@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Wayfound — Hospital Stay Planner</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#14170f;
+    --muted:#697068;
+    --accent:#17703a;
+    --tint:rgba(23,112,58,.10);
+    --tint2:rgba(23,112,58,.16);
+    --line:#e4e7e1;
+    --soft:#f5f7f3;
+  }
+  *{box-sizing:border-box;}
+  body{
+    min-height:100vh;margin:0;padding:32px 0;
+    display:flex;justify-content:center;align-items:flex-start;
+    background:#dfe1dc;color:var(--ink);
+    font-family:'Nunito Sans',system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .screen{
+    width:768px;height:1024px;background:#fff;position:relative;
+    display:flex;flex-direction:column;
+  }
+  .topbar{
+    padding:16px 24px;border-bottom:1px solid var(--line);
+    display:flex;align-items:center;justify-content:space-between;
+  }
+  .brand{font-size:22px;font-weight:700;letter-spacing:-.3px;}
+  .brand span{font-size:12px;font-weight:600;color:var(--muted);margin-left:8px;}
+  .topactions{display:flex;align-items:center;gap:10px;}
+  .action{
+    min-height:42px;padding:0 14px;background:var(--soft);
+    display:flex;align-items:center;gap:7px;font-size:13px;font-weight:700;color:var(--accent);
+  }
+  .avatar{
+    width:42px;height:42px;background:var(--accent);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;
+  }
+  .content{padding:18px 24px 14px;flex:1;}
+  .assignment{
+    display:flex;align-items:flex-start;justify-content:space-between;gap:20px;
+  }
+  .assignment .eyebrow{
+    font-size:11px;line-height:15px;color:var(--accent);font-weight:700;
+    text-transform:uppercase;letter-spacing:.7px;
+  }
+  .assignment h1{margin:3px 0 0;font-size:24px;line-height:31px;letter-spacing:-.4px;}
+  .assignment p{margin:3px 0 0;font-size:13px;line-height:18px;color:var(--muted);}
+  .edit{
+    min-height:42px;padding:0 16px;border:1px solid var(--accent);
+    display:flex;align-items:center;color:var(--accent);font-size:13px;font-weight:700;flex:none;
+  }
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:15px;}
+  .stat{background:var(--soft);padding:11px 13px;border-top:3px solid var(--accent);}
+  .stat b{display:block;font-size:15px;line-height:20px;}
+  .stat span{display:block;margin-top:2px;font-size:12px;line-height:16px;color:var(--muted);}
+  .feature{
+    margin-top:16px;display:grid;grid-template-columns:358px 1fr;
+    border:1px solid var(--line);
+  }
+  .feature img{
+    width:358px;height:118px;object-fit:cover;display:block;background:#c8cbc4;
+  }
+  .feature-copy{padding:13px 16px;background:var(--tint);}
+  .feature-copy b{font-size:16px;line-height:21px;}
+  .feature-copy p{margin:4px 0 9px;font-size:12px;line-height:17px;color:#405a49;}
+  .route{
+    display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:var(--accent);
+  }
+  .head{
+    display:flex;align-items:baseline;justify-content:space-between;margin-top:17px;
+  }
+  .head h2{margin:0;font-size:16px;line-height:22px;}
+  .head span{font-size:12px;color:var(--muted);}
+  .homes{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:8px;}
+  .home{border:1px solid var(--line);padding:10px;}
+  .home-top{display:flex;gap:9px;align-items:center;}
+  .home img{width:56px;height:56px;object-fit:cover;display:block;background:#c8cbc4;flex:none;}
+  .home-title{min-width:0;}
+  .home-title b{
+    display:block;font-size:14px;line-height:19px;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .home-title span{display:block;font-size:11px;line-height:15px;color:var(--muted);}
+  .tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:9px;}
+  .tag{
+    padding:3px 6px;background:var(--tint);color:var(--accent);
+    font-size:10px;font-weight:700;line-height:14px;
+  }
+  .home-foot{
+    margin-top:9px;padding-top:8px;border-top:1px solid var(--line);
+    display:flex;justify-content:space-between;align-items:end;
+  }
+  .home-foot strong{font-size:15px;line-height:20px;}
+  .home-foot small{font-size:10px;line-height:14px;color:var(--muted);}
+  .home-foot .time{text-align:right;}
+  .home-foot .time b{display:block;font-size:13px;line-height:18px;color:var(--accent);}
+  .areas{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:8px;}
+  .area{display:flex;border:1px solid var(--line);background:var(--soft);}
+  .area img{width:114px;height:78px;object-fit:cover;display:block;background:#c8cbc4;flex:none;}
+  .area div{padding:9px 10px;min-width:0;}
+  .area b{
+    display:block;font-size:14px;line-height:19px;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .area span{display:block;margin-top:3px;font-size:11px;line-height:15px;color:var(--muted);}
+  .checklist{
+    margin-top:8px;display:grid;grid-template-columns:repeat(3,1fr);
+    border:1px solid var(--line);
+  }
+  .check{
+    padding:12px 13px;display:flex;gap:9px;align-items:flex-start;
+    border-right:1px solid var(--line);
+  }
+  .check:last-child{border-right:0;}
+  .checkmark{
+    width:22px;height:22px;flex:none;background:var(--tint2);color:var(--accent);
+    display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;
+  }
+  .check b{display:block;font-size:12px;line-height:17px;}
+  .check span{display:block;font-size:10px;line-height:14px;color:var(--muted);}
+  .tabs{
+    border-top:1px solid var(--line);padding:9px 18px 11px;
+    display:flex;justify-content:space-around;
+  }
+  .tab{
+    min-width:128px;display:flex;align-items:center;justify-content:center;gap:7px;
+    min-height:46px;color:var(--muted);font-size:13px;font-weight:600;
+  }
+  .tab.on{background:var(--tint);color:var(--accent);font-weight:700;}
+</style>
+</head>
+<body>
+<div class="screen">
+  <header class="topbar">
+    <div class="brand">Wayfound <span>for travel nurses</span></div>
+    <div class="topactions">
+      <div class="action">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#17703a" stroke-width="2"><path d="M6 3h12v18l-6-4-6 4z"/></svg>
+        4 saved
+      </div>
+      <div class="avatar">JM</div>
+    </div>
+  </header>
+
+  <main class="content">
+    <section class="assignment">
+      <div>
+        <div class="eyebrow">Your upcoming assignment</div>
+        <h1>UCSF Medical Center at Parnassus</h1>
+        <p>March 4–June 3 · 13 weeks · Night shift · San Francisco, California</p>
+      </div>
+      <div class="edit">Edit assignment</div>
+    </section>
+
+    <section class="stats">
+      <div class="stat"><b>36 homes</b><span>Available for all 13 weeks</span></div>
+      <div class="stat"><b>18 minutes</b><span>Average hospital commute</span></div>
+      <div class="stat"><b>$1,475–$2,400</b><span>Monthly furnished range</span></div>
+    </section>
+
+    <section class="feature">
+      <img src="https://loremflickr.com/358/118/beach?lock=5880" width="358" height="118" alt="Rocky shoreline along the coast highway at low tide">
+      <div class="feature-copy">
+        <b>Live close without giving up quiet</b>
+        <p>Outer Sunset stays offer calmer streets and direct late-night transit to Parnassus.</p>
+        <div class="route">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#17703a" stroke-width="2"><path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2z"/><path d="M9 4v14M15 6v14"/></svg>
+          Compare routes
+        </div>
+      </div>
+    </section>
+
+    <div class="head"><h2>Top matches for your assignment</h2><span>Verified availability</span></div>
+    <section class="homes">
+      <article class="home">
+        <div class="home-top">
+          <img src="https://loremflickr.com/56/56/hotel?lock=5884" width="56" height="56" alt="Cliffside Inn guest room with ocean view">
+          <div class="home-title"><b>Parnassus Studio</b><span>Entire place · 4.8 (128)</span></div>
+        </div>
+        <div class="tags"><span class="tag">Utilities</span><span class="tag">Furnished</span></div>
+        <div class="home-foot">
+          <div><strong>$2,180</strong><small> / month</small></div>
+          <div class="time"><b>8 min</b><small>walk</small></div>
+        </div>
+      </article>
+
+      <article class="home">
+        <div class="home-top">
+          <img src="https://loremflickr.com/56/56/hotel?lock=5885" width="56" height="56" alt="Harbor Lantern Hotel entrance at dusk">
+          <div class="home-title"><b>Cole Valley Suite</b><span>1 bedroom · 4.7 (96)</span></div>
+        </div>
+        <div class="tags"><span class="tag">Laundry</span><span class="tag">Quiet</span></div>
+        <div class="home-foot">
+          <div><strong>$2,340</strong><small> / month</small></div>
+          <div class="time"><b>12 min</b><small>transit</small></div>
+        </div>
+      </article>
+
+      <article class="home">
+        <div class="home-top">
+          <img src="https://loremflickr.com/56/56/mountain?lock=5886" width="56" height="56" alt="Wooden cabin among redwood trees">
+          <div class="home-title"><b>Sunset Quiet Room</b><span>Private room · 4.9 (74)</span></div>
+        </div>
+        <div class="tags"><span class="tag">Parking</span><span class="tag">Desk</span></div>
+        <div class="home-foot">
+          <div><strong>$1,475</strong><small> / month</small></div>
+          <div class="time"><b>18 min</b><small>N line</small></div>
+        </div>
+      </article>
+    </section>
+
+    <div class="head"><h2>Compare nearby neighborhoods</h2><span>Based on night-shift travel</span></div>
+    <section class="areas">
+      <article class="area">
+        <img src="https://loremflickr.com/114/78/beach?lock=5881" width="114" height="78" alt="Wide sand beach below cliffs in Big Sur">
+        <div><b>Inner Sunset</b><span>Closest overall<br>11 available</span></div>
+      </article>
+      <article class="area">
+        <img src="https://loremflickr.com/114/78/mountain?lock=5882" width="114" height="78" alt="Forested headland above the water near Mendocino">
+        <div><b>Cole Valley</b><span>Best for walking<br>9 available</span></div>
+      </article>
+      <article class="area">
+        <img src="https://loremflickr.com/114/78/beach?lock=5883" width="114" height="78" alt="Grassy dunes and surf at Point Reyes">
+        <div><b>Outer Sunset</b><span>Best value<br>16 available</span></div>
+      </article>
+    </section>
+
+    <div class="head"><h2>Every match includes</h2><span>Designed for extended stays</span></div>
+    <section class="checklist">
+      <div class="check">
+        <div class="checkmark">✓</div>
+        <div><b>Full-assignment availability</b><span>No mid-contract move required</span></div>
+      </div>
+      <div class="check">
+        <div class="checkmark">✓</div>
+        <div><b>Furnished essentials</b><span>Kitchen, linens, and workspace</span></div>
+      </div>
+      <div class="check">
+        <div class="checkmark">✓</div>
+        <div><b>Verified commute</b><span>Routes checked for your shift</span></div>
+      </div>
+    </section>
+  </main>
+
+  <nav class="tabs">
+    <div class="tab on">
+      <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#17703a" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2 5-5 2 2-5z"/></svg>
+      Matches
+    </div>
+    <div class="tab">
+      <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#697068" stroke-width="2"><path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2z"/><path d="M9 4v14M15 6v14"/></svg>
+      Commute map
+    </div>
+    <div class="tab">
+      <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#697068" stroke-width="2"><path d="M6 3h12v18l-6-4-6 4z"/></svg>
+      Saved homes
+    </div>
+    <div class="tab">
+      <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#697068" stroke-width="2"><path d="M5 4h14v16H5z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>
+      Assignment
+    </div>
+  </nav>
+</div>
+</body>
+</html>

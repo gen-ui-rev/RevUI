@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reviews</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 32px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #e8e5e2;
+      color: #251f1b;
+      font-family: 'Inter', system-ui, sans-serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #fffdfb;
+    }
+
+    .topbar {
+      display: grid;
+      grid-template-columns: 40px 1fr 40px;
+      align-items: center;
+      padding: 14px 12px 13px;
+      background: #fffdfb;
+    }
+
+    .topbar h1 {
+      margin: 0;
+      text-align: center;
+      font-size: 18px;
+      line-height: 24px;
+      font-weight: 600;
+    }
+
+    .icon-button {
+      width: 40px;
+      padding: 6px;
+      border: 0;
+      background: transparent;
+      color: #251f1b;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .icon-button svg {
+      width: 22px;
+      height: 22px;
+      display: block;
+    }
+
+    main {
+      flex: 1;
+      padding: 10px 16px 8px;
+    }
+
+    .media-context {
+      display: grid;
+      grid-template-columns: 64px 1fr;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .artwork {
+      width: 64px;
+      height: 64px;
+      background:
+        repeating-linear-gradient(45deg, rgba(255, 253, 251, 0.16) 0 4px, rgba(255, 253, 251, 0) 4px 12px),
+        linear-gradient(#f0642a 0 50%, #241c18 50% 100%);
+      box-shadow: inset 0 0 0 3px #fffdfb, inset 0 0 0 5px #241c18;
+    }
+
+    .eyebrow {
+      margin: 0 0 4px;
+      color: #8b7669;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .media-title {
+      margin: 0 0 3px;
+      font-size: 16px;
+      line-height: 21px;
+      font-weight: 600;
+    }
+
+    .media-creator {
+      margin: 0;
+      color: #75665e;
+      font-size: 13px;
+      line-height: 18px;
+    }
+
+    .rating-panel {
+      margin-top: 14px;
+      padding: 16px;
+      background: #fff0e7;
+    }
+
+    .rating-panel h2,
+    .reviews-heading h2 {
+      margin: 0;
+      font-size: 17px;
+      line-height: 23px;
+      font-weight: 600;
+    }
+
+    .rating-layout {
+      display: grid;
+      grid-template-columns: 92px 1fr;
+      gap: 18px;
+      align-items: center;
+      margin-top: 13px;
+    }
+
+    .score {
+      margin: 0;
+      color: #d95612;
+      font-size: 38px;
+      line-height: 42px;
+      font-weight: 700;
+      letter-spacing: -0.04em;
+    }
+
+    .star-meter {
+      position: relative;
+      width: 83px;
+      margin-top: 3px;
+      color: #d9c5b9;
+      font-size: 16px;
+      line-height: 18px;
+      letter-spacing: 1px;
+      white-space: nowrap;
+    }
+
+    .star-meter .filled-stars {
+      position: absolute;
+      inset: 0 auto auto 0;
+      width: 92%;
+      overflow: hidden;
+      color: #ee671f;
+      white-space: nowrap;
+    }
+
+    .rating-count {
+      margin: 5px 0 0;
+      color: #806e63;
+      font-size: 12px;
+      line-height: 17px;
+    }
+
+    .distribution {
+      display: grid;
+      gap: 6px;
+    }
+
+    .distribution-row {
+      display: grid;
+      grid-template-columns: 12px 1fr 31px;
+      gap: 7px;
+      align-items: center;
+      color: #6f6058;
+      font-size: 12px;
+      line-height: 13px;
+    }
+
+    .bar {
+      height: 7px;
+      background: #efd9cc;
+    }
+
+    .bar-fill {
+      height: 100%;
+      background: #ed6a24;
+    }
+
+    .percent {
+      text-align: right;
+    }
+
+    .reviews-heading {
+      margin-top: 17px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .sort-button {
+      padding: 7px 9px;
+      border: 0;
+      background: #fff0e7;
+      color: #b94910;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 600;
+    }
+
+    .reviews-list {
+      margin-top: 8px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .review-card {
+      display: grid;
+      grid-template-columns: 54px 1fr;
+      gap: 12px;
+      padding: 12px 14px;
+      border: 1px solid #f1e8e2;
+      background: #fffdfb;
+    }
+
+    .review-card.top {
+      border: 0;
+      border-left: 4px solid #ed6a24;
+      background: #fff3e9;
+      padding-left: 12px;
+    }
+
+    .score-col {
+      text-align: center;
+    }
+
+    .card-score {
+      margin: 0;
+      color: #d95612;
+      font-size: 26px;
+      line-height: 28px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+    }
+
+    .card-stars {
+      display: block;
+      margin-top: 2px;
+      color: #ee671f;
+      font-size: 11px;
+      line-height: 14px;
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+    }
+
+    .badge {
+      margin: 0 0 5px;
+      color: #b94910;
+      font-size: 10px;
+      line-height: 15px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+    }
+
+    .review-meta {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .reviewer {
+      margin: 0;
+      font-size: 14px;
+      line-height: 19px;
+      font-weight: 600;
+    }
+
+    .review-date {
+      flex-shrink: 0;
+      color: #9a8c84;
+      font-size: 11px;
+      line-height: 19px;
+    }
+
+    .review-copy {
+      margin: 5px 0 0;
+      color: #6b5e56;
+      font-size: 13px;
+      line-height: 19px;
+    }
+
+    .helpful {
+      margin: 6px 0 0;
+      color: #8a766a;
+      font-size: 11px;
+      line-height: 17px;
+      font-weight: 500;
+    }
+
+    .tabbar {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      padding: 9px 8px 10px;
+      background: #fff4ed;
+    }
+
+    .tab {
+      padding: 2px 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      color: #8e7e75;
+      text-decoration: none;
+      font-size: 12px;
+      line-height: 15px;
+      font-weight: 500;
+    }
+
+    .tab svg {
+      width: 21px;
+      height: 21px;
+      display: block;
+    }
+
+    .tab.active {
+      color: #df5915;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <button class="icon-button" type="button" aria-label="Go back">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M15 5L8 12L15 19" stroke="currentColor" stroke-width="1.8" stroke-linecap="square" stroke-linejoin="miter"/>
+        </svg>
+      </button>
+      <h1>Reviews</h1>
+      <button class="icon-button" type="button" aria-label="More options">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <rect x="4" y="11" width="2.5" height="2.5"/>
+          <rect x="10.75" y="11" width="2.5" height="2.5"/>
+          <rect x="17.5" y="11" width="2.5" height="2.5"/>
+        </svg>
+      </button>
+    </header>
+
+    <main>
+      <section class="media-context" aria-label="Album being reviewed">
+        <div class="artwork" role="img" aria-label="Graphic split-block album artwork with diagonal stripes"></div>
+        <div>
+          <p class="eyebrow">Album · Indie Folk</p>
+          <p class="media-title">After the Signal</p>
+          <p class="media-creator">Nora Vale · 2025 · 11 tracks</p>
+        </div>
+      </section>
+
+      <section class="rating-panel" aria-labelledby="rating-title">
+        <h2 id="rating-title">Listener rating</h2>
+        <div class="rating-layout">
+          <div>
+            <p class="score">4.6</p>
+            <div class="star-meter" aria-label="4.6 out of 5 stars">
+              <span>★★★★★</span>
+              <span class="filled-stars">★★★★★</span>
+            </div>
+            <p class="rating-count">1,284 ratings</p>
+          </div>
+
+          <div class="distribution" aria-label="Rating distribution">
+            <div class="distribution-row">
+              <span>5</span>
+              <div class="bar"><div class="bar-fill" style="width:72%"></div></div>
+              <span class="percent">72%</span>
+            </div>
+            <div class="distribution-row">
+              <span>4</span>
+              <div class="bar"><div class="bar-fill" style="width:18%"></div></div>
+              <span class="percent">18%</span>
+            </div>
+            <div class="distribution-row">
+              <span>3</span>
+              <div class="bar"><div class="bar-fill" style="width:6%"></div></div>
+              <span class="percent">6%</span>
+            </div>
+            <div class="distribution-row">
+              <span>2</span>
+              <div class="bar"><div class="bar-fill" style="width:3%"></div></div>
+              <span class="percent">3%</span>
+            </div>
+            <div class="distribution-row">
+              <span>1</span>
+              <div class="bar"><div class="bar-fill" style="width:1%"></div></div>
+              <span class="percent">1%</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section aria-labelledby="reviews-title">
+        <div class="reviews-heading">
+          <h2 id="reviews-title">Listener reviews</h2>
+          <button class="sort-button" type="button">Highest rated</button>
+        </div>
+
+        <div class="reviews-list">
+          <article class="review-card top">
+            <div class="score-col">
+              <p class="card-score">5.0</p>
+              <span class="card-stars" aria-label="5 out of 5 stars">★★★★★</span>
+            </div>
+            <div>
+              <p class="badge">Most helpful</p>
+              <div class="review-meta">
+                <p class="reviewer">Maya Holden</p>
+                <time class="review-date" datetime="2025-05-18">May 18</time>
+              </div>
+              <p class="review-copy">The quiet production gives every lyric room to land. “Northbound” is a standout.</p>
+              <p class="helpful">94 listeners found this helpful</p>
+            </div>
+          </article>
+
+          <article class="review-card">
+            <div class="score-col">
+              <p class="card-score">4.0</p>
+              <span class="card-stars" aria-label="4 out of 5 stars">★★★★</span>
+            </div>
+            <div>
+              <div class="review-meta">
+                <p class="reviewer">Evan Mercer</p>
+                <time class="review-date" datetime="2025-05-12">May 12</time>
+              </div>
+              <p class="review-copy">A focused record with a strong second half; the closing run is excellent.</p>
+              <p class="helpful">61 listeners found this helpful</p>
+            </div>
+          </article>
+
+          <article class="review-card">
+            <div class="score-col">
+              <p class="card-score">5.0</p>
+              <span class="card-stars" aria-label="5 out of 5 stars">★★★★★</span>
+            </div>
+            <div>
+              <div class="review-meta">
+                <p class="reviewer">Tessa Rowan</p>
+                <time class="review-date" datetime="2025-05-06">May 6</time>
+              </div>
+              <p class="review-copy">Warm and restrained. The vocal layers reward good headphones.</p>
+              <p class="helpful">47 listeners found this helpful</p>
+            </div>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <nav class="tabbar" aria-label="Primary navigation">
+      <a class="tab" href="#">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M4 10.5L12 4L20 10.5V20H14.5V14H9.5V20H4V10.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="miter"/>
+        </svg>
+        <span>Home</span>
+      </a>
+      <a class="tab" href="#">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="10.5" cy="10.5" r="6.5" stroke="currentColor" stroke-width="1.7"/>
+          <path d="M15.5 15.5L20 20" stroke="currentColor" stroke-width="1.7"/>
+        </svg>
+        <span>Search</span>
+      </a>
+      <a class="tab" href="#">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M5 5H19V19H5V5Z" stroke="currentColor" stroke-width="1.7"/>
+          <path d="M9 5V19M15 5V19" stroke="currentColor" stroke-width="1.7"/>
+        </svg>
+        <span>Browse</span>
+      </a>
+      <a class="tab active" href="#" aria-current="page">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M5 4H19V20H5V4Z" stroke="currentColor" stroke-width="1.7"/>
+          <path d="M9 8H15M9 12H15M9 16H13" stroke="currentColor" stroke-width="1.7"/>
+        </svg>
+        <span>Library</span>
+      </a>
+    </nav>
+  </div>
+</body>
+</html>

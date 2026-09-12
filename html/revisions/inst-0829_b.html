@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verbloom Sentence Annotation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      display: grid;
+      place-items: center;
+      background: #e4e7eb;
+      color: #1d2733;
+      font-family: 'Poppins', system-ui, sans-serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 560px;
+      padding: 16px;
+      background: #eef1f4;
+    }
+
+    .editor {
+      width: 100%;
+      background: #ffffff;
+      border-radius: 8px;
+      box-shadow: 0 9px 25px rgba(29, 39, 51, 0.1);
+    }
+
+    .editor-header {
+      padding: 14px 16px 13px;
+      border-radius: 8px 8px 0 0;
+      background: #203651;
+      color: #ffffff;
+    }
+
+    .header-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 4px;
+    }
+
+    .eyebrow {
+      margin: 0;
+      color: #a9c9f7;
+      font-size: 10px;
+      line-height: 1.4;
+      font-weight: 600;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+    }
+
+    .progress {
+      padding: 3px 7px;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      border-radius: 3px;
+      color: #dbe8f8;
+      font-size: 10px;
+      line-height: 1.3;
+      font-weight: 500;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 20px;
+      line-height: 1.3;
+      font-weight: 600;
+    }
+
+    .lesson-meta {
+      margin: 3px 0 9px;
+      color: #d2ddea;
+      font-size: 11px;
+      line-height: 1.4;
+    }
+
+    .lesson-grid {
+      display: grid;
+      grid-template-columns: 1.35fr 1fr 0.8fr;
+      gap: 6px;
+    }
+
+    .lesson-fact {
+      padding-top: 6px;
+      border-top: 1px solid rgba(255, 255, 255, 0.16);
+    }
+
+    .fact-label {
+      display: block;
+      color: #92a9c3;
+      font-size: 8px;
+      line-height: 1.35;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .fact-value {
+      display: block;
+      margin-top: 1px;
+      color: #ffffff;
+      font-size: 10px;
+      line-height: 1.35;
+      font-weight: 500;
+    }
+
+    .workspace {
+      padding: 12px 15px 10px;
+      background: #f7f8fa;
+      border-bottom: 1px solid #e1e6eb;
+    }
+
+    .workspace-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 7px;
+    }
+
+    .workspace-heading p {
+      margin: 0;
+      color: #52606f;
+      font-size: 10px;
+      line-height: 1.4;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .workspace-heading span {
+      color: #778390;
+      font-size: 9px;
+      line-height: 1.4;
+    }
+
+    .paper {
+      position: relative;
+      padding: 13px 14px 14px;
+      border: 2px solid #293f59;
+      border-radius: 1px;
+      background: #fffdf4;
+      box-shadow: 5px 5px 0 #d8dee5;
+    }
+
+    .paper-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 11px;
+      padding-bottom: 7px;
+      border-bottom: 1px dashed #aeb5b8;
+    }
+
+    .question-number {
+      margin: 0;
+      color: #293f59;
+      font-size: 10px;
+      line-height: 1.4;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .sheet-tag {
+      padding: 2px 6px;
+      border: 1px solid #c8b778;
+      border-radius: 2px;
+      color: #75652d;
+      background: #fff8d8;
+      font-size: 8px;
+      line-height: 1.4;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .sentence {
+      position: relative;
+      z-index: 1;
+      margin: 0;
+      padding: 0 4px;
+      color: #172433;
+      font-family: Georgia, serif;
+      font-size: 17px;
+      line-height: 1.65;
+    }
+
+    .sheet-note {
+      position: relative;
+      z-index: 1;
+      margin: 9px 4px 0;
+      color: #777467;
+      font-size: 9px;
+      line-height: 1.4;
+      font-style: italic;
+    }
+
+    .annotation {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    .task-sequence {
+      padding: 10px 15px 11px;
+      border-bottom: 1px solid #e1e6eb;
+    }
+
+    .sequence-heading {
+      margin: 0 0 7px;
+      color: #536170;
+      font-size: 10px;
+      line-height: 1.4;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .sequence {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 6px;
+    }
+
+    .sequence-step {
+      position: relative;
+      padding: 6px 6px 6px 24px;
+      border: 1px solid #dce1e7;
+      border-radius: 4px;
+      background: #ffffff;
+      color: #44515f;
+      font-size: 9px;
+      line-height: 1.35;
+    }
+
+    .sequence-step strong {
+      position: absolute;
+      left: 6px;
+      top: 6px;
+      display: grid;
+      width: 14px;
+      height: 14px;
+      place-items: center;
+      border-radius: 2px;
+      background: #e7edf5;
+      color: #203651;
+      font-size: 8px;
+    }
+
+    .sequence-step.current {
+      border-color: #2563c9;
+      background: #f3f7fd;
+    }
+
+    .sequence-step.current strong {
+      background: #2563c9;
+      color: #ffffff;
+    }
+
+    .tool-section {
+      padding: 9px 15px 10px;
+      border-bottom: 1px solid #e1e6eb;
+    }
+
+    .tool-row {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .tool-label {
+      width: 51px;
+      flex: 0 0 51px;
+      color: #536170;
+      font-size: 10px;
+      line-height: 1.35;
+      font-weight: 600;
+    }
+
+    .tools {
+      display: grid;
+      flex: 1;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 5px;
+    }
+
+    .tool {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      padding: 5px 2px;
+      border: 1px solid #d7dde4;
+      border-radius: 3px;
+      background: #ffffff;
+      color: #44515f;
+      font-size: 9px;
+      line-height: 1.4;
+      font-weight: 500;
+    }
+
+    .tool svg {
+      width: 13px;
+      height: 13px;
+      flex: 0 0 auto;
+    }
+
+    .tool.active {
+      border-color: #203651;
+      background: #203651;
+      color: #ffffff;
+    }
+
+    .actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 9px 15px 10px;
+    }
+
+    .saved {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      color: #667483;
+      font-size: 9px;
+      line-height: 1.4;
+    }
+
+    .saved svg {
+      width: 13px;
+      height: 13px;
+      color: #26714c;
+    }
+
+    .action-buttons {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .clear-button,
+    .submit-button {
+      border-radius: 3px;
+      font-size: 11px;
+      line-height: 1.4;
+      font-weight: 500;
+    }
+
+    .clear-button {
+      padding: 6px 8px;
+      border: 1px solid #d3dae1;
+      background: #ffffff;
+      color: #596675;
+    }
+
+    .submit-button {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 6px 10px;
+      border: 1px solid #2563c9;
+      background: #2563c9;
+      color: #ffffff;
+    }
+
+    .submit-button svg {
+      width: 13px;
+      height: 13px;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <main class="editor" aria-label="Verbloom sentence annotation exercise">
+      <header class="editor-header">
+        <div class="header-top">
+          <p class="eyebrow">Grammar Foundations</p>
+          <span class="progress">4 of 6</span>
+        </div>
+        <h1>Clauses and conjunctions</h1>
+        <p class="lesson-meta">Lesson 8 · Guided review · Intermediate level</p>
+        <div class="lesson-grid" aria-label="Lesson information">
+          <div class="lesson-fact">
+            <span class="fact-label">Learning goal</span>
+            <span class="fact-value">Identify clause roles</span>
+          </div>
+          <div class="lesson-fact">
+            <span class="fact-label">Focus</span>
+            <span class="fact-value">Dependent clauses</span>
+          </div>
+          <div class="lesson-fact">
+            <span class="fact-label">Value</span>
+            <span class="fact-value">1 point</span>
+          </div>
+        </div>
+      </header>
+
+      <section class="workspace" aria-label="Sentence canvas">
+        <div class="workspace-heading">
+          <p>Read the sentence first</p>
+          <span>Sentence 4</span>
+        </div>
+
+        <div class="paper">
+          <div class="paper-title">
+            <p class="question-number">Annotation sheet</p>
+            <span class="sheet-tag">Blue ink</span>
+          </div>
+          <p class="sentence">Although it was raining, the class continued outside.</p>
+          <p class="sheet-note">Mark only the words that form the dependent clause.</p>
+
+          <svg class="annotation" viewBox="0 0 324 139" preserveAspectRatio="none" fill="none" aria-hidden="true">
+            <path d="M17 91 C57 94, 99 91, 147 93" stroke="#2563c9" stroke-width="3" stroke-linecap="round"/>
+            <path d="M17 48 C25 41, 70 40, 86 46 C94 50, 94 63, 86 68 C67 73, 31 72, 18 66 C10 62, 10 53, 17 48Z" stroke="#2563c9" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </section>
+
+      <section class="task-sequence" aria-labelledby="sequence-label">
+        <p class="sequence-heading" id="sequence-label">Then complete these steps</p>
+        <div class="sequence">
+          <div class="sequence-step current">
+            <strong>1</strong>
+            Underline the clause
+          </div>
+          <div class="sequence-step">
+            <strong>2</strong>
+            Circle its conjunction
+          </div>
+          <div class="sequence-step">
+            <strong>3</strong>
+            Review and submit
+          </div>
+        </div>
+      </section>
+
+      <section class="tool-section" aria-labelledby="tool-label">
+        <div class="tool-row">
+          <span class="tool-label" id="tool-label">Mark with</span>
+          <div class="tools" role="toolbar" aria-label="Drawing tools">
+            <button class="tool active" type="button" aria-pressed="true">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M4 20l4.2-1 10.6-10.6a2 2 0 0 0 0-2.8l-.4-.4a2 2 0 0 0-2.8 0L5 15.8 4 20Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+              </svg>
+              Pen
+            </button>
+            <button class="tool" type="button">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="m5 15 8.8-8.8 4 4L9 19H5v-4Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+              </svg>
+              Mark
+            </button>
+            <button class="tool" type="button">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <rect x="5" y="5" width="14" height="14" rx="1" stroke="currentColor" stroke-width="1.8"/>
+                <circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.8"/>
+              </svg>
+              Shape
+            </button>
+            <button class="tool" type="button">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="m7.2 17.8-3-3a2 2 0 0 1 0-2.8l6.8-6.8a2 2 0 0 1 2.8 0l5 5a2 2 0 0 1 0 2.8L14 17.8H7.2Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+              </svg>
+              Erase
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <footer class="actions">
+        <div class="saved">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="m5 12 4 4L19 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Draft saved
+        </div>
+        <div class="action-buttons">
+          <button class="clear-button" type="button">Clear</button>
+          <button class="submit-button" type="button">
+            Submit
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="m9 5 7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+      </footer>
+    </main>
+  </div>
+</body>
+</html>

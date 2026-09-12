@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Waverly — Activity</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --violet:#6D28D9;
+    --violet-soft:#EDE9FE;
+    --ink:#191821;
+    --muted:#6B6A78;
+    --ground:#F1F1F4;
+  }
+  *{box-sizing:border-box;}
+  body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    padding:40px 0;
+    margin:0;
+    background:#DEDEE3;
+    font-family:'Nunito Sans', system-ui, sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .screen{
+    width:390px;
+    height:844px;
+    background:var(--ground);
+    position:relative;
+    display:flex;
+    flex-direction:column;
+    color:var(--ink);
+  }
+
+  /* top bar */
+  .topbar{
+    background:#FFFFFF;
+    padding:18px 20px 14px;
+    display:flex;
+    align-items:flex-end;
+    justify-content:space-between;
+    border-bottom:1px solid #E4E4E9;
+  }
+  .topbar h1{
+    margin:0;
+    font-size:22px;
+    font-weight:700;
+    letter-spacing:-0.2px;
+  }
+  .topbar .sub{
+    margin:3px 0 0;
+    font-size:13px;
+    color:var(--muted);
+  }
+  .markread{
+    font-size:13px;
+    font-weight:600;
+    color:var(--violet);
+    padding-bottom:2px;
+  }
+
+  /* filters — segmented count tiles */
+  .filters{
+    background:#FFFFFF;
+    padding:10px 16px 12px;
+    display:flex;
+    gap:6px;
+    border-bottom:1px solid #E4E4E9;
+  }
+  .chip{
+    flex:1;
+    min-width:0;
+    background:#F1F1F4;
+    border-radius:4px;
+    padding:6px 4px 7px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:1px;
+  }
+  .chip .count{
+    font-size:15px;
+    font-weight:700;
+    line-height:1.2;
+    color:#3A3946;
+  }
+  .chip .name{
+    font-size:11px;
+    font-weight:600;
+    line-height:1.2;
+    color:var(--muted);
+    white-space:nowrap;
+  }
+  .chip.on{ background:var(--violet); }
+  .chip.on .count{ color:#FFFFFF; }
+  .chip.on .name{ color:#DDD3F8; }
+
+  /* list */
+  .list{
+    flex:1;
+    padding:14px 16px 0;
+    overflow:hidden;
+  }
+  .sechead{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    padding:0 2px 8px;
+    margin-bottom:10px;
+    border-bottom:1px solid #DFDFE5;
+  }
+  .sechead .label{
+    font-size:17px;
+    font-weight:700;
+    letter-spacing:-0.1px;
+    color:#3A3946;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+  .sechead .n{
+    font-size:12px;
+    font-weight:600;
+    color:#8C8B97;
+    white-space:nowrap;
+    margin-left:12px;
+  }
+  .sec + .sechead{ padding-top:16px; }
+
+  .card{
+    background:#FFFFFF;
+    border-radius:4px;
+    padding:12px;
+    display:flex;
+    gap:12px;
+    align-items:center;
+    margin-bottom:8px;
+  }
+  .card.unread{
+    box-shadow:0 2px 8px rgba(24,22,44,0.10);
+  }
+  .card.read{
+    background:#FBFBFC;
+    border:1px solid #E7E7EC;
+  }
+  .card:last-child{ margin-bottom:0; }
+
+  .thumb{
+    width:56px;
+    height:56px;
+    border-radius:4px;
+    flex:0 0 56px;
+    object-fit:cover;
+    display:block;
+    background:#D9D9DF;
+  }
+  .mono{
+    width:56px;
+    height:56px;
+    flex:0 0 56px;
+    border-radius:4px;
+    background:var(--violet-soft);
+    color:#5B21B6;
+    font-size:18px;
+    font-weight:700;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    letter-spacing:0.5px;
+  }
+  .read .mono{
+    background:#EFEFF3;
+    color:#7A7987;
+  }
+
+  .body{ min-width:0; flex:1; }
+  .title{
+    font-size:15px;
+    font-weight:700;
+    line-height:1.3;
+    margin:0;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+  .read .title{ font-weight:600; color:#4E4D59; }
+  .meta{
+    margin:4px 0 0;
+    font-size:13px;
+    color:var(--muted);
+    line-height:1.35;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+  .read .meta{ color:#8C8B97; }
+  .dot{
+    width:8px;
+    height:8px;
+    border-radius:4px;
+    background:var(--violet);
+    flex:0 0 8px;
+  }
+
+  /* tab bar */
+  .tabs{
+    background:#FFFFFF;
+    border-top:1px solid #E4E4E9;
+    display:flex;
+    padding:10px 8px 16px;
+  }
+  .tab{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:5px;
+    font-size:12px;
+    font-weight:600;
+    color:#8C8B97;
+    position:relative;
+  }
+  .tab.on{ color:var(--violet); }
+  .tab svg{ display:block; }
+  .badge{
+    position:absolute;
+    top:-2px;
+    left:calc(50% + 6px);
+    width:7px;
+    height:7px;
+    border-radius:4px;
+    background:var(--violet);
+  }
+</style>
+</head>
+<body>
+<div class="screen">
+
+  <div class="topbar">
+    <div>
+      <h1>Activity</h1>
+      <p class="sub">4 unread since Monday</p>
+    </div>
+    <div class="markread">Mark all read</div>
+  </div>
+
+  <div class="filters">
+    <div class="chip on">
+      <span class="count">6</span>
+      <span class="name">All</span>
+    </div>
+    <div class="chip">
+      <span class="count">4</span>
+      <span class="name">Unread</span>
+    </div>
+    <div class="chip">
+      <span class="count">2</span>
+      <span class="name">Follows</span>
+    </div>
+    <div class="chip">
+      <span class="count">3</span>
+      <span class="name">Releases</span>
+    </div>
+  </div>
+
+  <div class="list">
+
+    <div class="sechead">
+      <span class="label">Today</span>
+      <span class="n">Mar 14</span>
+    </div>
+    <div class="sec">
+
+      <div class="card unread">
+        <img class="thumb" src="https://loremflickr.com/56/56/studio?lock=8180" width="56" height="56" alt="Recording studio cover art for The Long Take podcast">
+        <div class="body">
+          <p class="title">New episode: The Long Take</p>
+          <p class="meta">Ep. 112, Freight of the Ordinary · 48 min · 2h ago</p>
+        </div>
+        <span class="dot"></span>
+      </div>
+
+      <div class="card unread">
+        <div class="mono">ME</div>
+        <div class="body">
+          <p class="title">Mara Ellison started following you</p>
+          <p class="meta">Follows 3 of your playlists · 4h ago</p>
+        </div>
+        <span class="dot"></span>
+      </div>
+
+      <div class="card unread">
+        <img class="thumb" src="https://loremflickr.com/56/56/vinyl?lock=8181" width="56" height="56" alt="Vinyl record sleeve for the Late Shift playlist">
+        <div class="body">
+          <p class="title">Late Shift was saved 12 times</p>
+          <p class="meta">Your playlist passed 400 saves · 7h ago</p>
+        </div>
+        <span class="dot"></span>
+      </div>
+
+    </div>
+
+    <div class="sechead">
+      <span class="label">Earlier this week</span>
+      <span class="n">Mar 10 – 13</span>
+    </div>
+    <div class="sec">
+
+      <div class="card unread">
+        <img class="thumb" src="https://loremflickr.com/56/56/concert?lock=8182" width="56" height="56" alt="Concert stage photo for the Hollow Coast live session">
+        <div class="body">
+          <p class="title">Hollow Coast live session added</p>
+          <p class="meta">Recorded at Ridgeway Hall · Wed 8:12 PM</p>
+        </div>
+        <span class="dot"></span>
+      </div>
+
+      <div class="card read">
+        <div class="mono">IB</div>
+        <div class="body">
+          <p class="title">Ivan Brooks shared Night Freight</p>
+          <p class="meta">Album by Sable Motor · Tue 6:40 PM</p>
+        </div>
+      </div>
+
+      <div class="card read">
+        <img class="thumb" src="https://loremflickr.com/56/56/guitar?lock=8183" width="56" height="56" alt="Electric guitar photo for the Guitar Tones weekly digest">
+        <div class="body">
+          <p class="title">Your weekly digest is ready</p>
+          <p class="meta">18 new tracks from artists you follow · Mon 7:00 AM</p>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="tabs">
+    <div class="tab">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5 12 4l8 6.5V20a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1z"/></svg>
+      Home
+    </div>
+    <div class="tab">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg>
+      Search
+    </div>
+    <div class="tab">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4v16M10 4v16M15.5 5l4 15"/></svg>
+      Library
+    </div>
+    <div class="tab on">
+      <span class="badge"></span>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 10a6 6 0 0 1 12 0c0 4 1.5 5.5 1.5 5.5h-15S6 14 6 10z"/><path d="M10 18.5a2.2 2.2 0 0 0 4 0"/></svg>
+      Activity
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

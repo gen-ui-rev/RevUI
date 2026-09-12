@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Overlap Plus</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#16130F;
+    --muted:#7C746B;
+    --rule:#E7E2DC;
+    --accent:#EE5F14;
+  }
+  *{box-sizing:border-box;}
+  body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    padding:40px 0;
+    margin:0;
+    background:#D9D5CF;
+    font-family:'Nunito Sans', system-ui, sans-serif;
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+  }
+  .screen{
+    width:390px;
+    height:844px;
+    background:#FFFFFF;
+    position:relative;
+    display:flex;
+    flex-direction:column;
+  }
+
+  /* top bar */
+  .topbar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:16px 20px 4px;
+  }
+  .close{
+    width:28px;height:28px;
+    display:flex;align-items:center;justify-content:center;
+    color:var(--ink);
+  }
+  .restore{
+    font-size:13px;font-weight:600;color:var(--muted);
+  }
+
+  .pad{padding:0 20px;}
+
+  .eyebrow{
+    margin:12px 0 0;
+    font-size:12px;font-weight:700;letter-spacing:.13em;
+    text-transform:uppercase;color:var(--accent);
+  }
+  h1{
+    margin:6px 0 0;
+    font-size:25px;line-height:1.22;font-weight:700;letter-spacing:-.2px;
+  }
+
+  /* photos */
+  .strip{
+    display:flex;
+    gap:7px;
+    margin-top:14px;
+  }
+  .thumb{
+    position:relative;
+    width:112px;height:84px;
+    border-radius:10px;
+    overflow:hidden;
+    background:#CFC9C2;
+  }
+  .thumb img{
+    display:block;
+    width:112px;height:84px;
+    object-fit:cover;
+    background:#CFC9C2;
+  }
+  .veil{
+    position:absolute;inset:0;
+    background:rgba(22,19,15,.62);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:3px;
+    color:#fff;
+  }
+  .veil span{font-size:13px;font-weight:700;}
+
+  .stripnote{
+    display:flex;align-items:center;gap:6px;
+    margin-top:8px;
+    font-size:13px;color:var(--muted);
+  }
+
+  /* comparison list */
+  .sechead{
+    display:flex;align-items:baseline;justify-content:space-between;
+    margin-top:20px;padding-top:16px;
+    border-top:1px solid var(--rule);
+  }
+  .sechead h2{
+    margin:0;font-size:13px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;
+  }
+  .sechead em{
+    font-style:normal;font-size:12px;font-weight:600;color:var(--muted);
+    letter-spacing:.06em;text-transform:uppercase;
+  }
+  .row{
+    display:flex;align-items:center;justify-content:space-between;gap:12px;
+    height:40px;
+    border-bottom:1px solid var(--rule);
+  }
+  .row .name{
+    display:flex;align-items:center;gap:9px;
+    font-size:15px;font-weight:600;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .row .lim{
+    font-size:13px;color:var(--muted);white-space:nowrap;
+  }
+  .check{color:var(--accent);flex:none;}
+
+  /* plans */
+  .plans{margin-top:18px;}
+  .plan{
+    display:flex;align-items:center;gap:12px;
+    padding:12px 0;
+    border-bottom:1px solid var(--rule);
+  }
+  .plan:first-child{border-top:1px solid var(--rule);}
+  .radio{
+    width:22px;height:22px;border-radius:50%;
+    border:2px solid #D3CCC4;flex:none;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .radio.on{border-color:var(--accent);}
+  .radio.on i{
+    width:11px;height:11px;border-radius:50%;background:var(--accent);display:block;
+  }
+  .plan .info{flex:1;min-width:0;}
+  .plan .ttl{
+    font-size:15px;font-weight:700;
+    display:flex;align-items:center;gap:8px;
+  }
+  .plan .sub{font-size:13px;color:var(--muted);margin-top:2px;}
+  .tag{
+    font-size:12px;font-weight:700;color:#fff;background:var(--accent);
+    border-radius:10px;padding:1px 7px;letter-spacing:.01em;
+  }
+  .price{font-size:15px;font-weight:700;text-align:right;white-space:nowrap;}
+  .price.hi{color:var(--accent);}
+  .price small{display:block;font-size:12px;font-weight:400;color:var(--muted);margin-top:2px;}
+
+  /* cta */
+  .cta{
+    display:block;
+    margin-top:16px;
+    height:52px;
+    border-radius:10px;
+    background:var(--accent);
+    color:#fff;
+    font-size:17px;font-weight:700;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .fine{
+    margin:10px 0 0;
+    font-size:12px;line-height:1.5;color:var(--muted);text-align:center;
+  }
+
+  /* tab bar */
+  .tabs{
+    position:absolute;left:0;right:0;bottom:0;
+    display:flex;
+    border-top:1px solid var(--rule);
+    background:#fff;
+    padding:8px 0 12px;
+  }
+  .tab{
+    flex:1;
+    display:flex;flex-direction:column;align-items:center;gap:3px;
+    font-size:12px;font-weight:600;color:#98918A;
+  }
+  .tab.active{color:var(--accent);}
+</style>
+</head>
+<body>
+<div class="screen">
+
+  <div class="topbar">
+    <div class="close" aria-label="Close">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 5l14 14M19 5L5 19"/></svg>
+    </div>
+    <div class="restore">Restore purchase</div>
+  </div>
+
+  <div class="pad">
+    <p class="eyebrow">Overlap Plus</p>
+    <h1>You've hit today's limit in Sunday Run Club.</h1>
+
+    <div class="strip">
+      <div class="thumb">
+        <img src="https://loremflickr.com/112/84/friends?lock=9760" width="112" height="84" alt="Group of runners meeting after a morning run">
+      </div>
+      <div class="thumb">
+        <img src="https://loremflickr.com/112/84/cafe?lock=9761" width="112" height="84" alt="Circle members gathered at a corner cafe table">
+      </div>
+      <div class="thumb">
+        <img src="https://loremflickr.com/112/84/party?lock=9762" width="112" height="84" alt="Locked photos from a circle's weekend party">
+        <div class="veil">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 018 0v3"/></svg>
+          <span>+21</span>
+        </div>
+      </div>
+    </div>
+    <div class="stripnote">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 018 0v3"/></svg>
+      24 posts from your 6 circles are locked until tomorrow.
+    </div>
+
+    <div class="sechead">
+      <h2>What Plus unlocks</h2>
+      <em>On free</em>
+    </div>
+
+    <div class="row">
+      <div class="name">
+        <svg class="check" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg>
+        Unlimited circle feed
+      </div>
+      <div class="lim">3 posts a day</div>
+    </div>
+    <div class="row">
+      <div class="name">
+        <svg class="check" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg>
+        Start any conversation
+      </div>
+      <div class="lim">1 new chat a week</div>
+    </div>
+    <div class="row">
+      <div class="name">
+        <svg class="check" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg>
+        RSVP to meetups
+      </div>
+      <div class="lim">View only</div>
+    </div>
+    <div class="row">
+      <div class="name">
+        <svg class="check" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg>
+        Full circle archive
+      </div>
+      <div class="lim">Last 7 days</div>
+    </div>
+
+    <div class="plans">
+      <div class="plan">
+        <div class="radio"></div>
+        <div class="info">
+          <div class="ttl">Monthly</div>
+          <div class="sub">Billed every month</div>
+        </div>
+        <div class="price">$7.99<small>per month</small></div>
+      </div>
+      <div class="plan">
+        <div class="radio on"><i></i></div>
+        <div class="info">
+          <div class="ttl">Yearly <span class="tag">Save 43%</span></div>
+          <div class="sub">$54.99 billed once a year</div>
+        </div>
+        <div class="price hi">$4.58<small>per month</small></div>
+      </div>
+      <div class="plan">
+        <div class="radio"></div>
+        <div class="info">
+          <div class="ttl">Circle plan</div>
+          <div class="sub">Up to 5 members you invite</div>
+        </div>
+        <div class="price">$12.99<small>per month</small></div>
+      </div>
+    </div>
+
+    <div class="cta">Start 7-day free trial</div>
+    <p class="fine">Free until March 21, 2024, then $54.99 a year.<br>Cancel anytime from Settings.</p>
+  </div>
+
+  <nav class="tabs">
+    <div class="tab">
+      <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
+      Feed
+    </div>
+    <div class="tab active">
+      <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="12" r="5"/><circle cx="15" cy="12" r="5"/></svg>
+      Circles
+    </div>
+    <div class="tab">
+      <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>
+      Post
+    </div>
+    <div class="tab">
+      <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4V5z"/></svg>
+      Chats
+    </div>
+    <div class="tab">
+      <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8" r="3.6"/><path d="M5 20c1.3-3.6 4-5.2 7-5.2s5.7 1.6 7 5.2"/></svg>
+      You
+    </div>
+  </nav>
+
+</div>
+</body>
+</html>

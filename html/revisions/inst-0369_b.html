@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Waypost — Followers</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 40px 0;
+    margin: 0;
+    background: #57515A;
+    font-family: 'Source Serif 4', Georgia, serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .screen {
+    width: 390px;
+    height: 844px;
+    position: relative;
+    background: #F1EEF1;
+    display: flex;
+    flex-direction: column;
+    color: #241F26;
+  }
+
+  /* top bar */
+  .topbar {
+    background: #FFFFFF;
+    padding: 18px 16px 14px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .topbar .back { display: flex; align-items: center; }
+  .topbar h1 {
+    margin: 0;
+    font-size: 19px;
+    font-weight: 600;
+    line-height: 26px;
+  }
+  .topbar .handle {
+    margin-left: auto;
+    font-size: 13px;
+    color: #7C7580;
+  }
+
+  /* tabs */
+  .tabs {
+    background: #FFFFFF;
+    display: flex;
+    border-bottom: 1px solid #E2DDE3;
+  }
+  .tab {
+    flex: 1;
+    padding: 11px 0 12px 0;
+    text-align: center;
+    font-size: 15px;
+    color: #7C7580;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+  }
+  .tab .num { font-weight: 600; }
+  .tab.active {
+    color: #7C4F86;
+    border-bottom-color: #7C4F86;
+    font-weight: 600;
+  }
+
+  /* search */
+  .searchwrap { padding: 14px 16px; }
+  .search {
+    background: #FFFFFF;
+    border: 1px solid #DBD5DC;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 0 12px;
+  }
+  .search span {
+    font-size: 14px;
+    color: #8B848F;
+  }
+
+  /* sections */
+  .body { padding: 0 16px; }
+  .sechead {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding: 4px 0 8px 0;
+  }
+  .sechead.sorter {
+    align-items: center;
+    position: relative;
+  }
+  .sechead h2 {
+    margin: 0;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #6E6773;
+  }
+  .sechead .meta { font-size: 13px; color: #8B848F; }
+
+  /* tapped sort trigger + open menu */
+  .sorttrigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #7C4F86;
+    color: #FFFFFF;
+    padding: 6px 10px;
+    font-size: 13px;
+    line-height: 17px;
+    font-weight: 600;
+  }
+  .sortmenu {
+    position: absolute;
+    top: calc(100% + 2px);
+    right: 0;
+    width: 196px;
+    background: #FFFFFF;
+    border: 1px solid #DBD5DC;
+    box-shadow: 0 8px 20px rgba(35, 27, 38, 0.22);
+    z-index: 6;
+    padding: 4px 0;
+  }
+  .sortmenu .cap {
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #8B848F;
+    padding: 7px 12px 6px 12px;
+  }
+  .sortmenu .opt {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 12px;
+    font-size: 14px;
+    line-height: 19px;
+    color: #3B3540;
+  }
+  .sortmenu .opt .tick { width: 14px; display: flex; align-items: center; }
+  .sortmenu .opt.sel { font-weight: 600; color: #7C4F86; background: #F6F1F7; }
+
+  .card {
+    background: #FFFFFF;
+    box-shadow: 0 1px 3px rgba(35, 27, 38, 0.10);
+    margin-bottom: 18px;
+  }
+  .row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    border-bottom: 1px solid #EDE9EE;
+  }
+  .row:last-child { border-bottom: none; }
+
+  /* profile spot: its own gutter column, divided from the text */
+  .avcol {
+    display: flex;
+    align-items: center;
+    padding-right: 12px;
+    border-right: 1px solid #EDE9EE;
+    align-self: stretch;
+  }
+  .av {
+    width: 48px;
+    height: 48px;
+    flex: 0 0 48px;
+    background: #7C4F86;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #FFFFFF;
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    box-shadow: 0 2px 5px rgba(60, 33, 68, 0.30);
+  }
+  .who { min-width: 0; flex: 1; }
+  .who .nm {
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 21px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .who .sub {
+    font-size: 13px;
+    color: #7C7580;
+    line-height: 18px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .btn {
+    flex: 0 0 88px;
+    width: 88px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: inherit;
+  }
+  .btn.follow {
+    background: #7C4F86;
+    color: #FFFFFF;
+    border: 1px solid #7C4F86;
+  }
+  .btn.following {
+    background: #FFFFFF;
+    color: #4A4350;
+    border: 1px solid #CFC7D1;
+    font-weight: 400;
+  }
+
+  /* tab bar */
+  .tabbar {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    background: #FFFFFF;
+    border-top: 1px solid #E2DDE3;
+    display: flex;
+    padding: 10px 0 12px 0;
+  }
+  .nav {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    color: #837C87;
+  }
+  .nav.on { color: #7C4F86; font-weight: 600; }
+</style>
+</head>
+<body>
+<div class="screen">
+
+  <div class="topbar">
+    <span class="back" aria-hidden="true">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#241F26" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 5 8 12l6.5 7"/></svg>
+    </span>
+    <h1>Marisol Vance</h1>
+    <span class="handle">Trip planner</span>
+  </div>
+
+  <div class="tabs">
+    <div class="tab active">Followers <span class="num">1,248</span></div>
+    <div class="tab">Following <span class="num">312</span></div>
+  </div>
+
+  <div class="searchwrap">
+    <div class="search">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#8B848F" stroke-width="1.6" stroke-linecap="round"><circle cx="11" cy="11" r="6.2"/><path d="M15.6 15.6 20 20"/></svg>
+      <span>Search followers</span>
+    </div>
+  </div>
+
+  <div class="body">
+
+    <div class="sechead">
+      <h2>New this week</h2>
+      <span class="meta">3</span>
+    </div>
+    <div class="card">
+      <div class="row">
+        <div class="avcol"><div class="av">AF</div></div>
+        <div class="who">
+          <div class="nm">Adele Ferran</div>
+          <div class="sub">Porto, Portugal · 14 trips</div>
+        </div>
+        <div class="btn follow">Follow</div>
+      </div>
+      <div class="row">
+        <div class="avcol"><div class="av">GM</div></div>
+        <div class="who">
+          <div class="nm">Grant Mowry</div>
+          <div class="sub">Denver, CO · 18 mutual</div>
+        </div>
+        <div class="btn follow">Follow</div>
+      </div>
+      <div class="row">
+        <div class="avcol"><div class="av">IC</div></div>
+        <div class="who">
+          <div class="nm">Ines Calloway</div>
+          <div class="sub">Reykjavik, Iceland · 9 trips</div>
+        </div>
+        <div class="btn following">Following</div>
+      </div>
+    </div>
+
+    <div class="sechead sorter">
+      <h2>All followers</h2>
+      <span class="sorttrigger">Sorted by recent
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 14.5l6-6 6 6"/></svg>
+      </span>
+      <div class="sortmenu">
+        <div class="cap">Sort followers by</div>
+        <div class="opt sel">
+          <span class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#7C4F86" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.8l4.6 4.4L19 6.6"/></svg></span>
+          Recently followed
+        </div>
+        <div class="opt"><span class="tick"></span>Name (A–Z)</div>
+        <div class="opt"><span class="tick"></span>Most trips logged</div>
+        <div class="opt"><span class="tick"></span>Mutual friends first</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="row">
+        <div class="avcol"><div class="av">TB</div></div>
+        <div class="who">
+          <div class="nm">Theo Bandara</div>
+          <div class="sub">Kyoto, Japan · 64 saved stays</div>
+        </div>
+        <div class="btn following">Following</div>
+      </div>
+      <div class="row">
+        <div class="avcol"><div class="av">PR</div></div>
+        <div class="who">
+          <div class="nm">Priya Rasmussen</div>
+          <div class="sub">Oslo, Norway · 7 mutual</div>
+        </div>
+        <div class="btn follow">Follow</div>
+      </div>
+      <div class="row">
+        <div class="avcol"><div class="av">CA</div></div>
+        <div class="who">
+          <div class="nm">Colin Ashworth</div>
+          <div class="sub">Austin, TX · 21 trips</div>
+        </div>
+        <div class="btn follow">Follow</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="tabbar">
+    <div class="nav">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M15 9l-2.1 4.9L8 16l2.1-4.9z"/></svg>
+      Explore
+    </div>
+    <div class="nav">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6.5 9.3 4.6l5.4 2 4.3-1.6v12.8l-4.3 1.6-5.4-2L4 19.3z"/><path d="M9.3 4.6v12.8M14.7 6.6v12.8"/></svg>
+      Trips
+    </div>
+    <div class="nav">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4.5h10v15l-5-3.6-5 3.6z"/></svg>
+      Saved
+    </div>
+    <div class="nav on">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8.4" r="3.6"/><path d="M5.4 19.4c.9-3.3 3.4-5 6.6-5s5.7 1.7 6.6 5"/></svg>
+      Profile
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

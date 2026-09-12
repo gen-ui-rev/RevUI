@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crop Photo — Roamstead</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #d8dde3;
+      color: #172033;
+      font-family: 'Inter', system-ui, sans-serif;
+    }
+
+    button {
+      font: inherit;
+      cursor: default;
+    }
+
+    .screen {
+      position: relative;
+      width: 768px;
+      height: 1024px;
+      background: #ffffff;
+      border: 1px solid #cbd2da;
+      overflow: hidden;
+    }
+
+    /* ---------- top bar ---------- */
+    .topbar {
+      display: grid;
+      grid-template-columns: 150px 1fr 150px;
+      align-items: center;
+      padding: 16px 32px;
+      border-bottom: 1px solid #e3e7eb;
+    }
+
+    .text-button {
+      border: 0;
+      padding: 0;
+      background: transparent;
+      color: #536174;
+      font-size: 16px;
+      line-height: 22px;
+      font-weight: 500;
+      text-align: left;
+    }
+
+    .titles {
+      text-align: center;
+    }
+
+    .topbar-title {
+      margin: 0;
+      font-size: 20px;
+      line-height: 26px;
+      font-weight: 600;
+      color: #172033;
+    }
+
+    .topbar-sub {
+      margin: 0;
+      color: #7c8896;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 500;
+    }
+
+    .topbar-count {
+      text-align: right;
+      color: #788493;
+      font-size: 14px;
+      line-height: 22px;
+      font-weight: 600;
+    }
+
+    /* ---------- top tabs ---------- */
+    .editor-tabs {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      border-bottom: 1px solid #dfe4e9;
+      background: #fafbfc;
+    }
+
+    .editor-tab {
+      position: relative;
+      border: 0;
+      padding: 16px 8px;
+      background: transparent;
+      color: #7a8594;
+      font-size: 15px;
+      line-height: 22px;
+      font-weight: 500;
+    }
+
+    .editor-tab.active {
+      color: #263243;
+      font-weight: 700;
+      background: #ffffff;
+    }
+
+    .editor-tab.active::after {
+      content: "";
+      position: absolute;
+      bottom: -1px;
+      left: 50%;
+      width: 88px;
+      height: 3px;
+      border-radius: 3px 3px 0 0;
+      transform: translateX(-50%);
+      background: #475569;
+    }
+
+    /* ---------- stage ---------- */
+    .photo-stage {
+      padding: 24px 32px;
+      background: #202a38;
+    }
+
+    .photo-wrap {
+      position: relative;
+      width: 704px;
+      height: 480px;
+      background: #6b7280;
+    }
+
+    .photo-wrap img {
+      width: 704px;
+      height: 480px;
+      display: block;
+      object-fit: cover;
+      background: #7a8490;
+    }
+
+    .shade {
+      position: absolute;
+      background: rgba(15, 23, 42, 0.58);
+      pointer-events: none;
+    }
+
+    .shade-top {
+      top: 0;
+      left: 0;
+      width: 704px;
+      height: 20px;
+    }
+
+    .shade-bottom {
+      top: 460px;
+      left: 0;
+      width: 704px;
+      height: 20px;
+    }
+
+    .shade-left {
+      top: 20px;
+      left: 0;
+      width: 132px;
+      height: 440px;
+    }
+
+    .shade-right {
+      top: 20px;
+      left: 572px;
+      width: 132px;
+      height: 440px;
+    }
+
+    .crop-frame {
+      position: absolute;
+      top: 20px;
+      left: 132px;
+      width: 440px;
+      height: 440px;
+      border: 1px solid rgba(255, 255, 255, 0.92);
+    }
+
+    .grid-v,
+    .grid-h {
+      position: absolute;
+      background: rgba(255, 255, 255, 0.44);
+    }
+
+    .grid-v {
+      top: 0;
+      bottom: 0;
+      width: 1px;
+    }
+
+    .grid-v.one {
+      left: 33.333%;
+    }
+
+    .grid-v.two {
+      left: 66.666%;
+    }
+
+    .grid-h {
+      left: 0;
+      right: 0;
+      height: 1px;
+    }
+
+    .grid-h.one {
+      top: 33.333%;
+    }
+
+    .grid-h.two {
+      top: 66.666%;
+    }
+
+    .handle {
+      position: absolute;
+      width: 28px;
+      height: 28px;
+      border-color: #ffffff;
+      border-style: solid;
+    }
+
+    .handle.tl {
+      top: -3px;
+      left: -3px;
+      border-width: 4px 0 0 4px;
+    }
+
+    .handle.tr {
+      top: -3px;
+      right: -3px;
+      border-width: 4px 4px 0 0;
+    }
+
+    .handle.bl {
+      bottom: -3px;
+      left: -3px;
+      border-width: 0 0 4px 4px;
+    }
+
+    .handle.br {
+      right: -3px;
+      bottom: -3px;
+      border-width: 0 4px 4px 0;
+    }
+
+    /* ---------- aspect ---------- */
+    .aspect-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 18px 32px;
+      border-bottom: 1px solid #e3e7eb;
+    }
+
+    .aspect-label {
+      flex: 0 0 auto;
+      font-size: 15px;
+      line-height: 20px;
+      font-weight: 600;
+      color: #344154;
+    }
+
+    .aspect-options {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .ratio {
+      border: 1px solid #d8dee5;
+      border-radius: 12px;
+      padding: 12px 20px;
+      background: #ffffff;
+      color: #647184;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 600;
+    }
+
+    .ratio.active {
+      border-color: #475569;
+      background: #475569;
+      color: #ffffff;
+    }
+
+    .output-note {
+      margin-left: auto;
+      flex: 0 0 auto;
+      color: #7c8896;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 500;
+    }
+
+    /* ---------- controls grid ---------- */
+    .control-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 22px 32px;
+      padding: 20px 32px;
+      border-bottom: 1px solid #e3e7eb;
+    }
+
+    .control-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    .control-name {
+      font-size: 15px;
+      line-height: 20px;
+      font-weight: 500;
+      color: #344154;
+    }
+
+    .control-value {
+      color: #697587;
+      font-size: 13px;
+      line-height: 20px;
+      font-weight: 600;
+    }
+
+    .slider {
+      position: relative;
+      height: 22px;
+    }
+
+    .slider-track {
+      position: absolute;
+      top: 10px;
+      left: 0;
+      right: 0;
+      height: 3px;
+      border-radius: 3px;
+      background: #d7dde4;
+    }
+
+    .slider-fill {
+      position: absolute;
+      top: 10px;
+      left: 0;
+      height: 3px;
+      border-radius: 3px;
+      background: #475569;
+    }
+
+    .slider-center {
+      position: absolute;
+      top: 6px;
+      left: 50%;
+      width: 1px;
+      height: 11px;
+      background: #9da7b4;
+    }
+
+    .slider-knob {
+      position: absolute;
+      top: 1px;
+      width: 20px;
+      height: 20px;
+      margin-left: -10px;
+      border: 2px solid #475569;
+      border-radius: 50%;
+      background: #ffffff;
+    }
+
+    /* ---------- bottom action bar ---------- */
+    .action-bar {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 20px 32px;
+      background: #ffffff;
+      border-top: 1px solid #dfe4e9;
+    }
+
+    .icon-tools {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .icon-button {
+      width: 48px;
+      height: 48px;
+      display: grid;
+      place-items: center;
+      border: 1px solid #d8dee5;
+      border-radius: 12px;
+      padding: 0;
+      background: #ffffff;
+      color: #536174;
+    }
+
+    .icon-button svg {
+      width: 22px;
+      height: 22px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .reset-button {
+      border: 1px solid #d8dee5;
+      border-radius: 12px;
+      padding: 13px 22px;
+      background: #ffffff;
+      color: #475569;
+      font-size: 15px;
+      line-height: 20px;
+      font-weight: 600;
+    }
+
+    .apply-button {
+      margin-left: auto;
+      border: 0;
+      border-radius: 12px;
+      padding: 14px 32px;
+      background: #475569;
+      color: #ffffff;
+      font-size: 16px;
+      line-height: 20px;
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <button class="text-button" type="button">Cancel</button>
+      <div class="titles">
+        <h1 class="topbar-title">Crop Photo</h1>
+        <p class="topbar-sub">Harborview Stay · Gallery photo</p>
+      </div>
+      <span class="topbar-count">2 of 6</span>
+    </header>
+
+    <nav class="editor-tabs" aria-label="Photo editing tools">
+      <button class="editor-tab active" type="button">Crop</button>
+      <button class="editor-tab" type="button">Adjust</button>
+      <button class="editor-tab" type="button">Perspective</button>
+    </nav>
+
+    <main>
+      <div class="photo-stage">
+        <div class="photo-wrap">
+          <img src="https://loremflickr.com/704/480/cityscape?lock=5930" width="704" height="480" alt="Waterfront city view selected for the Harborview Stay gallery">
+          <div class="shade shade-top"></div>
+          <div class="shade shade-bottom"></div>
+          <div class="shade shade-left"></div>
+          <div class="shade shade-right"></div>
+          <div class="crop-frame" aria-hidden="true">
+            <span class="grid-v one"></span>
+            <span class="grid-v two"></span>
+            <span class="grid-h one"></span>
+            <span class="grid-h two"></span>
+            <span class="handle tl"></span>
+            <span class="handle tr"></span>
+            <span class="handle bl"></span>
+            <span class="handle br"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="aspect-row">
+        <span class="aspect-label">Aspect</span>
+        <div class="aspect-options">
+          <button class="ratio" type="button">Free</button>
+          <button class="ratio active" type="button">1:1</button>
+          <button class="ratio" type="button">4:3</button>
+          <button class="ratio" type="button">16:9</button>
+        </div>
+        <span class="output-note">Exports at 2048 × 2048 px</span>
+      </div>
+
+      <div class="control-grid">
+        <div class="control-block">
+          <div class="control-head">
+            <span class="control-name">Straighten</span>
+            <span class="control-value">−1.5°</span>
+          </div>
+          <div class="slider" aria-label="Straighten set to negative 1.5 degrees">
+            <span class="slider-track"></span>
+            <span class="slider-fill" style="width:46%;"></span>
+            <span class="slider-center"></span>
+            <span class="slider-knob" style="left:46%;"></span>
+          </div>
+        </div>
+
+        <div class="control-block">
+          <div class="control-head">
+            <span class="control-name">Zoom</span>
+            <span class="control-value">112%</span>
+          </div>
+          <div class="slider" aria-label="Zoom set to 112 percent">
+            <span class="slider-track"></span>
+            <span class="slider-fill" style="width:38%;"></span>
+            <span class="slider-knob" style="left:38%;"></span>
+          </div>
+        </div>
+
+        <div class="control-block">
+          <div class="control-head">
+            <span class="control-name">Vertical</span>
+            <span class="control-value">0</span>
+          </div>
+          <div class="slider" aria-label="Vertical perspective set to zero">
+            <span class="slider-track"></span>
+            <span class="slider-fill" style="width:50%;"></span>
+            <span class="slider-center"></span>
+            <span class="slider-knob" style="left:50%;"></span>
+          </div>
+        </div>
+
+        <div class="control-block">
+          <div class="control-head">
+            <span class="control-name">Horizontal</span>
+            <span class="control-value">+2</span>
+          </div>
+          <div class="slider" aria-label="Horizontal perspective set to positive 2">
+            <span class="slider-track"></span>
+            <span class="slider-fill" style="width:54%;"></span>
+            <span class="slider-center"></span>
+            <span class="slider-knob" style="left:54%;"></span>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <div class="action-bar">
+      <div class="icon-tools">
+        <button class="icon-button" type="button" aria-label="Rotate left">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 8V3m0 0h5M4 3l4 4"></path>
+            <path d="M5.5 15.5a8 8 0 1 0 1.1-9.8"></path>
+          </svg>
+        </button>
+        <button class="icon-button" type="button" aria-label="Rotate right">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M20 8V3m0 0h-5m5 0-4 4"></path>
+            <path d="M18.5 15.5a8 8 0 1 1-1.1-9.8"></path>
+          </svg>
+        </button>
+        <button class="icon-button" type="button" aria-label="Flip horizontally">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 3v18"></path>
+            <path d="M9 6 3 12l6 6V6Z"></path>
+            <path d="m15 6 6 6-6 6V6Z"></path>
+          </svg>
+        </button>
+      </div>
+      <button class="reset-button" type="button">Reset crop</button>
+      <button class="apply-button" type="button">Save photo</button>
+    </div>
+  </div>
+</body>
+</html>

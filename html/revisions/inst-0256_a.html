@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Morrowdesk Followers</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #dfe3e8;
+      color: #1f2937;
+      font-family: 'Inter', system-ui, sans-serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      width: 1024px;
+      height: 768px;
+      display: grid;
+      grid-template-columns: 216px minmax(0, 1fr);
+      background: #f5f6f8;
+      box-shadow: 0 20px 60px rgba(51, 65, 85, 0.16);
+    }
+
+    .sidebar {
+      display: flex;
+      flex-direction: column;
+      padding: 24px 16px 18px;
+      color: #dbe3ec;
+      background: #334155;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      padding: 0 10px 25px;
+    }
+
+    .brand-mark {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      color: #334155;
+      background: #ffffff;
+      border-radius: 10px;
+      font-size: 17px;
+      font-weight: 700;
+    }
+
+    .brand-name {
+      margin: 0;
+      color: #ffffff;
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .brand-plan {
+      margin: 2px 0 0;
+      color: #aebdca;
+      font-size: 11px;
+    }
+
+    .side-label {
+      margin: 0 10px 9px;
+      color: #93a4b5;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+    }
+
+    .side-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .side-item {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      padding: 10px 11px;
+      color: #c6d0da;
+      background: transparent;
+      border: 0;
+      border-radius: 9px;
+      font-size: 13px;
+      font-weight: 500;
+      text-align: left;
+    }
+
+    .side-item.active {
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.13);
+      font-weight: 600;
+    }
+
+    .side-item svg {
+      width: 19px;
+      height: 19px;
+      flex: 0 0 auto;
+    }
+
+    .sidebar-footer {
+      margin-top: auto;
+      padding: 16px 10px 4px;
+      border-top: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .workspace-name {
+      margin: 0 0 3px;
+      color: #ffffff;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .workspace-role {
+      margin: 0;
+      color: #9fb0bf;
+      font-size: 11px;
+    }
+
+    .main-shell {
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 15px 28px;
+      background: #ffffff;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    .page-heading {
+      min-width: 0;
+    }
+
+    .breadcrumb {
+      margin: 0 0 3px;
+      color: #7b8492;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    h1 {
+      margin: 0;
+      color: #1f2937;
+      font-size: 21px;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .icon-button {
+      width: 38px;
+      height: 38px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #64748b;
+      background: #ffffff;
+      border: 1px solid #dfe3e8;
+      border-radius: 9px;
+      cursor: default;
+    }
+
+    .icon-button svg {
+      width: 19px;
+      height: 19px;
+    }
+
+    .content {
+      flex: 1;
+      padding: 24px 32px 28px;
+    }
+
+    .content-column {
+      width: 100%;
+      max-width: 650px;
+      margin: 0 auto;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 24px;
+      margin-bottom: 22px;
+      border-bottom: 1px solid #dfe3e8;
+    }
+
+    .tab {
+      position: relative;
+      padding: 0 2px 12px;
+      color: #718096;
+      background: transparent;
+      border: 0;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .tab.active {
+      color: #334155;
+    }
+
+    .tab.active::after {
+      content: "";
+      position: absolute;
+      right: 0;
+      bottom: -1px;
+      left: 0;
+      height: 3px;
+      background: #475569;
+      border-radius: 3px 3px 0 0;
+    }
+
+    .intro {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 16px;
+    }
+
+    .intro h2 {
+      margin: 0 0 5px;
+      color: #1f2937;
+      font-size: 17px;
+      font-weight: 700;
+    }
+
+    .intro p {
+      margin: 0;
+      color: #64748b;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .count-badge {
+      flex: 0 0 auto;
+      padding: 5px 9px;
+      color: #536274;
+      background: #e9edf1;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .tools {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .search-field {
+      min-width: 0;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 10px 12px;
+      color: #7b8492;
+      background: #ffffff;
+      border: 1px solid #d9dee5;
+      border-radius: 9px;
+      font-size: 13px;
+    }
+
+    .search-field svg {
+      width: 18px;
+      height: 18px;
+      flex: 0 0 auto;
+    }
+
+    .sort-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 12px;
+      color: #536274;
+      background: #ffffff;
+      border: 1px solid #d9dee5;
+      border-radius: 9px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .sort-button svg {
+      width: 15px;
+      height: 15px;
+    }
+
+    .people-card {
+      background: #ffffff;
+      border: 1px solid #e1e5ea;
+      border-radius: 12px;
+      box-shadow: 0 8px 22px rgba(51, 65, 85, 0.06);
+    }
+
+    .person-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 13px 15px;
+    }
+
+    .person-row + .person-row {
+      border-top: 1px solid #edf0f2;
+    }
+
+    .avatar {
+      width: 42px;
+      height: 42px;
+      flex: 0 0 42px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #64748b;
+      background: #eef1f4;
+      border: 1px solid #dbe1e7;
+      border-radius: 50%;
+    }
+
+    .avatar svg {
+      width: 28px;
+      height: 28px;
+    }
+
+    .identity {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .person-name {
+      margin: 0 0 4px;
+      overflow: hidden;
+      color: #1f2937;
+      font-size: 13px;
+      font-weight: 600;
+      line-height: 1.2;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .person-detail {
+      margin: 0;
+      overflow: hidden;
+      color: #7b8492;
+      font-size: 11px;
+      line-height: 1.35;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .follow-button {
+      width: 94px;
+      flex: 0 0 94px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    .follow-button.primary {
+      color: #ffffff;
+      background: #475569;
+      border: 1px solid #475569;
+    }
+
+    .follow-button.secondary {
+      color: #475569;
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">M</div>
+        <div>
+          <p class="brand-name">Morrowdesk</p>
+          <p class="brand-plan">Team workspace</p>
+        </div>
+      </div>
+
+      <p class="side-label">Workspace</p>
+      <nav class="side-nav" aria-label="Main navigation">
+        <button class="side-item">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M4 10.5L12 4l8 6.5V20H4v-9.5z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+            <path d="M9.5 20v-6h5v6" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+          </svg>
+          <span>Home</span>
+        </button>
+
+        <button class="side-item">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <rect x="5" y="3.5" width="14" height="17" rx="2" stroke="currentColor" stroke-width="1.7"/>
+            <path d="M8.5 8h7M8.5 12h7M8.5 16h4.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+          </svg>
+          <span>Notes</span>
+        </button>
+
+        <button class="side-item">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <rect x="3.5" y="5.5" width="17" height="15" rx="2" stroke="currentColor" stroke-width="1.7"/>
+            <path d="M7 3.5v4M17 3.5v4M3.5 10h17" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+            <path d="M8 14h3M14 14h2M8 17h2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+          </svg>
+          <span>Schedule</span>
+        </button>
+
+        <button class="side-item active" aria-current="page">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="9" cy="8" r="3.5" stroke="currentColor" stroke-width="1.7"/>
+            <path d="M3.5 20c.4-4 2.3-6.2 5.5-6.2s5.1 2.2 5.5 6.2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+            <circle cx="17.5" cy="9" r="2.5" stroke="currentColor" stroke-width="1.7"/>
+            <path d="M16 14.5c2.8-.3 4.4 1.5 4.7 4.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+          </svg>
+          <span>People</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <p class="workspace-name">Product team</p>
+        <p class="workspace-role">Shared planning space</p>
+      </div>
+    </aside>
+
+    <div class="main-shell">
+      <header class="top-bar">
+        <div class="page-heading">
+          <p class="breadcrumb">People / Connections</p>
+          <h1>Followers</h1>
+        </div>
+
+        <div class="header-actions">
+          <button class="icon-button" aria-label="Search Morrowdesk">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="1.8"/>
+              <path d="M16 16l4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+            </svg>
+          </button>
+          <button class="icon-button" aria-label="More options">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <circle cx="5" cy="12" r="1.4" fill="currentColor"/>
+              <circle cx="12" cy="12" r="1.4" fill="currentColor"/>
+              <circle cx="19" cy="12" r="1.4" fill="currentColor"/>
+            </svg>
+          </button>
+        </div>
+      </header>
+
+      <main class="content">
+        <div class="content-column">
+          <nav class="tabs" aria-label="Connection lists">
+            <button class="tab active" aria-selected="true">Followers 248</button>
+            <button class="tab" aria-selected="false">Following 96</button>
+          </nav>
+
+          <section class="intro" aria-labelledby="followers-list-title">
+            <div>
+              <h2 id="followers-list-title">Recent followers</h2>
+              <p>People who follow your public notes and project updates.</p>
+            </div>
+            <span class="count-badge">248 total</span>
+          </section>
+
+          <div class="tools">
+            <div class="search-field" role="search" aria-label="Search followers">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="1.8"/>
+                <path d="M16 16l4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+              </svg>
+              <span>Search followers</span>
+            </div>
+            <button class="sort-button">
+              Newest
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M8 10l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+          </div>
+
+          <div class="people-card">
+            <div class="person-row">
+              <div class="avatar" aria-hidden="true">
+                <svg viewBox="0 0 32 32" fill="none">
+                  <circle cx="16" cy="11" r="5" stroke="currentColor" stroke-width="1.6"/>
+                  <path d="M7.5 26c.7-5 3.8-7.5 8.5-7.5s7.8 2.5 8.5 7.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+                  <path d="M11 8.5c1.7-2.3 6.6-3.1 9.7.2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <div class="identity">
+                <p class="person-name">Avery Quill</p>
+                <p class="person-detail">Design lead · 12 shared notes</p>
+              </div>
+              <button class="follow-button primary">Follow back</button>
+            </div>
+
+            <div class="person-row">
+              <div class="avatar" aria-hidden="true">
+                <svg viewBox="0 0 32 32" fill="none">
+                  <circle cx="16" cy="11.5" r="5" stroke="currentColor" stroke-width="1.6"/>
+                  <path d="M7.5 26c.8-4.9 3.7-7.4 8.5-7.4s7.7 2.5 8.5 7.4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+                  <path d="M10.5 10c.6-3.4 2.8-5 5.8-5 2.6 0 4.4 1.5 5.1 4.1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <div class="identity">
+                <p class="person-name">Jordan Vale</p>
+                <p class="person-detail">Project planner · 6 shared boards</p>
+              </div>
+              <button class="follow-button secondary">Following</button>
+            </div>
+
+            <div class="person-row">
+              <div class="avatar" aria-hidden="true">
+                <svg viewBox="0 0 32 32" fill="none">
+                  <circle cx="16" cy="11.5" r="5" stroke="currentColor" stroke-width="1.6"/>
+                  <path d="M7.5 26c.8-4.9 3.7-7.4 8.5-7.4s7.7 2.5 8.5 7.4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+                  <path d="M10.8 9.2c2.8.1 5.7-1.1 7.5-3.1 1.7.7 2.7 2.1 3 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <div class="identity">
+                <p class="person-name">Casey Arden</p>
+                <p class="person-detail">Researcher · 3 shared notes</p>
+              </div>
+              <button class="follow-button primary">Follow back</button>
+            </div>
+
+            <div class="person-row">
+              <div class="avatar" aria-hidden="true">
+                <svg viewBox="0 0 32 32" fill="none">
+                  <circle cx="16" cy="11.5" r="5" stroke="currentColor" stroke-width="1.6"/>
+                  <path d="M7.5 26c.8-4.9 3.7-7.4 8.5-7.4s7.7 2.5 8.5 7.4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+                  <path d="M11.2 8.3c1-2 2.8-3.1 5.2-3.1 2.5 0 4.2 1.3 5 3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <div class="identity">
+                <p class="person-name">Morgan Haye</p>
+                <p class="person-detail">Team coordinator · 9 shared boards</p>
+              </div>
+              <button class="follow-button secondary">Following</button>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+</body>
+</html>

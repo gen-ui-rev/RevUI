@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rental Filters</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #e9e8e5;
+      color: #24231f;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      color: inherit;
+    }
+
+    .screen {
+      width: 1024px;
+      height: 768px;
+      display: flex;
+      background: #f4f3f0;
+      border: 1px solid #cfcdc7;
+      overflow: hidden;
+    }
+
+    /* ---------- left rail ---------- */
+    .rail {
+      width: 300px;
+      flex: 0 0 300px;
+      display: flex;
+      flex-direction: column;
+      padding: 24px 22px 22px;
+      border-right: 1px solid #dedcd6;
+      background: #ffffff;
+    }
+
+    .brand {
+      margin: 0;
+      color: #9a6200;
+      font-size: 11px;
+      line-height: 15px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .rail h1 {
+      margin: 8px 0 0;
+      font-size: 21px;
+      line-height: 27px;
+      font-weight: 600;
+    }
+
+    .rail-sub {
+      margin: 4px 0 0;
+      color: #6d6961;
+      font-size: 13px;
+      line-height: 18px;
+    }
+
+    .location-box {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 16px;
+      border: 1px solid #d5d2cb;
+      border-radius: 6px;
+      padding: 10px 12px;
+      background: #faf9f6;
+    }
+
+    .location-box svg {
+      width: 16px;
+      height: 16px;
+      flex: 0 0 auto;
+      stroke: #77736b;
+    }
+
+    .location-box span {
+      min-width: 0;
+      flex: 1;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      color: #34322d;
+      font-size: 13px;
+      line-height: 18px;
+    }
+
+    .match-card {
+      margin-top: 16px;
+      border: 1px solid #e5d5b4;
+      border-radius: 8px;
+      padding: 12px 14px;
+      background: #fdf6e8;
+    }
+
+    .match-card strong {
+      display: block;
+      font-size: 22px;
+      line-height: 28px;
+      font-weight: 700;
+    }
+
+    .match-card span {
+      color: #6d6155;
+      font-size: 12px;
+      line-height: 17px;
+    }
+
+    .rail-label {
+      margin: 22px 0 8px;
+      color: #77736b;
+      font-size: 11px;
+      line-height: 15px;
+      font-weight: 600;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+    }
+
+    .chip-stack {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+    }
+
+    .active-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      border: 1px solid #d5d2cb;
+      border-radius: 999px;
+      padding: 5px 10px;
+      background: #f7f6f2;
+      color: #3d3a34;
+      font-size: 12px;
+      line-height: 17px;
+      cursor: default;
+    }
+
+    .active-chip i {
+      color: #8b877e;
+      font-style: normal;
+      font-size: 13px;
+    }
+
+    .option-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 4px 0;
+      color: #34322d;
+      font-size: 13px;
+      line-height: 19px;
+      cursor: default;
+    }
+
+    .option-row input {
+      width: 15px;
+      height: 15px;
+      flex: 0 0 auto;
+      margin: 0;
+      accent-color: #d88a00;
+    }
+
+    .option-text {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .option-count {
+      color: #8b877e;
+      font-size: 12px;
+    }
+
+    .rail-actions {
+      margin-top: auto;
+      padding-top: 18px;
+    }
+
+    .apply-button {
+      width: 100%;
+      border: 1px solid #c77e00;
+      border-radius: 6px;
+      padding: 13px 16px;
+      background: #d88a00;
+      color: #1f1a12;
+      font-size: 15px;
+      line-height: 20px;
+      font-weight: 600;
+      cursor: default;
+    }
+
+    .secondary-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 10px;
+    }
+
+    .link-button {
+      border: 0;
+      background: transparent;
+      padding: 4px 0;
+      color: #9a6200;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 600;
+      cursor: default;
+    }
+
+    .link-button.muted {
+      color: #6d6961;
+      font-weight: 500;
+    }
+
+    /* ---------- workspace ---------- */
+    .workspace {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .workspace-head {
+      padding: 24px 26px 6px;
+    }
+
+    .workspace-head h2 {
+      margin: 0;
+      font-size: 17px;
+      line-height: 23px;
+      font-weight: 600;
+    }
+
+    .workspace-head p {
+      margin: 4px 0 0;
+      color: #6d6961;
+      font-size: 13px;
+      line-height: 18px;
+    }
+
+    .groups {
+      flex: 1;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      align-items: start;
+      padding: 18px 26px 26px;
+      min-height: 0;
+    }
+
+    .group {
+      min-width: 0;
+      border: 1px solid #e2e0da;
+      border-radius: 10px;
+      padding: 16px 16px 18px;
+      background: #ffffff;
+    }
+
+    .group-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 8px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #edebe5;
+    }
+
+    .group-head h3 {
+      margin: 0;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 600;
+    }
+
+    .group-head span {
+      color: #8b877e;
+      font-size: 11px;
+      line-height: 16px;
+    }
+
+    .sub-label {
+      margin: 14px 0 6px;
+      color: #77736b;
+      font-size: 11px;
+      line-height: 15px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .field {
+      margin-bottom: 8px;
+    }
+
+    .field-box {
+      display: flex;
+      align-items: center;
+      border: 1px solid #c9c6be;
+      border-radius: 6px;
+      background: #ffffff;
+    }
+
+    .field-box span {
+      padding-left: 10px;
+      color: #6d6961;
+      font-size: 13px;
+    }
+
+    .field-box input {
+      min-width: 0;
+      width: 100%;
+      border: 0;
+      outline: 0;
+      padding: 9px 10px 9px 4px;
+      background: transparent;
+      color: #24231f;
+      font-size: 13px;
+      line-height: 19px;
+    }
+
+    .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .chip {
+      border: 1px solid #c9c6be;
+      border-radius: 999px;
+      padding: 5px 11px;
+      background: #ffffff;
+      color: #45423c;
+      font-size: 12px;
+      line-height: 17px;
+      cursor: default;
+    }
+
+    .chip.selected {
+      border-color: #d88a00;
+      background: #fdf3e0;
+      color: #7a4f00;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <aside class="rail" aria-label="Search summary and sorting">
+      <p class="brand">Northside Rentals</p>
+      <h1>Rental filters</h1>
+      <p class="rail-sub">Long-term homes for renters staying a year or more.</p>
+
+      <div class="location-box">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M12 21s7-5.4 7-11a7 7 0 10-14 0c0 5.6 7 11 7 11z" stroke-width="1.6" stroke-linejoin="round"/>
+          <circle cx="12" cy="10" r="2.4" stroke-width="1.6"/>
+        </svg>
+        <span>Portland, OR &middot; within 10 miles</span>
+      </div>
+
+      <div class="match-card">
+        <strong>684 homes</strong>
+        <span>match your filters out of 2,418 long-term rentals</span>
+      </div>
+
+      <p class="rail-label">Applied filters</p>
+      <div class="chip-stack">
+        <span class="active-chip">$1,200 &ndash; $2,400 <i>&times;</i></span>
+        <span class="active-chip">2&ndash;3 beds <i>&times;</i></span>
+        <span class="active-chip">12-month lease <i>&times;</i></span>
+        <span class="active-chip">Pets allowed <i>&times;</i></span>
+      </div>
+
+      <p class="rail-label">Sort results by</p>
+      <label class="option-row">
+        <input type="radio" name="sort" checked>
+        <span class="option-text">Recommended for renters</span>
+      </label>
+      <label class="option-row">
+        <input type="radio" name="sort">
+        <span class="option-text">Newest listed</span>
+      </label>
+      <label class="option-row">
+        <input type="radio" name="sort">
+        <span class="option-text">Rent: low to high</span>
+      </label>
+      <label class="option-row">
+        <input type="radio" name="sort">
+        <span class="option-text">Move-in date: soonest</span>
+      </label>
+
+      <div class="rail-actions">
+        <button class="apply-button" type="button">View 684 rentals</button>
+        <div class="secondary-row">
+          <button class="link-button" type="button">Save this search</button>
+          <button class="link-button muted" type="button">Clear all</button>
+        </div>
+      </div>
+    </aside>
+
+    <main class="workspace">
+      <div class="workspace-head">
+        <h2>Refine your home search</h2>
+        <p>Set your budget, the home you need and when you can move in.</p>
+      </div>
+
+      <div class="groups">
+        <section class="group" aria-labelledby="b-head">
+          <div class="group-head">
+            <h3 id="b-head">Budget</h3>
+            <span>per month</span>
+          </div>
+
+          <p class="sub-label">Rent range</p>
+          <div class="field">
+            <div class="field-box">
+              <span>$</span>
+              <input type="text" value="1,200" aria-label="Minimum monthly rent">
+            </div>
+          </div>
+          <div class="field">
+            <div class="field-box">
+              <span>$</span>
+              <input type="text" value="2,400" aria-label="Maximum monthly rent">
+            </div>
+          </div>
+
+          <p class="sub-label">Upfront cost</p>
+          <div class="field">
+            <div class="field-box">
+              <span>Max deposit $</span>
+              <input type="text" value="2,400" aria-label="Maximum deposit">
+            </div>
+          </div>
+
+          <p class="sub-label">Include</p>
+          <label class="option-row">
+            <input type="checkbox" checked>
+            <span class="option-text">Utilities in rent</span>
+          </label>
+          <label class="option-row">
+            <input type="checkbox" checked>
+            <span class="option-text">No application fee</span>
+          </label>
+          <label class="option-row">
+            <input type="checkbox">
+            <span class="option-text">Income-based rent</span>
+          </label>
+        </section>
+
+        <section class="group" aria-labelledby="h-head">
+          <div class="group-head">
+            <h3 id="h-head">Home requirements</h3>
+            <span>4 set</span>
+          </div>
+
+          <p class="sub-label">Bedrooms</p>
+          <div class="chip-row">
+            <button class="chip" type="button">Studio</button>
+            <button class="chip" type="button">1</button>
+            <button class="chip selected" type="button">2</button>
+            <button class="chip selected" type="button">3</button>
+            <button class="chip" type="button">4+</button>
+          </div>
+
+          <p class="sub-label">Bathrooms</p>
+          <div class="chip-row">
+            <button class="chip" type="button">1+</button>
+            <button class="chip selected" type="button">1.5+</button>
+            <button class="chip" type="button">2+</button>
+          </div>
+
+          <p class="sub-label">Home type</p>
+          <label class="option-row">
+            <input type="checkbox" checked>
+            <span class="option-text">Apartment <span class="option-count">391</span></span>
+          </label>
+          <label class="option-row">
+            <input type="checkbox" checked>
+            <span class="option-text">House <span class="option-count">168</span></span>
+          </label>
+          <label class="option-row">
+            <input type="checkbox">
+            <span class="option-text">Townhouse</span>
+          </label>
+
+          <p class="sub-label">Must-haves</p>
+          <label class="option-row">
+            <input type="checkbox" checked>
+            <span class="option-text">In-unit laundry</span>
+          </label>
+          <label class="option-row">
+            <input type="checkbox">
+            <span class="option-text">Dedicated parking</span>
+          </label>
+        </section>
+
+        <section class="group" aria-labelledby="a-head">
+          <div class="group-head">
+            <h3 id="a-head">Availability</h3>
+            <span>lease terms</span>
+          </div>
+
+          <p class="sub-label">Move in between</p>
+          <div class="field">
+            <div class="field-box">
+              <input type="text" value="Aug 1, 2024" aria-label="Earliest move-in date">
+            </div>
+          </div>
+          <div class="field">
+            <div class="field-box">
+              <input type="text" value="Oct 1, 2024" aria-label="Latest move-in date">
+            </div>
+          </div>
+
+          <p class="sub-label">Lease length</p>
+          <label class="option-row">
+            <input type="radio" name="lease" checked>
+            <span class="option-text">12 months or longer</span>
+          </label>
+          <label class="option-row">
+            <input type="radio" name="lease">
+            <span class="option-text">6 to 11 months</span>
+          </label>
+          <label class="option-row">
+            <input type="radio" name="lease">
+            <span class="option-text">Month to month</span>
+          </label>
+
+          <p class="sub-label">Listing status</p>
+          <label class="option-row">
+            <input type="checkbox" checked>
+            <span class="option-text">Available now <span class="option-count">412</span></span>
+          </label>
+          <label class="option-row">
+            <input type="checkbox" checked>
+            <span class="option-text">Verified landlord</span>
+          </label>
+          <label class="option-row">
+            <input type="checkbox" checked>
+            <span class="option-text">Cats or dogs allowed</span>
+          </label>
+        </section>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

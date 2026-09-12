@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Morrow Market Seller Leaderboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #e8e7e3;
+      color: #252330;
+      font-family: 'Source Serif 4', Georgia, serif;
+    }
+
+    .screen {
+      width: 390px;
+      height: 560px;
+      padding: 24px;
+      background: #faf9f6;
+    }
+
+    .component {
+      width: 100%;
+    }
+
+    .eyebrow {
+      margin: 0 0 3px;
+      color: #696675;
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    h1 {
+      margin: 0 0 13px;
+      color: #24212e;
+      font-size: 24px;
+      font-weight: 600;
+      line-height: 1.2;
+    }
+
+    .rank-summary {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 14px;
+      padding: 13px 16px;
+      border-radius: 14px;
+      background: rgba(79, 70, 165, 0.12);
+    }
+
+    .summary-label {
+      margin: 0;
+      color: #514a76;
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
+    .summary-meta {
+      margin: 3px 0 0;
+      color: #454150;
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
+    .summary-rank {
+      margin: 0;
+      color: #4f46a5;
+      font-size: 34px;
+      font-weight: 600;
+      line-height: 1;
+    }
+
+    .leaderboard {
+      margin-top: 15px;
+    }
+
+    .board-heading {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin: 0 2px 8px;
+    }
+
+    .board-heading h2 {
+      margin: 0;
+      color: #302d39;
+      font-size: 15px;
+      font-weight: 600;
+      line-height: 1.3;
+    }
+
+    .board-heading span {
+      color: #777382;
+      font-size: 11px;
+      line-height: 1.3;
+    }
+
+    .category-group + .category-group {
+      margin-top: 11px;
+    }
+
+    .category-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0 2px 5px;
+      color: #514a76;
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1.3;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .category-label::after {
+      content: "";
+      height: 1px;
+      flex: 1;
+      background: rgba(79, 70, 165, 0.15);
+    }
+
+    .rank-list {
+      margin: 0;
+      padding: 3px;
+      list-style: none;
+      border-radius: 13px;
+      background: rgba(79, 70, 165, 0.055);
+    }
+
+    .rank-row {
+      display: grid;
+      grid-template-columns: 27px minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 9px;
+      padding: 7px 9px;
+      border-radius: 11px;
+    }
+
+    .rank-row + .rank-row {
+      border-top: 1px solid rgba(79, 70, 165, 0.09);
+    }
+
+    .rank-row.current {
+      border-top-color: transparent;
+      background: rgba(79, 70, 165, 0.14);
+    }
+
+    .rank-number {
+      color: #625e6b;
+      font-size: 15px;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    .seller {
+      min-width: 0;
+    }
+
+    .seller-name {
+      margin: 0;
+      overflow: hidden;
+      color: #292632;
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 1.25;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .seller-note {
+      margin: 1px 0 0;
+      color: #716d79;
+      font-size: 11px;
+      line-height: 1.25;
+    }
+
+    .score {
+      color: #302d39;
+      font-size: 13px;
+      font-weight: 600;
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .current .rank-number,
+    .current .seller-name,
+    .current .score {
+      color: #4f46a5;
+    }
+
+    .you-tag {
+      display: inline-block;
+      margin-left: 5px;
+      padding: 1px 5px;
+      border-radius: 8px;
+      background: #4f46a5;
+      color: #ffffff;
+      font-size: 9px;
+      font-weight: 600;
+      line-height: 1.35;
+      vertical-align: 1px;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <main class="component" aria-labelledby="leaderboard-title">
+      <p class="eyebrow">Morrow Market · Weekly standings</p>
+      <h1 id="leaderboard-title">Your seller rank</h1>
+
+      <section class="rank-summary" aria-label="Your current position">
+        <div>
+          <p class="summary-label">Jordan Hale · Your shop</p>
+          <p class="summary-meta">1,284 points · 86 sellers</p>
+        </div>
+        <p class="summary-rank">#4</p>
+      </section>
+
+      <section class="leaderboard" aria-label="Seller leaderboard grouped by shop category">
+        <div class="board-heading">
+          <h2>Standings by shop category</h2>
+          <span>Global rank shown</span>
+        </div>
+
+        <section class="category-group" aria-labelledby="home-category">
+          <h3 class="category-label" id="home-category">Home &amp; vintage</h3>
+          <ol class="rank-list">
+            <li class="rank-row">
+              <span class="rank-number">1</span>
+              <div class="seller">
+                <p class="seller-name">Clara Bennett</p>
+                <p class="seller-note">Home goods</p>
+              </div>
+              <span class="score">1,672</span>
+            </li>
+            <li class="rank-row">
+              <span class="rank-number">2</span>
+              <div class="seller">
+                <p class="seller-name">Elliot Mercer</p>
+                <p class="seller-note">Vintage finds</p>
+              </div>
+              <span class="score">1,519</span>
+            </li>
+            <li class="rank-row current">
+              <span class="rank-number">4</span>
+              <div class="seller">
+                <p class="seller-name">Jordan Hale <span class="you-tag">YOU</span></p>
+                <p class="seller-note">Curated decor</p>
+              </div>
+              <span class="score">1,284</span>
+            </li>
+          </ol>
+        </section>
+
+        <section class="category-group" aria-labelledby="paper-category">
+          <h3 class="category-label" id="paper-category">Paper &amp; stationery</h3>
+          <ol class="rank-list">
+            <li class="rank-row">
+              <span class="rank-number">3</span>
+              <div class="seller">
+                <p class="seller-name">Nora Calloway</p>
+                <p class="seller-note">Paper goods</p>
+              </div>
+              <span class="score">1,401</span>
+            </li>
+          </ol>
+        </section>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

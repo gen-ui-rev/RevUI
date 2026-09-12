@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cedarpath Care Inbox</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 32px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #e4e4e7;
+      color: #18181b;
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #ffffff;
+      border: 1px solid #d4d4d8;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 13px 18px;
+    }
+
+    .service-name {
+      margin: 0 0 2px;
+      color: #71717a;
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 16px;
+      letter-spacing: 0.02em;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 22px;
+      font-weight: 600;
+      line-height: 27px;
+      letter-spacing: -0.03em;
+    }
+
+    .compose {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 10px 12px;
+      border: 0;
+      border-radius: 6px;
+      background: #27272a;
+      color: #ffffff;
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 18px;
+      white-space: nowrap;
+    }
+
+    .compose svg {
+      width: 17px;
+      height: 17px;
+      flex: none;
+    }
+
+    .search-area {
+      padding: 0 18px 12px;
+    }
+
+    .search-box {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 11px 12px;
+      border-radius: 6px;
+      background: #f4f4f5;
+      color: #71717a;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 20px;
+    }
+
+    .search-box svg {
+      width: 18px;
+      height: 18px;
+      flex: none;
+    }
+
+    .mail-tabs {
+      display: flex;
+      padding: 0 18px;
+      border-bottom: 1px solid #d4d4d8;
+    }
+
+    .mail-tab {
+      position: relative;
+      padding: 10px 1px 11px;
+      margin-right: 26px;
+      color: #71717a;
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 20px;
+      white-space: nowrap;
+    }
+
+    .mail-tab.active {
+      color: #18181b;
+    }
+
+    .mail-tab.active::after {
+      position: absolute;
+      right: 0;
+      bottom: -1px;
+      left: 0;
+      height: 2px;
+      background: #27272a;
+      content: "";
+    }
+
+    .message-area {
+      flex: 1;
+    }
+
+    .list-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 11px 18px 9px;
+      border-bottom: 1px solid #e4e4e7;
+    }
+
+    .list-heading h2 {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 20px;
+    }
+
+    .list-heading span {
+      color: #71717a;
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 16px;
+    }
+
+    .message-row {
+      display: grid;
+      grid-template-columns: 8px minmax(0, 1fr) 68px;
+      column-gap: 9px;
+      padding: 11px 18px;
+      border-bottom: 1px solid #e4e4e7;
+    }
+
+    .unread-mark {
+      width: 7px;
+      height: 7px;
+      margin-top: 6px;
+      border-radius: 50%;
+      background: transparent;
+    }
+
+    .message-row.unread .unread-mark {
+      background: #27272a;
+    }
+
+    .message-copy {
+      min-width: 0;
+    }
+
+    .sender,
+    .subject,
+    .preview {
+      margin: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .sender {
+      color: #3f3f46;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 18px;
+    }
+
+    .message-row.unread .sender,
+    .message-row.unread .subject {
+      color: #18181b;
+      font-weight: 600;
+    }
+
+    .subject {
+      margin-top: 1px;
+      color: #27272a;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 18px;
+    }
+
+    .preview {
+      margin-top: 1px;
+      color: #71717a;
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 16px;
+    }
+
+    .message-date {
+      padding-top: 1px;
+      color: #71717a;
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 16px;
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .message-row.unread .message-date {
+      color: #3f3f46;
+      font-weight: 600;
+    }
+
+    .bottom-nav {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border-top: 1px solid #d4d4d8;
+      background: #ffffff;
+      padding: 8px 8px 10px;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      color: #71717a;
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 15px;
+    }
+
+    .nav-item.active {
+      color: #18181b;
+      font-weight: 600;
+    }
+
+    .nav-item svg {
+      width: 21px;
+      height: 21px;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <div>
+        <p class="service-name">CEDARPATH HEALTH</p>
+        <h1>Care inbox</h1>
+      </div>
+      <button class="compose" type="button" aria-label="New message">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M12 20h9"/>
+          <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4Z"/>
+        </svg>
+        New message
+      </button>
+    </header>
+
+    <div class="search-area">
+      <div class="search-box" role="search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+          <circle cx="11" cy="11" r="7"/>
+          <path d="m20 20-4-4"/>
+        </svg>
+        Search messages
+      </div>
+    </div>
+
+    <nav class="mail-tabs" aria-label="Mailbox folders">
+      <div class="mail-tab active">Inbox</div>
+      <div class="mail-tab">Unread 3</div>
+      <div class="mail-tab">Archived</div>
+    </nav>
+
+    <main class="message-area">
+      <div class="list-heading">
+        <h2>Messages</h2>
+        <span>Updated 9:45 AM</span>
+      </div>
+
+      <section aria-label="Inbox messages">
+        <article class="message-row unread">
+          <span class="unread-mark" aria-hidden="true"></span>
+          <div class="message-copy">
+            <p class="sender">Mara Ellison, RD</p>
+            <p class="subject">Your nutrition plan was updated</p>
+            <p class="preview">I adjusted your afternoon snack targets for training days.</p>
+          </div>
+          <time class="message-date">9:42 AM</time>
+        </article>
+
+        <article class="message-row unread">
+          <span class="unread-mark" aria-hidden="true"></span>
+          <div class="message-copy">
+            <p class="sender">Dr. Adrian Cole</p>
+            <p class="subject">Follow-up summary and next steps</p>
+            <p class="preview">Your visit notes and updated care instructions are ready.</p>
+          </div>
+          <time class="message-date">8:15 AM</time>
+        </article>
+
+        <article class="message-row unread">
+          <span class="unread-mark" aria-hidden="true"></span>
+          <div class="message-copy">
+            <p class="sender">Cedarpath Lab</p>
+            <p class="subject">Iron panel results available</p>
+            <p class="preview">New results from your March 17 blood draw are posted.</p>
+          </div>
+          <time class="message-date">Yesterday</time>
+        </article>
+
+        <article class="message-row">
+          <span class="unread-mark" aria-hidden="true"></span>
+          <div class="message-copy">
+            <p class="sender">Noah Bennett, PT</p>
+            <p class="subject">Week 4 movement notes</p>
+            <p class="preview">Keep the current range for squats and add one recovery day.</p>
+          </div>
+          <time class="message-date">Monday</time>
+        </article>
+
+        <article class="message-row">
+          <span class="unread-mark" aria-hidden="true"></span>
+          <div class="message-copy">
+            <p class="sender">Sleep Program</p>
+            <p class="subject">Your weekly sleep report</p>
+            <p class="preview">Average sleep duration increased by 24 minutes last week.</p>
+          </div>
+          <time class="message-date">Sunday</time>
+        </article>
+
+        <article class="message-row">
+          <span class="unread-mark" aria-hidden="true"></span>
+          <div class="message-copy">
+            <p class="sender">Billing Support</p>
+            <p class="subject">Receipt for your March visit</p>
+            <p class="preview">Your payment receipt and insurance summary are attached.</p>
+          </div>
+          <time class="message-date">Mar 14</time>
+        </article>
+
+        <article class="message-row">
+          <span class="unread-mark" aria-hidden="true"></span>
+          <div class="message-copy">
+            <p class="sender">Dr. Simone Park</p>
+            <p class="subject">Appointment details for March 26</p>
+            <p class="preview">Please complete the medication review before your visit.</p>
+          </div>
+          <time class="message-date">Mar 12</time>
+        </article>
+      </section>
+    </main>
+
+    <nav class="bottom-nav" aria-label="Primary navigation">
+      <div class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M4 10.5 12 4l8 6.5"/>
+          <path d="M6 9.5V20h12V9.5"/>
+          <path d="M9.5 20v-6h5v6"/>
+        </svg>
+        Today
+      </div>
+      <div class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M7 3v3M17 3v3M4 9h16"/>
+          <rect x="4" y="5" width="16" height="16" rx="2"/>
+          <path d="m8 14 2 2 5-5"/>
+        </svg>
+        Plan
+      </div>
+      <div class="nav-item active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="3" y="5" width="18" height="14" rx="2"/>
+          <path d="m4 7 8 6 8-6"/>
+        </svg>
+        Inbox
+      </div>
+      <div class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="8" r="4"/>
+          <path d="M5 21a7 7 0 0 1 14 0"/>
+        </svg>
+        Profile
+      </div>
+    </nav>
+  </div>
+</body>
+</html>

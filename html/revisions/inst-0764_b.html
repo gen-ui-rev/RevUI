@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Loopstead Playlist</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #d8d5da;
+      color: #29262c;
+      font-family: 'Manrope', system-ui, sans-serif;
+    }
+
+    button { font: inherit; }
+    svg { display: block; }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #f3f1f4;
+    }
+
+    .topbar {
+      flex: 0 0 auto;
+      display: grid;
+      grid-template-columns: 36px 1fr 76px;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 14px;
+      background: #ffffff;
+      border-bottom: 1px solid #e4e0e5;
+    }
+
+    .topbar-title {
+      margin: 0;
+      font-size: 17px;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .icon-button {
+      width: 36px;
+      height: 36px;
+      padding: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #4e4951;
+      background: transparent;
+      border: 0;
+      border-radius: 6px;
+    }
+
+    .top-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 4px;
+    }
+
+    .main {
+      flex: 1 1 auto;
+      min-height: 0;
+      padding: 10px 12px;
+    }
+
+    .playlist-card,
+    .queue-card,
+    .player-card {
+      background: #ffffff;
+      border-radius: 8px;
+    }
+
+    .playlist-card {
+      padding: 10px;
+      display: grid;
+      grid-template-columns: 72px minmax(0, 1fr) 40px;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 5px 16px rgba(53, 43, 55, 0.08);
+    }
+
+    .playlist-art {
+      width: 72px;
+      height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #795a75;
+      background: #e9dfe8;
+      border-radius: 7px;
+    }
+
+    .playlist-copy { min-width: 0; }
+
+    .eyebrow {
+      margin: 0 0 2px;
+      color: #87627f;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .07em;
+    }
+
+    .playlist-title {
+      margin: 0;
+      color: #272329;
+      font-size: 16px;
+      line-height: 1.25;
+      font-weight: 700;
+    }
+
+    .playlist-meta {
+      margin: 4px 0 0;
+      color: #6d6870;
+      font-size: 11px;
+      line-height: 1.35;
+    }
+
+    .round-play {
+      width: 40px;
+      height: 40px;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      background: #87627f;
+      border: 0;
+      border-radius: 50%;
+    }
+
+    .player-card {
+      margin-top: 8px;
+      padding: 10px 11px;
+      color: #352f37;
+      background: #eee5ed;
+      border: 1px solid #dfd0dc;
+    }
+
+    .player-label {
+      margin: 0 0 7px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: #76556f;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .live-dot {
+      width: 7px;
+      height: 7px;
+      flex: 0 0 auto;
+      background: #87627f;
+      border-radius: 50%;
+    }
+
+    .player-main {
+      display: grid;
+      grid-template-columns: 46px minmax(0, 1fr) 38px;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .player-art {
+      width: 46px;
+      height: 46px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      background: #87627f;
+      border-radius: 7px;
+    }
+
+    .player-copy { min-width: 0; }
+
+    .player-title,
+    .player-artist {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .player-title {
+      font-size: 14px;
+      line-height: 1.3;
+      font-weight: 700;
+    }
+
+    .player-artist {
+      margin-top: 2px;
+      color: #6e626c;
+      font-size: 11px;
+      line-height: 1.3;
+    }
+
+    .time-line {
+      margin-top: 5px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      color: #786d76;
+      font-size: 10px;
+    }
+
+    .track-line {
+      height: 3px;
+      flex: 1 1 auto;
+      background: #d4c4d1;
+      border-radius: 3px;
+    }
+
+    .track-fill {
+      width: 42%;
+      height: 3px;
+      background: #87627f;
+      border-radius: 3px;
+    }
+
+    .pause-button {
+      width: 38px;
+      height: 38px;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      background: #87627f;
+      border: 0;
+      border-radius: 50%;
+    }
+
+    .queue-card {
+      margin-top: 8px;
+      border: 1px solid #e5e1e6;
+    }
+
+    .queue-heading {
+      padding: 8px 11px;
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      border-bottom: 1px solid #e8e4e9;
+    }
+
+    .queue-heading h2 {
+      margin: 0;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .queue-count {
+      color: #777179;
+      font-size: 11px;
+      white-space: nowrap;
+    }
+
+    .track-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .track-row {
+      padding: 5px 8px 5px 11px;
+      display: grid;
+      grid-template-columns: 36px minmax(0, 1fr) 35px 25px;
+      align-items: center;
+      gap: 7px;
+      border-bottom: 1px solid #eeeaf0;
+    }
+
+    .track-row:last-child { border-bottom: 0; }
+
+    .track-number {
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #7b747c;
+      background: #f0edf0;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .track-copy { min-width: 0; }
+
+    .track-name,
+    .artist-name {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .track-name {
+      color: #302c32;
+      font-size: 13px;
+      line-height: 1.3;
+      font-weight: 700;
+    }
+
+    .artist-name {
+      margin-top: 1px;
+      color: #777179;
+      font-size: 11px;
+      line-height: 1.25;
+    }
+
+    .duration {
+      color: #706a72;
+      font-size: 11px;
+      text-align: right;
+    }
+
+    .more-button {
+      width: 25px;
+      height: 29px;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #716b73;
+      background: transparent;
+      border: 0;
+      border-radius: 6px;
+    }
+
+    .tabbar {
+      flex: 0 0 auto;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      background: #ffffff;
+      border-top: 1px solid #ded9df;
+    }
+
+    .tab {
+      padding: 8px 4px 9px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      color: #777179;
+      background: transparent;
+      border: 0;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .tab.active {
+      color: #87627f;
+      font-weight: 700;
+    }
+
+    .tab svg {
+      width: 22px;
+      height: 22px;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <button class="icon-button" aria-label="Go back">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M15 5 8 12l7 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <h1 class="topbar-title">Loopstead Playlists</h1>
+      <div class="top-actions">
+        <button class="icon-button" aria-label="Share playlist">
+          <svg width="21" height="21" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="18" cy="5" r="2.2" stroke="currentColor" stroke-width="1.7"/>
+            <circle cx="6" cy="12" r="2.2" stroke="currentColor" stroke-width="1.7"/>
+            <circle cx="18" cy="19" r="2.2" stroke="currentColor" stroke-width="1.7"/>
+            <path d="m8 11 7.8-4.6M8 13l7.8 4.6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+          </svg>
+        </button>
+        <button class="icon-button" aria-label="More playlist options">
+          <svg width="21" height="21" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <main class="main">
+      <section class="playlist-card" aria-labelledby="playlist-title-b">
+        <div class="playlist-art" aria-hidden="true">
+          <svg width="46" height="46" viewBox="0 0 64 64" fill="none">
+            <circle cx="20" cy="44" r="7" stroke="currentColor" stroke-width="2.4"/>
+            <circle cx="46" cy="38" r="7" stroke="currentColor" stroke-width="2.4"/>
+            <path d="M27 44V19l26-6v25M27 27l26-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M12 17c4-4 8-4 12 0M10 11c6-6 12-6 18 0" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="playlist-copy">
+          <p class="eyebrow">Community mix</p>
+          <h2 class="playlist-title" id="playlist-title-b">After Hours Exchange</h2>
+          <p class="playlist-meta">8 tracks · Nessa Vale and 3 friends</p>
+        </div>
+        <button class="round-play" aria-label="Play all tracks">
+          <svg width="17" height="17" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <path d="M6.5 4.5v11l8-5.5-8-5.5Z" fill="currentColor"/>
+          </svg>
+        </button>
+      </section>
+
+      <section class="player-card" aria-label="Now playing">
+        <p class="player-label"><span class="live-dot"></span>Now playing</p>
+        <div class="player-main">
+          <div class="player-art" aria-hidden="true">
+            <svg width="25" height="25" viewBox="0 0 24 24" fill="none">
+              <path d="M8 6v12M16 6v12" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="player-copy">
+            <div class="player-title">Streetlight Signals</div>
+            <div class="player-artist">Tessa Morn</div>
+            <div class="time-line">
+              <span>1:34</span>
+              <div class="track-line" aria-hidden="true"><div class="track-fill"></div></div>
+              <span>3:42</span>
+            </div>
+          </div>
+          <button class="pause-button" aria-label="Pause Streetlight Signals">
+            <svg width="17" height="17" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <path d="M7 5v10M13 5v10" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </div>
+      </section>
+
+      <section class="queue-card" aria-labelledby="tracks-title-b">
+        <div class="queue-heading">
+          <h2 id="tracks-title-b">Remaining tracks</h2>
+          <span class="queue-count">7 tracks · 27 min</span>
+        </div>
+
+        <ol class="track-list" start="2">
+          <li class="track-row">
+            <span class="track-number" aria-hidden="true">2</span>
+            <div class="track-copy"><div class="track-name">Soft Static</div><div class="artist-name">Owen Hartley</div></div>
+            <span class="duration">4:08</span>
+            <button class="more-button" aria-label="More options for Soft Static"><svg width="18" height="18" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><circle cx="10" cy="4" r="1.3"/><circle cx="10" cy="10" r="1.3"/><circle cx="10" cy="16" r="1.3"/></svg></button>
+          </li>
+          <li class="track-row">
+            <span class="track-number" aria-hidden="true">3</span>
+            <div class="track-copy"><div class="track-name">Window Seat</div><div class="artist-name">Mira North</div></div>
+            <span class="duration">3:16</span>
+            <button class="more-button" aria-label="More options for Window Seat"><svg width="18" height="18" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><circle cx="10" cy="4" r="1.3"/><circle cx="10" cy="10" r="1.3"/><circle cx="10" cy="16" r="1.3"/></svg></button>
+          </li>
+          <li class="track-row">
+            <span class="track-number" aria-hidden="true">4</span>
+            <div class="track-copy"><div class="track-name">Low River</div><div class="artist-name">Calder June</div></div>
+            <span class="duration">4:21</span>
+            <button class="more-button" aria-label="More options for Low River"><svg width="18" height="18" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><circle cx="10" cy="4" r="1.3"/><circle cx="10" cy="10" r="1.3"/><circle cx="10" cy="16" r="1.3"/></svg></button>
+          </li>
+          <li class="track-row">
+            <span class="track-number" aria-hidden="true">5</span>
+            <div class="track-copy"><div class="track-name">Unsent Notes</div><div class="artist-name">Lena Wren</div></div>
+            <span class="duration">3:33</span>
+            <button class="more-button" aria-label="More options for Unsent Notes"><svg width="18" height="18" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><circle cx="10" cy="4" r="1.3"/><circle cx="10" cy="10" r="1.3"/><circle cx="10" cy="16" r="1.3"/></svg></button>
+          </li>
+          <li class="track-row">
+            <span class="track-number" aria-hidden="true">6</span>
+            <div class="track-copy"><div class="track-name">Second Avenue Rain</div><div class="artist-name">Ellis Gray</div></div>
+            <span class="duration">3:57</span>
+            <button class="more-button" aria-label="More options for Second Avenue Rain"><svg width="18" height="18" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><circle cx="10" cy="4" r="1.3"/><circle cx="10" cy="10" r="1.3"/><circle cx="10" cy="16" r="1.3"/></svg></button>
+          </li>
+          <li class="track-row">
+            <span class="track-number" aria-hidden="true">7</span>
+            <div class="track-copy"><div class="track-name">Half Past Quiet</div><div class="artist-name">Rowan Pike</div></div>
+            <span class="duration">4:12</span>
+            <button class="more-button" aria-label="More options for Half Past Quiet"><svg width="18" height="18" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><circle cx="10" cy="4" r="1.3"/><circle cx="10" cy="10" r="1.3"/><circle cx="10" cy="16" r="1.3"/></svg></button>
+          </li>
+          <li class="track-row">
+            <span class="track-number" aria-hidden="true">8</span>
+            <div class="track-copy"><div class="track-name">Lights Still On</div><div class="artist-name">Della Shore</div></div>
+            <span class="duration">3:48</span>
+            <button class="more-button" aria-label="More options for Lights Still On"><svg width="18" height="18" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><circle cx="10" cy="4" r="1.3"/><circle cx="10" cy="10" r="1.3"/><circle cx="10" cy="16" r="1.3"/></svg></button>
+          </li>
+        </ol>
+      </section>
+    </main>
+
+    <nav class="tabbar" aria-label="Primary navigation">
+      <button class="tab">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 11.5 12 5l8 6.5V20h-6v-5h-4v5H4v-8.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
+        <span>Feed</span>
+      </button>
+      <button class="tab">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 5h14v11H9l-4 3V5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M8 9h8M8 12.5h5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+        <span>Messages</span>
+      </button>
+      <button class="tab active" aria-current="page">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7 4h10v16H7z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M10 9.5v6l5-3-5-3Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
+        <span>Playlists</span>
+      </button>
+      <button class="tab">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="8" r="3.5" stroke="currentColor" stroke-width="1.7"/><path d="M5.5 20c.7-4.2 2.9-6.3 6.5-6.3s5.8 2.1 6.5 6.3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+        <span>Profile</span>
+      </button>
+    </nav>
+  </div>
+</body>
+</html>

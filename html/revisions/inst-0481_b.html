@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Wayfare Bag</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body {
+    min-height: 100vh; display: flex; justify-content: center; align-items: flex-start;
+    padding: 40px 0; margin: 0; background: #d9dde0;
+    font-family: 'Roboto', system-ui, sans-serif; color: #1d252b;
+  }
+  .screen {
+    width: 390px; height: 844px; background: #f6f4f1;
+    display: flex; flex-direction: column; position: relative;
+  }
+  .topbar {
+    display: flex; align-items: center; gap: 12px; padding: 14px 16px;
+    background: #fff; border-bottom: 1px solid #e7e1dc;
+  }
+  .topbar .back { width: 24px; height: 24px; display: block; }
+  .topbar h1 { margin: 0; flex: 1; font-size: 18px; font-weight: 500; }
+  .topbar .count { font-size: 13px; color: #746e69; }
+
+  .trip {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    padding: 10px 16px; color: #fff; background: #8a493d;
+    border-bottom: 1px solid #723b32;
+  }
+  .triptext { min-width: 0; }
+  .trip .name {
+    font-size: 15px; font-weight: 500; line-height: 20px;
+    overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
+  }
+  .trip .meta { margin-top: 2px; font-size: 12px; line-height: 16px; color: #f5ded8; }
+  .hold {
+    flex: none; padding: 4px 7px; border: 1px solid rgba(255,255,255,.45);
+    border-radius: 12px; font-size: 11px; line-height: 14px; color: #fff;
+  }
+
+  .cards { padding: 7px 10px 0; }
+  .card {
+    margin-bottom: 7px; background: #fff; border: 1px solid #e3ddd7;
+    border-radius: 12px; box-shadow: 0 1px 2px rgba(55,42,32,.04);
+  }
+  .cardhead {
+    display: flex; align-items: center; gap: 8px; padding: 5px 9px;
+    border-bottom: 1px solid #eee8e3;
+  }
+  .stop {
+    width: 20px; height: 20px; border-radius: 50%; background: #f0dfd8;
+    display: flex; align-items: center; justify-content: center; flex: none;
+    font-size: 11px; font-weight: 700; color: #82483d;
+  }
+  .place { flex: 1; font-size: 13px; line-height: 18px; font-weight: 700; }
+  .dates { font-size: 12px; line-height: 16px; color: #7b746e; }
+
+  .stayline { display: flex; gap: 10px; padding: 6px 9px; }
+  .stayline img.thumb {
+    width: 76px; height: 76px; border-radius: 9px; object-fit: cover;
+    display: block; background: #c9d2d7; flex: none;
+  }
+  .staybody { flex: 1; min-width: 0; }
+  .hotelrow { display: flex; align-items: baseline; gap: 7px; }
+  .hotel {
+    flex: 1; min-width: 0; font-size: 14px; font-weight: 500; line-height: 19px;
+    overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
+  }
+  .price { font-size: 14px; font-weight: 500; line-height: 19px; white-space: nowrap; }
+  .room {
+    margin-top: 2px; font-size: 12px; line-height: 16px; color: #756f69;
+    overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
+  }
+  .assigned { display: flex; align-items: center; gap: 7px; margin-top: 7px; }
+  .avatar {
+    width: 22px; height: 22px; border-radius: 50%; background: #dfebe8;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 700; color: #315e56; flex: none;
+  }
+  .assigncopy { min-width: 0; }
+  .assignlabel { font-size: 9px; line-height: 11px; color: #8a827b; text-transform: uppercase; letter-spacing: .35px; }
+  .person {
+    font-size: 12px; line-height: 14px; font-weight: 500;
+    overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
+  }
+
+  .addon {
+    display: flex; align-items: center; gap: 8px; padding: 5px 9px;
+    border-top: 1px solid #eee8e3; background: #fbfaf8;
+    border-radius: 0 0 12px 12px;
+  }
+  .addon img.athumb {
+    width: 40px; height: 40px; border-radius: 8px; object-fit: cover;
+    display: block; background: #c9d2d7; flex: none;
+  }
+  .addonicon {
+    width: 40px; height: 40px; border-radius: 8px; flex: none;
+    display: flex; align-items: center; justify-content: center;
+    background: #efe3dc; color: #7a493f;
+  }
+  .addbody { flex: 1; min-width: 0; }
+  .addlabel { font-size: 10px; line-height: 12px; color: #9a5d50; font-weight: 700; text-transform: uppercase; letter-spacing: .4px; }
+  .addtitle {
+    font-size: 12px; line-height: 15px; font-weight: 500;
+    overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
+  }
+  .addmeta {
+    font-size: 11px; line-height: 14px; color: #7b746e;
+    overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
+  }
+  .addprice { flex: none; font-size: 12px; font-weight: 500; color: #4f4843; }
+
+  .costarea {
+    display: flex; gap: 9px; padding: 1px 10px 7px;
+  }
+  .costs, .budgetbox {
+    flex: 1; padding: 7px 9px; border-radius: 10px; background: #fff;
+    border: 1px solid #e3ddd7;
+  }
+  .sline {
+    display: flex; justify-content: space-between; gap: 6px;
+    font-size: 11px; line-height: 16px; color: #6c655f;
+  }
+  .sline span:last-child { color: #252b2f; white-space: nowrap; }
+  .budgetlabel {
+    font-size: 10px; line-height: 13px; color: #8a493d;
+    text-transform: uppercase; letter-spacing: .4px; font-weight: 700;
+  }
+  .budgetvalue { margin-top: 1px; font-size: 16px; line-height: 20px; font-weight: 700; }
+  .budgetmeta { font-size: 11px; line-height: 14px; color: #6f6862; }
+
+  .footer {
+    margin-top: auto; padding: 7px 16px 8px; background: #fff;
+    border-top: 1px solid #e1dbd6;
+  }
+  .totalrow { display: flex; align-items: baseline; justify-content: space-between; }
+  .tlabel { font-size: 14px; color: #554e49; }
+  .tval { font-size: 20px; font-weight: 700; }
+  .note { margin-top: 1px; font-size: 11px; line-height: 14px; color: #756e68; }
+  .cta {
+    margin-top: 6px; height: 40px; border-radius: 9px; background: #8a493d; color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px; font-weight: 500;
+  }
+
+  .tabs {
+    display: flex; padding: 6px 0 7px; background: #fff;
+    border-top: 1px solid #ebe6e2;
+  }
+  .tab {
+    flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px;
+    color: #96908b; position: relative;
+  }
+  .tab .tl { font-size: 12px; line-height: 14px; }
+  .tab.on { color: #8a493d; }
+  .tab.on .tl { font-weight: 500; }
+  .badge {
+    position: absolute; top: -2px; left: 50%; margin-left: 5px;
+    min-width: 16px; height: 16px; border-radius: 10px; padding: 0 3px;
+    background: #8a493d; color: #fff; font-size: 12px; line-height: 16px; text-align: center;
+  }
+</style>
+</head>
+<body>
+<div class="screen">
+  <div class="topbar">
+    <svg class="back" viewBox="0 0 24 24" fill="none" stroke="#1d252b" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+    <h1>Trip Bag</h1>
+    <span class="count">3 destinations</span>
+  </div>
+
+  <div class="trip">
+    <div class="triptext">
+      <div class="name">Coast &amp; Canyon, Spring 2026</div>
+      <div class="meta">Apr 12 – Apr 24 &middot; People Operations</div>
+    </div>
+    <div class="hold">48-hour hold</div>
+  </div>
+
+  <div class="cards">
+    <div class="card">
+      <div class="cardhead">
+        <span class="stop">1</span>
+        <span class="place">Lisbon</span>
+        <span class="dates">Apr 12–15</span>
+      </div>
+      <div class="stayline">
+        <img class="thumb" src="https://loremflickr.com/76/76/hotel?lock=6580" width="76" height="76" alt="Harbor Light Hotel room in Lisbon">
+        <div class="staybody">
+          <div class="hotelrow">
+            <div class="hotel">Harbor Light Hotel</div>
+            <div class="price">$612</div>
+          </div>
+          <div class="room">3 nights &middot; Deluxe King</div>
+          <div class="assigned">
+            <span class="avatar">MC</span>
+            <div class="assigncopy">
+              <div class="assignlabel">Employee</div>
+              <div class="person">Maya Chen</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="addon">
+        <img class="athumb" src="https://loremflickr.com/40/40/cityscape?lock=6583" width="40" height="40" alt="Lisbon old town streets on the walking tour">
+        <div class="addbody">
+          <div class="addlabel">Added experience</div>
+          <div class="addtitle">Old Town Walking Tour</div>
+          <div class="addmeta">Apr 13 at 9:00 AM &middot; 2 guests</div>
+        </div>
+        <div class="addprice">$64</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="cardhead">
+        <span class="stop">2</span>
+        <span class="place">Tulum</span>
+        <span class="dates">Apr 16–20</span>
+      </div>
+      <div class="stayline">
+        <img class="thumb" src="https://loremflickr.com/76/76/beach?lock=6581" width="76" height="76" alt="Coral Bay Bungalow on the beach in Tulum">
+        <div class="staybody">
+          <div class="hotelrow">
+            <div class="hotel">Coral Bay Bungalow</div>
+            <div class="price">$884</div>
+          </div>
+          <div class="room">4 nights &middot; Garden Suite</div>
+          <div class="assigned">
+            <span class="avatar">JE</span>
+            <div class="assigncopy">
+              <div class="assignlabel">Employee</div>
+              <div class="person">Jordan Ellis</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="addon">
+        <img class="athumb" src="https://loremflickr.com/40/40/beach?lock=6584" width="40" height="40" alt="Reef and shoreline at the snorkel charter meeting point">
+        <div class="addbody">
+          <div class="addlabel">Added experience</div>
+          <div class="addtitle">Reef Snorkel Charter</div>
+          <div class="addmeta">Apr 18 at 7:30 AM &middot; 1 guest</div>
+        </div>
+        <div class="addprice">$76</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="cardhead">
+        <span class="stop">3</span>
+        <span class="place">Aspen</span>
+        <span class="dates">Apr 21–24</span>
+      </div>
+      <div class="stayline">
+        <img class="thumb" src="https://loremflickr.com/76/76/mountain?lock=6582" width="76" height="76" alt="Pinecrest Lodge in the mountains near Aspen">
+        <div class="staybody">
+          <div class="hotelrow">
+            <div class="hotel">Pinecrest Lodge</div>
+            <div class="price">$537</div>
+          </div>
+          <div class="room">3 nights &middot; Two Queens</div>
+          <div class="assigned">
+            <span class="avatar">PN</span>
+            <div class="assigncopy">
+              <div class="assignlabel">Employee</div>
+              <div class="person">Priya Nair</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="addon">
+        <div class="addonicon">
+          <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 17h14l-1.4-6H6.4z"/><path d="M8 11l2-4h4l2 4M8 20h.01M16 20h.01"/></svg>
+        </div>
+        <div class="addbody">
+          <div class="addlabel">Stay benefit</div>
+          <div class="addtitle">Trailhead Shuttle</div>
+          <div class="addmeta">Apr 22 at 8:00 AM &middot; 2 seats</div>
+        </div>
+        <div class="addprice">Included</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="costarea">
+    <div class="costs">
+      <div class="sline"><span>Stays + extras</span><span>$2,173.00</span></div>
+      <div class="sline"><span>Taxes and fees</span><span>$274.35</span></div>
+      <div class="sline"><span>Member credit</span><span>−$50.00</span></div>
+    </div>
+    <div class="budgetbox">
+      <div class="budgetlabel">Department budget</div>
+      <div class="budgetvalue">$3,000.00</div>
+      <div class="budgetmeta">$602.65 available after purchase</div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div class="totalrow">
+      <span class="tlabel">Total due today</span>
+      <span class="tval">$2,397.35</span>
+    </div>
+    <div class="note">Free cancellation on all stays through Apr 5</div>
+    <div class="cta">Continue to payment</div>
+  </div>
+
+  <div class="tabs">
+    <div class="tab">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/></svg>
+      <span class="tl">Explore</span>
+    </div>
+    <div class="tab">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4l6 2 5-2v14l-5 2-6-2-5 2V6z"/><path d="M9 4v14M15 6v14"/></svg>
+      <span class="tl">Maps</span>
+    </div>
+    <div class="tab on">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h16l-1.2 12H5.2z"/><path d="M9 8V6a3 3 0 016 0v2"/></svg>
+      <span class="tl">Bag</span>
+      <span class="badge">6</span>
+    </div>
+    <div class="tab">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8.5" r="3.5"/><path d="M5 20c0-3.6 3.1-5.5 7-5.5s7 1.9 7 5.5"/></svg>
+      <span class="tl">Account</span>
+    </div>
+  </div>
+</div>
+</body>
+</html>

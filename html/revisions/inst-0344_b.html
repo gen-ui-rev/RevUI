@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Nocturne — Now Playing</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --accent:#b8375a;
+    --accent-08:rgba(184,55,90,0.08);
+    --accent-14:rgba(184,55,90,0.14);
+    --accent-22:rgba(184,55,90,0.22);
+    --ink:#231b1e;
+    --muted:#7d7276;
+  }
+  *{box-sizing:border-box;}
+  body{
+    min-height:100vh;display:flex;justify-content:center;align-items:flex-start;
+    padding:40px 0;margin:0;background:#e6e1e0;
+    font-family:'Source Serif 4',Georgia,serif;color:var(--ink);
+  }
+  .screen{
+    position:relative;width:390px;height:844px;background:#fffcfc;
+    display:flex;flex-direction:column;
+  }
+  .topbar{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:18px 20px 10px;
+  }
+  .topbar .label{
+    font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);
+  }
+  .iconbtn{width:24px;height:24px;color:var(--ink);display:block;}
+  .body{padding:0 20px;}
+  .art{
+    width:160px;height:160px;margin:12px auto 0;border-radius:6px;
+    background:var(--accent-14);display:flex;align-items:center;justify-content:center;
+  }
+  .art svg{width:72px;height:72px;color:var(--accent);}
+  h1{
+    margin:14px 0 0;font-size:25px;font-weight:600;line-height:1.2;letter-spacing:-0.01em;
+  }
+  .sub{margin:6px 0 0;font-size:15px;color:var(--muted);line-height:1.2;}
+  .tally{display:flex;gap:8px;margin-top:8px;}
+  .pill{
+    display:inline-flex;align-items:center;gap:6px;
+    border:1px solid var(--accent-22);border-radius:6px;
+    padding:4px 9px;font-size:11.5px;line-height:1.25;color:var(--accent);
+  }
+  .pill .n{font-weight:700;font-size:12.5px;}
+  .pill.left{border-color:#e7dcde;color:var(--muted);}
+  .narrator{display:flex;align-items:center;gap:11px;margin-top:16px;}
+  .mono{
+    width:40px;height:40px;border-radius:6px;background:var(--accent-14);
+    display:flex;align-items:center;justify-content:center;
+    font-size:14px;font-weight:600;color:var(--accent);flex:none;
+  }
+  .narrator .name{font-size:15px;}
+  .narrator .role{font-size:12px;color:var(--muted);margin-top:2px;}
+  .progress{margin-top:22px;}
+  .track{height:6px;border-radius:6px;background:var(--accent-14);position:relative;}
+  .fill{position:absolute;left:0;top:0;bottom:0;width:45%;background:var(--accent);border-radius:6px;}
+  .knob{position:absolute;left:45%;top:-3px;width:12px;height:12px;border-radius:6px;background:var(--accent);margin-left:-6px;}
+  .times{display:flex;justify-content:space-between;margin-top:9px;font-size:12px;color:var(--muted);line-height:1.25;}
+  .controls{
+    display:flex;align-items:center;justify-content:center;gap:34px;margin-top:16px;
+  }
+  .ctrl{width:34px;height:34px;color:var(--ink);}
+  .play{
+    width:64px;height:64px;border-radius:6px;background:var(--accent);
+    display:flex;align-items:center;justify-content:center;flex:none;
+  }
+  .play svg{width:26px;height:26px;color:#fffcfc;}
+  .timerline{
+    margin:12px auto 0;display:inline-flex;align-items:center;gap:8px;
+    background:var(--accent-08);border-radius:6px;padding:7px 12px;
+    font-size:13px;color:var(--accent);line-height:1.25;
+  }
+  .timerwrap{display:flex;justify-content:center;}
+  .timerline svg{width:15px;height:15px;}
+  .seclabel{
+    margin-top:16px;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);
+    line-height:1.25;
+  }
+  .row{display:flex;align-items:center;gap:11px;padding:8px 0;}
+  .row .txt{min-width:0;flex:1;}
+  .row .t{font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .row .m{font-size:12px;color:var(--muted);margin-top:2px;}
+  .row .dur{font-size:13px;color:var(--muted);flex:none;}
+
+  /* headline upcoming session */
+  .row.lead{
+    padding:16px 0;gap:14px;border-bottom:1px solid #f0e7e9;
+  }
+  .row.lead .mono{
+    width:48px;height:48px;font-size:15px;
+    background:var(--accent);color:#fffcfc;
+  }
+  .row.lead .t{
+    font-size:19px;font-weight:600;color:#1a1214;line-height:1.3;letter-spacing:-0.01em;
+  }
+  .row.lead .m{font-size:12.5px;margin-top:3px;color:var(--accent);}
+  .row.lead .dur{font-size:14px;color:#1a1214;font-weight:600;}
+
+  /* tight secondary list */
+  .row.mini{padding:4px 0;gap:9px;}
+  .row.mini .mono{width:30px;height:30px;border-radius:5px;font-size:11px;background:transparent;border:1px solid var(--accent-22);}
+  .row.mini .t{font-size:13px;color:#4c4145;}
+  .row.mini .m{font-size:10.5px;margin-top:1px;}
+  .row.mini .dur{font-size:11.5px;}
+
+  .tabbar{
+    position:absolute;left:0;right:0;bottom:0;height:66px;
+    display:flex;align-items:center;background:#fffcfc;
+    border-top:1px solid #efe6e8;
+  }
+  .tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;color:var(--muted);}
+  .tab svg{width:22px;height:22px;}
+  .tab span{font-size:12px;}
+  .tab.on{color:var(--accent);}
+</style>
+</head>
+<body>
+<div class="screen">
+
+  <div class="topbar">
+    <svg class="iconbtn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
+    <div class="label">Sleep Recovery</div>
+    <svg class="iconbtn" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="12" cy="19" r="1.6"/></svg>
+  </div>
+
+  <div class="body">
+    <div class="art">
+      <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M30 6a15 15 0 100 30 17 17 0 010-30z"/>
+        <path d="M8 40h4M16 40h3M23 40h5M32 40h3M39 40h4" stroke-width="2"/>
+      </svg>
+    </div>
+
+    <h1>Deep Sleep Descent</h1>
+    <p class="sub">Night 6 &middot; Guided wind-down</p>
+    <div class="tally">
+      <span class="pill"><span class="n">5</span> nights finished</span>
+      <span class="pill left"><span class="n">9</span> nights left</span>
+    </div>
+
+    <div class="narrator">
+      <div class="mono">ME</div>
+      <div>
+        <div class="name">Maya Ellsworth</div>
+        <div class="role">Sleep therapist, narration</div>
+      </div>
+    </div>
+
+    <div class="progress">
+      <div class="track"><div class="fill"></div><div class="knob"></div></div>
+      <div class="times"><span>14:22</span><span>&minus;17:38</span></div>
+    </div>
+
+    <div class="controls">
+      <svg class="ctrl" viewBox="0 0 34 34" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M17 8a9 9 0 11-8.6 11.6"/><path d="M11 4v5h5"/>
+        <text x="17" y="21" font-size="9" font-family="Georgia, serif" fill="currentColor" stroke="none" text-anchor="middle">15</text>
+      </svg>
+      <div class="play">
+        <svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg>
+      </div>
+      <svg class="ctrl" viewBox="0 0 34 34" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M17 8a9 9 0 10 8.6 11.6"/><path d="M23 4v5h-5"/>
+        <text x="17" y="21" font-size="9" font-family="Georgia, serif" fill="currentColor" stroke="none" text-anchor="middle">15</text>
+      </svg>
+    </div>
+
+    <div class="timerwrap">
+      <div class="timerline">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 3h6"/></svg>
+        Sleep timer ends in 20 min
+      </div>
+    </div>
+
+    <div class="seclabel">Next in program</div>
+    <div class="row lead">
+      <div class="mono">N7</div>
+      <div class="txt">
+        <div class="t">Body Scan for Sleep</div>
+        <div class="m">Tomorrow, 10:30 PM</div>
+      </div>
+      <div class="dur">24 min</div>
+    </div>
+    <div class="row mini">
+      <div class="mono">N8</div>
+      <div class="txt">
+        <div class="t">Slow Breath Wind-Down</div>
+        <div class="m">Thu, Mar 14</div>
+      </div>
+      <div class="dur">18 min</div>
+    </div>
+    <div class="row mini">
+      <div class="mono">N9</div>
+      <div class="txt">
+        <div class="t">Quiet Mind, Still Room</div>
+        <div class="m">Fri, Mar 15</div>
+      </div>
+      <div class="dur">26 min</div>
+    </div>
+  </div>
+
+  <div class="tabbar">
+    <div class="tab">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11l8-6 8 6v8a1 1 0 01-1 1h-4v-6H9v6H5a1 1 0 01-1-1z"/></svg>
+      <span>Today</span>
+    </div>
+    <div class="tab on">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3a9 9 0 100 18 10.5 10.5 0 010-18z"/></svg>
+      <span>Sleep</span>
+    </div>
+    <div class="tab">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="7" height="7" rx="1"/><rect x="13" y="4" width="7" height="7" rx="1"/><rect x="4" y="13" width="7" height="7" rx="1"/><rect x="13" y="13" width="7" height="7" rx="1"/></svg>
+      <span>Programs</span>
+    </div>
+    <div class="tab">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-3.6 3.1-5.5 7-5.5s7 1.9 7 5.5"/></svg>
+      <span>Profile</span>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

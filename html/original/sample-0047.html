@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trailnest Order History</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #dfe5e2;
+      color: #18332a;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #fbfdfc;
+    }
+
+    .topbar {
+      flex: 0 0 auto;
+      padding: 16px 16px 10px;
+    }
+
+    .brand {
+      margin: 0 0 5px;
+      color: #16815f;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .title-copy {
+      min-width: 0;
+    }
+
+    h1 {
+      margin: 0;
+      color: #102a22;
+      font-size: 28px;
+      line-height: 34px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+    }
+
+    .subtitle {
+      margin: 3px 0 0;
+      color: #61736c;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 400;
+    }
+
+    .icon-button {
+      width: 42px;
+      height: 42px;
+      flex: 0 0 42px;
+      display: grid;
+      place-items: center;
+      padding: 0;
+      border: 0;
+      border-radius: 14px;
+      background: #e5f5ee;
+      color: #137456;
+    }
+
+    .icon-button svg {
+      width: 21px;
+      height: 21px;
+    }
+
+    .filters {
+      flex: 0 0 auto;
+      display: flex;
+      gap: 8px;
+      padding: 0 16px 12px;
+    }
+
+    .filter {
+      min-width: 0;
+      height: 38px;
+      padding: 0 16px;
+      border: 0;
+      border-radius: 14px;
+      background: #f0f4f2;
+      color: #586a63;
+      font-size: 14px;
+      line-height: 38px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .filter.active {
+      background: #dcefe7;
+      color: #0f6f50;
+    }
+
+    .orders {
+      flex: 1 1 auto;
+      padding: 0 16px;
+    }
+
+    .year-group + .year-group {
+      margin-top: 12px;
+    }
+
+    .year-heading {
+      margin: 0;
+      padding: 2px 2px 7px;
+      color: #50645c;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 700;
+    }
+
+    .order-list {
+      display: grid;
+      gap: 8px;
+    }
+
+    .order-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px;
+      border-radius: 14px;
+      background: #edf7f2;
+    }
+
+    .order-row img {
+      width: 82px;
+      height: 82px;
+      flex: 0 0 82px;
+      display: block;
+      object-fit: cover;
+      border-radius: 14px;
+      background: #cbd9d3;
+    }
+
+    .order-copy {
+      min-width: 0;
+      flex: 1 1 auto;
+    }
+
+    .order-date {
+      margin: 0 0 2px;
+      color: #63756e;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 600;
+    }
+
+    .order-title {
+      margin: 0;
+      overflow: hidden;
+      color: #163128;
+      font-size: 15px;
+      line-height: 20px;
+      font-weight: 700;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .order-meta {
+      margin: 2px 0 0;
+      overflow: hidden;
+      color: #526860;
+      font-size: 13px;
+      line-height: 17px;
+      font-weight: 400;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .order-ref {
+      margin: 1px 0 0;
+      color: #7a8984;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 400;
+    }
+
+    .order-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .amount {
+      color: #17342a;
+      font-size: 14px;
+      line-height: 18px;
+      font-weight: 700;
+    }
+
+    .status {
+      color: #137456;
+      font-size: 12px;
+      line-height: 18px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .status.refunded {
+      padding: 2px 7px;
+      border-radius: 14px;
+      background: #f8e8e5;
+      color: #9a463b;
+    }
+
+    .tabbar {
+      flex: 0 0 72px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      padding: 8px 10px 10px;
+      background: #f3f7f5;
+    }
+
+    .tab {
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      padding: 3px 2px;
+      border: 0;
+      background: transparent;
+      color: #71817b;
+      font-size: 12px;
+      line-height: 15px;
+      font-weight: 600;
+    }
+
+    .tab svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .tab.active {
+      color: #117554;
+    }
+
+    .tab.active .tab-icon {
+      width: 42px;
+      height: 30px;
+      display: grid;
+      place-items: center;
+      border-radius: 14px;
+      background: #dcefe7;
+    }
+
+    .tab-icon {
+      height: 30px;
+      display: grid;
+      place-items: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <p class="brand">Trailnest</p>
+      <div class="title-row">
+        <div class="title-copy">
+          <h1>Order history</h1>
+          <p class="subtitle">Past bookings, payments, and receipts</p>
+        </div>
+        <button class="icon-button" type="button" aria-label="Search order history">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="10.8" cy="10.8" r="6.5" stroke="currentColor" stroke-width="2"></circle>
+            <path d="M15.7 15.7L20 20" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <nav class="filters" aria-label="Order categories">
+      <button class="filter active" type="button">All orders</button>
+      <button class="filter" type="button">Stays</button>
+      <button class="filter" type="button">Activities</button>
+    </nav>
+
+    <main class="orders">
+      <section class="year-group" aria-labelledby="year-2025">
+        <h2 class="year-heading" id="year-2025">2025</h2>
+        <div class="order-list">
+          <article class="order-row">
+            <img src="https://loremflickr.com/82/82/hotel?lock=1630" width="82" height="82" alt="Harbor hotel exterior in Boston">
+            <div class="order-copy">
+              <p class="order-date">Sep 18, 2025</p>
+              <h3 class="order-title">Harborlight Hotel</h3>
+              <p class="order-meta">Boston · Oct 11–14 · 2 guests</p>
+              <p class="order-ref">Order TN-48271</p>
+              <div class="order-footer">
+                <span class="amount">$684.20</span>
+                <span class="status">Completed</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="order-row">
+            <img src="https://loremflickr.com/82/82/cityscape?lock=1631" width="82" height="82" alt="Chicago skyline viewed from the river">
+            <div class="order-copy">
+              <p class="order-date">Aug 2, 2025</p>
+              <h3 class="order-title">Chicago River Cruise</h3>
+              <p class="order-meta">Chicago · Aug 23 · 2 adults</p>
+              <p class="order-ref">Order TN-47506</p>
+              <div class="order-footer">
+                <span class="amount">$118.00</span>
+                <span class="status refunded">Refunded</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="order-row">
+            <img src="https://loremflickr.com/82/82/mountain?lock=1632" width="82" height="82" alt="Mountain lodge surrounded by forest">
+            <div class="order-copy">
+              <p class="order-date">Jun 14, 2025</p>
+              <h3 class="order-title">Pine Ridge Lodge</h3>
+              <p class="order-meta">Asheville · Jun 28–30 · 2 guests</p>
+              <p class="order-ref">Order TN-45193</p>
+              <div class="order-footer">
+                <span class="amount">$436.75</span>
+                <span class="status">Completed</span>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="year-group" aria-labelledby="year-2024">
+        <h2 class="year-heading" id="year-2024">2024</h2>
+        <div class="order-list">
+          <article class="order-row">
+            <img src="https://loremflickr.com/82/82/beach?lock=1633" width="82" height="82" alt="Quiet beach near a coastal inn">
+            <div class="order-copy">
+              <p class="order-date">Nov 9, 2024</p>
+              <h3 class="order-title">Driftwood Coast Inn</h3>
+              <p class="order-meta">Monterey · Nov 21–24 · 2 guests</p>
+              <p class="order-ref">Order TN-39814</p>
+              <div class="order-footer">
+                <span class="amount">$792.40</span>
+                <span class="status">Completed</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="order-row">
+            <img src="https://loremflickr.com/82/82/cityscape?lock=1634" width="82" height="82" alt="Historic city streets on a guided tour">
+            <div class="order-copy">
+              <p class="order-date">Jul 6, 2024</p>
+              <h3 class="order-title">Old Quarter Walking Tour</h3>
+              <p class="order-meta">Savannah · Jul 19 · 3 adults</p>
+              <p class="order-ref">Order TN-36129</p>
+              <div class="order-footer">
+                <span class="amount">$126.00</span>
+                <span class="status">Completed</span>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <nav class="tabbar" aria-label="Main navigation">
+      <button class="tab" type="button">
+        <span class="tab-icon">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M4 18.5L8.2 7.2L12 12L15.2 5.5L20 18.5H4Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"></path>
+          </svg>
+        </span>
+        <span>Explore</span>
+      </button>
+
+      <button class="tab active" type="button">
+        <span class="tab-icon">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M5 8.5H19V18.5C19 19.3 18.3 20 17.5 20H6.5C5.7 20 5 19.3 5 18.5V8.5Z" stroke="currentColor" stroke-width="1.8"></path>
+            <path d="M8 8.5V6.5C8 5.7 8.7 5 9.5 5H14.5C15.3 5 16 5.7 16 6.5V8.5" stroke="currentColor" stroke-width="1.8"></path>
+            <path d="M5 13H19" stroke="currentColor" stroke-width="1.8"></path>
+          </svg>
+        </span>
+        <span>Trips</span>
+      </button>
+
+      <button class="tab" type="button">
+        <span class="tab-icon">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M12 20S5 15.7 5 9.7C5 7.1 6.9 5 9.4 5C10.7 5 11.6 5.6 12 6.4C12.4 5.6 13.3 5 14.6 5C17.1 5 19 7.1 19 9.7C19 15.7 12 20 12 20Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"></path>
+          </svg>
+        </span>
+        <span>Saved</span>
+      </button>
+
+      <button class="tab" type="button">
+        <span class="tab-icon">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="12" cy="8" r="3.2" stroke="currentColor" stroke-width="1.8"></circle>
+            <path d="M5.5 19C6.2 15.7 8.5 14 12 14C15.5 14 17.8 15.7 18.5 19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
+          </svg>
+        </span>
+        <span>Account</span>
+      </button>
+    </nav>
+  </div>
+</body>
+</html>

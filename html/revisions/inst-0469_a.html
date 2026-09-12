@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Select Return Items</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #dfe5e3;
+      color: #172321;
+      font-family: 'Roboto', system-ui, sans-serif;
+    }
+
+    button {
+      font-family: inherit;
+    }
+
+    .screen {
+      width: 768px;
+      height: 1024px;
+      padding: 44px 48px;
+      background: #f4f7f6;
+      box-shadow: 0 18px 48px rgba(24, 48, 44, 0.14);
+    }
+
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 32px;
+    }
+
+    .back-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 11px 14px;
+      border: 1px solid #b8c5c2;
+      background: #ffffff;
+      color: #29413d;
+      font-size: 15px;
+      line-height: 22px;
+      font-weight: 500;
+    }
+
+    .back-button svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .step-label {
+      margin: 0;
+      color: #60706d;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 500;
+    }
+
+    .select-panel {
+      width: 100%;
+      background: #ffffff;
+      border: 1px solid #bfcac7;
+      box-shadow: 0 8px 22px rgba(31, 59, 54, 0.07);
+    }
+
+    .panel-heading {
+      padding: 30px 32px 28px;
+      background: #087c74;
+      color: #ffffff;
+    }
+
+    .panel-heading h1 {
+      margin: 0;
+      font-size: 30px;
+      line-height: 1.2;
+      font-weight: 700;
+    }
+
+    .panel-heading p {
+      margin: 9px 0 0;
+      color: #dff4f1;
+      font-size: 16px;
+      line-height: 24px;
+    }
+
+    .selection-control,
+    .item-row {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .selection-control {
+      padding: 18px 24px;
+      border-bottom: 1px solid #d8dfdd;
+      color: #263a37;
+      font-size: 16px;
+      line-height: 24px;
+      font-weight: 700;
+    }
+
+    .item-row {
+      padding: 22px 24px;
+      border-bottom: 1px solid #d8dfdd;
+    }
+
+    .item-row.selected {
+      background: #f0f8f7;
+    }
+
+    .selector {
+      width: 28px;
+      height: 28px;
+      flex: 0 0 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid #71817e;
+      background: #ffffff;
+      color: #ffffff;
+    }
+
+    .selector.checked {
+      border-color: #087c74;
+      background: #087c74;
+    }
+
+    .selector.indeterminate {
+      border-color: #087c74;
+      color: #087c74;
+    }
+
+    .selector svg {
+      width: 18px;
+      height: 18px;
+      display: block;
+    }
+
+    .item-copy {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .item-name {
+      margin: 0;
+      overflow: hidden;
+      color: #172321;
+      font-size: 17px;
+      line-height: 24px;
+      font-weight: 500;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .item-detail {
+      margin: 5px 0 0;
+      color: #60706d;
+      font-size: 15px;
+      line-height: 22px;
+    }
+
+    .row-status {
+      flex: 0 0 auto;
+      padding: 5px 9px;
+      background: #dcefeb;
+      color: #076a63;
+      font-size: 12px;
+      line-height: 18px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .panel-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      padding: 24px;
+      background: #fbfcfc;
+    }
+
+    .selection-count {
+      margin: 0;
+      color: #4f605d;
+      font-size: 15px;
+      line-height: 22px;
+    }
+
+    .selection-count strong {
+      display: block;
+      color: #087c74;
+      font-size: 17px;
+      line-height: 24px;
+      font-weight: 700;
+    }
+
+    .continue-button {
+      min-width: 250px;
+      padding: 15px 22px;
+      border: 1px solid #087c74;
+      background: #087c74;
+      color: #ffffff;
+      font-size: 16px;
+      line-height: 22px;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .help-note {
+      margin: 24px 4px 0;
+      color: #60706d;
+      font-size: 14px;
+      line-height: 21px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <nav class="top-bar" aria-label="Return navigation">
+      <button class="back-button" type="button">
+        <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+          <path d="M12.5 4.5L7 10L12.5 15.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="square"/>
+        </svg>
+        Back to order
+      </button>
+      <p class="step-label">Return items · Step 1 of 3</p>
+    </nav>
+
+    <section class="select-panel" aria-labelledby="return-title-a">
+      <header class="panel-heading">
+        <h1 id="return-title-a">Select items to return</h1>
+        <p>Order CL-48271 · Delivered May 14</p>
+      </header>
+
+      <div class="selection-control">
+        <span class="selector indeterminate" aria-hidden="true">
+          <svg viewBox="0 0 16 16" fill="none">
+            <path d="M3 8H13" stroke="currentColor" stroke-width="2" stroke-linecap="square"/>
+          </svg>
+        </span>
+        <span>Select all eligible items</span>
+      </div>
+
+      <div class="item-row selected">
+        <span class="selector checked" aria-hidden="true">
+          <svg viewBox="0 0 16 16" fill="none">
+            <path d="M3 8.2L6.3 11.3L13 4.7" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter"/>
+          </svg>
+        </span>
+        <div class="item-copy">
+          <p class="item-name">Linen Blend Overshirt</p>
+          <p class="item-detail">Price $68.00 · Quantity 1</p>
+        </div>
+        <span class="row-status">Selected</span>
+      </div>
+
+      <div class="item-row selected">
+        <span class="selector checked" aria-hidden="true">
+          <svg viewBox="0 0 16 16" fill="none">
+            <path d="M3 8.2L6.3 11.3L13 4.7" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter"/>
+          </svg>
+        </span>
+        <div class="item-copy">
+          <p class="item-name">Stoneware Serving Bowl</p>
+          <p class="item-detail">Price $34.00 · Quantity 1</p>
+        </div>
+        <span class="row-status">Selected</span>
+      </div>
+
+      <div class="item-row">
+        <span class="selector" aria-hidden="true"></span>
+        <div class="item-copy">
+          <p class="item-name">Canvas Market Tote</p>
+          <p class="item-detail">Price $22.00 · Quantity 1</p>
+        </div>
+      </div>
+
+      <footer class="panel-footer">
+        <p class="selection-count">
+          <strong>2 of 3 items selected</strong>
+          Return value: $102.00
+        </p>
+        <button class="continue-button" type="button">Choose return reason</button>
+      </footer>
+    </section>
+
+    <p class="help-note">You can review your selection before submitting the return.</p>
+  </div>
+</body>
+</html>

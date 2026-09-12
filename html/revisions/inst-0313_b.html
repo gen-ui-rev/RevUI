@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Sleep Reset — Program</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --rose:#D6285C;
+    --rose-08:rgba(214,40,92,0.08);
+    --rose-14:rgba(214,40,92,0.14);
+    --ink:#1B1418;
+    --mid:#6E6469;
+    --line:#F1EDEF;
+  }
+  *{box-sizing:border-box;}
+  body{
+    min-height:100vh;display:flex;justify-content:center;align-items:flex-start;
+    padding:40px 0;margin:0;background:#E6E2E4;
+    font-family:'Poppins',system-ui,sans-serif;color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+  }
+  .screen{
+    width:768px;height:1024px;background:#FFFFFF;position:relative;display:flex;flex-direction:column;
+  }
+
+  /* top bar */
+  .topbar{display:flex;align-items:center;gap:14px;padding:16px 32px;}
+  .topbar .tb-title{flex:1;font-size:15px;font-weight:500;letter-spacing:.01em;}
+  .iconbtn{width:44px;height:44px;flex:none;border-radius:22px;display:flex;align-items:center;justify-content:center;
+           color:var(--ink);background:#FAF7F8;}
+
+  /* hero */
+  .hero{margin:2px 32px 0;background:var(--rose-08);border-radius:10px;padding:22px 26px;
+        display:flex;gap:28px;align-items:flex-end;}
+  .hero .htxt{flex:1;min-width:0;}
+  .kicker{font-size:11.5px;font-weight:500;color:var(--rose);letter-spacing:.09em;text-transform:uppercase;}
+  .hero h1{margin:9px 0 0;font-size:30px;line-height:1.18;font-weight:600;letter-spacing:-.015em;}
+  .hero p{margin:9px 0 0;max-width:470px;font-size:14px;line-height:1.55;color:var(--mid);}
+  .chips{display:flex;gap:8px;flex:none;}
+  .chip{background:#fff;border-radius:8px;padding:10px 13px;font-size:12.5px;font-weight:500;color:var(--ink);white-space:nowrap;}
+
+  /* section head */
+  .shead{display:flex;align-items:baseline;justify-content:space-between;padding:24px 32px 12px;}
+  .shead h2{margin:0;font-size:20px;font-weight:600;letter-spacing:-.01em;}
+  .shead span{font-size:12.5px;color:var(--mid);}
+
+  /* week switcher */
+  .wtabs{display:flex;gap:10px;padding:0 32px;}
+  .wtab{flex:1;min-width:0;border:1px solid var(--line);background:#FAF7F8;border-radius:10px;
+        padding:11px 8px;text-align:center;}
+  .wtab .wn{font-size:14.5px;font-weight:600;color:var(--ink);}
+  .wtab .wl{margin-top:2px;font-size:11.5px;color:var(--mid);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .wtab.active{background:var(--rose);border-color:var(--rose);}
+  .wtab.active .wn{color:#fff;}
+  .wtab.active .wl{color:rgba(255,255,255,.82);}
+  .wtab.locked .wn{color:#8C8489;}
+
+  /* session cards */
+  .cards{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:14px 32px 0;}
+  .card{border:1px solid var(--line);border-radius:10px;padding:13px 14px;display:flex;align-items:center;gap:13px;}
+  .card.next{border-color:var(--rose-14);background:var(--rose-08);}
+  .num{width:44px;height:44px;flex:none;border-radius:8px;background:var(--rose-08);
+       display:flex;align-items:center;justify-content:center;font-size:13.5px;font-weight:500;color:var(--rose);}
+  .num.on{background:var(--rose);color:#fff;}
+  .rtxt{flex:1;min-width:0;}
+  .rtxt .t{font-size:14.5px;font-weight:500;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .rtxt .m{margin-top:3px;font-size:12px;color:var(--mid);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .rend{flex:none;display:flex;align-items:center;color:var(--rose);}
+  .rend.lock{color:#B9B1B5;}
+  .tag{background:var(--rose);color:#fff;border-radius:6px;padding:6px 10px;font-size:11.5px;font-weight:500;}
+
+  .filler{flex:1;min-height:14px;}
+
+  /* progress — moved down beside the action, much larger bar */
+  .pbig{margin:0 32px;border:1px solid var(--line);border-radius:12px;padding:18px 22px;
+        display:flex;align-items:center;gap:26px;}
+  .pbig .pnum{flex:none;font-size:34px;font-weight:600;letter-spacing:-.02em;color:var(--rose);line-height:1;}
+  .pbig .pbody{flex:1;min-width:0;}
+  .prow{display:flex;align-items:baseline;justify-content:space-between;}
+  .prow .plab{font-size:14px;font-weight:500;}
+  .prow .pval{font-size:12.5px;color:var(--mid);}
+  .track{margin-top:11px;height:14px;border-radius:10px;background:var(--rose-14);}
+  .fill{height:14px;width:25%;border-radius:10px;background:var(--rose);}
+
+  /* cta */
+  .cta{padding:16px 32px 18px;display:flex;align-items:center;gap:20px;}
+  .btn{width:330px;flex:none;background:var(--rose);color:#fff;border-radius:10px;
+       padding:18px 0;text-align:center;font-size:16px;font-weight:600;}
+  .cta .note{flex:1;min-width:0;font-size:13px;line-height:1.5;color:var(--mid);}
+  .cta .note b{display:block;color:var(--ink);font-weight:500;}
+
+  /* tab bar */
+  .tabs{height:76px;flex:none;display:flex;border-top:1px solid var(--line);background:#fff;}
+  .tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;
+       font-size:12px;color:#9A9296;font-weight:500;}
+  .tab.active{color:var(--rose);}
+</style>
+</head>
+<body>
+  <div class="screen">
+
+    <div class="topbar">
+      <span class="iconbtn" aria-hidden="true">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
+      </span>
+      <div class="tb-title">Program detail</div>
+      <span class="iconbtn" aria-hidden="true">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4h12v16l-6-4-6 4z"/></svg>
+      </span>
+    </div>
+
+    <div class="hero">
+      <div class="htxt">
+        <div class="kicker">Sleep course</div>
+        <h1>Sleep Reset: 21 Nights</h1>
+        <p>Rebuild a stable bedtime with short evening sessions, breathing drills and a weekly sleep log review.</p>
+      </div>
+      <div class="chips">
+        <span class="chip">12 sessions</span>
+        <span class="chip">4 weeks</span>
+        <span class="chip">16 min avg</span>
+      </div>
+    </div>
+
+    <div class="shead">
+      <h2>Curriculum</h2>
+      <span>Week 1 · Wind down · 3 of 5 done</span>
+    </div>
+
+    <div class="wtabs">
+      <div class="wtab active">
+        <div class="wn">Week 1</div>
+        <div class="wl">Wind down</div>
+      </div>
+      <div class="wtab locked">
+        <div class="wn">Week 2</div>
+        <div class="wl">Sleep pressure</div>
+      </div>
+      <div class="wtab locked">
+        <div class="wn">Week 3</div>
+        <div class="wl">Night waking</div>
+      </div>
+      <div class="wtab locked">
+        <div class="wn">Week 4</div>
+        <div class="wl">Keep the gains</div>
+      </div>
+    </div>
+
+    <div class="cards">
+      <div class="card">
+        <div class="num">01</div>
+        <div class="rtxt">
+          <div class="t">Set your sleep window</div>
+          <div class="m">12 min · Audio lesson</div>
+        </div>
+        <div class="rend" aria-label="Completed">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4 10-10"/></svg>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="num">02</div>
+        <div class="rtxt">
+          <div class="t">Caffeine and the last 8 hours</div>
+          <div class="m">9 min · Reading + checklist</div>
+        </div>
+        <div class="rend" aria-label="Completed">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4 10-10"/></svg>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="num">03</div>
+        <div class="rtxt">
+          <div class="t">Breathing drill: 4-7-8</div>
+          <div class="m">14 min · Guided practice</div>
+        </div>
+        <div class="rend" aria-label="Completed">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4 10-10"/></svg>
+        </div>
+      </div>
+
+      <div class="card next">
+        <div class="num on">04</div>
+        <div class="rtxt">
+          <div class="t">Light exposure after dinner</div>
+          <div class="m">16 min · Audio lesson</div>
+        </div>
+        <div class="rend"><span class="tag">Next</span></div>
+      </div>
+
+      <div class="card">
+        <div class="num">05</div>
+        <div class="rtxt">
+          <div class="t">Week 1 sleep log review</div>
+          <div class="m">18 min · Opens Monday, March 11</div>
+        </div>
+        <div class="rend lock" aria-label="Locked">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="num">LH</div>
+        <div class="rtxt">
+          <div class="t">Dr. Lena Harkness</div>
+          <div class="m">Sleep medicine physician · 4 programs</div>
+        </div>
+        <div class="rend lock">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="filler"></div>
+
+    <div class="pbig">
+      <div class="pnum">25%</div>
+      <div class="pbody">
+        <div class="prow">
+          <span class="plab">3 of 12 sessions done</span>
+          <span class="pval">Week 1 of 4 · 9 sessions left</span>
+        </div>
+        <div class="track"><div class="fill"></div></div>
+      </div>
+    </div>
+
+    <div class="cta">
+      <div class="btn">Continue session 4</div>
+      <div class="note"><b>Light exposure after dinner</b>16 min · Best started before 10:30 PM</div>
+    </div>
+
+    <div class="tabs">
+      <div class="tab">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11l8-6 8 6v8a1 1 0 01-1 1H5a1 1 0 01-1-1z"/></svg>
+        Today
+      </div>
+      <div class="tab active">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5h9a3 3 0 013 3v11H8a3 3 0 00-3 3z"/><path d="M17 8h2v11"/></svg>
+        Programs
+      </div>
+      <div class="tab">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 19V9"/><path d="M12 19V5"/><path d="M19 19v-7"/></svg>
+        Trends
+      </div>
+      <div class="tab">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="9" r="3.4"/><path d="M5.5 20a6.5 6.5 0 0113 0"/></svg>
+        Profile
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

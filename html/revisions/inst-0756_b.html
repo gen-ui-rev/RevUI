@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>New Meal — Wellnest</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 32px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #dfe2e8;
+      color: #202231;
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+      font-size: 14px;
+      font-weight: 400;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      cursor: default;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #f4f5f8;
+      border: 1px solid #cfd2da;
+    }
+
+    .topbar {
+      flex-shrink: 0;
+      display: grid;
+      grid-template-columns: 40px 1fr 40px;
+      align-items: center;
+      padding: 17px 14px;
+      background: #ffffff;
+      border-bottom: 1px solid #e3e5eb;
+    }
+
+    .topbar h1 {
+      margin: 0;
+      text-align: center;
+      font-size: 20px;
+      line-height: 26px;
+      font-weight: 600;
+      letter-spacing: -0.3px;
+    }
+
+    .icon-button {
+      width: 40px;
+      height: 32px;
+      padding: 4px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: flex-start;
+      color: #363949;
+      background: transparent;
+      border: 0;
+    }
+
+    .icon-button svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .topbar-spacer {
+      width: 40px;
+    }
+
+    main {
+      flex: 1;
+      min-height: 0;
+      padding: 12px 14px 11px;
+    }
+
+    .intro {
+      margin-bottom: 8px;
+    }
+
+    .intro h2 {
+      margin: 0;
+      font-size: 18px;
+      line-height: 24px;
+      font-weight: 600;
+      letter-spacing: -0.2px;
+    }
+
+    .section {
+      margin-top: 10px;
+    }
+
+    .section:first-of-type {
+      margin-top: 0;
+    }
+
+    .section-title {
+      margin: 0 0 6px;
+      color: #555968;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.55px;
+    }
+
+    .card {
+      background: #ffffff;
+      border: 1px solid #e4e6ec;
+      border-radius: 4px;
+      box-shadow: 0 2px 7px rgba(31, 35, 52, 0.06);
+    }
+
+    .field-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 9px 12px;
+      border-bottom: 1px solid #eceef2;
+    }
+
+    .field-label {
+      width: 75px;
+      flex-shrink: 0;
+      color: #5f6372;
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .text-input {
+      min-width: 0;
+      flex: 1;
+      padding: 0;
+      color: #202231;
+      background: transparent;
+      border: 0;
+      outline: 0;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 600;
+    }
+
+    .meal-type-row {
+      display: block;
+      padding: 8px 12px 9px;
+      border-bottom: 1px solid #eceef2;
+    }
+
+    .meal-type-row .field-label {
+      width: auto;
+      margin-bottom: 6px;
+      display: block;
+    }
+
+    .segmented {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 5px;
+    }
+
+    .segment {
+      padding: 6px 3px;
+      color: #606473;
+      background: #f2f3f6;
+      border: 1px solid transparent;
+      border-radius: 4px;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    .segment.active {
+      color: #4438a7;
+      background: #eeecff;
+      border-color: #cbc6fa;
+    }
+
+    .split-fields {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .compact-field {
+      padding: 8px 12px;
+    }
+
+    .compact-field + .compact-field {
+      border-left: 1px solid #eceef2;
+    }
+
+    .compact-label {
+      display: block;
+      margin-bottom: 2px;
+      color: #777b89;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .compact-value {
+      display: block;
+      color: #202231;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 600;
+    }
+
+    .food-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto 28px;
+      align-items: center;
+      gap: 10px;
+      padding: 6px 10px 6px 12px;
+      border-bottom: 1px solid #eceef2;
+    }
+
+    .food-copy {
+      min-width: 0;
+    }
+
+    .food-name {
+      margin: 0 0 1px;
+      overflow: hidden;
+      color: #202231;
+      font-size: 14px;
+      line-height: 19px;
+      font-weight: 600;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .food-serving {
+      margin: 0;
+      color: #777b89;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .food-calories {
+      color: #4f5361;
+      font-size: 12px;
+      line-height: 16px;
+      white-space: nowrap;
+    }
+
+    .remove-button {
+      width: 28px;
+      height: 28px;
+      padding: 4px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #8a8e9c;
+      background: transparent;
+      border: 0;
+    }
+
+    .remove-button svg {
+      width: 17px;
+      height: 17px;
+    }
+
+    .add-food-button {
+      width: 100%;
+      padding: 8px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      color: #4b3db7;
+      background: #ffffff;
+      border: 0;
+      border-radius: 0 0 4px 4px;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 600;
+    }
+
+    .add-food-button svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .budget-main {
+      display: grid;
+      grid-template-columns: 66px minmax(0, 1fr);
+      align-items: center;
+      gap: 13px;
+      padding: 9px 12px;
+      border-bottom: 1px solid #eceef2;
+    }
+
+    .calorie-ring {
+      width: 62px;
+      height: 62px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: conic-gradient(#4b3db7 0deg 55deg, #ebeaf2 55deg 360deg);
+      border-radius: 50%;
+    }
+
+    .calorie-ring::before {
+      width: 46px;
+      height: 46px;
+      position: absolute;
+      content: "";
+      background: #ffffff;
+      border-radius: 50%;
+    }
+
+    .ring-value {
+      position: relative;
+      color: #4438a7;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 700;
+    }
+
+    .budget-copy {
+      min-width: 0;
+    }
+
+    .budget-heading {
+      margin: 0 0 2px;
+      color: #252837;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 700;
+    }
+
+    .budget-detail {
+      margin: 0;
+      color: #696d7d;
+      font-size: 12px;
+      line-height: 17px;
+    }
+
+    .budget-remaining {
+      margin: 3px 0 0;
+      color: #373a49;
+      font-size: 12px;
+      line-height: 17px;
+      font-weight: 600;
+    }
+
+    .macro-strip {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      padding: 7px 6px;
+    }
+
+    .macro-item {
+      text-align: center;
+      border-right: 1px solid #eceef2;
+    }
+
+    .macro-item:last-child {
+      border-right: 0;
+    }
+
+    .macro-value {
+      display: block;
+      color: #252837;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 600;
+    }
+
+    .macro-label {
+      display: block;
+      margin-top: 1px;
+      color: #7b7f8d;
+      font-size: 11px;
+      line-height: 15px;
+    }
+
+    .save-button {
+      width: 100%;
+      margin-top: 10px;
+      padding: 9px 16px;
+      color: #ffffff;
+      background: #4b3db7;
+      border: 1px solid #4b3db7;
+      border-radius: 4px;
+      font-size: 16px;
+      line-height: 22px;
+      font-weight: 600;
+    }
+
+    .tabbar {
+      flex-shrink: 0;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      padding: 7px 8px 9px;
+      background: #ffffff;
+      border-top: 1px solid #dfe1e7;
+    }
+
+    .tab {
+      min-width: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      color: #777b89;
+      background: transparent;
+      border: 0;
+      font-size: 12px;
+      line-height: 15px;
+      font-weight: 400;
+    }
+
+    .tab-icon {
+      width: 30px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 4px;
+    }
+
+    .tab svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .tab.active {
+      color: #4b3db7;
+      font-weight: 600;
+    }
+
+    .tab.active .tab-icon {
+      background: #eeecff;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <button class="icon-button" type="button" aria-label="Close new meal form">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M6 6L18 18M18 6L6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+      </button>
+      <h1>New meal</h1>
+      <div class="topbar-spacer" aria-hidden="true"></div>
+    </header>
+
+    <main>
+      <div class="intro">
+        <h2>Log what you ate</h2>
+      </div>
+
+      <form>
+        <section class="section" aria-labelledby="meal-details-title-b">
+          <h3 class="section-title" id="meal-details-title-b">Meal details</h3>
+          <div class="card">
+            <label class="field-row">
+              <span class="field-label">Meal name</span>
+              <input class="text-input" type="text" value="Morning oatmeal" aria-label="Meal name">
+            </label>
+
+            <div class="meal-type-row">
+              <span class="field-label">Meal type</span>
+              <div class="segmented" aria-label="Meal type">
+                <button class="segment active" type="button">Breakfast</button>
+                <button class="segment" type="button">Lunch</button>
+                <button class="segment" type="button">Dinner</button>
+                <button class="segment" type="button">Snack</button>
+              </div>
+            </div>
+
+            <div class="split-fields">
+              <div class="compact-field">
+                <span class="compact-label">Date</span>
+                <span class="compact-value">Jun 18, 2025</span>
+              </div>
+              <div class="compact-field">
+                <span class="compact-label">Time</span>
+                <span class="compact-value">8:15 AM</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="section" aria-labelledby="foods-title-b">
+          <h3 class="section-title" id="foods-title-b">Foods</h3>
+          <div class="card">
+            <div class="food-row">
+              <div class="food-copy">
+                <p class="food-name">Rolled oats</p>
+                <p class="food-serving">1 cup cooked · 234 g</p>
+              </div>
+              <span class="food-calories">166 cal</span>
+              <button class="remove-button" type="button" aria-label="Remove rolled oats">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M7 7L17 17M17 7L7 17" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+                </svg>
+              </button>
+            </div>
+
+            <div class="food-row">
+              <div class="food-copy">
+                <p class="food-name">Blueberries</p>
+                <p class="food-serving">1/2 cup · 74 g</p>
+              </div>
+              <span class="food-calories">42 cal</span>
+              <button class="remove-button" type="button" aria-label="Remove blueberries">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M7 7L17 17M17 7L7 17" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+                </svg>
+              </button>
+            </div>
+
+            <div class="food-row">
+              <div class="food-copy">
+                <p class="food-name">Almond butter</p>
+                <p class="food-serving">1 tablespoon · 16 g</p>
+              </div>
+              <span class="food-calories">98 cal</span>
+              <button class="remove-button" type="button" aria-label="Remove almond butter">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M7 7L17 17M17 7L7 17" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+                </svg>
+              </button>
+            </div>
+
+            <button class="add-food-button" type="button">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+              </svg>
+              Add food
+            </button>
+          </div>
+        </section>
+
+        <section class="section" aria-labelledby="budget-title-b">
+          <h3 class="section-title" id="budget-title-b">Daily calorie budget</h3>
+          <div class="card">
+            <div class="budget-main" aria-label="This meal uses 15 percent of the 2,000 calorie daily allowance">
+              <div class="calorie-ring" aria-hidden="true">
+                <span class="ring-value">15%</span>
+              </div>
+              <div class="budget-copy">
+                <p class="budget-heading">306 calories in this meal</p>
+                <p class="budget-detail">Daily allowance: 2,000 calories</p>
+                <p class="budget-remaining">1,694 calories remain</p>
+              </div>
+            </div>
+
+            <div class="macro-strip" aria-label="Nutrition totals">
+              <div class="macro-item">
+                <span class="macro-value">10 g</span>
+                <span class="macro-label">Protein</span>
+              </div>
+              <div class="macro-item">
+                <span class="macro-value">42 g</span>
+                <span class="macro-label">Carbs</span>
+              </div>
+              <div class="macro-item">
+                <span class="macro-value">12 g</span>
+                <span class="macro-label">Fat</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <button class="save-button" type="submit">Save meal</button>
+      </form>
+    </main>
+
+    <nav class="tabbar" aria-label="Primary navigation">
+      <button class="tab" type="button">
+        <span class="tab-icon">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M4 10.5L12 4L20 10.5V20H14.5V14H9.5V20H4V10.5Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+          </svg>
+        </span>
+        <span>Today</span>
+      </button>
+
+      <button class="tab" type="button">
+        <span class="tab-icon">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M5 4H19V20H5V4Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+            <path d="M8 9H16M8 13H16M8 17H13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+          </svg>
+        </span>
+        <span>Journal</span>
+      </button>
+
+      <button class="tab active" type="button" aria-current="page">
+        <span class="tab-icon">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/>
+          </svg>
+        </span>
+        <span>Add</span>
+      </button>
+
+      <button class="tab" type="button">
+        <span class="tab-icon">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="12" cy="8" r="3.5" stroke="currentColor" stroke-width="1.6"/>
+            <path d="M5.5 20C6.1 15.9 8.2 14 12 14C15.8 14 17.9 15.9 18.5 20" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+          </svg>
+        </span>
+        <span>Profile</span>
+      </button>
+    </nav>
+  </div>
+</body>
+</html>

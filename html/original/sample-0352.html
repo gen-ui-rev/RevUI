@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Tandem — Calendar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  body{
+    min-height:100vh;display:flex;justify-content:center;align-items:flex-start;
+    padding:40px 0;margin:0;background:#d7d7d9;
+    font-family:'Plus Jakarta Sans', system-ui, sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .screen{
+    width:390px;height:844px;background:#ececed;display:flex;flex-direction:column;
+    color:#26262a;position:relative;
+  }
+
+  /* top bar */
+  .topbar{background:#fff;border-bottom:1px solid #e2e2e4;padding:14px 16px 12px;}
+  .tb-row{display:flex;align-items:center;justify-content:space-between;}
+  .month{font-size:21px;font-weight:700;letter-spacing:-.2px;}
+  .month span{font-weight:400;color:#8a8a90;}
+  .tb-actions{display:flex;align-items:center;gap:2px;}
+  .ibtn{width:30px;height:30px;border-radius:4px;display:flex;align-items:center;justify-content:center;color:#52525b;}
+  .tb-row2{display:flex;align-items:center;justify-content:space-between;margin-top:12px;}
+  .seg{display:flex;background:#f1f1f2;border-radius:4px;padding:2px;}
+  .seg div{font-size:13px;font-weight:600;color:#71717a;padding:5px 14px;border-radius:4px;}
+  .seg div.on{background:#3f3f46;color:#fff;}
+  .today{font-size:13px;font-weight:600;color:#3f3f46;border:1px solid #d4d4d8;border-radius:4px;padding:6px 12px;}
+
+  /* main */
+  .main{flex:1;padding:12px;display:flex;flex-direction:column;}
+  .card{background:#fff;border-radius:4px;box-shadow:0 1px 3px rgba(24,24,27,.10);}
+
+  /* grid */
+  .grid-card{padding:8px 6px 10px;}
+  .dow{display:grid;grid-template-columns:repeat(7,1fr);margin-bottom:2px;}
+  .dow div{font-size:12px;font-weight:600;color:#9a9aa1;text-align:center;letter-spacing:.4px;}
+  .weeks{display:grid;grid-template-columns:repeat(7,1fr);}
+  .cell{height:56px;display:flex;flex-direction:column;align-items:center;padding-top:5px;box-sizing:border-box;}
+  .num{font-size:13px;font-weight:600;color:#3f3f46;height:22px;width:22px;line-height:22px;text-align:center;border-radius:4px;}
+  .num.out{color:#c2c2c8;font-weight:400;}
+  .num.sel{background:#3f3f46;color:#fff;}
+  .bars{width:calc(100% - 12px);margin-top:4px;display:flex;flex-direction:column;gap:3px;}
+  .bar{height:3px;border-radius:4px;background:#d4d4d8;}
+  .bar.mid{background:#a1a1aa;}
+  .bar.dark{background:#3f3f46;}
+
+  /* agenda */
+  .ag-head{display:flex;align-items:baseline;justify-content:space-between;padding:16px 4px 8px;}
+  .ag-title{font-size:15px;font-weight:700;}
+  .ag-count{font-size:12px;font-weight:500;color:#8a8a90;}
+  .list{overflow:hidden;}
+  .row{display:flex;gap:12px;padding:12px 14px;border-top:1px solid #efeff1;}
+  .row:first-child{border-top:none;}
+  .time{width:64px;flex:none;}
+  .time .t{font-size:14px;font-weight:600;color:#26262a;}
+  .time .d{font-size:12px;font-weight:500;color:#9a9aa1;margin-top:2px;}
+  .rule{width:3px;flex:none;border-radius:4px;background:#d4d4d8;}
+  .rule.mid{background:#a1a1aa;}
+  .rule.dark{background:#3f3f46;}
+  .body{min-width:0;flex:1;}
+  .ev{font-size:15px;font-weight:600;letter-spacing:-.1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .meta{font-size:13px;color:#78787f;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .badge{display:inline-block;font-size:12px;font-weight:600;color:#3f3f46;border:1px solid #c9c9ce;
+    border-radius:4px;padding:2px 6px;margin-top:6px;}
+  .thumb{width:36px;height:36px;flex:none;border-radius:4px;background:#dedee1;}
+
+  /* tab bar */
+  .tabs{background:#fff;border-top:1px solid #e2e2e4;display:flex;padding:9px 0 12px;}
+  .tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;color:#9a9aa1;}
+  .tab.on{color:#26262a;}
+  .tab span{font-size:12px;font-weight:600;}
+</style>
+</head>
+<body>
+<div class="screen">
+
+  <div class="topbar">
+    <div class="tb-row">
+      <div class="month">October <span>2025</span></div>
+      <div class="tb-actions">
+        <div class="ibtn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </div>
+        <div class="ibtn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+        </div>
+        <div class="ibtn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6"/></svg>
+        </div>
+      </div>
+    </div>
+    <div class="tb-row2">
+      <div class="seg">
+        <div class="on">Month</div>
+        <div>Week</div>
+        <div>Day</div>
+      </div>
+      <div class="today">Today</div>
+    </div>
+  </div>
+
+  <div class="main">
+
+    <div class="card grid-card">
+      <div class="dow">
+        <div>SUN</div><div>MON</div><div>TUE</div><div>WED</div><div>THU</div><div>FRI</div><div>SAT</div>
+      </div>
+      <div class="weeks">
+        <!-- week 1 -->
+        <div class="cell"><div class="num out">28</div><div class="bars"></div></div>
+        <div class="cell"><div class="num out">29</div><div class="bars"><div class="bar"></div></div></div>
+        <div class="cell"><div class="num out">30</div><div class="bars"><div class="bar"></div><div class="bar"></div></div></div>
+        <div class="cell"><div class="num">1</div><div class="bars"><div class="bar mid"></div><div class="bar"></div></div></div>
+        <div class="cell"><div class="num">2</div><div class="bars"><div class="bar"></div></div></div>
+        <div class="cell"><div class="num">3</div><div class="bars"><div class="bar mid"></div></div></div>
+        <div class="cell"><div class="num">4</div><div class="bars"></div></div>
+        <!-- week 2 -->
+        <div class="cell"><div class="num">5</div><div class="bars"></div></div>
+        <div class="cell"><div class="num">6</div><div class="bars"><div class="bar mid"></div><div class="bar"></div></div></div>
+        <div class="cell"><div class="num">7</div><div class="bars"><div class="bar"></div><div class="bar"></div></div></div>
+        <div class="cell"><div class="num">8</div><div class="bars"><div class="bar mid"></div></div></div>
+        <div class="cell"><div class="num">9</div><div class="bars"><div class="bar"></div><div class="bar"></div></div></div>
+        <div class="cell"><div class="num">10</div><div class="bars"><div class="bar mid"></div></div></div>
+        <div class="cell"><div class="num">11</div><div class="bars"></div></div>
+        <!-- week 3 -->
+        <div class="cell"><div class="num">12</div><div class="bars"><div class="bar"></div></div></div>
+        <div class="cell"><div class="num">13</div><div class="bars"><div class="bar mid"></div><div class="bar"></div></div></div>
+        <div class="cell"><div class="num">14</div><div class="bars"><div class="bar"></div></div></div>
+        <div class="cell"><div class="num sel">15</div><div class="bars"><div class="bar dark"></div><div class="bar mid"></div></div></div>
+        <div class="cell"><div class="num">16</div><div class="bars"><div class="bar mid"></div><div class="bar"></div></div></div>
+        <div class="cell"><div class="num">17</div><div class="bars"><div class="bar"></div></div></div>
+        <div class="cell"><div class="num">18</div><div class="bars"></div></div>
+        <!-- week 4 -->
+        <div class="cell"><div class="num">19</div><div class="bars"></div></div>
+        <div class="cell"><div class="num">20</div><div class="bars"><div class="bar mid"></div><div class="bar"></div></div></div>
+        <div class="cell"><div class="num">21</div><div class="bars"><div class="bar"></div></div></div>
+        <div class="cell"><div class="num">22</div><div class="bars"><div class="bar mid"></div><div class="bar"></div></div></div>
+        <div class="cell"><div class="num">23</div><div class="bars"><div class="bar"></div></div></div>
+        <div class="cell"><div class="num">24</div><div class="bars"><div class="bar mid"></div><div class="bar"></div></div></div>
+        <div class="cell"><div class="num">25</div><div class="bars"><div class="bar"></div></div></div>
+        <!-- week 5 -->
+        <div class="cell"><div class="num">26</div><div class="bars"></div></div>
+        <div class="cell"><div class="num">27</div><div class="bars"><div class="bar"></div><div class="bar"></div></div></div>
+        <div class="cell"><div class="num">28</div><div class="bars"><div class="bar mid"></div></div></div>
+        <div class="cell"><div class="num">29</div><div class="bars"><div class="bar"></div></div></div>
+        <div class="cell"><div class="num">30</div><div class="bars"><div class="bar mid"></div><div class="bar"></div></div></div>
+        <div class="cell"><div class="num">31</div><div class="bars"><div class="bar"></div></div></div>
+        <div class="cell"><div class="num out">1</div><div class="bars"></div></div>
+      </div>
+    </div>
+
+    <div class="ag-head">
+      <div class="ag-title">Wednesday, October 15</div>
+      <div class="ag-count">4 events · 3h 45m booked</div>
+    </div>
+
+    <div class="card list">
+      <div class="row">
+        <div class="time"><div class="t">8:30 AM</div><div class="d">30 min</div></div>
+        <div class="rule dark"></div>
+        <div class="body">
+          <div class="ev">Platform standup</div>
+          <div class="meta">Video room 2 · 11 attendees</div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="time"><div class="t">10:00 AM</div><div class="d">1 hr</div></div>
+        <div class="rule mid"></div>
+        <div class="body">
+          <div class="ev">Roadmap review</div>
+          <div class="meta">Conference Room B · Marta Ellison</div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="time"><div class="t">12:30 PM</div><div class="d">45 min</div></div>
+        <div class="rule"></div>
+        <div class="body">
+          <div class="ev">Lunch with Dana Whitfield</div>
+          <div class="meta">Cafe on Fifth · Off-site</div>
+        </div>
+        <div class="thumb"></div>
+      </div>
+      <div class="row">
+        <div class="time"><div class="t">3:00 PM</div><div class="d">1 hr 30 min</div></div>
+        <div class="rule mid"></div>
+        <div class="body">
+          <div class="ev">Q4 planning workshop</div>
+          <div class="meta">Studio A · 9 attendees</div>
+          <div class="badge">Needs your RSVP</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="tabs">
+    <div class="tab on">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
+      <span>Calendar</span>
+    </div>
+    <div class="tab">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 13l2.2-7.2A2 2 0 0 1 8.1 4.4h7.8a2 2 0 0 1 1.9 1.4L20 13"/><path d="M4 13h4l1.2 2.4h5.6L16 13h4v5a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/></svg>
+      <span>Inbox</span>
+    </div>
+    <div class="tab">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l5 5v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M14 3v6h6M9 13h6M9 17h4"/></svg>
+      <span>Notes</span>
+    </div>
+    <div class="tab">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="9" r="3.2"/><path d="M3 20c0-3.2 2.7-5.2 6-5.2s6 2 6 5.2"/><path d="M16 5.4a3.2 3.2 0 0 1 0 6.2M18 20c0-2.4-1-4.1-2.6-5"/></svg>
+      <span>Team</span>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

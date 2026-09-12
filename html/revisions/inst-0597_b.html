@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Noviq Health Tablet Workspace</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 32px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #dfe4e4;
+      color: #1f2d2d;
+      font-family: 'Poppins', system-ui, sans-serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      width: 768px;
+      height: 1024px;
+      display: flex;
+      background: #f3f5f5;
+      border: 1px solid #cfd6d6;
+      box-shadow: 0 18px 45px rgba(31, 45, 45, 0.12);
+    }
+
+    .sidebar {
+      width: 116px;
+      flex: 0 0 116px;
+      display: flex;
+      flex-direction: column;
+      padding: 18px 12px;
+      background: #ffffff;
+      border-right: 1px solid #dfe5e5;
+    }
+
+    .brand {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      color: #1f2d2d;
+      text-align: center;
+    }
+
+    .brand-mark {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      border-radius: 9px;
+      color: #ffffff;
+      background: #0b8f87;
+    }
+
+    .brand-name {
+      font-size: 12px;
+      line-height: 17px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .side-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 34px;
+    }
+
+    .nav-item {
+      min-height: 64px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      border-radius: 10px;
+      color: #7a8686;
+      font-size: 12px;
+      line-height: 17px;
+      text-decoration: none;
+    }
+
+    .nav-item svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .nav-item.active {
+      color: #0b817a;
+      background: #e8f4f2;
+      font-weight: 600;
+    }
+
+    .sidebar-profile {
+      margin-top: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 7px;
+      color: #586666;
+      font-size: 11px;
+      line-height: 16px;
+    }
+
+    .avatar {
+      width: 40px;
+      height: 40px;
+      display: grid;
+      place-items: center;
+      border-radius: 9px;
+      color: #0b716c;
+      background: #d9efed;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .workspace {
+      min-width: 0;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 13px 22px;
+      background: #ffffff;
+      border-bottom: 1px solid #e3e8e8;
+    }
+
+    .date-block span {
+      display: block;
+      color: #738080;
+      font-size: 11px;
+      line-height: 16px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .date-block strong {
+      display: block;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 500;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .sync-label {
+      color: #687575;
+      font-size: 12px;
+      line-height: 17px;
+    }
+
+    .icon-button {
+      position: relative;
+      width: 42px;
+      height: 42px;
+      padding: 0;
+      display: grid;
+      place-items: center;
+      border: 1px solid #e1e7e7;
+      border-radius: 9px;
+      color: #516060;
+      background: #ffffff;
+    }
+
+    .notification-dot {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 8px;
+      height: 8px;
+      border: 2px solid #ffffff;
+      border-radius: 50%;
+      background: #0b8f87;
+    }
+
+    main {
+      flex: 1;
+      min-height: 0;
+      padding: 18px 20px 20px;
+      background: #f3f5f5;
+    }
+
+    .welcome {
+      margin-bottom: 14px;
+    }
+
+    .welcome h1 {
+      margin: 0;
+      font-size: 23px;
+      line-height: 31px;
+      font-weight: 600;
+    }
+
+    .welcome p {
+      margin: 2px 0 0;
+      color: #687575;
+      font-size: 13px;
+      line-height: 19px;
+    }
+
+    .card {
+      border: 1px solid #e1e7e7;
+      border-radius: 10px;
+      background: #ffffff;
+      box-shadow: 0 3px 12px rgba(30, 54, 54, 0.06);
+    }
+
+    .plan-card {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 18px;
+      padding: 16px 18px;
+      border-left: 5px solid #0b8f87;
+    }
+
+    .plan-copy {
+      min-width: 0;
+    }
+
+    .eyebrow {
+      margin: 0 0 3px;
+      color: #0b7e77;
+      font-size: 11px;
+      line-height: 16px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .plan-copy h2 {
+      margin: 0;
+      font-size: 21px;
+      line-height: 29px;
+      font-weight: 600;
+    }
+
+    .plan-copy > p:last-of-type {
+      margin: 4px 0 0;
+      color: #647171;
+      font-size: 13px;
+      line-height: 19px;
+    }
+
+    .plan-stats {
+      display: flex;
+      gap: 26px;
+      margin-top: 12px;
+    }
+
+    .plan-stat span {
+      display: block;
+      color: #738080;
+      font-size: 11px;
+      line-height: 16px;
+    }
+
+    .plan-stat strong {
+      display: block;
+      margin-top: 1px;
+      color: #273535;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 500;
+    }
+
+    .progress-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .progress-ring {
+      width: 88px;
+      height: 88px;
+      flex: 0 0 88px;
+    }
+
+    .progress-caption {
+      width: 76px;
+      color: #687575;
+      font-size: 11px;
+      line-height: 16px;
+    }
+
+    .section {
+      margin-top: 16px;
+    }
+
+    .section-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+
+    .section-title {
+      margin: 0;
+      font-size: 16px;
+      line-height: 23px;
+      font-weight: 600;
+    }
+
+    .section-note {
+      color: #738080;
+      font-size: 11px;
+      line-height: 16px;
+    }
+
+    .progress-entry {
+      padding: 14px;
+    }
+
+    .entry-grid {
+      display: grid;
+      grid-template-columns: 1.15fr 0.95fr auto;
+      gap: 12px;
+      align-items: end;
+    }
+
+    .field-label {
+      display: block;
+      margin-bottom: 6px;
+      color: #5f6d6d;
+      font-size: 12px;
+      line-height: 17px;
+      font-weight: 500;
+    }
+
+    .choice-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+    }
+
+    .choice {
+      min-height: 42px;
+      padding: 0 8px;
+      border: 1px solid #dbe4e4;
+      border-radius: 8px;
+      color: #536161;
+      background: #f8fafa;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    .choice.active {
+      border-color: #82c4bd;
+      color: #0b716c;
+      background: #e8f5f3;
+      font-weight: 600;
+    }
+
+    .amount-box {
+      min-height: 42px;
+      display: grid;
+      grid-template-columns: 42px 1fr 42px;
+      align-items: center;
+      border: 1px solid #dbe4e4;
+      border-radius: 8px;
+      background: #ffffff;
+    }
+
+    .amount-box button {
+      height: 40px;
+      padding: 0;
+      border: 0;
+      color: #0b817a;
+      background: transparent;
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+    .amount-box strong {
+      color: #2d3d3d;
+      font-size: 13px;
+      text-align: center;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .save-button {
+      min-height: 42px;
+      padding: 0 18px;
+      border: 0;
+      border-radius: 8px;
+      color: #ffffff;
+      background: #0b8f87;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .lower-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.18fr) minmax(0, 0.82fr);
+      gap: 16px;
+      align-items: start;
+    }
+
+    .target-list {
+      padding: 0;
+    }
+
+    .target-row {
+      display: grid;
+      grid-template-columns: 30px minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 9px;
+      padding: 9px 11px;
+    }
+
+    .target-row + .target-row {
+      border-top: 1px solid #e6ebeb;
+    }
+
+    .target-status {
+      width: 28px;
+      height: 28px;
+      display: grid;
+      place-items: center;
+      border-radius: 7px;
+      color: #0b817a;
+      background: #dff1ef;
+    }
+
+    .target-status.open {
+      color: #708080;
+      background: #edf1f1;
+    }
+
+    .target-copy {
+      min-width: 0;
+    }
+
+    .target-name,
+    .target-detail {
+      display: block;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .target-name {
+      color: #273535;
+      font-size: 12px;
+      line-height: 17px;
+      font-weight: 500;
+    }
+
+    .target-detail {
+      margin-top: 1px;
+      color: #738080;
+      font-size: 10px;
+      line-height: 15px;
+    }
+
+    .target-value {
+      min-width: 60px;
+      color: #4f5d5d;
+      font-size: 11px;
+      line-height: 16px;
+      font-weight: 500;
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .target-value.done {
+      color: #0b817a;
+    }
+
+    .inline-action {
+      display: block;
+      margin-top: 3px;
+      color: #0b817a;
+      font-size: 10px;
+      line-height: 14px;
+      font-weight: 600;
+    }
+
+    .next-card {
+      padding: 10px;
+    }
+
+    .next-card img {
+      width: 92px;
+      height: 92px;
+      display: block;
+      object-fit: cover;
+      border-radius: 8px;
+      background: #ccd8d7;
+    }
+
+    .next-top {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .next-copy {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .next-time {
+      margin: 0 0 2px;
+      color: #0b7e77;
+      font-size: 11px;
+      line-height: 16px;
+      font-weight: 600;
+    }
+
+    .next-copy h3 {
+      margin: 0;
+      font-size: 15px;
+      line-height: 21px;
+      font-weight: 600;
+    }
+
+    .next-meta {
+      margin: 2px 0 0;
+      color: #687575;
+      font-size: 11px;
+      line-height: 16px;
+    }
+
+    .activity-button {
+      width: 100%;
+      min-height: 40px;
+      margin-top: 10px;
+      border: 1px solid #b9dcd8;
+      border-radius: 8px;
+      color: #0b716c;
+      background: #eef8f7;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .checkin-card {
+      margin-top: 12px;
+      padding: 13px;
+    }
+
+    .checkin-card strong {
+      display: block;
+      font-size: 13px;
+      line-height: 19px;
+      font-weight: 600;
+    }
+
+    .checkin-card p {
+      margin: 3px 0 0;
+      color: #687575;
+      font-size: 11px;
+      line-height: 16px;
+    }
+
+    .checkin-time {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      margin-top: 9px;
+      color: #0b817a;
+      font-size: 12px;
+      line-height: 17px;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 18 18" fill="none">
+            <path d="M3 9h3l1.5-4 3 8 1.5-4H15" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <span class="brand-name">Noviq Health</span>
+      </div>
+
+      <nav class="side-nav" aria-label="Primary navigation">
+        <a class="nav-item active" href="#" aria-current="page">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M3.5 10.5 12 3.8l8.5 6.7v9H14v-5h-4v5H3.5v-9Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+          </svg>
+          <span>Home</span>
+        </a>
+        <a class="nav-item" href="#">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M7 4h10M7 9h10M7 14h6M5 3v17M19 3v17" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+          </svg>
+          <span>Plan</span>
+        </a>
+        <a class="nav-item" href="#">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+            <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5"/>
+          </svg>
+          <span>Log</span>
+        </a>
+        <a class="nav-item" href="#">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="12" cy="8" r="3.5" stroke="currentColor" stroke-width="1.7"/>
+            <path d="M5.5 20c.6-4 2.8-6 6.5-6s5.9 2 6.5 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+          </svg>
+          <span>Profile</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-profile">
+        <div class="avatar" aria-label="Maren Sloan profile">MS</div>
+        <span>Maren</span>
+      </div>
+    </aside>
+
+    <div class="workspace">
+      <header class="topbar">
+        <div class="date-block">
+          <span>Today</span>
+          <strong>Wednesday, May 14</strong>
+        </div>
+        <div class="top-actions">
+          <span class="sync-label">Plan updated this morning</span>
+          <button class="icon-button" type="button" aria-label="Notifications">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9ZM10 21h4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span class="notification-dot"></span>
+          </button>
+        </div>
+      </header>
+
+      <main>
+        <div class="welcome">
+          <h1>Good morning, Maren</h1>
+          <p>Review your plan and record progress from one workspace.</p>
+        </div>
+
+        <section class="card plan-card" aria-labelledby="plan-title-b">
+          <div class="plan-copy">
+            <p class="eyebrow">Today’s plan</p>
+            <h2 id="plan-title-b">3 of 5 goals done</h2>
+            <p>Complete your walk and water goal to close the day.</p>
+            <div class="plan-stats">
+              <div class="plan-stat">
+                <span>Current streak</span>
+                <strong>6 days</strong>
+              </div>
+              <div class="plan-stat">
+                <span>Next check-in</span>
+                <strong>8:30 PM</strong>
+              </div>
+            </div>
+          </div>
+          <div class="progress-wrap">
+            <svg class="progress-ring" viewBox="0 0 88 88" aria-label="60 percent complete">
+              <circle cx="44" cy="44" r="34" fill="none" stroke="#e3eceb" stroke-width="8"/>
+              <circle cx="44" cy="44" r="34" fill="none" stroke="#0b8f87" stroke-width="8" stroke-linecap="round" stroke-dasharray="128.2 213.6" transform="rotate(-90 44 44)"/>
+              <text x="44" y="42" text-anchor="middle" fill="#1f3534" font-family="Poppins, sans-serif" font-size="16" font-weight="600">60%</text>
+              <text x="44" y="58" text-anchor="middle" fill="#718080" font-family="Poppins, sans-serif" font-size="9">complete</text>
+            </svg>
+            <span class="progress-caption">Two targets remain today.</span>
+          </div>
+        </section>
+
+        <section class="section" aria-labelledby="entry-title-b">
+          <div class="section-heading">
+            <h2 class="section-title" id="entry-title-b">Record progress</h2>
+            <span class="section-note">Saved to today’s plan</span>
+          </div>
+          <div class="card progress-entry">
+            <div class="entry-grid">
+              <div>
+                <span class="field-label">What are you adding?</span>
+                <div class="choice-row">
+                  <button class="choice active" type="button">Water</button>
+                  <button class="choice" type="button">Steps</button>
+                  <button class="choice" type="button">Activity</button>
+                </div>
+              </div>
+              <div>
+                <span class="field-label">Amount</span>
+                <div class="amount-box">
+                  <button type="button" aria-label="Decrease amount">−</button>
+                  <strong>1 glass</strong>
+                  <button type="button" aria-label="Increase amount">+</button>
+                </div>
+              </div>
+              <button class="save-button" type="button">Add progress</button>
+            </div>
+          </div>
+        </section>
+
+        <div class="lower-grid">
+          <section class="section" aria-labelledby="targets-title-b">
+            <div class="section-heading">
+              <h2 class="section-title" id="targets-title-b">Daily targets</h2>
+              <span class="section-note">3 complete · 2 open</span>
+            </div>
+            <div class="card target-list">
+              <div class="target-row">
+                <div class="target-status">
+                  <svg width="15" height="15" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+                    <path d="m4 9 3 3 7-7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+                <div class="target-copy">
+                  <span class="target-name">Morning medication</span>
+                  <span class="target-detail">Logged at 8:05 AM</span>
+                </div>
+                <span class="target-value done">Done</span>
+              </div>
+
+              <div class="target-row">
+                <div class="target-status">
+                  <svg width="15" height="15" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+                    <path d="m4 9 3 3 7-7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+                <div class="target-copy">
+                  <span class="target-name">Breakfast log</span>
+                  <span class="target-detail">Oatmeal, berries, and yogurt</span>
+                </div>
+                <span class="target-value done">420 kcal</span>
+              </div>
+
+              <div class="target-row">
+                <div class="target-status">
+                  <svg width="15" height="15" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+                    <path d="m4 9 3 3 7-7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+                <div class="target-copy">
+                  <span class="target-name">Sleep goal</span>
+                  <span class="target-detail">Goal was 7 hours 30 minutes</span>
+                </div>
+                <span class="target-value done">7h 38m</span>
+              </div>
+
+              <div class="target-row">
+                <div class="target-status open">
+                  <svg width="15" height="15" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+                    <path d="M9 2.5s-4 4.4-4 7.5a4 4 0 0 0 8 0c0-3.1-4-7.5-4-7.5Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+                <div class="target-copy">
+                  <span class="target-name">Water</span>
+                  <span class="target-detail">Two glasses remaining</span>
+                  <span class="inline-action">Quick add available above</span>
+                </div>
+                <span class="target-value">6 of 8</span>
+              </div>
+
+              <div class="target-row">
+                <div class="target-status open">
+                  <svg width="15" height="15" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+                    <path d="M4 13.5 7.2 10l2.2 1.8L14 6.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M11 6.5h3v3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+                <div class="target-copy">
+                  <span class="target-name">Daily steps</span>
+                  <span class="target-detail">1,580 steps remaining</span>
+                  <span class="inline-action">Enter a new total above</span>
+                </div>
+                <span class="target-value">7,420</span>
+              </div>
+            </div>
+          </section>
+
+          <div>
+            <section class="section" aria-labelledby="next-title-b">
+              <div class="section-heading">
+                <h2 class="section-title" id="next-title-b">Next up</h2>
+                <span class="section-note">5:30 PM</span>
+              </div>
+              <div class="card next-card">
+                <div class="next-top">
+                  <img src="https://loremflickr.com/92/92/running?lock=7990" width="92" height="92" alt="Runner completing an outdoor workout">
+                  <div class="next-copy">
+                    <p class="next-time">Today</p>
+                    <h3>Brisk walk</h3>
+                    <p class="next-meta">25 minutes<br>Easy pace</p>
+                  </div>
+                </div>
+                <button class="activity-button" type="button">View activity</button>
+              </div>
+            </section>
+
+            <section class="card checkin-card" aria-label="Evening check-in">
+              <strong>Evening check-in</strong>
+              <p>Review your completed goals and note how you feel.</p>
+              <span class="checkin-time">
+                <svg width="15" height="15" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+                  <circle cx="9" cy="9" r="6.5" stroke="currentColor" stroke-width="1.5"/>
+                  <path d="M9 5.5V9l2.5 1.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+                8:30 PM
+              </span>
+            </section>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+</body>
+</html>

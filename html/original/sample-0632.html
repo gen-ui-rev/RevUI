@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verify Sign-In</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #d8d7d3;
+      color: #25231f;
+      font-family: 'Source Sans 3', system-ui, sans-serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #f3f2ef;
+      border: 1px solid #c9c7c1;
+    }
+
+    .top-bar {
+      min-height: 64px;
+      padding: 0 18px;
+      display: grid;
+      grid-template-columns: 56px 1fr 56px;
+      align-items: center;
+      background: #ffffff;
+      border-bottom: 1px solid #dedbd4;
+    }
+
+    .back-button {
+      width: 40px;
+      height: 40px;
+      padding: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: flex-start;
+      color: #34312c;
+      background: transparent;
+      border: 0;
+      cursor: default;
+    }
+
+    .back-button svg {
+      width: 23px;
+      height: 23px;
+    }
+
+    .service-name {
+      margin: 0;
+      text-align: center;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 19px;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    .help-link {
+      color: #5b554c;
+      font-size: 14px;
+      font-weight: 600;
+      text-align: right;
+      text-decoration: none;
+    }
+
+    main {
+      flex: 1;
+      padding: 27px 22px 20px;
+    }
+
+    .intro {
+      text-align: center;
+    }
+
+    .security-glyph {
+      width: 56px;
+      height: 56px;
+      margin: 0 auto 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #9b6204;
+      background: #f8dfad;
+      border-radius: 10px;
+    }
+
+    .security-glyph svg {
+      width: 30px;
+      height: 30px;
+    }
+
+    h1,
+    h2 {
+      font-family: 'Playfair Display', Georgia, serif;
+    }
+
+    h1 {
+      margin: 0;
+      color: #24211d;
+      font-size: 29px;
+      font-weight: 700;
+      line-height: 1.16;
+    }
+
+    .intro-copy {
+      max-width: 308px;
+      margin: 10px auto 0;
+      color: #666058;
+      font-size: 15px;
+      line-height: 1.45;
+    }
+
+    .masked-email {
+      color: #37332e;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .code-card {
+      margin-top: 25px;
+      padding: 22px 19px 20px;
+      background: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0 7px 20px rgba(62, 53, 38, 0.09);
+    }
+
+    .code-card h2 {
+      margin: 0;
+      font-size: 20px;
+      font-weight: 600;
+      line-height: 1.25;
+    }
+
+    .code-caption {
+      margin: 5px 0 17px;
+      color: #6a645c;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    .code-fields {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 7px;
+    }
+
+    .digit {
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #292621;
+      background: #fbfaf8;
+      border: 1px solid #cfcac1;
+      border-radius: 10px;
+      font-size: 22px;
+      font-weight: 600;
+      line-height: 1;
+    }
+
+    .digit.active {
+      background: #fffaf0;
+      border: 2px solid #d48a0d;
+    }
+
+    .expiry {
+      margin: 13px 0 17px;
+      color: #766f65;
+      font-size: 14px;
+      line-height: 1.4;
+      text-align: center;
+    }
+
+    .verify-button {
+      width: 100%;
+      min-height: 50px;
+      padding: 12px 18px;
+      color: #2c2417;
+      background: #e2a132;
+      border: 0;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: default;
+    }
+
+    .resend-row {
+      margin: 15px 0 0;
+      color: #686158;
+      font-size: 14px;
+      text-align: center;
+    }
+
+    .resend-link {
+      margin-left: 4px;
+      color: #855500;
+      font-weight: 600;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    .notice {
+      margin-top: 18px;
+      padding: 16px;
+      display: grid;
+      grid-template-columns: 24px 1fr;
+      gap: 11px;
+      background: #ffffff;
+      border: 1px solid #dedad1;
+      border-radius: 10px;
+    }
+
+    .notice svg {
+      width: 22px;
+      height: 22px;
+      margin-top: 1px;
+      color: #8f670f;
+    }
+
+    .notice-title {
+      margin: 0 0 3px;
+      color: #35312c;
+      font-size: 15px;
+      font-weight: 600;
+      line-height: 1.3;
+    }
+
+    .notice-copy {
+      margin: 0;
+      color: #6c655c;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    .tab-bar {
+      min-height: 74px;
+      padding: 8px 12px 9px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      align-items: center;
+      background: #ffffff;
+      border-top: 1px solid #d9d6cf;
+    }
+
+    .tab {
+      min-width: 0;
+      color: #817a70;
+      text-align: center;
+      text-decoration: none;
+      font-size: 12px;
+      line-height: 1.2;
+    }
+
+    .tab svg {
+      width: 22px;
+      height: 22px;
+      display: block;
+      margin: 0 auto 4px;
+    }
+
+    .tab.active {
+      color: #9b6204;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="top-bar">
+      <button class="back-button" type="button" aria-label="Go back">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M15 5L8 12L15 19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <p class="service-name">Copper Grove</p>
+      <a class="help-link" href="#">Help</a>
+    </header>
+
+    <main>
+      <section class="intro" aria-labelledby="verification-title">
+        <div class="security-glyph" aria-hidden="true">
+          <svg viewBox="0 0 32 32" fill="none">
+            <path d="M16 3.5L26 7.5V14.5C26 21.2 22 26.2 16 28.5C10 26.2 6 21.2 6 14.5V7.5L16 3.5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+            <path d="M12 15.5L14.7 18.2L20.5 12.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <h1 id="verification-title">Verify your sign-in</h1>
+        <p class="intro-copy">
+          We sent a 6-digit security code to
+          <span class="masked-email">m•••.bell@oakmail.com</span>.
+        </p>
+      </section>
+
+      <section class="code-card" aria-labelledby="code-heading">
+        <h2 id="code-heading">Enter security code</h2>
+        <p class="code-caption">Use the most recent code in your email.</p>
+
+        <div class="code-fields" role="group" aria-label="Six digit security code">
+          <div class="digit" aria-label="Digit 1, 4">4</div>
+          <div class="digit" aria-label="Digit 2, 8">8</div>
+          <div class="digit" aria-label="Digit 3, 1">1</div>
+          <div class="digit" aria-label="Digit 4, 2">2</div>
+          <div class="digit active" aria-label="Digit 5, 6">6</div>
+          <div class="digit" aria-label="Digit 6, 0">0</div>
+        </div>
+
+        <p class="expiry">This code expires in 7 minutes.</p>
+        <button class="verify-button" type="button">Verify and continue</button>
+        <p class="resend-row">
+          Did not receive it?
+          <a class="resend-link" href="#">Send a new code</a>
+        </p>
+      </section>
+
+      <section class="notice" aria-label="Security guidance">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M12 3L20 6.2V11.8C20 17.1 16.8 21 12 22.8C7.2 21 4 17.1 4 11.8V6.2L12 3Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+          <path d="M12 8V13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+          <path d="M12 16.5V16.6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+        </svg>
+        <div>
+          <p class="notice-title">Keep your account protected</p>
+          <p class="notice-copy">Copper Grove will never ask you to share this code by phone or message.</p>
+        </div>
+      </section>
+    </main>
+
+    <nav class="tab-bar" aria-label="Primary navigation">
+      <a class="tab" href="#">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M4 10.5L12 4L20 10.5V20H14.8V14H9.2V20H4V10.5Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+        </svg>
+        Home
+      </a>
+      <a class="tab" href="#">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M5 7H19M5 12H19M5 17H15" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+          <circle cx="4.5" cy="7" r="1" fill="currentColor"/>
+          <circle cx="4.5" cy="12" r="1" fill="currentColor"/>
+          <circle cx="4.5" cy="17" r="1" fill="currentColor"/>
+        </svg>
+        Activity
+      </a>
+      <a class="tab" href="#">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M5 19V13M10 19V9M15 19V5M20 19V11" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+        </svg>
+        Plan
+      </a>
+      <a class="tab active" href="#" aria-current="page">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.6"/>
+          <path d="M5 20C5.8 16.4 8.1 14.5 12 14.5C15.9 14.5 18.2 16.4 19 20" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+        </svg>
+        Account
+      </a>
+    </nav>
+  </div>
+</body>
+</html>

@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Playlists — Lingo Grove</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      color: #20262d;
+      background: #e6e8eb;
+      font-family: 'Nunito Sans', system-ui, sans-serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #f5f6f8;
+      border: 1px solid #d3d7dc;
+    }
+
+    .topbar {
+      flex: 0 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 13px 20px 12px;
+      background: #ffffff;
+      border-bottom: 1px solid #dfe3e7;
+    }
+
+    .topbar h1 {
+      margin: 0;
+      color: #132f50;
+      font-size: 23px;
+      line-height: 1.2;
+      font-weight: 700;
+      letter-spacing: -0.35px;
+    }
+
+    .top-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .icon-button {
+      width: 38px;
+      height: 38px;
+      padding: 0;
+      display: grid;
+      place-items: center;
+      color: #35475a;
+      background: #ffffff;
+      border: 1px solid #d8dde2;
+      border-radius: 19px;
+    }
+
+    .icon-button.add {
+      color: #ffffff;
+      background: #102f52;
+      border-color: #102f52;
+    }
+
+    .icon-button svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    main {
+      min-height: 0;
+      flex: 1 1 auto;
+      padding: 12px 16px 0;
+    }
+
+    .learning-card {
+      padding: 12px;
+      background: #ffffff;
+      border: 1px solid #dce1e6;
+      border-radius: 14px;
+      box-shadow: 0 2px 0 rgba(18, 47, 80, 0.05);
+    }
+
+    .learning-label {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      margin: 0 0 8px;
+      color: #102f52;
+      font-size: 11px;
+      line-height: 15px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.7px;
+    }
+
+    .learning-label::before {
+      content: "";
+      width: 7px;
+      height: 7px;
+      flex: 0 0 7px;
+      background: #102f52;
+      border-radius: 50%;
+    }
+
+    .learning-content {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .learning-content img {
+      width: 88px;
+      height: 88px;
+      flex: 0 0 88px;
+      display: block;
+      object-fit: cover;
+      border-radius: 11px;
+      background: #d9dee4;
+    }
+
+    .lesson-copy {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .playlist-name-top {
+      margin: 0 0 2px;
+      color: #66717d;
+      font-size: 11px;
+      line-height: 15px;
+      font-weight: 600;
+    }
+
+    .lesson-copy h2 {
+      margin: 0;
+      color: #152c46;
+      font-size: 18px;
+      line-height: 22px;
+      font-weight: 700;
+    }
+
+    .lesson-meta {
+      margin: 3px 0 8px;
+      color: #6c7680;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .resume-button {
+      width: 100%;
+      padding: 7px 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      color: #ffffff;
+      background: #102f52;
+      border: 0;
+      border-radius: 8px;
+      font-size: 12px;
+      line-height: 17px;
+      font-weight: 700;
+    }
+
+    .resume-button svg {
+      width: 15px;
+      height: 15px;
+    }
+
+    .view-tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3px;
+      margin: 10px 0 2px;
+      padding: 3px;
+      background: #e5e8ec;
+      border-radius: 9px;
+    }
+
+    .view-tab {
+      padding: 7px 4px;
+      color: #68737f;
+      background: transparent;
+      border: 0;
+      border-radius: 7px;
+      font-size: 12px;
+      line-height: 17px;
+      font-weight: 600;
+    }
+
+    .view-tab.active {
+      color: #102f52;
+      background: #ffffff;
+      font-weight: 700;
+      box-shadow: 0 1px 2px rgba(18, 35, 52, 0.09);
+    }
+
+    .section-heading {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      padding: 8px 2px 6px;
+    }
+
+    .section-heading h3 {
+      margin: 0;
+      color: #202b37;
+      font-size: 15px;
+      line-height: 20px;
+      font-weight: 700;
+    }
+
+    .section-heading span {
+      color: #77818c;
+      font-size: 11px;
+      line-height: 15px;
+    }
+
+    .lesson-list,
+    .playlist-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .lesson-list {
+      background: #ffffff;
+      border: 1px solid #dfe3e7;
+      border-radius: 11px;
+    }
+
+    .lesson-row {
+      display: grid;
+      grid-template-columns: 28px minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 10px;
+      border-bottom: 1px solid #e7eaed;
+    }
+
+    .lesson-row:last-child {
+      border-bottom: 0;
+    }
+
+    .lesson-index {
+      color: #7b8691;
+      font-size: 12px;
+      line-height: 18px;
+      text-align: center;
+    }
+
+    .lesson-row.active .lesson-index {
+      width: 28px;
+      height: 28px;
+      display: grid;
+      place-items: center;
+      color: #ffffff;
+      background: #102f52;
+      border-radius: 50%;
+    }
+
+    .lesson-index svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    .lesson-info {
+      min-width: 0;
+    }
+
+    .lesson-title {
+      margin: 0;
+      overflow: hidden;
+      color: #28323c;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 700;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .lesson-row.active .lesson-title {
+      color: #102f52;
+    }
+
+    .lesson-detail {
+      margin: 0;
+      color: #7b858f;
+      font-size: 11px;
+      line-height: 15px;
+    }
+
+    .duration {
+      color: #69747f;
+      font-size: 11px;
+      line-height: 17px;
+      white-space: nowrap;
+    }
+
+    .playlist-list {
+      display: grid;
+      gap: 5px;
+    }
+
+    .playlist-row {
+      display: grid;
+      grid-template-columns: 50px minmax(0, 1fr) 18px;
+      align-items: center;
+      gap: 11px;
+      padding: 5px 9px 5px 5px;
+      background: #ffffff;
+      border: 1px solid #dfe3e7;
+      border-radius: 10px;
+    }
+
+    .playlist-row img {
+      width: 50px;
+      height: 50px;
+      display: block;
+      object-fit: cover;
+      border-radius: 8px;
+      background: #d9dee4;
+    }
+
+    .playlist-copy {
+      min-width: 0;
+    }
+
+    .playlist-name {
+      margin: 0 0 1px;
+      overflow: hidden;
+      color: #28323c;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 700;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .playlist-detail {
+      margin: 0;
+      color: #7a848e;
+      font-size: 11px;
+      line-height: 15px;
+    }
+
+    .chevron {
+      width: 18px;
+      height: 18px;
+      color: #7c8792;
+    }
+
+    .tabbar {
+      flex: 0 0 auto;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      padding: 8px 8px 7px;
+      background: #ffffff;
+      border-top: 1px solid #d8dde2;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      padding: 2px 0;
+      color: #727d88;
+      font-size: 12px;
+      line-height: 15px;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .nav-item.active {
+      color: #102f52;
+      font-weight: 700;
+    }
+
+    .nav-item.active svg {
+      padding: 2px;
+      color: #ffffff;
+      background: #102f52;
+      border-radius: 6px;
+    }
+
+    .nav-item svg {
+      width: 22px;
+      height: 22px;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <h1>Keep learning</h1>
+      <div class="top-actions">
+        <button class="icon-button" type="button" aria-label="Search playlists">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="1.8"/>
+            <path d="M16 16L20 20" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+        </button>
+        <button class="icon-button add" type="button" aria-label="Create playlist">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <main>
+      <section class="learning-card" aria-labelledby="active-lesson-title">
+        <p class="learning-label">Active lesson</p>
+        <div class="learning-content">
+          <img src="https://loremflickr.com/88/88/study?lock=7250" width="88" height="88" alt="Open notebook and study materials">
+          <div class="lesson-copy">
+            <p class="playlist-name-top">Everyday English · Lesson 7</p>
+            <h2 id="active-lesson-title">Making Weekend Plans</h2>
+            <p class="lesson-meta">Conversation practice · 8:24</p>
+            <button class="resume-button" type="button">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M8.2 5.8C8.2 5.08 9 4.65 9.6 5.05L18 10.67C18.54 11.03 18.54 11.82 18 12.18L9.6 17.8C9 18.2 8.2 17.77 8.2 17.05V5.8Z"/>
+              </svg>
+              Resume lesson
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <nav class="view-tabs" aria-label="Playlist views">
+        <button class="view-tab active" type="button">My playlists</button>
+        <button class="view-tab" type="button">Shared with me</button>
+      </nav>
+
+      <section aria-labelledby="queue-heading">
+        <div class="section-heading">
+          <h3 id="queue-heading">Learning queue</h3>
+          <span>4 remaining</span>
+        </div>
+        <ol class="lesson-list">
+          <li class="lesson-row active">
+            <span class="lesson-index">
+              <svg viewBox="0 0 18 18" fill="none" aria-hidden="true">
+                <path d="M4 11V7M9 14V4M14 11V7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </span>
+            <div class="lesson-info">
+              <p class="lesson-title">Making Weekend Plans</p>
+              <p class="lesson-detail">Current lesson</p>
+            </div>
+            <span class="duration">8:24</span>
+          </li>
+          <li class="lesson-row">
+            <span class="lesson-index">8</span>
+            <div class="lesson-info">
+              <p class="lesson-title">Ordering at a Café</p>
+              <p class="lesson-detail">Listening lesson</p>
+            </div>
+            <span class="duration">10:12</span>
+          </li>
+          <li class="lesson-row">
+            <span class="lesson-index">9</span>
+            <div class="lesson-info">
+              <p class="lesson-title">Asking for Directions</p>
+              <p class="lesson-detail">Speaking drill</p>
+            </div>
+            <span class="duration">7:48</span>
+          </li>
+        </ol>
+      </section>
+
+      <section aria-labelledby="saved-heading">
+        <div class="section-heading">
+          <h3 id="saved-heading">Saved playlists</h3>
+          <span>3 playlists</span>
+        </div>
+        <ul class="playlist-list">
+          <li class="playlist-row">
+            <img src="https://loremflickr.com/50/50/books?lock=7251" width="50" height="50" alt="Stack of language study books">
+            <div class="playlist-copy">
+              <p class="playlist-name">Business Vocabulary Basics</p>
+              <p class="playlist-detail">9 lessons · 1 hr 34 min</p>
+            </div>
+            <svg class="chevron" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+              <path d="M7 4.5L11.5 9L7 13.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </li>
+          <li class="playlist-row">
+            <img src="https://loremflickr.com/50/50/library?lock=7252" width="50" height="50" alt="Quiet library shelves for reading practice">
+            <div class="playlist-copy">
+              <p class="playlist-name">Short Stories for Listening</p>
+              <p class="playlist-detail">14 lessons · 2 hr 42 min</p>
+            </div>
+            <svg class="chevron" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+              <path d="M7 4.5L11.5 9L7 13.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </li>
+          <li class="playlist-row">
+            <img src="https://loremflickr.com/50/50/classroom?lock=7253" width="50" height="50" alt="Classroom prepared for a pronunciation lesson">
+            <div class="playlist-copy">
+              <p class="playlist-name">Clear Pronunciation Practice</p>
+              <p class="playlist-detail">11 lessons · 1 hr 56 min</p>
+            </div>
+            <svg class="chevron" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+              <path d="M7 4.5L11.5 9L7 13.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </li>
+        </ul>
+      </section>
+    </main>
+
+    <nav class="tabbar" aria-label="Primary navigation">
+      <a class="nav-item" href="#">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M4 10.5L12 4L20 10.5V20H14.5V14H9.5V20H4V10.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+        </svg>
+        <span>Home</span>
+      </a>
+      <a class="nav-item" href="#">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M4 5.5C6.8 4.8 9.4 5.2 12 7V19C9.4 17.2 6.8 16.8 4 17.5V5.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+          <path d="M20 5.5C17.2 4.8 14.6 5.2 12 7V19C14.6 17.2 17.2 16.8 20 17.5V5.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+        </svg>
+        <span>Courses</span>
+      </a>
+      <a class="nav-item active" href="#" aria-current="page">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <rect x="4" y="5" width="16" height="4" rx="1" stroke="currentColor" stroke-width="1.7"/>
+          <rect x="4" y="15" width="16" height="4" rx="1" stroke="currentColor" stroke-width="1.7"/>
+          <path d="M10 11.3L14 13L10 14.7V11.3Z" fill="currentColor"/>
+        </svg>
+        <span>Playlists</span>
+      </a>
+      <a class="nav-item" href="#">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <rect x="5" y="4" width="14" height="16" rx="3" stroke="currentColor" stroke-width="1.7"/>
+          <path d="M9 9H15M9 13H15M9 17H13" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+        </svg>
+        <span>Activity</span>
+      </a>
+    </nav>
+  </div>
+</body>
+</html>

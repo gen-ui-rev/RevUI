@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Wanderline — Audio Guides</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  body{
+    min-height:100vh;margin:0;display:flex;justify-content:center;align-items:flex-start;
+    padding:40px 0;background:#e7eaee;
+    font-family:'Plus Jakarta Sans',system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .screen{
+    width:768px;height:1024px;background:#f5f7fa;position:relative;
+    display:flex;flex-direction:column;color:#0f172a;overflow:hidden;
+  }
+
+  /* app bar with horizontal nav */
+  .appbar{flex:none;height:64px;display:flex;align-items:center;gap:18px;padding:0 24px;
+          background:#ffffff;border-bottom:1px solid #e8edf3;}
+  .brand{display:flex;align-items:center;gap:9px;font-size:16px;font-weight:700;flex:none;}
+  .mark{width:30px;height:30px;border-radius:9px;background:#0284c7;color:#fff;
+        display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;}
+  .nav{display:flex;gap:4px;flex:1;}
+  .nvi{padding:9px 14px;border-radius:10px;font-size:13px;font-weight:600;color:#64748b;}
+  .nvi.on{background:rgba(2,132,199,.12);color:#0284c7;}
+  .iconbtn{width:38px;height:38px;border-radius:11px;border:1px solid #e5eaf1;flex:none;
+           display:flex;align-items:center;justify-content:center;color:#334155;}
+  .avatar{width:34px;height:34px;border-radius:17px;background:#e2e8f0;color:#475569;flex:none;
+          display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;}
+
+  /* guide strip */
+  .guide{flex:none;display:flex;align-items:center;gap:18px;padding:16px 24px;
+         background:#ffffff;border-bottom:1px solid #e8edf3;}
+  .tile{width:64px;height:64px;border-radius:13px;background:rgba(2,132,199,.16);color:#075985;flex:none;
+        display:flex;align-items:center;justify-content:center;}
+  .gtext{flex:1;min-width:0;}
+  .kicker{font-size:11px;font-weight:600;color:#0369a1;letter-spacing:.05em;text-transform:uppercase;}
+  .gname{font-size:22px;font-weight:700;line-height:28px;margin:2px 0 3px;}
+  .gmeta{font-size:13px;line-height:18px;color:#64748b;}
+  .gplayer{width:250px;flex:none;display:flex;align-items:center;gap:13px;}
+  .play{width:52px;height:52px;border-radius:26px;background:#0284c7;flex:none;
+        display:flex;align-items:center;justify-content:center;}
+  .prog{flex:1;min-width:0;}
+  .prog-line{display:flex;justify-content:space-between;font-size:12px;font-weight:500;color:#334155;margin-bottom:7px;}
+  .bar{height:7px;border-radius:4px;background:rgba(2,132,199,.22);}
+  .bar span{display:block;height:7px;border-radius:4px;background:#0284c7;width:42%;}
+
+  /* split body */
+  .body{flex:1;display:flex;min-height:0;}
+
+  /* master list */
+  .list{width:300px;flex:none;background:#ffffff;border-right:1px solid #e8edf3;
+        display:flex;flex-direction:column;}
+  .listhead{padding:16px 18px 12px;}
+  .listhead h2{margin:0;font-size:16px;font-weight:700;line-height:21px;}
+  .listhead .note{font-size:12px;font-weight:500;color:#64748b;margin-top:3px;}
+  .seg{display:flex;background:#f1f5f9;border-radius:10px;padding:3px;margin-top:12px;}
+  .seg div{flex:1;text-align:center;font-size:11.5px;font-weight:600;color:#64748b;padding:7px 0;border-radius:8px;}
+  .seg div.on{background:#ffffff;color:#0f172a;box-shadow:0 1px 2px rgba(15,23,42,.14);}
+
+  .srow{display:flex;align-items:center;gap:11px;padding:10px 18px;}
+  .num{width:22px;flex:none;text-align:center;font-size:12px;font-weight:700;color:#94a3b8;}
+  .info{flex:1;min-width:0;}
+  .info .t{font-size:14px;font-weight:600;line-height:18px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .info .s{font-size:11.5px;line-height:15px;color:#94a3b8;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .dur{font-size:12px;font-weight:600;color:#94a3b8;flex:none;}
+  .srow.played .info .t{color:#94a3b8;font-weight:500;}
+  .srow.sel{background:rgba(2,132,199,.10);border-left:3px solid #0284c7;padding-left:15px;}
+  .srow.sel .info .t{color:#0f172a;}
+  .srow.sel .info .s{color:#0369a1;font-weight:600;}
+  .srow.sel .num,.srow.sel .dur{color:#0284c7;}
+
+  .listfoot{margin-top:auto;padding:10px 18px;border-top:1px solid #eef2f6;}
+  .btn{display:flex;align-items:center;justify-content:center;gap:8px;height:36px;border-radius:18px;
+       font-size:13px;font-weight:600;border:1px solid #dde5ee;color:#334155;}
+
+  /* detail pane */
+  .detail{flex:1;min-width:0;padding:20px 26px 22px;display:flex;flex-direction:column;}
+  .dkicker{font-size:11px;font-weight:600;color:#0369a1;letter-spacing:.05em;text-transform:uppercase;}
+  .detail h1{margin:5px 0 0;font-size:26px;font-weight:700;line-height:32px;}
+  .chips{display:flex;gap:8px;margin-top:11px;}
+  .chip{font-size:11.5px;font-weight:600;color:#475569;background:#eaeff5;border-radius:13px;padding:6px 11px;}
+
+  .card{background:#ffffff;border:1px solid #e8edf3;border-radius:14px;padding:16px 18px;margin-top:14px;}
+  .card h3{margin:0 0 10px;font-size:13px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;color:#64748b;}
+  .times{display:flex;justify-content:space-between;font-size:12px;font-weight:600;color:#475569;}
+  .wave{display:flex;align-items:center;gap:5px;height:44px;margin:6px 0 8px;}
+  .wave span{flex:1;border-radius:2px;background:#cbd5e1;}
+  .wave span.on{background:#0284c7;}
+  .controls{display:flex;align-items:center;gap:10px;margin-top:12px;}
+  .ctl{width:42px;height:42px;border-radius:21px;border:1px solid #dde5ee;flex:none;
+       display:flex;align-items:center;justify-content:center;color:#334155;}
+  .ctl.big{width:52px;height:52px;border-radius:26px;background:#0284c7;border-color:#0284c7;color:#fff;}
+  .pill{height:36px;padding:0 14px;border-radius:18px;border:1px solid #dde5ee;
+        display:flex;align-items:center;font-size:12.5px;font-weight:600;color:#334155;flex:none;}
+  .grow{flex:1;}
+
+  .tscript{font-size:13px;line-height:20px;color:#334155;}
+  .link{margin-top:10px;font-size:12.5px;font-weight:600;color:#0284c7;}
+  .facts{display:flex;flex-direction:column;gap:8px;}
+  .fact{display:flex;justify-content:space-between;font-size:13px;}
+  .fact span:first-child{color:#64748b;font-weight:500;}
+  .fact span:last-child{font-weight:600;}
+
+  .upnext{margin-top:auto;display:flex;align-items:center;gap:12px;
+          background:#ffffff;border:1px solid #e8edf3;border-radius:14px;padding:13px 16px;}
+  .upnext .lbl{font-size:11px;font-weight:600;color:#94a3b8;letter-spacing:.05em;text-transform:uppercase;}
+  .upnext .t{font-size:14px;font-weight:600;line-height:19px;margin-top:2px;}
+</style>
+</head>
+<body>
+  <div class="screen">
+
+    <div class="appbar">
+      <div class="brand"><span class="mark">W</span>Wanderline</div>
+      <div class="nav">
+        <div class="nvi">Explore</div>
+        <div class="nvi">Trips</div>
+        <div class="nvi on">Guides</div>
+        <div class="nvi">Saved</div>
+      </div>
+      <div class="iconbtn" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4 4"/></svg>
+      </div>
+      <div class="iconbtn" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 4v11"/><path d="M8 11l4 4 4-4"/><path d="M5 19h14"/></svg>
+      </div>
+      <div class="avatar">MV</div>
+    </div>
+
+    <div class="guide">
+      <div class="tile" aria-hidden="true">
+        <svg width="34" height="34" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="7" cy="8" r="3"/><circle cx="25" cy="24" r="3"/>
+          <path d="M10 8h9a4 4 0 0 1 0 8h-6a4 4 0 0 0 0 8h9"/>
+        </svg>
+      </div>
+      <div class="gtext">
+        <div class="kicker">Walking guide</div>
+        <div class="gname">Alfama by Foot</div>
+        <div class="gmeta">Lisbon, Portugal · 12 stops · 1 hr 48 min · Narrated by Mara Vilela</div>
+      </div>
+      <div class="gplayer">
+        <div class="play" aria-hidden="true">
+          <svg width="19" height="19" viewBox="0 0 18 18" fill="#ffffff"><rect x="4" y="3.5" width="3.2" height="11" rx="1"/><rect x="10.8" y="3.5" width="3.2" height="11" rx="1"/></svg>
+        </div>
+        <div class="prog">
+          <div class="prog-line"><span>Stop 5 of 12</span><span>46 min left</span></div>
+          <div class="bar"><span></span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="body">
+
+      <div class="list">
+        <div class="listhead">
+          <h2>Stops</h2>
+          <div class="note">8 of 12 downloaded</div>
+          <div class="seg">
+            <div class="on">All 12</div>
+            <div>Downloaded</div>
+            <div>Unplayed</div>
+          </div>
+        </div>
+
+        <div class="srow played">
+          <div class="num">1</div>
+          <div class="info"><div class="t">Sé Cathedral Steps</div><div class="s">Landmark · Played</div></div>
+          <div class="dur">6:12</div>
+        </div>
+        <div class="srow played">
+          <div class="num">2</div>
+          <div class="info"><div class="t">Largo das Portas do Sol</div><div class="s">Viewpoint · Played</div></div>
+          <div class="dur">8:40</div>
+        </div>
+        <div class="srow played">
+          <div class="num">3</div>
+          <div class="info"><div class="t">Miradouro de Santa Luzia</div><div class="s">Viewpoint · Played</div></div>
+          <div class="dur">5:28</div>
+        </div>
+        <div class="srow played">
+          <div class="num">4</div>
+          <div class="info"><div class="t">Rua dos Remédios</div><div class="s">Street walk · Played</div></div>
+          <div class="dur">4:55</div>
+        </div>
+        <div class="srow sel">
+          <div class="num" aria-hidden="true">
+            <svg width="13" height="13" viewBox="0 0 14 14" fill="currentColor"><rect x="1" y="4" width="2.5" height="6" rx="1"/><rect x="5.75" y="1.5" width="2.5" height="11" rx="1"/><rect x="10.5" y="5.5" width="2.5" height="3" rx="1"/></svg>
+          </div>
+          <div class="info"><div class="t">Casa dos Bicos Facade</div><div class="s">Now playing · 3:12 left</div></div>
+          <div class="dur">9:04</div>
+        </div>
+        <div class="srow">
+          <div class="num">6</div>
+          <div class="info"><div class="t">Escadinhas de São Miguel</div><div class="s">Street walk · Downloaded</div></div>
+          <div class="dur">7:18</div>
+        </div>
+        <div class="srow">
+          <div class="num">7</div>
+          <div class="info"><div class="t">Feira da Ladra Market</div><div class="s">Market · Not downloaded</div></div>
+          <div class="dur">11:30</div>
+        </div>
+        <div class="srow">
+          <div class="num">8</div>
+          <div class="info"><div class="t">São Vicente Terrace</div><div class="s">Viewpoint · Downloaded</div></div>
+          <div class="dur">6:44</div>
+        </div>
+        <div class="srow">
+          <div class="num">9</div>
+          <div class="info"><div class="t">Panteão Nacional</div><div class="s">Landmark · Downloaded</div></div>
+          <div class="dur">8:02</div>
+        </div>
+        <div class="srow">
+          <div class="num">10</div>
+          <div class="info"><div class="t">Jardim Botto Machado</div><div class="s">Garden · Downloaded</div></div>
+          <div class="dur">4:36</div>
+        </div>
+        <div class="srow">
+          <div class="num">11</div>
+          <div class="info"><div class="t">Santa Clara Steps</div><div class="s">Street walk · Not downloaded</div></div>
+          <div class="dur">5:10</div>
+        </div>
+        <div class="srow">
+          <div class="num">12</div>
+          <div class="info"><div class="t">Campo de Santa Clara</div><div class="s">Square · Not downloaded</div></div>
+          <div class="dur">6:28</div>
+        </div>
+
+        <div class="listfoot">
+          <div class="btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M12 4v11"/><path d="M8 11l4 4 4-4"/><path d="M5 19h14"/></svg>
+            Download remaining 4
+          </div>
+        </div>
+      </div>
+
+      <div class="detail">
+        <div class="dkicker">Stop 5 of 12 · Now playing</div>
+        <h1>Casa dos Bicos Facade</h1>
+        <div class="chips">
+          <div class="chip">Landmark</div>
+          <div class="chip">9:04</div>
+          <div class="chip">Downloaded</div>
+          <div class="chip">Step-free</div>
+        </div>
+
+        <div class="card">
+          <div class="times"><span>5:52</span><span>9:04</span></div>
+          <div class="wave" aria-hidden="true">
+            <span class="on" style="height:12px"></span><span class="on" style="height:20px"></span><span class="on" style="height:28px"></span><span class="on" style="height:36px"></span><span class="on" style="height:24px"></span><span class="on" style="height:16px"></span><span class="on" style="height:30px"></span><span class="on" style="height:40px"></span><span class="on" style="height:32px"></span><span class="on" style="height:22px"></span><span class="on" style="height:14px"></span><span class="on" style="height:26px"></span><span class="on" style="height:34px"></span><span class="on" style="height:42px"></span><span class="on" style="height:30px"></span><span class="on" style="height:20px"></span><span class="on" style="height:12px"></span><span class="on" style="height:24px"></span><span class="on" style="height:32px"></span><span class="on" style="height:26px"></span><span class="on" style="height:18px"></span><span style="height:12px"></span><span style="height:22px"></span><span style="height:30px"></span><span style="height:38px"></span><span style="height:28px"></span><span style="height:18px"></span><span style="height:24px"></span><span style="height:34px"></span><span style="height:26px"></span><span style="height:16px"></span><span style="height:10px"></span>
+          </div>
+          <div class="controls">
+            <div class="ctl" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 6l-6 6 6 6"/><path d="M18 6l-6 6 6 6"/></svg>
+            </div>
+            <div class="ctl big" aria-hidden="true">
+              <svg width="19" height="19" viewBox="0 0 18 18" fill="#ffffff"><rect x="4" y="3.5" width="3.2" height="11" rx="1"/><rect x="10.8" y="3.5" width="3.2" height="11" rx="1"/></svg>
+            </div>
+            <div class="ctl" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 6l6 6-6 6"/><path d="M6 6l6 6-6 6"/></svg>
+            </div>
+            <div class="grow"></div>
+            <div class="pill">1.0×</div>
+            <div class="pill">Show on map</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Transcript</h3>
+          <div class="tscript">The diamond-cut stones give this house its name, and most were reset by hand after the 1755 earthquake flattened the street. Step inside the ground floor and you will walk over a glass panel laid above Roman fish-salting tanks.</div>
+          <div class="link">Read full transcript ›</div>
+        </div>
+
+        <div class="card">
+          <h3>About this stop</h3>
+          <div class="facts">
+            <div class="fact"><span>Built</span><span>1523</span></div>
+            <div class="fact"><span>Neighbourhood</span><span>Alfama</span></div>
+            <div class="fact"><span>Best time to visit</span><span>Late afternoon</span></div>
+            <div class="fact"><span>Walk to next stop</span><span>4 min · 180 m</span></div>
+          </div>
+        </div>
+
+        <div class="upnext">
+          <div class="info">
+            <div class="lbl">Up next · Stop 6</div>
+            <div class="t">Escadinhas de São Miguel · 7:18</div>
+          </div>
+          <div class="pill">Play next</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cartnest Shopping Goal</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 32px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #e7e7e2;
+      color: #20221b;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #fbfbf7;
+    }
+
+    .topbar {
+      padding: 15px 18px 13px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+
+    .service-name {
+      margin: 0 0 2px;
+      color: #6b704f;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .topbar h1 {
+      margin: 0;
+      font-size: 24px;
+      line-height: 1.2;
+      font-weight: 650;
+      letter-spacing: -0.02em;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .icon-button,
+    .profile-button {
+      width: 38px;
+      height: 38px;
+      padding: 0;
+      border: 0;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      color: #4f5634;
+      background: rgba(112, 123, 70, 0.12);
+    }
+
+    .profile-button {
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    main {
+      flex: 1;
+      padding: 4px 18px 18px;
+    }
+
+    .goal-summary {
+      padding: 18px;
+      border-radius: 10px;
+      background: rgba(112, 123, 70, 0.16);
+    }
+
+    .goal-kicker {
+      margin: 0 0 7px;
+      color: #62694a;
+      font-size: 13px;
+      line-height: 1.3;
+      font-weight: 600;
+    }
+
+    .goal-summary h2 {
+      margin: 0;
+      font-size: 23px;
+      line-height: 1.25;
+      font-weight: 650;
+      letter-spacing: -0.015em;
+    }
+
+    .goal-description {
+      margin: 7px 0 14px;
+      color: #555a46;
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .goal-meta {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      color: #4d5337;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .goal-meta span {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .section {
+      margin-top: 20px;
+    }
+
+    .section-heading {
+      margin-bottom: 9px;
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+    }
+
+    .section-heading h3 {
+      margin: 0;
+      font-size: 16px;
+      line-height: 1.3;
+      font-weight: 650;
+    }
+
+    .section-count {
+      color: #747766;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .task-list {
+      display: grid;
+      gap: 8px;
+    }
+
+    .task-row {
+      min-width: 0;
+      padding: 10px;
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      border-radius: 10px;
+      background: rgba(112, 123, 70, 0.09);
+    }
+
+    .task-photo {
+      width: 60px;
+      height: 60px;
+      flex: 0 0 60px;
+      display: block;
+      object-fit: cover;
+      border-radius: 10px;
+      background: #d8d9cf;
+    }
+
+    .task-copy {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .task-title {
+      margin: 0 0 4px;
+      overflow: hidden;
+      color: #26281f;
+      font-size: 15px;
+      line-height: 1.3;
+      font-weight: 600;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .task-detail {
+      margin: 0;
+      overflow: hidden;
+      color: #6e7163;
+      font-size: 13px;
+      line-height: 1.35;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .task-note {
+      margin-top: 4px;
+      color: #7b6337;
+      font-size: 12px;
+      line-height: 1.3;
+      font-weight: 600;
+    }
+
+    .check {
+      width: 28px;
+      height: 28px;
+      flex: 0 0 28px;
+      padding: 0;
+      border: 0;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      color: #707b46;
+      background: #ffffff;
+    }
+
+    .check.done {
+      color: #ffffff;
+      background: #707b46;
+    }
+
+    .completed .task-title {
+      color: #65685b;
+      text-decoration: line-through;
+    }
+
+    .completed .task-photo {
+      opacity: 0.72;
+    }
+
+    .tabbar {
+      flex-shrink: 0;
+      padding: 9px 12px 11px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      background: #f3f3ed;
+    }
+
+    .tab {
+      min-width: 0;
+      padding: 3px 0;
+      border: 0;
+      display: grid;
+      justify-items: center;
+      gap: 4px;
+      color: #7c7f72;
+      background: transparent;
+      font-size: 12px;
+      line-height: 1.2;
+      font-weight: 500;
+    }
+
+    .tab.active {
+      color: #66713e;
+      font-weight: 650;
+    }
+
+    svg {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <div>
+        <p class="service-name">Cartnest</p>
+        <h1>Shopping goal</h1>
+      </div>
+      <div class="top-actions">
+        <button class="icon-button" type="button" aria-label="Search">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="1.8"></circle>
+            <path d="M16 16L20.2 20.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
+          </svg>
+        </button>
+        <button class="profile-button" type="button" aria-label="Maren Cole profile">MC</button>
+      </div>
+    </header>
+
+    <main>
+      <section class="goal-summary" aria-labelledby="goal-title">
+        <p class="goal-kicker">Current goal</p>
+        <h2 id="goal-title">Finish the guest room</h2>
+        <p class="goal-description">Buy the remaining essentials before family arrives.</p>
+        <div class="goal-meta">
+          <span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <rect x="4" y="5.5" width="16" height="14.5" rx="2" stroke="currentColor" stroke-width="1.7"></rect>
+              <path d="M8 3.5V7.5M16 3.5V7.5M4 9.5H20" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"></path>
+            </svg>
+            Due June 21
+          </span>
+          <span>3 items left</span>
+        </div>
+      </section>
+
+      <section class="section" aria-labelledby="to-buy-heading">
+        <div class="section-heading">
+          <h3 id="to-buy-heading">To buy</h3>
+          <span class="section-count">3 items</span>
+        </div>
+
+        <div class="task-list">
+          <article class="task-row">
+            <img class="task-photo" src="https://loremflickr.com/60/60/furniture?lock=8870" width="60" height="60" alt="Wood bedside table">
+            <div class="task-copy">
+              <p class="task-title">Oak bedside table</p>
+              <p class="task-detail">Budget up to $140</p>
+            </div>
+            <button class="check" type="button" aria-label="Mark oak bedside table complete">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M7 12.5L10.3 16L17.5 8.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+              </svg>
+            </button>
+          </article>
+
+          <article class="task-row">
+            <img class="task-photo" src="https://loremflickr.com/60/60/product?lock=8871" width="60" height="60" alt="Neutral cotton bed sheets">
+            <div class="task-copy">
+              <p class="task-title">Queen cotton sheet set</p>
+              <p class="task-detail">Ivory or warm white · under $90</p>
+              <p class="task-note">Two saved options are low in stock</p>
+            </div>
+            <button class="check" type="button" aria-label="Mark queen cotton sheet set complete">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M7 12.5L10.3 16L17.5 8.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+              </svg>
+            </button>
+          </article>
+
+          <article class="task-row">
+            <img class="task-photo" src="https://loremflickr.com/60/60/furniture?lock=8872" width="60" height="60" alt="Small reading lamp">
+            <div class="task-copy">
+              <p class="task-title">Dimmable reading lamp</p>
+              <p class="task-detail">Brass finish · under $75</p>
+            </div>
+            <button class="check" type="button" aria-label="Mark dimmable reading lamp complete">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M7 12.5L10.3 16L17.5 8.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+              </svg>
+            </button>
+          </article>
+        </div>
+      </section>
+
+      <section class="section completed" aria-labelledby="completed-heading">
+        <div class="section-heading">
+          <h3 id="completed-heading">Completed</h3>
+          <span class="section-count">1 item</span>
+        </div>
+
+        <div class="task-list">
+          <article class="task-row">
+            <img class="task-photo" src="https://loremflickr.com/60/60/product?lock=8873" width="60" height="60" alt="Textured throw blanket">
+            <div class="task-copy">
+              <p class="task-title">Woven throw blanket</p>
+              <p class="task-detail">Purchased June 3 · $48.00</p>
+            </div>
+            <button class="check done" type="button" aria-label="Woven throw blanket completed">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M6.5 12.5L10.2 16.2L17.8 8.4" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path>
+              </svg>
+            </button>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <nav class="tabbar" aria-label="Primary navigation">
+      <button class="tab" type="button">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M4 10.5L12 4L20 10.5V20H14.8V14H9.2V20H4V10.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"></path>
+        </svg>
+        <span>Home</span>
+      </button>
+      <button class="tab" type="button">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="1.7"></circle>
+          <path d="M16 16L20 20" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"></path>
+        </svg>
+        <span>Browse</span>
+      </button>
+      <button class="tab active" type="button" aria-current="page">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <rect x="5" y="4" width="14" height="16" rx="2" stroke="currentColor" stroke-width="1.7"></rect>
+          <path d="M8.5 9.5L10.4 11.3L14.8 7.5M8.5 15.5H15.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></path>
+        </svg>
+        <span>Goals</span>
+      </button>
+      <button class="tab" type="button">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M6 8H18L17 20H7L6 8Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"></path>
+          <path d="M9 9V7C9 5.3 10.3 4 12 4C13.7 4 15 5.3 15 7V9" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"></path>
+        </svg>
+        <span>Cart</span>
+      </button>
+    </nav>
+  </div>
+</body>
+</html>

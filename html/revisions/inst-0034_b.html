@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Host Earnings</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #e4e6e1;
+      color: #171a16;
+      font-family: 'Source Sans 3', system-ui, sans-serif;
+    }
+
+    button,
+    a {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .screen {
+      width: 1024px;
+      height: 768px;
+      display: flex;
+      background: #ffffff;
+      border: 1px solid #d4d9cf;
+      box-shadow: 0 18px 48px rgba(35, 42, 32, 0.13);
+    }
+
+    .side-rail {
+      width: 184px;
+      flex: 0 0 184px;
+      display: flex;
+      flex-direction: column;
+      padding: 22px 13px 18px;
+      background: #1e251f;
+      color: #ffffff;
+    }
+
+    .brand {
+      padding: 1px 10px 26px;
+    }
+
+    .brand-name {
+      margin: 0;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 23px;
+      line-height: 1.2;
+      font-weight: 700;
+    }
+
+    .brand-mode {
+      display: inline-block;
+      margin-top: 7px;
+      padding: 3px 7px;
+      border: 1px solid #4b5749;
+      border-radius: 6px;
+      color: #d5dfcf;
+      font-size: 10px;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+    }
+
+    .rail-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px;
+      border-radius: 9px;
+      color: #bac2b8;
+      font-size: 14px;
+      text-decoration: none;
+    }
+
+    .nav-link svg {
+      width: 19px;
+      height: 19px;
+      flex: 0 0 19px;
+    }
+
+    .nav-link.active {
+      background: #dafe58;
+      color: #1c2319;
+      font-weight: 600;
+    }
+
+    .rail-footer {
+      margin-top: auto;
+    }
+
+    .help-card {
+      padding: 12px;
+      border: 1px solid #3d483d;
+      border-radius: 10px;
+      background: #283129;
+    }
+
+    .help-title,
+    .help-copy {
+      margin: 0;
+    }
+
+    .help-title {
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .help-copy {
+      margin-top: 4px;
+      color: #aeb8ac;
+      font-size: 11px;
+      line-height: 1.35;
+    }
+
+    .help-link {
+      display: inline-block;
+      margin-top: 8px;
+      color: #ddf47f;
+      font-size: 12px;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .profile {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      margin-top: 13px;
+      padding: 13px 4px 0;
+      border-top: 1px solid #394238;
+    }
+
+    .avatar {
+      width: 32px;
+      height: 32px;
+      flex: 0 0 32px;
+      display: grid;
+      place-items: center;
+      border-radius: 9px;
+      background: #f2f4ed;
+      color: #253024;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .profile-copy {
+      min-width: 0;
+    }
+
+    .profile-name,
+    .profile-role {
+      margin: 0;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+
+    .profile-name {
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .profile-role {
+      margin-top: 1px;
+      color: #9fa99d;
+      font-size: 11px;
+    }
+
+    .workspace {
+      min-width: 0;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: #f7f8f4;
+    }
+
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 22px;
+      padding: 19px 25px;
+      border-bottom: 1px solid #dce1d7;
+      background: #ffffff;
+    }
+
+    .title-wrap h1,
+    .feature-value,
+    .section-heading {
+      margin: 0;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 700;
+    }
+
+    .title-wrap h1 {
+      font-size: 28px;
+      line-height: 1.2;
+    }
+
+    .title-wrap p {
+      margin: 3px 0 0;
+      color: #70776c;
+      font-size: 13px;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .period-control {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding: 8px 11px;
+      border: 1px solid #d9ded4;
+      border-radius: 9px;
+      background: #ffffff;
+      color: #343a31;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .period-control svg {
+      width: 15px;
+      height: 15px;
+    }
+
+    .export-button {
+      padding: 8px 12px;
+      border: 1px solid #252a24;
+      border-radius: 9px;
+      background: #252a24;
+      color: #ffffff;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    main {
+      flex: 1;
+      padding: 20px 23px;
+    }
+
+    .dashboard-top {
+      display: grid;
+      grid-template-columns: minmax(0, 1.65fr) minmax(250px, 0.8fr);
+      gap: 15px;
+    }
+
+    .performance-card,
+    .payout-card,
+    .panel {
+      border: 1px solid #dce1d7;
+      border-radius: 14px;
+      background: #ffffff;
+    }
+
+    .performance-card {
+      padding: 17px 18px 15px;
+    }
+
+    .feature-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .feature-label {
+      margin: 0;
+      color: #687064;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .feature-value {
+      margin-top: 3px;
+      font-size: 36px;
+      line-height: 1.1;
+      letter-spacing: -0.025em;
+    }
+
+    .feature-change {
+      margin: 5px 0 0;
+      color: #687064;
+      font-size: 12px;
+    }
+
+    .change-positive {
+      color: #55720d;
+      font-weight: 600;
+    }
+
+    .booking-pill {
+      padding: 7px 10px;
+      border-radius: 9px;
+      background: #eff8ce;
+      color: #425016;
+      font-size: 12px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .chart {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      align-items: end;
+      gap: 14px;
+      margin-top: 17px;
+      padding-top: 9px;
+      border-top: 1px solid #edf0e9;
+    }
+
+    .chart-group {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .bar-area {
+      width: 100%;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      padding-top: 4px;
+    }
+
+    .chart-bar {
+      width: 26px;
+      border-radius: 5px 5px 2px 2px;
+      background: #d2e98a;
+    }
+
+    .chart-group.current .chart-bar {
+      background: #9fc52d;
+    }
+
+    .chart-value {
+      color: #50584d;
+      font-size: 10px;
+      font-weight: 600;
+    }
+
+    .chart-month {
+      color: #7b8277;
+      font-size: 10px;
+      text-transform: uppercase;
+    }
+
+    .bar-jan {
+      height: 32px;
+    }
+
+    .bar-feb {
+      height: 46px;
+    }
+
+    .bar-mar {
+      height: 58px;
+    }
+
+    .bar-apr {
+      height: 51px;
+    }
+
+    .bar-may {
+      height: 72px;
+    }
+
+    .payout-card {
+      padding: 17px;
+      background: #dafe58;
+      border-color: #bad83d;
+    }
+
+    .payout-kicker,
+    .payout-date,
+    .payout-note {
+      margin: 0;
+    }
+
+    .payout-kicker {
+      color: #4b5727;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .payout-date {
+      margin-top: 9px;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .payout-amount {
+      margin: 2px 0 5px;
+      font-size: 30px;
+      line-height: 1.15;
+      font-weight: 600;
+      letter-spacing: -0.025em;
+    }
+
+    .payout-note {
+      color: #4d5928;
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    .payout-button {
+      width: 100%;
+      margin-top: 15px;
+      padding: 8px 10px;
+      border: 1px solid #20251e;
+      border-radius: 9px;
+      background: #20251e;
+      color: #ffffff;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 11px;
+      margin-top: 14px;
+    }
+
+    .summary-card {
+      padding: 12px 14px;
+      border: 1px solid #dce1d7;
+      border-radius: 11px;
+      background: #ffffff;
+    }
+
+    .summary-label,
+    .summary-value,
+    .summary-meta {
+      margin: 0;
+    }
+
+    .summary-label {
+      color: #70786d;
+      font-size: 11px;
+    }
+
+    .summary-value {
+      margin-top: 2px;
+      font-size: 21px;
+      line-height: 1.2;
+      font-weight: 600;
+    }
+
+    .summary-meta {
+      margin-top: 2px;
+      color: #71796e;
+      font-size: 11px;
+    }
+
+    .lower-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.45fr) minmax(270px, 0.9fr);
+      gap: 15px;
+      margin-top: 15px;
+    }
+
+    .panel {
+      padding: 15px;
+    }
+
+    .section-title-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 15px;
+      margin-bottom: 9px;
+    }
+
+    .section-heading {
+      font-size: 19px;
+      line-height: 1.3;
+    }
+
+    .text-link {
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: #506712;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .event-row {
+      display: grid;
+      grid-template-columns: 34px minmax(0, 1fr) 78px;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 0;
+      border-bottom: 1px solid #e5e9e1;
+    }
+
+    .event-row:last-child {
+      border-bottom: 0;
+      padding-bottom: 1px;
+    }
+
+    .event-icon {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      border-radius: 9px;
+      background: #f0f3eb;
+      color: #596254;
+    }
+
+    .event-icon svg {
+      width: 17px;
+      height: 17px;
+    }
+
+    .event-copy {
+      min-width: 0;
+    }
+
+    .event-title,
+    .event-meta {
+      margin: 0;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+
+    .event-title {
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .event-meta {
+      margin-top: 2px;
+      color: #737b70;
+      font-size: 11px;
+    }
+
+    .event-value {
+      font-size: 13px;
+      font-weight: 600;
+      text-align: right;
+    }
+
+    .insight {
+      padding: 11px 12px;
+      border-radius: 10px;
+      background: #f1f5e6;
+    }
+
+    .insight + .insight {
+      margin-top: 9px;
+    }
+
+    .insight-label,
+    .insight-title,
+    .insight-copy {
+      margin: 0;
+    }
+
+    .insight-label {
+      color: #6a755e;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .insight-title {
+      margin-top: 3px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .insight-copy {
+      margin-top: 3px;
+      color: #687064;
+      font-size: 11px;
+      line-height: 1.35;
+    }
+
+    .settings-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-top: 11px;
+      padding-top: 11px;
+      border-top: 1px solid #e5e9e1;
+    }
+
+    .settings-copy {
+      min-width: 0;
+    }
+
+    .settings-title,
+    .settings-meta {
+      margin: 0;
+    }
+
+    .settings-title {
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .settings-meta {
+      margin-top: 2px;
+      color: #747b71;
+      font-size: 11px;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <aside class="side-rail">
+      <div class="brand">
+        <p class="brand-name">Neighborly</p>
+        <span class="brand-mode">Host mode</span>
+      </div>
+
+      <nav class="rail-nav" aria-label="Primary navigation">
+        <a class="nav-link" href="#">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M4 10.5 12 4l8 6.5V20h-5v-5.5H9V20H4v-9.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+          </svg>
+          <span>Dashboard</span>
+        </a>
+        <a class="nav-link" href="#">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <rect x="3.5" y="5" width="17" height="15" rx="2" stroke="currentColor" stroke-width="1.7"/>
+            <path d="M7 3v4M17 3v4M3.5 10h17" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+          </svg>
+          <span>Bookings</span>
+        </a>
+        <a class="nav-link" href="#">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M5 18.5 3.8 21l3.7-1.2c1.3.7 2.8 1.1 4.5 1.1 5 0 9-3.6 9-8s-4-8-9-8-9 3.6-9 8c0 2.1.7 4 2 5.6Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+          </svg>
+          <span>Messages</span>
+        </a>
+        <a class="nav-link active" href="#" aria-current="page">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M4 18.5V11M10 18.5V6M16 18.5v-9M22 18.5H2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+            <path d="m3.5 8 5-4 5 3 6-5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span>Earnings</span>
+        </a>
+        <a class="nav-link" href="#">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="8" cy="9" r="3" stroke="currentColor" stroke-width="1.7"/>
+            <circle cx="16.5" cy="8" r="2.5" stroke="currentColor" stroke-width="1.7"/>
+            <path d="M2.8 20v-1.5A4.5 4.5 0 0 1 7.3 14h1.4a4.5 4.5 0 0 1 4.5 4.5V20M14 14h2.6a4 4 0 0 1 4 4v1" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+          </svg>
+          <span>Guests</span>
+        </a>
+        <a class="nav-link" href="#">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.7"/>
+            <path d="M19 13.5v-3l2-1.3-2-3.4-2.3 1A8 8 0 0 0 14 5.2L13.7 3h-3.4L10 5.2a8 8 0 0 0-2.7 1.6l-2.3-1-2 3.4 2 1.3v3l-2 1.3 2 3.4 2.3-1a8 8 0 0 0 2.7 1.6l.3 2.2h3.4l.3-2.2a8 8 0 0 0 2.7-1.6l2.3 1 2-3.4-2-1.3Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+          </svg>
+          <span>Settings</span>
+        </a>
+      </nav>
+
+      <div class="rail-footer">
+        <div class="help-card">
+          <p class="help-title">Host support</p>
+          <p class="help-copy">Get help with payouts, fees, and tax documents.</p>
+          <a class="help-link" href="#">Open support center</a>
+        </div>
+
+        <div class="profile">
+          <div class="avatar" aria-hidden="true">AM</div>
+          <div class="profile-copy">
+            <p class="profile-name">Avery Morgan</p>
+            <p class="profile-role">Community host</p>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <div class="workspace">
+      <header class="top-bar">
+        <div class="title-wrap">
+          <h1>Earnings overview</h1>
+          <p>Track income from your community events and experiences.</p>
+        </div>
+
+        <div class="header-actions">
+          <button class="period-control" type="button">
+            <span>May 1–31, 2025</span>
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <button class="export-button" type="button">Export report</button>
+        </div>
+      </header>
+
+      <main>
+        <div class="dashboard-top">
+          <section class="performance-card" aria-labelledby="month-heading">
+            <div class="feature-head">
+              <div>
+                <p class="feature-label">Total earned this month</p>
+                <h2 class="feature-value" id="month-heading">$1,284.50</h2>
+                <p class="feature-change"><span class="change-positive">Up 12%</span> from $1,146.80 in April</p>
+              </div>
+              <span class="booking-pill">23 completed bookings</span>
+            </div>
+
+            <div class="chart" aria-label="Monthly earnings from January through May">
+              <div class="chart-group">
+                <span class="chart-value">$760</span>
+                <div class="bar-area"><div class="chart-bar bar-jan"></div></div>
+                <span class="chart-month">Jan</span>
+              </div>
+              <div class="chart-group">
+                <span class="chart-value">$910</span>
+                <div class="bar-area"><div class="chart-bar bar-feb"></div></div>
+                <span class="chart-month">Feb</span>
+              </div>
+              <div class="chart-group">
+                <span class="chart-value">$1,078</span>
+                <div class="bar-area"><div class="chart-bar bar-mar"></div></div>
+                <span class="chart-month">Mar</span>
+              </div>
+              <div class="chart-group">
+                <span class="chart-value">$1,147</span>
+                <div class="bar-area"><div class="chart-bar bar-apr"></div></div>
+                <span class="chart-month">Apr</span>
+              </div>
+              <div class="chart-group current">
+                <span class="chart-value">$1,285</span>
+                <div class="bar-area"><div class="chart-bar bar-may"></div></div>
+                <span class="chart-month">May</span>
+              </div>
+            </div>
+          </section>
+
+          <aside class="payout-card" aria-labelledby="payout-heading">
+            <p class="payout-kicker">Next payout</p>
+            <h2 class="payout-date" id="payout-heading">Friday, May 31</h2>
+            <p class="payout-amount">$642.80</p>
+            <p class="payout-note">Sending to checking account ending in 4821.</p>
+            <button class="payout-button" type="button">Review payout</button>
+          </aside>
+        </div>
+
+        <section class="summary-grid" aria-label="Earnings totals">
+          <article class="summary-card">
+            <p class="summary-label">Pending</p>
+            <p class="summary-value">$318.00</p>
+            <p class="summary-meta">6 upcoming bookings</p>
+          </article>
+          <article class="summary-card">
+            <p class="summary-label">Host fees this month</p>
+            <p class="summary-value">$67.60</p>
+            <p class="summary-meta">5% average service fee</p>
+          </article>
+          <article class="summary-card">
+            <p class="summary-label">Year to date</p>
+            <p class="summary-value">$5,926.40</p>
+            <p class="summary-meta">Across 104 bookings</p>
+          </article>
+        </section>
+
+        <div class="lower-grid">
+          <section class="panel" aria-labelledby="transactions-heading">
+            <div class="section-title-row">
+              <h2 class="section-heading" id="transactions-heading">Latest transactions</h2>
+              <button class="text-link" type="button">See full ledger</button>
+            </div>
+
+            <div class="event-row">
+              <div class="event-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none">
+                  <path d="M5 5h14v15H5V5Zm3-2v4m8-4v4M5 10h14" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <div class="event-copy">
+                <p class="event-title">Neighborhood garden workshop</p>
+                <p class="event-meta">May 24 · 8 paid guests</p>
+              </div>
+              <span class="event-value">+$184.00</span>
+            </div>
+
+            <div class="event-row">
+              <div class="event-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none">
+                  <path d="M5 5h14v15H5V5Zm3-2v4m8-4v4M5 10h14" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <div class="event-copy">
+                <p class="event-title">Sunday pottery circle</p>
+                <p class="event-meta">May 19 · 5 paid guests</p>
+              </div>
+              <span class="event-value">+$112.50</span>
+            </div>
+
+            <div class="event-row">
+              <div class="event-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none">
+                  <path d="M5 5h14v15H5V5Zm3-2v4m8-4v4M5 10h14" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <div class="event-copy">
+                <p class="event-title">Community supper club</p>
+                <p class="event-meta">May 16 · 12 paid guests</p>
+              </div>
+              <span class="event-value">+$276.00</span>
+            </div>
+
+            <div class="event-row">
+              <div class="event-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none">
+                  <path d="M4 7.5h16v12H4v-12ZM4 11h16M8 15.5h3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <div class="event-copy">
+                <p class="event-title">Weekly payout</p>
+                <p class="event-meta">May 10 · Checking account 4821</p>
+              </div>
+              <span class="event-value">−$504.20</span>
+            </div>
+          </section>
+
+          <aside class="panel" aria-labelledby="insights-heading">
+            <div class="section-title-row">
+              <h2 class="section-heading" id="insights-heading">Host insights</h2>
+            </div>
+
+            <div class="insight">
+              <p class="insight-label">Top earner</p>
+              <p class="insight-title">Community supper club</p>
+              <p class="insight-copy">Generated $388 this month across two hosted evenings.</p>
+            </div>
+
+            <div class="insight">
+              <p class="insight-label">Opportunity</p>
+              <p class="insight-title">Saturday events fill fastest</p>
+              <p class="insight-copy">Your Saturday bookings reached 92% capacity in May.</p>
+            </div>
+
+            <div class="settings-row">
+              <div class="settings-copy">
+                <p class="settings-title">Weekly payouts</p>
+                <p class="settings-meta">Checking ···· 4821</p>
+              </div>
+              <button class="text-link" type="button">Manage</button>
+            </div>
+          </aside>
+        </div>
+      </main>
+    </div>
+  </div>
+</body>
+</html>

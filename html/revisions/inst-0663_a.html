@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Lingoloom — New Lesson Set</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;}
+  body{
+    font-family:'Poppins',system-ui,sans-serif;
+    background:#ECEAF0;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    padding:40px 0;
+    margin:0;
+    color:#1A1723;
+  }
+  .screen{
+    width:1024px;
+    height:768px;
+    background:#fff;
+    display:flex;
+    border:1px solid #DCD8E3;
+  }
+
+  /* left navigation */
+  .nav{
+    width:208px;flex:none;
+    background:#FAF9FC;
+    border-right:1px solid #E5E2EA;
+    display:flex;flex-direction:column;
+    padding:20px 14px 18px;
+  }
+  .brand{
+    display:flex;align-items:center;gap:9px;
+    padding:0 8px 18px;
+  }
+  .brand .mark{
+    width:24px;height:24px;flex:none;
+    background:#6B2FD6;color:#fff;
+    font-size:12px;font-weight:600;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .brand .nm{font-size:15px;font-weight:600;letter-spacing:-0.2px;}
+  .navitem{
+    display:flex;align-items:center;gap:11px;
+    padding:10px;
+    font-size:13px;
+    color:#6A6377;
+  }
+  .navitem svg{flex:none;}
+  .navitem.on{background:#F1EDF9;color:#6B2FD6;font-weight:500;}
+  .navnote{
+    font-size:11px;color:#9A93A6;
+    padding:16px 8px 6px;
+    letter-spacing:0.4px;
+    text-transform:uppercase;
+  }
+  .spacer{flex:1;}
+  .who{
+    display:flex;align-items:center;gap:10px;
+    padding:12px 8px 0;
+    border-top:1px solid #E5E2EA;
+  }
+  .who .av{
+    width:30px;height:30px;flex:none;
+    background:#F1EDF9;color:#6B2FD6;
+    font-size:12px;font-weight:600;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .who .n{font-size:12.5px;font-weight:500;}
+  .who .r{font-size:11px;color:#8A8296;margin-top:1px;}
+
+  /* main */
+  .main{flex:1;min-width:0;display:flex;flex-direction:column;}
+  .topbar{
+    display:flex;align-items:center;gap:16px;
+    padding:18px 24px;
+    border-bottom:1px solid #E5E2EA;
+  }
+  .topbar h1{font-size:18px;font-weight:600;margin:0;letter-spacing:-0.2px;}
+  .topbar .grow{flex:1;}
+  .savedraft{font-size:13px;font-weight:500;color:#6B2FD6;padding:0 6px;}
+  .cta{
+    height:40px;padding:0 22px;
+    background:#6B2FD6;color:#fff;
+    display:flex;align-items:center;justify-content:center;
+    font-size:14px;font-weight:600;
+  }
+
+  .step{
+    display:flex;align-items:center;gap:14px;
+    padding:12px 24px;
+    border-bottom:1px solid #E5E2EA;
+  }
+  .step .k{font-size:12.5px;font-weight:500;color:#6B2FD6;flex:none;}
+  .step .v{font-size:12px;color:#7A7286;flex:none;}
+  .track{height:4px;background:#EDEAF2;flex:1;}
+  .track span{display:block;height:4px;width:66%;background:#6B2FD6;}
+
+  .body{
+    flex:1;
+    padding:24px;
+    display:flex;
+    gap:24px;
+    align-items:flex-start;
+  }
+  .col-left{width:420px;flex:none;}
+  .col-right{flex:1;min-width:0;}
+
+  .label{
+    font-size:12px;font-weight:500;color:#7A7286;
+    margin:0 0 7px;display:block;
+  }
+
+  /* cover thumbs */
+  .thumbs{display:flex;gap:10px;}
+  .thumb{
+    position:relative;
+    width:96px;height:68px;
+    border:1px solid #E5E2EA;
+    background:#DDD9E3;
+  }
+  .thumb img{width:96px;height:68px;object-fit:cover;display:block;background:#DDD9E3;}
+  .thumb.sel{border:2px solid #6B2FD6;}
+  .thumb.sel img{width:92px;height:64px;}
+  .tick{
+    position:absolute;right:0;bottom:0;
+    width:18px;height:18px;background:#6B2FD6;
+    display:flex;align-items:center;justify-content:center;
+  }
+
+  /* fields */
+  .field{margin-top:18px;}
+  .input{
+    height:44px;
+    border:1px solid #CFC9D8;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:0 12px;
+    font-size:14px;
+    background:#fff;
+  }
+  .input .txt{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .input.focus{border-color:#6B2FD6;}
+  .area{
+    height:84px;
+    border:1px solid #CFC9D8;
+    padding:9px 12px;
+    font-size:13px;
+    line-height:1.55;
+    color:#3B3547;
+  }
+  .two{display:flex;gap:14px;}
+  .two > div{flex:1;min-width:0;}
+  .chev{color:#7A7286;flex:none;}
+
+  /* materials */
+  .mat-head{
+    display:flex;align-items:flex-start;justify-content:space-between;
+    gap:12px;
+    padding-bottom:10px;
+    border-bottom:1px solid #E5E2EA;
+  }
+  .mat-head h2{font-size:15px;font-weight:600;margin:0;}
+  .mat-head .count{font-size:12px;color:#7A7286;margin-top:3px;}
+  .add{
+    display:flex;align-items:center;gap:5px;
+    font-size:12.5px;font-weight:500;color:#6B2FD6;
+    border:1px solid #D8CFEE;
+    padding:7px 11px;flex:none;
+  }
+  .row{
+    display:flex;align-items:center;gap:12px;
+    padding:9px 0;
+    border-bottom:1px solid #EFEDF3;
+  }
+  .row img{width:44px;height:44px;object-fit:cover;display:block;background:#DDD9E3;flex:none;}
+  .mono{
+    width:44px;height:44px;flex:none;
+    background:#F1EDF9;color:#6B2FD6;
+    font-size:14px;font-weight:600;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .row .meta{min-width:0;flex:1;}
+  .row .t{font-size:13.5px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .row .s{font-size:11.5px;color:#7A7286;margin-top:2px;}
+  .row .r{font-size:11.5px;color:#7A7286;flex:none;}
+</style>
+</head>
+<body>
+<div class="screen">
+
+  <nav class="nav">
+    <div class="brand">
+      <span class="mark">LL</span>
+      <span class="nm">Lingoloom</span>
+    </div>
+
+    <div class="navitem">
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 10.5L12 4l8 6.5V20H4z"/></svg>
+      Home
+    </div>
+    <div class="navitem">
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 4h6v16H5zM13 4h6v16h-6z"/></svg>
+      Library
+    </div>
+    <div class="navitem on">
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4h16v16H4z"/><path d="M12 8.5v7M8.5 12h7"/></svg>
+      Create
+    </div>
+    <div class="navitem">
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8.5" r="3.6"/><path d="M5 20c1.4-3.4 4-5 7-5s5.6 1.6 7 5"/></svg>
+      Profile
+    </div>
+
+    <div class="navnote">Current draft</div>
+    <div class="navitem">Everyday Spanish</div>
+
+    <div class="spacer"></div>
+
+    <div class="who">
+      <span class="av">MI</span>
+      <div>
+        <div class="n">Marta Ibáñez</div>
+        <div class="r">Tutor · Madrid</div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="main">
+
+    <div class="topbar">
+      <h1>New Lesson Set</h1>
+      <div class="grow"></div>
+      <div class="savedraft">Save draft</div>
+      <div class="cta">Continue to review</div>
+    </div>
+
+    <div class="step">
+      <span class="k">Step 2 of 3</span>
+      <div class="track"><span></span></div>
+      <span class="v">Details &amp; materials</span>
+    </div>
+
+    <div class="body">
+
+      <section class="col-left">
+        <span class="label">Cover image</span>
+        <div class="thumbs">
+          <div class="thumb sel">
+            <img src="https://loremflickr.com/92/64/books?lock=8800" width="92" height="64" alt="Stack of Spanish phrase books, selected cover">
+            <span class="tick">
+              <svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="1.8"><path d="M2 6.4l2.6 2.6L10 3.6"/></svg>
+            </span>
+          </div>
+          <div class="thumb"><img src="https://loremflickr.com/96/68/classroom?lock=8801" width="96" height="68" alt="Empty language classroom with desks"></div>
+          <div class="thumb"><img src="https://loremflickr.com/96/68/study?lock=8802" width="96" height="68" alt="Notebook and pencil on a study desk"></div>
+          <div class="thumb"><img src="https://loremflickr.com/96/68/library?lock=8803" width="96" height="68" alt="Library shelves seen from an aisle"></div>
+        </div>
+
+        <div class="field">
+          <span class="label">Lesson set title</span>
+          <div class="input focus">
+            <span class="txt">Everyday Spanish: Ordering Food</span>
+          </div>
+        </div>
+
+        <div class="field two">
+          <div>
+            <span class="label">Language</span>
+            <div class="input">
+              <span class="txt">Spanish</span>
+              <svg class="chev" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 5.5L7 9.5l4-4"/></svg>
+            </div>
+          </div>
+          <div>
+            <span class="label">Level</span>
+            <div class="input">
+              <span class="txt">Beginner A2</span>
+              <svg class="chev" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 5.5L7 9.5l4-4"/></svg>
+            </div>
+          </div>
+        </div>
+
+        <div class="field two">
+          <div>
+            <span class="label">Session length</span>
+            <div class="input">
+              <span class="txt">45 minutes</span>
+              <svg class="chev" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 5.5L7 9.5l4-4"/></svg>
+            </div>
+          </div>
+          <div>
+            <span class="label">First class</span>
+            <div class="input">
+              <span class="txt">Mar 12, 2025</span>
+              <svg class="chev" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 5.5L7 9.5l4-4"/></svg>
+            </div>
+          </div>
+        </div>
+
+        <div class="field">
+          <span class="label">What learners will practise</span>
+          <div class="area">Ordering a full meal, asking about ingredients and allergies, and paying the bill politely in a small café.</div>
+        </div>
+      </section>
+
+      <aside class="col-right">
+        <div class="mat-head">
+          <div>
+            <h2>Materials</h2>
+            <div class="count">3 attachments · 9.8 MB total</div>
+          </div>
+          <div class="add">
+            <svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M7 2v10M2 7h10"/></svg>
+            Add file
+          </div>
+        </div>
+
+        <div class="row">
+          <img src="https://loremflickr.com/44/44/books?lock=8804" width="44" height="44" alt="Cover of a menu vocabulary flashcard deck">
+          <div class="meta">
+            <div class="t">Menu vocabulary deck</div>
+            <div class="s">Flashcards · 24 cards</div>
+          </div>
+          <div class="r">2.1 MB</div>
+        </div>
+
+        <div class="row">
+          <img src="https://loremflickr.com/44/44/study?lock=8805" width="44" height="44" alt="Audio lesson artwork showing headphones on a desk">
+          <div class="meta">
+            <div class="t">Restaurant dialogue audio</div>
+            <div class="s">Audio · 4:12</div>
+          </div>
+          <div class="r">6.8 MB</div>
+        </div>
+
+        <div class="row">
+          <img src="https://loremflickr.com/44/44/classroom?lock=8806" width="44" height="44" alt="Printed practice worksheet on a classroom table">
+          <div class="meta">
+            <div class="t">Ordering practice worksheet</div>
+            <div class="s">PDF · 3 pages</div>
+          </div>
+          <div class="r">0.9 MB</div>
+        </div>
+
+        <div class="row">
+          <div class="mono">DR</div>
+          <div class="meta">
+            <div class="t">Co-teacher: Daniela Reyes</div>
+            <div class="s">Can edit materials</div>
+          </div>
+          <div class="r">Invited</div>
+        </div>
+      </aside>
+
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pick a time — Loopside</title>
+<style>
+  :root{
+    --amber:#d97706;
+    --amber-dark:#b45309;
+    --amber-soft:rgba(245,158,11,0.16);
+    --amber-softer:rgba(245,158,11,0.09);
+    --ink:#1c1917;
+    --mid:#6b6560;
+    --fill:#f2f0ee;
+    --line:#e7e5e2;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:#e7e5e2;
+    font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    color:var(--ink);
+  }
+  .screen{
+    width:1024px;
+    height:768px;
+    background:#ffffff;
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
+  }
+  .navbar{
+    height:52px;
+    flex:0 0 auto;
+    display:flex;
+    align-items:center;
+    gap:26px;
+    padding:0 34px;
+    border-bottom:1px solid var(--line);
+  }
+  .brand{font-size:15px;font-weight:700;letter-spacing:.01em;}
+  .navbar nav{display:flex;gap:20px;font-size:13px;color:var(--mid);}
+  .navbar nav b{color:var(--amber-dark);font-weight:600;}
+  .navright{margin-left:auto;display:flex;align-items:center;gap:12px;font-size:12px;color:var(--mid);}
+  .stack{display:flex;}
+  .av{
+    width:26px;height:26px;border-radius:50%;
+    background:var(--fill);color:#57534e;
+    font-size:11px;font-weight:600;
+    display:flex;align-items:center;justify-content:center;
+    border:2px solid #fff;margin-left:-7px;
+  }
+  .av:first-child{margin-left:0;}
+  .hero{
+    width:1024px;
+    height:130px;
+    display:block;
+    object-fit:cover;
+    background:#d6d2cd;
+    flex:0 0 auto;
+  }
+  .content{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    padding:22px 34px 20px;
+  }
+  .titlerow{
+    display:flex;
+    align-items:flex-end;
+    gap:30px;
+  }
+  .kicker{
+    font-size:12px;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    color:var(--amber-dark);
+    font-weight:600;
+  }
+  h1{
+    margin:6px 0 5px;
+    font-size:24px;
+    line-height:1.2;
+    font-weight:600;
+  }
+  .sub{margin:0;font-size:13px;color:var(--mid);}
+  .datepick{margin-left:auto;text-align:right;}
+  .datepick .cap{font-size:11px;color:#a09a94;margin-bottom:7px;}
+  .pills{display:flex;gap:7px;}
+  .pill{
+    background:var(--fill);
+    border-radius:9px;
+    padding:7px 12px;
+    text-align:center;
+    min-width:60px;
+  }
+  .pill .dow{font-size:11px;color:var(--mid);}
+  .pill .num{font-size:15px;font-weight:600;margin-top:1px;}
+  .pill.on{background:var(--amber-soft);}
+  .pill.on .dow,.pill.on .num{color:var(--amber-dark);}
+  .sectionhead{
+    display:flex;
+    align-items:baseline;
+    gap:12px;
+    margin:22px 0 10px;
+  }
+  .sectionhead .label{font-size:13px;font-weight:600;color:var(--mid);}
+  .sectionhead .legend{margin-left:auto;font-size:11px;color:#a09a94;}
+  .matrix{width:100%;border-collapse:separate;border-spacing:0;table-layout:fixed;}
+  .matrix col.who{width:200px;}
+  .matrix thead th{padding:0 3px 9px;vertical-align:bottom;}
+  .matrix thead th.wholab{
+    text-align:left;
+    font-size:11px;
+    font-weight:600;
+    color:#a09a94;
+    letter-spacing:.04em;
+    text-transform:uppercase;
+    padding-left:0;
+  }
+  .mhead{
+    border-radius:10px;
+    padding:8px 2px 9px;
+    text-align:center;
+    background:var(--fill);
+  }
+  .mhead .tm{font-size:13px;font-weight:600;}
+  .mhead .ct{font-size:10px;color:var(--mid);margin-top:2px;}
+  .mhead.on{background:var(--amber);}
+  .mhead.on .tm{color:#fff;}
+  .mhead.on .ct{color:rgba(255,255,255,.88);}
+  .mhead.closed{background:#faf9f8;}
+  .mhead.closed .tm,.mhead.closed .ct{color:#b6b0aa;}
+  .matrix td{
+    height:38px;
+    border-top:1px solid #f2efec;
+    text-align:center;
+    font-size:13px;
+  }
+  .matrix td.oncol{background:var(--amber-softer);}
+  .matrix tbody tr:last-child td{border-bottom:1px solid #f2efec;}
+  .member{
+    display:flex;
+    align-items:center;
+    gap:9px;
+    text-align:left;
+  }
+  .mono{
+    width:26px;height:26px;border-radius:8px;
+    background:var(--fill);color:#57534e;
+    font-size:11px;font-weight:600;
+    display:flex;align-items:center;justify-content:center;
+    flex:0 0 auto;
+  }
+  .member .nm{font-size:13px;font-weight:600;}
+  .member .rp{font-size:11px;color:#a09a94;margin-left:auto;padding-right:10px;}
+  .mk{
+    display:inline-flex;
+    width:24px;height:24px;
+    border-radius:50%;
+    align-items:center;justify-content:center;
+    font-size:12px;font-weight:700;
+  }
+  .mk.yes{background:var(--amber-soft);color:var(--amber-dark);}
+  .mk.no{background:var(--fill);color:#b6b0aa;}
+  .mk.wait{border:1px dashed #d9d5d1;color:#c2bcb6;font-weight:600;}
+  .matrix tfoot td{
+    border-top:1px solid var(--line);
+    padding-top:10px;
+    vertical-align:top;
+  }
+  .fitlab{
+    text-align:left;
+    font-size:12px;
+    font-weight:600;
+    color:var(--mid);
+  }
+  .bar{
+    height:5px;
+    border-radius:3px;
+    background:#eceae7;
+    margin:4px 12px 6px;
+  }
+  .bar i{display:block;height:100%;border-radius:3px;background:#e0a63f;}
+  .bar i.f33{width:33%;}
+  .bar i.f66{width:66%;}
+  .bar i.f100{width:100%;background:var(--amber);}
+  .bar i.f0{width:0;}
+  .word{font-size:11px;font-weight:600;color:#8a8079;}
+  .word.best{color:var(--amber-dark);}
+  .word.off{color:#b6b0aa;}
+  .footbar{
+    margin-top:auto;
+    border-top:1px solid var(--line);
+    padding-top:16px;
+    display:flex;
+    align-items:center;
+    gap:16px;
+  }
+  .recap{display:flex;align-items:center;gap:12px;}
+  .recap .line1{font-size:16px;font-weight:600;}
+  .recap .line2{font-size:12px;color:var(--mid);margin-top:3px;}
+  .btns{margin-left:auto;display:flex;gap:12px;}
+  .cta{
+    background:var(--amber);color:#fff;border:0;border-radius:10px;
+    padding:13px 24px;font-size:15px;font-weight:600;font-family:inherit;cursor:pointer;
+  }
+  .ghost{
+    background:#fff;color:var(--ink);border:1px solid var(--line);border-radius:10px;
+    padding:13px 20px;font-size:14px;font-weight:600;font-family:inherit;cursor:pointer;
+  }
+</style>
+</head>
+<body>
+  <div class="screen">
+    <header class="navbar">
+      <div class="brand">Loopside</div>
+      <nav><span>Groups</span><b>Scheduling</b><span>Members</span><span>Places</span></nav>
+      <div class="navright">
+        3 of 5 members replied
+        <div class="stack">
+          <div class="av">DR</div>
+          <div class="av">KP</div>
+          <div class="av">JL</div>
+        </div>
+      </div>
+    </header>
+
+    <img class="hero" src="https://loremflickr.com/1024/130/cafe?lock=3681" width="1024" height="130" alt="Corner table at Marlow Coffee, where the meetup is planned">
+
+    <div class="content">
+      <div class="titlerow">
+        <div>
+          <div class="kicker">Latte Club</div>
+          <h1>Pick a time for Thursday coffee</h1>
+          <p class="sub">Marlow Coffee, 4th &amp; Pine · Runs about 90 minutes · Hosted by Dana Reyes</p>
+        </div>
+        <div class="datepick">
+          <div class="cap">Choose a day in March</div>
+          <div class="pills">
+            <div class="pill"><div class="dow">Wed</div><div class="num">11</div></div>
+            <div class="pill on"><div class="dow">Thu</div><div class="num">12</div></div>
+            <div class="pill"><div class="dow">Fri</div><div class="num">13</div></div>
+            <div class="pill"><div class="dow">Sat</div><div class="num">14</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sectionhead">
+        <div class="label">Who is free at each start time</div>
+        <div class="legend">✓ free · ✕ busy · dashed circle = no reply yet</div>
+      </div>
+
+      <table class="matrix">
+        <colgroup><col class="who"><col><col><col><col><col><col><col></colgroup>
+        <thead>
+          <tr>
+            <th class="wholab">Member</th>
+            <th><div class="mhead"><div class="tm">4:00 PM</div><div class="ct">1 of 3 free</div></div></th>
+            <th><div class="mhead"><div class="tm">5:30 PM</div><div class="ct">2 of 3 free</div></div></th>
+            <th><div class="mhead"><div class="tm">6:00 PM</div><div class="ct">2 of 3 free</div></div></th>
+            <th><div class="mhead on"><div class="tm">6:30 PM</div><div class="ct">3 of 3 free</div></div></th>
+            <th><div class="mhead"><div class="tm">7:00 PM</div><div class="ct">2 of 3 free</div></div></th>
+            <th><div class="mhead"><div class="tm">8:00 PM</div><div class="ct">2 of 3 free</div></div></th>
+            <th><div class="mhead closed"><div class="tm">9:30 PM</div><div class="ct">Café closed</div></div></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><div class="member"><div class="mono">DR</div><div class="nm">Dana Reyes</div><span class="rp">replied</span></div></td>
+            <td><span class="mk no">✕</span></td>
+            <td><span class="mk yes">✓</span></td>
+            <td><span class="mk yes">✓</span></td>
+            <td class="oncol"><span class="mk yes">✓</span></td>
+            <td><span class="mk yes">✓</span></td>
+            <td><span class="mk no">✕</span></td>
+            <td><span class="mk no">✕</span></td>
+          </tr>
+          <tr>
+            <td><div class="member"><div class="mono">KP</div><div class="nm">Kiran Patel</div><span class="rp">replied</span></div></td>
+            <td><span class="mk no">✕</span></td>
+            <td><span class="mk no">✕</span></td>
+            <td><span class="mk yes">✓</span></td>
+            <td class="oncol"><span class="mk yes">✓</span></td>
+            <td><span class="mk yes">✓</span></td>
+            <td><span class="mk yes">✓</span></td>
+            <td><span class="mk no">✕</span></td>
+          </tr>
+          <tr>
+            <td><div class="member"><div class="mono">JL</div><div class="nm">Jules Lam</div><span class="rp">replied</span></div></td>
+            <td><span class="mk yes">✓</span></td>
+            <td><span class="mk yes">✓</span></td>
+            <td><span class="mk no">✕</span></td>
+            <td class="oncol"><span class="mk yes">✓</span></td>
+            <td><span class="mk no">✕</span></td>
+            <td><span class="mk yes">✓</span></td>
+            <td><span class="mk no">✕</span></td>
+          </tr>
+          <tr>
+            <td><div class="member"><div class="mono">MO</div><div class="nm">Mira Osei</div><span class="rp">waiting</span></div></td>
+            <td><span class="mk wait">?</span></td>
+            <td><span class="mk wait">?</span></td>
+            <td><span class="mk wait">?</span></td>
+            <td class="oncol"><span class="mk wait">?</span></td>
+            <td><span class="mk wait">?</span></td>
+            <td><span class="mk wait">?</span></td>
+            <td><span class="mk no">✕</span></td>
+          </tr>
+          <tr>
+            <td><div class="member"><div class="mono">TB</div><div class="nm">Tom Brandt</div><span class="rp">waiting</span></div></td>
+            <td><span class="mk wait">?</span></td>
+            <td><span class="mk wait">?</span></td>
+            <td><span class="mk wait">?</span></td>
+            <td class="oncol"><span class="mk wait">?</span></td>
+            <td><span class="mk wait">?</span></td>
+            <td><span class="mk wait">?</span></td>
+            <td><span class="mk no">✕</span></td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td class="fitlab">Group fit so far</td>
+            <td><div class="bar"><i class="f33"></i></div><div class="word">Weak</div></td>
+            <td><div class="bar"><i class="f66"></i></div><div class="word">Fair</div></td>
+            <td><div class="bar"><i class="f66"></i></div><div class="word">Fair</div></td>
+            <td class="oncol"><div class="bar"><i class="f100"></i></div><div class="word best">Best match</div></td>
+            <td><div class="bar"><i class="f66"></i></div><div class="word">Fair</div></td>
+            <td><div class="bar"><i class="f66"></i></div><div class="word">Fair</div></td>
+            <td><div class="bar"><i class="f0"></i></div><div class="word off">Unavailable</div></td>
+          </tr>
+        </tfoot>
+      </table>
+
+      <div class="footbar">
+        <div class="recap">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#b45309" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="9"></circle>
+            <path d="M12 7.5V12l3 1.8"></path>
+          </svg>
+          <div>
+            <div class="line1">Thursday, March 12 · 6:30 PM</div>
+            <div class="line2">Ends around 8:00 PM · Everyone who replied is free at this time</div>
+          </div>
+        </div>
+        <div class="btns">
+          <button class="ghost" type="button">Nudge Mira and Tom</button>
+          <button class="cta" type="button">Send this time to the group</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

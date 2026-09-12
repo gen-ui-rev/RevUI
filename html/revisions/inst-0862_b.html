@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign in to Serevia Health</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #e9eaf0;
+      color: #202235;
+      font-family: 'Nunito Sans', system-ui, sans-serif;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    .screen {
+      position: relative;
+      width: 1024px;
+      height: 768px;
+      flex: 0 0 1024px;
+      display: flex;
+      flex-direction: column;
+      background: #ffffff;
+      border: 1px solid #d8dae4;
+    }
+
+    /* Dark navy top bar */
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 44px 17px;
+      background: #171c3d;
+    }
+
+    .service-name {
+      margin: 0;
+      color: #ffffff;
+      font-size: 20px;
+      line-height: 28px;
+      font-weight: 700;
+      letter-spacing: -0.2px;
+    }
+
+    .bar-links {
+      display: flex;
+      align-items: center;
+      gap: 26px;
+    }
+
+    .bar-links a {
+      color: #ffffff;
+      font-size: 14px;
+      line-height: 22px;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .help-link {
+      color: #ffffff;
+      font-size: 14px;
+      line-height: 22px;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    /* Page canvas */
+    .page {
+      display: flex;
+      flex: 1;
+      min-height: 0;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 36px 40px;
+      background: #eef0f6;
+    }
+
+    .card {
+      width: 744px;
+      background: #ffffff;
+      border: 1px solid #e0e2ec;
+      border-radius: 12px;
+      box-shadow: 0 14px 34px rgba(26, 30, 62, 0.08);
+    }
+
+    .auth-tabs {
+      display: flex;
+      padding: 0 36px;
+      border-bottom: 1px solid #e6e7ee;
+    }
+
+    .auth-tab {
+      position: relative;
+      padding: 13px 20px 12px;
+      color: #686b7b;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .auth-tab.active {
+      color: #4338a3;
+    }
+
+    .auth-tab.active::after {
+      position: absolute;
+      right: 10px;
+      bottom: -1px;
+      left: 10px;
+      height: 2px;
+      background: #4b43ad;
+      content: "";
+    }
+
+    .card-body {
+      display: flex;
+      gap: 34px;
+      padding: 30px 36px 34px;
+    }
+
+    .form-col {
+      flex: 1;
+      min-width: 0;
+    }
+
+    h1 {
+      margin: 0;
+      color: #1f2131;
+      font-size: 28px;
+      line-height: 36px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+
+    .intro {
+      margin: 8px 0 0;
+      color: #626575;
+      font-size: 15px;
+      line-height: 22px;
+    }
+
+    .credentials {
+      margin-top: 22px;
+    }
+
+    .field-group + .field-group {
+      margin-top: 14px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      color: #323545;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 700;
+    }
+
+    .text-input,
+    .password-wrap {
+      width: 100%;
+      border: 1px solid #cfd1dc;
+      border-radius: 6px;
+      background: #ffffff;
+    }
+
+    .text-input {
+      padding: 11px 13px;
+      color: #242634;
+      font-size: 15px;
+      line-height: 22px;
+      outline: none;
+    }
+
+    .text-input:focus,
+    .password-wrap:focus-within {
+      border-color: #4b43ad;
+    }
+
+    .password-wrap {
+      display: flex;
+      align-items: center;
+    }
+
+    .password-wrap input {
+      min-width: 0;
+      flex: 1;
+      padding: 11px 8px 11px 13px;
+      border: 0;
+      outline: none;
+      background: transparent;
+      color: #242634;
+      font-size: 15px;
+      line-height: 22px;
+    }
+
+    .visibility-button {
+      width: 41px;
+      padding: 8px 12px 6px 8px;
+      border: 0;
+      background: transparent;
+      color: #696c7d;
+      cursor: pointer;
+    }
+
+    .visibility-button svg {
+      display: block;
+      width: 20px;
+      height: 20px;
+    }
+
+    .forgot-row {
+      margin-top: 8px;
+      text-align: right;
+    }
+
+    .text-link {
+      color: #4b43ad;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    /* Stay signed in — framed control */
+    .remember-box {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 14px;
+      padding: 12px 14px;
+      border: 1px solid #dcdeea;
+      border-radius: 8px;
+      background: #f8f8fc;
+    }
+
+    .remember-box input {
+      width: 17px;
+      height: 17px;
+      flex: 0 0 17px;
+      margin: 0;
+      accent-color: #4b43ad;
+      cursor: pointer;
+    }
+
+    .remember-box label {
+      margin: 0;
+      color: #2f3245;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .remember-days {
+      margin-left: auto;
+      color: #6f7284;
+      font-size: 12.5px;
+      line-height: 18px;
+      white-space: nowrap;
+    }
+
+    .actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-top: 18px;
+    }
+
+    .primary-button {
+      padding: 12px 34px;
+      border: 1px solid #433a9f;
+      border-radius: 6px;
+      background: #4b43ad;
+      color: #ffffff;
+      font-size: 15px;
+      line-height: 22px;
+      font-weight: 700;
+      text-align: center;
+      cursor: pointer;
+    }
+
+    .actions-note {
+      margin: 0;
+      color: #717484;
+      font-size: 12.5px;
+      line-height: 18px;
+    }
+
+    /* Side column */
+    .side-col {
+      width: 258px;
+      flex: 0 0 258px;
+      padding: 20px;
+      border: 1px solid #e4e5ee;
+      border-radius: 10px;
+      background: #f6f7fc;
+    }
+
+    .alternate-title {
+      margin: 0 0 12px;
+      color: #383a49;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 700;
+    }
+
+    .secondary-button {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid #cfd1dc;
+      border-radius: 6px;
+      background: #ffffff;
+      color: #343647;
+      font-size: 13.5px;
+      line-height: 20px;
+      font-weight: 700;
+      text-align: center;
+      cursor: pointer;
+    }
+
+    .secondary-button + .secondary-button {
+      margin-top: 10px;
+    }
+
+    .side-divider {
+      height: 1px;
+      margin: 18px 0;
+      background: #e2e3ec;
+    }
+
+    .support-note {
+      margin: 0;
+      color: #63667a;
+      font-size: 13px;
+      line-height: 20px;
+    }
+
+    .account-note {
+      margin: 14px 0 0;
+      color: #666978;
+      font-size: 13.5px;
+      line-height: 20px;
+    }
+
+    .legal {
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+      margin-top: 26px;
+    }
+
+    .legal a {
+      color: #6f7280;
+      font-size: 12px;
+      line-height: 18px;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="top-bar">
+      <p class="service-name">Serevia Health</p>
+      <div class="bar-links">
+        <a href="#">Find care</a>
+        <a class="help-link" href="#">Help</a>
+      </div>
+    </header>
+
+    <div class="page">
+      <div class="card">
+        <nav class="auth-tabs" aria-label="Account access">
+          <a class="auth-tab active" href="#" aria-current="page">Sign in</a>
+          <a class="auth-tab" href="#">Create account</a>
+        </nav>
+
+        <div class="card-body">
+          <section class="form-col" aria-labelledby="sign-in-heading">
+            <h1 id="sign-in-heading">Sign in</h1>
+            <p class="intro">Access your recovery plan, sleep records, and activity history.</p>
+
+            <form class="credentials">
+              <div class="field-group">
+                <label for="email">Email address</label>
+                <input class="text-input" id="email" name="email" type="email" value="avery.holt@sereviamail.com" autocomplete="email">
+              </div>
+
+              <div class="field-group">
+                <label for="password">Password</label>
+                <div class="password-wrap">
+                  <input id="password" name="password" type="password" value="Riverstone84" autocomplete="current-password">
+                  <button class="visibility-button" type="button" aria-label="Show password">
+                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      <path d="M2.75 12s3.25-5 9.25-5 9.25 5 9.25 5-3.25 5-9.25 5-9.25-5-9.25-5Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+                      <circle cx="12" cy="12" r="2.6" stroke="currentColor" stroke-width="1.6"/>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+
+              <div class="forgot-row">
+                <a class="text-link" href="#">Forgot password?</a>
+              </div>
+
+              <div class="remember-box">
+                <input id="stay-signed-in" name="stay-signed-in" type="checkbox">
+                <label for="stay-signed-in">Stay signed in</label>
+                <span class="remember-days">Trusted for 30 days</span>
+              </div>
+
+              <div class="actions">
+                <button class="primary-button" type="submit">Sign in</button>
+                <p class="actions-note">Records are encrypted in transit and at rest.</p>
+              </div>
+            </form>
+          </section>
+
+          <aside class="side-col" aria-labelledby="alternate-heading">
+            <h2 class="alternate-title" id="alternate-heading">Other sign-in options</h2>
+            <button class="secondary-button" type="button">Use a one-time email code</button>
+            <button class="secondary-button" type="button">Use a member ID</button>
+            <div class="side-divider"></div>
+            <p class="support-note">Member support is available weekdays, 8am to 8pm ET.</p>
+            <p class="account-note">New to Serevia Health? <a class="text-link" href="#">Create an account</a></p>
+          </aside>
+        </div>
+      </div>
+
+      <footer class="legal">
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+        <a href="#">Accessibility</a>
+      </footer>
+    </div>
+  </div>
+</body>
+</html>

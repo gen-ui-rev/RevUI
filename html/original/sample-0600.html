@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Study Map — Lingo Grove</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 32px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #dfe1dc;
+      color: #1d241d;
+      font-family: 'Source Sans 3', system-ui, sans-serif;
+    }
+
+    button {
+      font: inherit;
+      color: inherit;
+    }
+
+    .screen {
+      position: relative;
+      width: 390px;
+      height: 844px;
+      background: #f8f8f3;
+    }
+
+    .top-bar {
+      position: relative;
+      z-index: 5;
+      padding: 17px 18px 15px;
+      background: #ffffff;
+    }
+
+    .top-line {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .service-name {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #556153;
+    }
+
+    .service-mark {
+      display: grid;
+      place-items: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 10px;
+      background: #d8ff69;
+      color: #29351e;
+    }
+
+    .profile {
+      display: grid;
+      place-items: center;
+      width: 34px;
+      height: 34px;
+      border: 0;
+      border-radius: 10px;
+      background: rgba(184, 236, 49, 0.22);
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    h1 {
+      margin: 0;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 28px;
+      line-height: 1.08;
+      font-weight: 700;
+      letter-spacing: -0.4px;
+    }
+
+    .intro {
+      margin: 4px 0 0;
+      font-size: 14px;
+      line-height: 1.35;
+      color: #677064;
+    }
+
+    .map-shell {
+      position: absolute;
+      inset: 130px 0 74px;
+      background: #e8e9e1;
+    }
+
+    .map-art {
+      position: absolute;
+      inset: 0;
+      display: block;
+      width: 390px;
+      height: 640px;
+    }
+
+    .search-control {
+      position: absolute;
+      z-index: 3;
+      top: 16px;
+      left: 16px;
+      right: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 13px 14px;
+      border-radius: 10px;
+      background: #ffffff;
+      box-shadow: 0 3px 12px rgba(32, 40, 30, 0.12);
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .search-control svg {
+      flex: 0 0 auto;
+      color: #657060;
+    }
+
+    .search-copy {
+      flex: 1;
+    }
+
+    .filter-button {
+      display: grid;
+      place-items: center;
+      width: 30px;
+      height: 30px;
+      padding: 0;
+      border: 0;
+      border-radius: 10px;
+      background: rgba(184, 236, 49, 0.25);
+    }
+
+    .filters {
+      position: absolute;
+      z-index: 3;
+      top: 75px;
+      left: 16px;
+      display: flex;
+      gap: 8px;
+    }
+
+    .chip {
+      padding: 8px 12px;
+      border: 0;
+      border-radius: 10px;
+      background: #ffffff;
+      box-shadow: 0 2px 8px rgba(32, 40, 30, 0.1);
+      font-size: 14px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .chip.active {
+      background: #d8ff69;
+    }
+
+    .map-marker {
+      position: absolute;
+      z-index: 2;
+      display: grid;
+      place-items: center;
+      width: 38px;
+      height: 44px;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: #283326;
+    }
+
+    .marker-one {
+      left: 92px;
+      top: 214px;
+    }
+
+    .marker-two {
+      left: 282px;
+      top: 184px;
+    }
+
+    .marker-selected {
+      left: 209px;
+      top: 318px;
+      color: #1e2818;
+    }
+
+    .marker-selected svg {
+      filter: drop-shadow(0 3px 3px rgba(34, 44, 29, 0.18));
+    }
+
+    .distance-label {
+      position: absolute;
+      z-index: 2;
+      left: 243px;
+      top: 352px;
+      padding: 5px 8px;
+      border-radius: 10px;
+      background: #d8ff69;
+      font-size: 12px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .current-location {
+      position: absolute;
+      z-index: 2;
+      left: 169px;
+      top: 280px;
+      width: 18px;
+      height: 18px;
+      border: 5px solid #ffffff;
+      border-radius: 50%;
+      background: #536347;
+      box-shadow: 0 1px 6px rgba(32, 40, 30, 0.22);
+    }
+
+    .recenter {
+      position: absolute;
+      z-index: 3;
+      right: 16px;
+      bottom: 150px;
+      display: grid;
+      place-items: center;
+      width: 44px;
+      height: 44px;
+      padding: 0;
+      border: 0;
+      border-radius: 10px;
+      background: #ffffff;
+      box-shadow: 0 3px 12px rgba(32, 40, 30, 0.12);
+    }
+
+    .study-card {
+      position: absolute;
+      z-index: 4;
+      right: 16px;
+      bottom: 16px;
+      left: 16px;
+      display: flex;
+      gap: 12px;
+      padding: 12px;
+      border-radius: 10px;
+      background: #ffffff;
+      box-shadow: 0 5px 16px rgba(32, 40, 30, 0.16);
+    }
+
+    .study-card img {
+      width: 104px;
+      height: 96px;
+      flex: 0 0 auto;
+      border-radius: 10px;
+      object-fit: cover;
+      display: block;
+      background: #d8ddd1;
+    }
+
+    .card-content {
+      min-width: 0;
+      flex: 1;
+      padding-top: 1px;
+    }
+
+    .eyebrow {
+      margin: 0 0 2px;
+      color: #63705e;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .card-title {
+      margin: 0;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 18px;
+      line-height: 1.15;
+      font-weight: 700;
+    }
+
+    .card-meta {
+      margin: 6px 0 0;
+      font-size: 14px;
+      line-height: 1.25;
+      color: #4f594c;
+    }
+
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 7px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .spots {
+      padding: 4px 7px;
+      border-radius: 10px;
+      background: rgba(184, 236, 49, 0.22);
+    }
+
+    .card-arrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .tab-bar {
+      position: absolute;
+      z-index: 8;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      padding: 9px 8px 10px;
+      background: #ffffff;
+    }
+
+    .tab {
+      width: 74px;
+      padding: 3px 0 0;
+      border: 0;
+      background: transparent;
+      color: #778075;
+      text-align: center;
+      font-size: 12px;
+      line-height: 1.2;
+    }
+
+    .tab svg {
+      display: block;
+      margin: 0 auto 4px;
+    }
+
+    .tab.active {
+      color: #26321f;
+      font-weight: 600;
+    }
+
+    .tab.active .tab-icon {
+      display: grid;
+      place-items: center;
+      width: 34px;
+      height: 30px;
+      margin: 0 auto 2px;
+      border-radius: 10px;
+      background: #d8ff69;
+    }
+
+    .map-label {
+      font-family: 'Source Sans 3', system-ui, sans-serif;
+      fill: #72796d;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .road-label {
+      font-family: 'Source Sans 3', system-ui, sans-serif;
+      fill: #8b9186;
+      font-size: 11px;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="top-bar">
+      <div class="top-line">
+        <div class="service-name">
+          <span class="service-mark" aria-hidden="true">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
+              <path d="M5 5.5C8.2 5.5 10.5 6.5 12 8.2C13.5 6.5 15.8 5.5 19 5.5V18.5C15.8 18.5 13.5 19.3 12 21C10.5 19.3 8.2 18.5 5 18.5V5.5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+              <path d="M12 8.2V21" stroke="currentColor" stroke-width="1.8"/>
+            </svg>
+          </span>
+          Lingo Grove
+        </div>
+        <button class="profile" aria-label="Open Morgan Reed's profile">MR</button>
+      </div>
+      <h1>Find a study circle</h1>
+      <p class="intro">Explore language sessions within a short walk.</p>
+    </header>
+
+    <main class="map-shell" aria-label="Map of nearby study circles">
+      <svg class="map-art" viewBox="0 0 390 640" role="img" aria-label="Street map showing three nearby language study circles">
+        <rect width="390" height="640" fill="#e9eae3"/>
+        <path d="M0 90H130V174H0Z" fill="#e1e2da"/>
+        <path d="M158 90H276V172H158Z" fill="#dedfd7"/>
+        <path d="M305 82H390V182H305Z" fill="#e0e1d9"/>
+        <path d="M0 213H79V315H0Z" fill="#dfe0d8"/>
+        <path d="M108 212H216V314H108Z" fill="#e0e1d9"/>
+        <path d="M248 211H358V298H248Z" fill="#ddded6"/>
+        <path d="M0 348H111V440H0Z" fill="#dfe0d8"/>
+        <path d="M143 354H248V441H143Z" fill="#dcded5"/>
+        <path d="M282 335H390V448H282Z" fill="#dfe0d8"/>
+        <path d="M0 477H86V640H0Z" fill="#dedfd7"/>
+        <path d="M117 479H220V640H117Z" fill="#e1e2da"/>
+        <path d="M252 476H390V640H252Z" fill="#ddded6"/>
+
+        <path d="M267 91C307 112 337 120 390 122V205C344 201 311 194 277 179Z" fill="#d8ff69" opacity="0.18"/>
+        <path d="M18 355C55 334 91 337 118 365V434H18Z" fill="#d8ff69" opacity="0.2"/>
+
+        <path d="M93 -10C90 82 92 162 93 252C94 350 89 474 93 650" fill="none" stroke="#ffffff" stroke-width="24"/>
+        <path d="M232 -10C232 84 228 172 232 260C235 362 231 484 235 650" fill="none" stroke="#ffffff" stroke-width="19"/>
+        <path d="M-10 195C86 191 177 198 270 193C321 190 355 192 400 190" fill="none" stroke="#ffffff" stroke-width="25"/>
+        <path d="M-10 331C92 332 172 327 262 331C314 333 351 330 400 331" fill="none" stroke="#ffffff" stroke-width="20"/>
+        <path d="M-10 460C82 460 182 456 270 462C318 465 355 462 400 462" fill="none" stroke="#ffffff" stroke-width="24"/>
+        <path d="M-20 570C80 525 164 498 251 441C311 403 351 365 410 324" fill="none" stroke="#ffffff" stroke-width="16"/>
+
+        <path d="M93 0V640" stroke="#d1d3cb" stroke-width="1.5" stroke-dasharray="5 7"/>
+        <path d="M232 0V640" stroke="#d1d3cb" stroke-width="1.5" stroke-dasharray="5 7"/>
+        <path d="M0 195H390" stroke="#d1d3cb" stroke-width="1.5" stroke-dasharray="5 7"/>
+        <path d="M0 331H390" stroke="#d1d3cb" stroke-width="1.5" stroke-dasharray="5 7"/>
+        <path d="M0 460H390" stroke="#d1d3cb" stroke-width="1.5" stroke-dasharray="5 7"/>
+
+        <text x="286" y="141" class="map-label">Willow Park</text>
+        <text x="22" y="392" class="map-label">Civic Garden</text>
+        <text x="104" y="187" class="road-label">Pine Street</text>
+        <text x="243" y="324" class="road-label">Grove Avenue</text>
+        <text x="104" y="454" class="road-label">Mercer Street</text>
+      </svg>
+
+      <div class="search-control">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="10.5" cy="10.5" r="6.5" stroke="currentColor" stroke-width="1.8"/>
+          <path d="M15.5 15.5L21 21" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+        <span class="search-copy">Search this map</span>
+        <button class="filter-button" aria-label="Open map filters">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M4 7H20M7 12H17M10 17H14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="filters" aria-label="Study circle filters">
+        <button class="chip active">Today</button>
+        <button class="chip">Spanish</button>
+        <button class="chip">Under 1 mile</button>
+      </div>
+
+      <button class="map-marker marker-one" aria-label="Beginner French study circle">
+        <svg width="38" height="44" viewBox="0 0 38 44" fill="none" aria-hidden="true">
+          <path d="M19 2C9.7 2 4 8.6 4 17.2C4 27.6 19 42 19 42C19 42 34 27.6 34 17.2C34 8.6 28.3 2 19 2Z" fill="#ffffff"/>
+          <circle cx="19" cy="17" r="6" fill="#66705f"/>
+        </svg>
+      </button>
+
+      <button class="map-marker marker-two" aria-label="English writing workshop">
+        <svg width="38" height="44" viewBox="0 0 38 44" fill="none" aria-hidden="true">
+          <path d="M19 2C9.7 2 4 8.6 4 17.2C4 27.6 19 42 19 42C19 42 34 27.6 34 17.2C34 8.6 28.3 2 19 2Z" fill="#ffffff"/>
+          <circle cx="19" cy="17" r="6" fill="#66705f"/>
+        </svg>
+      </button>
+
+      <button class="map-marker marker-selected" aria-label="Selected Spanish conversation circle">
+        <svg width="38" height="44" viewBox="0 0 38 44" fill="none" aria-hidden="true">
+          <path d="M19 2C9.7 2 4 8.6 4 17.2C4 27.6 19 42 19 42C19 42 34 27.6 34 17.2C34 8.6 28.3 2 19 2Z" fill="#d8ff69"/>
+          <circle cx="19" cy="17" r="6" fill="currentColor"/>
+        </svg>
+      </button>
+
+      <span class="distance-label">7 min walk</span>
+      <span class="current-location" aria-label="Your current location"></span>
+
+      <button class="recenter" aria-label="Recenter map on your location">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.8"/>
+          <path d="M12 2V5M12 19V22M2 12H5M19 12H22" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+      </button>
+
+      <article class="study-card">
+        <img src="https://loremflickr.com/104/96/classroom?lock=8030" width="104" height="96" alt="Tables arranged for a small classroom study session">
+        <div class="card-content">
+          <p class="eyebrow">Selected circle</p>
+          <h2 class="card-title">Spanish Conversation</h2>
+          <p class="card-meta">Today, 6:30 PM · Intermediate</p>
+          <div class="card-footer">
+            <span class="spots">4 spots open</span>
+            <span class="card-arrow">
+              View
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M5 12H19M14 7L19 12L14 17" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+          </div>
+        </div>
+      </article>
+    </main>
+
+    <nav class="tab-bar" aria-label="Primary navigation">
+      <button class="tab" aria-label="Home">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M3.5 10.5L12 3.5L20.5 10.5V20H14.5V14H9.5V20H3.5V10.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+        </svg>
+        Home
+      </button>
+      <button class="tab" aria-label="Learn">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M4 5.5C7.4 5.5 10 6.4 12 8.2C14 6.4 16.6 5.5 20 5.5V18.5C16.6 18.5 14 19.3 12 21C10 19.3 7.4 18.5 4 18.5V5.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+          <path d="M12 8V21" stroke="currentColor" stroke-width="1.7"/>
+        </svg>
+        Learn
+      </button>
+      <button class="tab active" aria-current="page" aria-label="Map">
+        <span class="tab-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M9 18L3.5 20.5V6L9 3.5L15 6L20.5 3.5V18L15 20.5L9 18Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+            <path d="M9 3.5V18M15 6V20.5" stroke="currentColor" stroke-width="1.7"/>
+          </svg>
+        </span>
+        Map
+      </button>
+      <button class="tab" aria-label="Profile">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.7"/>
+          <path d="M4.5 21C5 16.8 7.6 14.5 12 14.5C16.4 14.5 19 16.8 19.5 21" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+        </svg>
+        Profile
+      </button>
+    </nav>
+  </div>
+</body>
+</html>

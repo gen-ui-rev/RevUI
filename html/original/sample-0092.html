@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pick a time — Cadence Language Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 40px 0;
+    margin: 0;
+    background: #ebebe9;
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .screen {
+    width: 390px;
+    padding: 24px 0;
+    background: #ebebe9;
+  }
+  .card {
+    width: 342px;
+    margin: 0 auto;
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 6px 20px rgba(28, 25, 23, 0.08);
+    padding: 20px;
+  }
+
+  .tutor {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .mono {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    background: #fdf0d5;
+    color: #9a5b06;
+    font-size: 15px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+  }
+  .tutor-text { min-width: 0; }
+  .tutor-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: #1c1917;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .tutor-meta {
+    font-size: 12px;
+    color: #78716c;
+    margin-top: 3px;
+  }
+
+  h1 {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1c1917;
+    margin: 18px 0 0;
+    letter-spacing: -0.2px;
+  }
+
+  .monthbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 16px;
+  }
+  .month {
+    font-size: 14px;
+    font-weight: 600;
+    color: #44403c;
+  }
+  .navs { display: flex; gap: 6px; }
+  .nav {
+    width: 28px;
+    height: 28px;
+    border-radius: 10px;
+    border: 1px solid #e7e5e4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #57534e;
+  }
+
+  .days {
+    display: flex;
+    gap: 5px;
+    margin-top: 12px;
+  }
+  .day {
+    flex: 1 1 0;
+    min-width: 0;
+    border-radius: 10px;
+    border: 1px solid #eae8e6;
+    padding: 8px 0 9px;
+    text-align: center;
+  }
+  .dow {
+    font-size: 12px;
+    color: #8a8480;
+    font-weight: 500;
+  }
+  .dnum {
+    font-size: 15px;
+    font-weight: 600;
+    color: #292524;
+    margin-top: 3px;
+  }
+  .day.on {
+    background: #f59e0b;
+    border-color: #f59e0b;
+  }
+  .day.on .dow { color: #6b3f04; }
+  .day.on .dnum { color: #1c1917; font-weight: 700; }
+  .day.off { border-color: #f1efed; background: #faf9f8; }
+  .day.off .dow, .day.off .dnum { color: #c3bfbb; }
+
+  .slabel {
+    font-size: 13px;
+    font-weight: 600;
+    color: #57534e;
+    margin-top: 20px;
+  }
+  .slots {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-top: 10px;
+  }
+  .slot {
+    border: 1px solid #e7e5e4;
+    border-radius: 10px;
+    text-align: center;
+    padding: 11px 0;
+    font-size: 14px;
+    font-weight: 500;
+    color: #292524;
+  }
+  .slot.on {
+    background: #f59e0b;
+    border-color: #f59e0b;
+    color: #1c1917;
+    font-weight: 700;
+  }
+  .slot.taken {
+    color: #c3bfbb;
+    background: #faf9f8;
+    border-color: #f1efed;
+  }
+  .tz {
+    font-size: 12px;
+    color: #8a8480;
+    margin-top: 12px;
+  }
+
+  .rule {
+    height: 1px;
+    background: #eeecea;
+    margin: 16px 0;
+  }
+  .summary {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  .sum-main {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1c1917;
+  }
+  .sum-side {
+    font-size: 13px;
+    color: #78716c;
+    white-space: nowrap;
+  }
+  .cta {
+    margin-top: 14px;
+    background: #f59e0b;
+    border-radius: 10px;
+    text-align: center;
+    padding: 14px 0;
+    font-size: 15px;
+    font-weight: 700;
+    color: #1c1917;
+  }
+</style>
+</head>
+<body>
+  <div class="screen">
+    <div class="card">
+      <div class="tutor">
+        <div class="mono">AR</div>
+        <div class="tutor-text">
+          <div class="tutor-name">Alina Reyes</div>
+          <div class="tutor-meta">Spanish conversation · Level B1</div>
+        </div>
+      </div>
+
+      <h1>Pick a lesson time</h1>
+
+      <div class="monthbar">
+        <div class="month">March 2026</div>
+        <div class="navs">
+          <div class="nav" aria-label="Previous week">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+          </div>
+          <div class="nav" aria-label="Next week">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="days">
+        <div class="day off"><div class="dow">Mon</div><div class="dnum">9</div></div>
+        <div class="day"><div class="dow">Tue</div><div class="dnum">10</div></div>
+        <div class="day"><div class="dow">Wed</div><div class="dnum">11</div></div>
+        <div class="day on"><div class="dow">Thu</div><div class="dnum">12</div></div>
+        <div class="day"><div class="dow">Fri</div><div class="dnum">13</div></div>
+        <div class="day"><div class="dow">Sat</div><div class="dnum">14</div></div>
+        <div class="day off"><div class="dow">Sun</div><div class="dnum">15</div></div>
+      </div>
+
+      <div class="slabel">Available times, Thursday, March 12</div>
+      <div class="slots">
+        <div class="slot">9:00 AM</div>
+        <div class="slot taken">10:30 AM</div>
+        <div class="slot">12:00 PM</div>
+        <div class="slot">2:15 PM</div>
+        <div class="slot on">4:30 PM</div>
+        <div class="slot taken">6:00 PM</div>
+      </div>
+      <div class="tz">Times shown in your local time, Pacific (PT).</div>
+
+      <div class="rule"></div>
+
+      <div class="summary">
+        <div class="sum-main">Thu, Mar 12 at 4:30 PM</div>
+        <div class="sum-side">45 min · 2 credits</div>
+      </div>
+
+      <div class="cta">Confirm 4:30 PM</div>
+    </div>
+  </div>
+</body>
+</html>

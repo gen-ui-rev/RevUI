@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Kestrel Pay — Transfer activity</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    margin: 0;
+    padding: 0;
+    background: #D9DBDF;
+    font-family: 'Source Serif 4', Georgia, serif;
+  }
+  .screen {
+    width: 768px;
+    height: 1024px;
+    background: #E9EAEC;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 26px 40px;
+    border-bottom: 1px solid #D6D8DD;
+    background: #EFF0F2;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 17px;
+    font-weight: 600;
+    color: #0B0C0F;
+  }
+  .logo {
+    width: 30px;
+    height: 30px;
+    border-radius: 9px;
+    background: #0B0C0F;
+    flex: none;
+  }
+  .tabs {
+    display: flex;
+    gap: 8px;
+  }
+  .tab {
+    font-size: 15px;
+    color: #6E747E;
+    padding: 10px 18px;
+    border-radius: 999px;
+  }
+  .tab.on {
+    background: #0B0C0F;
+    color: #FFFFFF;
+    font-weight: 600;
+  }
+  .stage {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0 174px;
+  }
+  .card {
+    width: 100%;
+    background: #FFFFFF;
+    border: 1px solid #E1E3E7;
+    border-radius: 26px;
+    padding: 34px 32px 28px;
+    box-shadow: 0 16px 38px rgba(17, 20, 28, 0.12);
+  }
+  .head {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+  }
+  .thumb {
+    width: 58px;
+    height: 58px;
+    border-radius: 16px;
+    background: #2F6BFF;
+    flex: none;
+  }
+  .who { flex: 1; min-width: 0; }
+  .kicker {
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #8B909A;
+    line-height: 1.3;
+  }
+  .name {
+    font-size: 22px;
+    font-weight: 600;
+    color: #0B0C0F;
+    line-height: 1.3;
+    margin-top: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .account {
+    font-size: 15px;
+    color: #6E747E;
+    line-height: 1.4;
+    margin-top: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .pill {
+    flex: none;
+    font-size: 13px;
+    font-weight: 600;
+    color: #1D4ED8;
+    background: #EBF1FF;
+    border-radius: 999px;
+    padding: 8px 15px;
+    white-space: nowrap;
+  }
+  .amount {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin-top: 26px;
+  }
+  .amount .value {
+    font-size: 58px;
+    font-weight: 700;
+    color: #0B0C0F;
+    line-height: 1.02;
+    letter-spacing: -0.015em;
+  }
+  .amount .unit {
+    font-size: 16px;
+    font-weight: 600;
+    color: #6E747E;
+    background: #F0F1F4;
+    border-radius: 8px;
+    padding: 5px 10px;
+  }
+  .rule {
+    height: 1px;
+    background: #E5E7EB;
+    margin: 26px 0 22px;
+  }
+  .tl-row { display: flex; gap: 14px; }
+  .tl-mark {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: none;
+    width: 16px;
+  }
+  .dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #C6CAD2;
+    flex: none;
+  }
+  .dot.done { background: #0B0C0F; }
+  .dot.now {
+    background: #2F6BFF;
+    box-shadow: 0 0 0 5px #E4ECFF;
+  }
+  .line {
+    width: 2px;
+    flex: 1;
+    min-height: 24px;
+    background: #DFE2E7;
+    margin: 6px 0;
+  }
+  .tl-body { flex: 1; min-width: 0; padding-bottom: 20px; }
+  .tl-body.last { padding-bottom: 0; }
+  .tl-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #0B0C0F;
+    line-height: 1.35;
+  }
+  .tl-title.muted { color: #8B909A; font-weight: 400; }
+  .tl-meta {
+    font-size: 14px;
+    color: #6E747E;
+    line-height: 1.4;
+    margin-top: 3px;
+  }
+  .cta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-top: 26px;
+    padding-top: 22px;
+    border-top: 1px solid #E5E7EB;
+  }
+  .cta .ref {
+    font-size: 14px;
+    color: #8B909A;
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .btn {
+    flex: none;
+    height: 50px;
+    padding: 0 26px;
+    border-radius: 14px;
+    background: #0B0C0F;
+    color: #FFFFFF;
+    font-size: 16px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+  }
+  .foot-note {
+    width: 100%;
+    text-align: center;
+    font-size: 14px;
+    color: #8B909A;
+    margin-top: 20px;
+  }
+</style>
+</head>
+<body>
+  <div class="screen">
+    <div class="topbar">
+      <div class="brand"><span class="logo"></span>Kestrel Pay</div>
+      <div class="tabs">
+        <div class="tab on">Activity</div>
+        <div class="tab">Accounts</div>
+        <div class="tab">Recipients</div>
+      </div>
+    </div>
+    <div class="stage">
+      <div class="card">
+        <div class="head">
+          <div class="thumb"></div>
+          <div class="who">
+            <div class="kicker">Transfer · Recipient</div>
+            <div class="name">Maya Okonkwo</div>
+            <div class="account">Chase Total Checking ···· 4821</div>
+          </div>
+          <div class="pill">Step 2 of 3</div>
+        </div>
+        <div class="amount">
+          <div class="value">$1,240.00</div>
+          <div class="unit">USD</div>
+        </div>
+        <div class="rule"></div>
+        <div class="tl-row">
+          <div class="tl-mark"><span class="dot done"></span><span class="line"></span></div>
+          <div class="tl-body">
+            <div class="tl-title">Sent from Kestrel balance</div>
+            <div class="tl-meta">Today, 3:12 PM</div>
+          </div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-mark"><span class="dot now"></span><span class="line"></span></div>
+          <div class="tl-body">
+            <div class="tl-title">Clearing with partner bank</div>
+            <div class="tl-meta">In progress · started 3:19 PM</div>
+          </div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-mark"><span class="dot"></span></div>
+          <div class="tl-body last">
+            <div class="tl-title muted">Deposit to ···· 4821</div>
+            <div class="tl-meta">Arrives 3:42 PM</div>
+          </div>
+        </div>
+        <div class="cta">
+          <div class="ref">Reference KP-77104</div>
+          <div class="btn">View receipt</div>
+        </div>
+      </div>
+      <div class="foot-note">Times shown in Eastern Time. Bank holidays may delay deposits.</div>
+    </div>
+  </div>
+</body>
+</html>

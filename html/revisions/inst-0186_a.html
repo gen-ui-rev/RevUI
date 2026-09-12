@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rental Filters</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #e9e8e5;
+      color: #24231f;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      color: inherit;
+    }
+
+    .screen {
+      width: 1024px;
+      height: 768px;
+      display: flex;
+      flex-direction: column;
+      background: #ffffff;
+      border: 1px solid #cfcdc7;
+      overflow: hidden;
+    }
+
+    .top-bar {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      padding: 16px 24px;
+      border-bottom: 1px solid #dedcd6;
+    }
+
+    .icon-button,
+    .clear-button,
+    .ghost-button {
+      border: 0;
+      background: transparent;
+      cursor: default;
+    }
+
+    .icon-button {
+      width: 34px;
+      height: 34px;
+      flex: 0 0 auto;
+      border: 1px solid #dedcd6;
+      border-radius: 6px;
+      display: grid;
+      place-items: center;
+      background: #ffffff;
+    }
+
+    .icon-button svg {
+      width: 18px;
+      height: 18px;
+      stroke: #24231f;
+    }
+
+    .title-block h1 {
+      margin: 0;
+      font-size: 20px;
+      line-height: 26px;
+      font-weight: 600;
+    }
+
+    .title-block p {
+      margin: 2px 0 0;
+      color: #6d6961;
+      font-size: 13px;
+      line-height: 18px;
+    }
+
+    .search-context {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .context-pill {
+      border: 1px solid #d5d2cb;
+      border-radius: 999px;
+      padding: 7px 14px;
+      background: #faf9f6;
+      color: #45423c;
+      font-size: 13px;
+      line-height: 18px;
+    }
+
+    .clear-button {
+      padding: 7px 4px;
+      color: #9a6200;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 600;
+    }
+
+    .tab-bar {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      padding: 0 24px;
+      border-bottom: 1px solid #dedcd6;
+      background: #fcfbf9;
+    }
+
+    .tab {
+      position: relative;
+      border: 0;
+      background: transparent;
+      padding: 12px 16px 11px;
+      color: #69665f;
+      font-size: 14px;
+      line-height: 20px;
+      cursor: default;
+    }
+
+    .tab.active {
+      color: #24231f;
+      font-weight: 600;
+    }
+
+    .tab.active::after {
+      content: "";
+      position: absolute;
+      right: 12px;
+      bottom: -1px;
+      left: 12px;
+      height: 3px;
+      background: #d88a00;
+    }
+
+    .result-summary {
+      margin: 0 0 0 auto;
+      color: #5e5b54;
+      font-size: 13px;
+      line-height: 18px;
+    }
+
+    .result-summary strong {
+      color: #24231f;
+      font-weight: 600;
+    }
+
+    .columns {
+      flex: 1;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      min-height: 0;
+    }
+
+    .col {
+      padding: 20px 24px 24px;
+      min-width: 0;
+    }
+
+    .col + .col {
+      border-left: 1px solid #ececE8;
+    }
+
+    .col > h2 {
+      margin: 0;
+      font-size: 16px;
+      line-height: 22px;
+      font-weight: 600;
+    }
+
+    .col > h2 + p {
+      margin: 3px 0 0;
+      color: #77736b;
+      font-size: 12px;
+      line-height: 17px;
+    }
+
+    .group-label {
+      margin: 20px 0 6px;
+      color: #77736b;
+      font-size: 11px;
+      line-height: 15px;
+      font-weight: 600;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+    }
+
+    .option-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 5px 0;
+      color: #34322d;
+      font-size: 14px;
+      line-height: 20px;
+      cursor: default;
+    }
+
+    .option-row input {
+      width: 16px;
+      height: 16px;
+      flex: 0 0 auto;
+      margin: 0;
+      accent-color: #d88a00;
+    }
+
+    .option-text {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .option-note {
+      color: #8b877e;
+      font-size: 12px;
+    }
+
+    .range-fields {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 8px;
+      padding-top: 2px;
+    }
+
+    .range-separator {
+      color: #77736b;
+      font-size: 13px;
+    }
+
+    .text-input {
+      display: flex;
+      align-items: center;
+      border: 1px solid #c9c6be;
+      border-radius: 5px;
+      background: #ffffff;
+    }
+
+    .text-input span {
+      padding-left: 10px;
+      color: #6d6961;
+      font-size: 13px;
+    }
+
+    .text-input input {
+      min-width: 0;
+      width: 100%;
+      border: 0;
+      outline: 0;
+      padding: 9px 10px 9px 4px;
+      background: transparent;
+      color: #24231f;
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding-top: 2px;
+    }
+
+    .chip {
+      border: 1px solid #c9c6be;
+      border-radius: 999px;
+      padding: 7px 14px;
+      background: #ffffff;
+      color: #45423c;
+      font-size: 13px;
+      line-height: 18px;
+      cursor: default;
+    }
+
+    .chip.selected {
+      border-color: #d88a00;
+      background: #fdf3e0;
+      color: #7a4f00;
+      font-weight: 600;
+    }
+
+    .bottom-action {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 14px 24px;
+      border-top: 1px solid #d5d2cb;
+      background: #fcfbf9;
+    }
+
+    .bottom-note {
+      margin: 0;
+      color: #5e5b54;
+      font-size: 13px;
+      line-height: 18px;
+    }
+
+    .bottom-buttons {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .ghost-button {
+      border: 1px solid #c9c6be;
+      border-radius: 5px;
+      padding: 11px 20px;
+      background: #ffffff;
+      color: #45423c;
+      font-size: 14px;
+      line-height: 18px;
+      font-weight: 500;
+    }
+
+    .apply-button {
+      border: 1px solid #c77e00;
+      border-radius: 5px;
+      padding: 11px 26px;
+      background: #d88a00;
+      color: #1f1a12;
+      font-size: 14px;
+      line-height: 18px;
+      font-weight: 600;
+      cursor: default;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="top-bar">
+      <button class="icon-button" type="button" aria-label="Close filters">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M5 5L19 19M19 5L5 19" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+      </button>
+      <div class="title-block">
+        <h1>Filter &amp; sort rentals</h1>
+        <p>Long-term homes, 12-month leases and up</p>
+      </div>
+      <div class="search-context">
+        <span class="context-pill">Portland, OR &middot; within 10 mi</span>
+        <button class="clear-button" type="button">Clear all</button>
+      </div>
+    </header>
+
+    <nav class="tab-bar" aria-label="Filter groups">
+      <button class="tab active" type="button" aria-current="page">All filters</button>
+      <button class="tab" type="button">Budget</button>
+      <button class="tab" type="button">Home requirements</button>
+      <button class="tab" type="button">Lease &amp; availability</button>
+      <p class="result-summary"><strong>684</strong> of 2,418 rentals match</p>
+    </nav>
+
+    <div class="columns">
+      <section class="col" aria-labelledby="budget-heading">
+        <h2 id="budget-heading">Budget</h2>
+        <p>Rent shown per month, utilities noted per listing.</p>
+
+        <p class="group-label">Sort by</p>
+        <label class="option-row">
+          <input type="radio" name="sort" checked>
+          <span class="option-text">Recommended for renters</span>
+        </label>
+        <label class="option-row">
+          <input type="radio" name="sort">
+          <span class="option-text">Newest listed</span>
+        </label>
+        <label class="option-row">
+          <input type="radio" name="sort">
+          <span class="option-text">Rent: low to high</span>
+        </label>
+        <label class="option-row">
+          <input type="radio" name="sort">
+          <span class="option-text">Rent: high to low</span>
+        </label>
+
+        <p class="group-label">Monthly rent</p>
+        <div class="range-fields">
+          <label class="text-input">
+            <span>$</span>
+            <input type="text" value="1,200" aria-label="Minimum monthly rent">
+          </label>
+          <span class="range-separator">to</span>
+          <label class="text-input">
+            <span>$</span>
+            <input type="text" value="2,400" aria-label="Maximum monthly rent">
+          </label>
+        </div>
+
+        <p class="group-label">Deposits &amp; fees</p>
+        <label class="option-row">
+          <input type="checkbox" checked>
+          <span class="option-text">Utilities included in rent</span>
+        </label>
+        <label class="option-row">
+          <input type="checkbox" checked>
+          <span class="option-text">Deposit one month or less</span>
+        </label>
+        <label class="option-row">
+          <input type="checkbox">
+          <span class="option-text">No application fee</span>
+        </label>
+      </section>
+
+      <section class="col" aria-labelledby="home-heading">
+        <h2 id="home-heading">Home requirements</h2>
+        <p>Size, layout and features you need day to day.</p>
+
+        <p class="group-label">Bedrooms</p>
+        <div class="chip-row">
+          <button class="chip" type="button">Studio</button>
+          <button class="chip" type="button">1</button>
+          <button class="chip selected" type="button">2</button>
+          <button class="chip selected" type="button">3</button>
+          <button class="chip" type="button">4+</button>
+        </div>
+
+        <p class="group-label">Bathrooms</p>
+        <div class="chip-row">
+          <button class="chip" type="button">1+</button>
+          <button class="chip selected" type="button">1.5+</button>
+          <button class="chip" type="button">2+</button>
+          <button class="chip" type="button">3+</button>
+        </div>
+
+        <p class="group-label">Home type</p>
+        <label class="option-row">
+          <input type="checkbox" checked>
+          <span class="option-text">Apartment</span>
+        </label>
+        <label class="option-row">
+          <input type="checkbox" checked>
+          <span class="option-text">House</span>
+        </label>
+        <label class="option-row">
+          <input type="checkbox">
+          <span class="option-text">Townhouse</span>
+        </label>
+        <label class="option-row">
+          <input type="checkbox">
+          <span class="option-text">Condo</span>
+        </label>
+
+        <p class="group-label">Must-haves</p>
+        <label class="option-row">
+          <input type="checkbox" checked>
+          <span class="option-text">In-unit laundry</span>
+        </label>
+        <label class="option-row">
+          <input type="checkbox">
+          <span class="option-text">Dedicated parking</span>
+        </label>
+        <label class="option-row">
+          <input type="checkbox">
+          <span class="option-text">Air conditioning</span>
+        </label>
+      </section>
+
+      <section class="col" aria-labelledby="lease-heading">
+        <h2 id="lease-heading">Lease &amp; availability</h2>
+        <p>When you can move and how long you plan to stay.</p>
+
+        <p class="group-label">Move-in window</p>
+        <div class="range-fields">
+          <label class="text-input">
+            <input type="text" value="Aug 1, 2024" aria-label="Earliest move-in date">
+          </label>
+          <span class="range-separator">to</span>
+          <label class="text-input">
+            <input type="text" value="Oct 1, 2024" aria-label="Latest move-in date">
+          </label>
+        </div>
+
+        <p class="group-label">Lease length</p>
+        <label class="option-row">
+          <input type="radio" name="lease" checked>
+          <span class="option-text">12 months or longer</span>
+        </label>
+        <label class="option-row">
+          <input type="radio" name="lease">
+          <span class="option-text">6 to 11 months</span>
+        </label>
+        <label class="option-row">
+          <input type="radio" name="lease">
+          <span class="option-text">Month to month</span>
+        </label>
+        <label class="option-row">
+          <input type="radio" name="lease">
+          <span class="option-text">Any lease length</span>
+        </label>
+
+        <p class="group-label">Availability</p>
+        <label class="option-row">
+          <input type="checkbox" checked>
+          <span class="option-text">Available now <span class="option-note">412</span></span>
+        </label>
+        <label class="option-row">
+          <input type="checkbox" checked>
+          <span class="option-text">Verified landlord</span>
+        </label>
+        <label class="option-row">
+          <input type="checkbox" checked>
+          <span class="option-text">Cats or dogs allowed</span>
+        </label>
+        <label class="option-row">
+          <input type="checkbox">
+          <span class="option-text">Video tour available</span>
+        </label>
+      </section>
+    </div>
+
+    <footer class="bottom-action">
+      <p class="bottom-note">Filters apply to saved search &ldquo;Northeast Portland, 2 bed&rdquo;</p>
+      <div class="bottom-buttons">
+        <button class="ghost-button" type="button">Save this search</button>
+        <button class="apply-button" type="button">View 684 rentals</button>
+      </div>
+    </footer>
+  </div>
+</body>
+</html>

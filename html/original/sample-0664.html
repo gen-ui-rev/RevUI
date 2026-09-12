@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Search Results — Morrow Market</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #e8e9e4;
+      color: #1d2118;
+      font-family: 'Inter', system-ui, sans-serif;
+    }
+
+    button {
+      margin: 0;
+      padding: 0;
+      border: 0;
+      color: inherit;
+      font: inherit;
+      background: none;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #ffffff;
+    }
+
+    .search-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px 6px;
+    }
+
+    .icon-button {
+      width: 36px;
+      height: 48px;
+      display: grid;
+      flex: 0 0 auto;
+      place-items: center;
+      color: #353b2c;
+    }
+
+    .icon-button svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .query-field {
+      min-width: 0;
+      height: 48px;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 12px;
+      border-radius: 4px;
+      background: rgba(184, 230, 46, 0.22);
+    }
+
+    .query-field svg {
+      width: 20px;
+      height: 20px;
+      flex: 0 0 auto;
+      color: #596329;
+    }
+
+    .query {
+      min-width: 0;
+      flex: 1;
+      overflow: hidden;
+      color: #171b13;
+      font-size: 15px;
+      font-weight: 600;
+      line-height: 20px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .clear-button {
+      width: 24px;
+      height: 24px;
+      display: grid;
+      flex: 0 0 auto;
+      place-items: center;
+      border-radius: 4px;
+      background: rgba(184, 230, 46, 0.34);
+      color: #424a20;
+    }
+
+    .clear-button svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    .filters {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 0 12px 10px;
+    }
+
+    .filter-chip {
+      height: 32px;
+      display: flex;
+      align-items: center;
+      padding: 0 11px;
+      border-radius: 4px;
+      background: rgba(184, 230, 46, 0.11);
+      color: #444a3c;
+      font-size: 13px;
+      font-weight: 500;
+      line-height: 18px;
+      white-space: nowrap;
+    }
+
+    .filter-chip.selected {
+      background: rgba(184, 230, 46, 0.42);
+      color: #252b12;
+      font-weight: 600;
+    }
+
+    .filter-control {
+      width: 32px;
+      height: 32px;
+      display: grid;
+      flex: 0 0 auto;
+      place-items: center;
+      margin-left: auto;
+      border-radius: 4px;
+      background: rgba(184, 230, 46, 0.18);
+      color: #495126;
+    }
+
+    .filter-control svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .results-summary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 2px 16px 10px;
+      color: #5b6054;
+      font-size: 13px;
+      line-height: 20px;
+    }
+
+    .results-summary strong {
+      color: #24291e;
+      font-weight: 600;
+    }
+
+    .sort {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      color: #39401f;
+      font-weight: 500;
+    }
+
+    .sort svg {
+      width: 15px;
+      height: 15px;
+    }
+
+    .results {
+      min-height: 0;
+      flex: 1;
+      padding: 0 12px;
+    }
+
+    .product-list {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .product-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 4px;
+      border-radius: 4px;
+      background: rgba(184, 230, 46, 0.065);
+    }
+
+    .product-row img {
+      width: 76px;
+      height: 76px;
+      display: block;
+      flex: 0 0 auto;
+      border-radius: 4px;
+      object-fit: cover;
+      background: #e6e8df;
+    }
+
+    .product-info {
+      min-width: 0;
+      flex: 1;
+      padding-right: 6px;
+    }
+
+    .product-name {
+      overflow: hidden;
+      color: #20251b;
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 19px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .product-detail {
+      margin-top: 2px;
+      overflow: hidden;
+      color: #6a7063;
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 17px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .product-price {
+      margin-top: 5px;
+      color: #242a17;
+      font-size: 15px;
+      font-weight: 700;
+      line-height: 19px;
+    }
+
+    .tab-bar {
+      display: flex;
+      align-items: stretch;
+      justify-content: space-between;
+      padding: 8px 10px 9px;
+      background: rgba(184, 230, 46, 0.08);
+    }
+
+    .tab {
+      width: 70px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      padding: 2px 0;
+      border-radius: 4px;
+      color: #73786c;
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 15px;
+    }
+
+    .tab svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .tab.active {
+      background: rgba(184, 230, 46, 0.28);
+      color: #2f3813;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header>
+      <div class="search-bar">
+        <button class="icon-button" type="button" aria-label="Go back">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+
+        <div class="query-field" role="search">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="1.8"/>
+            <path d="M16 16L20 20" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+          <span class="query">white sneakers</span>
+          <button class="clear-button" type="button" aria-label="Clear search">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M8 8L16 16M16 8L8 16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </div>
+
+        <button class="icon-button" type="button" aria-label="Shopping bag">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M5 8.5H19L18 20H6L5 8.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+            <path d="M9 9V6.5C9 4.8 10.3 3.5 12 3.5C13.7 3.5 15 4.8 15 6.5V9" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="filters" aria-label="Search filters">
+        <button class="filter-chip selected" type="button">All</button>
+        <button class="filter-chip" type="button">Men</button>
+        <button class="filter-chip" type="button">Women</button>
+        <button class="filter-chip" type="button">Under $75</button>
+        <button class="filter-control" type="button" aria-label="More filters">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M4 7H14M18 7H20M4 17H8M12 17H20" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+            <circle cx="16" cy="7" r="2" stroke="currentColor" stroke-width="1.7"/>
+            <circle cx="10" cy="17" r="2" stroke="currentColor" stroke-width="1.7"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="results-summary">
+        <span><strong>126 results</strong> for white sneakers</span>
+        <button class="sort" type="button">
+          Best match
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M8 10L12 14L16 10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <main class="results">
+      <div class="product-list">
+        <article class="product-row">
+          <img src="https://loremflickr.com/76/76/sneakers?lock=8810" width="76" height="76" alt="White low-top court sneakers">
+          <div class="product-info">
+            <div class="product-name">Northline Court Low</div>
+            <div class="product-detail">Men's 7–13 · White leather</div>
+            <div class="product-price">$74.00</div>
+          </div>
+        </article>
+
+        <article class="product-row">
+          <img src="https://loremflickr.com/76/76/sneakers?lock=8811" width="76" height="76" alt="White canvas running sneakers">
+          <div class="product-info">
+            <div class="product-name">Alder Canvas Runner</div>
+            <div class="product-detail">Women's 5–11 · Natural white</div>
+            <div class="product-price">$58.00</div>
+          </div>
+        </article>
+
+        <article class="product-row">
+          <img src="https://loremflickr.com/76/76/sneakers?lock=8812" width="76" height="76" alt="White leather everyday sneakers">
+          <div class="product-info">
+            <div class="product-name">Fieldday Leather Low</div>
+            <div class="product-detail">Unisex 4–13 · Soft leather</div>
+            <div class="product-price">$92.00</div>
+          </div>
+        </article>
+
+        <article class="product-row">
+          <img src="https://loremflickr.com/76/76/sneakers?lock=8813" width="76" height="76" alt="White retro court sneakers">
+          <div class="product-info">
+            <div class="product-name">Commonstep Retro Court</div>
+            <div class="product-detail">Men's 6–12 · Chalk white</div>
+            <div class="product-price">$66.00</div>
+          </div>
+        </article>
+
+        <article class="product-row">
+          <img src="https://loremflickr.com/76/76/sneakers?lock=8814" width="76" height="76" alt="White knit training sneakers">
+          <div class="product-info">
+            <div class="product-name">Harbor Knit Trainer</div>
+            <div class="product-detail">Women's 5–12 · Washable knit</div>
+            <div class="product-price">$49.00</div>
+          </div>
+        </article>
+
+        <article class="product-row">
+          <img src="https://loremflickr.com/76/76/sneakers?lock=8815" width="76" height="76" alt="White classic lace-up sneakers">
+          <div class="product-info">
+            <div class="product-name">Pave Classic Sneaker</div>
+            <div class="product-detail">Unisex 4–14 · Bright white</div>
+            <div class="product-price">$80.00</div>
+          </div>
+        </article>
+
+        <article class="product-row">
+          <img src="https://loremflickr.com/76/76/sneakers?lock=8816" width="76" height="76" alt="Off-white suede low-top sneakers">
+          <div class="product-info">
+            <div class="product-name">Drift Suede Low</div>
+            <div class="product-detail">Men's 7–13 · Off-white suede</div>
+            <div class="product-price">$71.00</div>
+          </div>
+        </article>
+      </div>
+    </main>
+
+    <nav class="tab-bar" aria-label="Primary navigation">
+      <button class="tab" type="button">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M4 11L12 4L20 11V20H14V14H10V20H4V11Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+        </svg>
+        <span>Home</span>
+      </button>
+
+      <button class="tab active" type="button">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="10.5" cy="10.5" r="6.5" stroke="currentColor" stroke-width="1.8"/>
+          <path d="M15.5 15.5L20 20" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+        <span>Search</span>
+      </button>
+
+      <button class="tab" type="button">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+        <span>Sell</span>
+      </button>
+
+      <button class="tab" type="button">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M12 20C12 20 4.5 15.8 4.5 9.5C4.5 6.8 6.4 5 8.8 5C10.3 5 11.4 5.8 12 6.8C12.6 5.8 13.7 5 15.2 5C17.6 5 19.5 6.8 19.5 9.5C19.5 15.8 12 20 12 20Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+        </svg>
+        <span>Saved</span>
+      </button>
+
+      <button class="tab" type="button">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="12" cy="8" r="3.5" stroke="currentColor" stroke-width="1.7"/>
+          <path d="M5.5 20C6.1 16.5 8.4 14.5 12 14.5C15.6 14.5 17.9 16.5 18.5 20" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+        </svg>
+        <span>Account</span>
+      </button>
+    </nav>
+  </div>
+</body>
+</html>

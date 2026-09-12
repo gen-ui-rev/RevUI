@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Cart — Lumina Study</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --pink:#e2467c;
+    --ink:#151a21;
+    --muted:#6d7480;
+    --line:#e8eaee;
+    --ground:#f1f2f5;
+  }
+  *{box-sizing:border-box;}
+  body{
+    min-height:100vh;display:flex;justify-content:center;align-items:flex-start;
+    padding:40px 0;margin:0;background:#d9dbe0;
+    font-family:'Roboto',system-ui,sans-serif;color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+  }
+  .screen{
+    width:390px;height:844px;background:var(--ground);
+    display:flex;flex-direction:column;position:relative;
+  }
+
+  /* top bar */
+  .topbar{
+    background:#fff;padding:14px 16px 12px;display:flex;align-items:center;gap:12px;
+    border-bottom:1px solid var(--line);
+  }
+  .iconbtn{
+    width:32px;height:32px;display:flex;align-items:center;justify-content:center;
+    margin-left:-6px;color:var(--ink);
+  }
+  .topbar h1{font-size:18px;font-weight:700;margin:0;line-height:22px;}
+  .topbar .sub{font-size:12px;color:var(--muted);line-height:16px;margin-top:1px;}
+  .topbar .edit{margin-left:auto;font-size:14px;font-weight:500;color:var(--pink);}
+
+  /* content */
+  .content{flex:1;padding:14px 16px 0;}
+  .card{
+    background:#fff;border-radius:14px;box-shadow:0 1px 3px rgba(16,24,40,.08);
+    overflow:hidden;
+  }
+  .card + .card{margin-top:12px;}
+
+  /* grouped section bands */
+  .ghead{
+    display:flex;align-items:center;gap:8px;padding:8px 14px;
+    background:#f7f8fa;border-bottom:1px solid var(--line);
+    font-size:11px;line-height:14px;font-weight:700;letter-spacing:.7px;
+    text-transform:uppercase;color:#5a6270;
+  }
+  .ghead.next{border-top:1px solid var(--line);}
+  .ghead svg{color:var(--pink);flex:none;}
+  .ghead .cnt{margin-left:auto;font-size:11px;font-weight:400;letter-spacing:0;text-transform:none;color:#9aa0aa;}
+
+  .row{display:flex;gap:12px;padding:12px 14px;align-items:flex-start;}
+  .row + .row{border-top:1px solid var(--line);}
+  .row img{
+    width:64px;height:64px;border-radius:14px;object-fit:cover;display:block;background:#e3e5ea;flex:none;
+  }
+  .mid{flex:1;min-width:0;}
+  .title{
+    font-size:14px;font-weight:500;line-height:18px;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .meta{
+    font-size:12px;color:var(--muted);line-height:16px;margin-top:2px;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .team{display:flex;align-items:center;gap:6px;margin-top:3px;min-width:0;}
+  .team .av{
+    width:16px;height:16px;border-radius:50%;background:#fde7ef;color:var(--pink);
+    font-size:9px;font-weight:700;line-height:16px;text-align:center;flex:none;
+  }
+  .team .tname{
+    font-size:12px;line-height:16px;font-weight:500;color:#4a5160;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .stepper{
+    margin-top:6px;display:inline-flex;align-items:center;
+    border:1px solid var(--line);border-radius:14px;height:28px;overflow:hidden;
+  }
+  .stepper span{
+    width:30px;height:26px;display:flex;align-items:center;justify-content:center;
+    color:var(--muted);
+  }
+  .qty{
+    min-width:26px;text-align:center;font-size:14px;font-weight:500;
+    border-left:1px solid var(--line);border-right:1px solid var(--line);height:26px;line-height:26px;
+  }
+  .price{font-size:14px;font-weight:700;text-align:right;flex:none;padding-top:1px;}
+  .price .was{display:block;font-size:12px;font-weight:400;color:var(--muted);text-decoration:line-through;margin-top:2px;}
+
+  /* company rate strip */
+  .promo{display:flex;align-items:center;gap:10px;padding:11px 14px;}
+  .promo .tag{color:var(--pink);display:flex;flex:none;}
+  .promo .ptext{
+    flex:1;min-width:0;font-size:13px;line-height:18px;font-weight:500;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .promo .change{font-size:13px;font-weight:500;color:var(--pink);flex:none;}
+
+  /* summary */
+  .sum{padding:12px 14px;}
+  .sline{display:flex;justify-content:space-between;gap:10px;font-size:14px;line-height:20px;color:var(--muted);}
+  .sline + .sline{margin-top:6px;}
+  .sline span{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .sline b{font-weight:400;color:var(--ink);flex:none;}
+  .sline.save b{color:var(--pink);font-weight:500;}
+  .sdiv{height:1px;background:var(--line);margin:10px 0;}
+  .total{display:flex;justify-content:space-between;align-items:baseline;}
+  .total .l{font-size:14px;font-weight:500;}
+  .total .v{font-size:22px;font-weight:700;letter-spacing:-.3px;}
+
+  /* cta */
+  .cta{padding:12px 16px;background:#fff;border-top:1px solid var(--line);}
+  .btn{
+    height:52px;border-radius:14px;background:var(--pink);color:#fff;
+    display:flex;align-items:center;justify-content:center;gap:8px;
+    font-size:16px;font-weight:700;
+  }
+  .btn .amt{font-weight:500;opacity:.85;}
+
+  /* tab bar */
+  .tabs{
+    height:62px;background:#fff;border-top:1px solid var(--line);
+    display:flex;align-items:center;padding-bottom:4px;
+  }
+  .tab{
+    flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;
+    font-size:12px;line-height:14px;color:#9aa0aa;position:relative;
+  }
+  .tab.on{color:var(--pink);font-weight:500;}
+  .badge{
+    position:absolute;top:-3px;left:calc(50% + 5px);
+    min-width:16px;height:16px;padding:0 4px;border-radius:8px;background:var(--pink);
+    color:#fff;font-size:11px;line-height:16px;font-weight:700;text-align:center;
+  }
+</style>
+</head>
+<body>
+<div class="screen">
+
+  <div class="topbar">
+    <div class="iconbtn">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+    </div>
+    <div>
+      <h1>Cart</h1>
+      <div class="sub">3 courses · 4 seats assigned</div>
+    </div>
+    <div class="edit">Edit</div>
+  </div>
+
+  <div class="content">
+
+    <div class="card">
+
+      <div class="ghead">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></svg>
+        Live courses
+        <span class="cnt">2 seats</span>
+      </div>
+
+      <div class="row">
+        <img src="https://loremflickr.com/64/64/classroom?lock=4560" width="64" height="64" alt="Students in a Spanish conversation class">
+        <div class="mid">
+          <div class="title">Spanish B1: Conversation Intensive</div>
+          <div class="meta">Marisol Vega · 24 live sessions</div>
+          <div class="team">
+            <span class="av">LO</span>
+            <span class="tname">Localization team</span>
+          </div>
+          <div class="stepper">
+            <span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14"/></svg>
+            </span>
+            <div class="qty">1</div>
+            <span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+            </span>
+          </div>
+        </div>
+        <div class="price">$79.00</div>
+      </div>
+
+      <div class="row">
+        <img src="https://loremflickr.com/64/64/library?lock=4562" width="64" height="64" alt="Library reading room used for the writing course">
+        <div class="mid">
+          <div class="title">Academic Writing for IELTS</div>
+          <div class="meta">Priya Raman · 12 live workshops</div>
+          <div class="team">
+            <span class="av">SE</span>
+            <span class="tname">Support EMEA team</span>
+          </div>
+          <div class="stepper">
+            <span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14"/></svg>
+            </span>
+            <div class="qty">1</div>
+            <span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+            </span>
+          </div>
+        </div>
+        <div class="price">$58.00</div>
+      </div>
+
+      <div class="ghead next">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6h9v13H9z"/><path d="M9 6H6a1 1 0 00-1 1v11a1 1 0 001 1h3"/></svg>
+        Self-paced
+        <span class="cnt">2 seats</span>
+      </div>
+
+      <div class="row">
+        <img src="https://loremflickr.com/64/64/books?lock=4561" width="64" height="64" alt="Japanese writing workbooks stacked on a desk">
+        <div class="mid">
+          <div class="title">Japanese Kana Foundations</div>
+          <div class="meta">Kenji Arai · 18 lessons</div>
+          <div class="team">
+            <span class="av">SA</span>
+            <span class="tname">Sales APAC team</span>
+          </div>
+          <div class="stepper">
+            <span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14"/></svg>
+            </span>
+            <div class="qty">2</div>
+            <span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+            </span>
+          </div>
+        </div>
+        <div class="price">$84.00<span class="was">$98.00</span></div>
+      </div>
+
+    </div>
+
+    <div class="card promo">
+      <div class="tag">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.6 13.4l-7.2 7.2a2 2 0 01-2.8 0l-7-7A2 2 0 013 12.2V5a2 2 0 012-2h7.2a2 2 0 011.4.6l7 7a2 2 0 010 2.8z"/><path d="M7.5 7.5h.01"/></svg>
+      </div>
+      <div class="ptext">Northwind Ltd rate · 10% off seats</div>
+      <div class="change">Details</div>
+    </div>
+
+    <div class="card sum">
+      <div class="sline"><span>Subtotal (4 seats)</span><b>$221.00</b></div>
+      <div class="sline save"><span>Company rate · Northwind Ltd</span><b>−$22.10</b></div>
+      <div class="sline"><span>Estimated tax</span><b>$15.91</b></div>
+      <div class="sdiv"></div>
+      <div class="total"><span class="l">Total due today</span><span class="v">$214.81</span></div>
+    </div>
+
+  </div>
+
+  <div class="cta">
+    <div class="btn">Continue to checkout <span class="amt">$214.81</span></div>
+  </div>
+
+  <div class="tabs">
+    <div class="tab">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5L12 4l9 6.5V20a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1z"/></svg>
+      Home
+    </div>
+    <div class="tab">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A1.5 1.5 0 015.5 4H11v16H5.5A1.5 1.5 0 014 18.5z"/><path d="M20 5.5A1.5 1.5 0 0018.5 4H13v16h5.5a1.5 1.5 0 001.5-1.5z"/></svg>
+      Courses
+    </div>
+    <div class="tab">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6"/></svg>
+      Search
+    </div>
+    <div class="tab on">
+      <span class="badge">3</span>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h2l2.2 10.2a2 2 0 002 1.6h7.1a2 2 0 002-1.5L21 8H7"/><circle cx="10" cy="20" r="1.2"/><circle cx="18" cy="20" r="1.2"/></svg>
+      Cart
+    </div>
+    <div class="tab">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8.5" r="3.8"/><path d="M4.5 20a7.5 7.5 0 0115 0"/></svg>
+      Profile
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Opening Planning Board</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 32px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #e8e6e1;
+      color: #36332e;
+      font-family: 'Source Sans 3', system-ui, sans-serif;
+    }
+
+    .screen {
+      width: 1024px;
+      height: 768px;
+      display: flex;
+      flex-direction: column;
+      background: #f7f6f3;
+      box-shadow: 0 18px 48px rgba(54, 51, 46, 0.16);
+    }
+
+    /* ---------- app chrome ---------- */
+    .topbar {
+      display: flex;
+      align-items: center;
+      gap: 26px;
+      padding: 16px 32px;
+      background: #fdfcfa;
+      border-bottom: 1px solid #e3dfd7;
+    }
+
+    .logo {
+      margin: 0;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 19px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      color: #4f4a42;
+    }
+
+    .nav {
+      display: flex;
+      gap: 22px;
+      font-size: 14px;
+      color: #7a7469;
+    }
+
+    .nav span {
+      padding-bottom: 3px;
+      cursor: pointer;
+    }
+
+    .nav .current {
+      color: #4f4a42;
+      font-weight: 600;
+      border-bottom: 2px solid #756e63;
+    }
+
+    .search {
+      margin-left: auto;
+      width: 232px;
+      padding: 8px 14px;
+      border: 1px solid #dcd7ce;
+      border-radius: 8px;
+      background: #f7f6f3;
+      color: #918a7d;
+      font-size: 13.5px;
+      cursor: text;
+    }
+
+    .avatar {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: #625c52;
+      color: #f7f6f3;
+      font-size: 12.5px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ---------- centered status card ---------- */
+    .stage {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 36px 32px 24px;
+    }
+
+    .loading-panel {
+      width: 100%;
+      max-width: 700px;
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      padding: 34px 38px;
+      background: #fdfcfa;
+      border: 1px solid #e5e1d9;
+      border-radius: 16px;
+    }
+
+    .loader {
+      flex: 0 0 auto;
+      padding: 18px;
+      background: rgba(122, 115, 103, 0.12);
+      border-radius: 14px;
+    }
+
+    .loader svg {
+      display: block;
+      width: 56px;
+      height: 56px;
+    }
+
+    .service {
+      margin: 0 0 8px;
+      color: #756e63;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      color: #4f4a42;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 27px;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    .message {
+      margin: 10px 0 0;
+      color: #4d4942;
+      font-size: 15px;
+      line-height: 1.5;
+    }
+
+    .note {
+      margin: 6px 0 0;
+      color: #8b8478;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .chips {
+      display: flex;
+      gap: 8px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+    }
+
+    .chip {
+      padding: 5px 11px;
+      border-radius: 999px;
+      background: rgba(122, 115, 103, 0.12);
+      color: #5c564d;
+      font-size: 12.5px;
+      font-weight: 600;
+    }
+
+    .chip.pending {
+      background: transparent;
+      border: 1px dashed #c8c2b7;
+      color: #918a7d;
+      font-weight: 400;
+    }
+
+    /* ---------- dimmed board preview ---------- */
+    .preview {
+      padding: 0 32px 30px;
+      opacity: 0.55;
+    }
+
+    .preview-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .preview-title {
+      margin: 0;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 17px;
+      font-weight: 600;
+      color: #4f4a42;
+    }
+
+    .preview-hint {
+      margin: 0;
+      color: #8b8478;
+      font-size: 12.5px;
+    }
+
+    .columns {
+      display: flex;
+      gap: 16px;
+    }
+
+    .column {
+      flex: 1;
+      padding: 14px 16px 16px;
+      background: #fdfcfa;
+      border: 1px solid #e5e1d9;
+      border-radius: 12px;
+    }
+
+    .column h2 {
+      margin: 0 0 10px;
+      font-size: 11.5px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #7a7469;
+    }
+
+    .card-line {
+      padding: 9px 11px;
+      margin-bottom: 8px;
+      background: #f2f0ec;
+      border-radius: 8px;
+      color: #565046;
+      font-size: 13px;
+      line-height: 1.35;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .card-line:last-child {
+      margin-bottom: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <p class="logo">Hearthwork</p>
+      <nav class="nav">
+        <span class="current">Boards</span>
+        <span>Calendar</span>
+        <span>Notes</span>
+        <span>Team</span>
+      </nav>
+      <div class="search">Search boards and notes</div>
+      <div class="avatar">MR</div>
+    </header>
+
+    <main class="stage">
+      <section class="loading-panel" role="status" aria-live="polite">
+        <div class="loader" aria-hidden="true">
+          <svg viewBox="0 0 52 52" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="26" cy="26" r="20" fill="none" stroke="rgba(117,110,99,0.22)" stroke-width="7"/>
+            <path d="M26 6 A20 20 0 0 1 45.6 22" fill="none" stroke="#756e63" stroke-width="7" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div>
+          <p class="service">Hearthwork</p>
+          <h1>Opening your planning board</h1>
+          <p class="message">Gathering the latest notes and assignments from your team.</p>
+          <p class="note">This usually takes a few seconds — the board below becomes editable when it finishes.</p>
+          <div class="chips">
+            <span class="chip">Notes synced</span>
+            <span class="chip">Assignments synced</span>
+            <span class="chip pending">Attachments</span>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <section class="preview" aria-hidden="true">
+      <div class="preview-head">
+        <p class="preview-title">Spring Opening</p>
+        <p class="preview-hint">Showing your last saved view</p>
+      </div>
+      <div class="columns">
+        <div class="column">
+          <h2>Backlog</h2>
+          <div class="card-line">Draft the neighbourhood invite list</div>
+          <div class="card-line">Compare two signage quotes</div>
+          <div class="card-line">Confirm florist delivery window</div>
+        </div>
+        <div class="column">
+          <h2>This week</h2>
+          <div class="card-line">Walk the floor plan with Dana</div>
+          <div class="card-line">Order the counter stools</div>
+          <div class="card-line">Book the photographer for launch day</div>
+        </div>
+        <div class="column">
+          <h2>Done</h2>
+          <div class="card-line">Signed the lease addendum</div>
+          <div class="card-line">Picked the opening menu</div>
+          <div class="card-line">Sent staff schedules for review</div>
+        </div>
+      </div>
+    </section>
+  </div>
+</body>
+</html>

@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Saved Buyers — Kestrel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#16161a;
+    --muted:#6f7076;
+    --rule:#e7e7ea;
+    --accent:#d92b2b;
+    --soft:#f8f8fa;
+  }
+  *{box-sizing:border-box;}
+  body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    padding:40px 0;
+    margin:0;
+    background:#ececee;
+    font-family:'Nunito Sans',system-ui,sans-serif;
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+  }
+  .screen{
+    width:390px;
+    height:844px;
+    background:#fff;
+    display:flex;
+    flex-direction:column;
+    position:relative;
+  }
+  .topbar{
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    padding:18px 20px 14px;
+  }
+  .topbar h1{
+    margin:0;
+    font-size:26px;
+    font-weight:700;
+    line-height:32px;
+    letter-spacing:-.4px;
+  }
+  .sub{
+    margin:2px 0 0;
+    font-size:13px;
+    line-height:18px;
+    color:var(--muted);
+  }
+  .acts{display:flex;gap:6px;margin-top:4px;}
+  .iconbtn{
+    width:36px;
+    height:36px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:10px;
+    color:var(--ink);
+  }
+  .iconbtn.primary{background:var(--accent);color:#fff;}
+  .segs{
+    display:flex;
+    align-items:center;
+    gap:22px;
+    padding:0 20px;
+    border-bottom:1px solid var(--rule);
+  }
+  .seg{
+    padding:0 0 10px;
+    margin-bottom:-1px;
+    border-bottom:2px solid transparent;
+    color:var(--muted);
+    font-size:14px;
+    font-weight:600;
+  }
+  .seg.on{
+    color:var(--accent);
+    border-bottom-color:var(--accent);
+    font-weight:700;
+  }
+  .segs .count{
+    margin-left:auto;
+    padding-bottom:10px;
+    color:var(--muted);
+    font-size:13px;
+  }
+  .pinned{padding:12px 20px 14px;}
+  .plabel{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    margin-bottom:7px;
+    color:var(--accent);
+    font-size:12px;
+    font-weight:700;
+    letter-spacing:.09em;
+    text-transform:uppercase;
+  }
+  .hero img{
+    width:350px;
+    height:120px;
+    display:block;
+    object-fit:cover;
+    background:#d9d9dd;
+    border-radius:10px;
+  }
+  .heroline{
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:12px;
+    margin-top:8px;
+  }
+  .hero h2{
+    margin:0;
+    font-size:18px;
+    font-weight:700;
+    line-height:22px;
+    letter-spacing:-.2px;
+  }
+  .hero p{
+    margin:1px 0 0;
+    color:var(--muted);
+    font-size:13px;
+    line-height:17px;
+  }
+  .priority{
+    flex:none;
+    padding:3px 8px;
+    border-radius:10px;
+    background:#fceceb;
+    color:var(--accent);
+    font-size:12px;
+    font-weight:700;
+  }
+  .quick{
+    display:flex;
+    gap:8px;
+    margin-top:9px;
+  }
+  .quick span{
+    flex:1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+    padding:6px 8px;
+    border:1px solid var(--rule);
+    border-radius:9px;
+    font-size:12px;
+    font-weight:700;
+  }
+  .quick .next{
+    background:var(--accent);
+    border-color:var(--accent);
+    color:#fff;
+  }
+  .rule{height:1px;background:var(--rule);margin:0 20px;}
+  .sechead{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    padding:13px 20px 7px;
+  }
+  .sechead h3{
+    margin:0;
+    color:var(--muted);
+    font-size:12px;
+    font-weight:700;
+    letter-spacing:.09em;
+    text-transform:uppercase;
+  }
+  .sechead span{color:var(--muted);font-size:12px;}
+  ul.list{list-style:none;margin:0;padding:0;}
+  ul.list li{
+    display:grid;
+    grid-template-columns:44px minmax(0,1fr) auto;
+    align-items:center;
+    gap:10px;
+    padding:7px 20px;
+    border-bottom:1px solid var(--rule);
+  }
+  ul.list li:last-child{border-bottom:none;}
+  ul.list img{
+    width:44px;
+    height:44px;
+    display:block;
+    object-fit:cover;
+    background:#d9d9dd;
+    border-radius:50%;
+  }
+  .who{min-width:0;}
+  .name{
+    overflow:hidden;
+    color:var(--ink);
+    font-size:14px;
+    font-weight:700;
+    line-height:19px;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+  .area{
+    overflow:hidden;
+    color:var(--muted);
+    font-size:12px;
+    line-height:16px;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+  .showing{
+    min-width:82px;
+    text-align:right;
+  }
+  .showing small{
+    display:block;
+    color:#9a9aa0;
+    font-size:10px;
+    font-weight:700;
+    line-height:13px;
+    letter-spacing:.04em;
+    text-transform:uppercase;
+  }
+  .showing strong{
+    display:block;
+    color:var(--ink);
+    font-size:12px;
+    line-height:16px;
+  }
+  .tabbar{
+    margin-top:auto;
+    display:flex;
+    padding:10px 8px 14px;
+    border-top:1px solid var(--rule);
+  }
+  .tab{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:4px;
+    color:var(--muted);
+    font-size:12px;
+  }
+  .tab.on{color:var(--accent);font-weight:700;}
+</style>
+</head>
+<body>
+<div class="screen">
+  <header class="topbar">
+    <div>
+      <h1>Saved buyers</h1>
+      <p class="sub">Buyer activity and showing history</p>
+    </div>
+    <div class="acts">
+      <span class="iconbtn" aria-label="Search buyers">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg>
+      </span>
+      <span class="iconbtn primary" aria-label="Add buyer">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      </span>
+    </div>
+  </header>
+
+  <nav class="segs">
+    <div class="seg on">Buyers</div>
+    <div class="seg">Homes</div>
+    <div class="seg">Closed</div>
+    <div class="count">7 buyers</div>
+  </nav>
+
+  <section class="pinned">
+    <div class="plabel">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M14 2l8 8-3.2.6-4.2 4.2.6 4.4-2 2-4.1-4.1L4 22l-1-1 4.9-5.1L3.8 11.8l2-2 4.4.6L14.4 6.2 14 2z"/></svg>
+      Priority buyer
+    </div>
+    <div class="hero">
+      <img src="https://loremflickr.com/350/120/street?lock=8300" width="350" height="120" alt="Cover photo of a tiled Lisbon side street saved to this collection">
+      <div class="heroline">
+        <div>
+          <h2>Elena Ruiz</h2>
+          <p>Alfama · Last showing Mar 12</p>
+        </div>
+        <span class="priority">Ready to offer</span>
+      </div>
+      <div class="quick">
+        <span>€650k–€800k</span>
+        <span class="next">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="5" width="16" height="15" rx="2"/><line x1="8" y1="3" x2="8" y2="7"/><line x1="16" y1="3" x2="16" y2="7"/></svg>
+          Showing Mar 18
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <div class="rule"></div>
+
+  <div class="sechead">
+    <h3>All buyers</h3>
+    <span>By recent showing</span>
+  </div>
+
+  <ul class="list">
+    <li>
+      <img src="https://loremflickr.com/44/44/cafe?lock=8301" width="44" height="44" alt="Cover thumbnail of a coffee bar">
+      <div class="who">
+        <div class="name">Marcus Lee</div>
+        <div class="area">Baixa &amp; Chiado</div>
+      </div>
+      <div class="showing"><small>Last showing</small><strong>Mar 11</strong></div>
+    </li>
+    <li>
+      <img src="https://loremflickr.com/44/44/friends?lock=8302" width="44" height="44" alt="Cover thumbnail of a group hanging out">
+      <div class="who">
+        <div class="name">Priya &amp; Daniel Shah</div>
+        <div class="area">Príncipe Real</div>
+      </div>
+      <div class="showing"><small>Last showing</small><strong>Mar 9</strong></div>
+    </li>
+    <li>
+      <img src="https://loremflickr.com/44/44/party?lock=8303" width="44" height="44" alt="Cover thumbnail of a crowded night market party">
+      <div class="who">
+        <div class="name">Jordan Kim</div>
+        <div class="area">Cais do Sodré</div>
+      </div>
+      <div class="showing"><small>Last showing</small><strong>Mar 6</strong></div>
+    </li>
+    <li>
+      <img src="https://loremflickr.com/44/44/street?lock=8304" width="44" height="44" alt="Cover thumbnail of a street style outfit">
+      <div class="who">
+        <div class="name">Sofia Bennett</div>
+        <div class="area">Estrela</div>
+      </div>
+      <div class="showing"><small>Last showing</small><strong>Mar 2</strong></div>
+    </li>
+    <li>
+      <img src="https://loremflickr.com/44/44/cafe?lock=8305" width="44" height="44" alt="Cover thumbnail of a table with books and coffee">
+      <div class="who">
+        <div class="name">Nora Vance</div>
+        <div class="area">Campo de Ourique</div>
+      </div>
+      <div class="showing"><small>Last showing</small><strong>Feb 27</strong></div>
+    </li>
+    <li>
+      <img src="https://loremflickr.com/44/44/friends?lock=8306" width="44" height="44" alt="Cover thumbnail of cyclists on a morning ride">
+      <div class="who">
+        <div class="name">Owen Brooks</div>
+        <div class="area">Avenidas Novas</div>
+      </div>
+      <div class="showing"><small>Last showing</small><strong>Feb 21</strong></div>
+    </li>
+  </ul>
+
+  <nav class="tabbar">
+    <div class="tab">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5L12 4l8 6.5V20a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1z"/></svg>
+      Home
+    </div>
+    <div class="tab">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><polygon points="15.5 8.5 10.5 10.5 8.5 15.5 13.5 13.5"/></svg>
+      Explore
+    </div>
+    <div class="tab">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12.5c0 3.9-3.6 7-8 7a9.5 9.5 0 0 1-2.6-.35L5 21l1.2-3.3A6.7 6.7 0 0 1 4 12.5c0-3.9 3.6-7 8-7s8 3.1 8 7z"/></svg>
+      Messages
+    </div>
+    <div class="tab on">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M7 3h10a2 2 0 0 1 2 2v16l-7-4.2L5 21V5a2 2 0 0 1 2-2z"/></svg>
+      Saved
+    </div>
+    <div class="tab">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8.5" r="3.8"/><path d="M4.8 20c1-3.4 3.8-5.2 7.2-5.2s6.2 1.8 7.2 5.2"/></svg>
+      Profile
+    </div>
+  </nav>
+</div>
+</body>
+</html>

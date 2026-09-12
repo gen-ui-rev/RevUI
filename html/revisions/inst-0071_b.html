@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Activity History</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #d9dadd;
+      color: #202124;
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #f2f3f4;
+    }
+
+    .app-header {
+      flex: 0 0 auto;
+      padding: 16px 16px 12px;
+      background: #ffffff;
+      border-bottom: 1px solid #dedfe1;
+    }
+
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .title-block {
+      min-width: 0;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 24px;
+      line-height: 30px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+
+    .subtitle {
+      margin: 2px 0 0;
+      color: #777a80;
+      font-size: 11px;
+      line-height: 16px;
+      font-weight: 500;
+    }
+
+    .icon-button {
+      width: 38px;
+      height: 38px;
+      padding: 8px;
+      border: 1px solid #e0e1e3;
+      background: #f7f7f8;
+      color: #34363a;
+    }
+
+    .icon-button svg {
+      display: block;
+      width: 20px;
+      height: 20px;
+    }
+
+    .filter-tabs {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      margin-top: 12px;
+      padding: 3px;
+      background: #eceef0;
+    }
+
+    .filter-tab {
+      padding: 7px 3px;
+      border: 0;
+      background: transparent;
+      color: #73767c;
+      font-size: 11px;
+      line-height: 15px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .filter-tab.active {
+      background: #ffffff;
+      color: #25272b;
+      box-shadow: 0 1px 3px rgba(32, 33, 36, 0.12);
+    }
+
+    .activity-content {
+      min-height: 0;
+      flex: 1 1 auto;
+      padding: 11px 12px;
+      background: #f2f3f4;
+    }
+
+    .summary-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2px 8px;
+    }
+
+    .summary-title {
+      margin: 0;
+      color: #303236;
+      font-size: 13px;
+      line-height: 19px;
+      font-weight: 700;
+    }
+
+    .summary-count {
+      padding: 3px 7px;
+      background: #e4e5e7;
+      color: #666970;
+      font-size: 10px;
+      line-height: 14px;
+      font-weight: 700;
+    }
+
+    .day-section + .day-section {
+      margin-top: 10px;
+    }
+
+    .day-card {
+      background: #ffffff;
+      border: 1px solid #dedfe1;
+      box-shadow: 0 2px 7px rgba(30, 33, 38, 0.06);
+    }
+
+    .day-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 10px;
+      background: #292b2f;
+      color: #ffffff;
+      border-left: 5px solid #f3c614;
+    }
+
+    .day-header-date {
+      display: flex;
+      align-items: baseline;
+      gap: 7px;
+    }
+
+    .day-title {
+      margin: 0;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 700;
+    }
+
+    .calendar-date {
+      color: #bfc1c5;
+      font-size: 10px;
+      line-height: 14px;
+      font-weight: 500;
+    }
+
+    .day-total {
+      color: #f3c614;
+      font-size: 10px;
+      line-height: 14px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .event-row {
+      display: grid;
+      grid-template-columns: 44px minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 9px;
+      padding: 9px 10px;
+    }
+
+    .event-row + .event-row {
+      border-top: 1px solid #ececee;
+    }
+
+    .person-tile {
+      position: relative;
+      width: 42px;
+      height: 42px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      border: 2px solid #ffffff;
+      outline: 1px solid;
+      font-size: 13px;
+      line-height: 16px;
+      font-weight: 700;
+    }
+
+    .person-tile::after {
+      content: "";
+      position: absolute;
+      right: -2px;
+      bottom: -1px;
+      width: 11px;
+      height: 11px;
+      border: 2px solid #ffffff;
+      border-radius: 50%;
+      background: #f3c614;
+    }
+
+    .tile-blue {
+      background: #cfe4f4;
+      color: #245b80;
+      outline-color: #83acc9;
+    }
+
+    .tile-mint {
+      background: #d3e9df;
+      color: #22634c;
+      outline-color: #83b69f;
+    }
+
+    .tile-rose {
+      background: #efd9df;
+      color: #7b3647;
+      outline-color: #c8909d;
+    }
+
+    .tile-lavender {
+      background: #e4dcf0;
+      color: #594078;
+      outline-color: #a995c4;
+    }
+
+    .tile-slate {
+      background: #d9e0e5;
+      color: #40515f;
+      outline-color: #92a1ac;
+    }
+
+    .tile-peach {
+      background: #f0ddd1;
+      color: #814b2c;
+      outline-color: #cfa082;
+    }
+
+    .event-copy {
+      min-width: 0;
+    }
+
+    .event-title {
+      overflow: hidden;
+      color: #292b2f;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 600;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .event-meta {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin-top: 2px;
+      color: #777a80;
+      font-size: 10px;
+      line-height: 14px;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .event-context {
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .meta-separator {
+      color: #b0b2b6;
+    }
+
+    .event-day {
+      color: #5c5f64;
+      font-weight: 700;
+    }
+
+    .event-kind {
+      padding: 3px 5px;
+      border: 1px solid #dedfe1;
+      background: #f6f7f7;
+      color: #666970;
+      font-size: 9px;
+      line-height: 12px;
+      font-weight: 700;
+      letter-spacing: 0.25px;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .bottom-nav {
+      flex: 0 0 68px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      background: #ffffff;
+      border-top: 1px solid #dfe0e2;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      border: 0;
+      background: transparent;
+      color: #777a80;
+      font-size: 12px;
+      line-height: 15px;
+      font-weight: 500;
+    }
+
+    .nav-item svg {
+      width: 21px;
+      height: 21px;
+    }
+
+    .nav-item.active {
+      color: #242528;
+      font-weight: 700;
+    }
+
+    .nav-icon-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 31px;
+      height: 26px;
+    }
+
+    .nav-item.active .nav-icon-wrap {
+      background: #f3c614;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="app-header">
+      <div class="top-bar">
+        <div class="title-block">
+          <h1>Activity</h1>
+          <p class="subtitle">Updates grouped by day</p>
+        </div>
+        <button class="icon-button" type="button" aria-label="Search activity">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="10.8" cy="10.8" r="6.6" stroke="currentColor" stroke-width="1.8"></circle>
+            <path d="M15.7 15.7L20.2 20.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="square"></path>
+          </svg>
+        </button>
+      </div>
+      <nav class="filter-tabs" aria-label="Activity filters">
+        <button class="filter-tab active" type="button">All activity</button>
+        <button class="filter-tab" type="button">Mentions</button>
+        <button class="filter-tab" type="button">Connections</button>
+      </nav>
+    </header>
+
+    <main class="activity-content">
+      <div class="summary-row">
+        <p class="summary-title">Your daily digest</p>
+        <span class="summary-count">6 updates</span>
+      </div>
+
+      <section class="day-section" aria-labelledby="today-title">
+        <div class="day-card">
+          <header class="day-header">
+            <div class="day-header-date">
+              <h2 class="day-title" id="today-title">Today</h2>
+              <span class="calendar-date">Tuesday, Jun 18</span>
+            </div>
+            <span class="day-total">3 events</span>
+          </header>
+
+          <article class="event-row">
+            <div class="person-tile tile-blue" aria-label="Mara Chen">MC</div>
+            <div class="event-copy">
+              <div class="event-title">Mara Chen mentioned you</div>
+              <div class="event-meta">
+                <span class="event-day">Today</span>
+                <span class="meta-separator">·</span>
+                <time>11:42 AM</time>
+                <span class="meta-separator">·</span>
+                <span class="event-context">Neighborhood Notes</span>
+              </div>
+            </div>
+            <span class="event-kind">Mention</span>
+          </article>
+
+          <article class="event-row">
+            <div class="person-tile tile-mint" aria-label="Tomas Reed">TR</div>
+            <div class="event-copy">
+              <div class="event-title">Tomas Reed accepted your request</div>
+              <div class="event-meta">
+                <span class="event-day">Today</span>
+                <span class="meta-separator">·</span>
+                <time>9:06 AM</time>
+                <span class="meta-separator">·</span>
+                <span class="event-context">Now connected</span>
+              </div>
+            </div>
+            <span class="event-kind">Connect</span>
+          </article>
+
+          <article class="event-row">
+            <div class="person-tile tile-rose" aria-label="Erin Vale">EV</div>
+            <div class="event-copy">
+              <div class="event-title">You saved Erin Vale’s post</div>
+              <div class="event-meta">
+                <span class="event-day">Today</span>
+                <span class="meta-separator">·</span>
+                <time>8:31 AM</time>
+                <span class="meta-separator">·</span>
+                <span class="event-context">Read Later</span>
+              </div>
+            </div>
+            <span class="event-kind">Saved</span>
+          </article>
+        </div>
+      </section>
+
+      <section class="day-section" aria-labelledby="yesterday-title">
+        <div class="day-card">
+          <header class="day-header">
+            <div class="day-header-date">
+              <h2 class="day-title" id="yesterday-title">Yesterday</h2>
+              <span class="calendar-date">Monday, Jun 17</span>
+            </div>
+            <span class="day-total">3 events</span>
+          </header>
+
+          <article class="event-row">
+            <div class="person-tile tile-lavender" aria-label="Nolan Pierce">NP</div>
+            <div class="event-copy">
+              <div class="event-title">Nolan Pierce replied to you</div>
+              <div class="event-meta">
+                <span class="event-day">Yesterday</span>
+                <span class="meta-separator">·</span>
+                <time>7:54 PM</time>
+                <span class="meta-separator">·</span>
+                <span class="event-context">Trail Updates</span>
+              </div>
+            </div>
+            <span class="event-kind">Reply</span>
+          </article>
+
+          <article class="event-row">
+            <div class="person-tile tile-slate" aria-label="Rowan Ellis">RE</div>
+            <div class="event-copy">
+              <div class="event-title">You followed Rowan Ellis</div>
+              <div class="event-meta">
+                <span class="event-day">Yesterday</span>
+                <span class="meta-separator">·</span>
+                <time>5:20 PM</time>
+                <span class="meta-separator">·</span>
+                <span class="event-context">Connection added</span>
+              </div>
+            </div>
+            <span class="event-kind">Follow</span>
+          </article>
+
+          <article class="event-row">
+            <div class="person-tile tile-peach" aria-label="Asha Bell">AB</div>
+            <div class="event-copy">
+              <div class="event-title">Asha Bell invited you to a group</div>
+              <div class="event-meta">
+                <span class="event-day">Yesterday</span>
+                <span class="meta-separator">·</span>
+                <time>2:12 PM</time>
+                <span class="meta-separator">·</span>
+                <span class="event-context">Garden Exchange</span>
+              </div>
+            </div>
+            <span class="event-kind">Invite</span>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <nav class="bottom-nav" aria-label="Primary navigation">
+      <button class="nav-item" type="button">
+        <span class="nav-icon-wrap">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M3.5 10.5L12 3.8L20.5 10.5V20H14.8V14.2H9.2V20H3.5V10.5Z" stroke="currentColor" stroke-width="1.7"></path>
+          </svg>
+        </span>
+        <span>Home</span>
+      </button>
+      <button class="nav-item" type="button">
+        <span class="nav-icon-wrap">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M4 5.5H20V16.5H10L5.5 20V16.5H4V5.5Z" stroke="currentColor" stroke-width="1.7"></path>
+          </svg>
+        </span>
+        <span>Messages</span>
+      </button>
+      <button class="nav-item active" type="button" aria-current="page">
+        <span class="nav-icon-wrap">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M12 6.5V12L15.8 14.2" stroke="currentColor" stroke-width="1.8"></path>
+            <path d="M5.2 6.5H2.8V4.1M3.3 6.1C5.2 3.3 8.5 1.8 11.8 2.2C16.6 2.8 20.1 7.1 19.7 11.9C19.3 16.7 15.2 20.4 10.4 20.2C6.8 20.1 3.7 17.8 2.4 14.6" stroke="currentColor" stroke-width="1.8"></path>
+          </svg>
+        </span>
+        <span>Activity</span>
+      </button>
+      <button class="nav-item" type="button">
+        <span class="nav-icon-wrap">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <rect x="5" y="3.5" width="14" height="17" stroke="currentColor" stroke-width="1.7"></rect>
+            <circle cx="12" cy="9" r="2.6" stroke="currentColor" stroke-width="1.6"></circle>
+            <path d="M8 17C8.5 14.8 9.9 13.7 12 13.7C14.1 13.7 15.5 14.8 16 17" stroke="currentColor" stroke-width="1.6"></path>
+          </svg>
+        </span>
+        <span>Profile</span>
+      </button>
+    </nav>
+  </div>
+</body>
+</html>

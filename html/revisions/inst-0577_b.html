@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Wayfare Voice Note</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 40px 0;
+    margin: 0;
+    background: #e9ebec;
+    font-family: 'Inter', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .screen {
+    width: 768px;
+    height: 1024px;
+    background: #ffffff;
+    position: relative;
+    color: #1d2126;
+    display: flex;
+  }
+
+  /* dark icon rail */
+  .rail {
+    flex: 0 0 76px;
+    width: 76px;
+    background: #14202a;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 22px 0;
+    gap: 6px;
+  }
+  .brand {
+    width: 36px;
+    height: 36px;
+    border-radius: 11px;
+    background: rgba(255,255,255,0.12);
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 20px;
+  }
+  .railitem {
+    width: 62px;
+    padding: 11px 0;
+    border-radius: 14px;
+    text-align: center;
+    font-size: 9px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.5);
+  }
+  .railitem svg { display: block; margin: 0 auto 5px; }
+  .railitem.active {
+    background: #ffffff;
+    color: #14202a;
+    font-weight: 700;
+  }
+
+  /* recorder panel — deep ink & mint */
+  .rec {
+    flex: 0 0 344px;
+    width: 344px;
+    background: #16262e;
+    color: #ffffff;
+    padding: 30px 26px 32px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .context {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid rgba(255,255,255,0.13);
+  }
+  .context .place {
+    font-size: 14px;
+    font-weight: 500;
+    color: rgba(255,255,255,0.86);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .context .day {
+    margin-left: auto;
+    font-size: 12px;
+    color: rgba(255,255,255,0.45);
+    white-space: nowrap;
+  }
+  .status {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #6fd6b0;
+  }
+  .status span {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: #6fd6b0;
+  }
+  .timer {
+    font-size: 82px;
+    font-weight: 600;
+    letter-spacing: -3px;
+    line-height: 1;
+    margin-top: 8px;
+    font-variant-numeric: tabular-nums;
+  }
+  .wave {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    height: 178px;
+    margin-top: 16px;
+  }
+  .wave i {
+    display: block;
+    width: 3px;
+    border-radius: 2px;
+    background: rgba(255,255,255,0.16);
+  }
+  .wave i.on { background: #6fd6b0; }
+  .ruler {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+    font-size: 12px;
+    color: rgba(255,255,255,0.42);
+  }
+  .meta {
+    margin-top: 14px;
+    font-size: 10px;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.24);
+  }
+  .controls {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 22px;
+  }
+  .ctrl {
+    width: 74px;
+    text-align: center;
+  }
+  .ctrl .btn {
+    width: 58px;
+    height: 58px;
+    margin: 0 auto 9px;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.28);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255,255,255,0.85);
+  }
+  .ctrl.main .btn {
+    width: 84px;
+    height: 84px;
+    background: #6fd6b0;
+    border-color: #6fd6b0;
+    color: #10222a;
+  }
+  .ctrl .lbl { font-size: 12px; color: rgba(255,255,255,0.55); }
+  .ctrl.main .lbl { color: #ffffff; font-weight: 600; }
+  .recfoot {
+    margin-top: 20px;
+    font-size: 11px;
+    color: rgba(255,255,255,0.3);
+    text-align: center;
+  }
+
+  /* markers column */
+  .side {
+    flex: 1;
+    min-width: 0;
+    background: #f1f3f5;
+    padding: 22px 24px 24px;
+    display: flex;
+    flex-direction: column;
+  }
+  .topbar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-bottom: 18px;
+  }
+  .iconbtn {
+    width: 38px;
+    height: 38px;
+    flex: 0 0 38px;
+    background: #ffffff;
+    border: 1px solid #e0e4e7;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #4b5158;
+  }
+  .titlewrap .title {
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: -0.1px;
+  }
+  .titlewrap .sub {
+    font-size: 12px;
+    color: #8b9298;
+    margin-top: 2px;
+  }
+  .discard {
+    margin-left: auto;
+    padding: 9px 15px;
+    background: #ffffff;
+    border: 1px solid #e0e4e7;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #6f767d;
+  }
+  .sechead {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 2px 2px 12px;
+  }
+  .sechead h2 {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .sechead .count {
+    font-size: 12px;
+    color: #9ba1a7;
+    white-space: nowrap;
+  }
+  .mlist {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+  }
+  .mcard {
+    background: #ffffff;
+    border: 1px solid #e5e9ec;
+    border-radius: 12px;
+    padding: 12px 14px;
+  }
+  .mcard .t {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.6px;
+    color: #2f8f74;
+    font-variant-numeric: tabular-nums;
+  }
+  .mcard .txt {
+    font-size: 14px;
+    line-height: 1.35;
+    margin-top: 3px;
+    color: #1d2126;
+  }
+  .addmarker {
+    margin-top: 12px;
+    border: 1px dashed #c8cfd4;
+    border-radius: 12px;
+    padding: 13px 14px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #6f767d;
+    text-align: center;
+  }
+  .summary {
+    margin-top: 14px;
+    background: #ffffff;
+    border: 1px solid #e5e9ec;
+    border-radius: 12px;
+    padding: 14px 16px 16px;
+  }
+  .summary h3 {
+    margin: 0 0 6px;
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .srow {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 8px 0 0;
+    font-size: 13px;
+  }
+  .srow .k { color: #8b9298; white-space: nowrap; }
+  .srow .v {
+    color: #1d2126;
+    font-weight: 500;
+    text-align: right;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+</style>
+</head>
+<body>
+<div class="screen">
+
+  <nav class="rail">
+    <div class="brand">W</div>
+    <div class="railitem">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M16.5 16.5L21 21"/></svg>
+      Explore
+    </div>
+    <div class="railitem">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4L3.8 6v14L9 18l6 2 5.2-2V4L15 6 9 4z"/><path d="M9 4v14M15 6v14"/></svg>
+      Map
+    </div>
+    <div class="railitem active">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 12a6.5 6.5 0 0013 0M12 18.5V21"/></svg>
+      Notes
+    </div>
+    <div class="railitem">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16v13H4zM8 7V4h8v3"/><path d="M4 12h16"/></svg>
+      Trips
+    </div>
+  </nav>
+
+  <section class="rec">
+    <div class="context">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.55)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 1116 0z"/><circle cx="12" cy="10" r="2.6"/></svg>
+      <div class="place">Hotel Marisol, Lisbon</div>
+      <div class="day">Day 3 · Mar 14</div>
+    </div>
+
+    <div class="mid">
+      <div class="status"><span class="dot"></span><span>Recording</span></div>
+      <div class="timer">06:12</div>
+      <div class="wave">
+        <i class="on" style="height:36px"></i><i class="on" style="height:58px"></i><i class="on" style="height:84px"></i>
+        <i class="on" style="height:46px"></i><i class="on" style="height:108px"></i><i class="on" style="height:140px"></i>
+        <i class="on" style="height:96px"></i><i class="on" style="height:68px"></i><i class="on" style="height:40px"></i>
+        <i class="on" style="height:62px"></i><i class="on" style="height:120px"></i><i class="on" style="height:160px"></i>
+        <i class="on" style="height:146px"></i><i class="on" style="height:86px"></i><i class="on" style="height:52px"></i>
+        <i class="on" style="height:74px"></i><i class="on" style="height:116px"></i><i class="on" style="height:132px"></i>
+        <i class="on" style="height:156px"></i><i class="on" style="height:92px"></i><i class="on" style="height:58px"></i>
+        <i class="on" style="height:34px"></i><i class="on" style="height:68px"></i><i class="on" style="height:104px"></i>
+        <i class="on" style="height:138px"></i><i class="on" style="height:168px"></i><i class="on" style="height:126px"></i>
+        <i class="on" style="height:80px"></i><i class="on" style="height:46px"></i><i class="on" style="height:64px"></i>
+        <i class="on" style="height:98px"></i><i class="on" style="height:144px"></i><i class="on" style="height:120px"></i>
+        <i class="on" style="height:74px"></i><i class="on" style="height:40px"></i><i class="on" style="height:52px"></i>
+        <i class="on" style="height:86px"></i><i class="on" style="height:126px"></i>
+        <i style="height:150px"></i><i style="height:92px"></i><i style="height:58px"></i>
+        <i style="height:40px"></i><i style="height:70px"></i><i style="height:104px"></i>
+        <i style="height:132px"></i><i style="height:80px"></i><i style="height:54px"></i>
+        <i style="height:66px"></i>
+      </div>
+      <div class="ruler"><span>60s ago</span><span>Now</span></div>
+      <div class="meta">Mono · 128 kbps · 3.1 MB</div>
+    </div>
+
+    <div>
+      <div class="controls">
+        <div class="ctrl">
+          <div class="btn">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 21V4h12l-2.5 4.5L18 13H6"/></svg>
+          </div>
+          <div class="lbl">Marker</div>
+        </div>
+        <div class="ctrl main">
+          <div class="btn">
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="currentColor"><rect x="7" y="5" width="3.6" height="14" rx="1"/><rect x="13.4" y="5" width="3.6" height="14" rx="1"/></svg>
+          </div>
+          <div class="lbl">Pause</div>
+        </div>
+        <div class="ctrl">
+          <div class="btn">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>
+          </div>
+          <div class="lbl">Stop &amp; save</div>
+        </div>
+      </div>
+      <div class="recfoot">Input: tablet microphone · autosaves every 30 s</div>
+    </div>
+  </section>
+
+  <section class="side">
+    <div class="topbar">
+      <div class="iconbtn">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
+      </div>
+      <div class="titlewrap">
+        <div class="title">Voice Note</div>
+        <div class="sub">Lisbon trip</div>
+      </div>
+      <div class="discard">Discard</div>
+    </div>
+
+    <div class="sechead">
+      <h2>Markers</h2>
+      <div class="count">8 in this note</div>
+    </div>
+
+    <div class="mlist">
+      <div class="mcard"><div class="t">00:24</div><div class="txt">Front desk staffed until 11 pm</div></div>
+      <div class="mcard"><div class="t">01:02</div><div class="txt">Tram 28 stop, two blocks downhill</div></div>
+      <div class="mcard"><div class="t">01:47</div><div class="txt">Breakfast served 7 to 10</div></div>
+      <div class="mcard"><div class="t">02:35</div><div class="txt">Rooftop bar closes at midnight</div></div>
+      <div class="mcard"><div class="t">03:18</div><div class="txt">Airport transfer, 22 euros</div></div>
+      <div class="mcard"><div class="t">04:06</div><div class="txt">Laundry picked up before noon</div></div>
+      <div class="mcard"><div class="t">04:52</div><div class="txt">Room safe code at reception</div></div>
+      <div class="mcard"><div class="t">05:44</div><div class="txt">Late checkout needs a day's notice</div></div>
+    </div>
+
+    <div class="addmarker">+ Add marker at 06:12</div>
+
+    <div class="summary">
+      <h3>Saving to</h3>
+      <div class="srow"><div class="k">Trip</div><div class="v">Lisbon, Portugal</div></div>
+      <div class="srow"><div class="k">Folder</div><div class="v">Day 3 · Lodging</div></div>
+      <div class="srow"><div class="k">Transcript</div><div class="v">English + PT</div></div>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

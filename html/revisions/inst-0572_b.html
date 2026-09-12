@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Share Episode</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #dedbd4;
+      color: #2c352f;
+      font-family: Georgia, 'Times New Roman', serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      position: relative;
+      width: 390px;
+      height: 560px;
+      padding: 24px 20px;
+      background: #f4efe4;
+    }
+
+    .screen::before {
+      position: absolute;
+      top: 14px;
+      right: 22px;
+      width: 66px;
+      height: 66px;
+      content: "";
+      background: #e6a457;
+      border-radius: 50%;
+      opacity: 0.32;
+    }
+
+    .screen::after {
+      position: absolute;
+      bottom: 16px;
+      left: -22px;
+      width: 86px;
+      height: 86px;
+      content: "";
+      border: 18px solid rgba(83, 119, 90, 0.15);
+      border-radius: 50%;
+    }
+
+    .share-sheet {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      padding: 20px;
+      background: #fffdf7;
+      border: 1px solid #bdb6a7;
+      border-radius: 2px;
+      box-shadow: 7px 7px 0 #d7c9ae;
+    }
+
+    .sheet-header {
+      padding-right: 38px;
+    }
+
+    .eyebrow {
+      margin: 0 0 8px;
+      color: #a84931;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      color: #2e4738;
+      font-size: 30px;
+      font-weight: 400;
+      letter-spacing: -0.025em;
+      line-height: 1.05;
+    }
+
+    .helper {
+      margin: 8px 0 0;
+      color: #69685f;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    .close-button {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      display: grid;
+      width: 34px;
+      height: 34px;
+      padding: 0;
+      place-items: center;
+      color: #2e4738;
+      background: #f3ead8;
+      border: 1px solid #bdb6a7;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+
+    .close-button svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .episode-preview {
+      display: flex;
+      margin-top: 18px;
+      padding: 14px 0;
+      align-items: center;
+      gap: 14px;
+      border-top: 1px solid #bdb6a7;
+      border-bottom: 1px solid #bdb6a7;
+    }
+
+    .cover {
+      position: relative;
+      flex: 0 0 62px;
+      width: 62px;
+      height: 62px;
+      background:
+        linear-gradient(90deg, transparent 48%, rgba(255,253,247,0.7) 49%, rgba(255,253,247,0.7) 51%, transparent 52%),
+        linear-gradient(#d3704f 0 48%, #315947 48% 100%);
+      border: 1px solid #315947;
+    }
+
+    .cover::before,
+    .cover::after {
+      position: absolute;
+      content: "";
+      background: #f2ce72;
+      border-radius: 50%;
+    }
+
+    .cover::before {
+      top: 9px;
+      left: 10px;
+      width: 17px;
+      height: 17px;
+    }
+
+    .cover::after {
+      right: 8px;
+      bottom: 7px;
+      width: 22px;
+      height: 22px;
+      border: 4px solid #fffdf7;
+      background: transparent;
+    }
+
+    .episode-copy {
+      min-width: 0;
+    }
+
+    .episode-title {
+      margin: 0;
+      color: #2c352f;
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 1.25;
+    }
+
+    .episode-meta {
+      margin: 5px 0 0;
+      color: #777268;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 11px;
+      line-height: 1.4;
+    }
+
+    .section-label {
+      margin: 16px 0 10px;
+      color: #69685f;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+    }
+
+    .share-options {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 9px;
+    }
+
+    .share-option {
+      display: flex;
+      min-width: 0;
+      padding: 12px 5px 11px;
+      align-items: center;
+      flex-direction: column;
+      gap: 8px;
+      text-align: center;
+      color: #2e4738;
+      background: #f7f0e2;
+      border: 1px solid #c9bfad;
+      border-radius: 2px;
+      cursor: pointer;
+    }
+
+    .option-icon {
+      display: grid;
+      width: 42px;
+      height: 42px;
+      place-items: center;
+      color: #fffdf7;
+      background: #2e5b47;
+      border-radius: 50%;
+    }
+
+    .share-option:nth-child(2) .option-icon {
+      background: #c65e40;
+    }
+
+    .share-option:nth-child(3) .option-icon {
+      color: #304b3d;
+      background: #edc967;
+    }
+
+    .option-icon svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .option-title {
+      display: block;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    .closing-note {
+      margin: 15px 0 0;
+      padding-top: 13px;
+      color: #777268;
+      border-top: 1px dashed #c9bfad;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 11px;
+      line-height: 1.4;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <div class="share-sheet" role="dialog" aria-labelledby="share-title-b" aria-describedby="share-help-b">
+      <button class="close-button" type="button" aria-label="Close share sheet">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M6 6L18 18M18 6L6 18" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+        </svg>
+      </button>
+
+      <header class="sheet-header">
+        <p class="eyebrow">A listening recommendation</p>
+        <h1 id="share-title-b">Pass this story along.</h1>
+        <p class="helper" id="share-help-b">A thoughtful episode is better when it is shared.</p>
+      </header>
+
+      <div class="episode-preview">
+        <div class="cover" aria-hidden="true"></div>
+        <div class="episode-copy">
+          <p class="episode-title">The Quiet Work of Memory</p>
+          <p class="episode-meta">Field Notes with Nora Vale<br>38 minutes</p>
+        </div>
+      </div>
+
+      <p class="section-label">Choose a way to share</p>
+
+      <div class="share-options" aria-label="Share options">
+        <button class="share-option" type="button">
+          <span class="option-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M16 20V18.5C16 16.57 14.21 15 12 15H7C4.79 15 3 16.57 3 18.5V20M9.5 11C11.43 11 13 9.43 13 7.5S11.43 4 9.5 4 6 5.57 6 7.5 7.57 11 9.5 11ZM17 8H22M19.5 5.5V10.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+            </svg>
+          </span>
+          <span class="option-title">Morrow listener</span>
+        </button>
+
+        <button class="share-option" type="button">
+          <span class="option-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M20 15.5C20 17.43 18.21 19 16 19H9L4 21V8.5C4 6.57 5.79 5 8 5H16C18.21 5 20 6.57 20 8.5V15.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          <span class="option-title">Messages</span>
+        </button>
+
+        <button class="share-option" type="button">
+          <span class="option-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M9.5 14.5L14.5 9.5M8 16L6.5 17.5C5.12 18.88 2.88 18.88 1.5 17.5C.12 16.12.12 13.88 1.5 12.5L5.5 8.5C6.88 7.12 9.12 7.12 10.5 8.5M16 8L17.5 6.5C18.88 5.12 21.12 5.12 22.5 6.5C23.88 7.88 23.88 10.12 22.5 11.5L18.5 15.5C17.12 16.88 14.88 16.88 13.5 15.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+            </svg>
+          </span>
+          <span class="option-title">Copy link</span>
+        </button>
+      </div>
+
+      <p class="closing-note">Shared from Morrow Play · Listen whenever the moment is right.</p>
+    </div>
+  </div>
+</body>
+</html>

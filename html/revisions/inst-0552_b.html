@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Recipe — Miso Salmon with Barley</title>
+<style>
+  :root{
+    --olive:#5C6B32;
+    --olive-dark:#465224;
+    --olive-mid:#8B9A55;
+    --olive-pale:#DCE1C8;
+    --ink:#1A1C14;
+    --muted:#6E7268;
+    --rule:#E2E3DC;
+    --rule-strong:#CFD1C6;
+    --paper:#FBFBF8;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    min-height:1088px;
+    padding:32px 0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#E8E9E3;
+    font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .screen{
+    width:768px;
+    height:1024px;
+    display:flex;
+    flex-direction:column;
+    position:relative;
+    background:#FFFFFF;
+    color:var(--ink);
+    box-shadow:0 18px 50px rgba(30,34,22,.12);
+  }
+
+  .topbar{
+    display:grid;
+    grid-template-columns:52px 1fr 52px;
+    align-items:center;
+    padding:8px 20px;
+    border-bottom:1px solid var(--rule);
+  }
+  .tb-title{
+    text-align:center;
+    font-size:16px;
+    font-weight:650;
+    letter-spacing:.2px;
+  }
+  .iconbtn{
+    width:44px;
+    min-height:44px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:12px;
+    color:var(--ink);
+  }
+  .iconbtn.saved{
+    justify-self:end;
+    color:var(--olive);
+    background:#EEF1E3;
+  }
+
+  .tablet-body{
+    flex:1;
+    min-height:0;
+    display:grid;
+    grid-template-columns:262px 1fr;
+    position:relative;
+  }
+  .serve-radio{
+    position:absolute;
+    opacity:0;
+    pointer-events:none;
+  }
+
+  .summary{
+    padding:28px 24px 24px;
+    border-right:1px solid var(--rule-strong);
+    background:var(--paper);
+  }
+  .eyebrow{
+    font-size:12px;
+    line-height:17px;
+    letter-spacing:1.15px;
+    text-transform:uppercase;
+    color:var(--olive);
+    font-weight:750;
+  }
+  h1{
+    margin:8px 0 0;
+    font-size:29px;
+    line-height:35px;
+    letter-spacing:-.55px;
+    font-weight:760;
+  }
+  .meta{
+    margin-top:10px;
+    font-size:14px;
+    line-height:21px;
+    color:var(--muted);
+  }
+
+  .summary-rule{
+    margin:24px 0;
+    border-top:1px solid var(--rule);
+  }
+  .summary-label{
+    font-size:12px;
+    line-height:17px;
+    color:var(--muted);
+  }
+  .lead-nutrient{
+    margin-top:7px;
+    display:flex;
+    align-items:baseline;
+    gap:8px;
+  }
+  .lead-nutrient strong{
+    color:var(--olive);
+    font-size:34px;
+    line-height:38px;
+    font-weight:780;
+    font-variant-numeric:tabular-nums;
+  }
+  .lead-nutrient span{
+    font-size:15px;
+    line-height:20px;
+    font-weight:700;
+  }
+  .nutrient-grid{
+    margin-top:15px;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+  }
+  .nutrient{
+    padding-top:10px;
+    border-top:1px solid var(--rule);
+  }
+  .nutrient strong{
+    display:block;
+    font-size:16px;
+    line-height:20px;
+    font-weight:720;
+    font-variant-numeric:tabular-nums;
+  }
+  .nutrient span{
+    display:block;
+    margin-top:2px;
+    font-size:11px;
+    line-height:15px;
+    color:var(--muted);
+  }
+  .target-copy{
+    margin-top:14px;
+    padding:11px 12px;
+    border-radius:9px;
+    background:#EEF1E3;
+    color:var(--olive-dark);
+    font-size:12px;
+    line-height:18px;
+  }
+
+  .serving-title{
+    font-size:13px;
+    line-height:18px;
+    font-weight:750;
+    letter-spacing:.8px;
+    text-transform:uppercase;
+  }
+  .serving-help{
+    margin-top:4px;
+    font-size:12px;
+    line-height:18px;
+    color:var(--muted);
+  }
+  .serving-picker{
+    margin-top:12px;
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:6px;
+  }
+  .serving-picker label{
+    min-height:44px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border:1px solid var(--rule-strong);
+    border-radius:10px;
+    background:#FFFFFF;
+    color:var(--muted);
+    font-size:14px;
+    line-height:18px;
+    font-weight:700;
+    cursor:pointer;
+  }
+  #b2:checked ~ .summary label[for="b2"],
+  #b4:checked ~ .summary label[for="b4"],
+  #b6:checked ~ .summary label[for="b6"]{
+    border-color:var(--olive);
+    background:var(--olive);
+    color:#FFFFFF;
+  }
+  #b2:focus-visible ~ .summary label[for="b2"],
+  #b4:focus-visible ~ .summary label[for="b4"],
+  #b6:focus-visible ~ .summary label[for="b6"]{
+    outline:2px solid var(--ink);
+    outline-offset:2px;
+  }
+
+  .recipe-content{
+    min-width:0;
+    padding:25px 30px 20px;
+  }
+  .section-head{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    gap:16px;
+    padding-bottom:10px;
+  }
+  .section-head h2{
+    margin:0;
+    font-size:14px;
+    line-height:20px;
+    font-weight:760;
+    letter-spacing:1.15px;
+    text-transform:uppercase;
+  }
+  .section-head .aside{
+    font-size:12px;
+    line-height:18px;
+    color:var(--muted);
+    text-align:right;
+  }
+  .count-text span{display:none;}
+  #b2:checked ~ .recipe-content .count-text .b2,
+  #b4:checked ~ .recipe-content .count-text .b4,
+  #b6:checked ~ .recipe-content .count-text .b6{display:inline;}
+
+  .ingredients-list{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    column-gap:24px;
+    border-top:1px solid var(--rule);
+  }
+  .ing{
+    min-width:0;
+    padding:11px 0;
+    border-bottom:1px solid var(--rule);
+  }
+  .ing .name{
+    display:block;
+    font-size:14px;
+    line-height:19px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .ing .amount{
+    display:block;
+    margin-top:3px;
+    color:var(--olive-dark);
+    font-size:13px;
+    line-height:18px;
+    font-weight:700;
+    font-variant-numeric:tabular-nums;
+    white-space:nowrap;
+  }
+  .amount span{display:none;}
+  #b2:checked ~ .recipe-content .amount .b2,
+  #b4:checked ~ .recipe-content .amount .b4,
+  #b6:checked ~ .recipe-content .amount .b6{display:inline;}
+
+  .method-section{margin-top:23px;}
+  .steps{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    border-top:1px solid var(--rule);
+    padding-top:12px;
+  }
+  .step{
+    padding:13px 14px;
+    border:1px solid var(--rule);
+    border-radius:10px;
+    background:var(--paper);
+  }
+  .step-top{
+    display:flex;
+    align-items:center;
+    gap:9px;
+    margin-bottom:7px;
+  }
+  .step .n{
+    width:28px;
+    min-height:28px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:7px;
+    background:var(--olive);
+    color:#FFFFFF;
+    font-size:13px;
+    line-height:18px;
+    font-weight:750;
+    font-variant-numeric:tabular-nums;
+  }
+  .step-title{
+    font-size:13px;
+    line-height:18px;
+    font-weight:750;
+  }
+  .step p{
+    margin:0;
+    font-size:13px;
+    line-height:19px;
+    color:#35382E;
+  }
+
+  .tabbar{
+    margin-top:auto;
+    display:flex;
+    padding:8px 68px 10px;
+    border-top:1px solid var(--rule-strong);
+    background:#FFFFFF;
+  }
+  .tab{
+    flex:1;
+    min-height:52px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:3px;
+    color:var(--muted);
+  }
+  .tab.active{color:var(--olive);}
+  .tab span{
+    font-size:12px;
+    line-height:15px;
+  }
+  .tab.active span{font-weight:700;}
+</style>
+</head>
+<body>
+  <div class="screen">
+    <div class="topbar">
+      <div class="iconbtn" aria-label="Back">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 19l-7-7 7-7"/></svg>
+      </div>
+      <div class="tb-title">Recipe</div>
+      <div class="iconbtn saved" aria-label="Saved">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="currentColor"><path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4.2L5 21V4a1 1 0 0 1 1-1z"/></svg>
+      </div>
+    </div>
+
+    <div class="tablet-body">
+      <input class="serve-radio" type="radio" name="servings-b" id="b2" checked>
+      <input class="serve-radio" type="radio" name="servings-b" id="b4">
+      <input class="serve-radio" type="radio" name="servings-b" id="b6">
+
+      <aside class="summary">
+        <div class="eyebrow">Dinner · High protein</div>
+        <h1>Miso Salmon with Barley</h1>
+        <div class="meta">30 min total<br>Easy · Weeknight friendly</div>
+
+        <div class="summary-rule"></div>
+
+        <div class="summary-label">Nutrition per serving</div>
+        <div class="lead-nutrient">
+          <strong>38 g</strong>
+          <span>Protein</span>
+        </div>
+        <div class="nutrient-grid">
+          <div class="nutrient"><strong>520</strong><span>Calories</span></div>
+          <div class="nutrient"><strong>44 g</strong><span>Carbs</span></div>
+          <div class="nutrient"><strong>18 g</strong><span>Fat</span></div>
+          <div class="nutrient"><strong>610 mg</strong><span>Sodium</span></div>
+        </div>
+        <div class="target-copy">Fits your 620 calorie dinner target with 100 calories to spare.</div>
+
+        <div class="summary-rule"></div>
+
+        <div class="serving-title">Servings</div>
+        <div class="serving-help">Amounts update when you choose a count.</div>
+        <div class="serving-picker" aria-label="Serving count">
+          <label for="b2">2</label>
+          <label for="b4">4</label>
+          <label for="b6">6</label>
+        </div>
+      </aside>
+
+      <main class="recipe-content">
+        <section>
+          <div class="section-head">
+            <h2>Ingredients</h2>
+            <div class="aside count-text">
+              <span class="b2">7 items · for 2 servings</span>
+              <span class="b4">7 items · for 4 servings</span>
+              <span class="b6">7 items · for 6 servings</span>
+            </div>
+          </div>
+
+          <div class="ingredients-list">
+            <div class="ing">
+              <span class="name">Salmon fillets, skin on</span>
+              <span class="amount"><span class="b2">2 (6 oz each)</span><span class="b4">4 (6 oz each)</span><span class="b6">6 (6 oz each)</span></span>
+            </div>
+            <div class="ing">
+              <span class="name">White miso paste</span>
+              <span class="amount"><span class="b2">2 tbsp</span><span class="b4">1/4 cup</span><span class="b6">6 tbsp</span></span>
+            </div>
+            <div class="ing">
+              <span class="name">Mirin</span>
+              <span class="amount"><span class="b2">1 tbsp</span><span class="b4">2 tbsp</span><span class="b6">3 tbsp</span></span>
+            </div>
+            <div class="ing">
+              <span class="name">Rice vinegar</span>
+              <span class="amount"><span class="b2">2 tsp</span><span class="b4">4 tsp</span><span class="b6">2 tbsp</span></span>
+            </div>
+            <div class="ing">
+              <span class="name">Pearl barley, rinsed</span>
+              <span class="amount"><span class="b2">3/4 cup</span><span class="b4">1 1/2 cups</span><span class="b6">2 1/4 cups</span></span>
+            </div>
+            <div class="ing">
+              <span class="name">Low-sodium chicken stock</span>
+              <span class="amount"><span class="b2">2 cups</span><span class="b4">4 cups</span><span class="b6">6 cups</span></span>
+            </div>
+            <div class="ing">
+              <span class="name">Baby spinach</span>
+              <span class="amount"><span class="b2">3 cups</span><span class="b4">6 cups</span><span class="b6">9 cups</span></span>
+            </div>
+          </div>
+        </section>
+
+        <section class="method-section">
+          <div class="section-head">
+            <h2>Method</h2>
+            <div class="aside">4 steps · about 30 minutes</div>
+          </div>
+          <div class="steps">
+            <div class="step">
+              <div class="step-top"><div class="n">1</div><div class="step-title">Make the glaze</div></div>
+              <p>Heat the broiler. Whisk the miso, mirin, and rice vinegar in a small bowl until smooth.</p>
+            </div>
+            <div class="step">
+              <div class="step-top"><div class="n">2</div><div class="step-title">Cook the barley</div></div>
+              <p>Simmer the barley in the stock, covered, for 20 minutes. Fold in the spinach off the heat.</p>
+            </div>
+            <div class="step">
+              <div class="step-top"><div class="n">3</div><div class="step-title">Broil the salmon</div></div>
+              <p>Pat the salmon dry, brush half the glaze over the tops, and broil 8 minutes on the upper rack.</p>
+            </div>
+            <div class="step">
+              <div class="step-top"><div class="n">4</div><div class="step-title">Glaze and serve</div></div>
+              <p>Spoon on the remaining glaze and rest 3 minutes before plating over the barley.</p>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <div class="tabbar">
+      <div class="tab">
+        <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l9 8h-2.5v9h-13v-9H3z"/></svg>
+        <span>Today</span>
+      </div>
+      <div class="tab">
+        <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="4.5" width="17" height="16"/><path d="M3.5 9.5h17M8 3v3M16 3v3"/></svg>
+        <span>Plan</span>
+      </div>
+      <div class="tab active">
+        <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3.5h11a3 3 0 0 1 3 3v14H8a3 3 0 0 1-3-3z"/><path d="M9 8h7M9 12h7"/></svg>
+        <span>Recipes</span>
+      </div>
+      <div class="tab">
+        <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.5"/><path d="M4.5 20c1.3-3.8 4-5.5 7.5-5.5s6.2 1.7 7.5 5.5"/></svg>
+        <span>Me</span>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Note — Rested</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1b1a18;
+    --muted:#6f6b66;
+    --line:#e3e0db;
+    --accent:#dd5f18;
+    --accent-soft:#fbf1e9;
+    --paper:#fffdfa;
+  }
+  *{box-sizing:border-box;}
+  body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    padding:40px 0;
+    margin:0;
+    background:#cdc8c1;
+    font-family:'Source Sans 3', system-ui, sans-serif;
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+  }
+  .screen{
+    width:390px;
+    height:844px;
+    position:relative;
+    display:flex;
+    flex-direction:column;
+    background:var(--paper);
+  }
+  .topbar{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:11px 16px 12px;
+    background:var(--accent-soft);
+    border-bottom:1px solid #edc9b1;
+    box-shadow:inset 0 -3px 0 rgba(221,95,24,.12);
+  }
+  .barcopy{
+    flex:1;
+    min-width:0;
+    display:flex;
+    flex-direction:column;
+    line-height:1.15;
+  }
+  .barcopy .label{
+    color:var(--accent);
+    font-size:10px;
+    font-weight:600;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+  }
+  .barcopy .crumb{
+    margin-top:3px;
+    color:var(--ink);
+    font-size:14px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .iconbtn{
+    width:26px;
+    height:26px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:var(--ink);
+    flex:0 0 auto;
+  }
+  .iconbtn.mark{
+    color:var(--accent);
+  }
+  .doc{
+    flex:1;
+    min-height:0;
+    padding:17px 22px 0;
+  }
+  .meta{
+    color:var(--muted);
+    font-size:12px;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+  }
+  h1{
+    margin:7px 0 0;
+    font-family:'Playfair Display', Georgia, serif;
+    font-size:26px;
+    line-height:1.18;
+    font-weight:700;
+  }
+  .sechead{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin:13px 0 7px;
+    color:var(--muted);
+    font-size:11px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+  }
+  .sechead:after{
+    content:"";
+    height:1px;
+    flex:1;
+    background:var(--line);
+  }
+  .readings{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    border:1px solid #ead9cd;
+    border-radius:7px;
+    background:#fff;
+  }
+  .reading{
+    min-width:0;
+    padding:9px 8px 8px;
+    border-right:1px solid var(--line);
+  }
+  .reading:last-child{border-right:none;}
+  .reading-top{
+    display:flex;
+    align-items:center;
+    gap:5px;
+    color:var(--accent);
+  }
+  .gl{display:flex;flex:0 0 auto;}
+  .nm{
+    min-width:0;
+    color:var(--muted);
+    font-size:11px;
+    line-height:1.15;
+  }
+  .vl{
+    display:block;
+    margin-top:6px;
+    color:var(--ink);
+    font-size:15px;
+    font-weight:600;
+    white-space:nowrap;
+  }
+  .sub{
+    display:block;
+    margin-top:2px;
+    color:var(--muted);
+    font-size:10px;
+    line-height:1.15;
+  }
+  .tags{
+    display:flex;
+    gap:6px;
+    margin-top:11px;
+  }
+  .tag{
+    padding:3px 8px;
+    border:1px solid var(--line);
+    border-radius:12px;
+    color:var(--muted);
+    background:#fff;
+    font-size:12px;
+    white-space:nowrap;
+  }
+  .tag.on{
+    border-color:#e8aa84;
+    background:var(--accent-soft);
+    color:var(--accent);
+  }
+  .rule{
+    height:1px;
+    margin:13px 0;
+    background:var(--line);
+  }
+  p{
+    margin:0 0 11px;
+    font-size:15px;
+    line-height:1.5;
+  }
+  .pull{
+    margin:0 0 12px;
+    padding:9px 11px;
+    border:1px solid #efd5c4;
+    border-radius:5px;
+    background:var(--accent-soft);
+    font-size:14px;
+    line-height:1.45;
+  }
+  .toolbar{
+    display:flex;
+    align-items:center;
+    gap:18px;
+    padding:11px 22px;
+    border-top:1px solid var(--line);
+    background:#fff;
+  }
+  .toolbar .count{
+    margin-left:auto;
+    color:var(--muted);
+    font-size:12px;
+    white-space:nowrap;
+  }
+  .tabs{
+    display:flex;
+    padding:8px 0 13px;
+    border-top:1px solid var(--line);
+    background:#fff;
+  }
+  .tab{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:3px;
+    color:var(--muted);
+    font-size:12px;
+  }
+  .tab.active{
+    color:var(--accent);
+    font-weight:600;
+  }
+</style>
+</head>
+<body>
+<div class="screen">
+  <div class="topbar">
+    <span class="iconbtn" aria-label="Back">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 5 8 12l6.5 7"/></svg>
+    </span>
+    <span class="barcopy">
+      <span class="label">Journal entry</span>
+      <span class="crumb">Sleep journal · Week 6</span>
+    </span>
+    <span class="iconbtn mark" aria-label="Pinned">
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor"><path d="M7 3.5h10a1 1 0 0 1 1 1V20l-6-3.6L6 20V4.5a1 1 0 0 1 1-1Z"/></svg>
+    </span>
+    <span class="iconbtn" aria-label="More">
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5.5" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="12" cy="18.5" r="1.6"/></svg>
+    </span>
+  </div>
+
+  <div class="doc">
+    <div class="meta">Tue, March 11 · saved 8:12 AM</div>
+    <h1>Third night without the late espresso</h1>
+
+    <div class="sechead">Attached readings</div>
+    <div class="readings">
+      <div class="reading">
+        <div class="reading-top">
+          <span class="gl">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8 8 0 0 1 9.5 4a7.5 7.5 0 1 0 10.5 10.5Z"/></svg>
+          </span>
+          <span class="nm">Asleep</span>
+        </div>
+        <span class="vl">7 h 42 m</span>
+        <span class="sub">10:41 PM–6:23 AM</span>
+      </div>
+      <div class="reading">
+        <div class="reading-top">
+          <span class="gl">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12.5h3.5L8.5 8l3 8 2.5-5.5 1.5 2H21"/></svg>
+          </span>
+          <span class="nm">Resting HR</span>
+        </div>
+        <span class="vl">58 bpm</span>
+        <span class="sub">12-day low</span>
+      </div>
+      <div class="reading">
+        <div class="reading-top">
+          <span class="gl">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><path d="M12 8v4.4l3 1.8"/></svg>
+          </span>
+          <span class="nm">Latency</span>
+        </div>
+        <span class="vl">14 min</span>
+        <span class="sub">Self-reported</span>
+      </div>
+    </div>
+
+    <div class="tags">
+      <span class="tag on">Caffeine trial</span>
+      <span class="tag">Sleep</span>
+      <span class="tag">Evening walk</span>
+    </div>
+
+    <div class="rule"></div>
+
+    <p>Lights out around 10:40, which is the earliest all week. I still woke once near 3 but fell back before I could reach for my phone, so I am counting it as an unbroken night.</p>
+
+    <div class="pull">No caffeine after 1 PM for three days running. The difference shows up in how long it takes me to fall asleep, not in the total hours.</div>
+
+    <p>Legs felt heavy on the morning walk. Dr. Almeida asked me to log that separately, so I will add it to the movement note before the Thursday call.</p>
+  </div>
+
+  <div class="toolbar">
+    <span class="iconbtn" aria-label="Edit text">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4l11-11-4-4L4 16v4Z"/><path d="M14.5 5.5 18.5 9.5"/></svg>
+    </span>
+    <span class="iconbtn" aria-label="Bulleted list">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M9 7h11M9 12h11M9 17h11"/><circle cx="5" cy="7" r="1.1" fill="currentColor" stroke="none"/><circle cx="5" cy="12" r="1.1" fill="currentColor" stroke="none"/><circle cx="5" cy="17" r="1.1" fill="currentColor" stroke="none"/></svg>
+    </span>
+    <span class="iconbtn" aria-label="Checklist">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4.5" width="6" height="6" rx="1"/><rect x="4" y="13.5" width="6" height="6" rx="1"/><path d="M13 7.5h7M13 16.5h7"/></svg>
+    </span>
+    <span class="iconbtn" aria-label="Attach reading">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15.5 8 9 14.5a2.8 2.8 0 0 0 4 4l6.5-6.5a5 5 0 0 0-7-7L5.5 11.5a7 7 0 0 0 0 0"/></svg>
+    </span>
+    <span class="iconbtn" aria-label="Add tag">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H5a1 1 0 0 0-1 1v6l9 9 8-8-9-9Z"/><circle cx="8" cy="8" r="1.2"/></svg>
+    </span>
+    <span class="count">412 words</span>
+  </div>
+
+  <div class="tabs">
+    <span class="tab">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3.5v3M16 3.5v3M4 10h16"/></svg>
+      Today
+    </span>
+    <span class="tab">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19h16"/><path d="M5 15l4-5 3.5 3L19 6"/></svg>
+      Trends
+    </span>
+    <span class="tab active">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4.5h9l5 5v10H5z"/><path d="M8.5 12h7M8.5 15.5h5"/></svg>
+      Journal
+    </span>
+    <span class="tab">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8.5" r="3.5"/><path d="M5 20c1.4-3.2 4-4.8 7-4.8s5.6 1.6 7 4.8"/></svg>
+      Profile
+    </span>
+  </div>
+</div>
+</body>
+</html>

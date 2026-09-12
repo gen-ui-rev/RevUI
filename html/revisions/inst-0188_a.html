@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Delete Workout Confirmation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #dfe2e5;
+      color: #202124;
+      font-family: 'Source Sans 3', system-ui, sans-serif;
+    }
+
+    .screen {
+      position: relative;
+      width: 1024px;
+      height: 768px;
+      overflow: hidden;
+      background: #f1f2f3;
+      box-shadow: 0 18px 48px rgba(31, 35, 39, 0.18);
+    }
+
+    /* ---------- app behind the dialog ---------- */
+    .app {
+      display: flex;
+      height: 100%;
+    }
+
+    .sidebar {
+      width: 218px;
+      flex: none;
+      padding: 30px 22px;
+      background: #20242a;
+      color: #c7ccd3;
+    }
+
+    .brand {
+      margin: 0 0 30px;
+      color: #ffffff;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: 0.4px;
+    }
+
+    .nav-item {
+      padding: 9px 12px;
+      margin-bottom: 4px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 400;
+    }
+
+    .nav-item.current {
+      background: #2e343c;
+      color: #ffffff;
+      font-weight: 600;
+    }
+
+    .sidebar-note {
+      margin-top: 34px;
+      padding-top: 18px;
+      border-top: 1px solid #2f343b;
+      color: #868f99;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .main {
+      flex: 1;
+      padding: 34px 40px;
+      min-width: 0;
+    }
+
+    .main-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      padding-bottom: 16px;
+      border-bottom: 1px solid #e0e3e6;
+    }
+
+    .main-head h2 {
+      margin: 0;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 24px;
+      font-weight: 600;
+    }
+
+    .main-head span {
+      color: #6f767d;
+      font-size: 13px;
+    }
+
+    .row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 15px 4px;
+      border-bottom: 1px solid #e8eaec;
+      font-size: 14px;
+    }
+
+    .row strong {
+      display: block;
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .row em {
+      display: block;
+      margin-top: 2px;
+      color: #7b8288;
+      font-size: 12.5px;
+      font-style: normal;
+    }
+
+    .row .dur {
+      color: #5c6368;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .row.selected strong { color: #a82420; }
+
+    /* ---------- scrim + dialog ---------- */
+    .scrim {
+      position: absolute;
+      inset: 0;
+      background: rgba(23, 26, 30, 0.58);
+    }
+
+    .confirmation {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 486px;
+      padding: 34px 36px 30px;
+      background: #ffffff;
+      border-radius: 14px;
+      box-shadow: 0 26px 60px rgba(16, 18, 21, 0.34);
+    }
+
+    .warning-mark {
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+      border-radius: 10px;
+      background: #fbe9e8;
+      color: #bd2c26;
+    }
+
+    .warning-mark svg {
+      width: 23px;
+      height: 23px;
+      display: block;
+    }
+
+    h1 {
+      margin: 0;
+      color: #a82420;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 29px;
+      font-weight: 700;
+      line-height: 1.16;
+    }
+
+    .workout {
+      margin: 18px 0 0;
+      padding: 14px 18px;
+      border-left: 3px solid #bd2c26;
+      border-radius: 0 8px 8px 0;
+      background: #faf7f6;
+    }
+
+    .workout-name {
+      margin: 0;
+      color: #202124;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 20px;
+      font-weight: 600;
+      line-height: 1.25;
+    }
+
+    .workout-meta {
+      margin: 5px 0 0;
+      color: #5f666c;
+      font-size: 13.5px;
+      font-weight: 600;
+      letter-spacing: 0.2px;
+    }
+
+    .message {
+      margin: 18px 0 0;
+      color: #555b60;
+      font-size: 15.5px;
+      line-height: 1.55;
+    }
+
+    .actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 26px;
+      padding-top: 20px;
+      border-top: 1px solid #ecedef;
+    }
+
+    button {
+      margin: 0;
+      padding: 10px 20px;
+      border: 0;
+      border-radius: 8px;
+      font: 600 14.5px/1.35 'Source Sans 3', system-ui, sans-serif;
+      cursor: default;
+    }
+
+    .keep {
+      background: #eef0f1;
+      color: #34383c;
+    }
+
+    .delete {
+      background: #bd2c26;
+      color: #ffffff;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <div class="app" aria-hidden="true">
+      <aside class="sidebar">
+        <p class="brand">Tempo</p>
+        <div class="nav-item">Dashboard</div>
+        <div class="nav-item current">Workout history</div>
+        <div class="nav-item">Progress</div>
+        <div class="nav-item">Equipment</div>
+        <div class="nav-item">Settings</div>
+        <p class="sidebar-note">Synced with your watch 6 minutes ago.</p>
+      </aside>
+
+      <main class="main">
+        <div class="main-head">
+          <h2>Workout history</h2>
+          <span>June 2025 · 14 sessions</span>
+        </div>
+        <div class="row selected">
+          <div><strong>Evening Strength</strong><em>Wed, June 18 · Home gym</em></div>
+          <div class="dur">42 min</div>
+        </div>
+        <div class="row">
+          <div><strong>Tempo Run</strong><em>Tue, June 17 · Riverside loop</em></div>
+          <div class="dur">36 min</div>
+        </div>
+        <div class="row">
+          <div><strong>Mobility Flow</strong><em>Mon, June 16 · Studio</em></div>
+          <div class="dur">28 min</div>
+        </div>
+        <div class="row">
+          <div><strong>Interval Cycling</strong><em>Sun, June 15 · Indoor trainer</em></div>
+          <div class="dur">51 min</div>
+        </div>
+        <div class="row">
+          <div><strong>Upper Body Push</strong><em>Fri, June 13 · Home gym</em></div>
+          <div class="dur">45 min</div>
+        </div>
+        <div class="row">
+          <div><strong>Recovery Walk</strong><em>Thu, June 12 · Hillside park</em></div>
+          <div class="dur">32 min</div>
+        </div>
+      </main>
+    </div>
+
+    <div class="scrim"></div>
+
+    <section class="confirmation" role="alertdialog" aria-labelledby="dialog-title" aria-describedby="dialog-message">
+      <div class="warning-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none">
+          <path d="M4.7 19h14.6c1.2 0 1.95-1.3 1.35-2.34L13.35 4a1.56 1.56 0 0 0-2.7 0l-7.3 12.66A1.56 1.56 0 0 0 4.7 19Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+          <path d="M12 8.3v4.9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          <circle cx="12" cy="16.1" r="1" fill="currentColor"/>
+        </svg>
+      </div>
+
+      <h1 id="dialog-title">Delete this workout?</h1>
+
+      <div class="workout">
+        <p class="workout-name">Evening Strength</p>
+        <p class="workout-meta">June 18, 2025 · 42 minutes · 318 kcal</p>
+      </div>
+
+      <p class="message" id="dialog-message">This activity and its recorded metrics will be removed permanently. Deleted sessions cannot be restored from your history.</p>
+
+      <div class="actions" aria-label="Confirmation choices">
+        <button class="keep" type="button">No, keep it</button>
+        <button class="delete" type="button">Yes, delete workout</button>
+      </div>
+    </section>
+  </div>
+</body>
+</html>

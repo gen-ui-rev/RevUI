@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rovelet Bird Sightings</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #d8d5d1;
+      color: #292724;
+      font-family: 'Inter', system-ui, sans-serif;
+    }
+
+    button {
+      margin: 0;
+      padding: 0;
+      border: 0;
+      border-radius: 0;
+      background: none;
+      color: inherit;
+      font: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #fcfbf9;
+    }
+
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 9px 16px 8px;
+      background: #fcfbf9;
+    }
+
+    .brand {
+      margin-bottom: 1px;
+      color: #8a7968;
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 14px;
+      letter-spacing: 1.3px;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 700;
+      line-height: 29px;
+      letter-spacing: -0.5px;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 17px;
+    }
+
+    .icon-button {
+      width: 24px;
+      height: 24px;
+      display: grid;
+      place-items: center;
+      cursor: default;
+    }
+
+    .icon-button svg {
+      width: 21px;
+      height: 21px;
+      display: block;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .feed-filters {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 16px 7px;
+      background: rgba(143, 125, 107, 0.08);
+    }
+
+    .filter {
+      padding: 5px 11px;
+      color: #716b64;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 18px;
+    }
+
+    .filter.active {
+      color: #55493e;
+      background: rgba(143, 125, 107, 0.22);
+      font-weight: 600;
+    }
+
+    .feed {
+      flex: 1;
+      background: rgba(143, 125, 107, 0.10);
+    }
+
+    .post {
+      padding: 9px 16px 8px;
+      background: #fcfbf9;
+    }
+
+    .post + .post {
+      margin-top: 4px;
+    }
+
+    .post-head {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .head-copy {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .species-name {
+      margin: 0;
+      color: #241f1a;
+      font-size: 17px;
+      font-weight: 700;
+      line-height: 22px;
+      letter-spacing: -0.2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .sci-name {
+      color: #8a7968;
+      font-size: 12px;
+      font-style: italic;
+      font-weight: 400;
+      line-height: 16px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .post-context {
+      color: #78716a;
+      font-size: 12.5px;
+      font-weight: 500;
+      line-height: 16px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .rarity {
+      flex: 0 0 auto;
+      margin-top: 3px;
+      padding: 3px 8px;
+      background: rgba(143, 125, 107, 0.20);
+      color: #5b4e42;
+      font-size: 10px;
+      font-weight: 700;
+      line-height: 12px;
+      letter-spacing: 0.7px;
+      text-transform: uppercase;
+    }
+
+    .rarity.rare {
+      background: rgba(150, 74, 42, 0.16);
+      color: #8b4022;
+    }
+
+    .more-button {
+      width: 26px;
+      height: 26px;
+      flex: 0 0 26px;
+      display: grid;
+      place-items: center;
+      color: #6e6861;
+    }
+
+    .more-button svg {
+      width: 18px;
+      height: 18px;
+      display: block;
+      fill: currentColor;
+    }
+
+    .post-photo {
+      width: 358px;
+      height: 104px;
+      display: block;
+      object-fit: cover;
+      background: #b8b1a9;
+    }
+
+    .post-actions {
+      display: flex;
+      align-items: center;
+      min-height: 34px;
+      color: #4e4944;
+    }
+
+    .observer {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      color: #5e574f;
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 16px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .avatar {
+      width: 22px;
+      height: 22px;
+      flex: 0 0 22px;
+      display: grid;
+      place-items: center;
+      margin-right: 7px;
+      background: rgba(143, 125, 107, 0.22);
+      color: #5e5145;
+      font-size: 10px;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .action {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin-left: 15px;
+      color: #4e4944;
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 16px;
+    }
+
+    .action svg,
+    .save-action svg {
+      width: 19px;
+      height: 19px;
+      display: block;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.7;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .save-action {
+      width: 22px;
+      height: 24px;
+      display: grid;
+      place-items: center;
+      margin-left: 15px;
+    }
+
+    .tab-bar {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      margin-top: auto;
+      padding: 6px 8px 7px;
+      background: #f3f0ec;
+    }
+
+    .tab {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      color: #746e67;
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 15px;
+    }
+
+    .tab svg {
+      width: 21px;
+      height: 21px;
+      display: block;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.75;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .tab.active {
+      color: #685849;
+      font-weight: 700;
+    }
+
+    .tab.active .tab-icon {
+      padding: 2px 15px;
+      background: rgba(143, 125, 107, 0.23);
+    }
+
+    .tab-icon {
+      display: grid;
+      place-items: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="top-bar">
+      <div>
+        <div class="brand">Rovelet</div>
+        <h1>Bird Sightings</h1>
+      </div>
+      <div class="top-actions">
+        <button class="icon-button" aria-label="Search species">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="10.8" cy="10.8" r="6.8"></circle>
+            <path d="M16 16l4.2 4.2"></path>
+          </svg>
+        </button>
+        <button class="icon-button" aria-label="Open messages">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 5.5h16v11H9l-5 3.5z"></path>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <nav class="feed-filters" aria-label="Sighting filters">
+      <button class="filter active">Latest</button>
+      <button class="filter">Rarities</button>
+      <button class="filter">Nearby</button>
+    </nav>
+
+    <main class="feed">
+      <article class="post">
+        <div class="post-head">
+          <div class="head-copy">
+            <h2 class="species-name">Cedar Waxwing</h2>
+            <div class="sci-name">Bombycilla cedrorum · flock of 9</div>
+            <div class="post-context">Pineglass Valley · 18 minutes ago</div>
+          </div>
+          <span class="rarity">Uncommon</span>
+          <button class="more-button" aria-label="More options for this Cedar Waxwing sighting">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="5" cy="12" r="1.5"></circle>
+              <circle cx="12" cy="12" r="1.5"></circle>
+              <circle cx="19" cy="12" r="1.5"></circle>
+            </svg>
+          </button>
+        </div>
+        <img class="post-photo" src="https://loremflickr.com/358/104/mountain?lock=5790" width="358" height="104" alt="Ridgeline above Pineglass Valley where the waxwing flock was feeding">
+        <div class="post-actions">
+          <span class="observer"><span class="avatar" aria-hidden="true">TR</span>Logged by Tessa Rowan</span>
+          <button class="action" aria-label="Like this sighting">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M20.7 5.8c-2-2-5.1-2-7.1 0L12 7.4l-1.6-1.6c-2-2-5.1-2-7.1 0s-2 5.1 0 7.1L12 21l8.7-8.1c2-2 2-5.1 0-7.1z"></path>
+            </svg>
+            <span>84</span>
+          </button>
+          <button class="action" aria-label="View comments">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 5h16v11H9l-5 4z"></path>
+            </svg>
+            <span>12</span>
+          </button>
+          <button class="save-action" aria-label="Save this sighting">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M6 3.5h12v17L12 17l-6 3.5z"></path>
+            </svg>
+          </button>
+        </div>
+      </article>
+
+      <article class="post">
+        <div class="post-head">
+          <div class="head-copy">
+            <h2 class="species-name">Peregrine Falcon</h2>
+            <div class="sci-name">Falco peregrinus · adult female</div>
+            <div class="post-context">Harbor Quarter · 1 hour ago</div>
+          </div>
+          <span class="rarity rare">Rare</span>
+          <button class="more-button" aria-label="More options for this Peregrine Falcon sighting">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="5" cy="12" r="1.5"></circle>
+              <circle cx="12" cy="12" r="1.5"></circle>
+              <circle cx="19" cy="12" r="1.5"></circle>
+            </svg>
+          </button>
+        </div>
+        <img class="post-photo" src="https://loremflickr.com/358/104/cityscape?lock=5791" width="358" height="104" alt="Harbor Quarter rooftops where the falcon was perched">
+        <div class="post-actions">
+          <span class="observer"><span class="avatar" aria-hidden="true">NP</span>Logged by Nolan Pike</span>
+          <button class="action" aria-label="Like this sighting">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M20.7 5.8c-2-2-5.1-2-7.1 0L12 7.4l-1.6-1.6c-2-2-5.1-2-7.1 0s-2 5.1 0 7.1L12 21l8.7-8.1c2-2 2-5.1 0-7.1z"></path>
+            </svg>
+            <span>61</span>
+          </button>
+          <button class="action" aria-label="View comments">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 5h16v11H9l-5 4z"></path>
+            </svg>
+            <span>9</span>
+          </button>
+          <button class="save-action" aria-label="Save this sighting">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M6 3.5h12v17L12 17l-6 3.5z"></path>
+            </svg>
+          </button>
+        </div>
+      </article>
+
+      <article class="post">
+        <div class="post-head">
+          <div class="head-copy">
+            <h2 class="species-name">Great Blue Heron</h2>
+            <div class="sci-name">Ardea herodias · single bird</div>
+            <div class="post-context">Morrow Bay · 3 hours ago</div>
+          </div>
+          <span class="rarity">Common</span>
+          <button class="more-button" aria-label="More options for this Great Blue Heron sighting">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="5" cy="12" r="1.5"></circle>
+              <circle cx="12" cy="12" r="1.5"></circle>
+              <circle cx="19" cy="12" r="1.5"></circle>
+            </svg>
+          </button>
+        </div>
+        <img class="post-photo" src="https://loremflickr.com/358/104/beach?lock=5792" width="358" height="104" alt="Shoreline at Morrow Bay where the heron was feeding">
+        <div class="post-actions">
+          <span class="observer"><span class="avatar" aria-hidden="true">IC</span>Logged by Iris Calder</span>
+          <button class="action" aria-label="Like this sighting">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M20.7 5.8c-2-2-5.1-2-7.1 0L12 7.4l-1.6-1.6c-2-2-5.1-2-7.1 0s-2 5.1 0 7.1L12 21l8.7-8.1c2-2 2-5.1 0-7.1z"></path>
+            </svg>
+            <span>107</span>
+          </button>
+          <button class="action" aria-label="View comments">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 5h16v11H9l-5 4z"></path>
+            </svg>
+            <span>16</span>
+          </button>
+          <button class="save-action" aria-label="Save this sighting">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M6 3.5h12v17L12 17l-6 3.5z"></path>
+            </svg>
+          </button>
+        </div>
+      </article>
+    </main>
+
+    <nav class="tab-bar" aria-label="Primary navigation">
+      <button class="tab active">
+        <span class="tab-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 4h16v5H4z"></path>
+            <path d="M4 13h16v7H4z"></path>
+          </svg>
+        </span>
+        <span>Feed</span>
+      </button>
+      <button class="tab">
+        <span class="tab-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="12" r="8.5"></circle>
+            <path d="M15.7 8.3l-2.2 5.2-5.2 2.2 2.2-5.2z"></path>
+          </svg>
+        </span>
+        <span>Explore</span>
+      </button>
+      <button class="tab">
+        <span class="tab-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 6l5-2 6 2 5-2v14l-5 2-6-2-5 2z"></path>
+            <path d="M9 4v14M15 6v14"></path>
+          </svg>
+        </span>
+        <span>Species</span>
+      </button>
+      <button class="tab">
+        <span class="tab-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="8" r="3.5"></circle>
+            <path d="M5.5 20c.7-4 3-6 6.5-6s5.8 2 6.5 6"></path>
+          </svg>
+        </span>
+        <span>Profile</span>
+      </button>
+    </nav>
+  </div>
+</body>
+</html>

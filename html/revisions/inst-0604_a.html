@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Following Timeline — LumaStep Health</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 28px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #d9dcdf;
+      color: #27313a;
+      font-family: 'Source Serif 4', Georgia, serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #fcfcfb;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 16px 6px;
+    }
+
+    .service-name {
+      margin: 0 0 1px;
+      color: #687480;
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 14px;
+      letter-spacing: .02em;
+    }
+
+    h1 {
+      margin: 0;
+      color: #26323d;
+      font-size: 24px;
+      font-weight: 700;
+      line-height: 27px;
+    }
+
+    .compose {
+      width: 36px;
+      height: 36px;
+      padding: 8px;
+      border: 0;
+      border-radius: 6px;
+      background: #e8edf0;
+      color: #536273;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .compose svg,
+    .nav-item svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .feed-tabs {
+      display: flex;
+      gap: 5px;
+      padding: 0 16px 6px;
+    }
+
+    .feed-tab {
+      flex: 1;
+      border: 0;
+      border-radius: 6px;
+      padding: 6px 10px;
+      background: transparent;
+      color: #687480;
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 20px;
+      text-align: center;
+    }
+
+    .feed-tab.active {
+      background: #e5eaee;
+      color: #344452;
+    }
+
+    .feed {
+      flex: 1;
+      padding: 3px 16px 5px;
+    }
+
+    .day-group {
+      position: relative;
+      padding-left: 13px;
+    }
+
+    .day-group::before {
+      content: "";
+      position: absolute;
+      top: 19px;
+      bottom: 3px;
+      left: 3px;
+      width: 1px;
+      background: #d2d9de;
+    }
+
+    .day-group:last-child::before {
+      bottom: 8px;
+    }
+
+    .day-title {
+      position: relative;
+      margin: 0 0 4px;
+      color: #64717c;
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 15px;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+
+    .day-title::before {
+      content: "";
+      position: absolute;
+      top: 5px;
+      left: -13px;
+      width: 7px;
+      height: 7px;
+      border: 2px solid #fcfcfb;
+      border-radius: 50%;
+      background: #627584;
+    }
+
+    .post {
+      width: 345px;
+      margin: 0 0 5px;
+      padding: 8px 10px;
+      border: 1px solid #e0e5e8;
+      border-radius: 6px;
+      background: #f4f6f7;
+    }
+
+    .post-head {
+      display: flex;
+      align-items: center;
+      min-width: 0;
+    }
+
+    .avatar {
+      width: 30px;
+      height: 30px;
+      flex: 0 0 30px;
+      margin-right: 8px;
+      border-radius: 6px;
+      background: #536273;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .post-meta {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .person {
+      margin: 0;
+      color: #27333d;
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 16px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .timestamp {
+      margin: 0;
+      color: #74808a;
+      font-size: 11px;
+      line-height: 13px;
+    }
+
+    .post-text {
+      margin: 5px 0 0;
+      color: #34404a;
+      font-size: 13px;
+      line-height: 17px;
+    }
+
+    .post-photo {
+      width: 338px;
+      object-fit: cover;
+      display: block;
+      margin: 6px -7px 0;
+      border-radius: 5px;
+      background: #c9d0d5;
+    }
+
+    .photo-running {
+      height: 90px;
+    }
+
+    .photo-gym {
+      height: 82px;
+    }
+
+    .post-actions {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-top: 5px;
+      color: #66737e;
+      font-size: 11px;
+      line-height: 14px;
+    }
+
+    .action {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      white-space: nowrap;
+    }
+
+    .action svg {
+      width: 14px;
+      height: 14px;
+      flex: 0 0 14px;
+    }
+
+    .tabbar {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-around;
+      padding: 6px 10px 7px;
+      background: #f6f7f7;
+    }
+
+    .nav-item {
+      width: 76px;
+      padding: 3px 4px;
+      border: 0;
+      border-radius: 6px;
+      background: transparent;
+      color: #78838c;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1px;
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 15px;
+    }
+
+    .nav-item.active {
+      background: #e5eaee;
+      color: #40515f;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <div>
+        <p class="service-name">LumaStep Health</p>
+        <h1>Following</h1>
+      </div>
+      <button class="compose" type="button" aria-label="Create a post">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M12 20h9"/>
+          <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4Z"/>
+        </svg>
+      </button>
+    </header>
+
+    <nav class="feed-tabs" aria-label="Feed organization">
+      <button class="feed-tab active" type="button">Timeline</button>
+      <button class="feed-tab" type="button">People</button>
+    </nav>
+
+    <main class="feed">
+      <section class="day-group" aria-labelledby="today-heading">
+        <h2 class="day-title" id="today-heading">Today</h2>
+        <article class="post">
+          <div class="post-head">
+            <div class="avatar" aria-hidden="true">MV</div>
+            <div class="post-meta">
+              <p class="person">Mara Venn</p>
+              <p class="timestamp">7:12 AM</p>
+            </div>
+          </div>
+          <p class="post-text">First easy 5K since my ankle recovery. Steady pace, with no pain at the finish.</p>
+          <img class="post-photo photo-running" src="https://loremflickr.com/338/90/running?lock=8070" width="338" height="90" alt="Runner training on an outdoor path">
+          <div class="post-actions">
+            <span class="action">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8Z"/>
+              </svg>
+              24 likes
+            </span>
+            <span class="action">6 comments</span>
+          </div>
+        </article>
+      </section>
+
+      <section class="day-group" aria-labelledby="yesterday-heading">
+        <h2 class="day-title" id="yesterday-heading">Yesterday</h2>
+        <article class="post">
+          <div class="post-head">
+            <div class="avatar" aria-hidden="true">ER</div>
+            <div class="post-meta">
+              <p class="person">Elliot Rune</p>
+              <p class="timestamp">8:46 PM</p>
+            </div>
+          </div>
+          <p class="post-text">A regular bedtime brought my average sleep up to 7 hours, 18 minutes.</p>
+          <div class="post-actions">
+            <span class="action">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8Z"/>
+              </svg>
+              18 likes
+            </span>
+            <span class="action">3 comments</span>
+          </div>
+        </article>
+      </section>
+
+      <section class="day-group" aria-labelledby="earlier-heading">
+        <h2 class="day-title" id="earlier-heading">March 8</h2>
+        <article class="post">
+          <div class="post-head">
+            <div class="avatar" aria-hidden="true">TH</div>
+            <div class="post-meta">
+              <p class="person">Tessa Hale</p>
+              <p class="timestamp">5:30 PM</p>
+            </div>
+          </div>
+          <p class="post-text">Added controlled deadlifts back into today’s strength session.</p>
+          <img class="post-photo photo-gym" src="https://loremflickr.com/338/82/gym?lock=8071" width="338" height="82" alt="Strength training equipment in a gym">
+          <div class="post-actions">
+            <span class="action">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8Z"/>
+              </svg>
+              31 likes
+            </span>
+            <span class="action">8 comments</span>
+          </div>
+        </article>
+
+        <article class="post">
+          <div class="post-head">
+            <div class="avatar" aria-hidden="true">JB</div>
+            <div class="post-meta">
+              <p class="person">Jon Bell</p>
+              <p class="timestamp">12:05 PM</p>
+            </div>
+          </div>
+          <p class="post-text">Meal prep is ready for three workdays: grain bowls, vegetables, and fruit.</p>
+          <div class="post-actions">
+            <span class="action">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8Z"/>
+              </svg>
+              15 likes
+            </span>
+            <span class="action">4 comments</span>
+          </div>
+        </article>
+      </section>
+    </main>
+
+    <nav class="tabbar" aria-label="Primary navigation">
+      <button class="nav-item active" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="m3 11 9-8 9 8"/>
+          <path d="M5 10v10h14V10"/>
+          <path d="M9 20v-6h6v6"/>
+        </svg>
+        Feed
+      </button>
+      <button class="nav-item" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M4 19V9"/>
+          <path d="M10 19V5"/>
+          <path d="M16 19v-7"/>
+          <path d="M22 19V3"/>
+        </svg>
+        Progress
+      </button>
+      <button class="nav-item" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="3" y="5" width="18" height="16" rx="2"/>
+          <path d="M16 3v4M8 3v4M3 11h18"/>
+        </svg>
+        Plan
+      </button>
+      <button class="nav-item" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="8" r="4"/>
+          <path d="M4 21a8 8 0 0 1 16 0"/>
+        </svg>
+        Profile
+      </button>
+    </nav>
+  </div>
+</body>
+</html>

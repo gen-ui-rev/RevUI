@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wanderdeck Trip Calendar</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 32px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #dfe6e8;
+      color: #173139;
+      font-family: 'Manrope', system-ui, sans-serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #ffffff;
+    }
+
+    .topbar {
+      flex: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 13px 18px 11px;
+    }
+
+    .eyebrow {
+      margin: 0 0 1px;
+      color: #168da0;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .03em;
+    }
+
+    h1 {
+      margin: 0;
+      color: #132d35;
+      font-size: 22px;
+      line-height: 1.25;
+      font-weight: 700;
+    }
+
+    .traveler {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border-radius: 14px;
+      background: #d8f5f8;
+      color: #087f91;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    main {
+      flex: 1;
+      min-height: 0;
+      padding: 0 16px 8px;
+    }
+
+    .calendar-tools {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 2px 0 8px;
+    }
+
+    .month-control {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .month-control strong {
+      width: 111px;
+      text-align: center;
+      color: #173139;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .icon-button {
+      width: 30px;
+      height: 30px;
+      padding: 0;
+      display: grid;
+      place-items: center;
+      border: 0;
+      border-radius: 14px;
+      background: #edf9fa;
+      color: #38717b;
+    }
+
+    .icon-button svg {
+      width: 17px;
+      height: 17px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .view-switch {
+      display: flex;
+      gap: 2px;
+      padding: 3px;
+      border-radius: 14px;
+      background: #eef9fa;
+    }
+
+    .view-switch span {
+      padding: 6px 10px;
+      border-radius: 14px;
+      color: #678087;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .view-switch .active {
+      background: #cceff4;
+      color: #087e90;
+      font-weight: 700;
+    }
+
+    .calendar {
+      padding: 10px;
+      border-radius: 14px;
+      background: #f0fafb;
+    }
+
+    .weekdays,
+    .days {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+    }
+
+    .weekday {
+      height: 24px;
+      display: grid;
+      place-items: center;
+      color: #73888d;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .day {
+      min-width: 0;
+      height: 46px;
+      padding: 4px 1px 3px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      border-radius: 14px;
+      color: #29464d;
+    }
+
+    .day.muted {
+      color: #a0afb2;
+    }
+
+    .day.has-event {
+      background: #def5f7;
+    }
+
+    .day.selected {
+      background: #9de6ee;
+      color: #064f5a;
+    }
+
+    .date-number {
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 500;
+    }
+
+    .selected .date-number {
+      font-weight: 700;
+    }
+
+    .event-name {
+      width: 100%;
+      margin-top: 2px;
+      overflow: hidden;
+      color: #147d8c;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 500;
+      text-align: center;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .selected .event-name {
+      color: #064f5a;
+      font-weight: 700;
+    }
+
+    .agenda-heading {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      padding: 13px 2px 9px;
+    }
+
+    .agenda-heading h2 {
+      margin: 0;
+      color: #173139;
+      font-size: 18px;
+      line-height: 1.25;
+      font-weight: 700;
+    }
+
+    .agenda-heading p {
+      margin: 0;
+      color: #71868b;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .agenda-list {
+      display: grid;
+      gap: 6px;
+    }
+
+    .agenda-row {
+      display: grid;
+      grid-template-columns: 52px minmax(0, 1fr) 66px;
+      gap: 10px;
+      align-items: center;
+      padding: 7px;
+      border-radius: 14px;
+      background: #effafb;
+    }
+
+    .agenda-row img {
+      width: 52px;
+      height: 52px;
+      display: block;
+      object-fit: cover;
+      border-radius: 14px;
+      background: #cbdcdf;
+    }
+
+    .agenda-copy {
+      min-width: 0;
+    }
+
+    .agenda-title {
+      margin: 0;
+      overflow: hidden;
+      color: #173139;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 700;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .agenda-meta {
+      margin: 2px 0 0;
+      overflow: hidden;
+      color: #688087;
+      font-size: 12px;
+      line-height: 17px;
+      font-weight: 400;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .agenda-time {
+      color: #176f7c;
+      font-size: 12px;
+      line-height: 17px;
+      font-weight: 700;
+      text-align: right;
+    }
+
+    .tabbar {
+      flex: none;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      padding: 8px 11px 9px;
+      background: #f5fafb;
+    }
+
+    .tab {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      color: #7a8d92;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 500;
+    }
+
+    .tab.active {
+      color: #07899c;
+      font-weight: 700;
+    }
+
+    .tab-icon {
+      width: 25px;
+      height: 25px;
+      display: grid;
+      place-items: center;
+      border-radius: 14px;
+    }
+
+    .tab.active .tab-icon {
+      background: #d1f3f6;
+    }
+
+    .tab svg {
+      width: 19px;
+      height: 19px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.7;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">WANDERDECK</p>
+        <h1>Trip calendar</h1>
+      </div>
+      <div class="traveler" aria-label="Mara Bell">MB</div>
+    </header>
+
+    <main>
+      <div class="calendar-tools">
+        <div class="month-control">
+          <button class="icon-button" type="button" aria-label="Previous month">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="m15 18-6-6 6-6"></path>
+            </svg>
+          </button>
+          <strong>September 2025</strong>
+          <button class="icon-button" type="button" aria-label="Next month">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="m9 18 6-6-6-6"></path>
+            </svg>
+          </button>
+        </div>
+        <div class="view-switch" aria-label="Calendar view">
+          <span class="active">Month</span>
+          <span>Week</span>
+        </div>
+      </div>
+
+      <section class="calendar" aria-label="September 2025 trip calendar">
+        <div class="weekdays">
+          <div class="weekday">Sun</div>
+          <div class="weekday">Mon</div>
+          <div class="weekday">Tue</div>
+          <div class="weekday">Wed</div>
+          <div class="weekday">Thu</div>
+          <div class="weekday">Fri</div>
+          <div class="weekday">Sat</div>
+        </div>
+        <div class="days">
+          <div class="day muted"><span class="date-number">31</span></div>
+          <div class="day"><span class="date-number">1</span></div>
+          <div class="day"><span class="date-number">2</span></div>
+          <div class="day"><span class="date-number">3</span></div>
+          <div class="day"><span class="date-number">4</span></div>
+          <div class="day"><span class="date-number">5</span></div>
+          <div class="day"><span class="date-number">6</span></div>
+
+          <div class="day"><span class="date-number">7</span></div>
+          <div class="day"><span class="date-number">8</span></div>
+          <div class="day"><span class="date-number">9</span></div>
+          <div class="day has-event"><span class="date-number">10</span><span class="event-name">Drive</span></div>
+          <div class="day has-event"><span class="date-number">11</span><span class="event-name">Stay</span></div>
+          <div class="day"><span class="date-number">12</span></div>
+          <div class="day has-event"><span class="date-number">13</span><span class="event-name">Tour</span></div>
+
+          <div class="day"><span class="date-number">14</span></div>
+          <div class="day has-event"><span class="date-number">15</span><span class="event-name">Ferry</span></div>
+          <div class="day has-event"><span class="date-number">16</span><span class="event-name">Beach</span></div>
+          <div class="day selected"><span class="date-number">17</span><span class="event-name">4 plans</span></div>
+          <div class="day has-event"><span class="date-number">18</span><span class="event-name">Hike</span></div>
+          <div class="day"><span class="date-number">19</span></div>
+          <div class="day has-event"><span class="date-number">20</span><span class="event-name">Stay</span></div>
+
+          <div class="day"><span class="date-number">21</span></div>
+          <div class="day"><span class="date-number">22</span></div>
+          <div class="day has-event"><span class="date-number">23</span><span class="event-name">Train</span></div>
+          <div class="day"><span class="date-number">24</span></div>
+          <div class="day"><span class="date-number">25</span></div>
+          <div class="day has-event"><span class="date-number">26</span><span class="event-name">Dinner</span></div>
+          <div class="day"><span class="date-number">27</span></div>
+
+          <div class="day"><span class="date-number">28</span></div>
+          <div class="day has-event"><span class="date-number">29</span><span class="event-name">Flight</span></div>
+          <div class="day"><span class="date-number">30</span></div>
+          <div class="day muted"><span class="date-number">1</span></div>
+          <div class="day muted"><span class="date-number">2</span></div>
+          <div class="day muted"><span class="date-number">3</span></div>
+          <div class="day muted"><span class="date-number">4</span></div>
+        </div>
+      </section>
+
+      <div class="agenda-heading">
+        <h2>Wednesday plans</h2>
+        <p>Sep 17 · Harbor City</p>
+      </div>
+
+      <section class="agenda-list" aria-label="Plans for Wednesday, September 17">
+        <article class="agenda-row">
+          <img src="https://loremflickr.com/52/52/cityscape?lock=9750" width="52" height="52" alt="Harbor City skyline near the airport">
+          <div class="agenda-copy">
+            <p class="agenda-title">Arrive in Harbor City</p>
+            <p class="agenda-meta">North Pier Airport · Terminal 2</p>
+          </div>
+          <div class="agenda-time">9:05 AM</div>
+        </article>
+
+        <article class="agenda-row">
+          <img src="https://loremflickr.com/52/52/hotel?lock=9751" width="52" height="52" alt="Coastline House hotel exterior">
+          <div class="agenda-copy">
+            <p class="agenda-title">Coastline House</p>
+            <p class="agenda-meta">Check-in · 18 Bay Street</p>
+          </div>
+          <div class="agenda-time">11:30 AM</div>
+        </article>
+
+        <article class="agenda-row">
+          <img src="https://loremflickr.com/52/52/cityscape?lock=9752" width="52" height="52" alt="Historic streets in the Old Harbor district">
+          <div class="agenda-copy">
+            <p class="agenda-title">Old Harbor walking tour</p>
+            <p class="agenda-meta">Meet at Lantern Square</p>
+          </div>
+          <div class="agenda-time">3:00 PM</div>
+        </article>
+
+        <article class="agenda-row">
+          <img src="https://loremflickr.com/52/52/beach?lock=9753" width="52" height="52" alt="Seaside view near Tide Table restaurant">
+          <div class="agenda-copy">
+            <p class="agenda-title">Dinner at Tide Table</p>
+            <p class="agenda-meta">Reservation for 2 · West Beach</p>
+          </div>
+          <div class="agenda-time">7:30 PM</div>
+        </article>
+      </section>
+    </main>
+
+    <nav class="tabbar" aria-label="Primary navigation">
+      <div class="tab">
+        <div class="tab-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M3 11.5 12 4l9 7.5"></path>
+            <path d="M5.5 10v10h13V10"></path>
+          </svg>
+        </div>
+        <span>Explore</span>
+      </div>
+      <div class="tab active">
+        <div class="tab-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="3.5" y="5.5" width="17" height="15" rx="3"></rect>
+            <path d="M8 3.5v4M16 3.5v4M3.5 10h17"></path>
+          </svg>
+        </div>
+        <span>Calendar</span>
+      </div>
+      <div class="tab">
+        <div class="tab-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 19.5V7.8L12 4l8 3.8v11.7"></path>
+            <path d="M8 20v-6h8v6M8 9h.01M12 9h.01M16 9h.01"></path>
+          </svg>
+        </div>
+        <span>Bookings</span>
+      </div>
+      <div class="tab">
+        <div class="tab-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="8" r="4"></circle>
+            <path d="M5 20c.8-4 3.1-6 7-6s6.2 2 7 6"></path>
+          </svg>
+        </div>
+        <span>Profile</span>
+      </div>
+    </nav>
+  </div>
+</body>
+</html>

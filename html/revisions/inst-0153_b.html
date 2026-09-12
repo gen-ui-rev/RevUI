@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tideframe Creator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 32px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #dfe5e4;
+      color: #172120;
+      font-family: 'Inter', system-ui, sans-serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #f4f7f6;
+      border: 1px solid #cbd3d1;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 20px 13px;
+      background: #fbfcfb;
+      border-bottom: 1px solid #e1e6e5;
+    }
+
+    .brand {
+      margin: 0;
+      color: #10201e;
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.4px;
+      line-height: 1.3;
+    }
+
+    .settings-button {
+      width: 32px;
+      height: 32px;
+      padding: 5px;
+      display: grid;
+      place-items: center;
+      color: #33413f;
+      background: transparent;
+      border: 1px solid #ccd5d3;
+      border-radius: 6px;
+    }
+
+    .settings-button svg {
+      width: 19px;
+      height: 19px;
+    }
+
+    main {
+      flex: 1;
+      min-height: 0;
+      padding: 14px 16px 0;
+    }
+
+    /* Creator hero */
+    .hero {
+      padding: 15px 16px 14px;
+      border-radius: 12px;
+      background: #0a4a48;
+      color: #eaf4f2;
+    }
+
+    .hero-top {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+    }
+
+    .monogram {
+      width: 56px;
+      height: 56px;
+      flex: 0 0 56px;
+      display: grid;
+      place-items: center;
+      border-radius: 10px;
+      background: #0f8f86;
+      color: #ffffff;
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+
+    .hero-copy {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .hero-copy h2 {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0;
+      color: #ffffff;
+      font-size: 21px;
+      font-weight: 700;
+      line-height: 1.25;
+      letter-spacing: -0.4px;
+    }
+
+    .verified {
+      padding: 1px 7px;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.16);
+      color: #cfeae7;
+      font-size: 10px;
+      font-weight: 700;
+      line-height: 1.7;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+    }
+
+    .hero-role {
+      margin: 5px 0 0;
+      overflow: hidden;
+      color: #a9ccc9;
+      font-size: 13px;
+      line-height: 1.4;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .hero-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 14px;
+      padding-top: 13px;
+      border-top: 1px solid rgba(255, 255, 255, 0.16);
+    }
+
+    .hero-stat b {
+      display: block;
+      color: #ffffff;
+      font-size: 17px;
+      font-weight: 700;
+      line-height: 1.2;
+      letter-spacing: -0.3px;
+    }
+
+    .hero-stat span {
+      display: block;
+      margin-top: 3px;
+      color: #9dc4c1;
+      font-size: 11px;
+      line-height: 1.3;
+    }
+
+    /* Cards */
+    .card {
+      margin-top: 12px;
+      padding: 14px 16px;
+      background: #fbfcfb;
+      border: 1px solid #dfe5e4;
+      border-radius: 12px;
+    }
+
+    .card-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .card-head h3 {
+      margin: 0;
+      color: #172321;
+      font-size: 15px;
+      font-weight: 700;
+      line-height: 1.4;
+    }
+
+    .trend {
+      color: #0d7a5f;
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1.4;
+    }
+
+    .chart-caption {
+      margin: 3px 0 0;
+      color: #77817f;
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .chart {
+      display: flex;
+      align-items: flex-end;
+      gap: 9px;
+      margin-top: 12px;
+    }
+
+    .bar-col {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .bar-track {
+      height: 76px;
+      display: flex;
+      align-items: flex-end;
+    }
+
+    .bar {
+      width: 100%;
+      border-radius: 4px 4px 0 0;
+      background: #a9d3cf;
+    }
+
+    .bar.now {
+      background: #087f78;
+    }
+
+    .bar-label {
+      color: #7f8a88;
+      font-size: 11px;
+      line-height: 1.3;
+      text-align: center;
+    }
+
+    .bar-label.now {
+      color: #0b6f69;
+      font-weight: 700;
+    }
+
+    /* Top performing */
+    .media-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 8px 0;
+      border-top: 1px solid #e5e9e8;
+    }
+
+    .media-row:first-of-type {
+      border-top: 0;
+      padding-top: 10px;
+    }
+
+    .media-row img {
+      width: 48px;
+      height: 48px;
+      flex: 0 0 48px;
+      display: block;
+      object-fit: cover;
+      border-radius: 6px;
+      background: #c8d2d0;
+    }
+
+    .media-copy {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .media-title {
+      margin: 0;
+      overflow: hidden;
+      color: #1d2927;
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 1.35;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .media-meta {
+      margin: 3px 0 0;
+      overflow: hidden;
+      color: #6f7977;
+      font-size: 12px;
+      line-height: 1.35;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .plays {
+      flex: 0 0 auto;
+      text-align: right;
+    }
+
+    .plays b {
+      display: block;
+      color: #0b6f69;
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 1.3;
+    }
+
+    .plays span {
+      display: block;
+      margin-top: 2px;
+      color: #7b8583;
+      font-size: 11px;
+      line-height: 1.3;
+    }
+
+    /* Sources */
+    .src-row {
+      padding: 7px 0 6px;
+      border-top: 1px solid #e5e9e8;
+    }
+
+    .src-row:first-of-type {
+      border-top: 0;
+      padding-top: 9px;
+    }
+
+    .src-line {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 10px;
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    .src-line span {
+      color: #3a4544;
+      font-weight: 500;
+    }
+
+    .src-line em {
+      color: #0b6f69;
+      font-size: 12px;
+      font-style: normal;
+      font-weight: 700;
+    }
+
+    .src-track {
+      height: 6px;
+      margin-top: 6px;
+      border-radius: 4px;
+      background: #e6ecea;
+    }
+
+    .src-fill {
+      height: 6px;
+      border-radius: 4px;
+      background: #0f8f86;
+    }
+
+    .tabbar {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      padding: 8px 8px 10px;
+      background: #fbfcfb;
+      border-top: 1px solid #d8dfdd;
+    }
+
+    .tab {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      color: #737d7b;
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 1.25;
+      text-decoration: none;
+    }
+
+    .tab svg {
+      width: 21px;
+      height: 21px;
+      stroke-width: 1.8;
+    }
+
+    .tab.active {
+      color: #087f78;
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <h1 class="brand">Tideframe for Creators</h1>
+      <button class="settings-button" type="button" aria-label="Creator settings">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="3"></circle>
+          <path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-1.8 1.8-.06-.06a1.7 1.7 0 0 0-1.88-.34 1.7 1.7 0 0 0-1.03 1.56V20h-2.55v-.1A1.7 1.7 0 0 0 11.42 18.34a1.7 1.7 0 0 0-1.88.34l-.06.06-1.8-1.8.06-.06A1.7 1.7 0 0 0 8.08 15a1.7 1.7 0 0 0-1.56-1.03H6V11.4h.52a1.7 1.7 0 0 0 1.56-1.03 1.7 1.7 0 0 0-.34-1.88l-.06-.06 1.8-1.8.06.06a1.7 1.7 0 0 0 1.88.34A1.7 1.7 0 0 0 12.45 5.5V5h2.55v.5a1.7 1.7 0 0 0 1.03 1.56 1.7 1.7 0 0 0 1.88-.34l.06-.06 1.8 1.8-.06.06a1.7 1.7 0 0 0-.34 1.88 1.7 1.7 0 0 0 1.56 1.03H21V14h-.03A1.7 1.7 0 0 0 19.4 15Z"></path>
+        </svg>
+      </button>
+    </header>
+
+    <main>
+      <section class="hero" aria-labelledby="creator-name">
+        <div class="hero-top">
+          <div class="monogram" aria-hidden="true">MV</div>
+          <div class="hero-copy">
+            <h2 id="creator-name">Mara Venn <span class="verified">Verified</span></h2>
+            <p class="hero-role">Ambient composer · Harbor Static</p>
+          </div>
+        </div>
+        <div class="hero-stats">
+          <div class="hero-stat"><b>24.8K</b><span>Followers</span></div>
+          <div class="hero-stat"><b>61.2K</b><span>Monthly listeners</span></div>
+          <div class="hero-stat"><b>148K</b><span>Streams in May</span></div>
+        </div>
+      </section>
+
+      <section class="card" aria-labelledby="growth-title">
+        <div class="card-head">
+          <h3 id="growth-title">Monthly listeners</h3>
+          <span class="trend">+12.4%</span>
+        </div>
+        <p class="chart-caption">Six-month trend, December to May</p>
+        <div class="chart">
+          <div class="bar-col">
+            <div class="bar-track"><div class="bar" style="height: 34px;"></div></div>
+            <div class="bar-label">Dec</div>
+          </div>
+          <div class="bar-col">
+            <div class="bar-track"><div class="bar" style="height: 42px;"></div></div>
+            <div class="bar-label">Jan</div>
+          </div>
+          <div class="bar-col">
+            <div class="bar-track"><div class="bar" style="height: 50px;"></div></div>
+            <div class="bar-label">Feb</div>
+          </div>
+          <div class="bar-col">
+            <div class="bar-track"><div class="bar" style="height: 46px;"></div></div>
+            <div class="bar-label">Mar</div>
+          </div>
+          <div class="bar-col">
+            <div class="bar-track"><div class="bar" style="height: 62px;"></div></div>
+            <div class="bar-label">Apr</div>
+          </div>
+          <div class="bar-col">
+            <div class="bar-track"><div class="bar now" style="height: 76px;"></div></div>
+            <div class="bar-label now">May</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="card" aria-labelledby="top-title">
+        <div class="card-head">
+          <h3 id="top-title">Top performing</h3>
+          <span class="trend">Past 30 days</span>
+        </div>
+        <div class="media-row">
+          <img src="https://loremflickr.com/48/48/concert?lock=2830" width="48" height="48" alt="Crowd watching a live concert">
+          <div class="media-copy">
+            <p class="media-title">Night Signals</p>
+            <p class="media-meta">Album · 9 tracks</p>
+          </div>
+          <span class="plays"><b>38.4K</b><span>plays</span></span>
+        </div>
+        <div class="media-row">
+          <img src="https://loremflickr.com/48/48/studio?lock=2831" width="48" height="48" alt="Microphone inside a recording studio">
+          <div class="media-copy">
+            <p class="media-title">How Sound Shapes Memory</p>
+            <p class="media-meta">Episode · 38 min</p>
+          </div>
+          <span class="plays"><b>26.1K</b><span>plays</span></span>
+        </div>
+        <div class="media-row">
+          <img src="https://loremflickr.com/48/48/vinyl?lock=2832" width="48" height="48" alt="Vinyl record on a turntable">
+          <div class="media-copy">
+            <p class="media-title">Low Tide Archive</p>
+            <p class="media-meta">Single · 6 min</p>
+          </div>
+          <span class="plays"><b>19.7K</b><span>plays</span></span>
+        </div>
+      </section>
+
+      <section class="card" aria-labelledby="sources-title">
+        <div class="card-head">
+          <h3 id="sources-title">Where listeners find you</h3>
+        </div>
+        <div class="src-row">
+          <div class="src-line"><span>Editorial playlists</span><em>44%</em></div>
+          <div class="src-track"><div class="src-fill" style="width: 44%;"></div></div>
+        </div>
+        <div class="src-row">
+          <div class="src-line"><span>Your profile</span><em>31%</em></div>
+          <div class="src-track"><div class="src-fill" style="width: 31%;"></div></div>
+        </div>
+        <div class="src-row">
+          <div class="src-line"><span>Search &amp; shares</span><em>25%</em></div>
+          <div class="src-track"><div class="src-fill" style="width: 25%;"></div></div>
+        </div>
+      </section>
+    </main>
+
+    <nav class="tabbar" aria-label="Primary navigation">
+      <a class="tab" href="#">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M3 11.5 12 4l9 7.5"></path>
+          <path d="M5.5 10.5V20h13v-9.5"></path>
+          <path d="M9.5 20v-5.5h5V20"></path>
+        </svg>
+        <span>Home</span>
+      </a>
+      <a class="tab" href="#">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M4 19V9"></path>
+          <path d="M10 19V5"></path>
+          <path d="M16 19v-8"></path>
+          <path d="M21 19H3"></path>
+        </svg>
+        <span>Audience</span>
+      </a>
+      <a class="tab" href="#">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M5 4.5h14v15H5z"></path>
+          <path d="M9 4.5v15"></path>
+          <path d="M13 8h3"></path>
+          <path d="M13 12h3"></path>
+        </svg>
+        <span>Catalog</span>
+      </a>
+      <a class="tab active" href="#" aria-current="page">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="8" r="3.5"></circle>
+          <path d="M5.5 20c.5-4 2.7-6 6.5-6s6 2 6.5 6"></path>
+        </svg>
+        <span>Creator</span>
+      </a>
+    </nav>
+  </div>
+</body>
+</html>

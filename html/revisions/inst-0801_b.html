@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Study Groups</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 24px 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #e8e8e4;
+      color: #20201d;
+      font-family: 'Roboto', system-ui, sans-serif;
+    }
+
+    button, input { font: inherit; }
+    button { color: inherit; cursor: pointer; }
+
+    .screen {
+      width: 1024px;
+      height: 768px;
+      display: flex;
+      flex-direction: column;
+      background: #ffffff;
+      border: 1px solid #dcdbd4;
+      border-radius: 4px;
+    }
+
+    .icon-button svg,
+    .search-icon,
+    .row-icon svg,
+    .nav-link svg,
+    .tick svg {
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    /* ---------- top app bar ---------- */
+    .appbar {
+      display: flex;
+      align-items: center;
+      gap: 26px;
+      padding: 0 24px;
+      border-bottom: 1px solid #e6e5df;
+      background: #fbfbf8;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 13px 0;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: -0.2px;
+      white-space: nowrap;
+    }
+
+    .brand-mark {
+      width: 28px;
+      height: 28px;
+      display: grid;
+      place-items: center;
+      border-radius: 8px;
+      background: #f1c40f;
+      color: #25220f;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .top-nav { display: flex; align-items: center; gap: 2px; }
+
+    .nav-link {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 18px 12px;
+      border: 0;
+      background: transparent;
+      color: #62625c;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 400;
+    }
+
+    .nav-link svg { width: 17px; height: 17px; }
+
+    .nav-link.active { color: #20201d; font-weight: 700; }
+
+    .nav-link.active::after {
+      content: "";
+      position: absolute;
+      right: 10px;
+      bottom: -1px;
+      left: 10px;
+      height: 3px;
+      background: #f1c40f;
+    }
+
+    .appbar-right {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .search-field {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      width: 252px;
+      padding: 8px 12px;
+      border: 1px solid #deddd6;
+      border-radius: 9px;
+      background: #ffffff;
+    }
+
+    .search-icon { width: 17px; height: 17px; flex: 0 0 17px; color: #62625c; }
+
+    .search-field input {
+      width: 100%;
+      min-width: 0;
+      padding: 0;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      color: #20201d;
+      font-size: 13px;
+      line-height: 18px;
+    }
+
+    .search-field input::placeholder { color: #777771; opacity: 1; }
+
+    .create-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 8px 13px;
+      border: 1px solid #d5aa00;
+      border-radius: 9px;
+      background: #f1c40f;
+      color: #25220f;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 700;
+    }
+
+    .create-button svg { width: 15px; height: 15px; }
+
+    /* ---------- filter row ---------- */
+    .filterbar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 11px 24px;
+      border-bottom: 1px solid #e6e5df;
+    }
+
+    .chip {
+      padding: 6px 13px;
+      border: 1px solid #dedcd4;
+      border-radius: 999px;
+      background: #ffffff;
+      color: #55554f;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 400;
+      white-space: nowrap;
+    }
+
+    .chip.active {
+      border-color: #d5aa00;
+      background: #fff3bd;
+      color: #20201d;
+      font-weight: 700;
+    }
+
+    .filter-note {
+      margin-left: auto;
+      color: #74746d;
+      font-size: 12px;
+      line-height: 16px;
+      white-space: nowrap;
+    }
+
+    /* ---------- body ---------- */
+    .body {
+      flex: 1;
+      display: flex;
+      min-height: 0;
+    }
+
+    .list-pane {
+      flex: 1;
+      min-width: 0;
+      padding: 18px 24px 20px;
+    }
+
+    .list-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .list-head h1 {
+      margin: 0;
+      font-size: 18px;
+      line-height: 22px;
+      font-weight: 700;
+      letter-spacing: -0.2px;
+    }
+
+    .list-head span { color: #74746d; font-size: 12px; line-height: 16px; }
+
+    .table-head,
+    .row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 92px 128px 76px;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .table-head {
+      padding: 0 10px 7px;
+      border-bottom: 1px solid #e6e5df;
+      color: #85847d;
+      font-size: 10px;
+      line-height: 14px;
+      font-weight: 700;
+      letter-spacing: 0.7px;
+      text-transform: uppercase;
+    }
+
+    .group-list { margin: 0; padding: 0; list-style: none; }
+
+    .row {
+      padding: 10px;
+      border-bottom: 1px solid #eeede7;
+      border-radius: 10px;
+    }
+
+    .row.selected {
+      background: #fffaea;
+      border-bottom-color: #f0e2ab;
+    }
+
+    .row-main {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      min-width: 0;
+    }
+
+    .row-icon {
+      width: 34px;
+      height: 34px;
+      flex: 0 0 34px;
+      display: grid;
+      place-items: center;
+      border-radius: 9px;
+      background: #fff6c7;
+      color: #5e531c;
+    }
+
+    .row-icon svg { width: 20px; height: 20px; }
+
+    .row-copy { min-width: 0; }
+
+    .row-name {
+      margin: 0;
+      overflow: hidden;
+      font-size: 14px;
+      line-height: 18px;
+      font-weight: 700;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .row-meta {
+      margin: 2px 0 0;
+      overflow: hidden;
+      color: #78786f;
+      font-size: 12px;
+      line-height: 15px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .lvl-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 6px;
+      background: #f1f0ea;
+      color: #3c3c36;
+      font-size: 11px;
+      line-height: 16px;
+      font-weight: 700;
+    }
+
+    .fit {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      flex: 0 0 8px;
+      border-radius: 50%;
+    }
+
+    .fit-good { color: #2c6425; }
+    .fit-good .dot { background: #4f9a3f; }
+    .fit-stretch { color: #7a5407; }
+    .fit-stretch .dot { background: #e0a010; }
+    .fit-high { color: #8a3227; }
+    .fit-high .dot { background: #c2563f; }
+    .fit-unknown { color: #6d6d66; }
+    .fit-unknown .dot { background: #b9b8b0; }
+
+    .row-action {
+      padding: 7px 10px;
+      border: 1px solid #d9d8d0;
+      border-radius: 8px;
+      background: #f7f7f4;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 700;
+    }
+
+    .row.selected .row-action {
+      border-color: #d5aa00;
+      background: #f1c40f;
+      color: #25220f;
+    }
+
+    .list-foot {
+      margin: 12px 0 0;
+      color: #85847d;
+      font-size: 11px;
+      line-height: 15px;
+    }
+
+    /* ---------- detail pane ---------- */
+    .detail {
+      width: 344px;
+      flex: 0 0 344px;
+      padding: 20px;
+      border-left: 1px solid #e6e5df;
+      background: #fbfbf8;
+    }
+
+    .detail-kicker {
+      margin: 0 0 6px;
+      color: #85847d;
+      font-size: 10px;
+      line-height: 14px;
+      font-weight: 700;
+      letter-spacing: 0.7px;
+      text-transform: uppercase;
+    }
+
+    .detail h2 {
+      margin: 0;
+      font-size: 17px;
+      line-height: 21px;
+      font-weight: 700;
+      letter-spacing: -0.2px;
+    }
+
+    .detail-sub {
+      margin: 4px 0 0;
+      color: #6f6f68;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .badge-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 12px 0 14px;
+    }
+
+    .badge {
+      padding: 4px 9px;
+      border: 1px solid #e2e0d8;
+      border-radius: 7px;
+      background: #ffffff;
+      font-size: 11px;
+      line-height: 15px;
+      font-weight: 700;
+    }
+
+    .verdict {
+      padding: 11px 13px;
+      border: 1px solid #cfe4c8;
+      border-radius: 11px;
+      background: #eaf5e5;
+    }
+
+    .verdict strong {
+      display: block;
+      color: #2c6425;
+      font-size: 13px;
+      line-height: 17px;
+    }
+
+    .verdict span {
+      display: block;
+      margin-top: 2px;
+      color: #4a6a44;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .detail h3 {
+      margin: 16px 0 9px;
+      color: #4d4d47;
+      font-size: 10px;
+      line-height: 14px;
+      font-weight: 700;
+      letter-spacing: 0.7px;
+      text-transform: uppercase;
+    }
+
+    .skill { margin-bottom: 12px; }
+
+    .skill-top {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .skill-name { font-size: 12px; line-height: 16px; font-weight: 500; }
+
+    .skill-state { font-size: 11px; line-height: 16px; font-weight: 700; }
+    .skill-state.ok { color: #2c6425; }
+    .skill-state.gap { color: #7a5407; }
+
+    .scale {
+      margin-top: 6px;
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 3px;
+    }
+
+    .step {
+      position: relative;
+      height: 6px;
+      border-radius: 3px;
+      background: #eae9e3;
+    }
+
+    .step.target { background: #f1c40f; }
+    .step.mine { box-shadow: inset 0 0 0 2px #20201d; }
+
+    .expect { margin: 0; padding: 0; list-style: none; }
+
+    .expect li {
+      display: flex;
+      align-items: flex-start;
+      gap: 9px;
+      margin-bottom: 8px;
+      color: #45453f;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .tick {
+      width: 16px;
+      height: 16px;
+      flex: 0 0 16px;
+      display: grid;
+      place-items: center;
+      border-radius: 5px;
+      background: #e4f2e0;
+      color: #2c6425;
+    }
+
+    .tick.warn { background: #fdeecd; color: #7a5407; }
+    .tick svg { width: 11px; height: 11px; }
+
+    .detail-actions { margin-top: 16px; }
+
+    .primary-button {
+      width: 100%;
+      padding: 11px 12px;
+      border: 1px solid #d5aa00;
+      border-radius: 10px;
+      background: #f1c40f;
+      color: #25220f;
+      font-size: 14px;
+      line-height: 18px;
+      font-weight: 700;
+    }
+
+    .secondary-button {
+      width: 100%;
+      margin-top: 8px;
+      padding: 10px 12px;
+      border: 1px solid #d9d8d0;
+      border-radius: 10px;
+      background: #ffffff;
+      font-size: 13px;
+      line-height: 17px;
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="appbar">
+      <div class="brand"><span class="brand-mark">Lr</span> Linguaroom</div>
+
+      <nav class="top-nav" aria-label="Main navigation">
+        <button class="nav-link" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3.5 10 8.5-7 8.5 7v10.5h-6v-6h-5v6h-6z"></path></svg>
+          Learn
+        </button>
+        <button class="nav-link active" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="8" cy="8" r="3"></circle>
+            <circle cx="17" cy="8.5" r="2.5"></circle>
+            <path d="M2.8 20v-2.2c0-3 2.2-5 5.2-5s5.2 2 5.2 5V20M13.7 14.2a4.7 4.7 0 0 1 3.3-1.3c2.5 0 4.2 1.7 4.2 4.2V20"></path>
+          </svg>
+          Groups
+        </button>
+        <button class="nav-link" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 4.5h16v12H9l-5 3z"></path>
+            <path d="M8 9h8M8 12.5h5"></path>
+          </svg>
+          Messages
+        </button>
+        <button class="nav-link" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="8" r="4"></circle>
+            <path d="M4.5 21c.4-4.5 3.2-7 7.5-7s7.1 2.5 7.5 7"></path>
+          </svg>
+          Profile
+        </button>
+      </nav>
+
+      <div class="appbar-right">
+        <label class="search-field">
+          <svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="10.8" cy="10.8" r="6.4"></circle>
+            <path d="m16 16 4.2 4.2"></path>
+          </svg>
+          <input type="text" placeholder="Search by language or goal" aria-label="Search study groups">
+        </label>
+        <button class="create-button" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
+          New group
+        </button>
+      </div>
+    </header>
+
+    <div class="filterbar">
+      <button class="chip active" type="button">For you</button>
+      <button class="chip" type="button">Speaking</button>
+      <button class="chip" type="button">Exams</button>
+      <button class="chip" type="button">Reading</button>
+      <span class="filter-note">Ability fit uses your self-assessed levels · Sorted by best fit</span>
+    </div>
+
+    <div class="body">
+      <section class="list-pane">
+        <div class="list-head">
+          <h1>Open groups</h1>
+          <span>27 available · 5 match your level</span>
+        </div>
+
+        <div class="table-head">
+          <span>Group and schedule</span>
+          <span>Level</span>
+          <span>Ability fit</span>
+          <span></span>
+        </div>
+
+        <ul class="group-list">
+          <li class="row selected">
+            <div class="row-main">
+              <div class="row-icon" aria-hidden="true">
+                <svg viewBox="0 0 28 28">
+                  <path d="M8.5 12.2a3.2 3.2 0 1 0 0-6.4 3.2 3.2 0 0 0 0 6.4ZM19.5 12.2a3.2 3.2 0 1 0 0-6.4 3.2 3.2 0 0 0 0 6.4Z"></path>
+                  <path d="M3.7 21.7v-2.1c0-2.8 2.1-4.8 4.8-4.8s4.8 2 4.8 4.8v2.1M14.7 21.7v-2.1c0-2.8 2.1-4.8 4.8-4.8s4.8 2 4.8 4.8v2.1"></path>
+                </svg>
+              </div>
+              <div class="row-copy">
+                <p class="row-name">Everyday Spanish Circle</p>
+                <p class="row-meta">Spanish · Tue and Thu, 7:00 PM · 18 members</p>
+              </div>
+            </div>
+            <span class="lvl-badge">B1–B2</span>
+            <span class="fit fit-good"><span class="dot"></span>Good fit</span>
+            <button class="row-action" type="button">Join</button>
+          </li>
+
+          <li class="row">
+            <div class="row-main">
+              <div class="row-icon" aria-hidden="true">
+                <svg viewBox="0 0 28 28">
+                  <path d="M5 7.2h18v12.2H12l-5.5 3v-3H5z"></path>
+                  <path d="M9 11.2h10M9 15.2h6"></path>
+                </svg>
+              </div>
+              <div class="row-copy">
+                <p class="row-name">Clear English Practice</p>
+                <p class="row-meta">English · Wednesday, 6:30 PM · 24 members</p>
+              </div>
+            </div>
+            <span class="lvl-badge">B1–C1</span>
+            <span class="fit fit-good"><span class="dot"></span>Good fit</span>
+            <button class="row-action" type="button">Join</button>
+          </li>
+
+          <li class="row">
+            <div class="row-main">
+              <div class="row-icon" aria-hidden="true">
+                <svg viewBox="0 0 28 28">
+                  <path d="M7 4.8h14v18.4H7z"></path>
+                  <path d="M10.5 9h7M10.5 13h7M10.5 17h4"></path>
+                  <path d="m17.5 20.5 1.7 1.7 3.2-3.5"></path>
+                </svg>
+              </div>
+              <div class="row-copy">
+                <p class="row-name">French Exam Workshop</p>
+                <p class="row-meta">French · Saturday, 10:00 AM · 12 members</p>
+              </div>
+            </div>
+            <span class="lvl-badge">B2–C1</span>
+            <span class="fit fit-high"><span class="dot"></span>Too advanced</span>
+            <button class="row-action" type="button">View</button>
+          </li>
+
+          <li class="row">
+            <div class="row-main">
+              <div class="row-icon" aria-hidden="true">
+                <svg viewBox="0 0 28 28">
+                  <path d="M4.5 6.5c3.5-.7 6.4.1 9.5 2.2v14c-3.1-2.1-6-2.9-9.5-2.2zM23.5 6.5c-3.5-.7-6.4.1-9.5 2.2v14c3.1-2.1 6-2.9 9.5-2.2z"></path>
+                </svg>
+              </div>
+              <div class="row-copy">
+                <p class="row-name">Japanese Short Stories</p>
+                <p class="row-meta">Japanese · Sunday, 4:00 PM · 16 members</p>
+              </div>
+            </div>
+            <span class="lvl-badge">A2–B1</span>
+            <span class="fit fit-stretch"><span class="dot"></span>A stretch</span>
+            <button class="row-action" type="button">Join</button>
+          </li>
+
+          <li class="row">
+            <div class="row-main">
+              <div class="row-icon" aria-hidden="true">
+                <svg viewBox="0 0 28 28">
+                  <circle cx="14" cy="14" r="9.5"></circle>
+                  <path d="M14 4.5c2.7 2.6 4 5.8 4 9.5s-1.3 6.9-4 9.5c-2.7-2.6-4-5.8-4-9.5s1.3-6.9 4-9.5ZM4.8 11h18.4M4.8 17h18.4"></path>
+                </svg>
+              </div>
+              <div class="row-copy">
+                <p class="row-name">German Travel Talk</p>
+                <p class="row-meta">German · Monday, 8:00 PM · 21 members</p>
+              </div>
+            </div>
+            <span class="lvl-badge">A1–A2</span>
+            <span class="fit fit-good"><span class="dot"></span>Good fit</span>
+            <button class="row-action" type="button">Join</button>
+          </li>
+
+          <li class="row">
+            <div class="row-main">
+              <div class="row-icon" aria-hidden="true">
+                <svg viewBox="0 0 28 28">
+                  <path d="M6.2 17.5V9.8A2.8 2.8 0 0 1 9 7h10a2.8 2.8 0 0 1 2.8 2.8v7.7"></path>
+                  <path d="M4.5 16.5h19v5h-19zM9 12h10"></path>
+                </svg>
+              </div>
+              <div class="row-copy">
+                <p class="row-name">Morning Korean Lounge</p>
+                <p class="row-meta">Korean · Weekdays, 7:30 AM · 14 members</p>
+              </div>
+            </div>
+            <span class="lvl-badge">A1–A2</span>
+            <span class="fit fit-unknown"><span class="dot"></span>Set level</span>
+            <button class="row-action" type="button">View</button>
+          </li>
+
+          <li class="row">
+            <div class="row-main">
+              <div class="row-icon" aria-hidden="true">
+                <svg viewBox="0 0 28 28">
+                  <path d="M14 4.5v19M7 8h14M6 23.5h16"></path>
+                  <path d="M8.2 8c0 4.1 2 7.5 5.8 10.2C17.8 15.5 19.8 12.1 19.8 8M8.5 17.5h11"></path>
+                </svg>
+              </div>
+              <div class="row-copy">
+                <p class="row-name">Mandarin Tone Lab</p>
+                <p class="row-meta">Mandarin · Friday, 5:30 PM · 9 members</p>
+              </div>
+            </div>
+            <span class="lvl-badge">B1–B2</span>
+            <span class="fit fit-unknown"><span class="dot"></span>Set level</span>
+            <button class="row-action" type="button">View</button>
+          </li>
+        </ul>
+
+        <p class="list-foot">Your levels on file: Spanish B1 · English B2 · French A2 · Japanese A1 · German A2</p>
+      </section>
+
+      <aside class="detail">
+        <p class="detail-kicker">Ability check</p>
+        <h2>Everyday Spanish Circle</h2>
+        <p class="detail-sub">Friendly conversation for intermediate learners. Tue and Thu, 7:00 PM.</p>
+
+        <div class="badge-row">
+          <span class="badge">Group level B1–B2</span>
+          <span class="badge">Your Spanish B1</span>
+        </div>
+
+        <div class="verdict">
+          <strong>Good fit for you</strong>
+          <span>You meet 2 of 3 skill targets. Listening sits one level above you.</span>
+        </div>
+
+        <h3>Skill targets</h3>
+
+        <div class="skill">
+          <div class="skill-top">
+            <span class="skill-name">Speaking</span>
+            <span class="skill-state ok">On target · B1</span>
+          </div>
+          <div class="scale" aria-hidden="true">
+            <span class="step"></span><span class="step"></span><span class="step target mine"></span><span class="step"></span><span class="step"></span><span class="step"></span>
+          </div>
+        </div>
+
+        <div class="skill">
+          <div class="skill-top">
+            <span class="skill-name">Listening</span>
+            <span class="skill-state gap">One level up · B2</span>
+          </div>
+          <div class="scale" aria-hidden="true">
+            <span class="step"></span><span class="step"></span><span class="step mine"></span><span class="step target"></span><span class="step"></span><span class="step"></span>
+          </div>
+        </div>
+
+        <div class="skill">
+          <div class="skill-top">
+            <span class="skill-name">Reading</span>
+            <span class="skill-state ok">On target · B1</span>
+          </div>
+          <div class="scale" aria-hidden="true">
+            <span class="step"></span><span class="step"></span><span class="step target mine"></span><span class="step"></span><span class="step"></span><span class="step"></span>
+          </div>
+        </div>
+
+        <h3>Before you join, you should</h3>
+        <ul class="expect">
+          <li>
+            <span class="tick" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7"></path></svg></span>
+            Hold a five-minute chat without notes
+          </li>
+          <li>
+            <span class="tick warn" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h14"></path></svg></span>
+            Follow native-speed audio on familiar topics
+          </li>
+          <li>
+            <span class="tick" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7"></path></svg></span>
+            Use past tenses to retell your week
+          </li>
+        </ul>
+
+        <div class="detail-actions">
+          <button class="primary-button" type="button">Join this group</button>
+          <button class="secondary-button" type="button">Take a 5-minute level check</button>
+        </div>
+      </aside>
+    </div>
+  </div>
+</body>
+</html>

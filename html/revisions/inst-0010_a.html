@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit Personal Note</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #dedde1;
+      color: #242228;
+      font-family: 'Roboto', system-ui, sans-serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #f4f3f5;
+    }
+
+    .top-bar {
+      flex: 0 0 auto;
+      display: grid;
+      grid-template-columns: 72px 1fr 72px;
+      align-items: center;
+      padding: 10px 16px;
+      background: #ffffff;
+      border-bottom: 1px solid #e5e2e7;
+    }
+
+    .back-button,
+    .format-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 0;
+      background: transparent;
+      color: #55515a;
+      padding: 0;
+    }
+
+    .back-button {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+    }
+
+    .top-title {
+      margin: 0;
+      text-align: center;
+      font-size: 17px;
+      line-height: 24px;
+      font-weight: 500;
+    }
+
+    .done-button {
+      justify-self: end;
+      border: 0;
+      border-radius: 10px;
+      padding: 9px 16px;
+      background: #d83e79;
+      color: #ffffff;
+      font-size: 14px;
+      line-height: 18px;
+      font-weight: 700;
+    }
+
+    main {
+      flex: 1 1 auto;
+      min-height: 0;
+      padding: 16px;
+    }
+
+    .location-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+      color: #6d6871;
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .location-row svg {
+      flex: 0 0 auto;
+      color: #d83e79;
+    }
+
+    .location-row strong {
+      color: #403c44;
+      font-weight: 500;
+    }
+
+    .editor-card,
+    .linked-card {
+      background: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0 3px 12px rgba(38, 31, 42, 0.08);
+    }
+
+    .editor-card {
+      padding: 18px;
+    }
+
+    .author-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .monogram {
+      width: 34px;
+      height: 34px;
+      flex: 0 0 auto;
+      display: grid;
+      place-items: center;
+      border-radius: 10px;
+      background: #f5c7d9;
+      color: #8f2852;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .author-copy {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .author-name {
+      margin: 0;
+      font-size: 14px;
+      line-height: 18px;
+      font-weight: 500;
+    }
+
+    .privacy {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin: 2px 0 0;
+      color: #77717b;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .saved-button {
+      flex: 0 0 auto;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      border: 0;
+      border-radius: 999px;
+      padding: 5px 11px;
+      background: #f2eef1;
+      color: #6a646f;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .saved-button svg {
+      flex: 0 0 auto;
+      color: #a89fae;
+    }
+
+    .note-title {
+      margin: 16px 0 4px;
+      font-size: 25px;
+      line-height: 32px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+    }
+
+    .note-date {
+      margin: 0;
+      color: #77717b;
+      font-size: 13px;
+      line-height: 18px;
+    }
+
+    .divider {
+      height: 1px;
+      margin: 16px 0;
+      background: #ece9ed;
+    }
+
+    .note-body {
+      font-size: 15px;
+      line-height: 22px;
+      color: #3d3941;
+    }
+
+    .note-body h2 {
+      margin: 0 0 7px;
+      font-size: 17px;
+      line-height: 23px;
+      font-weight: 700;
+      color: #28252b;
+    }
+
+    .note-body p {
+      margin: 0;
+    }
+
+    .checklist {
+      display: grid;
+      gap: 10px;
+      margin: 14px 0 16px;
+    }
+
+    .check-item {
+      display: grid;
+      grid-template-columns: 20px 1fr;
+      align-items: start;
+      gap: 9px;
+      font-size: 15px;
+      line-height: 20px;
+    }
+
+    .checkbox {
+      width: 20px;
+      height: 20px;
+      display: grid;
+      place-items: center;
+      border: 1.5px solid #aaa4ad;
+      border-radius: 5px;
+      color: transparent;
+    }
+
+    .check-item.complete .checkbox {
+      border-color: #d83e79;
+      background: #d83e79;
+      color: #ffffff;
+    }
+
+    .check-item.complete .check-label {
+      color: #858087;
+      text-decoration: line-through;
+    }
+
+    .closing-heading {
+      margin-top: 0;
+    }
+
+    .format-dock {
+      flex: 0 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 8px 14px;
+      background: #ffffff;
+      border-top: 1px solid #e5e2e7;
+    }
+
+    .format-button {
+      width: 36px;
+      height: 34px;
+      border-radius: 10px;
+    }
+
+    .format-button.active {
+      background: #f9dce7;
+      color: #a82c5d;
+    }
+
+    .format-letter {
+      font-size: 16px;
+      line-height: 20px;
+      font-weight: 700;
+    }
+
+    .format-letter.italic {
+      font-style: italic;
+      font-family: Georgia, serif;
+      font-weight: 700;
+    }
+
+    .toolbar-spacer {
+      flex: 1;
+    }
+
+    .word-count {
+      color: #8a858c;
+      font-size: 12px;
+      line-height: 16px;
+      white-space: nowrap;
+    }
+
+    .linked-card {
+      margin-top: 14px;
+      padding: 14px 16px;
+    }
+
+    .section-label {
+      margin: 0;
+      color: #77717b;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .linked-row {
+      display: grid;
+      grid-template-columns: 38px 1fr 20px;
+      align-items: center;
+      gap: 11px;
+      margin-top: 10px;
+    }
+
+    .project-mark {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      border-radius: 10px;
+      background: #f7e3eb;
+      color: #b53366;
+    }
+
+    .linked-copy {
+      min-width: 0;
+    }
+
+    .linked-title {
+      margin: 0;
+      overflow: hidden;
+      color: #302d33;
+      font-size: 14px;
+      line-height: 19px;
+      font-weight: 500;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .linked-meta {
+      margin: 2px 0 0;
+      color: #7c7680;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .chevron {
+      color: #8d8790;
+    }
+
+    .tab-bar {
+      flex: 0 0 auto;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      padding: 8px 8px 10px;
+      background: #ffffff;
+      border-top: 1px solid #e5e2e7;
+    }
+
+    .tab {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      border: 0;
+      background: transparent;
+      color: #817b84;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 500;
+    }
+
+    .tab svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .tab.active {
+      color: #d83e79;
+    }
+
+    svg {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="top-bar">
+      <button class="back-button" type="button" aria-label="Back to notes">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <h1 class="top-title">Edit note</h1>
+      <button class="done-button" type="button">Done</button>
+    </header>
+
+    <main>
+      <div class="location-row">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M7 3.5H14.5L18.5 7.5V20.5H7V3.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+          <path d="M14 3.5V8H18.5" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+        </svg>
+        <span><strong>My notes</strong> / Planning</span>
+      </div>
+
+      <section class="editor-card" aria-label="Personal note editor">
+        <div class="author-row">
+          <div class="monogram" aria-hidden="true">EC</div>
+          <div class="author-copy">
+            <p class="author-name">Emery Cole</p>
+            <p class="privacy">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <rect x="5" y="10" width="14" height="10" rx="2" stroke="currentColor" stroke-width="2"/>
+                <path d="M8.5 10V7.5C8.5 5.57 10.07 4 12 4C13.93 4 15.5 5.57 15.5 7.5V10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+              Only you
+            </p>
+          </div>
+          <button class="saved-button" type="button" aria-label="Saved — open version history">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.9"/>
+              <path d="M12 7.5V12L15.5 14" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Saved
+          </button>
+        </div>
+
+        <div role="textbox" aria-multiline="true" aria-label="Note content">
+          <h2 class="note-title">Weekly planning notes</h2>
+          <p class="note-date">May 12, 2025 · Monday</p>
+
+          <div class="divider"></div>
+
+          <div class="note-body">
+            <h2>Focus for this week</h2>
+            <p>Keep the release plan narrow and make ownership clear before the Wednesday review. The handoff should be easy to scan without another meeting.</p>
+
+            <div class="checklist" aria-label="Weekly checklist">
+              <div class="check-item complete">
+                <span class="checkbox" aria-hidden="true">
+                  <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
+                    <path d="M3 8.2L6.2 11.2L13 4.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </span>
+                <span class="check-label">Confirm review owners</span>
+              </div>
+              <div class="check-item">
+                <span class="checkbox" aria-hidden="true"></span>
+                <span class="check-label">Draft the launch checklist</span>
+              </div>
+              <div class="check-item">
+                <span class="checkbox" aria-hidden="true"></span>
+                <span class="check-label">Collect open questions by Thursday</span>
+              </div>
+            </div>
+
+            <h2 class="closing-heading">Reminder</h2>
+            <p>Leave Friday afternoon open for follow-ups and documentation.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="linked-card" aria-labelledby="linked-heading">
+        <p class="section-label" id="linked-heading">Linked workspace item</p>
+        <div class="linked-row">
+          <div class="project-mark" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <path d="M4 7.5H10L12 5.5H20V19H4V7.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="linked-copy">
+            <p class="linked-title">Summer release planning</p>
+            <p class="linked-meta">Project · Updated May 9</p>
+          </div>
+          <svg class="chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M9 6L15 12L9 18" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </section>
+    </main>
+
+    <div class="format-dock" aria-label="Formatting tools">
+      <button class="format-button" type="button" aria-label="Bold">
+        <span class="format-letter">B</span>
+      </button>
+      <button class="format-button" type="button" aria-label="Italic">
+        <span class="format-letter italic">I</span>
+      </button>
+      <button class="format-button active" type="button" aria-label="Checklist">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <rect x="3.5" y="4" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.7"/>
+          <path d="M5 6.5L6 7.5L8 5.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M11.5 6.5H20" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+          <rect x="3.5" y="15" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.7"/>
+          <path d="M11.5 17.5H20" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+        </svg>
+      </button>
+      <button class="format-button" type="button" aria-label="Bulleted list">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="5" cy="7" r="1.4" fill="currentColor"/>
+          <circle cx="5" cy="12" r="1.4" fill="currentColor"/>
+          <circle cx="5" cy="17" r="1.4" fill="currentColor"/>
+          <path d="M9 7H20M9 12H20M9 17H20" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+        </svg>
+      </button>
+      <button class="format-button" type="button" aria-label="Add link">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M10 13.8L8.2 15.6C6.77 17.03 4.45 17.03 3.02 15.6C1.59 14.17 1.59 11.85 3.02 10.42L6.2 7.24C7.63 5.81 9.95 5.81 11.38 7.24" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+          <path d="M14 10.2L15.8 8.4C17.23 6.97 19.55 6.97 20.98 8.4C22.41 9.83 22.41 12.15 20.98 13.58L17.8 16.76C16.37 18.19 14.05 18.19 12.62 16.76" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+          <path d="M8.5 15.5L15.5 8.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+        </svg>
+      </button>
+      <span class="toolbar-spacer"></span>
+      <span class="word-count">59 words</span>
+    </div>
+
+    <nav class="tab-bar" aria-label="Primary navigation">
+      <button class="tab" type="button">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M4 10.5L12 4L20 10.5V20H14.5V14H9.5V20H4V10.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+        </svg>
+        <span>Home</span>
+      </button>
+      <button class="tab active" type="button" aria-current="page">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M6 3.5H15L19 7.5V20.5H6V3.5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+          <path d="M14.5 3.5V8H19M9 12H16M9 16H16" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span>Notes</span>
+      </button>
+      <button class="tab" type="button">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <rect x="3.5" y="5.5" width="17" height="15" rx="2" stroke="currentColor" stroke-width="1.7"/>
+          <path d="M3.5 9.5H20.5M8 3.5V7M16 3.5V7" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+        </svg>
+        <span>Schedule</span>
+      </button>
+      <button class="tab" type="button">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="9" cy="8" r="3.2" stroke="currentColor" stroke-width="1.7"/>
+          <circle cx="17" cy="9" r="2.4" stroke="currentColor" stroke-width="1.7"/>
+          <path d="M3.5 19C3.5 15.96 5.96 13.5 9 13.5C12.04 13.5 14.5 15.96 14.5 19M14 14.5C16.8 13.7 20 15.52 20 18.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+        </svg>
+        <span>Team</span>
+      </button>
+    </nav>
+  </div>
+</body>
+</html>

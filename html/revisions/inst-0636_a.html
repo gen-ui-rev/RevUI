@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>CareRelay — Visit recording upload</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 40px 0;
+    margin: 0;
+    background: #e8e6ed;
+    font-family: 'Nunito Sans', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .screen {
+    width: 1024px;
+    height: 768px;
+    background: #ffffff;
+    position: relative;
+    color: #1b1922;
+    display: flex;
+    overflow: hidden;
+    border-radius: 6px;
+    box-shadow: 0 18px 40px rgba(27,25,34,0.14);
+  }
+
+  /* ---------- sidebar ---------- */
+  .sidebar {
+    width: 232px;
+    flex: none;
+    border-right: 1px solid #edecf1;
+    background: #fbfafd;
+    display: flex;
+    flex-direction: column;
+    padding: 22px 16px 18px;
+  }
+  .brand { display: flex; align-items: center; gap: 11px; padding: 0 6px 22px; }
+  .logo {
+    width: 38px; height: 38px; border-radius: 10px;
+    background: #6d3ce0; color: #fff;
+    font-size: 14px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    flex: none;
+  }
+  .bname { font-size: 15px; font-weight: 700; letter-spacing: -0.2px; }
+  .bsub { font-size: 12px; color: #8a8695; margin-top: 2px; }
+
+  .navlabel {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.9px;
+    text-transform: uppercase; color: #a29ead;
+    padding: 0 8px 8px;
+  }
+  .nav { flex: 1; }
+  .navitem {
+    display: flex; align-items: center; gap: 11px;
+    padding: 10px 10px;
+    border-radius: 9px;
+    font-size: 14px;
+    color: #5f5b6b;
+    margin-bottom: 3px;
+  }
+  .navitem svg { flex: none; }
+  .navitem.on {
+    background: rgba(109,60,224,0.12);
+    color: #4c22ab;
+    font-weight: 700;
+  }
+  .navitem .pill {
+    margin-left: auto;
+    font-size: 11px; font-weight: 700;
+    background: #6d3ce0; color: #fff;
+    border-radius: 20px; padding: 1px 7px;
+  }
+  .sidefoot {
+    border-top: 1px solid #edecf1;
+    padding-top: 14px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .mono {
+    width: 34px; height: 34px; border-radius: 9px;
+    background: rgba(109,60,224,0.22); color: #4c22ab;
+    font-size: 13px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    flex: none;
+  }
+  .sidefoot .who { font-size: 13px; font-weight: 700; }
+  .sidefoot .what { font-size: 12px; color: #8a8695; margin-top: 2px; }
+
+  /* ---------- main ---------- */
+  .main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+  .mainhead {
+    display: flex; align-items: center; gap: 14px;
+    padding: 20px 34px 18px;
+    border-bottom: 1px solid #edecf1;
+  }
+  .back {
+    width: 34px; height: 34px; flex: none;
+    border: 1px solid #e4e2ea; border-radius: 9px;
+    display: flex; align-items: center; justify-content: center;
+    color: #4c4857;
+  }
+  .mainhead h1 { font-size: 20px; font-weight: 700; margin: 0; letter-spacing: -0.3px; }
+  .mainhead .crumb { font-size: 13px; color: #8a8695; margin-top: 3px; }
+  .headright { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+  .badge {
+    font-size: 12px; font-weight: 700;
+    color: #2c6a52; background: rgba(44,106,82,0.12);
+    border-radius: 20px; padding: 6px 12px;
+  }
+  .btn {
+    font-size: 13px; font-weight: 700;
+    border: 1px solid #e4e2ea; border-radius: 9px;
+    padding: 8px 14px; color: #4c4857;
+  }
+
+  .content {
+    flex: 1;
+    padding: 22px 34px;
+    display: grid;
+    grid-template-columns: 1fr 1.1fr;
+    gap: 26px;
+    align-content: start;
+  }
+
+  /* hero card */
+  .hero {
+    background: rgba(109, 60, 224, 0.10);
+    border-radius: 12px;
+    padding: 22px;
+  }
+  .kicker {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.9px;
+    text-transform: uppercase; color: #6d3ce0; margin: 0 0 9px;
+  }
+  .hero h2 {
+    font-size: 21px; line-height: 1.25; font-weight: 700;
+    margin: 0 0 6px; letter-spacing: -0.3px;
+  }
+  .filemeta {
+    font-size: 13px; color: #5f5b6b; margin: 0 0 18px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .track { height: 10px; border-radius: 10px; background: rgba(109,60,224,0.20); overflow: hidden; }
+  .fill { width: 68%; height: 100%; background: #6d3ce0; border-radius: 10px; }
+  .stats { display: flex; justify-content: space-between; align-items: baseline; margin-top: 11px; }
+  .stats .pct { font-size: 14px; font-weight: 700; }
+  .stats .rem { font-size: 12px; color: #5f5b6b; }
+  .hr { height: 1px; background: rgba(76,34,171,0.14); margin: 18px 0; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 18px; }
+  .fldk { font-size: 11px; font-weight: 700; letter-spacing: 0.7px; text-transform: uppercase; color: #7a6ba0; }
+  .fldv { font-size: 13px; font-weight: 700; margin-top: 3px; }
+
+  .cancel {
+    margin-top: 18px;
+    padding: 13px;
+    border-radius: 10px;
+    background: #ffffff;
+    border: 1px solid rgba(76,34,171,0.22);
+    text-align: center;
+    font-size: 14px; font-weight: 700; color: #4c22ab;
+  }
+  .note { margin: 12px 0 0; font-size: 12px; line-height: 1.55; color: #8a8695; }
+
+  /* queue card */
+  .card { border: 1px solid #edecf1; border-radius: 12px; padding: 18px 20px 6px; }
+  .cardhead { display: flex; justify-content: space-between; align-items: baseline; padding-bottom: 6px; }
+  .cardhead h3 {
+    font-size: 12px; font-weight: 700; letter-spacing: 0.9px;
+    text-transform: uppercase; color: #6b6775; margin: 0;
+  }
+  .cardhead .count { font-size: 12px; color: #8a8695; }
+
+  .step { display: grid; grid-template-columns: 28px 1fr 92px; gap: 13px; padding: 15px 0; border-bottom: 1px solid #f2f1f5; }
+  .step:last-child { border-bottom: none; }
+  .num {
+    width: 28px; height: 28px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700;
+    border: 1px solid #ddd9e6; color: #8a8695; background: #fff;
+    flex: none;
+  }
+  .num.done { background: #2c6a52; border-color: #2c6a52; color: #fff; }
+  .num.live { background: #6d3ce0; border-color: #6d3ce0; color: #fff; }
+  .step .label { font-size: 14px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .step .sub { font-size: 12px; color: #8a8695; margin-top: 2px; }
+  .barwrap { display: flex; align-items: center; gap: 10px; margin-top: 9px; }
+  .track2 { flex: 1; height: 6px; border-radius: 6px; background: #ece9f4; overflow: hidden; }
+  .f2 { height: 100%; border-radius: 6px; background: #6d3ce0; }
+  .f2.ok { background: #2c6a52; }
+  .pct2 { font-size: 11px; font-weight: 700; color: #5f5b6b; width: 32px; text-align: right; }
+  .state { font-size: 12px; color: #8a8695; text-align: right; }
+  .state.active { color: #6d3ce0; font-weight: 700; }
+  .state.ok { color: #2c6a52; font-weight: 700; }
+  .state .t { display: block; color: #a29ead; font-weight: 400; margin-top: 3px; }
+</style>
+</head>
+<body>
+  <div class="screen">
+
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="logo">CR</div>
+        <div>
+          <div class="bname">CareRelay</div>
+          <div class="bsub">Mercy Home Health</div>
+        </div>
+      </div>
+
+      <div class="nav">
+        <div class="navlabel">Care</div>
+        <div class="navitem">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8.5" r="3.5"/><path d="M5 20c0-3.3 3.1-5.5 7-5.5s7 2.2 7 5.5"/></svg>
+          Patients
+        </div>
+        <div class="navitem">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M4 10h16"/></svg>
+          Visit schedule
+        </div>
+        <div class="navitem">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 12a6.5 6.5 0 0 0 13 0"/><path d="M12 18.5V21"/></svg>
+          Recordings
+        </div>
+        <div class="navlabel" style="padding-top:16px">Transfers</div>
+        <div class="navitem on">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4"/><path d="M8 8l4-4 4 4"/><path d="M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg>
+          Sending now
+          <span class="pill">1</span>
+        </div>
+        <div class="navitem">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5h6a2 2 0 0 1 2 2V19a2 2 0 0 0-2-2H4z"/><path d="M20 5.5h-6a2 2 0 0 0-2 2V19a2 2 0 0 1 2-2h6z"/></svg>
+          Chart history
+        </div>
+      </div>
+
+      <div class="sidefoot">
+        <div class="mono">DW</div>
+        <div>
+          <div class="who">Dana Whitfield</div>
+          <div class="what">RN · Field team 2</div>
+        </div>
+      </div>
+    </aside>
+
+    <div class="main">
+      <div class="mainhead">
+        <div class="back">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
+        </div>
+        <div>
+          <h1>Visit recording upload</h1>
+          <div class="crumb">Sending now · Visit 4812 · Ortiz, Rafael</div>
+        </div>
+        <div class="headright">
+          <span class="badge">End-to-end encrypted</span>
+          <span class="btn">Pause queue</span>
+        </div>
+      </div>
+
+      <div class="content">
+
+        <div>
+          <div class="hero">
+            <p class="kicker">Step 2 of 4 · uploading</p>
+            <h2>Home visit recording</h2>
+            <p class="filemeta">visit4812-audio.m4a · 48.2 MB · recorded 12:38 PM</p>
+
+            <div class="track"><div class="fill"></div></div>
+            <div class="stats">
+              <span class="pct">68% · 32.8 MB of 48.2 MB</span>
+              <span class="rem">40 seconds left</span>
+            </div>
+
+            <div class="hr"></div>
+
+            <div class="grid2">
+              <div>
+                <div class="fldk">Patient</div>
+                <div class="fldv">Rafael Ortiz · MRN 88-4127</div>
+              </div>
+              <div>
+                <div class="fldk">Visit date</div>
+                <div class="fldv">Mar 14 · 12:15 PM</div>
+              </div>
+              <div>
+                <div class="fldk">Sending to</div>
+                <div class="fldv">Mercy EHR · Chart intake</div>
+              </div>
+              <div>
+                <div class="fldk">Reviewing clinician</div>
+                <div class="fldv">Dr. Marisol Vega</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="cancel">Cancel transfer</div>
+          <p class="note">Files are sent one at a time in the order below. Keep this window open until all four items reach the chart — nothing is stored on this laptop.</p>
+        </div>
+
+        <div class="card">
+          <div class="cardhead">
+            <h3>Sending order</h3>
+            <span class="count">1 of 4 delivered</span>
+          </div>
+
+          <div class="step">
+            <div class="num done">1</div>
+            <div>
+              <div class="label">visit-summary.pdf</div>
+              <div class="sub">380 KB · nurse narrative note</div>
+              <div class="barwrap">
+                <div class="track2"><div class="f2 ok" style="width:100%"></div></div>
+                <span class="pct2">100%</span>
+              </div>
+            </div>
+            <div class="state ok">Delivered<span class="t">1:12 PM</span></div>
+          </div>
+
+          <div class="step">
+            <div class="num live">2</div>
+            <div>
+              <div class="label">visit4812-audio.m4a</div>
+              <div class="sub">48.2 MB · 32.8 MB sent</div>
+              <div class="barwrap">
+                <div class="track2"><div class="f2" style="width:68%"></div></div>
+                <span class="pct2">68%</span>
+              </div>
+            </div>
+            <div class="state active">Uploading<span class="t">40 s left</span></div>
+          </div>
+
+          <div class="step">
+            <div class="num">3</div>
+            <div>
+              <div class="label">vitals-log.csv</div>
+              <div class="sub">24 KB · BP, pulse, SpO₂</div>
+              <div class="barwrap">
+                <div class="track2"><div class="f2" style="width:0%"></div></div>
+                <span class="pct2">0%</span>
+              </div>
+            </div>
+            <div class="state">Queued<span class="t">next</span></div>
+          </div>
+
+          <div class="step">
+            <div class="num">4</div>
+            <div>
+              <div class="label">consent-form.pdf</div>
+              <div class="sub">1.8 MB · signed at visit</div>
+              <div class="barwrap">
+                <div class="track2"><div class="f2" style="width:0%"></div></div>
+                <span class="pct2">0%</span>
+              </div>
+            </div>
+            <div class="state">Queued<span class="t">last</span></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

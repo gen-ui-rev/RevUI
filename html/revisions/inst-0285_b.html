@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Havenrow</title>
+<style>
+  :root{
+    --ground:#EDEBE8;
+    --taupe:#9C8D7B;
+    --taupe-deep:#7E7161;
+    --ink:#2E2A26;
+    --muted:#7C766E;
+    --faint:#A9A29A;
+    --line:#E1DDD7;
+    --soft:#F6F4F1;
+  }
+  *{box-sizing:border-box;}
+  body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    margin:0;
+    padding:24px;
+    background:#5C5750;
+    font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  }
+  .screen{
+    width:768px;
+    height:1024px;
+    display:flex;
+    background:var(--ground);
+    color:var(--ink);
+  }
+  .tabbar{
+    width:176px;
+    flex:none;
+    display:flex;
+    flex-direction:column;
+    background:var(--taupe-deep);
+    color:#FFFFFF;
+    padding:40px 20px 30px;
+  }
+  .rail-heading{
+    margin:0 12px 44px;
+    font-size:13px;
+    font-weight:700;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    color:rgba(255,255,255,0.72);
+  }
+  .tab{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    padding:16px 14px;
+    margin-bottom:9px;
+    border-radius:12px;
+    color:rgba(255,255,255,0.58);
+  }
+  .tab.active{
+    color:#FFFFFF;
+    background:rgba(255,255,255,0.13);
+  }
+  .tab span{
+    font-size:15px;
+    font-weight:500;
+  }
+  .rail-note{
+    margin:auto 12px 0;
+    font-size:11px;
+    line-height:1.55;
+    color:rgba(255,255,255,0.52);
+  }
+  .content{
+    min-width:0;
+    flex:1;
+    display:flex;
+    flex-direction:column;
+  }
+  .stage{
+    flex:1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:44px;
+  }
+  .card{
+    width:100%;
+    background:#FFFFFF;
+    border-radius:22px;
+    box-shadow:0 14px 38px rgba(60,52,44,0.1);
+    padding:40px;
+  }
+  .identity{
+    display:flex;
+    align-items:center;
+    gap:20px;
+    text-align:left;
+  }
+  .mark{
+    width:70px;
+    height:70px;
+    flex:none;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:18px;
+    background:var(--taupe);
+    color:#FFFFFF;
+    font-size:22px;
+    font-weight:650;
+    letter-spacing:-1px;
+  }
+  .brand-copy{
+    min-width:0;
+  }
+  .brand{
+    margin:0;
+    font-size:36px;
+    line-height:1.05;
+    font-weight:650;
+    letter-spacing:-0.7px;
+  }
+  .tagline{
+    margin:8px 0 0;
+    color:var(--muted);
+    font-size:14px;
+    line-height:1.45;
+  }
+  .restore-panel{
+    margin-top:36px;
+    padding:28px;
+    border-radius:16px;
+    background:var(--soft);
+  }
+  .restore-title{
+    margin:0;
+    font-size:18px;
+    font-weight:600;
+  }
+  .restore-intro{
+    margin:7px 0 0;
+    color:var(--muted);
+    font-size:13px;
+    line-height:1.5;
+  }
+  .restore-grid{
+    display:grid;
+    grid-template-columns:150px minmax(0,1fr);
+    align-items:center;
+    gap:28px;
+    margin-top:26px;
+  }
+  .progress-ring{
+    width:144px;
+    height:144px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:50%;
+    background:conic-gradient(var(--taupe-deep) 0 68%, #DDD8D1 68% 100%);
+    position:relative;
+  }
+  .progress-ring:before{
+    content:"";
+    position:absolute;
+    inset:13px;
+    border-radius:50%;
+    background:#FFFFFF;
+  }
+  .progress-value{
+    position:relative;
+    z-index:1;
+    text-align:center;
+  }
+  .progress-value strong{
+    display:block;
+    font-size:30px;
+    line-height:1;
+    color:var(--taupe-deep);
+  }
+  .progress-value span{
+    display:block;
+    margin-top:7px;
+    color:var(--muted);
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:0.8px;
+  }
+  .steps{
+    margin:0;
+    padding:0;
+    list-style:none;
+  }
+  .step{
+    display:flex;
+    align-items:center;
+    gap:11px;
+    padding:10px 0;
+    border-bottom:1px solid #E4E0DB;
+    color:var(--muted);
+    font-size:13px;
+  }
+  .step:last-child{
+    border-bottom:0;
+  }
+  .status-dot{
+    width:22px;
+    height:22px;
+    flex:none;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:50%;
+    background:#D9D3CB;
+    color:#FFFFFF;
+    font-size:12px;
+    font-weight:700;
+  }
+  .step.done{
+    color:var(--ink);
+  }
+  .step.done .status-dot{
+    background:var(--taupe-deep);
+  }
+  .remaining{
+    margin:24px 0 0;
+    padding-top:20px;
+    border-top:1px solid var(--line);
+    color:var(--muted);
+    font-size:13px;
+    line-height:1.5;
+  }
+  .remaining strong{
+    color:var(--ink);
+    font-weight:600;
+  }
+  .footer{
+    padding:0 44px 30px;
+    text-align:center;
+  }
+  .footer p{
+    margin:0;
+    color:var(--faint);
+    font-size:12px;
+    line-height:1.6;
+  }
+</style>
+</head>
+<body>
+  <div class="screen">
+    <nav class="tabbar" aria-label="Primary navigation">
+      <p class="rail-heading">Secure access</p>
+      <div class="tab active">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5 12 4l8 6.5V20a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1z"/></svg>
+        <span>Home</span>
+      </div>
+      <div class="tab">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5.5" width="18" height="13" rx="2.5"/><path d="M3 10h18"/></svg>
+        <span>Spending</span>
+      </div>
+      <div class="tab">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17.5 9.5 12l3.5 3.5L20 8"/><path d="M15.5 8H20v4.5"/></svg>
+        <span>Invest</span>
+      </div>
+      <div class="tab">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8.5" r="3.5"/><path d="M5 20c0-3.6 3.1-5.5 7-5.5s7 1.9 7 5.5"/></svg>
+        <span>Profile</span>
+      </div>
+      <p class="rail-note">Version 5.2.0 (build 1148)</p>
+    </nav>
+
+    <main class="content">
+      <div class="stage">
+        <section class="card" aria-label="Account restoration">
+          <header class="identity">
+            <div class="mark" aria-hidden="true">H</div>
+            <div class="brand-copy">
+              <h1 class="brand">Havenrow</h1>
+              <p class="tagline">Banking and investing, one balance</p>
+            </div>
+          </header>
+
+          <div class="restore-panel">
+            <h2 class="restore-title">Restoring your accounts</h2>
+            <p class="restore-intro">Your secured account records are being returned to this device.</p>
+
+            <div class="restore-grid">
+              <div class="progress-ring" aria-label="Account restore is 68 percent complete">
+                <div class="progress-value">
+                  <strong>68%</strong>
+                  <span>Complete</span>
+                </div>
+              </div>
+
+              <ul class="steps">
+                <li class="step done"><span class="status-dot">✓</span><span>Bank balances</span></li>
+                <li class="step done"><span class="status-dot">✓</span><span>Recent activity</span></li>
+                <li class="step done"><span class="status-dot">✓</span><span>Investments</span></li>
+                <li class="step"><span class="status-dot">4</span><span>Retirement account</span></li>
+              </ul>
+            </div>
+
+            <p class="remaining"><strong>One account remains.</strong> Checking, savings, and brokerage records are restored.</p>
+          </div>
+        </section>
+      </div>
+
+      <footer class="footer">
+        <p>Deposits held at Cardell Trust, Member FDIC</p>
+      </footer>
+    </main>
+  </div>
+</body>
+</html>

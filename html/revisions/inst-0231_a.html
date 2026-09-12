@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #ecebed;
+      color: #202024;
+      font-family: 'Roboto', system-ui, sans-serif;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #f5f3f5;
+      box-shadow: 0 2px 14px rgba(31, 28, 32, 0.12);
+    }
+
+    .topbar {
+      min-height: 56px;
+      padding: 0 16px;
+      display: grid;
+      grid-template-columns: 40px 1fr 76px;
+      align-items: center;
+      background: #ffffff;
+      border-bottom: 1px solid #e8e5e8;
+    }
+
+    .icon-button {
+      width: 40px;
+      height: 40px;
+      margin-left: -8px;
+      padding: 8px;
+      border: 0;
+      background: transparent;
+      color: #242126;
+      display: grid;
+      place-items: center;
+    }
+
+    .topbar h1 {
+      margin: 0;
+      text-align: center;
+      font-size: 20px;
+      line-height: 24px;
+      font-weight: 700;
+    }
+
+    .secure {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 5px;
+      color: #6e6870;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 500;
+    }
+
+    main {
+      flex: 1;
+      padding: 16px 18px 8px;
+    }
+
+    .flow {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .tl-step {
+      position: relative;
+      padding: 0 0 14px 42px;
+    }
+
+    .tl-step:last-child {
+      padding-bottom: 0;
+    }
+
+    .tl-step:not(:last-child)::after {
+      content: "";
+      position: absolute;
+      top: 32px;
+      bottom: 4px;
+      left: 13px;
+      width: 2px;
+      background: #e2dde2;
+    }
+
+    .tl-num {
+      position: absolute;
+      top: 2px;
+      left: 0;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: #e72575;
+      color: #ffffff;
+      font-size: 13px;
+      line-height: 16px;
+      font-weight: 700;
+    }
+
+    .tl-num.current {
+      background: #ffffff;
+      border: 2px solid #e72575;
+      color: #d91f6d;
+    }
+
+    .tl-label {
+      margin: 0 0 6px;
+      color: #8a838b;
+      font-size: 11px;
+      line-height: 16px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .card {
+      padding: 12px 14px;
+      background: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0 1px 3px rgba(35, 30, 36, 0.08);
+    }
+
+    .card-heading {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    .card-heading h2 {
+      margin: 0;
+      color: #242126;
+      font-size: 16px;
+      line-height: 22px;
+      font-weight: 700;
+    }
+
+    .text-action {
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: #d91f6d;
+      font-family: inherit;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 500;
+    }
+
+    .meta {
+      color: #7c757d;
+      font-size: 12px;
+      line-height: 18px;
+    }
+
+    .address {
+      margin-top: 8px;
+      font-style: normal;
+    }
+
+    .recipient-line {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 500;
+    }
+
+    .recipient-line span {
+      color: #716b72;
+      font-weight: 400;
+    }
+
+    .address-detail {
+      margin: 3px 0 0;
+      color: #514c52;
+      font-size: 14px;
+      line-height: 18px;
+    }
+
+    .delivery-note {
+      margin: 5px 0 0;
+      color: #716b72;
+      font-size: 12px;
+      line-height: 17px;
+    }
+
+    .payment-list {
+      margin-top: 6px;
+    }
+
+    .payment-row {
+      min-height: 42px;
+      display: grid;
+      grid-template-columns: 22px 1fr auto;
+      align-items: center;
+      gap: 9px;
+      color: #2d292e;
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .radio {
+      width: 18px;
+      height: 18px;
+      border: 1.5px solid #aaa4aa;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+    }
+
+    .radio.selected {
+      border-color: #e72575;
+    }
+
+    .radio.selected::after {
+      content: "";
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: #e72575;
+    }
+
+    .item-list {
+      margin-top: 8px;
+    }
+
+    .item-row {
+      min-height: 62px;
+      display: grid;
+      grid-template-columns: 56px 1fr auto;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .item-row + .item-row {
+      margin-top: 6px;
+    }
+
+    .item-row img {
+      width: 56px;
+      height: 56px;
+      display: block;
+      object-fit: cover;
+      background: #eee9ec;
+      border-radius: 4px;
+    }
+
+    .item-copy {
+      min-width: 0;
+    }
+
+    .item-name {
+      margin: 0;
+      color: #2d292e;
+      font-size: 14px;
+      line-height: 18px;
+      font-weight: 500;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+
+    .item-option {
+      margin: 3px 0 0;
+      color: #7b747c;
+      font-size: 12px;
+      line-height: 17px;
+    }
+
+    .item-price {
+      color: #2d292e;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .summary-list {
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid #ece8ec;
+    }
+
+    .summary-row {
+      min-height: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      color: #5e585f;
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .summary-row .discount {
+      color: #d91f6d;
+      font-weight: 500;
+    }
+
+    .checkout-footer {
+      padding: 11px 18px 14px;
+      border-top: 1px solid #dedade;
+      background: #ffffff;
+    }
+
+    .total-line {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 9px;
+    }
+
+    .total-label {
+      color: #4d484e;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 500;
+    }
+
+    .total-amount {
+      color: #1f1c20;
+      font-size: 20px;
+      line-height: 24px;
+      font-weight: 700;
+    }
+
+    .place-order {
+      width: 100%;
+      min-height: 48px;
+      border: 0;
+      border-radius: 4px;
+      background: #e72575;
+      color: #ffffff;
+      font-family: inherit;
+      font-size: 16px;
+      line-height: 22px;
+      font-weight: 700;
+    }
+
+    svg {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <button class="icon-button" type="button" aria-label="Go back">
+        <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M15 5 8 12l7 7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <h1>Checkout</h1>
+      <div class="secure">
+        <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true">
+          <rect x="2.5" y="6" width="9" height="6.5" rx="1" fill="none" stroke="currentColor" stroke-width="1.2"/>
+          <path d="M4.5 6V4.5a2.5 2.5 0 0 1 5 0V6" fill="none" stroke="currentColor" stroke-width="1.2"/>
+        </svg>
+        Secure
+      </div>
+    </header>
+
+    <main>
+      <ol class="flow">
+        <li class="tl-step">
+          <span class="tl-num" aria-hidden="true">1</span>
+          <p class="tl-label">Confirmed</p>
+          <div class="card">
+            <div class="card-heading">
+              <h2>Delivery address</h2>
+              <button class="text-action" type="button">Change</button>
+            </div>
+            <address class="address">
+              <div class="recipient-line">Maren Cole <span>(415) 555-0138</span></div>
+              <p class="address-detail">318 Willow Street, Apt 4B<br>San Francisco, CA 94102</p>
+              <p class="delivery-note">Leave the package with the front desk.</p>
+            </address>
+          </div>
+        </li>
+
+        <li class="tl-step">
+          <span class="tl-num" aria-hidden="true">2</span>
+          <p class="tl-label">Confirmed</p>
+          <div class="card">
+            <div class="card-heading">
+              <h2>Payment method</h2>
+              <button class="text-action" type="button">Add new</button>
+            </div>
+            <div class="payment-list">
+              <div class="payment-row">
+                <span class="radio selected" aria-hidden="true"></span>
+                <span>Visa ending in 2846</span>
+                <span class="meta">Expires 08/28</span>
+              </div>
+              <div class="payment-row">
+                <span class="radio" aria-hidden="true"></span>
+                <span>Store credit</span>
+                <span class="meta">$18.40 available</span>
+              </div>
+            </div>
+          </div>
+        </li>
+
+        <li class="tl-step">
+          <span class="tl-num current" aria-hidden="true">3</span>
+          <p class="tl-label">Review now</p>
+          <div class="card">
+            <div class="card-heading">
+              <h2>Order review</h2>
+              <span class="meta">2 items</span>
+            </div>
+            <div class="item-list">
+              <article class="item-row">
+                <img src="https://loremflickr.com/56/56/sneakers?lock=3710" width="56" height="56" alt="White everyday sneakers">
+                <div class="item-copy">
+                  <p class="item-name">Everyday Court Sneakers</p>
+                  <p class="item-option">Cloud white · Size 8 · Qty 1</p>
+                </div>
+                <div class="item-price">$74.00</div>
+              </article>
+              <article class="item-row">
+                <img src="https://loremflickr.com/56/56/fashion?lock=3711" width="56" height="56" alt="Rose-colored knit shoulder bag">
+                <div class="item-copy">
+                  <p class="item-name">Soft Knit Shoulder Bag</p>
+                  <p class="item-option">Dusty rose · Qty 1</p>
+                </div>
+                <div class="item-price">$42.00</div>
+              </article>
+            </div>
+            <div class="summary-list">
+              <div class="summary-row"><span>Merchandise</span><span>$116.00</span></div>
+              <div class="summary-row"><span>Standard delivery</span><span>$6.95</span></div>
+              <div class="summary-row"><span>Estimated tax</span><span>$10.15</span></div>
+              <div class="summary-row"><span>WELCOME10</span><span class="discount">−$11.60</span></div>
+            </div>
+          </div>
+        </li>
+      </ol>
+    </main>
+
+    <footer class="checkout-footer">
+      <div class="total-line">
+        <span class="total-label">Order total</span>
+        <span class="total-amount">$121.50</span>
+      </div>
+      <button class="place-order" type="button">Place order</button>
+    </footer>
+  </div>
+</body>
+</html>

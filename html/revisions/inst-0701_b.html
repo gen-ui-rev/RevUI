@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Loop — Group Call</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#101215;
+    --surface:#171a1e;
+    --panel:#1f2328;
+    --control:#3a4047;
+    --line:rgba(255,255,255,.14);
+    --text:#f1f3f5;
+    --muted:#98a1a9;
+    --sky:#38bdf8;
+    --danger:#d8453b;
+  }
+  *{box-sizing:border-box;}
+  body{
+    min-height:100vh;
+    margin:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#d9dcdf;
+    font-family:'Source Sans 3',system-ui,sans-serif;
+  }
+  button{font:inherit;}
+  .screen{
+    width:1024px;
+    height:768px;
+    display:grid;
+    grid-template-columns:88px 1fr;
+    background:var(--bg);
+    color:var(--text);
+    border:1px solid rgba(0,0,0,.25);
+  }
+
+  .rail{
+    border-right:1px solid var(--line);
+    background:#121519;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    padding:18px 0 16px;
+  }
+  .brand{
+    width:40px;
+    height:40px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:var(--sky);
+    color:#071117;
+    font-family:'Playfair Display',Georgia,serif;
+    font-size:23px;
+    font-weight:700;
+  }
+  .railnav{
+    flex:1;
+    width:100%;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    gap:13px;
+  }
+  .railitem{
+    position:relative;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:4px;
+    padding:9px 0;
+    color:var(--muted);
+    font-size:11px;
+  }
+  .railitem.active{color:var(--sky);}
+  .railitem.active:before{
+    content:"";
+    position:absolute;
+    left:0;
+    top:8px;
+    bottom:8px;
+    width:3px;
+    background:var(--sky);
+  }
+  .profile{
+    width:34px;
+    height:34px;
+    border:1px solid var(--line);
+    background:var(--panel);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#cbd2d8;
+    font-size:12px;
+    font-weight:600;
+  }
+
+  .content{
+    min-width:0;
+    display:flex;
+    flex-direction:column;
+  }
+  .topbar{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    padding:14px 20px;
+    border-bottom:1px solid var(--line);
+    background:#14171b;
+  }
+  .titlewrap{
+    flex:1;
+    min-width:0;
+  }
+  .titlewrap h1{
+    margin:0;
+    font-family:'Playfair Display',Georgia,serif;
+    font-size:22px;
+    line-height:1.1;
+    font-weight:700;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .sub{
+    margin-top:3px;
+    display:flex;
+    align-items:center;
+    gap:7px;
+    color:var(--muted);
+    font-size:13px;
+  }
+  .dot{
+    width:7px;
+    height:7px;
+    background:var(--sky);
+    flex:0 0 auto;
+  }
+  .top-action{
+    height:36px;
+    padding:0 13px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    border:1px solid var(--line);
+    background:var(--panel);
+    color:var(--text);
+    font-weight:600;
+  }
+  .more{
+    width:36px;
+    height:36px;
+    border:0;
+    background:transparent;
+    color:var(--text);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+
+  .call-layout{
+    flex:1;
+    min-height:0;
+    display:grid;
+    grid-template-columns:1fr 330px;
+  }
+  .stage{
+    min-width:0;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    padding:22px 28px 18px;
+    background:
+      linear-gradient(rgba(255,255,255,.018),rgba(255,255,255,.018)),
+      var(--bg);
+  }
+  .stage-label{
+    width:390px;
+    margin-bottom:10px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+  }
+  .stage-label strong{font-size:15px;}
+  .stage-status{
+    display:flex;
+    align-items:center;
+    gap:7px;
+    color:var(--sky);
+    font-size:12px;
+  }
+  .stage-status span{
+    width:7px;
+    height:7px;
+    background:var(--sky);
+  }
+  .hero{
+    width:390px;
+    background:var(--panel);
+    border:1px solid var(--line);
+  }
+  .hero img{
+    width:390px;
+    height:264px;
+    display:block;
+    object-fit:cover;
+    background:#252a30;
+    margin:-1px -1px 0;
+  }
+  .hero-caption{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:10px 12px;
+  }
+  .hero-caption strong{font-size:14px;}
+  .hero-caption span{font-size:12px;color:var(--muted);}
+
+  .controls{
+    display:flex;
+    align-items:flex-start;
+    justify-content:center;
+    gap:24px;
+    margin-top:28px;
+  }
+  .ctl{
+    min-width:58px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:6px;
+  }
+  .ctlbox{
+    width:54px;
+    height:54px;
+    padding:0;
+    border:0;
+    border-radius:50%;
+    background:var(--control);
+    color:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .ctlbox.on{
+    background:var(--sky);
+    color:#071117;
+  }
+  .ctlbox.end{
+    background:var(--danger);
+    color:#fff;
+  }
+  .ctl span{
+    color:#c7cdd3;
+    font-size:12px;
+  }
+
+  .people-panel{
+    min-width:0;
+    padding:17px 16px;
+    border-left:1px solid var(--line);
+    background:var(--surface);
+  }
+  .group + .group{margin-top:18px;}
+  .group-title{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:10px;
+    color:#d9dee3;
+    font-size:12px;
+    font-weight:600;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+  }
+  .count{
+    min-width:24px;
+    padding:2px 7px;
+    border:1px solid var(--line);
+    color:var(--muted);
+    text-align:center;
+  }
+  .current-person{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:9px 10px;
+    margin-bottom:10px;
+    border:1px solid rgba(56,189,248,.5);
+    background:rgba(56,189,248,.08);
+  }
+  .camera-symbol{
+    width:31px;
+    height:31px;
+    flex:0 0 auto;
+    background:var(--sky);
+    color:#071117;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .current-copy{
+    flex:1;
+    min-width:0;
+  }
+  .current-copy strong{
+    display:block;
+    font-size:14px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .current-copy span{
+    display:block;
+    color:var(--sky);
+    font-size:11px;
+  }
+
+  .camera-grid{
+    display:grid;
+    grid-template-columns:repeat(2,118px);
+    gap:10px 12px;
+  }
+  .camera-card{min-width:0;}
+  .camera-card img{
+    width:118px;
+    height:88px;
+    display:block;
+    object-fit:cover;
+    background:#252a30;
+  }
+  .camera-name{
+    margin-top:5px;
+    color:#d7dce1;
+    font-size:12px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+
+  .audio-list{border-top:1px solid var(--line);}
+  .audio-person{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:10px 0;
+    border-bottom:1px solid var(--line);
+  }
+  .mono{
+    width:34px;
+    height:34px;
+    flex:0 0 auto;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border:1px solid var(--line);
+    background:#272c32;
+    color:#cbd2d8;
+    font-size:12px;
+    font-weight:600;
+  }
+  .audio-copy{
+    flex:1;
+    min-width:0;
+  }
+  .audio-copy strong{
+    display:block;
+    font-size:14px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .audio-copy span{
+    display:block;
+    color:var(--muted);
+    font-size:11px;
+  }
+  .audio-icon{
+    flex:0 0 auto;
+    color:var(--muted);
+  }
+</style>
+</head>
+<body>
+<div class="screen">
+  <aside class="rail">
+    <div class="brand">L</div>
+    <nav class="railnav">
+      <div class="railitem">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 10.5 12 4l8 6.5V20h-5.5v-5.5h-5V20H4z"/></svg>
+        Feed
+      </div>
+      <div class="railitem">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3.5" y="3.5" width="7" height="7"/><rect x="13.5" y="3.5" width="7" height="7"/><rect x="3.5" y="13.5" width="7" height="7"/><rect x="13.5" y="13.5" width="7" height="7"/></svg>
+        Rooms
+      </div>
+      <div class="railitem active">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 3.5h4l1.5 4.5-2.2 1.7a12 12 0 0 0 6 6l1.7-2.2 4.5 1.5v4a1.5 1.5 0 0 1-1.6 1.5C10.6 19.9 4.1 13.4 3.5 5.1A1.5 1.5 0 0 1 5 3.5z"/></svg>
+        Calls
+      </div>
+    </nav>
+    <div class="profile">YOU</div>
+  </aside>
+
+  <div class="content">
+    <header class="topbar">
+      <div class="titlewrap">
+        <h1>Sunset Crew</h1>
+        <div class="sub"><span class="dot"></span>Live · 12:47 · 7 on call</div>
+      </div>
+      <button class="top-action" aria-label="Invite someone">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="10" cy="8" r="3.4"/><path d="M3.5 19.5c.6-3.4 3.3-5.3 6.5-5.3 1 0 2 .2 2.9.6"/><path d="M18 14v6M15 17h6"/></svg>
+        Invite
+      </button>
+      <button class="more" aria-label="More call options">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg>
+      </button>
+    </header>
+
+    <main class="call-layout">
+      <section class="stage">
+        <div class="stage-label">
+          <strong>Current speaker</strong>
+          <div class="stage-status"><span></span>Live video</div>
+        </div>
+        <article class="hero">
+          <img src="https://loremflickr.com/390/264/cafe?lock=9360" width="390" height="264" alt="Live video from a corner table in a busy cafe">
+          <div class="hero-caption">
+            <strong>Marcy Aldridge</strong>
+            <span>Speaking</span>
+          </div>
+        </article>
+
+        <div class="controls">
+          <div class="ctl">
+            <button class="ctlbox on" aria-label="Microphone on">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v3"/></svg>
+            </button>
+            <span>Mic on</span>
+          </div>
+          <div class="ctl">
+            <button class="ctlbox" aria-label="Video">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="6.5" width="12" height="11"/><path d="M15 11l6-3.5v9L15 13z"/></svg>
+            </button>
+            <span>Video</span>
+          </div>
+          <div class="ctl">
+            <button class="ctlbox" aria-label="Speaker">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 9.5h3.5L12 5.5v13L7.5 14.5H4z"/><path d="M16 9.5a4 4 0 0 1 0 5M18.7 7a7.5 7.5 0 0 1 0 10"/></svg>
+            </button>
+            <span>Speaker</span>
+          </div>
+          <div class="ctl">
+            <button class="ctlbox" aria-label="Flip camera">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 12a8 8 0 0 1 13.7-5.6L20 8.5"/><path d="M20 4v4.5h-4.5"/><path d="M20 12a8 8 0 0 1-13.7 5.6L4 15.5"/><path d="M4 20v-4.5h4.5"/></svg>
+            </button>
+            <span>Flip</span>
+          </div>
+          <div class="ctl">
+            <button class="ctlbox end" aria-label="Leave call">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 14.2c5-4.3 13-4.3 18 0l-2.6 2.3-3.1-1.6v-2.6c-2.2-.8-4.4-.8-6.6 0v2.6l-3.1 1.6z"/></svg>
+            </button>
+            <span>Leave</span>
+          </div>
+        </div>
+      </section>
+
+      <aside class="people-panel">
+        <section class="group">
+          <div class="group-title"><span>On camera</span><span class="count">4</span></div>
+          <article class="current-person">
+            <div class="camera-symbol">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="3" y="6.5" width="12" height="11"/><path d="M15 11l6-3.5v9L15 13z"/></svg>
+            </div>
+            <div class="current-copy"><strong>Marcy Aldridge</strong><span>Speaking on stage</span></div>
+          </article>
+          <div class="camera-grid">
+            <article class="camera-card">
+              <img src="https://loremflickr.com/118/88/street?lock=9361" width="118" height="88" alt="Video tile showing an evening street crossing">
+              <div class="camera-name">Devon Pruitt</div>
+            </article>
+            <article class="camera-card">
+              <img src="https://loremflickr.com/118/88/party?lock=9362" width="118" height="88" alt="Video tile showing a rooftop party">
+              <div class="camera-name">Iris Kwan</div>
+            </article>
+            <article class="camera-card">
+              <img src="https://loremflickr.com/118/88/friends?lock=9363" width="118" height="88" alt="Video tile showing a group gathered around a table">
+              <div class="camera-name">Theo Vance</div>
+            </article>
+          </div>
+        </section>
+
+        <section class="group">
+          <div class="group-title"><span>No video</span><span class="count">3</span></div>
+          <div class="audio-list">
+            <article class="audio-person">
+              <div class="mono">NR</div>
+              <div class="audio-copy"><strong>Nadia Reyes</strong><span>Muted</span></div>
+              <svg class="audio-icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 5l14 14"/></svg>
+            </article>
+            <article class="audio-person">
+              <div class="mono">GO</div>
+              <div class="audio-copy"><strong>Gil Ostrander</strong><span>Camera off</span></div>
+              <svg class="audio-icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="6.5" width="12" height="11"/><path d="M15 11l6-3.5v9L15 13zM4 4l16 16"/></svg>
+            </article>
+            <article class="audio-person">
+              <div class="mono">PR</div>
+              <div class="audio-copy"><strong>Priya Raines</strong><span>Audio only</span></div>
+              <svg class="audio-icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 9.5h3.5L12 5.5v13L7.5 14.5H4z"/><path d="M16 9.5a4 4 0 0 1 0 5"/></svg>
+            </article>
+          </div>
+        </section>
+      </aside>
+    </main>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Taskstead Checkout</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #d7dadb;
+      color: #202326;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      width: 1024px;
+      height: 768px;
+      display: flex;
+      background: #f7f7f6;
+      box-shadow: 0 20px 55px rgba(36, 40, 43, .15);
+    }
+
+    .sidebar {
+      width: 72px;
+      flex: 0 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 16px 9px;
+      background: #ffffff;
+      border-right: 1px solid #dedfdf;
+    }
+
+    .brand-mark {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      margin-bottom: 27px;
+      color: #ffffff;
+      background: #3e4448;
+      border-radius: 11px;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: -.4px;
+    }
+
+    .icon-nav {
+      width: 100%;
+      display: grid;
+      gap: 9px;
+    }
+
+    .nav-button {
+      width: 52px;
+      min-height: 52px;
+      padding: 7px 2px 5px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      color: #8a8e91;
+      background: transparent;
+      border: 0;
+      border-radius: 10px;
+      font-size: 9px;
+      line-height: 12px;
+      font-weight: 600;
+    }
+
+    .nav-button.active {
+      color: #303538;
+      background: #eceeed;
+    }
+
+    .nav-button svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .sidebar-spacer {
+      flex: 1;
+    }
+
+    .profile {
+      width: 36px;
+      height: 36px;
+      display: grid;
+      place-items: center;
+      color: #ffffff;
+      background: #747a7e;
+      border-radius: 50%;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .shell {
+      min-width: 0;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      padding: 15px 22px;
+      background: #f7f7f6;
+      border-bottom: 1px solid #e0e2e2;
+    }
+
+    .back-button {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      padding: 0;
+      color: #3c4246;
+      background: #ffffff;
+      border: 1px solid #dadcdc;
+      border-radius: 50%;
+    }
+
+    .title-copy {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .title-copy h1 {
+      margin: 0;
+      font-size: 22px;
+      line-height: 27px;
+      font-weight: 650;
+    }
+
+    .title-copy p {
+      margin: 1px 0 0;
+      color: #74797c;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .secure-chip {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 10px;
+      color: #555b5f;
+      background: #ffffff;
+      border: 1px solid #dcdfdf;
+      border-radius: 18px;
+      font-size: 11px;
+      font-weight: 650;
+    }
+
+    .workspace {
+      min-height: 0;
+      flex: 1;
+      display: grid;
+      grid-template-columns: 150px minmax(0, 1fr) 300px;
+      gap: 22px;
+      padding: 20px 22px 18px;
+      align-items: start;
+    }
+
+    .progress-panel {
+      padding-top: 3px;
+    }
+
+    .progress-panel h2 {
+      margin: 0 0 18px;
+      font-size: 11px;
+      line-height: 15px;
+      letter-spacing: .8px;
+      text-transform: uppercase;
+    }
+
+    .step {
+      position: relative;
+      display: flex;
+      align-items: flex-start;
+      gap: 9px;
+      padding-bottom: 30px;
+      color: #8a8f92;
+    }
+
+    .step:last-child {
+      padding-bottom: 0;
+    }
+
+    .step:not(:last-child)::after {
+      content: "";
+      position: absolute;
+      top: 25px;
+      left: 11px;
+      width: 1px;
+      height: 26px;
+      background: #cfd2d3;
+    }
+
+    .step-dot {
+      width: 23px;
+      height: 23px;
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      border: 1px solid #c9cdcf;
+      border-radius: 50%;
+      font-size: 10px;
+      font-weight: 700;
+    }
+
+    .step.done,
+    .step.current {
+      color: #34393c;
+    }
+
+    .step.done .step-dot {
+      color: #ffffff;
+      background: #5e6468;
+      border-color: #5e6468;
+    }
+
+    .step.current .step-dot {
+      border: 2px solid #4f5559;
+    }
+
+    .step strong {
+      display: block;
+      margin-top: 2px;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .step small {
+      display: block;
+      margin-top: 1px;
+      color: #909497;
+      font-size: 10px;
+      line-height: 14px;
+    }
+
+    .form-column {
+      display: grid;
+      gap: 14px;
+    }
+
+    .section-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 6px;
+    }
+
+    .section-heading h2 {
+      margin: 0;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 650;
+    }
+
+    .text-action {
+      padding: 2px 0;
+      color: #646a6e;
+      background: transparent;
+      border: 0;
+      font-size: 11px;
+      line-height: 16px;
+      font-weight: 700;
+    }
+
+    .form-card {
+      padding: 12px 14px;
+      background: #ffffff;
+      border: 1px solid #dcdfdf;
+      border-left: 3px solid #73797d;
+      border-radius: 4px 9px 9px 4px;
+    }
+
+    .address-name,
+    .method-title {
+      margin: 0;
+      font-size: 13px;
+      line-height: 19px;
+      font-weight: 650;
+    }
+
+    .address-line,
+    .muted-line {
+      margin: 1px 0 0;
+      color: #676d71;
+      font-size: 12px;
+      line-height: 17px;
+    }
+
+    .method-row,
+    .payment-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .method-copy,
+    .payment-copy {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .method-price {
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .choice-mark {
+      width: 20px;
+      height: 20px;
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      color: #ffffff;
+      background: #596064;
+      border-radius: 5px;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .card-symbol {
+      width: 42px;
+      height: 28px;
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      color: #ffffff;
+      background: #60666a;
+      border-radius: 5px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .5px;
+    }
+
+    .billing-line {
+      margin: 9px 0 0 52px;
+      padding-top: 8px;
+      color: #6c7275;
+      border-top: 1px solid #e1e3e3;
+      font-size: 11px;
+      line-height: 16px;
+    }
+
+    .summary-panel {
+      padding: 15px;
+      background: #edeeee;
+      border-radius: 12px;
+    }
+
+    .summary-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 13px;
+    }
+
+    .summary-heading h2 {
+      margin: 0;
+      font-size: 15px;
+      line-height: 20px;
+    }
+
+    .summary-heading span {
+      padding: 3px 7px;
+      color: #646a6d;
+      background: #ffffff;
+      border-radius: 10px;
+      font-size: 10px;
+      font-weight: 700;
+    }
+
+    .product-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .product-row {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      min-width: 0;
+    }
+
+    .product-row img {
+      width: 48px;
+      height: 48px;
+      display: block;
+      flex: 0 0 auto;
+      object-fit: cover;
+      background: #d7d9da;
+      border-radius: 6px;
+    }
+
+    .product-copy {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .product-name {
+      margin: 0;
+      overflow: hidden;
+      font-size: 12px;
+      line-height: 17px;
+      font-weight: 650;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .product-detail {
+      margin: 2px 0 0;
+      color: #74797c;
+      font-size: 10px;
+      line-height: 14px;
+    }
+
+    .product-price {
+      flex: 0 0 auto;
+      font-size: 12px;
+      line-height: 18px;
+      font-weight: 700;
+    }
+
+    .totals {
+      margin-top: 13px;
+      padding-top: 10px;
+      border-top: 1px solid #d1d4d5;
+    }
+
+    .total-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      color: #61676b;
+      font-size: 11px;
+      line-height: 21px;
+    }
+
+    .total-row.final {
+      margin-top: 6px;
+      padding-top: 9px;
+      color: #202427;
+      border-top: 1px solid #d1d4d5;
+      font-size: 15px;
+      line-height: 22px;
+      font-weight: 700;
+    }
+
+    .summary-note {
+      margin: 11px 0 0;
+      color: #757a7d;
+      font-size: 10px;
+      line-height: 15px;
+    }
+
+    .checkout-dock {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      padding: 13px 22px;
+      background: #ffffff;
+      border-top: 1px solid #dfe1e1;
+    }
+
+    .dock-copy {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .dock-copy strong {
+      display: block;
+      font-size: 13px;
+      line-height: 18px;
+    }
+
+    .dock-copy span {
+      display: block;
+      margin-top: 1px;
+      color: #747a7d;
+      font-size: 11px;
+      line-height: 15px;
+    }
+
+    .due {
+      text-align: right;
+    }
+
+    .due-label {
+      margin: 0;
+      color: #74797d;
+      font-size: 10px;
+      line-height: 14px;
+      text-transform: uppercase;
+      letter-spacing: .7px;
+    }
+
+    .due-value {
+      margin: 1px 0 0;
+      font-size: 19px;
+      line-height: 23px;
+      font-weight: 700;
+    }
+
+    .pay-button {
+      min-width: 210px;
+      min-height: 48px;
+      padding: 5px 6px 5px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      color: #ffffff;
+      background: #555c60;
+      border: 0;
+      border-radius: 9px;
+      font-size: 13px;
+      font-weight: 700;
+      text-align: left;
+    }
+
+    .pay-arrow {
+      width: 36px;
+      height: 36px;
+      display: grid;
+      place-items: center;
+      color: #3f4549;
+      background: #ffffff;
+      border-radius: 7px;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <aside class="sidebar">
+      <div class="brand-mark">TS</div>
+
+      <nav class="icon-nav" aria-label="App navigation">
+        <button class="nav-button">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M4 5.5H20V18.5H4V5.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+            <path d="M8 3.5V7.5M16 3.5V7.5M4 9.5H20" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+          </svg>
+          Schedule
+        </button>
+
+        <button class="nav-button">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M6 4H18C19.1 4 20 4.9 20 6V18C20 19.1 19.1 20 18 20H6C4.9 20 4 19.1 4 18V6C4 4.9 4.9 4 6 4Z" stroke="currentColor" stroke-width="1.7"/>
+            <path d="M8 8H16M8 12H16M8 16H13" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+          </svg>
+          Notes
+        </button>
+
+        <button class="nav-button active">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M5 8H19L18 20H6L5 8Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+            <path d="M9 9V7C9 5.34 10.34 4 12 4C13.66 4 15 5.34 15 7V9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+          Shop
+        </button>
+
+        <button class="nav-button">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="12" cy="8" r="3.5" stroke="currentColor" stroke-width="1.7"/>
+            <path d="M5.5 20C5.8 16.5 8.25 14.5 12 14.5C15.75 14.5 18.2 16.5 18.5 20" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+          </svg>
+          Account
+        </button>
+      </nav>
+
+      <div class="sidebar-spacer"></div>
+      <div class="profile" aria-label="Morgan Ellis account">ME</div>
+    </aside>
+
+    <div class="shell">
+      <header class="topbar">
+        <button class="back-button" aria-label="Go back">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+
+        <div class="title-copy">
+          <h1>Checkout</h1>
+          <p>Taskstead Supply · Complete your order</p>
+        </div>
+
+        <div class="secure-chip">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <rect x="5" y="10" width="14" height="10" rx="2" stroke="currentColor" stroke-width="1.8"/>
+            <path d="M8 10V7.5C8 5.57 9.57 4 11.5 4H12.5C14.43 4 16 5.57 16 7.5V10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+          Secure
+        </div>
+      </header>
+
+      <main class="workspace">
+        <aside class="progress-panel" aria-label="Checkout progress, payment step">
+          <h2>Order progress</h2>
+
+          <div class="step done">
+            <span class="step-dot">✓</span>
+            <div>
+              <strong>Shipping</strong>
+              <small>Address saved</small>
+            </div>
+          </div>
+
+          <div class="step current">
+            <span class="step-dot">2</span>
+            <div>
+              <strong>Payment</strong>
+              <small>Current step</small>
+            </div>
+          </div>
+
+          <div class="step">
+            <span class="step-dot">3</span>
+            <div>
+              <strong>Review</strong>
+              <small>Confirm order</small>
+            </div>
+          </div>
+        </aside>
+
+        <div class="form-column">
+          <section>
+            <div class="section-heading">
+              <h2>Shipping address</h2>
+              <button class="text-action">Edit address</button>
+            </div>
+            <div class="form-card">
+              <p class="address-name">Morgan Ellis</p>
+              <p class="address-line">245 Cedar Lane, Apt 4B</p>
+              <p class="address-line">Portland, OR 97205</p>
+            </div>
+          </section>
+
+          <section>
+            <div class="section-heading">
+              <h2>Delivery</h2>
+              <button class="text-action">Change option</button>
+            </div>
+            <div class="form-card method-row">
+              <span class="choice-mark" aria-hidden="true">✓</span>
+              <div class="method-copy">
+                <p class="method-title">Standard delivery</p>
+                <p class="muted-line">Arrives Tuesday, May 20</p>
+              </div>
+              <span class="method-price">$4.95</span>
+            </div>
+          </section>
+
+          <section>
+            <div class="section-heading">
+              <h2>Payment method</h2>
+              <button class="text-action">Change card</button>
+            </div>
+            <div class="form-card">
+              <div class="payment-row">
+                <div class="card-symbol">VISA</div>
+                <div class="payment-copy">
+                  <p class="method-title">Visa ending in 4827</p>
+                  <p class="muted-line">Expires 08/27</p>
+                </div>
+                <span class="choice-mark" aria-hidden="true">✓</span>
+              </div>
+              <p class="billing-line">Billing address matches shipping</p>
+            </div>
+          </section>
+        </div>
+
+        <aside class="summary-panel">
+          <div class="summary-heading">
+            <h2>Order summary</h2>
+            <span>2 items</span>
+          </div>
+
+          <div class="product-list">
+            <div class="product-row">
+              <img src="https://loremflickr.com/48/48/desk?lock=8230" width="48" height="48" alt="Gray weekly planning pad on a desk">
+              <div class="product-copy">
+                <p class="product-name">Team Planning Pad</p>
+                <p class="product-detail">Charcoal · Quantity 2</p>
+              </div>
+              <span class="product-price">$56.00</span>
+            </div>
+
+            <div class="product-row">
+              <img src="https://loremflickr.com/48/48/notebook?lock=8231" width="48" height="48" alt="Project cards beside a notebook">
+              <div class="product-copy">
+                <p class="product-name">Project Marker Set</p>
+                <p class="product-detail">Neutral · Quantity 1</p>
+              </div>
+              <span class="product-price">$18.00</span>
+            </div>
+          </div>
+
+          <div class="totals">
+            <div class="total-row"><span>Subtotal</span><span>$74.00</span></div>
+            <div class="total-row"><span>Shipping</span><span>$4.95</span></div>
+            <div class="total-row"><span>Estimated tax</span><span>$6.52</span></div>
+            <div class="total-row final"><span>Total</span><span>$85.47</span></div>
+          </div>
+
+          <p class="summary-note">Taxes are estimated using the Portland delivery address.</p>
+        </aside>
+      </main>
+
+      <div class="checkout-dock">
+        <div class="dock-copy">
+          <strong>Ready for final review</strong>
+          <span>You can confirm shipping and payment details before submitting.</span>
+        </div>
+
+        <div class="due">
+          <p class="due-label">Due today</p>
+          <p class="due-value">$85.47</p>
+        </div>
+
+        <button class="pay-button">
+          <span>Review and pay</span>
+          <span class="pay-arrow" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+              <path d="M5 12H19M14 7L19 12L14 17" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+        </button>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

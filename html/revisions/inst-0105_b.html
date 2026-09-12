@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RouteNest Inclusive Stay Search</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 32px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #e9e8eb;
+      color: #202027;
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    }
+
+    button, input { font: inherit; }
+    button { color: inherit; }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #ffffff;
+      border: 1px solid #d8d7dc;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      padding: 11px 14px;
+      border-bottom: 1px solid #e6e4e8;
+      background: #ffffff;
+    }
+
+    .icon-button {
+      width: 38px;
+      height: 38px;
+      padding: 0;
+      flex: 0 0 auto;
+      display: grid;
+      place-items: center;
+      border: 1px solid #e2e0e5;
+      border-radius: 10px;
+      background: #ffffff;
+    }
+
+    .icon-button svg {
+      width: 20px;
+      height: 20px;
+      stroke: currentColor;
+    }
+
+    .assistant-mark {
+      width: 38px;
+      height: 38px;
+      flex: 0 0 auto;
+      display: grid;
+      place-items: center;
+      border-radius: 10px;
+      background: #d92f72;
+      color: #ffffff;
+    }
+
+    .assistant-mark svg {
+      width: 21px;
+      height: 21px;
+      stroke: currentColor;
+    }
+
+    .topbar-copy {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .topbar-title {
+      margin: 0;
+      font-size: 16px;
+      line-height: 21px;
+      font-weight: 700;
+    }
+
+    .topbar-subtitle {
+      margin: 1px 0 0;
+      color: #77727c;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 500;
+    }
+
+    .conversation {
+      min-height: 0;
+      flex: 1;
+      padding: 10px 14px 8px;
+      background: #ffffff;
+    }
+
+    .date-label {
+      margin: 0 0 9px;
+      text-align: center;
+      color: #817c85;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 500;
+    }
+
+    .message {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      margin-top: 9px;
+    }
+
+    .message.user { justify-content: flex-end; }
+
+    .ai-avatar {
+      width: 28px;
+      height: 28px;
+      flex: 0 0 auto;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: #fbe8f0;
+      color: #bd215d;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .message-body {
+      max-width: 306px;
+    }
+
+    .speaker {
+      margin: 0 0 4px;
+      color: #6f6973;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 600;
+    }
+
+    .bubble {
+      padding: 9px 11px;
+      border: 1px solid #e4e1e6;
+      border-radius: 10px;
+      background: #f8f7f9;
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .user .bubble {
+      max-width: 316px;
+      border-color: #d92f72;
+      background: #d92f72;
+      color: #ffffff;
+    }
+
+    .results {
+      margin: 10px 0 0 36px;
+      display: grid;
+      gap: 7px;
+    }
+
+    .stay-card {
+      display: flex;
+      gap: 10px;
+      padding: 7px;
+      border: 1px solid #dfdde2;
+      border-left: 3px solid #d92f72;
+      border-radius: 10px;
+      background: #ffffff;
+    }
+
+    .stay-photo {
+      position: relative;
+      width: 72px;
+      height: 72px;
+      flex: 0 0 auto;
+    }
+
+    .stay-photo img {
+      width: 72px;
+      height: 72px;
+      display: block;
+      object-fit: cover;
+      border-radius: 7px;
+      background: #e4e1e5;
+    }
+
+    .bookmark-button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 25px;
+      height: 25px;
+      padding: 0;
+      display: grid;
+      place-items: center;
+      border: 0;
+      border-radius: 0 7px 0 9px;
+      background: #ffffff;
+      color: #a91f54;
+      box-shadow: -1px 1px 3px rgba(32, 32, 39, 0.16);
+    }
+
+    .bookmark-button svg {
+      width: 14px;
+      height: 14px;
+      stroke: currentColor;
+    }
+
+    .stay-info {
+      min-width: 0;
+      flex: 1;
+      padding: 1px 1px 0 0;
+    }
+
+    .stay-name {
+      margin: 0;
+      overflow: hidden;
+      color: #202027;
+      font-size: 14px;
+      line-height: 18px;
+      font-weight: 700;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .stay-location {
+      margin: 2px 0 0;
+      overflow: hidden;
+      color: #716c76;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 500;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .access-row {
+      display: flex;
+      gap: 4px;
+      margin-top: 3px;
+      white-space: nowrap;
+    }
+
+    .access-tag {
+      padding: 1px 5px;
+      border-radius: 5px;
+      background: #f5e9ee;
+      color: #8f1d49;
+      font-size: 10px;
+      line-height: 14px;
+      font-weight: 700;
+    }
+
+    .stay-bottom {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 6px;
+      margin-top: 3px;
+    }
+
+    .rating {
+      color: #615c65;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .price {
+      color: #202027;
+      font-size: 13px;
+      line-height: 17px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .price span {
+      color: #77717a;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .suggestions {
+      margin: 11px 0 0 36px;
+    }
+
+    .suggestion-label {
+      margin: 0 0 7px;
+      color: #6f6973;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 600;
+    }
+
+    .suggestion-row {
+      display: flex;
+      gap: 7px;
+    }
+
+    .suggestion {
+      min-width: 0;
+      flex: 1;
+      padding: 9px 7px;
+      border: 1px solid #e0a7bd;
+      border-radius: 10px;
+      background: #fff7fa;
+      color: #a91f54;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 600;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .composer-wrap {
+      padding: 8px 12px;
+      border-top: 1px solid #e6e4e8;
+      background: #ffffff;
+    }
+
+    .composer {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 5px 5px 5px 10px;
+      border: 1px solid #dcd9df;
+      border-radius: 10px;
+      background: #ffffff;
+    }
+
+    .attach-button, .send-button {
+      width: 32px;
+      height: 32px;
+      padding: 0;
+      flex: 0 0 auto;
+      display: grid;
+      place-items: center;
+      border-radius: 8px;
+    }
+
+    .attach-button {
+      border: 0;
+      background: transparent;
+      color: #6f6973;
+    }
+
+    .send-button {
+      border: 1px solid #d92f72;
+      background: #d92f72;
+      color: #ffffff;
+    }
+
+    .attach-button svg, .send-button svg {
+      width: 18px;
+      height: 18px;
+      stroke: currentColor;
+    }
+
+    .composer input {
+      min-width: 0;
+      flex: 1;
+      padding: 0;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      color: #29262d;
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .composer input::placeholder {
+      color: #8b858e;
+      opacity: 1;
+    }
+
+    .tabbar {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-around;
+      padding: 7px 4px 9px;
+      border-top: 1px solid #e6e4e8;
+      background: #ffffff;
+    }
+
+    .tab {
+      width: 82px;
+      padding: 0;
+      display: grid;
+      justify-items: center;
+      gap: 3px;
+      border: 0;
+      background: transparent;
+      color: #77727c;
+      font-size: 12px;
+      line-height: 15px;
+      font-weight: 500;
+    }
+
+    .tab svg {
+      width: 21px;
+      height: 21px;
+      stroke: currentColor;
+    }
+
+    .tab.active {
+      color: #c52764;
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <button class="icon-button" type="button" aria-label="Go back">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M15 18l-6-6 6-6"></path>
+        </svg>
+      </button>
+
+      <div class="assistant-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 3l1.35 4.15L17.5 8.5l-4.15 1.35L12 14l-1.35-4.15L6.5 8.5l4.15-1.35L12 3z"></path>
+          <path d="M18.5 14.5l.75 2.25 2.25.75-2.25.75-.75 2.25-.75-2.25-2.25-.75 2.25-.75.75-2.25z"></path>
+        </svg>
+      </div>
+
+      <div class="topbar-copy">
+        <h1 class="topbar-title">RouteNest AI</h1>
+        <p class="topbar-subtitle">Inclusive travel planning</p>
+      </div>
+
+      <button class="icon-button" type="button" aria-label="Start a new chat">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M12 5v14M5 12h14"></path>
+        </svg>
+      </button>
+    </header>
+
+    <main class="conversation">
+      <p class="date-label">Today</p>
+
+      <div class="message user">
+        <div class="bubble">Find a quiet San Diego stay with step-free access and hearing-accessible rooms, May 16–19.</div>
+      </div>
+
+      <div class="message">
+        <div class="ai-avatar" aria-hidden="true">AI</div>
+        <div class="message-body">
+          <p class="speaker">RouteNest AI</p>
+          <div class="bubble">I found 9 stays listing visual alarms, accessible entrances, and elevators. Here are the best-rated options.</div>
+        </div>
+      </div>
+
+      <section class="results" aria-label="Recommended inclusive stays">
+        <article class="stay-card">
+          <div class="stay-photo">
+            <img src="https://loremflickr.com/72/72/hotel?lock=2290" width="72" height="72" alt="Coastal hotel beside palm trees">
+            <button class="bookmark-button" type="button" aria-label="Bookmark Harbor Pine Inn">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M6 4.5h12v16l-6-4-6 4v-16z"></path>
+              </svg>
+            </button>
+          </div>
+          <div class="stay-info">
+            <h2 class="stay-name">Harbor Pine Inn</h2>
+            <p class="stay-location">Coronado · 0.2 mi to beach</p>
+            <div class="access-row" aria-label="Accessibility features">
+              <span class="access-tag">Visual alarms</span>
+              <span class="access-tag">Step-free</span>
+            </div>
+            <div class="stay-bottom">
+              <span class="rating">9.1 rating</span>
+              <span class="price">$238 <span>nightly</span></span>
+            </div>
+          </div>
+        </article>
+
+        <article class="stay-card">
+          <div class="stay-photo">
+            <img src="https://loremflickr.com/72/72/beach?lock=2291" width="72" height="72" alt="Sandy beach near a seaside lodging">
+            <button class="bookmark-button" type="button" aria-label="Bookmark Cove Lantern Hotel">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M6 4.5h12v16l-6-4-6 4v-16z"></path>
+              </svg>
+            </button>
+          </div>
+          <div class="stay-info">
+            <h2 class="stay-name">Cove Lantern Hotel</h2>
+            <p class="stay-location">La Jolla · 0.4 mi to beach</p>
+            <div class="access-row" aria-label="Accessibility features">
+              <span class="access-tag">TTY available</span>
+              <span class="access-tag">Elevator</span>
+            </div>
+            <div class="stay-bottom">
+              <span class="rating">8.9 rating</span>
+              <span class="price">$214 <span>nightly</span></span>
+            </div>
+          </div>
+        </article>
+
+        <article class="stay-card">
+          <div class="stay-photo">
+            <img src="https://loremflickr.com/72/72/hotel?lock=2292" width="72" height="72" alt="Modern seaside hotel exterior">
+            <button class="bookmark-button" type="button" aria-label="Bookmark Saltwood House">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M6 4.5h12v16l-6-4-6 4v-16z"></path>
+              </svg>
+            </button>
+          </div>
+          <div class="stay-info">
+            <h2 class="stay-name">Saltwood House</h2>
+            <p class="stay-location">Ocean Beach · Quiet courtyard</p>
+            <div class="access-row" aria-label="Accessibility features">
+              <span class="access-tag">Door signals</span>
+              <span class="access-tag">Step-free</span>
+            </div>
+            <div class="stay-bottom">
+              <span class="rating">8.8 rating</span>
+              <span class="price">$196 <span>nightly</span></span>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <div class="message">
+        <div class="ai-avatar" aria-hidden="true">AI</div>
+        <div class="message-body">
+          <div class="bubble">Harbor Pine Inn lists the fullest set of features. I recommend confirming visual alarms with the hotel.</div>
+        </div>
+      </div>
+
+      <section class="suggestions" aria-label="Suggested prompts">
+        <p class="suggestion-label">Continue with a suggestion</p>
+        <div class="suggestion-row">
+          <button class="suggestion" type="button">Compare features</button>
+          <button class="suggestion" type="button">Draft a hotel call</button>
+        </div>
+      </section>
+    </main>
+
+    <div class="composer-wrap">
+      <form class="composer">
+        <button class="attach-button" type="button" aria-label="Add accessibility preferences">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 5v14M5 12h14"></path>
+          </svg>
+        </button>
+        <input type="text" aria-label="Message RouteNest AI" placeholder="Refine accessibility features">
+        <button class="send-button" type="submit" aria-label="Send message">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M5 12h14"></path>
+            <path d="M13 6l6 6-6 6"></path>
+          </svg>
+        </button>
+      </form>
+    </div>
+
+    <nav class="tabbar" aria-label="Primary navigation">
+      <button class="tab" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M3.5 10.5L12 3.8l8.5 6.7"></path>
+          <path d="M5.5 9.5v10h13v-10"></path>
+        </svg>
+        <span>Explore</span>
+      </button>
+
+      <button class="tab" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M7 4h10v4H7z"></path>
+          <path d="M5 8h14v12H5z"></path>
+          <path d="M9 12h6"></path>
+        </svg>
+        <span>Trips</span>
+      </button>
+
+      <button class="tab active" type="button" aria-current="page">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M5 5.5h14v10H9l-4 3v-13z"></path>
+          <path d="M9 10.5h.01M12 10.5h.01M15 10.5h.01"></path>
+        </svg>
+        <span>Assistant</span>
+      </button>
+
+      <button class="tab" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M6 4.5h12v16l-6-4-6 4v-16z"></path>
+        </svg>
+        <span>Saved</span>
+      </button>
+    </nav>
+  </div>
+</body>
+</html>

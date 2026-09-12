@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Loomwork Calendar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box}
+  body{
+    margin:0;padding:32px 0;min-height:100vh;display:flex;justify-content:center;align-items:flex-start;
+    background:#dededb;font-family:'Plus Jakarta Sans',system-ui,sans-serif;color:#1d1d1b
+  }
+  .screen{width:768px;height:1024px;position:relative;background:#f2f2f0;overflow:hidden}
+  .topbar{background:#fff;border-bottom:1px solid #e5e5e0;padding:18px 22px 15px}
+  .tb-row1{display:flex;align-items:center;justify-content:space-between}
+  .tb-title{font-size:26px;font-weight:700;letter-spacing:-.45px}
+  .tb-title span{font-weight:400;color:#878780}
+  .tb-actions{display:flex;gap:9px}
+  .icobtn,.addbtn{height:40px;border-radius:9px;display:flex;align-items:center;justify-content:center}
+  .icobtn{width:40px;background:#f4f4f1;color:#4a4a45}
+  .addbtn{padding:0 16px;gap:7px;background:#f7c92b;color:#241f00;font-size:13px;font-weight:700}
+  .tb-row2{display:flex;align-items:center;justify-content:space-between;margin-top:15px}
+  .navgrp{display:flex;align-items:center;gap:7px}
+  .navbtn{
+    width:38px;height:38px;border-radius:8px;background:#f5f5f2;display:flex;
+    align-items:center;justify-content:center;color:#4a4a45
+  }
+  .todaybtn{font-size:13px;font-weight:700;border:1px solid #deded8;border-radius:8px;padding:9px 15px}
+  .views{display:flex;gap:4px;background:#f1f1ed;border-radius:9px;padding:3px}
+  .views div{font-size:13px;font-weight:600;color:#85857e;padding:8px 18px;border-radius:7px}
+  .views .on{background:#fff;color:#1d1d1b;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+
+  .content{padding:16px 18px 84px}
+  .card{background:#fff;border:1px solid #e7e7e2;border-radius:12px;box-shadow:0 2px 7px rgba(0,0,0,.045)}
+  .calcard{padding:13px 14px 10px}
+  .calhead{display:flex;align-items:center;justify-content:space-between;padding:1px 5px 12px}
+  .calhead-title{font-size:15px;font-weight:700}
+  .legend{display:flex;align-items:center;gap:7px;font-size:12px;color:#85857e}
+  .legend i{display:block;width:7px;height:7px;border-radius:50%;background:#102a43}
+  .wd,.grid{display:grid;grid-template-columns:repeat(7,1fr)}
+  .wd div{text-align:center;font-size:12px;font-weight:700;color:#96968e;padding-bottom:8px}
+  .cell{
+    min-width:0;padding:5px 0 4px;border-top:1px solid #f0f0ec;display:flex;
+    flex-direction:column;align-items:center;justify-content:flex-start
+  }
+  .num{
+    width:33px;height:31px;border-radius:9px;display:flex;align-items:center;justify-content:center;
+    font-size:14px;font-weight:600;color:#25251f
+  }
+  .cell.out .num{color:#c2c2bb}
+  .cell.sel{background:#fffcf0}
+  .cell.sel .num{background:#f7c92b;color:#241f00;font-weight:700}
+  .dots{display:flex;gap:7px;min-height:10px;align-items:center;margin-top:2px}
+  .dot{display:block;width:7px;height:7px;border-radius:50%;background:#102a43}
+
+  .agenda{margin-top:16px}
+  .ag-head{
+    display:flex;align-items:center;justify-content:space-between;padding:14px 17px;
+    border-bottom:1px solid #ecece7
+  }
+  .ag-date{font-size:16px;font-weight:700}
+  .ag-count{font-size:12px;color:#85857e}
+  .event-grid{display:grid;grid-template-columns:1fr 1fr}
+  .ev{
+    display:grid;grid-template-columns:66px 4px minmax(0,1fr);gap:10px;padding:12px 16px;
+    border-bottom:1px solid #f0f0ec
+  }
+  .ev:nth-child(odd){border-right:1px solid #f0f0ec}
+  .ev:last-child{grid-column:1 / -1;border-bottom:none}
+  .ev-time{font-size:12.5px;font-weight:700;color:#55554f;padding-top:1px}
+  .ev-bar{border-radius:5px;background:#f7c92b}
+  .ev-body{min-width:0}
+  .ev-title{font-size:13px;font-weight:700;line-height:1.35;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .ev-sub{font-size:11.5px;color:#898981;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+  .tabbar{
+    position:absolute;left:0;bottom:0;width:100%;background:#fff;border-top:1px solid #e3e3de;
+    display:flex;padding:7px 94px 8px
+  }
+  .tab{
+    flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
+    color:#999991;padding:3px 0
+  }
+  .tab span{font-size:11px;font-weight:600}
+  .tab.on{color:#1d1d1b}
+  .tab.on svg{color:#b78100}
+</style>
+</head>
+<body>
+<div class="screen">
+  <header class="topbar">
+    <div class="tb-row1">
+      <div class="tb-title">March <span>2025</span></div>
+      <div class="tb-actions">
+        <div class="icobtn" aria-label="Search">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4 4"/></svg>
+        </div>
+        <div class="addbtn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+          <span>New event</span>
+        </div>
+      </div>
+    </div>
+    <div class="tb-row2">
+      <div class="navgrp">
+        <div class="navbtn" aria-label="Previous month"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 6L9 12l5.5 6"/></svg></div>
+        <div class="navbtn" aria-label="Next month"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 6L15 12l-5.5 6"/></svg></div>
+        <div class="todaybtn">Today</div>
+      </div>
+      <div class="views"><div class="on">Month</div><div>Week</div><div>Agenda</div></div>
+    </div>
+  </header>
+
+  <main class="content">
+    <section class="card calcard">
+      <div class="calhead">
+        <div class="calhead-title">Month overview</div>
+        <div class="legend"><i></i><span>Scheduled events</span></div>
+      </div>
+      <div class="wd"><div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div></div>
+      <div class="grid">
+        <div class="cell out"><div class="num">23</div><div class="dots"></div></div>
+        <div class="cell out"><div class="num">24</div><div class="dots"></div></div>
+        <div class="cell out"><div class="num">25</div><div class="dots"></div></div>
+        <div class="cell out"><div class="num">26</div><div class="dots"></div></div>
+        <div class="cell out"><div class="num">27</div><div class="dots"></div></div>
+        <div class="cell out"><div class="num">28</div><div class="dots"></div></div>
+        <div class="cell"><div class="num">1</div><div class="dots"></div></div>
+
+        <div class="cell"><div class="num">2</div><div class="dots"></div></div>
+        <div class="cell"><div class="num">3</div><div class="dots"><i class="dot"></i><i class="dot"></i><i class="dot"></i></div></div>
+        <div class="cell"><div class="num">4</div><div class="dots"><i class="dot"></i><i class="dot"></i></div></div>
+        <div class="cell"><div class="num">5</div><div class="dots"><i class="dot"></i></div></div>
+        <div class="cell"><div class="num">6</div><div class="dots"><i class="dot"></i><i class="dot"></i><i class="dot"></i></div></div>
+        <div class="cell"><div class="num">7</div><div class="dots"><i class="dot"></i></div></div>
+        <div class="cell"><div class="num">8</div><div class="dots"></div></div>
+
+        <div class="cell"><div class="num">9</div><div class="dots"></div></div>
+        <div class="cell"><div class="num">10</div><div class="dots"><i class="dot"></i><i class="dot"></i></div></div>
+        <div class="cell"><div class="num">11</div><div class="dots"><i class="dot"></i><i class="dot"></i><i class="dot"></i></div></div>
+        <div class="cell"><div class="num">12</div><div class="dots"><i class="dot"></i><i class="dot"></i></div></div>
+        <div class="cell sel"><div class="num">13</div><div class="dots"><i class="dot"></i><i class="dot"></i><i class="dot"></i></div></div>
+        <div class="cell"><div class="num">14</div><div class="dots"><i class="dot"></i><i class="dot"></i></div></div>
+        <div class="cell"><div class="num">15</div><div class="dots"></div></div>
+
+        <div class="cell"><div class="num">16</div><div class="dots"></div></div>
+        <div class="cell"><div class="num">17</div><div class="dots"><i class="dot"></i><i class="dot"></i></div></div>
+        <div class="cell"><div class="num">18</div><div class="dots"><i class="dot"></i></div></div>
+        <div class="cell"><div class="num">19</div><div class="dots"><i class="dot"></i><i class="dot"></i><i class="dot"></i></div></div>
+        <div class="cell"><div class="num">20</div><div class="dots"><i class="dot"></i></div></div>
+        <div class="cell"><div class="num">21</div><div class="dots"><i class="dot"></i><i class="dot"></i></div></div>
+        <div class="cell"><div class="num">22</div><div class="dots"></div></div>
+
+        <div class="cell"><div class="num">23</div><div class="dots"></div></div>
+        <div class="cell"><div class="num">24</div><div class="dots"><i class="dot"></i></div></div>
+        <div class="cell"><div class="num">25</div><div class="dots"><i class="dot"></i><i class="dot"></i></div></div>
+        <div class="cell"><div class="num">26</div><div class="dots"><i class="dot"></i></div></div>
+        <div class="cell"><div class="num">27</div><div class="dots"><i class="dot"></i><i class="dot"></i></div></div>
+        <div class="cell"><div class="num">28</div><div class="dots"><i class="dot"></i></div></div>
+        <div class="cell"><div class="num">29</div><div class="dots"></div></div>
+
+        <div class="cell"><div class="num">30</div><div class="dots"></div></div>
+        <div class="cell"><div class="num">31</div><div class="dots"><i class="dot"></i><i class="dot"></i></div></div>
+        <div class="cell out"><div class="num">1</div><div class="dots"></div></div>
+        <div class="cell out"><div class="num">2</div><div class="dots"></div></div>
+        <div class="cell out"><div class="num">3</div><div class="dots"></div></div>
+        <div class="cell out"><div class="num">4</div><div class="dots"></div></div>
+        <div class="cell out"><div class="num">5</div><div class="dots"></div></div>
+      </div>
+    </section>
+
+    <section class="card agenda">
+      <div class="ag-head">
+        <div class="ag-date">Thursday, March 13</div>
+        <div class="ag-count">5 events · 3 hr 30 min</div>
+      </div>
+      <div class="event-grid">
+        <div class="ev">
+          <div class="ev-time">8:30 AM</div><div class="ev-bar"></div>
+          <div class="ev-body"><div class="ev-title">Daily standup</div><div class="ev-sub">15 min · Product pod · Room 2A</div></div>
+        </div>
+        <div class="ev">
+          <div class="ev-time">10:00 AM</div><div class="ev-bar"></div>
+          <div class="ev-body"><div class="ev-title">Design review: onboarding flow</div><div class="ev-sub">Marta Vance and 3 others · Studio</div></div>
+        </div>
+        <div class="ev">
+          <div class="ev-time">12:15 PM</div><div class="ev-bar"></div>
+          <div class="ev-body"><div class="ev-title">Lunch with Owen Reyes</div><div class="ev-sub">45 min · Cafe on Bell Street</div></div>
+        </div>
+        <div class="ev">
+          <div class="ev-time">2:00 PM</div><div class="ev-bar"></div>
+          <div class="ev-body"><div class="ev-title">Sprint 24 planning</div><div class="ev-sub">90 min · Engineering · Video call</div></div>
+        </div>
+        <div class="ev">
+          <div class="ev-time">4:30 PM</div><div class="ev-bar"></div>
+          <div class="ev-body"><div class="ev-title">1:1 with Priya Raman</div><div class="ev-sub">30 min · Room 4B</div></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <nav class="tabbar" aria-label="Primary navigation">
+    <div class="tab on">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 9.5h17M8 3.5v3M16 3.5v3"/></svg>
+      <span>Calendar</span>
+    </div>
+    <div class="tab">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M5 7.5h11M5 12h11M5 16.5h7"/><path d="M19 6.5l-1.6 1.7-1-1"/></svg>
+      <span>Tasks</span>
+    </div>
+    <div class="tab">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3.5h9l4 4V20a1 1 0 01-1 1H6a1 1 0 01-1-1V4.5a1 1 0 011-1z"/><path d="M14.5 3.7V8H19"/></svg>
+      <span>Notes</span>
+    </div>
+    <div class="tab">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="9.5" cy="9" r="3.2"/><path d="M3.8 19c.5-3 2.8-4.7 5.7-4.7S14.7 16 15.2 19"/><path d="M16 6.4a3 3 0 010 5.4M17.8 18.6c-.2-1.6-.7-2.9-1.6-3.8"/></svg>
+      <span>Teams</span>
+    </div>
+  </nav>
+</div>
+</body>
+</html>

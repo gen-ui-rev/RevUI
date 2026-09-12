@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Formstead Property Tour Editor</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #dfe2e1;
+      color: #202426;
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    }
+
+    button {
+      border: 0;
+      border-radius: 0;
+      color: inherit;
+      background: none;
+      font: inherit;
+      cursor: pointer;
+    }
+
+    .screen {
+      width: 1024px;
+      height: 768px;
+      display: flex;
+      flex-direction: column;
+      background: #fbfbfa;
+      box-shadow: 0 18px 50px rgba(32, 36, 38, 0.12);
+    }
+
+    .topbar {
+      display: grid;
+      grid-template-columns: 220px 1fr 220px;
+      align-items: center;
+      gap: 16px;
+      padding: 12px 20px;
+      border-bottom: 1px solid #e2e4e3;
+      background: #fbfbfa;
+    }
+
+    .back-button {
+      justify-self: start;
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      padding: 9px 10px;
+      color: #555b5f;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 600;
+    }
+
+    .topbar-title {
+      min-width: 0;
+      text-align: center;
+    }
+
+    .topbar-title strong {
+      display: block;
+      overflow: hidden;
+      color: #24282b;
+      font-size: 16px;
+      line-height: 21px;
+      font-weight: 700;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .topbar-title span {
+      display: block;
+      margin-top: 2px;
+      color: #747a7d;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 500;
+    }
+
+    .topbar-actions {
+      justify-self: end;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .preview-button,
+    .save-button {
+      padding: 9px 14px;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 700;
+    }
+
+    .preview-button {
+      border: 1px solid #cfd3d1;
+      color: #53595d;
+      background: #ffffff;
+    }
+
+    .save-button {
+      background: #4f5c58;
+      color: #ffffff;
+    }
+
+    .workspace {
+      min-height: 0;
+      flex: 1;
+      display: grid;
+      grid-template-columns: 680px 344px;
+    }
+
+    .stage-column {
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px 24px 14px;
+      background: #eef0ef;
+    }
+
+    .preview {
+      position: relative;
+      width: 620px;
+      height: 465px;
+      background: #c7cbc8;
+      box-shadow: 0 2px 14px rgba(31, 36, 34, 0.14);
+    }
+
+    .preview-art {
+      display: block;
+      width: 620px;
+      height: 465px;
+    }
+
+    .scene-tag,
+    .duration {
+      position: absolute;
+      top: 14px;
+      padding: 6px 9px;
+      color: #ffffff;
+      background: rgba(28, 33, 31, 0.74);
+      font-size: 11px;
+      line-height: 15px;
+      font-weight: 700;
+    }
+
+    .scene-tag {
+      left: 14px;
+    }
+
+    .duration {
+      right: 14px;
+    }
+
+    .playback-row {
+      width: 620px;
+      display: grid;
+      grid-template-columns: 38px minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 11px;
+      padding: 10px 0 9px;
+    }
+
+    .play-button {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      border: 1px solid #d2d5d3;
+      background: #ffffff;
+    }
+
+    .clip-details {
+      min-width: 0;
+    }
+
+    .clip-details strong {
+      display: block;
+      overflow: hidden;
+      color: #292d30;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 700;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .clip-details span {
+      display: block;
+      color: #777d80;
+      font-size: 11px;
+      line-height: 16px;
+      font-weight: 500;
+    }
+
+    .timecode {
+      color: #5c6366;
+      font-size: 12px;
+      line-height: 18px;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .stage-status {
+      width: 620px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 10px;
+      border-top: 1px solid #d9dcda;
+      color: #687074;
+      font-size: 11px;
+      line-height: 16px;
+      font-weight: 600;
+    }
+
+    .stage-status strong {
+      color: #42494c;
+      font-weight: 700;
+    }
+
+    .inspector {
+      min-width: 0;
+      padding: 19px 20px;
+      border-left: 1px solid #dde0de;
+      background: #ffffff;
+    }
+
+    .inspector-heading {
+      margin: 0;
+      color: #292e30;
+      font-size: 15px;
+      line-height: 20px;
+      font-weight: 700;
+    }
+
+    .inspector-copy {
+      margin: 4px 0 15px;
+      color: #777d80;
+      font-size: 11px;
+      line-height: 17px;
+      font-weight: 500;
+    }
+
+    .control-group {
+      padding: 15px;
+      border: 1px solid #e0e3e1;
+      background: #fafbfa;
+    }
+
+    .control-group + .control-group {
+      margin-top: 12px;
+    }
+
+    .group-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 13px;
+    }
+
+    .group-heading h2 {
+      margin: 0;
+      color: #303537;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 700;
+    }
+
+    .group-heading span {
+      color: #8a8f91;
+      font-size: 10px;
+      line-height: 14px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .field-label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 0 0 8px;
+      color: #646b6e;
+      font-size: 11px;
+      line-height: 16px;
+      font-weight: 700;
+    }
+
+    .field-label output {
+      color: #3f4649;
+      font-size: 11px;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .ratio-options {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 5px;
+      margin-bottom: 16px;
+    }
+
+    .ratio-button {
+      padding: 8px 3px;
+      border: 1px solid #d8dcda;
+      background: #ffffff;
+      color: #60676a;
+      font-size: 11px;
+      line-height: 16px;
+      font-weight: 700;
+    }
+
+    .ratio-button.active {
+      border-color: #4f5c58;
+      background: #4f5c58;
+      color: #ffffff;
+    }
+
+    .slider {
+      position: relative;
+      height: 18px;
+    }
+
+    .slider-track,
+    .slider-fill {
+      position: absolute;
+      top: 8px;
+      height: 3px;
+    }
+
+    .slider-track {
+      left: 0;
+      right: 0;
+      background: #dfe2e0;
+    }
+
+    .slider-fill {
+      left: 0;
+      background: #4f5c58;
+    }
+
+    .slider-center {
+      position: absolute;
+      top: 4px;
+      left: calc(50% - 1px);
+      width: 2px;
+      height: 11px;
+      background: #aeb4b1;
+    }
+
+    .slider-thumb {
+      position: absolute;
+      top: 2px;
+      width: 14px;
+      height: 14px;
+      margin-left: -7px;
+      border: 2px solid #ffffff;
+      border-radius: 50%;
+      background: #4f5c58;
+      box-shadow: 0 0 0 1px #4f5c58;
+    }
+
+    .adjustment + .adjustment {
+      margin-top: 14px;
+    }
+
+    .reset-button {
+      margin-top: 15px;
+      padding: 7px 0 2px;
+      color: #61696c;
+      font-size: 11px;
+      line-height: 16px;
+      font-weight: 700;
+    }
+
+    .tip {
+      display: flex;
+      gap: 9px;
+      margin-top: 12px;
+      padding: 11px 12px;
+      background: #f1f4f2;
+      color: #626a6d;
+      font-size: 10px;
+      line-height: 16px;
+      font-weight: 500;
+    }
+
+    .tip strong {
+      display: block;
+      color: #41494b;
+      font-size: 11px;
+      line-height: 16px;
+    }
+
+    .tabbar {
+      display: grid;
+      grid-template-columns: repeat(4, 120px);
+      justify-content: center;
+      gap: 4px;
+      padding: 7px 18px 9px;
+      border-top: 1px solid #dde0de;
+      background: #f5f6f5;
+    }
+
+    .tab {
+      position: relative;
+      padding: 8px 12px;
+      color: #747a7d;
+      font-size: 12px;
+      line-height: 17px;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    .tab.active {
+      color: #29302d;
+      background: #e3e8e5;
+      font-weight: 700;
+    }
+
+    .tab.active::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 30%;
+      width: 40%;
+      height: 2px;
+      background: #4f5c58;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <button class="back-button" aria-label="Back to tour">
+        <svg width="17" height="17" viewBox="0 0 20 20" aria-hidden="true">
+          <path d="M12.8 4.2L7 10l5.8 5.8" fill="none" stroke="#555B5F" stroke-width="1.8" stroke-linecap="square"/>
+        </svg>
+        Tour media
+      </button>
+
+      <div class="topbar-title">
+        <strong>Crop property tour</strong>
+        <span>18 Hawthorne Lane · Open-plan living area</span>
+      </div>
+
+      <div class="topbar-actions">
+        <button class="preview-button">Preview tour</button>
+        <button class="save-button">Save crop</button>
+      </div>
+    </header>
+
+    <main class="workspace">
+      <section class="stage-column" aria-label="Property tour crop preview">
+        <div class="preview">
+          <svg class="preview-art" viewBox="0 0 620 465" role="img" aria-label="Illustrated living room property tour frame with crop guides">
+            <rect width="620" height="465" fill="#d8dcda"/>
+            <rect width="620" height="305" fill="#e7e9e7"/>
+            <rect y="305" width="620" height="160" fill="#b9aaa0"/>
+            <path d="M0 305L620 305L620 465L0 465Z" fill="#b5a69c"/>
+            <path d="M0 305L620 305" stroke="#8e837b" stroke-width="4"/>
+            <rect x="44" y="55" width="197" height="189" fill="#aab8bc"/>
+            <rect x="54" y="65" width="177" height="169" fill="#c8d4d5"/>
+            <path d="M142 65V234M54 150H231" stroke="#f4f5f3" stroke-width="8"/>
+            <rect x="387" y="45" width="189" height="201" fill="#a8b5b8"/>
+            <rect x="398" y="57" width="167" height="177" fill="#c6d2d2"/>
+            <path d="M481 57V234M398 145H565" stroke="#f4f5f3" stroke-width="8"/>
+            <rect x="263" y="76" width="96" height="116" fill="#cac3b8"/>
+            <rect x="271" y="84" width="80" height="100" fill="#87928e"/>
+            <path d="M286 154L305 127L319 142L335 112L351 184H271Z" fill="#b9c0ba"/>
+            <rect x="88" y="280" width="294" height="99" rx="4" fill="#8d9691"/>
+            <rect x="105" y="263" width="91" height="65" rx="4" fill="#9ea6a1"/>
+            <rect x="205" y="257" width="91" height="70" rx="4" fill="#99a29d"/>
+            <rect x="306" y="266" width="60" height="61" rx="4" fill="#a3aaa6"/>
+            <rect x="110" y="376" width="22" height="47" fill="#6e7672"/>
+            <rect x="340" y="376" width="22" height="47" fill="#6e7672"/>
+            <ellipse cx="467" cy="372" rx="82" ry="35" fill="#d4cec4"/>
+            <rect x="459" y="373" width="16" height="55" fill="#8f847b"/>
+            <rect x="423" y="425" width="88" height="8" fill="#8f847b"/>
+            <rect x="515" y="249" width="18" height="70" fill="#8b8379"/>
+            <path d="M523 249C482 247 488 207 519 223C514 186 554 188 553 221C580 209 591 245 558 254Z" fill="#7f9286"/>
+            <rect x="0" y="0" width="54" height="465" fill="#1e2421" opacity="0.52"/>
+            <rect x="566" y="0" width="54" height="465" fill="#1e2421" opacity="0.52"/>
+            <rect x="54" y="0" width="512" height="33" fill="#1e2421" opacity="0.52"/>
+            <rect x="54" y="432" width="512" height="33" fill="#1e2421" opacity="0.52"/>
+            <path d="M225 33V432M395 33V432M54 166H566M54 299H566" fill="none" stroke="#FFFFFF" stroke-width="1" opacity="0.52"/>
+            <path d="M54 70V33H91M529 33H566V70M54 395V432H91M529 432H566V395" fill="none" stroke="#FFFFFF" stroke-width="3"/>
+            <circle cx="310" cy="232" r="4" fill="#FFFFFF"/>
+          </svg>
+          <span class="scene-tag">Scene 04 · Living room</span>
+          <span class="duration">00:12</span>
+        </div>
+
+        <div class="playback-row" aria-label="Scene playback details">
+          <button class="play-button" aria-label="Play scene preview">
+            <svg width="15" height="15" viewBox="0 0 16 16" aria-hidden="true">
+              <path d="M4 2.5L13 8L4 13.5Z" fill="#4F5C58"/>
+            </svg>
+          </button>
+          <div class="clip-details">
+            <strong>Living room walkthrough</strong>
+            <span>4K landscape original · Stabilized</span>
+          </div>
+          <span class="timecode">00:05.4 / 00:12.0</span>
+        </div>
+
+        <div class="stage-status">
+          <span><strong>Output:</strong> 2160 × 1620 px</span>
+          <span>Grid: thirds · Safe area visible</span>
+        </div>
+      </section>
+
+      <aside class="inspector" aria-label="Crop controls">
+        <h1 class="inspector-heading">Crop controls</h1>
+        <p class="inspector-copy">Frame the room first, then correct the camera perspective.</p>
+
+        <section class="control-group" aria-labelledby="composition-title">
+          <div class="group-heading">
+            <h2 id="composition-title">Composition</h2>
+            <span>Frame</span>
+          </div>
+
+          <div class="field-label">
+            <span>Ratio</span>
+            <output>4:3</output>
+          </div>
+          <div class="ratio-options">
+            <button class="ratio-button">Free</button>
+            <button class="ratio-button active">4:3</button>
+            <button class="ratio-button">3:2</button>
+            <button class="ratio-button">1:1</button>
+            <button class="ratio-button">9:16</button>
+          </div>
+
+          <div class="field-label">
+            <span>Zoom</span>
+            <output>108%</output>
+          </div>
+          <div class="slider" aria-label="Zoom 108 percent">
+            <span class="slider-track"></span>
+            <span class="slider-fill" style="width: 41%;"></span>
+            <span class="slider-thumb" style="left: 41%;"></span>
+          </div>
+        </section>
+
+        <section class="control-group" aria-labelledby="perspective-title">
+          <div class="group-heading">
+            <h2 id="perspective-title">Perspective</h2>
+            <span>Geometry</span>
+          </div>
+
+          <div class="adjustment">
+            <div class="field-label">
+              <span>Straighten</span>
+              <output>−0.6°</output>
+            </div>
+            <div class="slider" aria-label="Straighten negative 0.6 degrees">
+              <span class="slider-track"></span>
+              <span class="slider-fill" style="left: 47%; width: 3%;"></span>
+              <span class="slider-center"></span>
+              <span class="slider-thumb" style="left: 47%;"></span>
+            </div>
+          </div>
+
+          <div class="adjustment">
+            <div class="field-label">
+              <span>Vertical</span>
+              <output>+7</output>
+            </div>
+            <div class="slider" aria-label="Vertical perspective plus 7">
+              <span class="slider-track"></span>
+              <span class="slider-fill" style="left: 50%; width: 12%;"></span>
+              <span class="slider-center"></span>
+              <span class="slider-thumb" style="left: 62%;"></span>
+            </div>
+          </div>
+
+          <div class="adjustment">
+            <div class="field-label">
+              <span>Horizontal</span>
+              <output>−2</output>
+            </div>
+            <div class="slider" aria-label="Horizontal perspective negative 2">
+              <span class="slider-track"></span>
+              <span class="slider-fill" style="left: 46%; width: 4%;"></span>
+              <span class="slider-center"></span>
+              <span class="slider-thumb" style="left: 46%;"></span>
+            </div>
+          </div>
+
+          <button class="reset-button">Reset perspective</button>
+        </section>
+
+        <div class="tip">
+          <svg width="16" height="16" viewBox="0 0 18 18" aria-hidden="true">
+            <circle cx="9" cy="9" r="7" fill="none" stroke="#68716D" stroke-width="1.4"/>
+            <path d="M9 8V13M9 5.2V5.4" stroke="#68716D" stroke-width="1.5"/>
+          </svg>
+          <div>
+            <strong>Agent tip</strong>
+            Align wall edges with the grid to keep rooms looking natural and spacious.
+          </div>
+        </div>
+      </aside>
+    </main>
+
+    <nav class="tabbar" aria-label="Property tour editing tools">
+      <button class="tab">Scenes</button>
+      <button class="tab">Trim</button>
+      <button class="tab active" aria-current="page">Crop</button>
+      <button class="tab">Enhance</button>
+    </nav>
+  </div>
+</body>
+</html>

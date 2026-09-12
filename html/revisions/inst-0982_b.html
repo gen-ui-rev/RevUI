@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Share lesson</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --zinc-900:#18181b;
+    --zinc-700:#3f3f46;
+    --zinc-600:#52525b;
+    --zinc-500:#71717a;
+    --line:rgba(63,63,70,0.12);
+    --fill:rgba(63,63,70,0.06);
+    --fill-strong:rgba(63,63,70,0.13);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:24px 0;
+    background:#e7e7ea;
+    font-family:'Plus Jakarta Sans', system-ui, sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .screen{
+    width:1024px;
+    height:768px;
+    background:#ffffff;
+    border-radius:10px;
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+    box-shadow:0 12px 40px rgba(24,24,27,0.10);
+  }
+
+  /* ---------- header ---------- */
+  .head{
+    display:flex;
+    align-items:center;
+    gap:32px;
+    padding:32px 48px 28px;
+    border-bottom:1px solid var(--line);
+  }
+  .head-copy{flex:1;min-width:0;}
+  h1{
+    margin:0 0 6px;
+    font-size:27px
+    ;font-weight:700;
+    color:var(--zinc-900);
+    letter-spacing:-0.02em;
+  }
+  .sub{
+    margin:0;
+    font-size:14px;
+    color:var(--zinc-500);
+  }
+  .preview{
+    flex:none;
+    display:flex;
+    align-items:center;
+    gap:14px;
+    background:var(--fill);
+    border-radius:8px;
+    padding:12px 16px;
+    width:340px;
+  }
+  .thumb{
+    width:56px;
+    height:56px;
+    border-radius:7px;
+    background:linear-gradient(135deg,#b4b4bb 0%,#8f8f98 100%);
+    flex:none;
+  }
+  .preview-text{min-width:0;}
+  .preview-title{
+    font-size:14px;
+    font-weight:700;
+    color:var(--zinc-900);
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .preview-meta{
+    margin-top:4px;
+    font-size:12px;
+    color:var(--zinc-500);
+  }
+
+  /* ---------- body ---------- */
+  .body{
+    flex:1;
+    padding:28px 48px 32px;
+    display:flex;
+    flex-direction:column;
+  }
+
+  .link{
+    display:flex;
+    align-items:center;
+    gap:16px;
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:16px 18px;
+  }
+  .link svg{flex:none;color:var(--zinc-600);}
+  .link-url{
+    flex:1;
+    min-width:0;
+    font-size:15px;
+    font-weight:500;
+    color:var(--zinc-900);
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .expiry{
+    flex:none;
+    display:flex;
+    align-items:baseline;
+    gap:8px;
+    padding-right:4px;
+    border-right:1px solid var(--line);
+    padding-right:18px;
+  }
+  .expiry-label{
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--zinc-500);
+  }
+  .expiry-date{
+    font-size:13px;
+    font-weight:600;
+    color:var(--zinc-700);
+  }
+  .link-action{
+    flex:none;
+    font-size:13px;
+    font-weight:700;
+    color:#ffffff;
+    background:var(--zinc-900);
+    border-radius:6px;
+    padding:10px 20px;
+    cursor:pointer;
+  }
+  .link-ghost{
+    flex:none;
+    font-size:13px;
+    font-weight:600;
+    color:var(--zinc-600);
+    padding:10px 6px;
+    cursor:pointer;
+  }
+  .link-ghost:hover{color:var(--zinc-900);}
+
+  .cols{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:24px;
+    align-items:start;
+    margin-top:28px;
+  }
+  .card{
+    border:1px solid var(--line);
+    border-radius:8px;
+    overflow:hidden;
+  }
+  .card-head{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding:14px 18px;
+    background:var(--fill);
+    border-bottom:1px solid var(--line);
+  }
+  .label{
+    font-size:12px;
+    font-weight:700;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--zinc-600);
+  }
+  .count{
+    font-size:11px;
+    font-weight:700;
+    color:var(--zinc-600);
+    background:rgba(63,63,70,0.10);
+    border-radius:20px;
+    padding:2px 8px;
+  }
+  .card-note{
+    margin-left:auto;
+    font-size:12px;
+    color:var(--zinc-500);
+  }
+  .row{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    padding:12px 18px;
+    border-bottom:1px solid var(--line);
+  }
+  .row:last-child{border-bottom:none;}
+  .avatar{
+    width:38px;
+    height:38px;
+    border-radius:8px;
+    background:#c4c4c9;
+    flex:none;
+  }
+  .who{flex:1;min-width:0;}
+  .name{
+    font-size:14px;
+    font-weight:600;
+    color:var(--zinc-900);
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .detail{
+    margin-top:2px;
+    font-size:12px;
+    color:var(--zinc-500);
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .send{
+    flex:none;
+    font-size:13px;
+    font-weight:600;
+    color:var(--zinc-900);
+    background:#ffffff;
+    border:1px solid var(--fill-strong);
+    border-radius:6px;
+    padding:7px 16px;
+    cursor:pointer;
+  }
+  .send:hover{background:var(--fill);}
+  .stamp{
+    flex:none;
+    font-size:12px;
+    font-weight:600;
+    color:var(--zinc-500);
+  }
+  .foot{
+    margin-top:auto;
+    padding-top:24px;
+    font-size:12px;
+    color:var(--zinc-500);
+  }
+</style>
+</head>
+<body>
+  <div class="screen">
+    <header class="head">
+      <div class="head-copy">
+        <h1>Share this lesson</h1>
+        <p class="sub">Anyone with the link can preview the first two exercises.</p>
+      </div>
+      <div class="preview">
+        <div class="thumb"></div>
+        <div class="preview-text">
+          <div class="preview-title">Past Tense in Conversation</div>
+          <div class="preview-meta">Spanish B1 · Unit 4 · 18 min</div>
+        </div>
+      </div>
+    </header>
+
+    <div class="body">
+      <div class="link">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"></path>
+          <path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"></path>
+        </svg>
+        <div class="link-url">lumenpath.co/l/past-tense-4</div>
+        <div class="expiry">
+          <span class="expiry-label">Expires</span>
+          <span class="expiry-date">April 12, 2025</span>
+        </div>
+        <div class="link-ghost">Change date</div>
+        <div class="link-action">Copy link</div>
+      </div>
+
+      <div class="cols">
+        <section class="card">
+          <div class="card-head">
+            <span class="label">Not sent yet</span>
+            <span class="count">3</span>
+          </div>
+          <div class="row">
+            <div class="avatar"></div>
+            <div class="who">
+              <div class="name">Marta Delgado</div>
+              <div class="detail">Study group · Tuesdays</div>
+            </div>
+            <div class="send">Send</div>
+          </div>
+          <div class="row">
+            <div class="avatar"></div>
+            <div class="who">
+              <div class="name">Priya Raman</div>
+              <div class="detail">Tutor · Spanish B1</div>
+            </div>
+            <div class="send">Send</div>
+          </div>
+          <div class="row">
+            <div class="avatar"></div>
+            <div class="who">
+              <div class="name">Conversation Club B1</div>
+              <div class="detail">6 members · meets Thursdays</div>
+            </div>
+            <div class="send">Send</div>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="card-head">
+            <span class="label">Sent</span>
+            <span class="count">3</span>
+            <span class="card-note">Last 30 days</span>
+          </div>
+          <div class="row">
+            <div class="avatar"></div>
+            <div class="who">
+              <div class="name">Owen Brackett</div>
+              <div class="detail">Opened the preview March 3</div>
+            </div>
+            <div class="stamp">March 2</div>
+          </div>
+          <div class="row">
+            <div class="avatar"></div>
+            <div class="who">
+              <div class="name">Diego Marín</div>
+              <div class="detail">Not opened yet</div>
+            </div>
+            <div class="stamp">Feb 26</div>
+          </div>
+          <div class="row">
+            <div class="avatar"></div>
+            <div class="who">
+              <div class="name">Lucía Herrera</div>
+              <div class="detail">Finished exercise 1</div>
+            </div>
+            <div class="stamp">Feb 19</div>
+          </div>
+        </section>
+      </div>
+
+      <div class="foot">Recipients get an email invite with the same preview link. Sending again resets nothing — progress is kept.</div>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Wayfare Voice Note</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 40px 0;
+    margin: 0;
+    background: #eceeef;
+    font-family: 'Inter', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .screen {
+    width: 768px;
+    height: 1024px;
+    background: #ffffff;
+    position: relative;
+    color: #1d2126;
+    display: flex;
+  }
+
+  /* left rail */
+  .rail {
+    flex: 0 0 96px;
+    width: 96px;
+    border-right: 1px solid #e4e6e8;
+    background: #fbfbfc;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 22px 0;
+    gap: 6px;
+  }
+  .brand {
+    width: 38px;
+    height: 38px;
+    border-radius: 12px;
+    background: #b1662f;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 18px;
+  }
+  .railitem {
+    width: 74px;
+    padding: 12px 0;
+    border-radius: 14px;
+    text-align: center;
+    font-size: 11px;
+    color: #8b9298;
+  }
+  .railitem svg { display: block; margin: 0 auto 5px; }
+  .railitem.active {
+    background: #f7ece2;
+    color: #a05c2a;
+    font-weight: 600;
+  }
+
+  /* main */
+  .main {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  .topbar {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 17px 24px;
+    border-bottom: 1px solid #e4e6e8;
+  }
+  .iconbtn {
+    width: 38px;
+    height: 38px;
+    flex: 0 0 38px;
+    border: 1px solid #e0e3e5;
+    border-radius: 11px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #4b5158;
+  }
+  .titlewrap .title {
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: -0.1px;
+  }
+  .titlewrap .sub {
+    font-size: 12px;
+    color: #8b9298;
+    margin-top: 2px;
+  }
+  .discard {
+    margin-left: auto;
+    padding: 9px 16px;
+    border: 1px solid #e0e3e5;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #6f767d;
+  }
+
+  .cols {
+    display: flex;
+    align-items: flex-start;
+    gap: 22px;
+    padding: 22px 24px 26px;
+  }
+  .colleft { flex: 0 0 320px; min-width: 0; }
+  .colright { flex: 1; min-width: 0; }
+
+  /* recorder card — warm sand */
+  .card {
+    background: #fdf5ec;
+    border: 1px solid #eddfcd;
+    border-radius: 16px;
+    padding: 20px 20px 22px;
+  }
+  .context {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid #eee1d0;
+  }
+  .context .place {
+    font-size: 14px;
+    font-weight: 500;
+    color: #5c4632;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .context .day {
+    margin-left: auto;
+    font-size: 12px;
+    color: #a58f77;
+    white-space: nowrap;
+  }
+  .status {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    margin-top: 20px;
+  }
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #c3702f;
+  }
+  .status span {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.7px;
+    text-transform: uppercase;
+    color: #a05c2a;
+  }
+  .timer {
+    font-size: 66px;
+    font-weight: 600;
+    letter-spacing: -2px;
+    line-height: 1;
+    margin-top: 6px;
+    color: #2f2318;
+    font-variant-numeric: tabular-nums;
+  }
+  .wave {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    height: 118px;
+    margin-top: 14px;
+  }
+  .wave i {
+    display: block;
+    width: 3px;
+    border-radius: 2px;
+    background: #e8d8c4;
+  }
+  .wave i.on { background: #c3702f; }
+  .ruler {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+    font-size: 12px;
+    color: #b3a390;
+  }
+  .meta {
+    margin-top: 12px;
+    font-size: 10px;
+    letter-spacing: 0.7px;
+    text-transform: uppercase;
+    color: #d0c2af;
+  }
+
+  .controls {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 24px;
+  }
+  .ctrl {
+    width: 72px;
+    text-align: center;
+  }
+  .ctrl .btn {
+    width: 60px;
+    height: 60px;
+    margin: 0 auto 8px;
+    border-radius: 50%;
+    border: 1px solid #e2cfb8;
+    background: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #8a6a4c;
+  }
+  .ctrl.main .btn {
+    width: 78px;
+    height: 78px;
+    background: #b1662f;
+    border-color: #b1662f;
+    color: #ffffff;
+  }
+  .ctrl .lbl { font-size: 12px; color: #94836f; }
+  .ctrl.main .lbl { color: #4a3623; font-weight: 600; }
+
+  /* generic panels */
+  .panel {
+    border: 1px solid #e4e6e8;
+    border-radius: 14px;
+    padding: 16px 18px 18px;
+  }
+  .panel + .panel { margin-top: 18px; }
+  .colleft .panel { margin-top: 18px; }
+  .panelhead {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 10px;
+    padding-bottom: 4px;
+  }
+  .panelhead h2 {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .panelhead .count {
+    font-size: 12px;
+    color: #9ba1a7;
+    white-space: nowrap;
+  }
+  .transcript p {
+    margin: 8px 0 0;
+    font-size: 13px;
+    line-height: 1.65;
+    color: #6f767d;
+  }
+  .mrow {
+    display: flex;
+    gap: 12px;
+    padding: 13px 0;
+    border-top: 1px solid #eeeff0;
+  }
+  .mrow .t {
+    flex: 0 0 46px;
+    width: 46px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #6f767d;
+    font-variant-numeric: tabular-nums;
+  }
+  .mrow .txt {
+    font-size: 14px;
+    line-height: 1.45;
+    color: #1d2126;
+  }
+  .srow {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 11px 0;
+    border-top: 1px solid #eeeff0;
+    font-size: 13px;
+  }
+  .srow .k { color: #8b9298; white-space: nowrap; }
+  .srow .v {
+    color: #1d2126;
+    font-weight: 500;
+    text-align: right;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+</style>
+</head>
+<body>
+<div class="screen">
+
+  <nav class="rail">
+    <div class="brand">W</div>
+    <div class="railitem">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M16.5 16.5L21 21"/></svg>
+      Explore
+    </div>
+    <div class="railitem">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4L3.8 6v14L9 18l6 2 5.2-2V4L15 6 9 4z"/><path d="M9 4v14M15 6v14"/></svg>
+      Map
+    </div>
+    <div class="railitem active">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 12a6.5 6.5 0 0013 0M12 18.5V21"/></svg>
+      Notes
+    </div>
+    <div class="railitem">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16v13H4zM8 7V4h8v3"/><path d="M4 12h16"/></svg>
+      Trips
+    </div>
+  </nav>
+
+  <div class="main">
+
+    <div class="topbar">
+      <div class="iconbtn">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
+      </div>
+      <div class="titlewrap">
+        <div class="title">Voice Note</div>
+        <div class="sub">Lisbon trip · Mar 14</div>
+      </div>
+      <div class="discard">Discard</div>
+    </div>
+
+    <div class="cols">
+
+      <div class="colleft">
+        <section class="card">
+          <div class="context">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#a58f77" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 1116 0z"/><circle cx="12" cy="10" r="2.6"/></svg>
+            <div class="place">Hotel Marisol, Lisbon</div>
+            <div class="day">Day 3</div>
+          </div>
+
+          <div class="status"><span class="dot"></span><span>Recording</span></div>
+          <div class="timer">04:38</div>
+          <div class="wave">
+            <i class="on" style="height:14px"></i><i class="on" style="height:24px"></i><i class="on" style="height:36px"></i>
+            <i class="on" style="height:20px"></i><i class="on" style="height:46px"></i><i class="on" style="height:58px"></i>
+            <i class="on" style="height:40px"></i><i class="on" style="height:28px"></i><i class="on" style="height:16px"></i>
+            <i class="on" style="height:26px"></i><i class="on" style="height:50px"></i><i class="on" style="height:68px"></i>
+            <i class="on" style="height:60px"></i><i class="on" style="height:36px"></i><i class="on" style="height:22px"></i>
+            <i class="on" style="height:30px"></i><i class="on" style="height:48px"></i><i class="on" style="height:56px"></i>
+            <i class="on" style="height:64px"></i><i class="on" style="height:38px"></i><i class="on" style="height:24px"></i>
+            <i class="on" style="height:14px"></i><i class="on" style="height:28px"></i><i class="on" style="height:44px"></i>
+            <i class="on" style="height:58px"></i><i class="on" style="height:70px"></i><i class="on" style="height:52px"></i>
+            <i class="on" style="height:34px"></i><i class="on" style="height:18px"></i><i class="on" style="height:26px"></i>
+            <i class="on" style="height:40px"></i><i class="on" style="height:60px"></i><i class="on" style="height:50px"></i>
+            <i class="on" style="height:30px"></i><i class="on" style="height:16px"></i><i class="on" style="height:22px"></i>
+            <i style="height:36px"></i><i style="height:46px"></i><i style="height:58px"></i>
+            <i style="height:38px"></i><i style="height:24px"></i><i style="height:16px"></i>
+            <i style="height:28px"></i><i style="height:42px"></i><i style="height:54px"></i>
+            <i style="height:32px"></i>
+          </div>
+          <div class="ruler"><span>60s ago</span><span>Now</span></div>
+          <div class="meta">Mono · 128 kbps · 3.1 MB</div>
+
+          <div class="controls">
+            <div class="ctrl">
+              <div class="btn">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 21V4h12l-2.5 4.5L18 13H6"/></svg>
+              </div>
+              <div class="lbl">Marker</div>
+            </div>
+            <div class="ctrl main">
+              <div class="btn">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><rect x="7" y="5" width="3.6" height="14" rx="1"/><rect x="13.4" y="5" width="3.6" height="14" rx="1"/></svg>
+              </div>
+              <div class="lbl">Pause</div>
+            </div>
+            <div class="ctrl">
+              <div class="btn">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>
+              </div>
+              <div class="lbl">Save note</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel transcript">
+          <div class="panelhead"><h2>Live transcript</h2></div>
+          <p>The front desk is staffed until eleven, after that you ring the bell by the side door. Tram 28 stops two blocks downhill and runs every ten minutes. Breakfast is in the back room, seven to ten, and the rooftop bar shuts at midnight.</p>
+        </section>
+      </div>
+
+      <div class="colright">
+        <section class="panel">
+          <div class="panelhead">
+            <h2>Markers</h2>
+            <div class="count">7 in this note</div>
+          </div>
+          <div class="mrow"><div class="t">00:18</div><div class="txt">Front desk hours, late check-in</div></div>
+          <div class="mrow"><div class="t">01:02</div><div class="txt">Tram 28 stop, two blocks downhill</div></div>
+          <div class="mrow"><div class="t">01:47</div><div class="txt">Breakfast served 7 to 10</div></div>
+          <div class="mrow"><div class="t">02:34</div><div class="txt">Rooftop bar closes at midnight</div></div>
+          <div class="mrow"><div class="t">03:20</div><div class="txt">Airport transfer, 22 euros</div></div>
+          <div class="mrow"><div class="t">04:05</div><div class="txt">Laundry picked up before noon</div></div>
+          <div class="mrow"><div class="t">04:28</div><div class="txt">Room safe code at reception</div></div>
+        </section>
+
+        <section class="panel">
+          <div class="panelhead"><h2>Note settings</h2></div>
+          <div class="srow"><div class="k">Trip</div><div class="v">Lisbon, Portugal</div></div>
+          <div class="srow"><div class="k">Folder</div><div class="v">Day 3 · Lodging</div></div>
+          <div class="srow"><div class="k">Transcript</div><div class="v">English + PT</div></div>
+          <div class="srow"><div class="k">Sync</div><div class="v">Wi-Fi only</div></div>
+          <div class="srow"><div class="k">Input</div><div class="v">Tablet mic</div></div>
+        </section>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

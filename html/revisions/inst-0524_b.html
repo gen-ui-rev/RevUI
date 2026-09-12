@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Luma Languages Comprehension Check</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #dfe3e8;
+      color: #1d2935;
+      font-family: 'Source Serif 4', Georgia, serif;
+    }
+
+    button,
+    textarea,
+    input {
+      font: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #fffdf8;
+    }
+
+    .topbar {
+      min-height: 62px;
+      flex: 0 0 auto;
+      padding: 11px 18px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: #213d4b;
+      color: #ffffff;
+    }
+
+    .back-button {
+      width: 36px;
+      height: 36px;
+      padding: 6px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      border-radius: 18px;
+      background: transparent;
+      color: #ffffff;
+    }
+
+    .topbar-copy {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .service-name {
+      margin: 0;
+      font-size: 12px;
+      line-height: 15px;
+      opacity: 0.78;
+    }
+
+    .page-title {
+      margin: 0;
+      font-size: 19px;
+      line-height: 23px;
+      font-weight: 600;
+    }
+
+    .level-badge {
+      flex: 0 0 auto;
+      padding: 5px 8px;
+      background: #f1c877;
+      color: #213d4b;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 700;
+    }
+
+    main {
+      min-height: 0;
+      flex: 1;
+      padding: 16px 18px 12px;
+    }
+
+    .intro h1 {
+      margin: 0;
+      font-size: 27px;
+      line-height: 32px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+    }
+
+    .intro p {
+      margin: 3px 0 0;
+      color: #667078;
+      font-size: 13px;
+      line-height: 18px;
+    }
+
+    .chapter-card {
+      margin-top: 12px;
+      padding: 10px;
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      background: #edf2ee;
+    }
+
+    .book-mark {
+      width: 48px;
+      height: 54px;
+      flex: 0 0 auto;
+      display: grid;
+      place-items: center;
+      background: #d77b56;
+      color: #ffffff;
+    }
+
+    .chapter-copy {
+      min-width: 0;
+    }
+
+    .chapter-status {
+      margin: 0;
+      color: #527166;
+      font-size: 11px;
+      line-height: 15px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .chapter-title {
+      margin: 1px 0 0;
+      font-size: 16px;
+      line-height: 20px;
+      font-weight: 600;
+    }
+
+    .chapter-meta {
+      margin: 1px 0 0;
+      color: #68746f;
+      font-size: 12px;
+      line-height: 17px;
+    }
+
+    fieldset {
+      min-width: 0;
+      margin: 14px 0 0;
+      padding: 0;
+      border: 0;
+    }
+
+    legend,
+    .field-label {
+      display: block;
+      padding: 0;
+      font-size: 16px;
+      line-height: 21px;
+      font-weight: 600;
+    }
+
+    .field-hint {
+      margin: 1px 0 0;
+      color: #717b7d;
+      font-size: 12px;
+      line-height: 17px;
+    }
+
+    .comprehension-options {
+      margin-top: 8px;
+      display: grid;
+      gap: 3px;
+    }
+
+    .comprehension-option,
+    .help-option {
+      position: relative;
+    }
+
+    .comprehension-option input,
+    .help-option input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .comprehension-option label {
+      padding: 6px 9px;
+      display: grid;
+      grid-template-columns: 24px minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 8px;
+      background: #f0f2ed;
+      color: #314047;
+      cursor: default;
+    }
+
+    .scale-step {
+      width: 23px;
+      height: 23px;
+      display: grid;
+      place-items: center;
+      border: 1px solid #9ba8a2;
+      border-radius: 50%;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 700;
+    }
+
+    .scale-title {
+      min-width: 0;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 600;
+    }
+
+    .scale-detail {
+      color: #748078;
+      font-size: 11px;
+      line-height: 16px;
+      white-space: nowrap;
+    }
+
+    .comprehension-option input:checked + label {
+      background: #213d4b;
+      color: #ffffff;
+    }
+
+    .comprehension-option input:checked + label .scale-step {
+      border-color: #f1c877;
+      background: #f1c877;
+      color: #213d4b;
+    }
+
+    .comprehension-option input:checked + label .scale-detail {
+      color: #dbe5e2;
+    }
+
+    .help-grid {
+      margin-top: 8px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+    }
+
+    .help-option label {
+      min-height: 35px;
+      padding: 7px 9px;
+      display: flex;
+      align-items: center;
+      background: #f0f2ed;
+      color: #405058;
+      font-size: 12px;
+      line-height: 17px;
+      cursor: default;
+    }
+
+    .help-option input:checked + label {
+      background: #dce9e2;
+      color: #254d3f;
+      font-weight: 600;
+    }
+
+    .help-option input:checked + label::before {
+      content: "✓";
+      margin-right: 6px;
+      color: #356b58;
+      font-weight: 700;
+    }
+
+    .reflection {
+      margin-top: 14px;
+    }
+
+    textarea {
+      width: 100%;
+      height: 58px;
+      margin-top: 6px;
+      padding: 8px 10px;
+      display: block;
+      resize: none;
+      border: 1px solid #d5dbd4;
+      border-radius: 0;
+      outline: 0;
+      background: #f7f7f2;
+      color: #1d2935;
+      font-size: 13px;
+      line-height: 18px;
+    }
+
+    textarea::placeholder {
+      color: #7b8481;
+      opacity: 1;
+    }
+
+    .character-count {
+      margin: 2px 0 0;
+      text-align: right;
+      color: #7b8481;
+      font-size: 11px;
+      line-height: 16px;
+    }
+
+    .privacy-note {
+      margin-top: 9px;
+      padding: 8px 10px;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      background: #f7ecd2;
+      color: #5c513a;
+      font-size: 12px;
+      line-height: 17px;
+    }
+
+    .privacy-note svg {
+      flex: 0 0 auto;
+      margin-top: 1px;
+      color: #9b6b22;
+    }
+
+    .submit-button {
+      width: 100%;
+      height: 43px;
+      margin-top: 9px;
+      border: 0;
+      border-radius: 0;
+      background: #d77b56;
+      color: #ffffff;
+      font-size: 15px;
+      line-height: 21px;
+      font-weight: 700;
+    }
+
+    .tabbar {
+      min-height: 64px;
+      flex: 0 0 auto;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      border-top: 1px solid #dbe0da;
+      background: #f1f2ed;
+    }
+
+    .tab {
+      border: 0;
+      border-radius: 0;
+      padding: 7px 4px 6px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      background: transparent;
+      color: #707a78;
+      font-size: 11px;
+      line-height: 14px;
+    }
+
+    .tab.active {
+      background: #dfe8e2;
+      color: #213d4b;
+      font-weight: 700;
+    }
+
+    .tab svg {
+      width: 21px;
+      height: 21px;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <button class="back-button" type="button" aria-label="Go back">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" aria-hidden="true">
+          <path d="M15 5L8 12L15 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <div class="topbar-copy">
+        <p class="service-name">Luma Languages</p>
+        <p class="page-title">Listening check-in</p>
+      </div>
+      <span class="level-badge">B1</span>
+    </header>
+
+    <main>
+      <section class="intro" aria-labelledby="check-heading">
+        <h1 id="check-heading">Check your understanding</h1>
+        <p>Think about the story before moving to the next chapter.</p>
+      </section>
+
+      <section class="chapter-card" aria-label="Audiobook chapter being reviewed">
+        <div class="book-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="27" height="27" fill="none">
+            <path d="M5 4H17C18.1 4 19 4.9 19 6V20H7C5.9 20 5 19.1 5 18V4Z" stroke="currentColor" stroke-width="1.7"/>
+            <path d="M8 8H16M8 11H15M8 16H19" stroke="currentColor" stroke-width="1.7"/>
+          </svg>
+        </div>
+        <div class="chapter-copy">
+          <p class="chapter-status">Chapter 8 complete</p>
+          <p class="chapter-title">The Letter from Valencia</p>
+          <p class="chapter-meta">Spanish Mystery Stories · 14 min</p>
+        </div>
+      </section>
+
+      <form>
+        <fieldset>
+          <legend>Which statement fits best?</legend>
+          <p class="field-hint">Choose one comprehension level.</p>
+          <div class="comprehension-options">
+            <div class="comprehension-option">
+              <input type="radio" id="understanding-b1" name="comprehension-b">
+              <label for="understanding-b1">
+                <span class="scale-step">1</span>
+                <span class="scale-title">I caught a few words</span>
+                <span class="scale-detail">Beginning</span>
+              </label>
+            </div>
+            <div class="comprehension-option">
+              <input type="radio" id="understanding-b2" name="comprehension-b">
+              <label for="understanding-b2">
+                <span class="scale-step">2</span>
+                <span class="scale-title">I followed the main idea</span>
+                <span class="scale-detail">Developing</span>
+              </label>
+            </div>
+            <div class="comprehension-option">
+              <input type="radio" id="understanding-b3" name="comprehension-b" checked>
+              <label for="understanding-b3">
+                <span class="scale-step">3</span>
+                <span class="scale-title">I understood most details</span>
+                <span class="scale-detail">Confident</span>
+              </label>
+            </div>
+            <div class="comprehension-option">
+              <input type="radio" id="understanding-b4" name="comprehension-b">
+              <label for="understanding-b4">
+                <span class="scale-step">4</span>
+                <span class="scale-title">I understood everything</span>
+                <span class="scale-detail">Fluent</span>
+              </label>
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>What should you practice next?</legend>
+          <div class="help-grid">
+            <div class="help-option">
+              <input type="checkbox" id="practice-words-b" checked>
+              <label for="practice-words-b">New vocabulary</label>
+            </div>
+            <div class="help-option">
+              <input type="checkbox" id="practice-speed-b">
+              <label for="practice-speed-b">Listening speed</label>
+            </div>
+            <div class="help-option">
+              <input type="checkbox" id="practice-grammar-b" checked>
+              <label for="practice-grammar-b">Grammar patterns</label>
+            </div>
+            <div class="help-option">
+              <input type="checkbox" id="practice-details-b">
+              <label for="practice-details-b">Story details</label>
+            </div>
+          </div>
+        </fieldset>
+
+        <div class="reflection">
+          <label class="field-label" for="reflection-b">Quick learning note</label>
+          <textarea id="reflection-b" maxlength="160" placeholder="Write one phrase or detail you want to remember."></textarea>
+          <p class="character-count">0 of 160 characters</p>
+        </div>
+
+        <div class="privacy-note">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" aria-hidden="true">
+            <path d="M12 3L19 6V11C19 15.3 16.1 19.1 12 21C7.9 19.1 5 15.3 5 11V6L12 3Z" stroke="currentColor" stroke-width="1.7"/>
+            <path d="M9 12L11 14L15.5 9.5" stroke="currentColor" stroke-width="1.7"/>
+          </svg>
+          <span>This private check-in adjusts your level and review suggestions.</span>
+        </div>
+
+        <button class="submit-button" type="button">Continue to chapter review</button>
+      </form>
+    </main>
+
+    <nav class="tabbar" aria-label="Primary navigation">
+      <button class="tab" type="button">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M4 10L12 4L20 10V20H14V14H10V20H4V10Z" stroke="currentColor" stroke-width="1.8"/>
+        </svg>
+        <span>Today</span>
+      </button>
+      <button class="tab" type="button">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M5 4H18C19.1 4 20 4.9 20 6V19H7C5.9 19 5 18.1 5 17V4Z" stroke="currentColor" stroke-width="1.8"/>
+          <path d="M8 8H17M8 12H17" stroke="currentColor" stroke-width="1.8"/>
+        </svg>
+        <span>My books</span>
+      </button>
+      <button class="tab active" type="button" aria-current="page">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M5 5H19V19H5V5Z" stroke="currentColor" stroke-width="1.8"/>
+          <path d="M8 12L11 15L16.5 8.5" stroke="currentColor" stroke-width="1.8"/>
+        </svg>
+        <span>Progress</span>
+      </button>
+    </nav>
+  </div>
+</body>
+</html>

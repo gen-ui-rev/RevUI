@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Suggested People</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #e9eeed;
+      color: #172221;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    button {
+      font: inherit;
+      cursor: pointer;
+    }
+
+    .screen {
+      width: 1024px;
+      height: 768px;
+      display: flex;
+      flex-direction: column;
+      background: #ffffff;
+      box-shadow: 0 12px 40px rgba(23, 34, 33, 0.12);
+    }
+
+    /* Top bar */
+    .topbar {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      padding: 0 40px;
+      height: 60px;
+      border-bottom: 1px solid #dce3e1;
+      flex: 0 0 auto;
+    }
+
+    .brand {
+      color: #086b66;
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+
+    .nav {
+      display: flex;
+      gap: 24px;
+      margin-left: 8px;
+    }
+
+    .nav span {
+      color: #63706e;
+      font-size: 14px;
+    }
+
+    .nav span.active {
+      color: #172221;
+      font-weight: 600;
+      box-shadow: inset 0 -2px 0 #0b8f86;
+      padding-bottom: 20px;
+    }
+
+    .topbar-right {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .search {
+      width: 210px;
+      padding: 7px 12px;
+      border: 1px solid #dce3e1;
+      border-radius: 6px;
+      color: #8a9694;
+      font-size: 13px;
+    }
+
+    .me {
+      width: 32px;
+      height: 32px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: #dcefed;
+      color: #086b66;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    /* Content */
+    .content {
+      flex: 1 1 auto;
+      padding: 28px 40px 0;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    .head {
+      display: flex;
+      align-items: flex-end;
+      gap: 24px;
+    }
+
+    .section-label {
+      margin: 0 0 6px;
+      color: #087f78;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 26px;
+      line-height: 1.2;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+
+    .intro {
+      margin: 8px 0 0;
+      color: #63706e;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .sort {
+      margin-left: auto;
+      padding: 8px 14px;
+      border: 1px solid #dce3e1;
+      border-radius: 6px;
+      background: #ffffff;
+      color: #3f4d4b;
+      font-size: 13px;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .chips {
+      display: flex;
+      gap: 10px;
+      margin: 20px 0 22px;
+    }
+
+    .chip {
+      padding: 7px 14px;
+      border: 1px solid #dce3e1;
+      border-radius: 999px;
+      background: #ffffff;
+      color: #3f4d4b;
+      font-size: 13px;
+      line-height: 1;
+    }
+
+    .chip.on {
+      border-color: #0b8f86;
+      background: #eaf6f5;
+      color: #086b66;
+      font-weight: 600;
+    }
+
+    /* Card grid */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      padding: 18px;
+      border: 1px solid #dce3e1;
+      border-radius: 10px;
+      background: #ffffff;
+    }
+
+    .card-top {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .initials {
+      width: 46px;
+      height: 46px;
+      flex: 0 0 auto;
+      display: grid;
+      place-items: center;
+      border-radius: 8px;
+      background: #dcefed;
+      color: #086b66;
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .person-copy {
+      min-width: 0;
+    }
+
+    .name {
+      margin: 0 0 3px;
+      overflow: hidden;
+      color: #172221;
+      font-size: 15px;
+      font-weight: 600;
+      line-height: 1.3;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .handle {
+      margin: 0;
+      overflow: hidden;
+      color: #8a9694;
+      font-size: 12px;
+      line-height: 1.3;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .context {
+      margin: 14px 0 0;
+      color: #697573;
+      font-size: 13px;
+      line-height: 1.45;
+      display: block;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .card-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 16px;
+    }
+
+    .follow {
+      flex: 1 1 auto;
+      padding: 8px 12px;
+      border: 1px solid #0b8f86;
+      border-radius: 6px;
+      background: #0b8f86;
+      color: #ffffff;
+      font-size: 13px;
+      font-weight: 600;
+      line-height: 1.2;
+    }
+
+    .dismiss {
+      padding: 8px 12px;
+      border: 1px solid #dce3e1;
+      border-radius: 6px;
+      background: #ffffff;
+      color: #63706e;
+      font-size: 13px;
+      font-weight: 500;
+      line-height: 1.2;
+    }
+
+    /* Footer */
+    .footer {
+      flex: 0 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-top: auto;
+      padding: 18px 40px;
+      border-top: 1px solid #dce3e1;
+    }
+
+    .count {
+      color: #8a9694;
+      font-size: 13px;
+    }
+
+    .footer-actions {
+      margin-left: auto;
+      display: flex;
+      gap: 10px;
+    }
+
+    .ghost {
+      padding: 10px 16px;
+      border: 1px solid #dce3e1;
+      border-radius: 6px;
+      background: #ffffff;
+      color: #3f4d4b;
+      font-size: 13px;
+      font-weight: 600;
+      line-height: 1.2;
+    }
+
+    .view-all {
+      padding: 10px 18px;
+      border: 0;
+      border-radius: 6px;
+      background: #0b8f86;
+      color: #ffffff;
+      font-size: 13px;
+      font-weight: 600;
+      line-height: 1.2;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <div class="brand">Commonly</div>
+      <nav class="nav">
+        <span>Home</span>
+        <span>Communities</span>
+        <span>Messages</span>
+        <span class="active">Discover</span>
+      </nav>
+      <div class="topbar-right">
+        <div class="search">Search people and communities</div>
+        <div class="me" aria-hidden="true">RM</div>
+      </div>
+    </header>
+
+    <section class="content" aria-labelledby="suggestions-title">
+      <div class="head">
+        <div>
+          <p class="section-label">Suggested for you</p>
+          <h1 id="suggestions-title">People worth following</h1>
+          <p class="intro">Based on your conversations and communities on Commonly.</p>
+        </div>
+        <button class="sort" type="button">Sorted by relevance</button>
+      </div>
+
+      <div class="chips">
+        <button class="chip on" type="button">All suggestions</button>
+        <button class="chip" type="button">Followed by friends</button>
+        <button class="chip" type="button">Neighborhood Notes</button>
+        <button class="chip" type="button">Local news</button>
+        <button class="chip" type="button">Design</button>
+      </div>
+
+      <div class="grid">
+        <article class="card">
+          <div class="card-top">
+            <div class="initials" aria-hidden="true">AM</div>
+            <div class="person-copy">
+              <p class="name">Avery Mercer</p>
+              <p class="handle">@averymercer</p>
+            </div>
+          </div>
+          <p class="context">Followed by Rowan and 8 others</p>
+          <div class="card-actions">
+            <button class="follow" type="button">Follow</button>
+            <button class="dismiss" type="button">Hide</button>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-top">
+            <div class="initials" aria-hidden="true">JL</div>
+            <div class="person-copy">
+              <p class="name">Jordan Lane</p>
+              <p class="handle">@jordanlane</p>
+            </div>
+          </div>
+          <p class="context">Active in Neighborhood Notes</p>
+          <div class="card-actions">
+            <button class="follow" type="button">Follow</button>
+            <button class="dismiss" type="button">Hide</button>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-top">
+            <div class="initials" aria-hidden="true">SC</div>
+            <div class="person-copy">
+              <p class="name">Sydney Cole</p>
+              <p class="handle">@sydcole</p>
+            </div>
+          </div>
+          <p class="context">Followed by Devon and 5 others</p>
+          <div class="card-actions">
+            <button class="follow" type="button">Follow</button>
+            <button class="dismiss" type="button">Hide</button>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-top">
+            <div class="initials" aria-hidden="true">PN</div>
+            <div class="person-copy">
+              <p class="name">Priya Nadar</p>
+              <p class="handle">@priyanadar</p>
+            </div>
+          </div>
+          <p class="context">Writes the Riverside Weekly</p>
+          <div class="card-actions">
+            <button class="follow" type="button">Follow</button>
+            <button class="dismiss" type="button">Hide</button>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-top">
+            <div class="initials" aria-hidden="true">TO</div>
+            <div class="person-copy">
+              <p class="name">Theo Okonkwo</p>
+              <p class="handle">@theookonkwo</p>
+            </div>
+          </div>
+          <p class="context">Followed by Maya and 3 others</p>
+          <div class="card-actions">
+            <button class="follow" type="button">Follow</button>
+            <button class="dismiss" type="button">Hide</button>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-top">
+            <div class="initials" aria-hidden="true">HB</div>
+            <div class="person-copy">
+              <p class="name">Harriet Boone</p>
+              <p class="handle">@harrietboone</p>
+            </div>
+          </div>
+          <p class="context">Moderates Local Makers Circle</p>
+          <div class="card-actions">
+            <button class="follow" type="button">Follow</button>
+            <button class="dismiss" type="button">Hide</button>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <span class="count">Showing 6 of 42 suggestions</span>
+      <div class="footer-actions">
+        <button class="ghost" type="button">Refresh list</button>
+        <button class="view-all" type="button">See all suggestions</button>
+      </div>
+    </footer>
+  </div>
+</body>
+</html>

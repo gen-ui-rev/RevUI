@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Select dates — Wayfare Stays</title>
+<style>
+  :root{
+    --ink:#1c2024;
+    --muted:#6b7280;
+    --line:#e6e8eb;
+    --band:#edeff1;
+    --accent:#232a31;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:24px 0;
+    background:#e5e7ea;
+    font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    color:var(--ink);
+  }
+  .screen{
+    width:1024px;
+    height:768px;
+    padding:40px;
+    background:#f0f1f3;
+    display:flex;
+    flex-direction:column;
+  }
+
+  /* ---- top bar with desktop step rail ---- */
+  .topbar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding-bottom:16px;
+    border-bottom:1px solid #dfe2e5;
+    margin-bottom:22px;
+  }
+  .brand{font-size:16px;font-weight:700;letter-spacing:-.01em}
+  .steps{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--muted)}
+  .steps b{
+    display:inline-flex;align-items:center;gap:7px;
+    font-weight:600;color:var(--ink);
+  }
+  .steps b i{
+    width:18px;height:18px;border-radius:50%;
+    background:var(--accent);color:#fff;
+    font-size:11px;font-style:normal;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .steps s{text-decoration:none}
+  .steps .sep{color:#c3c7cc}
+
+  .card{
+    background:#fff;
+    border-radius:14px;
+    box-shadow:0 8px 24px rgba(20,24,28,.10);
+    padding:28px 32px 26px;
+  }
+
+  .head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:28px;
+    margin-bottom:24px;
+  }
+  .eyebrow{
+    font-size:12px;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    color:var(--muted);
+    margin:0 0 5px;
+  }
+  h1{
+    font-size:24px;
+    font-weight:600;
+    margin:0;
+    letter-spacing:-.015em;
+  }
+  .range{
+    display:flex;
+    align-items:stretch;
+    border:1px solid var(--line);
+    border-radius:10px;
+    overflow:hidden;
+    width:404px;
+    flex:0 0 404px;
+  }
+  .leg{
+    flex:1 1 0;
+    padding:11px 13px;
+    min-width:0;
+    cursor:pointer;
+  }
+  .leg + .leg{border-left:1px solid var(--line)}
+  .leg .lbl{font-size:11px;color:var(--muted);margin:0 0 3px}
+  .leg .val{
+    font-size:15px;font-weight:600;margin:0;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .leg.active{background:#f7f8f9}
+
+  /* ---- two-month calendar ---- */
+  .months{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:32px;
+  }
+  .mhead{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:8px;
+  }
+  .month{
+    flex:1 1 auto;
+    text-align:center;
+    font-size:15px;
+    font-weight:600;
+  }
+  .nb{
+    width:32px;height:32px;
+    border-radius:9px;
+    border:1px solid var(--line);
+    background:#fff;
+    display:flex;align-items:center;justify-content:center;
+    color:var(--ink);
+    cursor:pointer;
+    flex:0 0 32px;
+  }
+  .nb:hover{background:#f7f8f9}
+  .nb.off{color:#c3c7cc;cursor:default}
+  .nb.off:hover{background:#fff}
+  .spacer{width:32px;flex:0 0 32px}
+
+  .grid{display:grid;grid-template-columns:repeat(7,1fr)}
+  .dow{
+    font-size:11px;
+    color:var(--muted);
+    text-align:center;
+    padding:6px 0 4px;
+  }
+  .cell{position:relative;height:48px}
+  .band{
+    position:absolute;
+    top:5px;bottom:5px;left:0;right:0;
+    background:var(--band);
+  }
+  .cell.start .band{left:5px;border-radius:11px 0 0 11px}
+  .cell.end .band{right:5px;border-radius:0 11px 11px 0}
+  .num{
+    position:absolute;
+    top:5px;left:50%;
+    transform:translateX(-50%);
+    width:38px;height:38px;
+    border-radius:11px;
+    display:flex;align-items:center;justify-content:center;
+    font-size:14px;
+    cursor:pointer;
+  }
+  .num:hover{background:#f2f3f5}
+  .cell.edge .num,.cell.edge .num:hover{
+    background:var(--accent);
+    color:#fff;
+    font-weight:600;
+  }
+  .cell.past .num{color:#c3c7cc;cursor:default}
+  .cell.past .num:hover{background:transparent}
+
+  /* ---- price summary bar ---- */
+  .sumbar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:24px;
+    margin-top:24px;
+    padding:16px 20px;
+    background:#f7f8f9;
+    border:1px solid var(--line);
+    border-radius:12px;
+  }
+  .breakdown{display:flex;align-items:center}
+  .bi{padding:0 16px}
+  .bi:first-child{padding-left:0}
+  .bi + .bi{border-left:1px solid #dfe2e5}
+  .bi .lab{
+    display:block;
+    font-size:11px;
+    color:var(--muted);
+    margin-bottom:4px;
+    white-space:nowrap;
+  }
+  .bi .amt{font-size:15px;font-weight:600}
+  .payblock{display:flex;align-items:center;gap:22px}
+  .tot .lab{
+    display:block;
+    font-size:11px;
+    color:var(--muted);
+    margin-bottom:2px;
+    white-space:nowrap;
+  }
+  .tot .amt{
+    font-size:26px;
+    font-weight:700;
+    letter-spacing:-.02em;
+    line-height:1.1;
+  }
+  .cta{
+    border:0;
+    background:var(--accent);
+    color:#fff;
+    font-size:15px;
+    font-weight:600;
+    padding:14px 26px;
+    border-radius:10px;
+    font-family:inherit;
+    cursor:pointer;
+    white-space:nowrap;
+  }
+  .cta:hover{background:#141a20}
+
+  .footnote{
+    display:flex;
+    justify-content:space-between;
+    gap:20px;
+    font-size:12px;
+    color:var(--muted);
+    margin:16px 2px 0;
+  }
+</style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <div class="brand">Wayfare Stays</div>
+      <div class="steps">
+        <b><i>1</i>Dates</b>
+        <span class="sep">›</span>
+        <s>2 Guests</s>
+        <span class="sep">›</span>
+        <s>3 Payment</s>
+      </div>
+    </header>
+
+    <section class="card">
+      <div class="head">
+        <div>
+          <p class="eyebrow">Harbor Loft · Lisbon</p>
+          <h1>Select your stay</h1>
+        </div>
+        <div class="range">
+          <div class="leg">
+            <p class="lbl">Check-in</p>
+            <p class="val">Fri, Apr 11</p>
+          </div>
+          <div class="leg active">
+            <p class="lbl">Check-out</p>
+            <p class="val">Tue, Apr 15</p>
+          </div>
+          <div class="leg">
+            <p class="lbl">Guests</p>
+            <p class="val">2 adults</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="months">
+        <div>
+          <div class="mhead">
+            <span class="nb off" aria-hidden="true">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
+            </span>
+            <span class="month">April 2025</span>
+            <span class="spacer"></span>
+          </div>
+          <div class="grid">
+            <div class="dow">Su</div><div class="dow">Mo</div><div class="dow">Tu</div>
+            <div class="dow">We</div><div class="dow">Th</div><div class="dow">Fr</div><div class="dow">Sa</div>
+
+            <div class="cell"></div>
+            <div class="cell"></div>
+            <div class="cell past"><span class="num">1</span></div>
+            <div class="cell past"><span class="num">2</span></div>
+            <div class="cell"><span class="num">3</span></div>
+            <div class="cell"><span class="num">4</span></div>
+            <div class="cell"><span class="num">5</span></div>
+
+            <div class="cell"><span class="num">6</span></div>
+            <div class="cell"><span class="num">7</span></div>
+            <div class="cell"><span class="num">8</span></div>
+            <div class="cell"><span class="num">9</span></div>
+            <div class="cell"><span class="num">10</span></div>
+            <div class="cell start edge"><span class="band"></span><span class="num">11</span></div>
+            <div class="cell"><span class="band"></span><span class="num">12</span></div>
+
+            <div class="cell"><span class="band"></span><span class="num">13</span></div>
+            <div class="cell"><span class="band"></span><span class="num">14</span></div>
+            <div class="cell end edge"><span class="band"></span><span class="num">15</span></div>
+            <div class="cell"><span class="num">16</span></div>
+            <div class="cell"><span class="num">17</span></div>
+            <div class="cell"><span class="num">18</span></div>
+            <div class="cell"><span class="num">19</span></div>
+
+            <div class="cell"><span class="num">20</span></div>
+            <div class="cell"><span class="num">21</span></div>
+            <div class="cell"><span class="num">22</span></div>
+            <div class="cell"><span class="num">23</span></div>
+            <div class="cell"><span class="num">24</span></div>
+            <div class="cell"><span class="num">25</span></div>
+            <div class="cell"><span class="num">26</span></div>
+
+            <div class="cell"><span class="num">27</span></div>
+            <div class="cell"><span class="num">28</span></div>
+            <div class="cell"><span class="num">29</span></div>
+            <div class="cell"><span class="num">30</span></div>
+            <div class="cell"></div>
+            <div class="cell"></div>
+            <div class="cell"></div>
+          </div>
+        </div>
+
+        <div>
+          <div class="mhead">
+            <span class="spacer"></span>
+            <span class="month">May 2025</span>
+            <span class="nb" aria-hidden="true">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg>
+            </span>
+          </div>
+          <div class="grid">
+            <div class="dow">Su</div><div class="dow">Mo</div><div class="dow">Tu</div>
+            <div class="dow">We</div><div class="dow">Th</div><div class="dow">Fr</div><div class="dow">Sa</div>
+
+            <div class="cell"></div>
+            <div class="cell"></div>
+            <div class="cell"></div>
+            <div class="cell"></div>
+            <div class="cell"><span class="num">1</span></div>
+            <div class="cell"><span class="num">2</span></div>
+            <div class="cell"><span class="num">3</span></div>
+
+            <div class="cell"><span class="num">4</span></div>
+            <div class="cell"><span class="num">5</span></div>
+            <div class="cell"><span class="num">6</span></div>
+            <div class="cell"><span class="num">7</span></div>
+            <div class="cell"><span class="num">8</span></div>
+            <div class="cell"><span class="num">9</span></div>
+            <div class="cell"><span class="num">10</span></div>
+
+            <div class="cell"><span class="num">11</span></div>
+            <div class="cell"><span class="num">12</span></div>
+            <div class="cell"><span class="num">13</span></div>
+            <div class="cell"><span class="num">14</span></div>
+            <div class="cell"><span class="num">15</span></div>
+            <div class="cell"><span class="num">16</span></div>
+            <div class="cell"><span class="num">17</span></div>
+
+            <div class="cell"><span class="num">18</span></div>
+            <div class="cell"><span class="num">19</span></div>
+            <div class="cell"><span class="num">20</span></div>
+            <div class="cell"><span class="num">21</span></div>
+            <div class="cell"><span class="num">22</span></div>
+            <div class="cell"><span class="num">23</span></div>
+            <div class="cell"><span class="num">24</span></div>
+
+            <div class="cell"><span class="num">25</span></div>
+            <div class="cell"><span class="num">26</span></div>
+            <div class="cell"><span class="num">27</span></div>
+            <div class="cell"><span class="num">28</span></div>
+            <div class="cell"><span class="num">29</span></div>
+            <div class="cell"><span class="num">30</span></div>
+            <div class="cell"><span class="num">31</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sumbar">
+        <div class="breakdown">
+          <div class="bi">
+            <span class="lab">4 nights × $149</span>
+            <span class="amt">$596</span>
+          </div>
+          <div class="bi">
+            <span class="lab">Cleaning fee</span>
+            <span class="amt">$65</span>
+          </div>
+          <div class="bi">
+            <span class="lab">Service fee</span>
+            <span class="amt">$42</span>
+          </div>
+          <div class="bi">
+            <span class="lab">City tax &amp; VAT</span>
+            <span class="amt">$37</span>
+          </div>
+        </div>
+        <div class="payblock">
+          <div class="tot">
+            <span class="lab">Total incl. taxes &amp; fees</span>
+            <span class="amt">$740</span>
+          </div>
+          <button class="cta" type="button">Confirm and pay</button>
+        </div>
+      </div>
+
+      <div class="footnote">
+        <span>Check-in from 3:00 PM · Minimum stay is 2 nights.</span>
+        <span>Free cancellation until Apr 4 · You won't be charged yet.</span>
+      </div>
+    </section>
+  </div>
+</body>
+</html>

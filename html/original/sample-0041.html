@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cartloom Shopping Calendar</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #e9edf1;
+      color: #17212b;
+      font-family: 'Inter', system-ui, sans-serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #ffffff;
+      border: 1px solid #dce2e7;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      padding: 12px 16px;
+      border-bottom: 1px solid #e3e8ec;
+    }
+
+    .title-mark {
+      width: 32px;
+      height: 32px;
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      color: #238fd3;
+      background: #eef8fe;
+      border: 1px solid #cce9f8;
+      border-radius: 10px;
+    }
+
+    .top-title {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .top-title h1 {
+      margin: 0;
+      font-size: 18px;
+      line-height: 22px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .top-title p {
+      margin: 2px 0 0;
+      color: #66727d;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .today-button {
+      padding: 7px 11px;
+      color: #238fd3;
+      background: #ffffff;
+      border: 1px solid #a9d7ef;
+      border-radius: 10px;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 600;
+    }
+
+    main {
+      flex: 1;
+      padding: 14px 16px 8px;
+    }
+
+    .calendar-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .month-nav {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+    }
+
+    .month-nav h2 {
+      min-width: 112px;
+      margin: 0;
+      text-align: center;
+      font-size: 16px;
+      line-height: 24px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+
+    .icon-button {
+      width: 30px;
+      height: 30px;
+      display: grid;
+      place-items: center;
+      padding: 0;
+      color: #54616c;
+      background: #ffffff;
+      border: 1px solid transparent;
+      border-radius: 10px;
+    }
+
+    .view-switch {
+      display: flex;
+      padding: 2px;
+      background: #f2f5f7;
+      border: 1px solid #e0e6ea;
+      border-radius: 10px;
+    }
+
+    .view-option {
+      padding: 5px 9px;
+      color: #69757f;
+      background: transparent;
+      border: 0;
+      border-radius: 8px;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 600;
+    }
+
+    .view-option.active {
+      color: #167dbd;
+      background: #ffffff;
+      border: 1px solid #bcdff2;
+    }
+
+    .calendar {
+      margin-top: 10px;
+      border: 1px solid #dfe5e9;
+      border-radius: 10px;
+    }
+
+    .weekday-row,
+    .date-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+    }
+
+    .weekday {
+      padding: 7px 0 6px;
+      color: #73808a;
+      text-align: center;
+      border-right: 1px solid #e7ebee;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 600;
+    }
+
+    .weekday:last-child {
+      border-right: 0;
+    }
+
+    .day {
+      min-width: 0;
+      min-height: 51px;
+      padding: 4px;
+      border-top: 1px solid #e7ebee;
+      border-right: 1px solid #e7ebee;
+      background: #ffffff;
+    }
+
+    .day:nth-child(7n) {
+      border-right: 0;
+    }
+
+    .day.other-month {
+      background: #fafbfc;
+      color: #a5afb7;
+    }
+
+    .day.selected {
+      background: #f3faff;
+    }
+
+    .date-number {
+      width: 23px;
+      height: 21px;
+      display: grid;
+      place-items: center;
+      margin-bottom: 2px;
+      color: #3d4953;
+      border-radius: 10px;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 500;
+    }
+
+    .other-month .date-number {
+      color: #a5afb7;
+    }
+
+    .selected .date-number {
+      color: #ffffff;
+      background: #238fd3;
+      font-weight: 700;
+    }
+
+    .event-chip {
+      width: 100%;
+      padding: 2px 3px;
+      overflow: hidden;
+      color: #167dbd;
+      background: #e8f6fd;
+      border-left: 2px solid #43a9df;
+      border-radius: 3px;
+      font-size: 12px;
+      line-height: 15px;
+      font-weight: 500;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    .selected .event-chip {
+      background: #dff2fc;
+      border-left-color: #238fd3;
+      font-weight: 600;
+    }
+
+    .agenda-heading {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-top: 16px;
+    }
+
+    .agenda-heading h2 {
+      margin: 0;
+      font-size: 16px;
+      line-height: 22px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+
+    .agenda-heading span {
+      color: #69757f;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 500;
+    }
+
+    .agenda-list {
+      margin-top: 8px;
+      border-top: 1px solid #dfe5e9;
+    }
+
+    .agenda-row {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      padding: 10px 0;
+      border-bottom: 1px solid #e5eaed;
+    }
+
+    .agenda-icon {
+      width: 36px;
+      height: 36px;
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      color: #238fd3;
+      background: #f1f9fd;
+      border: 1px solid #cfe8f5;
+      border-radius: 10px;
+    }
+
+    .agenda-copy {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .agenda-copy h3 {
+      margin: 0;
+      overflow: hidden;
+      color: #25313b;
+      font-size: 14px;
+      line-height: 18px;
+      font-weight: 600;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    .agenda-copy p {
+      margin: 3px 0 0;
+      overflow: hidden;
+      color: #6d7882;
+      font-size: 12px;
+      line-height: 16px;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    .agenda-time {
+      flex: 0 0 auto;
+      color: #46525c;
+      text-align: right;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 500;
+    }
+
+    .agenda-time small {
+      display: block;
+      color: #84909a;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 400;
+    }
+
+    .tabbar {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border-top: 1px solid #dfe5e9;
+      background: #ffffff;
+    }
+
+    .tab {
+      position: relative;
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+      gap: 3px;
+      padding: 9px 4px 10px;
+      color: #79858f;
+      text-decoration: none;
+      font-size: 12px;
+      line-height: 15px;
+      font-weight: 500;
+    }
+
+    .tab.active {
+      color: #1685c7;
+      font-weight: 600;
+    }
+
+    .tab.active::before {
+      position: absolute;
+      top: -1px;
+      left: 31px;
+      right: 31px;
+      height: 2px;
+      content: "";
+      background: #238fd3;
+    }
+
+    svg {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <div class="title-mark" aria-hidden="true">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none">
+          <rect x="4" y="5.5" width="16" height="14" rx="2" stroke="currentColor" stroke-width="1.7"/>
+          <path d="M8 3.5V7.5M16 3.5V7.5M4 9.5H20" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+          <path d="M8 13H10M14 13H16M8 16.5H10" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="top-title">
+        <h1>Shopping calendar</h1>
+        <p>Cartloom orders and deadlines</p>
+      </div>
+      <button class="today-button" type="button">Today</button>
+    </header>
+
+    <main>
+      <div class="calendar-toolbar">
+        <div class="month-nav">
+          <button class="icon-button" type="button" aria-label="Previous month">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+              <path d="M14.5 6.5L9 12L14.5 17.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <h2>April 2025</h2>
+          <button class="icon-button" type="button" aria-label="Next month">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+              <path d="M9.5 6.5L15 12L9.5 17.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+
+        <div class="view-switch" aria-label="Calendar view">
+          <button class="view-option active" type="button">Month</button>
+          <button class="view-option" type="button">Week</button>
+        </div>
+      </div>
+
+      <section class="calendar" aria-label="April 2025 calendar">
+        <div class="weekday-row">
+          <div class="weekday">Mon</div>
+          <div class="weekday">Tue</div>
+          <div class="weekday">Wed</div>
+          <div class="weekday">Thu</div>
+          <div class="weekday">Fri</div>
+          <div class="weekday">Sat</div>
+          <div class="weekday">Sun</div>
+        </div>
+
+        <div class="date-grid">
+          <div class="day other-month"><div class="date-number">31</div></div>
+          <div class="day"><div class="date-number">1</div></div>
+          <div class="day"><div class="date-number">2</div><div class="event-chip">Deal</div></div>
+          <div class="day"><div class="date-number">3</div></div>
+          <div class="day"><div class="date-number">4</div><div class="event-chip">Arrives</div></div>
+          <div class="day"><div class="date-number">5</div></div>
+          <div class="day"><div class="date-number">6</div></div>
+
+          <div class="day"><div class="date-number">7</div></div>
+          <div class="day"><div class="date-number">8</div><div class="event-chip">Credit</div></div>
+          <div class="day"><div class="date-number">9</div></div>
+          <div class="day"><div class="date-number">10</div></div>
+          <div class="day"><div class="date-number">11</div><div class="event-chip">Return</div></div>
+          <div class="day"><div class="date-number">12</div></div>
+          <div class="day"><div class="date-number">13</div></div>
+
+          <div class="day"><div class="date-number">14</div></div>
+          <div class="day"><div class="date-number">15</div></div>
+          <div class="day selected"><div class="date-number">16</div><div class="event-chip">4 events</div></div>
+          <div class="day"><div class="date-number">17</div></div>
+          <div class="day"><div class="date-number">18</div><div class="event-chip">Arrives</div></div>
+          <div class="day"><div class="date-number">19</div></div>
+          <div class="day"><div class="date-number">20</div></div>
+
+          <div class="day"><div class="date-number">21</div></div>
+          <div class="day"><div class="date-number">22</div><div class="event-chip">Pickup</div></div>
+          <div class="day"><div class="date-number">23</div></div>
+          <div class="day"><div class="date-number">24</div></div>
+          <div class="day"><div class="date-number">25</div><div class="event-chip">Return</div></div>
+          <div class="day"><div class="date-number">26</div></div>
+          <div class="day"><div class="date-number">27</div></div>
+
+          <div class="day"><div class="date-number">28</div></div>
+          <div class="day"><div class="date-number">29</div><div class="event-chip">Sale</div></div>
+          <div class="day"><div class="date-number">30</div></div>
+          <div class="day other-month"><div class="date-number">1</div></div>
+          <div class="day other-month"><div class="date-number">2</div></div>
+          <div class="day other-month"><div class="date-number">3</div></div>
+          <div class="day other-month"><div class="date-number">4</div></div>
+        </div>
+      </section>
+
+      <div class="agenda-heading">
+        <h2>Wednesday, April 16</h2>
+        <span>4 events</span>
+      </div>
+
+      <section class="agenda-list" aria-label="Events on April 16">
+        <article class="agenda-row">
+          <div class="agenda-icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <path d="M3.5 7.5H14.5V17.5H3.5V7.5Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+              <path d="M14.5 10.5H18L20.5 13.5V17.5H14.5V10.5Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+              <circle cx="7" cy="18" r="2" stroke="currentColor" stroke-width="1.6"/>
+              <circle cx="17.5" cy="18" r="2" stroke="currentColor" stroke-width="1.6"/>
+            </svg>
+          </div>
+          <div class="agenda-copy">
+            <h3>Freshfield pantry order</h3>
+            <p>Delivery to 418 Willow Street</p>
+          </div>
+          <div class="agenda-time">9 AM–1 PM<small>Delivery</small></div>
+        </article>
+
+        <article class="agenda-row">
+          <div class="agenda-icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <path d="M8 7H18.5V17.5H8C5.5 17.5 3.5 15.5 3.5 13C3.5 10.5 5.5 8.5 8 8.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M7 5L4 8.5L7 12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="agenda-copy">
+            <h3>North Harbor jacket</h3>
+            <p>Last day for a free return</p>
+          </div>
+          <div class="agenda-time">All day<small>Return</small></div>
+        </article>
+
+        <article class="agenda-row">
+          <div class="agenda-icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <path d="M4 10H20V19H4V10Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+              <path d="M3 7H21V10H3V7Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+              <path d="M12 7V19M12 7C9.5 7 7.5 5.8 7.5 4.3C7.5 3.2 8.4 2.5 9.5 2.5C11.2 2.5 12 4.5 12 7ZM12 7C14.5 7 16.5 5.8 16.5 4.3C16.5 3.2 15.6 2.5 14.5 2.5C12.8 2.5 12 4.5 12 7Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="agenda-copy">
+            <h3>Spring member sale</h3>
+            <p>Saved items enter early access</p>
+          </div>
+          <div class="agenda-time">10:00 AM<small>Deal starts</small></div>
+        </article>
+
+        <article class="agenda-row">
+          <div class="agenda-icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <rect x="3.5" y="6" width="17" height="13" rx="2" stroke="currentColor" stroke-width="1.6"/>
+              <path d="M3.5 9H20.5M16 13H20.5V16.5H16C15 16.5 14.5 15.8 14.5 14.8C14.5 13.8 15 13 16 13Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="agenda-copy">
+            <h3>Cartloom wallet credit</h3>
+            <p>$18.40 promotional balance</p>
+          </div>
+          <div class="agenda-time">11:59 PM<small>Expires</small></div>
+        </article>
+      </section>
+    </main>
+
+    <nav class="tabbar" aria-label="Primary navigation">
+      <a class="tab" href="#">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M4 10.5L12 4L20 10.5V19.5H14.5V14H9.5V19.5H4V10.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+        </svg>
+        <span>Shop</span>
+      </a>
+      <a class="tab" href="#">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M5 7.5H19V19.5H5V7.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+          <path d="M8 7.5V5.5C8 4.7 8.7 4 9.5 4H14.5C15.3 4 16 4.7 16 5.5V7.5M8 12H16" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+        </svg>
+        <span>Orders</span>
+      </a>
+      <a class="tab active" href="#" aria-current="page">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <rect x="4" y="5.5" width="16" height="14" rx="2" stroke="currentColor" stroke-width="1.7"/>
+          <path d="M8 3.5V7.5M16 3.5V7.5M4 9.5H20M8 13H10M14 13H16M8 16.5H10" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+        </svg>
+        <span>Calendar</span>
+      </a>
+      <a class="tab" href="#">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="12" cy="8" r="3.5" stroke="currentColor" stroke-width="1.7"/>
+          <path d="M5.5 19C6.1 15.7 8.4 14 12 14C15.6 14 17.9 15.7 18.5 19" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+        </svg>
+        <span>Account</span>
+      </a>
+    </nav>
+  </div>
+</body>
+</html>

@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stillwell Workout Player</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 32px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #d8d3cc;
+      color: #272521;
+      font-family: 'Source Serif 4', Georgia, serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      position: relative;
+      width: 390px;
+      height: 844px;
+      background: #f8f5f0;
+    }
+
+    .topbar {
+      height: 58px;
+      padding: 0 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #d8d0c7;
+    }
+
+    .brand {
+      font-size: 20px;
+      line-height: 1;
+      font-weight: 700;
+      letter-spacing: -0.2px;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .icon-button {
+      width: 38px;
+      height: 38px;
+      padding: 0;
+      border: 0;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      color: #38342f;
+      background: transparent;
+    }
+
+    .player {
+      position: relative;
+      width: 390px;
+      height: 220px;
+      background: #4d4943;
+    }
+
+    .player-photo {
+      width: 390px;
+      height: 220px;
+      object-fit: cover;
+      display: block;
+      background: #706a63;
+    }
+
+    .player-shade {
+      position: absolute;
+      inset: 0;
+      background: rgba(25, 23, 21, 0.31);
+    }
+
+    .player-heading {
+      position: absolute;
+      top: 14px;
+      left: 18px;
+      right: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: #fff;
+    }
+
+    .playing-label {
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .player-center {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 30px;
+    }
+
+    .skip-control {
+      width: 40px;
+      padding: 0;
+      border: 0;
+      color: #fff;
+      background: transparent;
+      text-align: center;
+    }
+
+    .skip-control span {
+      display: block;
+      margin-top: 2px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .pause-control {
+      width: 62px;
+      height: 62px;
+      padding: 0;
+      border: 0;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      color: #fff;
+      background: #9a8879;
+    }
+
+    .player-bottom {
+      position: absolute;
+      right: 18px;
+      bottom: 14px;
+      left: 18px;
+      color: #fff;
+    }
+
+    .time-row {
+      margin-bottom: 7px;
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .progress-track {
+      position: relative;
+      width: 100%;
+      height: 4px;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.48);
+    }
+
+    .progress-fill {
+      width: 37%;
+      height: 4px;
+      border-radius: 14px;
+      background: #d6c6ba;
+    }
+
+    .progress-knob {
+      position: absolute;
+      top: 50%;
+      left: 37%;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #fff;
+      transform: translate(-50%, -50%);
+    }
+
+    .session {
+      padding: 18px 20px 17px;
+      border-bottom: 1px solid #d8d0c7;
+    }
+
+    .eyebrow {
+      margin: 0 0 4px;
+      color: #806f61;
+      font-size: 13px;
+      line-height: 1.3;
+      font-weight: 700;
+      letter-spacing: 0.45px;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 25px;
+      line-height: 1.16;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+    }
+
+    .session-meta {
+      margin: 7px 0 0;
+      color: #68615a;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    .session-actions {
+      margin-top: 15px;
+      display: flex;
+      align-items: center;
+      gap: 26px;
+    }
+
+    .text-action {
+      padding: 0;
+      border: 0;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      color: #4d463f;
+      background: transparent;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .text-action.accent {
+      color: #806f61;
+    }
+
+    .queue {
+      padding: 16px 20px 0;
+    }
+
+    .section-title {
+      margin: 0 0 3px;
+      font-size: 18px;
+      line-height: 1.3;
+      font-weight: 700;
+    }
+
+    .section-note {
+      margin: 0 0 8px;
+      color: #746d66;
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
+    .queue-row {
+      min-height: 72px;
+      padding: 9px 0;
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      border-top: 1px solid #ddd5cd;
+    }
+
+    .queue-thumb {
+      width: 82px;
+      height: 54px;
+      flex: 0 0 auto;
+      object-fit: cover;
+      display: block;
+      border-radius: 14px;
+      background: #b7aea5;
+    }
+
+    .queue-copy {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .queue-title {
+      margin: 0;
+      overflow: hidden;
+      color: #2f2b27;
+      font-size: 15px;
+      line-height: 1.3;
+      font-weight: 600;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .queue-meta {
+      margin: 3px 0 0;
+      color: #746d66;
+      font-size: 13px;
+      line-height: 1.3;
+    }
+
+    .duration {
+      flex: 0 0 auto;
+      color: #5c554e;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .tabbar {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      height: 72px;
+      padding: 8px 12px 7px;
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      border-top: 1px solid #d4ccc4;
+      background: #f8f5f0;
+    }
+
+    .tab {
+      width: 76px;
+      padding: 2px 0;
+      border: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      color: #756e67;
+      background: transparent;
+      font-size: 12px;
+      line-height: 1.2;
+      font-weight: 600;
+    }
+
+    .tab.active {
+      color: #806f61;
+    }
+
+    svg {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <div class="brand">Stillwell</div>
+      <div class="top-actions">
+        <button class="icon-button" aria-label="Send workout to TV">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M5 18.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3Z" fill="currentColor"/>
+            <path d="M3.5 14.5a6 6 0 0 1 6 6M3.5 10a10.5 10.5 0 0 1 10.5 10.5M7 4h11a2 2 0 0 1 2 2v11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+        </button>
+        <button class="icon-button" aria-label="Close player">
+          <svg width="21" height="21" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="m6 6 12 12M18 6 6 18" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <main>
+      <section class="player" aria-label="Workout video player">
+        <img class="player-photo" src="https://loremflickr.com/390/220/running?lock=7610" width="390" height="220" alt="Runner training outdoors during an interval workout">
+        <div class="player-shade"></div>
+
+        <div class="player-heading">
+          <span class="playing-label">Interval 3 of 6</span>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M8 3H5a2 2 0 0 0-2 2v3M16 3h3a2 2 0 0 1 2 2v3M8 21H5a2 2 0 0 1-2-2v-3M16 21h3a2 2 0 0 0 2-2v-3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+        </div>
+
+        <div class="player-center">
+          <button class="skip-control" aria-label="Go back 10 seconds">
+            <svg width="30" height="30" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+              <path d="M8.5 10V5.5L4 10l4.5 4.5V10ZM7 10a10 10 0 1 1-1 9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span>10</span>
+          </button>
+
+          <button class="pause-control" aria-label="Pause workout">
+            <svg width="25" height="25" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M8.5 6v12M15.5 6v12" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/>
+            </svg>
+          </button>
+
+          <button class="skip-control" aria-label="Go forward 10 seconds">
+            <svg width="30" height="30" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+              <path d="M23.5 10V5.5L28 10l-4.5 4.5V10ZM25 10a10 10 0 1 0 1 9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span>10</span>
+          </button>
+        </div>
+
+        <div class="player-bottom">
+          <div class="time-row">
+            <span>08:42</span>
+            <span>23:30</span>
+          </div>
+          <div class="progress-track">
+            <div class="progress-fill"></div>
+            <div class="progress-knob"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="session" aria-labelledby="workout-title">
+        <p class="eyebrow">Now playing</p>
+        <h1 id="workout-title">Low-Impact Run Intervals</h1>
+        <p class="session-meta">With Rowan Hale · Moderate · No equipment</p>
+        <div class="session-actions">
+          <button class="text-action accent">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M6 3.5h12v17l-6-3.6-6 3.6v-17Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+            </svg>
+            Save
+          </button>
+          <button class="text-action">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M8 12h8M12 8v8M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+            </svg>
+            Add 5 minutes
+          </button>
+        </div>
+      </section>
+
+      <section class="queue" aria-labelledby="queue-title">
+        <h2 class="section-title" id="queue-title">Up next</h2>
+        <p class="section-note">Your cooldown starts when this session ends.</p>
+
+        <div class="queue-row">
+          <img class="queue-thumb" src="https://loremflickr.com/82/54/gym?lock=7611" width="82" height="54" alt="Athlete stretching in a gym">
+          <div class="queue-copy">
+            <p class="queue-title">Standing Recovery Stretch</p>
+            <p class="queue-meta">Guided cooldown · Easy</p>
+          </div>
+          <span class="duration">8 min</span>
+        </div>
+
+        <div class="queue-row">
+          <img class="queue-thumb" src="https://loremflickr.com/82/54/running?lock=7612" width="82" height="54" alt="Runner cooling down after training">
+          <div class="queue-copy">
+            <p class="queue-title">Breath and Pace Reset</p>
+            <p class="queue-meta">Recovery · Easy</p>
+          </div>
+          <span class="duration">6 min</span>
+        </div>
+      </section>
+    </main>
+
+    <nav class="tabbar" aria-label="Primary navigation">
+      <button class="tab">
+        <svg width="23" height="23" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="m4 10 8-6 8 6v10H4V10Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+          <path d="M9.5 20v-6h5v6" stroke="currentColor" stroke-width="1.7"/>
+        </svg>
+        Home
+      </button>
+      <button class="tab active" aria-current="page">
+        <svg width="23" height="23" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M5 8h14M5 16h14M7 5v6M17 5v6M7 13v6M17 13v6M3 9.5v-3M21 9.5v-3M3 17.5v-3M21 17.5v-3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+        </svg>
+        Move
+      </button>
+      <button class="tab">
+        <svg width="23" height="23" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M6 4.5h12v15H6v-15Z" stroke="currentColor" stroke-width="1.7"/>
+          <path d="M9 8h6M9 12h6M9 16h4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+        </svg>
+        Plan
+      </button>
+      <button class="tab">
+        <svg width="23" height="23" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="12" cy="8" r="3.5" stroke="currentColor" stroke-width="1.7"/>
+          <path d="M5.5 20c.8-4 3-6 6.5-6s5.7 2 6.5 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+        </svg>
+        Profile
+      </button>
+    </nav>
+  </div>
+</body>
+</html>

@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gatherpost Volunteer Schedule</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #d7d7d7;
+      color: #202020;
+      font-family: 'Inter', system-ui, sans-serif;
+    }
+
+    button {
+      margin: 0;
+      border: 0;
+      padding: 0;
+      background: none;
+      color: inherit;
+      font: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #f1f1f1;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 11px 14px 10px 16px;
+      background: #14432c;
+      border-bottom: 1px solid #0f3623;
+    }
+
+    .brand {
+      margin: 0 0 2px;
+      color: #9dc2ab;
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 15px;
+    }
+
+    h1 {
+      margin: 0;
+      color: #ffffff;
+      font-size: 23px;
+      font-weight: 700;
+      line-height: 27px;
+      letter-spacing: -0.3px;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .icon-button {
+      width: 36px;
+      height: 36px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      background: transparent;
+      color: #ffffff;
+    }
+
+    .icon-button.primary {
+      border-color: #ffffff;
+      background: rgba(255, 255, 255, 0.2);
+      color: #ffffff;
+    }
+
+    .icon-button svg {
+      width: 19px;
+      height: 19px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .mail-tabs {
+      display: flex;
+      gap: 25px;
+      padding: 0 16px;
+      background: #ffffff;
+      border-bottom: 1px solid #dddddd;
+    }
+
+    .mail-tab {
+      position: relative;
+      padding: 12px 0 10px;
+      color: #797979;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 17px;
+    }
+
+    .mail-tab.active {
+      color: #14432c;
+      font-weight: 600;
+    }
+
+    .mail-tab.active::after {
+      content: "";
+      position: absolute;
+      right: 0;
+      bottom: -1px;
+      left: 0;
+      height: 3px;
+      background: #14432c;
+    }
+
+    .mailbox {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .mail-tools {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 9px 14px;
+      color: #656565;
+      font-size: 14px;
+      line-height: 18px;
+    }
+
+    .mail-tools strong {
+      color: #14432c;
+      font-weight: 600;
+    }
+
+    .filter-button {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      color: #515151;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .filter-button svg {
+      width: 15px;
+      height: 15px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.7;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .schedule {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding: 0 12px;
+    }
+
+    .day-card {
+      background: #ffffff;
+      border-left: 4px solid #cddbd1;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.09);
+    }
+
+    .day-card.today {
+      border-left-color: #14432c;
+    }
+
+    .day-card-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      padding: 7px 12px;
+      background: #f2f6f3;
+      border-bottom: 1px solid #e2eae4;
+    }
+
+    .day-name {
+      color: #14432c;
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 16px;
+    }
+
+    .day-meta {
+      color: #6f8377;
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 15px;
+    }
+
+    .shift-row {
+      display: grid;
+      grid-template-columns: 66px minmax(0, 1fr);
+      padding: 8px 12px;
+      border-bottom: 1px solid #ecefed;
+    }
+
+    .day-card .shift-row:last-child {
+      border-bottom: 0;
+    }
+
+    .shift-clock {
+      padding-right: 10px;
+    }
+
+    .shift-start {
+      color: #1c3a29;
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 16px;
+      white-space: nowrap;
+    }
+
+    .shift-length {
+      color: #8a9a90;
+      font-size: 11px;
+      font-weight: 500;
+      line-height: 14px;
+    }
+
+    .shift-body {
+      min-width: 0;
+      padding-left: 11px;
+      border-left: 1px solid #dfe6e1;
+    }
+
+    .shift-role {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      min-width: 0;
+      line-height: 18px;
+    }
+
+    .shift-role .role-name {
+      min-width: 0;
+      flex: 1;
+      overflow: hidden;
+      color: #171717;
+      font-size: 14px;
+      font-weight: 600;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .tag {
+      flex: 0 0 auto;
+      padding: 1px 6px;
+      background: #f4ece1;
+      color: #8f5a20;
+      font-size: 11px;
+      font-weight: 600;
+      line-height: 15px;
+      white-space: nowrap;
+    }
+
+    .shift-place {
+      overflow: hidden;
+      color: #757b77;
+      font-size: 13px;
+      font-weight: 400;
+      line-height: 17px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .bottom-nav {
+      margin-top: auto;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      padding: 8px 4px 9px;
+      border-top: 1px solid #d7d7d7;
+      background: #ffffff;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      color: #818181;
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 14px;
+    }
+
+    .nav-item.active {
+      color: #14432c;
+      font-weight: 600;
+    }
+
+    .nav-item svg {
+      width: 21px;
+      height: 21px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.7;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .nav-item.active .mail-fill {
+      fill: #e6ede8;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <div>
+        <p class="brand">Harvest Table Food Bank</p>
+        <h1>Volunteer Shifts</h1>
+      </div>
+      <div class="top-actions">
+        <button class="icon-button" type="button" aria-label="Search shifts">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="10.5" cy="10.5" r="6.5"></circle>
+            <path d="M15.5 15.5 21 21"></path>
+          </svg>
+        </button>
+        <button class="icon-button primary" type="button" aria-label="Claim an open shift">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 5v14"></path>
+            <path d="M5 12h14"></path>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <nav class="mail-tabs" aria-label="Schedule views">
+      <button class="mail-tab active" type="button">Upcoming</button>
+      <button class="mail-tab" type="button">Open Shifts</button>
+      <button class="mail-tab" type="button">Logged</button>
+    </nav>
+
+    <main class="mailbox">
+      <div class="mail-tools">
+        <span><strong>19.5 hrs</strong> booked this week</span>
+        <button class="filter-button" type="button">
+          By day
+          <svg viewBox="0 0 20 20" aria-hidden="true">
+            <path d="m6 8 4 4 4-4"></path>
+          </svg>
+        </button>
+      </div>
+
+      <section class="schedule" aria-label="Volunteer shifts by day">
+        <article class="day-card today">
+          <header class="day-card-head">
+            <span class="day-name">Today · Wed May 21</span>
+            <span class="day-meta">3 shifts · 7.5 hrs</span>
+          </header>
+          <div class="shift-row">
+            <div class="shift-clock">
+              <div class="shift-start">8:00 AM</div>
+              <div class="shift-length">3 hrs</div>
+            </div>
+            <div class="shift-body">
+              <div class="shift-role">
+                <span class="role-name">Morning Sort Line</span>
+                <span class="tag">Confirm</span>
+              </div>
+              <div class="shift-place">Warehouse Bay 2 · with Dana Reyes</div>
+            </div>
+          </div>
+          <div class="shift-row">
+            <div class="shift-clock">
+              <div class="shift-start">11:30 AM</div>
+              <div class="shift-length">2 hrs</div>
+            </div>
+            <div class="shift-body">
+              <div class="shift-role">
+                <span class="role-name">Client Pickup Desk</span>
+              </div>
+              <div class="shift-place">Front Lobby · greeter station</div>
+            </div>
+          </div>
+          <div class="shift-row">
+            <div class="shift-clock">
+              <div class="shift-start">2:00 PM</div>
+              <div class="shift-length">2.5 hrs</div>
+            </div>
+            <div class="shift-body">
+              <div class="shift-role">
+                <span class="role-name">Produce Rescue Run</span>
+                <span class="tag">Confirm</span>
+              </div>
+              <div class="shift-place">Loading Dock A · van route west</div>
+            </div>
+          </div>
+        </article>
+
+        <article class="day-card">
+          <header class="day-card-head">
+            <span class="day-name">Tomorrow · Thu May 22</span>
+            <span class="day-meta">3 shifts · 7 hrs</span>
+          </header>
+          <div class="shift-row">
+            <div class="shift-clock">
+              <div class="shift-start">9:00 AM</div>
+              <div class="shift-length">3 hrs</div>
+            </div>
+            <div class="shift-body">
+              <div class="shift-role">
+                <span class="role-name">Pantry Restock</span>
+              </div>
+              <div class="shift-place">Aisles 3–5 · canned goods</div>
+            </div>
+          </div>
+          <div class="shift-row">
+            <div class="shift-clock">
+              <div class="shift-start">1:00 PM</div>
+              <div class="shift-length">2 hrs</div>
+            </div>
+            <div class="shift-body">
+              <div class="shift-role">
+                <span class="role-name">Kids Snack Packs</span>
+              </div>
+              <div class="shift-place">Community Room · packing tables</div>
+            </div>
+          </div>
+          <div class="shift-row">
+            <div class="shift-clock">
+              <div class="shift-start">5:00 PM</div>
+              <div class="shift-length">2 hrs</div>
+            </div>
+            <div class="shift-body">
+              <div class="shift-role">
+                <span class="role-name">Evening Delivery Prep</span>
+              </div>
+              <div class="shift-place">Loading Dock B · 40 home boxes</div>
+            </div>
+          </div>
+        </article>
+
+        <article class="day-card">
+          <header class="day-card-head">
+            <span class="day-name">Fri May 23</span>
+            <span class="day-meta">3 shifts · 5.5 hrs</span>
+          </header>
+          <div class="shift-row">
+            <div class="shift-clock">
+              <div class="shift-start">10:00 AM</div>
+              <div class="shift-length">1 hr</div>
+            </div>
+            <div class="shift-body">
+              <div class="shift-role">
+                <span class="role-name">Volunteer Orientation</span>
+              </div>
+              <div class="shift-place">Training Room · new team intake</div>
+            </div>
+          </div>
+          <div class="shift-row">
+            <div class="shift-clock">
+              <div class="shift-start">12:00 PM</div>
+              <div class="shift-length">3 hrs</div>
+            </div>
+            <div class="shift-body">
+              <div class="shift-role">
+                <span class="role-name">Weekend Box Build</span>
+              </div>
+              <div class="shift-place">Warehouse Bay 1 · 120 boxes</div>
+            </div>
+          </div>
+          <div class="shift-row">
+            <div class="shift-clock">
+              <div class="shift-start">3:30 PM</div>
+              <div class="shift-length">1.5 hrs</div>
+            </div>
+            <div class="shift-body">
+              <div class="shift-role">
+                <span class="role-name">Freezer Inventory</span>
+              </div>
+              <div class="shift-place">Cold Storage · count and log</div>
+            </div>
+          </div>
+        </article>
+      </section>
+    </main>
+
+    <nav class="bottom-nav" aria-label="Main navigation">
+      <button class="nav-item" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="m3 11 9-7 9 7"></path>
+          <path d="M5 10v10h14V10"></path>
+          <path d="M9 20v-6h6v6"></path>
+        </svg>
+        <span>Home</span>
+      </button>
+      <button class="nav-item" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="8" cy="9" r="3"></circle>
+          <circle cx="16.5" cy="10" r="2.5"></circle>
+          <path d="M2.5 20c.6-4.3 2.4-6.5 5.7-6.5s5.2 2.2 5.8 6.5"></path>
+          <path d="M14 15c4-.5 6.5 1.2 7.2 5"></path>
+        </svg>
+        <span>Team</span>
+      </button>
+      <button class="nav-item active" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path class="mail-fill" d="M3 5h18v15H3z"></path>
+          <path d="M3 5h18v15H3z"></path>
+          <path d="M3 10h18"></path>
+          <path d="M8 3v4M16 3v4"></path>
+        </svg>
+        <span>Schedule</span>
+      </button>
+      <button class="nav-item" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="8" r="4"></circle>
+          <path d="M4.5 21c.8-5.2 3.3-7.8 7.5-7.8s6.7 2.6 7.5 7.8"></path>
+        </svg>
+        <span>Profile</span>
+      </button>
+    </nav>
+  </div>
+</body>
+</html>

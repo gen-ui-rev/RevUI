@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nearfolk Ratings and Reviews</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 32px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #e4e4e7;
+      color: #18181b;
+      font-family: 'Roboto', system-ui, sans-serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #ffffff;
+      border: 1px solid #d4d4d8;
+    }
+
+    .top-bar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 15px 16px;
+      border-bottom: 1px solid #e4e4e7;
+    }
+
+    .icon-button {
+      width: 24px;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #3f3f46;
+      background: transparent;
+      border: 0;
+    }
+
+    .icon-button svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .top-title {
+      flex: 1;
+      margin: 0;
+      font-size: 18px;
+      line-height: 24px;
+      font-weight: 700;
+    }
+
+    .community {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 16px;
+    }
+
+    .community img {
+      width: 56px;
+      height: 56px;
+      flex: 0 0 auto;
+      display: block;
+      object-fit: cover;
+      background: #d4d4d8;
+      border-radius: 6px;
+    }
+
+    .community-copy {
+      min-width: 0;
+    }
+
+    .community-name {
+      margin: 0 0 4px;
+      font-size: 17px;
+      line-height: 22px;
+      font-weight: 700;
+    }
+
+    .community-meta {
+      margin: 0;
+      color: #71717a;
+      font-size: 14px;
+      line-height: 19px;
+    }
+
+    .tabs {
+      display: flex;
+      padding: 0 16px;
+      border-bottom: 1px solid #d4d4d8;
+    }
+
+    .tab {
+      position: relative;
+      flex: 1;
+      padding: 11px 4px 10px;
+      color: #71717a;
+      text-align: center;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 500;
+    }
+
+    .tab.active {
+      color: #27272a;
+    }
+
+    .tab.active::after {
+      position: absolute;
+      right: 12px;
+      bottom: -1px;
+      left: 12px;
+      height: 2px;
+      background: #3f3f46;
+      content: "";
+    }
+
+    .rating-section {
+      padding: 14px 16px 15px;
+      border-bottom: 1px solid #d4d4d8;
+    }
+
+    .section-heading {
+      margin: 0 0 11px;
+      font-size: 15px;
+      line-height: 20px;
+      font-weight: 700;
+    }
+
+    .rating-layout {
+      display: grid;
+      grid-template-columns: 105px 1fr;
+      gap: 17px;
+      align-items: center;
+    }
+
+    .rating-total {
+      text-align: center;
+    }
+
+    .rating-number {
+      margin: 0;
+      color: #27272a;
+      font-size: 38px;
+      line-height: 42px;
+      font-weight: 700;
+    }
+
+    .stars {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      color: #3f3f46;
+    }
+
+    .rating-total .stars {
+      justify-content: center;
+      margin-top: 3px;
+    }
+
+    .stars svg {
+      width: 15px;
+      height: 15px;
+      flex: 0 0 auto;
+    }
+
+    .rating-count {
+      margin: 4px 0 0;
+      color: #71717a;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .distribution {
+      display: grid;
+      gap: 5px;
+    }
+
+    .distribution-row {
+      display: grid;
+      grid-template-columns: 10px 1fr 29px;
+      gap: 7px;
+      align-items: center;
+      color: #71717a;
+      font-size: 12px;
+      line-height: 14px;
+    }
+
+    .bar {
+      height: 6px;
+      background: #e4e4e7;
+      border-radius: 6px;
+    }
+
+    .bar-fill {
+      height: 6px;
+      background: #52525b;
+      border-radius: 6px;
+    }
+
+    .percent {
+      text-align: right;
+    }
+
+    .review-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 16px;
+      border-bottom: 1px solid #d4d4d8;
+    }
+
+    .review-count {
+      margin: 0;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 500;
+    }
+
+    .sort-button {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 0;
+      color: #52525b;
+      background: transparent;
+      border: 0;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 500;
+    }
+
+    .sort-button svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .review-list {
+      flex: 1;
+    }
+
+    .review {
+      display: grid;
+      grid-template-columns: 36px 1fr;
+      gap: 10px;
+      padding: 12px 16px;
+      border-bottom: 1px solid #e4e4e7;
+    }
+
+    .monogram {
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #3f3f46;
+      background: #e4e4e7;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .review-content {
+      min-width: 0;
+    }
+
+    .review-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .review-name {
+      margin: 0;
+      font-size: 14px;
+      line-height: 19px;
+      font-weight: 700;
+    }
+
+    .review-date {
+      flex: 0 0 auto;
+      color: #71717a;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .review .stars {
+      margin-top: 2px;
+    }
+
+    .review .stars svg {
+      width: 13px;
+      height: 13px;
+    }
+
+    .review-text {
+      margin: 6px 0 0;
+      color: #3f3f46;
+      font-size: 14px;
+      line-height: 19px;
+    }
+
+    .helpful {
+      margin: 6px 0 0;
+      color: #71717a;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .bottom-nav {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      padding: 8px 8px 9px;
+      border-top: 1px solid #d4d4d8;
+      background: #ffffff;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      color: #71717a;
+      font-size: 12px;
+      line-height: 15px;
+      font-weight: 500;
+    }
+
+    .nav-item.active {
+      color: #27272a;
+    }
+
+    .nav-item svg {
+      width: 21px;
+      height: 21px;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="top-bar">
+      <button class="icon-button" type="button" aria-label="Go back">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <h1 class="top-title">Ratings &amp; reviews</h1>
+      <button class="icon-button" type="button" aria-label="Share community">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="18" cy="5" r="2.25" stroke="currentColor" stroke-width="1.7"/>
+          <circle cx="6" cy="12" r="2.25" stroke="currentColor" stroke-width="1.7"/>
+          <circle cx="18" cy="19" r="2.25" stroke="currentColor" stroke-width="1.7"/>
+          <path d="M8 11L16 6.2M8 13L16 17.8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </header>
+
+    <section class="community" aria-label="Community details">
+      <img src="https://loremflickr.com/56/56/friends?lock=3150" width="56" height="56" alt="Friends gathered around a table at the Sunday Table community">
+      <div class="community-copy">
+        <h2 class="community-name">Sunday Table</h2>
+        <p class="community-meta">Local community · 1,840 members</p>
+      </div>
+    </section>
+
+    <nav class="tabs" aria-label="Community sections">
+      <div class="tab">Overview</div>
+      <div class="tab active">Reviews</div>
+      <div class="tab">Members</div>
+    </nav>
+
+    <main class="review-list">
+      <section class="rating-section" aria-labelledby="member-rating">
+        <h2 class="section-heading" id="member-rating">Member rating</h2>
+        <div class="rating-layout">
+          <div class="rating-total">
+            <p class="rating-number">4.6</p>
+            <div class="stars" aria-label="4.6 out of 5 stars">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.7l2.82 5.72 6.31.92-4.56 4.44 1.08 6.28L12 17.09l-5.65 2.97 1.08-6.28-4.56-4.44 6.31-.92L12 2.7z"/></svg>
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.7l2.82 5.72 6.31.92-4.56 4.44 1.08 6.28L12 17.09l-5.65 2.97 1.08-6.28-4.56-4.44 6.31-.92L12 2.7z"/></svg>
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.7l2.82 5.72 6.31.92-4.56 4.44 1.08 6.28L12 17.09l-5.65 2.97 1.08-6.28-4.56-4.44 6.31-.92L12 2.7z"/></svg>
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.7l2.82 5.72 6.31.92-4.56 4.44 1.08 6.28L12 17.09l-5.65 2.97 1.08-6.28-4.56-4.44 6.31-.92L12 2.7z"/></svg>
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.7l2.82 5.72 6.31.92-4.56 4.44 1.08 6.28L12 17.09l-5.65 2.97 1.08-6.28-4.56-4.44 6.31-.92L12 2.7z"/></svg>
+            </div>
+            <p class="rating-count">248 ratings</p>
+          </div>
+
+          <div class="distribution" aria-label="Rating distribution">
+            <div class="distribution-row">
+              <span>5</span><div class="bar"><div class="bar-fill" style="width:72%"></div></div><span class="percent">72%</span>
+            </div>
+            <div class="distribution-row">
+              <span>4</span><div class="bar"><div class="bar-fill" style="width:18%"></div></div><span class="percent">18%</span>
+            </div>
+            <div class="distribution-row">
+              <span>3</span><div class="bar"><div class="bar-fill" style="width:6%"></div></div><span class="percent">6%</span>
+            </div>
+            <div class="distribution-row">
+              <span>2</span><div class="bar"><div class="bar-fill" style="width:3%"></div></div><span class="percent">3%</span>
+            </div>
+            <div class="distribution-row">
+              <span>1</span><div class="bar"><div class="bar-fill" style="width:1%"></div></div><span class="percent">1%</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="review-toolbar">
+        <p class="review-count">248 reviews</p>
+        <button class="sort-button" type="button">
+          Most helpful
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M7 10L12 15L17 10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+
+      <article class="review">
+        <div class="monogram" aria-hidden="true">MW</div>
+        <div class="review-content">
+          <div class="review-head">
+            <h3 class="review-name">Mara Wells</h3>
+            <span class="review-date">May 18, 2025</span>
+          </div>
+          <div class="stars" aria-label="5 out of 5 stars">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.7l2.82 5.72 6.31.92-4.56 4.44 1.08 6.28L12 17.09l-5.65 2.97 1.08-6.28-4.56-4.44 6.31-.92L12 2.7z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.7l2.82 5.72 6.31.92-4.56 4.44 1.08 6.28L12 17.09l-5.65 2.97 1.08-6.28-4.56-4.44 6.31-.92L12 2.7z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.7l2.82 5.72 6.31.92-4.56 4.44 1.08 6.28L12 17.09l-5.65 2.97 1.08-6.28-4.56-4.44 6.31-.92L12 2.7z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.7l2.82 5.72 6.31.92-4.56 4.44 1.08 6.28L12 17.09l-5.65 2.97 1.08-6.28-4.56-4.44 6.31-.92L12 2.7z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.7l2.82 5.72 6.31.92-4.56 4.44 1.08 6.28L12 17.09l-5.65 2.97 1.08-6.28-4.56-4.44 6.31-.92L12 2.7z"/></svg>
+          </div>
+          <p class="review-text">The hosts make introductions easy, and the weekly dinners feel welcoming without being forced.</p>
+          <p class="helpful">Helpful to 34 members</p>
+        </div>
+      </article>
+
+      <article class="review">
+        <div class="monogram" aria-hidden="true">DL</div>
+        <div class="review-content">
+          <div class="review-head">
+            <h3 class="review-name">Dorian Lee</h3>
+            <span class="review-date">May 3, 2025</span>
+          </div>
+          <div class="stars" aria-label="4 out of 5 stars">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.7l2.82 5.72 6.31.92-4.56 4.44 1.08 6.28L12 17.09l-5.65 2.97 1.08-6.28-4.56-4.44 6.31-.92L12 2.7z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.7l2.82 5.72 6.31.92-4.56 4.44 1.08 6.28L12 17.09l-5.65 2.97 1.08-6.28-4.56-4.44 6.31-.92L12 2.7z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.7l2.82 5.72 6.31.92-4.56 4.44 1.08 6.28L12 17.09l-5.65 2.97 1.08-6.28-4.56-4.44 6.31-.92L12 2.7z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.7l2.82 5.72 6.31.92-4.56 4.44 1.08 6.28L12 17.09l-5.65 2.97 1.08-6.28-4.56-4.44 6.31-.92L12 2.7z"/></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M12 2.7l2.82 5.72 6.31.92-4.56 4.44 1.08 6.28L12 17.09l-5.65 2.97 1.08-6.28-4.56-4.44 6.31-.92L12 2.7z"/></svg>
+          </div>
+          <p class="review-text">Good mix of regulars and newcomers. Weekend events fill quickly, so planning ahead helps.</p>
+          <p class="helpful">Helpful to 19 members</p>
+        </div>
+      </article>
+
+      <article class="review">
+        <div class="monogram" aria-hidden="true">NC</div>
+        <div class="review-content">
+          <div class="review-head">
+            <h3 class="review-name">Nora Clarke</h3>
+            <span class="review-date">Apr 21, 2025</span>
+          </div>
+          <div class="stars" aria-label="5 out of 5 stars">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.7l2.82 5.72 6.31.92-4.56 4.44 1.08 6.28L12 17.09l-5.65 2.97 1.08-6.28-4.56-4.44 6.31-.92L12 2.7z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.7l2.82 5.72 6.31.92-4.56 4.44 1.08 6.28L12 17.09l-5.65 2.97 1.08-6.28-4.56-4.44 6.31-.92L12 2.7z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.7l2.82 5.72 6.31.92-4.56 4.44 1.08 6.28L12 17.09l-5.65 2.97 1.08-6.28-4.56-4.44 6.31-.92L12 2.7z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.7l2.82 5.72 6.31.92-4.56 4.44 1.08 6.28L12 17.09l-5.65 2.97 1.08-6.28-4.56-4.44 6.31-.92L12 2.7z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.7l2.82 5.72 6.31.92-4.56 4.44 1.08 6.28L12 17.09l-5.65 2.97 1.08-6.28-4.56-4.44 6.31-.92L12 2.7z"/></svg>
+          </div>
+          <p class="review-text">Clear event details, thoughtful moderators, and plenty of smaller meetups for quieter members.</p>
+          <p class="helpful">Helpful to 12 members</p>
+        </div>
+      </article>
+    </main>
+
+    <nav class="bottom-nav" aria-label="Primary navigation">
+      <div class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M4 10.5L12 4L20 10.5V20H14.5V14H9.5V20H4V10.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+        </svg>
+        <span>Home</span>
+      </div>
+      <div class="nav-item active">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.7"/>
+          <path d="M14.8 9.2L13.2 13.2L9.2 14.8L10.8 10.8L14.8 9.2Z" fill="currentColor"/>
+        </svg>
+        <span>Discover</span>
+      </div>
+      <div class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M4 5.5H20V16.5H10L6 20V16.5H4V5.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+        </svg>
+        <span>Messages</span>
+      </div>
+      <div class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="12" cy="8" r="3.2" stroke="currentColor" stroke-width="1.7"/>
+          <path d="M5.5 20C6 16.4 8.2 14.5 12 14.5C15.8 14.5 18 16.4 18.5 20" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+        </svg>
+        <span>Profile</span>
+      </div>
+    </nav>
+  </div>
+</body>
+</html>

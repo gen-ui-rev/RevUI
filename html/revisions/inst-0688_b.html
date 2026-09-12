@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Waypoint — Inbox</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 40px 0;
+    margin: 0;
+    background: #e8e8ec;
+    font-family: 'Roboto', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .screen {
+    width: 390px;
+    height: 844px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    color: #16151a;
+    background: #f8f7fa;
+  }
+
+  .identity {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding: 14px 16px 10px;
+    background: #ffffff;
+  }
+  .avatar {
+    width: 40px;
+    height: 40px;
+    flex: 0 0 40px;
+    display: grid;
+    place-items: center;
+    color: #ffffff;
+    background: #44308d;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 700;
+  }
+  .identitytext {
+    flex: 1;
+    min-width: 0;
+  }
+  .eyebrow {
+    color: #85818d;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.6px;
+    line-height: 13px;
+    text-transform: uppercase;
+  }
+  .accountline {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+  }
+  .accountname {
+    color: #1b1920;
+    font-size: 17px;
+    font-weight: 700;
+    line-height: 21px;
+  }
+  .unreadcount {
+    color: #6435e0;
+    font-size: 11px;
+    font-weight: 500;
+  }
+  .accountmail {
+    color: #716e79;
+    font-size: 11px;
+    line-height: 14px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .compose {
+    width: 32px;
+    height: 32px;
+    flex: 0 0 32px;
+    display: grid;
+    place-items: center;
+    color: #ffffff;
+    background: #6435e0;
+    border-radius: 10px;
+  }
+
+  .searcharea {
+    padding: 2px 16px 10px;
+    background: #ffffff;
+  }
+  .search {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 11px 12px;
+    color: #ffffff;
+    background: #4f2bb8;
+    border: 1px solid #4f2bb8;
+    border-radius: 11px;
+    box-shadow: 0 3px 8px rgba(79, 43, 184, 0.20);
+    font-size: 14px;
+    font-weight: 500;
+  }
+  .search span { flex: 1; }
+  .searchfilter {
+    padding-left: 9px;
+    border-left: 1px solid rgba(255,255,255,0.32);
+  }
+
+  .filterbar {
+    display: flex;
+    align-items: center;
+    padding: 0 16px 10px;
+    background: #ffffff;
+  }
+  .segmented {
+    display: flex;
+    padding: 3px;
+    background: #f0eef3;
+    border-radius: 9px;
+  }
+  .segment {
+    padding: 5px 13px;
+    color: #6f6c76;
+    border-radius: 7px;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 16px;
+  }
+  .segment.on {
+    color: #27232e;
+    background: #ffffff;
+    box-shadow: 0 1px 3px rgba(31, 26, 43, 0.12);
+  }
+  .sort {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-left: auto;
+    color: #77737e;
+    font-size: 11px;
+    font-weight: 500;
+  }
+
+  .list {
+    flex: 1;
+    padding: 8px 10px 7px;
+  }
+  .group {
+    margin-bottom: 7px;
+    background: #ffffff;
+    border: 1px solid #e7e4eb;
+    border-radius: 12px;
+    box-shadow: 0 1px 2px rgba(32, 27, 42, 0.03);
+  }
+  .group:last-child { margin-bottom: 0; }
+  .grouphead {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 10px;
+    border-bottom: 1px solid #efedf2;
+  }
+  .groupbadge {
+    width: 24px;
+    height: 24px;
+    flex: 0 0 24px;
+    display: grid;
+    place-items: center;
+    color: #6435e0;
+    background: #eee9fb;
+    border-radius: 7px;
+  }
+  .grouptitle {
+    flex: 1;
+    color: #29262f;
+    font-size: 13px;
+    font-weight: 700;
+  }
+  .groupnote {
+    color: #898590;
+    font-size: 10px;
+    font-weight: 500;
+  }
+
+  .row {
+    display: flex;
+    align-items: flex-start;
+    gap: 9px;
+    padding: 7px 10px;
+    border-bottom: 1px solid #f1eff3;
+  }
+  .row:last-child { border-bottom: 0; }
+  .thumb {
+    width: 34px;
+    height: 34px;
+    flex: 0 0 34px;
+    display: grid;
+    place-items: center;
+    border-radius: 9px;
+    color: #5f5a68;
+    font-size: 11px;
+    font-weight: 700;
+  }
+  .t1 { background: #ded3fa; color: #5736a9; }
+  .t2 { background: #cfe0f2; color: #3e668c; }
+  .t3 { background: #e6dfd3; color: #756148; }
+  .t4 { background: #d5e7dd; color: #3f7055; }
+  .t5 { background: #eddbe2; color: #825469; }
+  .t6 { background: #dcdce4; color: #5d5b68; }
+
+  .body {
+    flex: 1;
+    min-width: 0;
+  }
+  .line1 {
+    display: flex;
+    align-items: baseline;
+    gap: 7px;
+  }
+  .sender {
+    flex: 1;
+    min-width: 0;
+    color: #2c2932;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 17px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .unread .sender {
+    color: #16151a;
+    font-weight: 700;
+  }
+  .time {
+    flex: 0 0 auto;
+    color: #918d97;
+    font-size: 10px;
+    line-height: 14px;
+    white-space: nowrap;
+  }
+  .unread .time {
+    color: #6435e0;
+    font-weight: 700;
+  }
+  .subject {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    color: #48444f;
+    font-size: 12px;
+    line-height: 16px;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  .subject span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .unread .subject {
+    color: #24212a;
+    font-weight: 500;
+  }
+  .preview {
+    color: #85818c;
+    font-size: 11px;
+    line-height: 15px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .unreaddot {
+    width: 7px;
+    height: 7px;
+    flex: 0 0 7px;
+    margin-top: 5px;
+    background: #6435e0;
+    border-radius: 50%;
+  }
+
+  .tabbar {
+    display: flex;
+    padding: 8px 0 12px;
+    background: #ffffff;
+    border-top: 1px solid #e4e2ea;
+  }
+  .tab {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    color: #86848f;
+    font-size: 11px;
+    font-weight: 500;
+  }
+  .tab.on { color: #6435e0; }
+  .tab svg { display: block; }
+</style>
+</head>
+<body>
+<div class="screen">
+  <div class="identity">
+    <div class="avatar">MC</div>
+    <div class="identitytext">
+      <div class="eyebrow">Travel mailbox</div>
+      <div class="accountline">
+        <div class="accountname">Maya Chen</div>
+        <div class="unreadcount">2 unread</div>
+      </div>
+      <div class="accountmail">maya.chen@example.com</div>
+    </div>
+    <div class="compose">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16.5 3.7l3.8 3.8L8.6 19.2l-4.8 1 1-4.8z"/></svg>
+    </div>
+  </div>
+
+  <div class="searcharea">
+    <div class="search">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6"/></svg>
+      <span>Search Maya's mailbox</span>
+      <div class="searchfilter">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 6h16M7 12h10M10 18h4"/></svg>
+      </div>
+    </div>
+  </div>
+
+  <div class="filterbar">
+    <div class="segmented">
+      <div class="segment on">All</div>
+      <div class="segment">Unread</div>
+      <div class="segment">Saved</div>
+    </div>
+    <div class="sort">
+      By category
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 10l5 5 5-5"/></svg>
+    </div>
+  </div>
+
+  <div class="list">
+    <div class="group">
+      <div class="grouphead">
+        <div class="groupbadge">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h16v11H4z"/><path d="M8 8V5h8v3"/></svg>
+        </div>
+        <div class="grouptitle">Bookings and transport</div>
+        <div class="groupnote">3 messages</div>
+      </div>
+
+      <div class="row unread">
+        <div class="thumb t1">HI</div>
+        <div class="body">
+          <div class="line1">
+            <div class="sender">Harborlight Inn</div>
+            <div class="time">9:41 AM</div>
+          </div>
+          <div class="subject"><span>Reservation confirmed</span></div>
+          <div class="preview">Check in March 14 after 3:00 PM.</div>
+        </div>
+        <div class="unreaddot"></div>
+      </div>
+
+      <div class="row unread">
+        <div class="thumb t2">AR</div>
+        <div class="body">
+          <div class="line1">
+            <div class="sender">Aurora Rail</div>
+            <div class="time">8:02 AM</div>
+          </div>
+          <div class="subject"><span>Seat change on Coastal Line 118</span></div>
+          <div class="preview">Car 5, seat 12A at no extra cost.</div>
+        </div>
+        <div class="unreaddot"></div>
+      </div>
+
+      <div class="row">
+        <div class="thumb t5">CF</div>
+        <div class="body">
+          <div class="line1">
+            <div class="sender">Cliffside Ferry</div>
+            <div class="time">Mar 8</div>
+          </div>
+          <div class="subject"><span>Boarding pass ready</span></div>
+          <div class="preview">Pier 9 departure at 6:40 AM.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="group">
+      <div class="grouphead">
+        <div class="groupbadge">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H8l-4 3z"/></svg>
+        </div>
+        <div class="grouptitle">Trip conversations</div>
+        <div class="groupnote">2 messages</div>
+      </div>
+
+      <div class="row">
+        <div class="thumb t3">NB</div>
+        <div class="body">
+          <div class="line1">
+            <div class="sender">Nadia Brandt</div>
+            <div class="time">7:15 AM</div>
+          </div>
+          <div class="subject">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#7c7a86" stroke-width="2" stroke-linecap="round"><path d="M20 11.5l-8.4 8.4a5 5 0 01-7-7l9-9a3.3 3.3 0 114.7 4.7l-9 9"/></svg>
+            <span>Splitting the Lisbon apartment</span>
+          </div>
+          <div class="preview">The deposit comes to $80 each.</div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="thumb t4">EC</div>
+        <div class="body">
+          <div class="line1">
+            <div class="sender">Elliot Chase</div>
+            <div class="time">Mar 9</div>
+          </div>
+          <div class="subject"><span>Trail permits for Zion</span></div>
+          <div class="preview">Two Angels Landing slots remain.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="group">
+      <div class="grouphead">
+        <div class="groupbadge">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16v11H4z"/><path d="M4 10h16"/></svg>
+        </div>
+        <div class="grouptitle">Payments and account</div>
+        <div class="groupnote">2 messages</div>
+      </div>
+
+      <div class="row">
+        <div class="thumb t1">WS</div>
+        <div class="body">
+          <div class="line1">
+            <div class="sender">Waypoint Support</div>
+            <div class="time">Mar 9</div>
+          </div>
+          <div class="subject"><span>Refund issued for order 8842</span></div>
+          <div class="preview">$128.50 is returning to card 4417.</div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="thumb t6">VS</div>
+        <div class="body">
+          <div class="line1">
+            <div class="sender">Vela Stays</div>
+            <div class="time">Mar 7</div>
+          </div>
+          <div class="subject"><span>Your host left a review</span></div>
+          <div class="preview">Marisol rated your stay five stars.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tabbar">
+    <div class="tab">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7.5"/><path d="M20.5 20.5L16.4 16.4"/></svg>
+      Explore
+    </div>
+    <div class="tab">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7.5h16v12H4z"/><path d="M9 7.5V5.2h6v2.3"/></svg>
+      Trips
+    </div>
+    <div class="tab on">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 6.5h17v11h-17z"/><path d="M3.5 7.5l8.5 6 8.5-6"/></svg>
+      Inbox
+    </div>
+    <div class="tab">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8.5" r="3.8"/><path d="M4.8 20c1.1-3.5 3.9-5.3 7.2-5.3s6.1 1.8 7.2 5.3"/></svg>
+      Account
+    </div>
+  </div>
+</div>
+</body>
+</html>

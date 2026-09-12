@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Purchase Queue — Marketstack</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 40px 0;
+    margin: 0;
+    background: #e9e9e6;
+    font-family: 'Roboto', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .screen {
+    width: 390px;
+    height: 844px;
+    position: relative;
+    background: #f7f7f4;
+    color: #17171a;
+    border: 1px solid #dedede;
+  }
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 13px 15px;
+    background: #fff;
+    border-bottom: 1px solid #dfdfdc;
+  }
+  .topbar h1 {
+    margin: 0;
+    font-size: 21px;
+    line-height: 27px;
+    letter-spacing: -.25px;
+  }
+  .store {
+    margin-top: 1px;
+    color: #77777c;
+    font-size: 11px;
+    line-height: 14px;
+  }
+  .topactions {
+    display: flex;
+    gap: 8px;
+  }
+  .iconbtn {
+    width: 33px;
+    height: 33px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #dcdcd8;
+    background: #fff;
+    color: #444448;
+  }
+  .controls {
+    display: flex;
+    padding: 8px 12px;
+    gap: 7px;
+    background: #fff;
+    border-bottom: 1px solid #dfdfdc;
+  }
+  .control {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    padding: 6px 9px;
+    border: 1px solid #dcdcd8;
+    background: #fff;
+    color: #4f4f54;
+    font-size: 12px;
+    line-height: 16px;
+  }
+  .control.primary {
+    flex: 1;
+    justify-content: flex-start;
+  }
+  .summary {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    background: #17171a;
+    color: #fff;
+  }
+  .metric {
+    padding: 9px 10px;
+    border-right: 1px solid #3b3b3e;
+  }
+  .metric:last-child { border-right: 0; }
+  .metric strong {
+    display: block;
+    font-size: 16px;
+    line-height: 19px;
+  }
+  .metric span {
+    display: block;
+    margin-top: 1px;
+    color: #c9c9cc;
+    font-size: 10px;
+    line-height: 14px;
+    text-transform: uppercase;
+    letter-spacing: .4px;
+  }
+  .grouphead {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 13px;
+    border-top: 1px solid #ddddda;
+    border-bottom: 1px solid #ddddda;
+    background: #ededE9;
+  }
+  .grouphead:first-of-type { border-top: 0; }
+  .grouphead h2 {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    margin: 0;
+    font-size: 12px;
+    line-height: 17px;
+    text-transform: uppercase;
+    letter-spacing: .45px;
+  }
+  .grouphead span {
+    color: #717176;
+    font-size: 11px;
+    line-height: 15px;
+  }
+  .signal {
+    width: 8px;
+    height: 8px;
+    display: inline-block;
+    border-radius: 50%;
+    background: #e34e27;
+  }
+  .signal.normal { background: #737379; }
+  .item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 4px 12px;
+    background: #fff;
+    border-bottom: 1px solid #e5e5e2;
+  }
+  .item img {
+    width: 72px;
+    height: 72px;
+    display: block;
+    flex: none;
+    object-fit: cover;
+    background: #d8d8d5;
+  }
+  .check {
+    width: 20px;
+    height: 20px;
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    border: 1.5px solid #b7b7b3;
+    color: transparent;
+  }
+  .item.urgent .check {
+    border-color: #e34e27;
+    background: #fff8f5;
+  }
+  .details {
+    min-width: 0;
+    flex: 1;
+  }
+  .sku {
+    color: #88888d;
+    font-size: 10px;
+    line-height: 13px;
+    letter-spacing: .3px;
+  }
+  .name {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 18px;
+  }
+  .facts {
+    margin-top: 1px;
+    color: #6e6e73;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 11px;
+    line-height: 15px;
+  }
+  .order {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 4px;
+    font-size: 11px;
+    line-height: 16px;
+  }
+  .units {
+    padding: 1px 5px;
+    border: 1px solid #cfcfcb;
+    color: #222226;
+    font-weight: 700;
+  }
+  .item.urgent .units {
+    border-color: #e89a80;
+    color: #ad3a17;
+  }
+  .eta {
+    color: #77777c;
+    white-space: nowrap;
+  }
+  .tabbar {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    display: flex;
+    padding: 8px 0 9px;
+    border-top: 1px solid #dcdcd8;
+    background: #fff;
+  }
+  .tabbar a {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    color: #85858a;
+    text-decoration: none;
+    font-size: 11px;
+    line-height: 14px;
+  }
+  .tabbar a.on {
+    color: #17171a;
+    font-weight: 700;
+  }
+</style>
+</head>
+<body>
+<div class="screen">
+  <div class="topbar">
+    <div>
+      <h1>Purchase queue</h1>
+      <div class="store">Marketstack Shop · Main location</div>
+    </div>
+    <div class="topactions">
+      <span class="iconbtn" aria-label="Search products">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M16.5 16.5 21 21"/></svg>
+      </span>
+      <span class="iconbtn" aria-label="More purchase queue options">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.7"/><circle cx="12" cy="12" r="1.7"/><circle cx="19" cy="12" r="1.7"/></svg>
+      </span>
+    </div>
+  </div>
+
+  <div class="controls">
+    <div class="control primary">
+      All suppliers
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+    </div>
+    <div class="control">
+      By priority
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+    </div>
+    <div class="control" aria-label="Filter queue">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h16M7 12h10M10 18h4"/></svg>
+    </div>
+  </div>
+
+  <div class="summary">
+    <div class="metric"><strong>7</strong><span>Products</span></div>
+    <div class="metric"><strong>68</strong><span>Units to buy</span></div>
+    <div class="metric"><strong>3</strong><span>Suppliers</span></div>
+  </div>
+
+  <div class="grouphead">
+    <h2><span class="signal"></span>Order today</h2>
+    <span>3 urgent</span>
+  </div>
+
+  <div class="item urgent">
+    <div class="check" aria-label="Select ceramic storage canister">✓</div>
+    <img src="https://loremflickr.com/72/72/product?lock=3660" width="72" height="72" alt="Ceramic storage canister awaiting purchase">
+    <div class="details">
+      <div class="sku">SKU 1048 · NORTHLINE</div>
+      <div class="name">Ceramic storage canister</div>
+      <div class="facts">On hand 2 · Reorder at 8</div>
+      <div class="order"><span class="units">18 units</span><span class="eta">ETA 4 days</span></div>
+    </div>
+  </div>
+
+  <div class="item urgent">
+    <div class="check" aria-label="Select ridge trail runner">✓</div>
+    <img src="https://loremflickr.com/72/72/sneakers?lock=3661" width="72" height="72" alt="Trail running shoe awaiting urgent purchase">
+    <div class="details">
+      <div class="sku">SKU 2281 · STRIDE GOODS</div>
+      <div class="name">Ridge trail runner</div>
+      <div class="facts">On hand 0 · 8 backorders</div>
+      <div class="order"><span class="units">16 units</span><span class="eta">ETA 3 days</span></div>
+    </div>
+  </div>
+
+  <div class="item urgent">
+    <div class="check" aria-label="Select Linden lounge chair">✓</div>
+    <img src="https://loremflickr.com/72/72/furniture?lock=3662" width="72" height="72" alt="Linden lounge chair awaiting urgent purchase">
+    <div class="details">
+      <div class="sku">SKU 3106 · OAK &amp; LOOM</div>
+      <div class="name">Linden lounge chair</div>
+      <div class="facts">On hand 1 · Reorder at 3</div>
+      <div class="order"><span class="units">6 units</span><span class="eta">ETA 12 days</span></div>
+    </div>
+  </div>
+
+  <div class="grouphead">
+    <h2><span class="signal normal"></span>Upcoming</h2>
+    <span>4 to review</span>
+  </div>
+
+  <div class="item">
+    <div class="check" aria-label="Select slim leather wallet">✓</div>
+    <img src="https://loremflickr.com/72/72/product?lock=3663" width="72" height="72" alt="Slim leather wallet in the upcoming purchase queue">
+    <div class="details">
+      <div class="sku">SKU 1189 · HIDEWORKS</div>
+      <div class="name">Slim leather wallet</div>
+      <div class="facts">On hand 7 · Reorder at 8</div>
+      <div class="order"><span class="units">10 units</span><span class="eta">Review Thu</span></div>
+    </div>
+  </div>
+
+  <div class="item">
+    <div class="check" aria-label="Select wool blend overcoat">✓</div>
+    <img src="https://loremflickr.com/72/72/fashion?lock=3664" width="72" height="72" alt="Wool blend overcoat in the upcoming purchase queue">
+    <div class="details">
+      <div class="sku">SKU 4520 · ALDER APPAREL</div>
+      <div class="name">Wool blend overcoat</div>
+      <div class="facts">On hand 5 · Reorder at 6</div>
+      <div class="order"><span class="units">8 units</span><span class="eta">Review Fri</span></div>
+    </div>
+  </div>
+
+  <div class="item">
+    <div class="check" aria-label="Select compact oak desk">✓</div>
+    <img src="https://loremflickr.com/72/72/furniture?lock=3665" width="72" height="72" alt="Compact oak desk in the upcoming purchase queue">
+    <div class="details">
+      <div class="sku">SKU 3144 · OAK &amp; LOOM</div>
+      <div class="name">Compact oak desk</div>
+      <div class="facts">On hand 4 · Reorder at 5</div>
+      <div class="order"><span class="units">4 units</span><span class="eta">Review Fri</span></div>
+    </div>
+  </div>
+
+  <div class="item">
+    <div class="check" aria-label="Select canvas high-top sneaker">✓</div>
+    <img src="https://loremflickr.com/72/72/sneakers?lock=3666" width="72" height="72" alt="Canvas high-top sneaker in the upcoming purchase queue">
+    <div class="details">
+      <div class="sku">SKU 2295 · STRIDE GOODS</div>
+      <div class="name">Canvas high-top sneaker</div>
+      <div class="facts">On hand 9 · Reorder at 10</div>
+      <div class="order"><span class="units">6 units</span><span class="eta">Review Mon</span></div>
+    </div>
+  </div>
+
+  <div class="tabbar">
+    <a href="#">
+      <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 10.5 12 4l8 6.5V20H4z"/></svg>
+      Dashboard
+    </a>
+    <a href="#">
+      <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 6h16v14H4zM8 6V4h8v2M4 11h16"/></svg>
+      Stock
+    </a>
+    <a href="#" class="on">
+      <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 5h14v15H5zM8 9h8M8 13h8M8 17h5"/><path d="M9 3h6v4H9z"/></svg>
+      Queue
+    </a>
+    <a href="#">
+      <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 7h16v13H4zM7 4h10v3M8 11h8"/></svg>
+      Purchases
+    </a>
+    <a href="#">
+      <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="8.5" r="3.5"/><path d="M5 20c1.5-3.5 4-5 7-5s5.5 1.5 7 5"/></svg>
+      Account
+    </a>
+  </div>
+</div>
+</body>
+</html>

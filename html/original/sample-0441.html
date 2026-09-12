@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Northstar Learning Plans</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 32px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #e7e9ed;
+      color: #172033;
+      font-family: 'Source Sans 3', system-ui, sans-serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #ffffff;
+      border: 1px solid #d9dee8;
+      box-shadow: 0 8px 24px rgba(25, 35, 55, 0.08);
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 15px 16px 13px;
+      border-bottom: 1px solid #e3e7ee;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      min-width: 0;
+      font-size: 17px;
+      font-weight: 600;
+      color: #172033;
+    }
+
+    .brand-mark {
+      width: 26px;
+      height: 26px;
+      display: grid;
+      place-items: center;
+      color: #1e63d5;
+      border: 2px solid #1e63d5;
+      border-radius: 10px;
+      flex: none;
+    }
+
+    .top-action {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      padding: 0;
+      color: #4b5870;
+      background: transparent;
+      border: 0;
+    }
+
+    .page-tabs {
+      display: flex;
+      gap: 25px;
+      padding: 0 16px;
+      border-bottom: 1px solid #e3e7ee;
+    }
+
+    .page-tab {
+      position: relative;
+      padding: 10px 0 9px;
+      color: #667085;
+      font-size: 14px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .page-tab.active {
+      color: #1e63d5;
+    }
+
+    .page-tab.active::after {
+      content: "";
+      position: absolute;
+      right: 0;
+      bottom: -1px;
+      left: 0;
+      height: 3px;
+      background: #1e63d5;
+    }
+
+    main {
+      flex: 1;
+      padding: 12px 16px 8px;
+    }
+
+    .eyebrow {
+      margin: 0 0 2px;
+      color: #1e63d5;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    h1,
+    h2 {
+      font-family: 'Playfair Display', Georgia, serif;
+    }
+
+    h1 {
+      margin: 0;
+      color: #15213a;
+      font-size: 28px;
+      line-height: 1.12;
+      font-weight: 700;
+    }
+
+    .intro {
+      margin: 5px 0 0;
+      color: #59657a;
+      font-size: 14px;
+      line-height: 1.35;
+    }
+
+    .billing-control {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 11px;
+      padding: 4px;
+      background: #eef3fb;
+      border-radius: 10px;
+    }
+
+    .billing-option {
+      flex: 1;
+      padding: 6px 8px;
+      text-align: center;
+      color: #61708a;
+      font-size: 14px;
+      font-weight: 600;
+      border-radius: 7px;
+    }
+
+    .billing-option.selected {
+      color: #ffffff;
+      background: #1e63d5;
+    }
+
+    .plan-grid,
+    .feature-row {
+      display: grid;
+      grid-template-columns: 128px repeat(3, minmax(0, 1fr));
+    }
+
+    .plan-grid {
+      margin-top: 13px;
+      border-top: 1px solid #cad3e1;
+      border-bottom: 1px solid #cad3e1;
+    }
+
+    .price-label {
+      display: flex;
+      align-items: flex-end;
+      padding: 10px 8px 11px 0;
+      color: #657187;
+      font-size: 13px;
+      line-height: 1.25;
+    }
+
+    .plan {
+      padding: 9px 4px 10px;
+      text-align: center;
+      border-left: 1px solid #e2e6ed;
+    }
+
+    .plan.featured {
+      background: #eef5ff;
+      border-top: 3px solid #1e63d5;
+      padding-top: 6px;
+    }
+
+    .plan-name {
+      color: #25314a;
+      font-size: 14px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .plan.featured .plan-name {
+      color: #1e63d5;
+    }
+
+    .plan-price {
+      margin-top: 4px;
+      color: #14213a;
+      font-size: 21px;
+      line-height: 1;
+      font-weight: 600;
+    }
+
+    .plan-term {
+      margin-top: 3px;
+      color: #6c778c;
+      font-size: 12px;
+      line-height: 1.15;
+    }
+
+    .recommendation {
+      margin-top: 5px;
+      color: #1e63d5;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .comparison-heading {
+      margin: 12px 0 5px;
+      font-size: 18px;
+      line-height: 1.2;
+      color: #17233b;
+    }
+
+    .comparison {
+      border-top: 1px solid #cad3e1;
+    }
+
+    .feature-row {
+      align-items: center;
+      border-bottom: 1px solid #e4e8ef;
+    }
+
+    .feature-label {
+      padding: 7px 8px 7px 0;
+      color: #2d394f;
+      font-size: 14px;
+      line-height: 1.2;
+    }
+
+    .feature-value {
+      padding: 7px 3px;
+      text-align: center;
+      color: #4c5970;
+      font-size: 14px;
+      line-height: 1.2;
+      border-left: 1px solid #eef0f4;
+    }
+
+    .feature-value.standard {
+      color: #174f9f;
+      font-weight: 600;
+      background: #f5f8fd;
+    }
+
+    .note {
+      margin: 8px 0 0;
+      color: #667085;
+      font-size: 12px;
+      line-height: 1.3;
+    }
+
+    .bottom-nav {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      padding: 8px 8px 7px;
+      border-top: 1px solid #dfe4ec;
+      background: #ffffff;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      color: #778195;
+      font-size: 12px;
+      line-height: 1;
+    }
+
+    .nav-item.active {
+      color: #1e63d5;
+      font-weight: 600;
+    }
+
+    .nav-item svg {
+      width: 21px;
+      height: 21px;
+      stroke: currentColor;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
+            <path d="M5 6.5C8.2 6.5 10.2 7.2 12 9v9c-1.8-1.8-3.8-2.5-7-2.5v-9Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+            <path d="M19 6.5c-3.2 0-5.2.7-7 2.5v9c1.8-1.8 3.8-2.5 7-2.5v-9Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+          </svg>
+        </span>
+        <span>Northstar Learning</span>
+      </div>
+      <button class="top-action" type="button" aria-label="Plan information">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none">
+          <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/>
+          <path d="M12 10.8v5.4M12 7.4h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </header>
+
+    <nav class="page-tabs" aria-label="Pricing sections">
+      <div class="page-tab active">Plans</div>
+      <div class="page-tab">Billing FAQ</div>
+      <div class="page-tab">For Teams</div>
+    </nav>
+
+    <main>
+      <p class="eyebrow">Learning plans</p>
+      <h1>Compare course access</h1>
+      <p class="intro">Choose the level of lessons, feedback, and live instruction that fits your study routine.</p>
+
+      <div class="billing-control" aria-label="Billing period">
+        <div class="billing-option">Monthly</div>
+        <div class="billing-option selected">Annual · Save 20%</div>
+      </div>
+
+      <section class="plan-grid" aria-label="Plan prices">
+        <div class="price-label">Price per month, billed annually</div>
+        <div class="plan">
+          <div class="plan-name">Starter</div>
+          <div class="plan-price">$0</div>
+          <div class="plan-term">No charge</div>
+        </div>
+        <div class="plan featured">
+          <div class="plan-name">Standard</div>
+          <div class="plan-price">$12</div>
+          <div class="plan-term">$144 yearly</div>
+          <div class="recommendation">Best fit</div>
+        </div>
+        <div class="plan">
+          <div class="plan-name">Complete</div>
+          <div class="plan-price">$24</div>
+          <div class="plan-term">$288 yearly</div>
+        </div>
+      </section>
+
+      <h2 class="comparison-heading">What each plan includes</h2>
+
+      <section class="comparison" aria-label="Plan feature comparison">
+        <div class="feature-row">
+          <div class="feature-label">Course library</div>
+          <div class="feature-value">8 courses</div>
+          <div class="feature-value standard">60 courses</div>
+          <div class="feature-value">All 140+</div>
+        </div>
+        <div class="feature-row">
+          <div class="feature-label">Live classes</div>
+          <div class="feature-value">None</div>
+          <div class="feature-value standard">2 monthly</div>
+          <div class="feature-value">8 monthly</div>
+        </div>
+        <div class="feature-row">
+          <div class="feature-label">Practice library</div>
+          <div class="feature-value">Core</div>
+          <div class="feature-value standard">Full</div>
+          <div class="feature-value">Full</div>
+        </div>
+        <div class="feature-row">
+          <div class="feature-label">Offline lessons</div>
+          <div class="feature-value">No</div>
+          <div class="feature-value standard">Yes</div>
+          <div class="feature-value">Yes</div>
+        </div>
+        <div class="feature-row">
+          <div class="feature-label">Writing feedback</div>
+          <div class="feature-value">3 monthly</div>
+          <div class="feature-value standard">Unlimited</div>
+          <div class="feature-value">Unlimited</div>
+        </div>
+        <div class="feature-row">
+          <div class="feature-label">Certificates</div>
+          <div class="feature-value">No</div>
+          <div class="feature-value standard">Included</div>
+          <div class="feature-value">Included</div>
+        </div>
+        <div class="feature-row">
+          <div class="feature-label">Learner profiles</div>
+          <div class="feature-value">1</div>
+          <div class="feature-value standard">1</div>
+          <div class="feature-value">4</div>
+        </div>
+        <div class="feature-row">
+          <div class="feature-label">Tutor session savings</div>
+          <div class="feature-value">None</div>
+          <div class="feature-value standard">10%</div>
+          <div class="feature-value">20%</div>
+        </div>
+      </section>
+
+      <p class="note">Annual plans renew every 12 months. You can change plans from account settings before the next renewal date.</p>
+    </main>
+
+    <nav class="bottom-nav" aria-label="Primary navigation">
+      <div class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none">
+          <path d="M4 10.5 12 4l8 6.5V20H4v-9.5Z" stroke-width="1.8" stroke-linejoin="round"/>
+          <path d="M9.5 20v-6h5v6" stroke-width="1.8" stroke-linejoin="round"/>
+        </svg>
+        <span>Home</span>
+      </div>
+      <div class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none">
+          <path d="M5 5.5h5.2c1 0 1.8.8 1.8 1.8V20c0-1.1-.9-2-2-2H5V5.5Z" stroke-width="1.8" stroke-linejoin="round"/>
+          <path d="M19 5.5h-5.2c-1 0-1.8.8-1.8 1.8V20c0-1.1.9-2 2-2h5V5.5Z" stroke-width="1.8" stroke-linejoin="round"/>
+        </svg>
+        <span>Courses</span>
+      </div>
+      <div class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none">
+          <path d="M5 19V9m7 10V5m7 14v-7" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+        <span>Progress</span>
+      </div>
+      <div class="nav-item active">
+        <svg viewBox="0 0 24 24" fill="none">
+          <circle cx="12" cy="8" r="3.5" stroke-width="1.8"/>
+          <path d="M5.5 20c.5-4 2.7-6 6.5-6s6 2 6.5 6" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+        <span>Account</span>
+      </div>
+    </nav>
+  </div>
+</body>
+</html>

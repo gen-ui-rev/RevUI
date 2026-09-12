@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nooklot Search Results</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #e8e8e4;
+      color: #171717;
+      font-family: 'Inter', system-ui, sans-serif;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      color: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #ffffff;
+      border: 1px solid #cfcfca;
+    }
+
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px;
+      border-bottom: 1px solid #deded9;
+    }
+
+    .service-name {
+      font-size: 18px;
+      line-height: 22px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .icon-button {
+      width: 24px;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      display: grid;
+      place-items: center;
+    }
+
+    .icon-button svg {
+      width: 21px;
+      height: 21px;
+      display: block;
+    }
+
+    .search-area {
+      padding: 10px 14px;
+      background: #ffd600;
+      border-bottom: 1px solid #171717;
+    }
+
+    .query-box {
+      min-height: 46px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 12px;
+      background: #ffffff;
+      border: 1px solid #171717;
+    }
+
+    .query-box svg {
+      width: 20px;
+      height: 20px;
+      flex: 0 0 auto;
+    }
+
+    .query-input {
+      min-width: 0;
+      flex: 1;
+      padding: 0;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      color: #171717;
+      font-size: 16px;
+      line-height: 22px;
+      font-weight: 600;
+    }
+
+    .clear-button {
+      width: 24px;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      display: grid;
+      place-items: center;
+    }
+
+    .clear-button svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .main {
+      min-height: 0;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .filters {
+      display: flex;
+      gap: 6px;
+      padding: 9px 14px;
+      border-bottom: 1px solid #deded9;
+    }
+
+    .filter {
+      padding: 7px 10px;
+      border: 1px solid #bdbdb7;
+      border-radius: 0;
+      background: #ffffff;
+      font-size: 13px;
+      line-height: 17px;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .filter.active {
+      border-color: #171717;
+      background: #ffd600;
+      font-weight: 600;
+    }
+
+    .results-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
+      border-bottom: 1px solid #deded9;
+    }
+
+    .result-count {
+      margin: 0;
+      font-size: 14px;
+      line-height: 18px;
+      font-weight: 600;
+    }
+
+    .sort-button {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 500;
+    }
+
+    .sort-button svg {
+      width: 15px;
+      height: 15px;
+    }
+
+    .results-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .result-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      border-bottom: 1px solid #e2e2dd;
+    }
+
+    .result-copy {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .product-name {
+      margin: 0 0 4px;
+      overflow: hidden;
+      color: #171717;
+      font-size: 14px;
+      line-height: 17px;
+      font-weight: 600;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .product-meta {
+      margin: 0;
+      overflow: hidden;
+      color: #686863;
+      font-size: 12px;
+      line-height: 15px;
+      font-weight: 400;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .price {
+      flex: 0 0 auto;
+      min-width: 58px;
+      text-align: right;
+      font-size: 15px;
+      line-height: 20px;
+      font-weight: 700;
+    }
+
+    .tab-bar {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border-top: 1px solid #bdbdb7;
+      background: #ffffff;
+    }
+
+    .tab {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      padding: 7px 0 8px;
+      color: #6a6a65;
+      text-decoration: none;
+      font-size: 12px;
+      line-height: 15px;
+      font-weight: 500;
+    }
+
+    .tab svg {
+      width: 20px;
+      height: 20px;
+      display: block;
+    }
+
+    .tab.active {
+      color: #171717;
+      font-weight: 700;
+    }
+
+    .tab.active::before {
+      position: absolute;
+      top: -1px;
+      left: 25%;
+      width: 50%;
+      height: 3px;
+      background: #ffd600;
+      content: "";
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="top-bar">
+      <div class="service-name">Nooklot</div>
+      <div class="top-actions">
+        <button class="icon-button" type="button" aria-label="Saved items">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M6.5 3.75h11v16.5L12 16.7l-5.5 3.55V3.75Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <button class="icon-button" type="button" aria-label="Shopping cart">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M3.5 4.5h2l1.7 9.2h10.9l1.9-6.4H6.2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="9" cy="18.5" r="1.25" stroke="currentColor" stroke-width="1.5"/>
+            <circle cx="17" cy="18.5" r="1.25" stroke="currentColor" stroke-width="1.5"/>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <section class="search-area" aria-label="Product search">
+      <div class="query-box">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="10.5" cy="10.5" r="6.25" stroke="currentColor" stroke-width="1.8"/>
+          <path d="m15.25 15.25 4.5 4.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+        <input class="query-input" type="text" value="desk lamp" aria-label="Search query">
+        <button class="clear-button" type="button" aria-label="Clear search">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="12" cy="12" r="8.5" fill="#deded9"/>
+            <path d="m9 9 6 6m0-6-6 6" stroke="#343434" stroke-width="1.6" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+    </section>
+
+    <main class="main">
+      <div class="filters" aria-label="Search filters">
+        <button class="filter active" type="button">All</button>
+        <button class="filter" type="button">Lighting</button>
+        <button class="filter" type="button">Under $50</button>
+        <button class="filter" type="button">Pickup</button>
+      </div>
+
+      <div class="results-heading">
+        <p class="result-count">126 results</p>
+        <button class="sort-button" type="button">
+          Best match
+          <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="m4 6 4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+
+      <ol class="results-list">
+        <li class="result-row">
+          <div class="result-copy">
+            <p class="product-name">Brass Desk Lamp with Adjustable Arm</p>
+            <p class="product-meta">Good condition · Brookfield · 2.4 mi</p>
+          </div>
+          <div class="price">$42</div>
+        </li>
+        <li class="result-row">
+          <div class="result-copy">
+            <p class="product-name">Matte Black Metal Task Lamp</p>
+            <p class="product-meta">Like new · North Glen · 3.1 mi</p>
+          </div>
+          <div class="price">$28</div>
+        </li>
+        <li class="result-row">
+          <div class="result-copy">
+            <p class="product-name">Small Mushroom Table Lamp</p>
+            <p class="product-meta">New · Shipping available</p>
+          </div>
+          <div class="price">$64</div>
+        </li>
+        <li class="result-row">
+          <div class="result-copy">
+            <p class="product-name">Clamp-On LED Desk Light</p>
+            <p class="product-meta">Good condition · Ashford · 4.8 mi</p>
+          </div>
+          <div class="price">$19</div>
+        </li>
+        <li class="result-row">
+          <div class="result-copy">
+            <p class="product-name">Vintage Green Banker Lamp</p>
+            <p class="product-meta">Good condition · West Arbor · 5.2 mi</p>
+          </div>
+          <div class="price">$78</div>
+        </li>
+        <li class="result-row">
+          <div class="result-copy">
+            <p class="product-name">Rechargeable Cordless Study Lamp</p>
+            <p class="product-meta">Like new · Shipping available</p>
+          </div>
+          <div class="price">$35</div>
+        </li>
+        <li class="result-row">
+          <div class="result-copy">
+            <p class="product-name">Oak Base Lamp with Linen Shade</p>
+            <p class="product-meta">Good condition · Lake Terrace · 6.0 mi</p>
+          </div>
+          <div class="price">$51</div>
+        </li>
+        <li class="result-row">
+          <div class="result-copy">
+            <p class="product-name">Industrial Steel Work Lamp</p>
+            <p class="product-meta">Fair condition · East Haven · 6.7 mi</p>
+          </div>
+          <div class="price">$39</div>
+        </li>
+        <li class="result-row">
+          <div class="result-copy">
+            <p class="product-name">Minimal White Dome Desk Lamp</p>
+            <p class="product-meta">Like new · Pine Crossing · 7.4 mi</p>
+          </div>
+          <div class="price">$44</div>
+        </li>
+        <li class="result-row">
+          <div class="result-copy">
+            <p class="product-name">Two-Tone Reading Lamp</p>
+            <p class="product-meta">Good condition · Shipping available</p>
+          </div>
+          <div class="price">$32</div>
+        </li>
+      </ol>
+    </main>
+
+    <nav class="tab-bar" aria-label="Primary navigation">
+      <a class="tab" href="#" aria-label="Home">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="m3.5 10.5 8.5-7 8.5 7v9h-6v-5h-5v5h-5v-9Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+        </svg>
+        <span>Home</span>
+      </a>
+      <a class="tab" href="#" aria-label="Categories">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <rect x="4" y="4" width="6" height="6" stroke="currentColor" stroke-width="1.6"/>
+          <rect x="14" y="4" width="6" height="6" stroke="currentColor" stroke-width="1.6"/>
+          <rect x="4" y="14" width="6" height="6" stroke="currentColor" stroke-width="1.6"/>
+          <rect x="14" y="14" width="6" height="6" stroke="currentColor" stroke-width="1.6"/>
+        </svg>
+        <span>Categories</span>
+      </a>
+      <a class="tab active" href="#" aria-current="page" aria-label="Search">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="10.5" cy="10.5" r="6.25" stroke="currentColor" stroke-width="1.8"/>
+          <path d="m15.25 15.25 4.5 4.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+        <span>Search</span>
+      </a>
+      <a class="tab" href="#" aria-label="Cart">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M3.5 4.5h2l1.7 9.2h10.9l1.9-6.4H6.2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="9" cy="18.5" r="1.25" stroke="currentColor" stroke-width="1.5"/>
+          <circle cx="17" cy="18.5" r="1.25" stroke="currentColor" stroke-width="1.5"/>
+        </svg>
+        <span>Cart</span>
+      </a>
+    </nav>
+  </div>
+</body>
+</html>

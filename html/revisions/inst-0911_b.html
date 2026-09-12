@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nooklot Search Results</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      display: grid;
+      place-items: center;
+      background: #e8e8e4;
+      color: #171717;
+      font-family: 'Inter', system-ui, sans-serif;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button,
+    a {
+      color: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .screen {
+      width: 1024px;
+      height: 768px;
+      display: flex;
+      flex-direction: column;
+      background: #ffffff;
+      border: 1px solid #cfcfca;
+      box-shadow: 0 16px 40px rgba(30, 30, 26, 0.08);
+    }
+
+    .top-bar {
+      display: flex;
+      align-items: center;
+      padding: 13px 24px;
+      border-bottom: 1px solid #deded9;
+    }
+
+    .service-name {
+      font-size: 20px;
+      line-height: 24px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+    }
+
+    .desktop-nav {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      margin-left: 50px;
+    }
+
+    .nav-link {
+      position: relative;
+      padding: 4px 0;
+      color: #686863;
+      text-decoration: none;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 500;
+    }
+
+    .nav-link.active {
+      color: #171717;
+      font-weight: 700;
+    }
+
+    .nav-link.active::after {
+      position: absolute;
+      right: 0;
+      bottom: -14px;
+      left: 0;
+      height: 3px;
+      background: #ffd600;
+      content: "";
+    }
+
+    .top-actions {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .icon-link {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 4px 0;
+      border: 0;
+      background: transparent;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 600;
+    }
+
+    .icon-link svg {
+      width: 19px;
+      height: 19px;
+      display: block;
+    }
+
+    .search-area {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 11px 24px;
+      background: #ffd600;
+      border-bottom: 1px solid #171717;
+    }
+
+    .query-box {
+      min-width: 0;
+      min-height: 44px;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 13px;
+      background: #ffffff;
+      border: 1px solid #171717;
+    }
+
+    .query-box > svg {
+      width: 20px;
+      height: 20px;
+      flex: 0 0 auto;
+    }
+
+    .query-input {
+      min-width: 0;
+      flex: 1;
+      padding: 0;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      color: #171717;
+      font-size: 16px;
+      line-height: 22px;
+      font-weight: 600;
+    }
+
+    .clear-button {
+      width: 26px;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      display: grid;
+      place-items: center;
+    }
+
+    .clear-button svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .search-button {
+      min-height: 44px;
+      padding: 0 24px;
+      border: 1px solid #171717;
+      background: #171717;
+      color: #ffffff;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 700;
+    }
+
+    .main {
+      min-height: 0;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .filters {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 9px 24px;
+      border-bottom: 1px solid #deded9;
+      background: #fafaf8;
+    }
+
+    .filters-label {
+      margin-right: 4px;
+      color: #686863;
+      font-size: 12px;
+      line-height: 17px;
+      font-weight: 700;
+    }
+
+    .filter {
+      padding: 6px 11px;
+      border: 1px solid #bdbdb7;
+      background: #ffffff;
+      font-size: 13px;
+      line-height: 17px;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .filter.active {
+      border-color: #171717;
+      background: #ffd600;
+      font-weight: 700;
+    }
+
+    .results-heading {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 11px 24px;
+      border-bottom: 1px solid #deded9;
+    }
+
+    .heading-copy {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+    }
+
+    .heading-title {
+      margin: 0;
+      font-size: 18px;
+      line-height: 23px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .result-count {
+      margin: 0;
+      color: #686863;
+      font-size: 12px;
+      line-height: 17px;
+    }
+
+    .heading-actions {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .save-search {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 12px;
+      border: 1px solid #171717;
+      background: #ffffff;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 700;
+    }
+
+    .save-search svg {
+      width: 17px;
+      height: 17px;
+      display: block;
+    }
+
+    .save-note {
+      color: #686863;
+      font-size: 12px;
+      line-height: 17px;
+    }
+
+    .sort-button {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 10px;
+      border: 1px solid #bdbdb7;
+      background: #ffffff;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 500;
+    }
+
+    .sort-button svg {
+      width: 15px;
+      height: 15px;
+      display: block;
+    }
+
+    .results-table {
+      min-width: 0;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .table-header,
+    .result-row {
+      display: grid;
+      grid-template-columns: minmax(0, 2fr) minmax(140px, 0.8fr) minmax(190px, 1fr) 80px;
+      align-items: center;
+      column-gap: 18px;
+      padding-right: 24px;
+      padding-left: 24px;
+    }
+
+    .table-header {
+      padding-top: 8px;
+      padding-bottom: 8px;
+      background: #f3f3ef;
+      border-bottom: 1px solid #cfcfca;
+      color: #686863;
+      font-size: 11px;
+      line-height: 16px;
+      font-weight: 700;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+    }
+
+    .result-row {
+      padding-top: 12px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #e2e2dd;
+    }
+
+    .result-row:hover {
+      background: #fffdf0;
+    }
+
+    .product-name {
+      min-width: 0;
+      margin: 0;
+      overflow: hidden;
+      font-size: 14px;
+      line-height: 18px;
+      font-weight: 700;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .condition,
+    .delivery {
+      min-width: 0;
+      margin: 0;
+      overflow: hidden;
+      color: #5f5f5a;
+      font-size: 12px;
+      line-height: 17px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .price {
+      text-align: right;
+      font-size: 15px;
+      line-height: 19px;
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="top-bar">
+      <div class="service-name">Nooklot</div>
+
+      <nav class="desktop-nav" aria-label="Primary navigation">
+        <a class="nav-link" href="#">Home</a>
+        <a class="nav-link" href="#">Categories</a>
+        <a class="nav-link active" href="#" aria-current="page">Search</a>
+      </nav>
+
+      <div class="top-actions">
+        <button class="icon-link" type="button" aria-label="Saved items">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M6.5 3.75h11v16.5L12 16.7l-5.5 3.55V3.75Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+          </svg>
+          <span>Saved items</span>
+        </button>
+        <button class="icon-link" type="button" aria-label="Shopping cart">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M3.5 4.5h2l1.7 9.2h10.9l1.9-6.4H6.2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="9" cy="18.5" r="1.25" stroke="currentColor" stroke-width="1.5"/>
+            <circle cx="17" cy="18.5" r="1.25" stroke="currentColor" stroke-width="1.5"/>
+          </svg>
+          <span>Cart</span>
+        </button>
+      </div>
+    </header>
+
+    <section class="search-area" aria-label="Product search">
+      <div class="query-box">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="10.5" cy="10.5" r="6.25" stroke="currentColor" stroke-width="1.8"/>
+          <path d="m15.25 15.25 4.5 4.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+        <input class="query-input" type="text" value="desk lamp" aria-label="Search query">
+        <button class="clear-button" type="button" aria-label="Clear search">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="12" cy="12" r="8.5" fill="#deded9"/>
+            <path d="m9 9 6 6m0-6-6 6" stroke="#343434" stroke-width="1.6" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+      <button class="search-button" type="button">Search</button>
+    </section>
+
+    <main class="main">
+      <div class="filters" aria-label="Search filters">
+        <span class="filters-label">Filters</span>
+        <button class="filter active" type="button">All</button>
+        <button class="filter" type="button">Lighting</button>
+        <button class="filter" type="button">Under $50</button>
+        <button class="filter" type="button">Pickup</button>
+      </div>
+
+      <div class="results-heading">
+        <div class="heading-copy">
+          <h1 class="heading-title">Desk lamp results</h1>
+          <p class="result-count">126 results</p>
+        </div>
+
+        <div class="heading-actions">
+          <span class="save-note">Get notified when new listings appear</span>
+          <button class="save-search" type="button">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M6.5 3.75h11v16.5L12 16.7l-5.5 3.55V3.75Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+            </svg>
+            Save this search
+          </button>
+          <button class="sort-button" type="button">
+            Best match
+            <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="m4 6 4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="table-header" aria-hidden="true">
+        <span>Listing</span>
+        <span>Condition</span>
+        <span>Location or delivery</span>
+        <span style="text-align:right;">Price</span>
+      </div>
+
+      <ol class="results-table">
+        <li class="result-row">
+          <p class="product-name">Brass Desk Lamp with Adjustable Arm</p>
+          <p class="condition">Good condition</p>
+          <p class="delivery">Brookfield · 2.4 mi</p>
+          <div class="price">$42</div>
+        </li>
+        <li class="result-row">
+          <p class="product-name">Matte Black Metal Task Lamp</p>
+          <p class="condition">Like new</p>
+          <p class="delivery">North Glen · 3.1 mi</p>
+          <div class="price">$28</div>
+        </li>
+        <li class="result-row">
+          <p class="product-name">Small Mushroom Table Lamp</p>
+          <p class="condition">New</p>
+          <p class="delivery">Shipping available</p>
+          <div class="price">$64</div>
+        </li>
+        <li class="result-row">
+          <p class="product-name">Clamp-On LED Desk Light</p>
+          <p class="condition">Good condition</p>
+          <p class="delivery">Ashford · 4.8 mi</p>
+          <div class="price">$19</div>
+        </li>
+        <li class="result-row">
+          <p class="product-name">Vintage Green Banker Lamp</p>
+          <p class="condition">Good condition</p>
+          <p class="delivery">West Arbor · 5.2 mi</p>
+          <div class="price">$78</div>
+        </li>
+        <li class="result-row">
+          <p class="product-name">Rechargeable Cordless Study Lamp</p>
+          <p class="condition">Like new</p>
+          <p class="delivery">Shipping available</p>
+          <div class="price">$35</div>
+        </li>
+        <li class="result-row">
+          <p class="product-name">Oak Base Lamp with Linen Shade</p>
+          <p class="condition">Good condition</p>
+          <p class="delivery">Lake Terrace · 6.0 mi</p>
+          <div class="price">$51</div>
+        </li>
+        <li class="result-row">
+          <p class="product-name">Industrial Steel Work Lamp</p>
+          <p class="condition">Fair condition</p>
+          <p class="delivery">East Haven · 6.7 mi</p>
+          <div class="price">$39</div>
+        </li>
+        <li class="result-row">
+          <p class="product-name">Minimal White Dome Desk Lamp</p>
+          <p class="condition">Like new</p>
+          <p class="delivery">Pine Crossing · 7.4 mi</p>
+          <div class="price">$44</div>
+        </li>
+        <li class="result-row">
+          <p class="product-name">Two-Tone Reading Lamp</p>
+          <p class="condition">Good condition</p>
+          <p class="delivery">Shipping available</p>
+          <div class="price">$32</div>
+        </li>
+      </ol>
+    </main>
+  </div>
+</body>
+</html>

@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Northnest Stay Shop</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      border-radius: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #e9e6e8;
+      color: #211c20;
+      font-family: 'Inter', system-ui, sans-serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #fffdfd;
+      border: 1px solid #d6ced3;
+    }
+
+    .app-header {
+      background: #875b74;
+      color: #ffffff;
+    }
+
+    .top-line {
+      position: relative;
+      padding: 10px 56px 9px 16px;
+    }
+
+    .service-name {
+      margin: 0 0 1px;
+      color: #eadde4;
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 15px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 22px;
+      font-weight: 700;
+      line-height: 27px;
+      letter-spacing: -.02em;
+    }
+
+    .cart-button {
+      position: absolute;
+      top: 17px;
+      right: 16px;
+      width: 32px;
+      height: 32px;
+      padding: 5px;
+      border: 1px solid rgba(255,255,255,.48);
+      background: transparent;
+      color: #ffffff;
+    }
+
+    .cart-button svg {
+      width: 20px;
+      height: 20px;
+      display: block;
+    }
+
+    .cart-count {
+      position: absolute;
+      top: -6px;
+      right: -6px;
+      min-width: 18px;
+      height: 18px;
+      padding: 0 4px;
+      display: grid;
+      place-items: center;
+      background: #ffffff;
+      color: #70475f;
+      border: 1px solid #70475f;
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 16px;
+    }
+
+    .search-box {
+      height: 40px;
+      margin: 0 16px 12px;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 0 11px;
+      background: #ffffff;
+      border: 1px solid #72475f;
+      color: #655b61;
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .search-box svg {
+      width: 18px;
+      height: 18px;
+      flex: 0 0 auto;
+      color: #875b74;
+    }
+
+    .categories {
+      display: flex;
+      gap: 6px;
+      padding: 8px 16px;
+      border-bottom: 1px solid #ded7db;
+      background: #fffdfd;
+    }
+
+    .category {
+      padding: 6px 10px;
+      border: 1px solid #cfc4ca;
+      background: #ffffff;
+      color: #51484d;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 20px;
+      white-space: nowrap;
+    }
+
+    .category.selected {
+      border-color: #875b74;
+      background: #f0e7ec;
+      color: #70475f;
+      font-weight: 600;
+    }
+
+    main {
+      width: 100%;
+    }
+
+    .section-heading {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      padding: 12px 16px 9px;
+    }
+
+    .section-heading h2,
+    .deal-heading h2 {
+      margin: 0;
+      font-size: 17px;
+      font-weight: 700;
+      line-height: 22px;
+      letter-spacing: -.01em;
+    }
+
+    .section-link {
+      color: #795168;
+      font-size: 13px;
+      font-weight: 600;
+      line-height: 18px;
+    }
+
+    .feature-card {
+      width: 358px;
+      margin: 0 16px;
+    }
+
+    .feature-card img {
+      width: 358px;
+      height: 158px;
+      display: block;
+      object-fit: cover;
+      background: #d9d0d5;
+    }
+
+    .feature-info {
+      width: 358px;
+      padding: 9px 12px 10px;
+      border-right: 1px solid #d8cfd4;
+      border-bottom: 1px solid #d8cfd4;
+      border-left: 1px solid #d8cfd4;
+      background: #ffffff;
+    }
+
+    .feature-title-line,
+    .feature-meta-line {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .feature-title {
+      min-width: 0;
+      margin: 0;
+      overflow: hidden;
+      color: #241e22;
+      font-size: 15px;
+      font-weight: 700;
+      line-height: 20px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .stay-count {
+      flex: 0 0 auto;
+      color: #6f646a;
+      font-size: 13px;
+      line-height: 20px;
+    }
+
+    .feature-meta-line {
+      margin-top: 5px;
+    }
+
+    .feature-location {
+      color: #62585e;
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .feature-price {
+      flex: 0 0 auto;
+      color: #70475f;
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 20px;
+    }
+
+    .deal-heading {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      padding: 14px 16px 7px;
+      border-bottom: 1px solid #ded7db;
+    }
+
+    .deal-note {
+      color: #756a70;
+      font-size: 12px;
+      line-height: 18px;
+    }
+
+    .stay-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .stay-row {
+      display: flex;
+      gap: 12px;
+      padding: 9px 16px;
+      border-bottom: 1px solid #e1dadd;
+      background: #fffdfd;
+    }
+
+    .stay-row img {
+      width: 104px;
+      height: 82px;
+      flex: 0 0 104px;
+      display: block;
+      object-fit: cover;
+      background: #d9d0d5;
+    }
+
+    .stay-details {
+      min-width: 0;
+      flex: 1;
+      padding-top: 1px;
+    }
+
+    .stay-name {
+      margin: 0 0 3px;
+      overflow: hidden;
+      color: #241e22;
+      font-size: 15px;
+      font-weight: 600;
+      line-height: 20px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .stay-place {
+      margin: 0 0 8px;
+      overflow: hidden;
+      color: #6f646a;
+      font-size: 13px;
+      line-height: 18px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .stay-bottom {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .stay-price {
+      color: #322a2f;
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 20px;
+    }
+
+    .stay-price span {
+      color: #71666c;
+      font-size: 12px;
+      font-weight: 400;
+    }
+
+    .stay-rating {
+      flex: 0 0 auto;
+      color: #655a60;
+      font-size: 12px;
+      line-height: 18px;
+    }
+
+    .tab-bar {
+      width: 100%;
+      margin-top: auto;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      padding: 7px 8px 6px;
+      border-top: 1px solid #cfc6cb;
+      background: #ffffff;
+    }
+
+    .tab {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      color: #776c72;
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 17px;
+    }
+
+    .tab svg {
+      width: 20px;
+      height: 20px;
+      display: block;
+    }
+
+    .tab.active {
+      color: #7b4d68;
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="app-header">
+      <div class="top-line">
+        <p class="service-name">Northnest</p>
+        <h1>Shop stays</h1>
+        <button class="cart-button" type="button" aria-label="View booking cart with 2 stays">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square" stroke-linejoin="miter" aria-hidden="true">
+            <path d="M3 4h2l2.2 10.2h10.9L21 7H6.1"></path>
+            <path d="M9 19.5h.01M18 19.5h.01"></path>
+          </svg>
+          <span class="cart-count">2</span>
+        </button>
+      </div>
+      <div class="search-box" role="search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square" aria-hidden="true">
+          <circle cx="10.5" cy="10.5" r="6.5"></circle>
+          <path d="M15.5 15.5 21 21"></path>
+        </svg>
+        <span>Search destinations and stays</span>
+      </div>
+    </header>
+
+    <nav class="categories" aria-label="Stay categories">
+      <button class="category selected" type="button">All stays</button>
+      <button class="category" type="button">Beach</button>
+      <button class="category" type="button">City</button>
+      <button class="category" type="button">Mountain</button>
+    </nav>
+
+    <main>
+      <section aria-labelledby="featured-title">
+        <div class="section-heading">
+          <h2 id="featured-title">Featured collection</h2>
+          <span class="section-link">View all</span>
+        </div>
+        <article class="feature-card">
+          <img src="https://loremflickr.com/358/158/beach?lock=7630" width="358" height="158" alt="Beachfront lodging beside a sandy Gulf Coast beach">
+          <div class="feature-info">
+            <div class="feature-title-line">
+              <h3 class="feature-title">Gulf Coast waterfront stays</h3>
+              <span class="stay-count">18 stays</span>
+            </div>
+            <div class="feature-meta-line">
+              <span class="feature-location">Mobile Bay, Alabama</span>
+              <span class="feature-price">From $189 nightly</span>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <section aria-labelledby="deals-title">
+        <div class="deal-heading">
+          <h2 id="deals-title">Available this weekend</h2>
+          <span class="deal-note">May 16–18</span>
+        </div>
+        <ul class="stay-list">
+          <li class="stay-row">
+            <img src="https://loremflickr.com/104/82/hotel?lock=7631" width="104" height="82" alt="Brick harbor hotel with large windows">
+            <div class="stay-details">
+              <h3 class="stay-name">Harborline House</h3>
+              <p class="stay-place">Portland, Maine</p>
+              <div class="stay-bottom">
+                <span class="stay-price">$214 <span>nightly</span></span>
+                <span class="stay-rating">4.8 rating</span>
+              </div>
+            </div>
+          </li>
+          <li class="stay-row">
+            <img src="https://loremflickr.com/104/82/mountain?lock=7632" width="104" height="82" alt="Mountain lodge surrounded by evergreen trees">
+            <div class="stay-details">
+              <h3 class="stay-name">Juniper Ridge Lodge</h3>
+              <p class="stay-place">Aspen, Colorado</p>
+              <div class="stay-bottom">
+                <span class="stay-price">$286 <span>nightly</span></span>
+                <span class="stay-rating">4.9 rating</span>
+              </div>
+            </div>
+          </li>
+          <li class="stay-row">
+            <img src="https://loremflickr.com/104/82/cityscape?lock=7633" width="104" height="82" alt="Downtown hotel among tall city buildings">
+            <div class="stay-details">
+              <h3 class="stay-name">Civic Row Hotel</h3>
+              <p class="stay-place">Chicago, Illinois</p>
+              <div class="stay-bottom">
+                <span class="stay-price">$173 <span>nightly</span></span>
+                <span class="stay-rating">4.7 rating</span>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </section>
+    </main>
+
+    <nav class="tab-bar" aria-label="Primary navigation">
+      <div class="tab active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square" stroke-linejoin="miter" aria-hidden="true">
+          <path d="M4 9h16v11H4z"></path>
+          <path d="M7 9V5h10v4M9 13h6"></path>
+        </svg>
+        <span>Shop</span>
+      </div>
+      <div class="tab">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square" stroke-linejoin="miter" aria-hidden="true">
+          <path d="M5 4h14v16H5z"></path>
+          <path d="M8 8h8M8 12h5"></path>
+        </svg>
+        <span>Trips</span>
+      </div>
+      <div class="tab">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square" stroke-linejoin="miter" aria-hidden="true">
+          <path d="M12 20 4.8 12.8a4.8 4.8 0 0 1 6.8-6.8l.4.4.4-.4a4.8 4.8 0 0 1 6.8 6.8z"></path>
+        </svg>
+        <span>Saved</span>
+      </div>
+      <div class="tab">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square" stroke-linejoin="miter" aria-hidden="true">
+          <circle cx="12" cy="8" r="4"></circle>
+          <path d="M5 21c.5-4 3-6 7-6s6.5 2 7 6"></path>
+        </svg>
+        <span>Account</span>
+      </div>
+    </nav>
+  </div>
+</body>
+</html>

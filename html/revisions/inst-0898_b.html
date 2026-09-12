@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Show Ops</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #e8e8e5;
+      color: #171717;
+      font-family: 'Roboto', system-ui, sans-serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #ffffff;
+      border: 1px solid #d7d7d2;
+    }
+
+    .topbar {
+      min-height: 54px;
+      padding: 0 10px;
+      display: grid;
+      grid-template-columns: 88px 1fr 88px;
+      align-items: center;
+      flex-shrink: 0;
+      border-bottom: 1px solid #deded9;
+      background: #ffffff;
+    }
+
+    .topbar-title {
+      margin: 0;
+      text-align: center;
+      font-size: 17px;
+      line-height: 22px;
+      font-weight: 700;
+    }
+
+    .top-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 2px;
+    }
+
+    .icon-button {
+      width: 40px;
+      height: 40px;
+      padding: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 0;
+      background: transparent;
+      color: #171717;
+    }
+
+    .icon-button svg {
+      width: 22px;
+      height: 22px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .main {
+      flex: 1;
+    }
+
+    .hero {
+      position: relative;
+      width: 390px;
+      height: 120px;
+      margin-left: -1px;
+    }
+
+    .hero img {
+      width: 390px;
+      height: 120px;
+      object-fit: cover;
+      display: block;
+      background: #b8b5a7;
+    }
+
+    .hero-label {
+      position: absolute;
+      left: 16px;
+      bottom: 12px;
+      padding: 7px 10px;
+      border-radius: 10px;
+      background: #f2cc32;
+      color: #171717;
+      font-size: 12px;
+      line-height: 14px;
+      font-weight: 700;
+      letter-spacing: .6px;
+    }
+
+    .alert {
+      padding: 8px 16px;
+      overflow: hidden;
+      border-bottom: 1px solid #ecdf9c;
+      background: #fdf6d9;
+      color: #574a10;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 500;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .details {
+      padding: 12px 16px 10px;
+    }
+
+    .category {
+      margin: 0 0 4px;
+      color: #746315;
+      font-size: 12px;
+      line-height: 14px;
+      font-weight: 700;
+      letter-spacing: .5px;
+      text-transform: uppercase;
+    }
+
+    .event-title {
+      margin: 0;
+      font-size: 22px;
+      line-height: 27px;
+      font-weight: 700;
+      letter-spacing: -.2px;
+    }
+
+    .host {
+      margin: 2px 0 0;
+      color: #666660;
+      font-size: 13px;
+      line-height: 18px;
+    }
+
+    .specs {
+      margin-top: 10px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .spec {
+      padding: 7px 10px;
+      border: 1px solid #deded9;
+      border-radius: 10px;
+      background: #faf9f4;
+    }
+
+    .spec-label {
+      display: block;
+      color: #746315;
+      font-size: 11px;
+      line-height: 14px;
+      font-weight: 700;
+      letter-spacing: .5px;
+      text-transform: uppercase;
+    }
+
+    .spec-value {
+      display: block;
+      margin-top: 2px;
+      overflow: hidden;
+      font-size: 15px;
+      line-height: 19px;
+      font-weight: 700;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .section-title {
+      margin: 0;
+      font-size: 15px;
+      line-height: 19px;
+      font-weight: 700;
+    }
+
+    .section-meta {
+      color: #74746e;
+      font-size: 11px;
+      line-height: 14px;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .acts {
+      margin-top: 12px;
+    }
+
+    .act-strip {
+      margin-top: 6px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .act-card {
+      padding: 8px;
+      border: 1px solid #deded9;
+      border-radius: 10px;
+      background: #ffffff;
+    }
+
+    .act-card img {
+      width: 44px;
+      height: 44px;
+      object-fit: cover;
+      display: block;
+      border-radius: 8px;
+      background: #c4c1b4;
+    }
+
+    .act-name {
+      display: block;
+      margin-top: 5px;
+      overflow: hidden;
+      color: #20201e;
+      font-size: 13px;
+      line-height: 16px;
+      font-weight: 700;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .act-meta {
+      display: block;
+      overflow: hidden;
+      color: #6a6a65;
+      font-size: 11px;
+      line-height: 14px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .cues {
+      margin-top: 12px;
+    }
+
+    .cue-list {
+      margin-top: 6px;
+      border: 1px solid #deded9;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .phase {
+      padding: 5px 10px 4px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      border-bottom: 1px solid #deded9;
+      background: #f5f4ee;
+      color: #5b5b55;
+      font-size: 11px;
+      line-height: 14px;
+      font-weight: 700;
+      letter-spacing: .5px;
+      text-transform: uppercase;
+    }
+
+    .phase-count {
+      color: #85857d;
+      font-weight: 500;
+      letter-spacing: 0;
+      text-transform: none;
+      white-space: nowrap;
+    }
+
+    .cue-row {
+      padding: 7px 10px;
+      display: grid;
+      grid-template-columns: 28px 58px 1fr auto;
+      gap: 8px;
+      align-items: center;
+      border-bottom: 1px solid #eeeee8;
+    }
+
+    .cue-row:last-child {
+      border-bottom: 0;
+    }
+
+    .cue-num {
+      color: #746315;
+      font-size: 12px;
+      line-height: 18px;
+      font-weight: 700;
+    }
+
+    .cue-time {
+      color: #30302d;
+      font-size: 12px;
+      line-height: 18px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .cue-item {
+      min-width: 0;
+      overflow: hidden;
+      font-size: 14px;
+      line-height: 18px;
+      font-weight: 500;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .cue-crew {
+      padding: 2px 6px;
+      border-radius: 6px;
+      background: #f0f0eb;
+      color: #6a6a65;
+      font-size: 10px;
+      line-height: 14px;
+      font-weight: 700;
+      letter-spacing: .4px;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .tabbar {
+      min-height: 64px;
+      padding: 5px 7px 4px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      flex-shrink: 0;
+      border-top: 1px solid #d8d8d3;
+      background: #ffffff;
+    }
+
+    .tab {
+      position: relative;
+      padding: 3px 2px 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      border: 0;
+      background: transparent;
+      color: #777770;
+      font-size: 12px;
+      line-height: 14px;
+      font-weight: 500;
+    }
+
+    .tab svg {
+      width: 21px;
+      height: 21px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .tab.active {
+      color: #171717;
+      font-weight: 700;
+    }
+
+    .tab.active::before {
+      content: "";
+      position: absolute;
+      top: -6px;
+      width: 34px;
+      height: 3px;
+      border-radius: 10px;
+      background: #f2cc32;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <div>
+        <button class="icon-button" type="button" aria-label="Go back">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M15 18l-6-6 6-6"></path>
+          </svg>
+        </button>
+      </div>
+      <h1 class="topbar-title">Show Ops</h1>
+      <div class="top-actions">
+        <button class="icon-button" type="button" aria-label="Send cue sheet to crew">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="18" cy="5" r="2.5"></circle>
+            <circle cx="6" cy="12" r="2.5"></circle>
+            <circle cx="18" cy="19" r="2.5"></circle>
+            <path d="M8.2 10.8l7.6-4.5M8.2 13.2l7.6 4.5"></path>
+          </svg>
+        </button>
+        <button class="icon-button" type="button" aria-label="Open crew checklist">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M8 4.5h8v2H8zM6 6.5h12v13H6z"></path>
+            <path d="M9 11.5l1.6 1.6L14 9.9"></path>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <main class="main">
+      <div class="hero">
+        <img src="https://loremflickr.com/390/120/concert?lock=11890" width="390" height="120" alt="Stage lights over a live concert performance">
+        <div class="hero-label">HOUSE OPEN 7:00 PM · SOUND ROOM A</div>
+      </div>
+      <p class="alert">Freight elevator down — load in via the Dock B ramp.</p>
+
+      <div class="details">
+        <p class="category">Cue sheet · Fri June 20</p>
+        <h2 class="event-title">Night Signal: Live Session</h2>
+        <p class="host">Crew lead: Dana Whitlock · Radio ch. 2</p>
+
+        <section class="specs" aria-label="Venue operations summary">
+          <div class="spec">
+            <span class="spec-label">Load-in</span>
+            <span class="spec-value">3:30 PM · Dock B</span>
+          </div>
+          <div class="spec">
+            <span class="spec-label">Power</span>
+            <span class="spec-value">60 kW · 3-phase</span>
+          </div>
+          <div class="spec">
+            <span class="spec-label">Crew on site</span>
+            <span class="spec-value">12 of 14</span>
+          </div>
+          <div class="spec">
+            <span class="spec-label">Curfew</span>
+            <span class="spec-value">10:30 PM hard</span>
+          </div>
+        </section>
+
+        <section class="acts" aria-labelledby="acts-title">
+          <div class="section-head">
+            <h3 class="section-title" id="acts-title">Set order</h3>
+            <span class="section-meta">3 acts · 10 min changeovers</span>
+          </div>
+          <div class="act-strip">
+            <div class="act-card">
+              <img src="https://loremflickr.com/44/44/guitar?lock=11891" width="44" height="44" alt="Guitar on stage for Ellis Reed">
+              <span class="act-name">1 · Ellis Reed</span>
+              <span class="act-meta">7:30 PM · 3 ch</span>
+            </div>
+            <div class="act-card">
+              <img src="https://loremflickr.com/44/44/studio?lock=11892" width="44" height="44" alt="Recording studio equipment for Mara Venn">
+              <span class="act-name">2 · Mara Venn</span>
+              <span class="act-meta">8:10 PM · 14 ch</span>
+            </div>
+            <div class="act-card">
+              <img src="https://loremflickr.com/44/44/vinyl?lock=11893" width="44" height="44" alt="Vinyl record for Harbor Static">
+              <span class="act-name">3 · Harbor Static</span>
+              <span class="act-meta">9:00 PM · 10 ch</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="cues" aria-labelledby="cues-title">
+          <div class="section-head">
+            <h3 class="section-title" id="cues-title">Crew cues</h3>
+            <span class="section-meta">Grouped by phase</span>
+          </div>
+          <div class="cue-list">
+            <div class="phase">
+              <span>Before doors</span>
+              <span class="phase-count">3:30 – 7:00 PM</span>
+            </div>
+            <div class="cue-row">
+              <div class="cue-num">01</div>
+              <div class="cue-time">3:30 PM</div>
+              <div class="cue-item">Load-in &amp; rigging</div>
+              <div class="cue-crew">Stage</div>
+            </div>
+            <div class="cue-row">
+              <div class="cue-num">02</div>
+              <div class="cue-time">5:45 PM</div>
+              <div class="cue-item">Line check, 18 inputs</div>
+              <div class="cue-crew">FOH</div>
+            </div>
+            <div class="phase">
+              <span>Show &amp; out</span>
+              <span class="phase-count">8:00 – 9:40 PM</span>
+            </div>
+            <div class="cue-row">
+              <div class="cue-num">03</div>
+              <div class="cue-time">8:00 PM</div>
+              <div class="cue-item">Changeover, strike risers</div>
+              <div class="cue-crew">Stage</div>
+            </div>
+            <div class="cue-row">
+              <div class="cue-num">04</div>
+              <div class="cue-time">9:40 PM</div>
+              <div class="cue-item">Tape stop, load-out</div>
+              <div class="cue-crew">All crew</div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <nav class="tabbar" aria-label="Primary navigation">
+      <button class="tab" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="11" cy="11" r="6.5"></circle>
+          <path d="M16 16l4 4"></path>
+        </svg>
+        <span>Search</span>
+      </button>
+      <button class="tab" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M5 5.5h5v13H5zM14 5.5h5v13h-5z"></path>
+        </svg>
+        <span>Rooms</span>
+      </button>
+      <button class="tab active" type="button" aria-current="page">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M5 6.5h14v12H5zM8 4.5v4M16 4.5v4M5 10.5h14"></path>
+        </svg>
+        <span>Cue Sheet</span>
+      </button>
+      <button class="tab" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="8" r="3.5"></circle>
+          <path d="M5.5 20c.7-3.8 3-5.7 6.5-5.7s5.8 1.9 6.5 5.7"></path>
+        </svg>
+        <span>Crew</span>
+      </button>
+    </nav>
+  </div>
+</body>
+</html>

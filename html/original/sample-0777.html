@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Formstead Media Editor</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #dfe1e1;
+      color: #202326;
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    }
+
+    button {
+      border: 0;
+      border-radius: 0;
+      font: inherit;
+      color: inherit;
+      background: none;
+      cursor: default;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #fbfbfa;
+    }
+
+    .topbar {
+      display: grid;
+      grid-template-columns: 76px 1fr 76px;
+      align-items: center;
+      padding: 14px 16px;
+      background: #fbfbfa;
+    }
+
+    .topbar-title {
+      min-width: 0;
+      text-align: center;
+    }
+
+    .topbar-title strong {
+      display: block;
+      font-size: 16px;
+      line-height: 20px;
+      font-weight: 700;
+    }
+
+    .topbar-title span {
+      display: block;
+      margin-top: 2px;
+      color: #73787c;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 500;
+    }
+
+    .close-button {
+      width: 40px;
+      padding: 8px;
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+    }
+
+    .done-button {
+      justify-self: end;
+      padding: 9px 14px;
+      background: #555b60;
+      color: #ffffff;
+      font-size: 14px;
+      line-height: 18px;
+      font-weight: 700;
+    }
+
+    .editor {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .preview {
+      position: relative;
+      width: 350px;
+      height: 354px;
+      margin: 0 20px;
+      background: #24282b;
+    }
+
+    .preview-art {
+      display: block;
+      width: 350px;
+      height: 354px;
+    }
+
+    .duration {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      padding: 5px 8px;
+      background: rgba(31, 35, 38, 0.74);
+      color: #ffffff;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 600;
+    }
+
+    .playback-row {
+      display: grid;
+      grid-template-columns: 42px 1fr auto;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 20px;
+    }
+
+    .play-button {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      background: #eceeed;
+    }
+
+    .clip-details {
+      min-width: 0;
+    }
+
+    .clip-details strong {
+      display: block;
+      overflow: hidden;
+      color: #292d30;
+      font-size: 14px;
+      line-height: 18px;
+      font-weight: 600;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .clip-details span {
+      display: block;
+      color: #787d80;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .timecode {
+      color: #5f6468;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 600;
+    }
+
+    .ratio-panel {
+      padding: 9px 20px 11px;
+      background: rgba(89, 96, 102, 0.06);
+    }
+
+    .section-label {
+      margin: 0 0 9px;
+      color: #6d7276;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .ratio-options {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 7px;
+    }
+
+    .ratio-button {
+      padding: 9px 4px;
+      background: #e8eae9;
+      color: #555b60;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 600;
+    }
+
+    .ratio-button.active {
+      background: #596066;
+      color: #ffffff;
+    }
+
+    .adjustments {
+      padding: 10px 20px 8px;
+    }
+
+    .adjustment-row {
+      display: grid;
+      grid-template-columns: 78px 1fr 42px;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 0;
+    }
+
+    .adjustment-name {
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 500;
+    }
+
+    .adjustment-value {
+      color: #5e6468;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 600;
+      text-align: right;
+    }
+
+    .slider {
+      position: relative;
+      height: 18px;
+    }
+
+    .slider-track {
+      position: absolute;
+      top: 8px;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: #dfe1e1;
+    }
+
+    .slider-fill {
+      position: absolute;
+      top: 8px;
+      left: 0;
+      height: 3px;
+      background: #596066;
+    }
+
+    .slider-center {
+      position: absolute;
+      top: 4px;
+      left: calc(50% - 1px);
+      width: 2px;
+      height: 11px;
+      background: #aeb2b4;
+    }
+
+    .slider-thumb {
+      position: absolute;
+      top: 3px;
+      width: 13px;
+      height: 13px;
+      margin-left: -6px;
+      border-radius: 50%;
+      background: #596066;
+    }
+
+    .tabbar {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      padding: 8px 12px 12px;
+      background: #f0f1f0;
+    }
+
+    .tab {
+      position: relative;
+      padding: 10px 4px 8px;
+      color: #73787c;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    .tab.active {
+      background: rgba(89, 96, 102, 0.12);
+      color: #2c3033;
+      font-weight: 700;
+    }
+
+    .tab.active::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 28%;
+      width: 44%;
+      height: 3px;
+      background: #596066;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <button class="close-button" aria-label="Close editor">
+        <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M5 5L19 19M19 5L5 19" fill="none" stroke="#34383B" stroke-width="1.8" stroke-linecap="square"/>
+        </svg>
+      </button>
+
+      <div class="topbar-title">
+        <strong>Crop workout clip</strong>
+        <span>Tuesday strength session</span>
+      </div>
+
+      <button class="done-button">Done</button>
+    </header>
+
+    <main class="editor">
+      <section class="preview" aria-label="Workout video crop preview">
+        <svg class="preview-art" viewBox="0 0 350 354" role="img" aria-label="Illustrated strength training video frame with crop guides">
+          <rect width="350" height="354" fill="#c9ccca"/>
+          <rect y="237" width="350" height="117" fill="#aeb2b0"/>
+          <rect x="22" y="37" width="73" height="154" fill="#b8bcba"/>
+          <rect x="255" y="26" width="70" height="171" fill="#b4b8b6"/>
+          <rect x="35" y="55" width="47" height="6" fill="#989d9a"/>
+          <rect x="267" y="49" width="46" height="58" fill="#a1a6a3"/>
+          <rect x="45" y="91" width="26" height="70" fill="#a5aaa7"/>
+          <rect x="276" y="122" width="28" height="55" fill="#9da29f"/>
+          <rect x="91" y="265" width="169" height="12" fill="#898f8c"/>
+          <rect x="107" y="277" width="10" height="48" fill="#858b88"/>
+          <rect x="234" y="277" width="10" height="48" fill="#858b88"/>
+
+          <circle cx="177" cy="105" r="22" fill="#545a5d"/>
+          <path d="M153 132 C160 120 194 119 202 134 L212 208 C205 226 147 226 140 208 Z" fill="#5f6568"/>
+          <path d="M153 138 L118 187 L128 195 L167 157 Z" fill="#555b5e"/>
+          <path d="M199 137 L231 181 L221 190 L185 157 Z" fill="#555b5e"/>
+          <rect x="107" y="181" width="31" height="10" fill="#484e51"/>
+          <rect x="217" y="177" width="31" height="10" fill="#484e51"/>
+          <rect x="99" y="176" width="9" height="21" fill="#41474a"/>
+          <rect x="248" y="172" width="9" height="21" fill="#41474a"/>
+          <path d="M151 213 L172 215 L165 282 L143 282 Z" fill="#4d5356"/>
+          <path d="M182 215 L204 212 L213 282 L191 282 Z" fill="#4d5356"/>
+          <rect x="133" y="278" width="34" height="12" fill="#3f4548"/>
+          <rect x="191" y="278" width="34" height="12" fill="#3f4548"/>
+
+          <rect x="0" y="0" width="22" height="354" fill="#202427" opacity="0.54"/>
+          <rect x="328" y="0" width="22" height="354" fill="#202427" opacity="0.54"/>
+          <rect x="22" y="0" width="306" height="20" fill="#202427" opacity="0.54"/>
+          <rect x="22" y="334" width="306" height="20" fill="#202427" opacity="0.54"/>
+
+          <path d="M124 20V334M226 20V334M22 125H328M22 229H328" fill="none" stroke="#FFFFFF" stroke-width="1" opacity="0.48"/>
+          <path d="M22 49V20H51M299 20H328V49M22 305V334H51M299 334H328V305" fill="none" stroke="#FFFFFF" stroke-width="3"/>
+        </svg>
+        <div class="duration">00:18</div>
+      </section>
+
+      <section class="playback-row" aria-label="Clip playback details">
+        <button class="play-button" aria-label="Play preview">
+          <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
+            <path d="M4 2.5L13 8L4 13.5Z" fill="#555B60"/>
+          </svg>
+        </button>
+        <div class="clip-details">
+          <strong>Front squat set 3</strong>
+          <span>1080 × 1920 original</span>
+        </div>
+        <span class="timecode">00:06 / 00:18</span>
+      </section>
+
+      <section class="ratio-panel" aria-labelledby="ratio-title">
+        <h2 class="section-label" id="ratio-title">Aspect ratio</h2>
+        <div class="ratio-options">
+          <button class="ratio-button">Free</button>
+          <button class="ratio-button active">4:5</button>
+          <button class="ratio-button">1:1</button>
+          <button class="ratio-button">9:16</button>
+          <button class="ratio-button">16:9</button>
+        </div>
+      </section>
+
+      <section class="adjustments" aria-labelledby="adjust-title">
+        <h2 class="section-label" id="adjust-title">Frame adjustments</h2>
+
+        <div class="adjustment-row">
+          <span class="adjustment-name">Zoom</span>
+          <div class="slider" aria-label="Zoom 112 percent">
+            <span class="slider-track"></span>
+            <span class="slider-fill" style="width: 57%;"></span>
+            <span class="slider-thumb" style="left: 57%;"></span>
+          </div>
+          <span class="adjustment-value">112%</span>
+        </div>
+
+        <div class="adjustment-row">
+          <span class="adjustment-name">Straighten</span>
+          <div class="slider" aria-label="Straighten negative 1.2 degrees">
+            <span class="slider-track"></span>
+            <span class="slider-fill" style="left: 44%; width: 6%;"></span>
+            <span class="slider-center"></span>
+            <span class="slider-thumb" style="left: 44%;"></span>
+          </div>
+          <span class="adjustment-value">−1.2°</span>
+        </div>
+
+        <div class="adjustment-row">
+          <span class="adjustment-name">Vertical</span>
+          <div class="slider" aria-label="Vertical adjustment plus 4">
+            <span class="slider-track"></span>
+            <span class="slider-fill" style="left: 50%; width: 10%;"></span>
+            <span class="slider-center"></span>
+            <span class="slider-thumb" style="left: 60%;"></span>
+          </div>
+          <span class="adjustment-value">+4</span>
+        </div>
+
+        <div class="adjustment-row">
+          <span class="adjustment-name">Horizontal</span>
+          <div class="slider" aria-label="Horizontal adjustment negative 2">
+            <span class="slider-track"></span>
+            <span class="slider-fill" style="left: 46%; width: 4%;"></span>
+            <span class="slider-center"></span>
+            <span class="slider-thumb" style="left: 46%;"></span>
+          </div>
+          <span class="adjustment-value">−2</span>
+        </div>
+      </section>
+    </main>
+
+    <nav class="tabbar" aria-label="Media editing tools">
+      <button class="tab">Trim</button>
+      <button class="tab active" aria-current="page">Crop</button>
+      <button class="tab">Adjust</button>
+      <button class="tab">Canvas</button>
+    </nav>
+  </div>
+</body>
+</html>

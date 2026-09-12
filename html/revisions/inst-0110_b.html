@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Earnings — Coterie</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 40px 0;
+    margin: 0;
+    background: #2b2825;
+    font-family: 'Source Serif 4', Georgia, serif;
+  }
+  .screen {
+    width: 390px;
+    height: 844px;
+    background: #f2efec;
+    position: relative;
+    color: #221f1c;
+  }
+
+  /* top bar */
+  .topbar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 18px 16px 12px;
+    background: #f2efec;
+  }
+  .topbar h1 {
+    margin: 0;
+    font-size: 21px;
+    font-weight: 600;
+    letter-spacing: -0.2px;
+    flex: 1;
+  }
+  .iconbtn {
+    width: 30px; height: 30px;
+    display: flex; align-items: center; justify-content: center;
+    color: #4a443e;
+  }
+
+  /* summary — big total, small note */
+  .summary { padding: 0 16px 12px; }
+  .summary .total {
+    font-size: 34px;
+    font-weight: 700;
+    letter-spacing: -1px;
+    line-height: 1.05;
+  }
+  .summary .note {
+    font-size: 12px;
+    color: #6f675f;
+    margin-top: 3px;
+  }
+
+  /* paid / unpaid split */
+  .strip {
+    display: flex;
+    gap: 10px;
+    padding: 0 16px 14px;
+  }
+  .cell {
+    flex: 1;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(45, 38, 32, 0.10);
+    padding: 9px 12px;
+  }
+  .cell .k {
+    font-size: 11px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: #857c72;
+  }
+  .cell .v {
+    font-size: 18px;
+    font-weight: 700;
+    margin-top: 2px;
+  }
+  .cell .v.pend { color: #8a6b3d; }
+
+  /* filter bar: counts + more filters + applied state */
+  .fbar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0 16px 7px;
+  }
+  .chip {
+    font-size: 12px;
+    color: #4a443e;
+    background: #e6e1db;
+    border-radius: 14px;
+    padding: 6px 11px;
+    white-space: nowrap;
+  }
+  .chip.on {
+    background: #8b7666;
+    color: #fdfbf9;
+    font-weight: 600;
+  }
+  .chip .n { opacity: 0.7; margin-left: 4px; }
+  .fbtn {
+    margin-left: auto;
+    width: 32px; height: 30px;
+    border: 1px solid #d9d2ca;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    color: #4a443e;
+    flex: none;
+  }
+  .fnote {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-size: 11px;
+    color: #857c72;
+    padding: 0 18px 14px;
+  }
+  .fnote .reset { color: #8b7666; font-weight: 600; }
+
+  /* payout batches */
+  .list { padding: 0 16px; }
+  .ghead {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 0 2px 8px;
+  }
+  .ghead .lbl {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: #857c72;
+    flex: 1;
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .ghead .tot {
+    font-size: 12px;
+    font-weight: 700;
+    color: #4a443e;
+    flex: none;
+  }
+  .bdot { width: 7px; height: 7px; border-radius: 50%; flex: none; }
+  .bdot.wait { background: #c9922f; }
+  .bdot.done { background: #5d7f59; }
+
+  .card {
+    background: #ffffff;
+    border-radius: 14px;
+    box-shadow: 0 1px 3px rgba(45, 38, 32, 0.10);
+    margin-bottom: 18px;
+  }
+  .card.wait { border: 1px solid #e6d8bd; }
+  .row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 14px;
+    border-top: 1px solid #efeae4;
+  }
+  .row:first-child { border-top: none; }
+  .row img {
+    width: 56px;
+    height: 56px;
+    border-radius: 14px;
+    object-fit: cover;
+    display: block;
+    background: #ddd6ce;
+    flex: none;
+  }
+  .body { flex: 1; min-width: 0; }
+  .title {
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.25;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .meta {
+    font-size: 13px;
+    color: #6f675f;
+    margin-top: 3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .money {
+    text-align: right;
+    flex: none;
+    padding-left: 6px;
+  }
+  .money .amt2 { font-size: 15px; font-weight: 600; }
+  .money .amt2.void {
+    color: #8d857c;
+    font-weight: 400;
+    text-decoration: line-through;
+  }
+  .money .lbl2 {
+    font-size: 10px;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    color: #a09890;
+    margin-top: 2px;
+  }
+
+  /* tab bar */
+  .tabs {
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    height: 64px;
+    background: #ffffff;
+    border-top: 1px solid #e4ded7;
+    display: flex;
+  }
+  .tab {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    font-size: 12px;
+    color: #8d857c;
+  }
+  .tab.on { color: #8b7666; font-weight: 600; }
+</style>
+</head>
+<body>
+  <div class="screen">
+
+    <div class="topbar">
+      <span class="iconbtn" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
+      </span>
+      <h1>Payouts</h1>
+      <span class="iconbtn" aria-hidden="true">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg>
+      </span>
+    </div>
+
+    <div class="summary">
+      <div class="total">$1,284.40</div>
+      <div class="note">net earnings from 24 hosted orders since January 2025</div>
+    </div>
+
+    <div class="strip">
+      <div class="cell">
+        <div class="k">Paid out</div>
+        <div class="v">$1,229.41</div>
+      </div>
+      <div class="cell">
+        <div class="k">Awaiting payout</div>
+        <div class="v pend">$54.99</div>
+      </div>
+    </div>
+
+    <div class="fbar">
+      <span class="chip on">All<span class="n">24</span></span>
+      <span class="chip">Paid<span class="n">19</span></span>
+      <span class="chip">Pending<span class="n">3</span></span>
+      <span class="fbtn" aria-hidden="true">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h16M4 12h11M4 17h6"/><circle cx="18" cy="12" r="2"/></svg>
+      </span>
+    </div>
+    <div class="fnote">
+      <span>Grouped by payout · Sep 1 – Oct 31 · newest first</span>
+      <span class="reset">Reset</span>
+    </div>
+
+    <div class="list">
+      <div class="ghead">
+        <span class="bdot wait"></span>
+        <span class="lbl">Awaiting payout · expected Oct 27</span>
+        <span class="tot">$54.99</span>
+      </div>
+      <div class="card wait">
+        <div class="row">
+          <img src="https://loremflickr.com/56/56/party?lock=2340" width="56" height="56" alt="Rooftop film night crowd at dusk">
+          <div class="body">
+            <div class="title">Rooftop Film Night</div>
+            <div class="meta">2 tickets · Oct 18 · $36.00 − $3.24 fee</div>
+          </div>
+          <div class="money">
+            <div class="amt2">$32.76</div>
+            <div class="lbl2">net</div>
+          </div>
+        </div>
+        <div class="row">
+          <img src="https://loremflickr.com/56/56/cafe?lock=2341" width="56" height="56" alt="Cafe counter where the latte art workshop was held">
+          <div class="body">
+            <div class="title">Latte Art Workshop, Grove Room</div>
+            <div class="meta">1 seat · Oct 14 · $24.00 − $1.77 fee</div>
+          </div>
+          <div class="money">
+            <div class="amt2">$22.23</div>
+            <div class="lbl2">net</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ghead">
+        <span class="bdot done"></span>
+        <span class="lbl">Deposited Oct 6 · Chase ··4821</span>
+        <span class="tot">$34.58</span>
+      </div>
+      <div class="card">
+        <div class="row">
+          <img src="https://loremflickr.com/56/56/friends?lock=2344" width="56" height="56" alt="Table set for a neighborhood potluck dinner">
+          <div class="body">
+            <div class="title">Neighborhood Potluck</div>
+            <div class="meta">2 tickets · Sep 27 · $20.00 − $1.80 fee</div>
+          </div>
+          <div class="money">
+            <div class="amt2">$18.20</div>
+            <div class="lbl2">net</div>
+          </div>
+        </div>
+        <div class="row">
+          <img src="https://loremflickr.com/56/56/street?lock=2346" width="56" height="56" alt="Harbor bar exterior at night">
+          <div class="body">
+            <div class="title">Late Set at Harbor Bar</div>
+            <div class="meta">1 ticket · Sep 2 · $18.00 − $1.62 fee</div>
+          </div>
+          <div class="money">
+            <div class="amt2">$16.38</div>
+            <div class="lbl2">net</div>
+          </div>
+        </div>
+        <div class="row">
+          <img src="https://loremflickr.com/56/56/street?lock=2343" width="56" height="56" alt="Street market stalls on a Sunday morning">
+          <div class="body">
+            <div class="title">Sunday Street Market Walk</div>
+            <div class="meta">1 seat · Oct 5 · refunded, fee returned</div>
+          </div>
+          <div class="money">
+            <div class="amt2 void">$12.00</div>
+            <div class="lbl2">$0.00 net</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <nav class="tabs">
+      <div class="tab">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
+        Feed
+      </div>
+      <div class="tab">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="9" cy="10" r="4"/><circle cx="16" cy="14" r="4"/></svg>
+        Circles
+      </div>
+      <div class="tab">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M8 3.5v3M16 3.5v3M3.5 10h17"/></svg>
+        Events
+      </div>
+      <div class="tab on">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8.5" r="3.8"/><path d="M5 20c1.5-3.6 4-5.2 7-5.2s5.5 1.6 7 5.2"/></svg>
+        You
+      </div>
+    </nav>
+
+  </div>
+</body>
+</html>

@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Longwave — Therapy Bookings</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body {
+    min-height: 100vh;
+    margin: 0;
+    padding: 36px 0;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    background: #d8d5dc;
+    color: #17151b;
+    font-family: 'Source Serif 4', Georgia, serif;
+  }
+  .screen {
+    width: 768px;
+    height: 1024px;
+    display: flex;
+    position: relative;
+    background: #fbfafc;
+    box-shadow: 0 18px 48px rgba(41, 35, 50, .12);
+  }
+
+  .rail {
+    width: 96px;
+    flex: 0 0 96px;
+    padding: 22px 12px 18px;
+    border-right: 1px solid #e5e1e9;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .mark {
+    width: 46px;
+    height: 46px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #5b3a70;
+    color: #fff;
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 28px;
+  }
+  .railnav {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .railitem {
+    padding: 10px 4px;
+    border-radius: 8px;
+    color: #746d79;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    font-size: 12px;
+  }
+  .railitem.on {
+    color: #5b3a70;
+    background: #f1ebf4;
+    font-weight: 600;
+  }
+  .staff {
+    margin-top: auto;
+    text-align: center;
+    color: #746d79;
+    font-size: 11px;
+    line-height: 1.25;
+  }
+  .avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    margin: 0 auto 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #e8dfe9;
+    color: #5b3a70;
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  .main {
+    min-width: 0;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  .topbar {
+    padding: 20px 22px 17px;
+    border-bottom: 1px solid #e5e1e9;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .eyebrow {
+    color: #77707d;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    font-size: 11px;
+  }
+  h1 {
+    margin: 2px 0 0;
+    font-size: 25px;
+    line-height: 1.15;
+  }
+  .topactions {
+    display: flex;
+    gap: 9px;
+  }
+  .iconbtn, .newbtn, .stepbtn {
+    border: 1px solid #ded9e2;
+    background: #fff;
+    color: #4c4652;
+    font: inherit;
+  }
+  .iconbtn {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .newbtn {
+    min-height: 40px;
+    border-radius: 8px;
+    padding: 8px 13px;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    background: #5b3a70;
+    border-color: #5b3a70;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  .monthrow {
+    padding: 15px 22px 13px;
+    display: grid;
+    grid-template-columns: 48px 1fr 48px;
+    align-items: center;
+    gap: 10px;
+    background: #fff;
+  }
+  .stepbtn {
+    width: 48px;
+    height: 42px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .monthtitle {
+    text-align: center;
+  }
+  .monthtitle strong {
+    display: block;
+    font-size: 20px;
+  }
+  .monthtitle span {
+    display: block;
+    margin-top: 1px;
+    font-size: 12px;
+    color: #746d79;
+  }
+  .viewrow {
+    padding: 10px 22px;
+    border-top: 1px solid #efecf1;
+    border-bottom: 1px solid #e5e1e9;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #fff;
+  }
+  .viewlabel {
+    font-size: 13px;
+    color: #625b68;
+  }
+  .toggle {
+    display: flex;
+    gap: 3px;
+    padding: 3px;
+    border: 1px solid #ded9e2;
+    border-radius: 8px;
+    background: #f7f5f8;
+  }
+  .toggle span {
+    padding: 6px 13px;
+    border-radius: 5px;
+    color: #6d6672;
+    font-size: 12px;
+  }
+  .toggle .on {
+    background: #fff;
+    color: #5b3a70;
+    font-weight: 700;
+    box-shadow: 0 1px 3px rgba(42, 35, 47, .12);
+  }
+
+  .workspace {
+    padding: 18px 20px 20px;
+    display: grid;
+    grid-template-columns: 1.08fr .92fr;
+    align-items: start;
+    gap: 16px;
+  }
+  .leftcol, .rightcol {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .panel {
+    border: 1px solid #e2dde6;
+    border-radius: 12px;
+    background: #fff;
+  }
+  .panelhead {
+    padding: 14px 15px 11px;
+    border-bottom: 1px solid #ece8ee;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .panelhead h2, .teamhead h2 {
+    margin: 0;
+    font-size: 16px;
+  }
+  .panelhead span {
+    color: #77707d;
+    font-size: 12px;
+    white-space: nowrap;
+  }
+  .dow {
+    padding: 10px 10px 4px;
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+  }
+  .dow div {
+    text-align: center;
+    color: #817a86;
+    font-size: 11px;
+  }
+  .calendar {
+    padding: 0 10px 11px;
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+  }
+  .day {
+    min-width: 0;
+    padding: 8px 2px 7px;
+    border-top: 1px solid #f0edf2;
+    text-align: center;
+    color: #39333e;
+    font-size: 13px;
+  }
+  .date {
+    width: 30px;
+    height: 30px;
+    margin: auto;
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .day.out { color: #b5afb9; }
+  .day.today .date {
+    border: 1px solid #785489;
+    color: #5b3a70;
+    font-weight: 700;
+  }
+  .day.selected .date {
+    background: #5b3a70;
+    color: #fff;
+    font-weight: 700;
+  }
+  .load {
+    height: 4px;
+    margin: 5px auto 0;
+    display: flex;
+    justify-content: center;
+    gap: 2px;
+  }
+  .load i {
+    width: 4px;
+    height: 4px;
+    display: block;
+    border-radius: 50%;
+    background: #a783b5;
+  }
+
+  .summary {
+    padding: 13px 15px 15px;
+    border-top: 1px solid #ece8ee;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .metric {
+    text-align: center;
+    border-right: 1px solid #ece8ee;
+  }
+  .metric:last-child { border-right: 0; }
+  .metric strong {
+    display: block;
+    color: #5b3a70;
+    font-size: 18px;
+  }
+  .metric span {
+    color: #77707d;
+    font-size: 11px;
+  }
+
+  .team {
+    padding: 14px 15px 15px;
+  }
+  .teamhead {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 12px;
+  }
+  .teamhead span {
+    color: #77707d;
+    font-size: 12px;
+  }
+  .therapists {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+  .therapist {
+    padding: 10px 7px;
+    border-radius: 8px;
+    background: #f7f3f8;
+    text-align: center;
+    min-width: 0;
+  }
+  .therapist b {
+    display: block;
+    font-size: 12px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .therapist small {
+    color: #77707d;
+    font-size: 10px;
+  }
+  .dot {
+    width: 7px;
+    height: 7px;
+    margin: 0 auto 5px;
+    border-radius: 50%;
+    background: #54926d;
+  }
+
+  .agendahead {
+    padding: 15px;
+    border-bottom: 1px solid #e8e4eb;
+  }
+  .agendahead .dateheading {
+    font-size: 17px;
+    font-weight: 700;
+  }
+  .agendahead .sub {
+    margin-top: 2px;
+    color: #77707d;
+    font-size: 12px;
+  }
+  .booking {
+    padding: 13px 14px;
+    border-bottom: 1px solid #eeeaf0;
+  }
+  .booking:last-child { border-bottom: 0; }
+  .bookingtop {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .time {
+    color: #5b3a70;
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .status {
+    padding: 2px 7px;
+    border-radius: 10px;
+    background: #e8f3ec;
+    color: #39704f;
+    font-size: 10px;
+    font-weight: 700;
+  }
+  .status.remote {
+    background: #eee8f4;
+    color: #664079;
+  }
+  .client {
+    margin-top: 6px;
+    font-size: 15px;
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .with {
+    margin-top: 2px;
+    color: #6f6874;
+    font-size: 12px;
+    line-height: 1.3;
+  }
+  .with b { color: #403947; }
+  .room {
+    margin-top: 5px;
+    color: #8a838e;
+    font-size: 11px;
+  }
+</style>
+</head>
+<body>
+<div class="screen">
+  <aside class="rail">
+    <div class="mark">L</div>
+    <div class="railnav">
+      <div class="railitem">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 10.5L12 4l8 6.5V20H4z"/></svg>
+        Overview
+      </div>
+      <div class="railitem on">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3.5" y="5" width="17" height="15" rx="1.5"/><path d="M3.5 10h17M8 3.5V6M16 3.5V6"/></svg>
+        Bookings
+      </div>
+      <div class="railitem">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.2"/><path d="M3.8 19c.5-3.5 2.2-5.3 5.2-5.3s4.7 1.8 5.2 5.3M14.2 14.2c2.9-.8 5.1.8 5.8 4.2"/></svg>
+        Clients
+      </div>
+      <div class="railitem">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 19V8l7-4 7 4v11"/><path d="M9 19v-5h6v5M8 10h8"/></svg>
+        Practice
+      </div>
+    </div>
+    <div class="staff">
+      <div class="avatar">EM</div>
+      Erin Moss<br>Coordinator
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div>
+        <div class="eyebrow">Longwave Care</div>
+        <h1>Therapy bookings</h1>
+      </div>
+      <div class="topactions">
+        <div class="iconbtn" aria-label="Search">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg>
+        </div>
+        <div class="newbtn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 5v14M5 12h14"/></svg>
+          New booking
+        </div>
+      </div>
+    </header>
+
+    <div class="monthrow">
+      <div class="stepbtn" aria-label="Previous month">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg>
+      </div>
+      <div class="monthtitle">
+        <strong>June 2025</strong>
+        <span>18 appointments across 6 therapists</span>
+      </div>
+      <div class="stepbtn" aria-label="Next month">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9.5 5.5L16 12l-6.5 6.5"/></svg>
+      </div>
+    </div>
+
+    <div class="viewrow">
+      <div class="viewlabel">Practice schedule</div>
+      <div class="toggle"><span class="on">Month</span><span>Week</span><span>Day</span></div>
+    </div>
+
+    <div class="workspace">
+      <div class="leftcol">
+        <section class="panel">
+          <div class="panelhead">
+            <h2>Monthly calendar</h2>
+            <span>Local time</span>
+          </div>
+          <div class="dow">
+            <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
+          </div>
+          <div class="calendar">
+            <div class="day"><div class="date">1</div><div class="load"><i></i></div></div>
+            <div class="day"><div class="date">2</div><div class="load"><i></i><i></i></div></div>
+            <div class="day"><div class="date">3</div><div class="load"></div></div>
+            <div class="day"><div class="date">4</div><div class="load"><i></i></div></div>
+            <div class="day"><div class="date">5</div><div class="load"><i></i><i></i></div></div>
+            <div class="day"><div class="date">6</div><div class="load"><i></i></div></div>
+            <div class="day"><div class="date">7</div><div class="load"></div></div>
+
+            <div class="day"><div class="date">8</div><div class="load"><i></i></div></div>
+            <div class="day"><div class="date">9</div><div class="load"><i></i><i></i></div></div>
+            <div class="day today"><div class="date">10</div><div class="load"><i></i></div></div>
+            <div class="day"><div class="date">11</div><div class="load"><i></i><i></i></div></div>
+            <div class="day selected"><div class="date">12</div><div class="load"><i></i><i></i><i></i></div></div>
+            <div class="day"><div class="date">13</div><div class="load"><i></i></div></div>
+            <div class="day"><div class="date">14</div><div class="load"></div></div>
+
+            <div class="day"><div class="date">15</div><div class="load"><i></i></div></div>
+            <div class="day"><div class="date">16</div><div class="load"><i></i><i></i></div></div>
+            <div class="day"><div class="date">17</div><div class="load"><i></i></div></div>
+            <div class="day"><div class="date">18</div><div class="load"></div></div>
+            <div class="day"><div class="date">19</div><div class="load"><i></i><i></i></div></div>
+            <div class="day"><div class="date">20</div><div class="load"><i></i></div></div>
+            <div class="day"><div class="date">21</div><div class="load"></div></div>
+
+            <div class="day"><div class="date">22</div><div class="load"><i></i></div></div>
+            <div class="day"><div class="date">23</div><div class="load"><i></i></div></div>
+            <div class="day"><div class="date">24</div><div class="load"><i></i><i></i></div></div>
+            <div class="day"><div class="date">25</div><div class="load"></div></div>
+            <div class="day"><div class="date">26</div><div class="load"><i></i><i></i></div></div>
+            <div class="day"><div class="date">27</div><div class="load"><i></i></div></div>
+            <div class="day"><div class="date">28</div><div class="load"></div></div>
+
+            <div class="day"><div class="date">29</div><div class="load"><i></i></div></div>
+            <div class="day"><div class="date">30</div><div class="load"><i></i><i></i></div></div>
+            <div class="day out"><div class="date">1</div><div class="load"></div></div>
+            <div class="day out"><div class="date">2</div><div class="load"></div></div>
+            <div class="day out"><div class="date">3</div><div class="load"><i></i></div></div>
+            <div class="day out"><div class="date">4</div><div class="load"></div></div>
+            <div class="day out"><div class="date">5</div><div class="load"></div></div>
+          </div>
+          <div class="summary">
+            <div class="metric"><strong>6</strong><span>Booked</span></div>
+            <div class="metric"><strong>2</strong><span>Telehealth</span></div>
+            <div class="metric"><strong>4</strong><span>In person</span></div>
+          </div>
+        </section>
+
+        <section class="panel team">
+          <div class="teamhead">
+            <h2>Therapists today</h2>
+            <span>4 available</span>
+          </div>
+          <div class="therapists">
+            <div class="therapist"><div class="dot"></div><b>Dr. Maya Chen</b><small>3 sessions</small></div>
+            <div class="therapist"><div class="dot"></div><b>Jon Bell, LCSW</b><small>2 sessions</small></div>
+            <div class="therapist"><div class="dot"></div><b>Priya Shah, LMFT</b><small>1 session</small></div>
+          </div>
+        </section>
+      </div>
+
+      <div class="rightcol">
+        <section class="panel">
+          <div class="agendahead">
+            <div class="dateheading">Thursday, June 12</div>
+            <div class="sub">6 clients booked · 8:30 AM–5:15 PM</div>
+          </div>
+
+          <div class="booking">
+            <div class="bookingtop"><span class="time">8:30–9:20 AM</span><span class="status">Confirmed</span></div>
+            <div class="client">Avery Morgan</div>
+            <div class="with">with <b>Dr. Maya Chen</b> · Individual therapy</div>
+            <div class="room">Room 3 · Intake follow-up</div>
+          </div>
+
+          <div class="booking">
+            <div class="bookingtop"><span class="time">10:00–10:50 AM</span><span class="status remote">Telehealth</span></div>
+            <div class="client">Jordan Ellis</div>
+            <div class="with">with <b>Jon Bell, LCSW</b> · Anxiety support</div>
+            <div class="room">Secure video visit</div>
+          </div>
+
+          <div class="booking">
+            <div class="bookingtop"><span class="time">11:15 AM–12:05 PM</span><span class="status">Confirmed</span></div>
+            <div class="client">Sofia Ramirez</div>
+            <div class="with">with <b>Priya Shah, LMFT</b> · Couples consultation</div>
+            <div class="room">Room 1 · First appointment</div>
+          </div>
+
+          <div class="booking">
+            <div class="bookingtop"><span class="time">1:30–2:20 PM</span><span class="status">Confirmed</span></div>
+            <div class="client">Theo Walker</div>
+            <div class="with">with <b>Dr. Maya Chen</b> · Individual therapy</div>
+            <div class="room">Room 3 · Recurring session</div>
+          </div>
+
+          <div class="booking">
+            <div class="bookingtop"><span class="time">3:00–3:50 PM</span><span class="status remote">Telehealth</span></div>
+            <div class="client">Naomi Brooks</div>
+            <div class="with">with <b>Jon Bell, LCSW</b> · Stress management</div>
+            <div class="room">Secure video visit</div>
+          </div>
+
+          <div class="booking">
+            <div class="bookingtop"><span class="time">4:25–5:15 PM</span><span class="status">Confirmed</span></div>
+            <div class="client">Marcus Reed</div>
+            <div class="with">with <b>Dr. Maya Chen</b> · Individual therapy</div>
+            <div class="room">Room 2 · Care plan review</div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+</div>
+</body>
+</html>

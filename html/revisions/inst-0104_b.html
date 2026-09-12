@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Nutriscope — Scan Meal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;}
+  body{
+    min-height:100vh;display:flex;justify-content:center;align-items:flex-start;
+    padding:32px 0;margin:0;background:#d8dadd;
+    font-family:'Poppins',system-ui,sans-serif;color:#1c1e21;
+  }
+  .screen{
+    position:relative;width:768px;height:1024px;background:#f1f2f4;
+  }
+
+  .rail{
+    position:absolute;left:0;top:0;bottom:0;width:108px;
+    background:#454a51;color:#ffffff;padding:24px 12px 20px;
+    display:flex;flex-direction:column;
+  }
+  .wordmark{
+    font-size:15px;font-weight:600;letter-spacing:.2px;
+    text-align:center;margin-bottom:40px;
+  }
+  .tabs{display:flex;flex-direction:column;gap:10px;}
+  .tab{
+    padding:12px 5px;border-radius:12px;
+    display:flex;flex-direction:column;align-items:center;gap:6px;
+    color:#bfc3c8;
+  }
+  .tab span{font-size:11px;font-weight:500;}
+  .tab.on{background:#ffffff;color:#454a51;}
+  .tab.on span{font-weight:600;}
+  .railhelp{
+    margin-top:auto;text-align:center;color:#c9cdd1;
+  }
+  .railhelp span{display:block;font-size:10px;margin-top:5px;}
+
+  .main{
+    position:relative;margin-left:108px;padding:22px;
+    display:grid;grid-template-columns:372px 222px;gap:16px;align-items:start;
+  }
+  .view-column{min-width:0;}
+  .topbar{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:0 0 18px;
+  }
+  .topbar h1{margin:0;font-size:22px;font-weight:600;}
+  .topbar p{margin:2px 0 0;font-size:12px;color:#777c82;}
+  .iconbtn{
+    width:42px;height:42px;border-radius:12px;background:#ffffff;
+    box-shadow:0 1px 3px rgba(16,18,20,.10);
+    display:flex;align-items:center;justify-content:center;
+  }
+
+  .finder{
+    position:relative;height:918px;border-radius:16px;
+    background:#696f75;overflow:hidden;
+  }
+  .finder:before{
+    content:"";position:absolute;left:-52px;top:244px;width:476px;height:476px;
+    border-radius:50%;background:#747a80;
+  }
+  .plate{
+    position:absolute;left:54px;top:356px;width:264px;height:184px;
+    border-radius:50%;background:#878c92;
+    box-shadow:inset 0 0 0 18px rgba(255,255,255,.07);
+  }
+  .guide-label{
+    position:absolute;top:20px;left:20px;right:20px;
+    background:rgba(255,255,255,.95);border-radius:12px;padding:11px 12px;
+    display:flex;align-items:center;gap:9px;
+  }
+  .guide-label i{
+    width:8px;height:8px;border-radius:50%;background:#4b5058;flex:0 0 auto;
+  }
+  .guide-label span{font-size:12px;font-weight:500;}
+  .frame{position:absolute;left:30px;top:286px;width:312px;height:324px;}
+  .c{position:absolute;width:46px;height:46px;border:4px solid #ffffff;}
+  .c.tl{left:0;top:0;border-right:0;border-bottom:0;border-radius:13px 0 0 0;}
+  .c.tr{right:0;top:0;border-left:0;border-bottom:0;border-radius:0 13px 0 0;}
+  .c.bl{left:0;bottom:0;border-right:0;border-top:0;border-radius:0 0 0 13px;}
+  .c.br{right:0;bottom:0;border-left:0;border-top:0;border-radius:0 0 13px 0;}
+  .finder-footer{
+    position:absolute;left:18px;right:18px;bottom:18px;
+    display:flex;align-items:center;justify-content:space-between;
+  }
+  .status{
+    display:flex;align-items:center;gap:7px;background:rgba(28,30,33,.66);
+    border-radius:10px;padding:8px 10px;color:#ffffff;
+  }
+  .status i{width:7px;height:7px;border-radius:50%;background:#ffffff;}
+  .status span{font-size:11px;font-weight:500;}
+  .flash{
+    width:38px;height:38px;border-radius:10px;background:rgba(255,255,255,.94);
+    display:flex;align-items:center;justify-content:center;
+  }
+
+  .control-panel{
+    background:#ffffff;border-radius:16px;padding:16px;
+    box-shadow:0 1px 3px rgba(16,18,20,.08);
+  }
+  .panel-head{padding-bottom:14px;border-bottom:1px solid #eceef0;}
+  .panel-head h2{margin:0 0 3px;font-size:17px;font-weight:600;}
+  .panel-head p{margin:0;font-size:11px;line-height:1.5;color:#777c82;}
+  .section{padding:16px 0;border-bottom:1px solid #eceef0;}
+  .section h3{margin:0 0 11px;font-size:13px;font-weight:600;}
+
+  .modes{display:flex;flex-direction:column;gap:8px;}
+  .chip{
+    border:1px solid #e1e3e6;border-radius:11px;padding:10px;
+    display:flex;align-items:center;gap:9px;color:#656a70;
+  }
+  .chip i{
+    width:28px;height:28px;border-radius:8px;background:#eef0f2;
+    display:flex;align-items:center;justify-content:center;
+    font-style:normal;font-size:11px;font-weight:600;
+  }
+  .chip span{font-size:12px;font-weight:500;}
+  .chip.on{background:#4b5058;border-color:#4b5058;color:#ffffff;}
+  .chip.on i{background:rgba(255,255,255,.16);}
+
+  .capture-row{display:flex;align-items:center;justify-content:space-between;}
+  .tool{
+    width:42px;height:42px;border-radius:11px;background:#eef0f2;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .thumb{background:#c5c8cc;}
+  .shutter{
+    width:68px;height:68px;border-radius:50%;border:3px solid #4b5058;
+    background:#ffffff;display:flex;align-items:center;justify-content:center;
+  }
+  .shutter i{width:52px;height:52px;border-radius:50%;background:#4b5058;}
+
+  .history{padding-top:16px;}
+  .history-head{
+    display:flex;align-items:baseline;justify-content:space-between;
+    margin-bottom:11px;
+  }
+  .history-head h3{margin:0;font-size:13px;font-weight:600;}
+  .history-head b{font-size:12px;color:#4b5058;}
+  .total{
+    background:#f1f2f4;border-radius:10px;padding:10px 11px;margin-bottom:9px;
+  }
+  .total strong{display:block;font-size:17px;font-weight:600;}
+  .total span{display:block;font-size:10px;color:#777c82;}
+  .meal{
+    position:relative;padding:9px 0 9px 14px;border-bottom:1px solid #eceef0;
+  }
+  .meal:last-child{border-bottom:0;padding-bottom:0;}
+  .meal:before{
+    content:"";position:absolute;left:0;top:15px;width:6px;height:6px;
+    border-radius:50%;background:#70757b;
+  }
+  .meal strong{
+    display:block;font-size:11px;font-weight:600;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .meal span{display:block;font-size:10px;color:#7a7f85;margin-top:2px;}
+  .note{
+    margin-top:16px;background:#e7e9ec;border-radius:12px;padding:12px;
+    font-size:10px;line-height:1.55;color:#60656b;
+  }
+</style>
+</head>
+<body>
+  <div class="screen">
+    <aside class="rail">
+      <div class="wordmark">Nutriscope</div>
+      <nav class="tabs" aria-label="Primary navigation">
+        <div class="tab">
+          <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5 12 4l8 6.5V20a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1z"/></svg>
+          <span>Today</span>
+        </div>
+        <div class="tab">
+          <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5h14M5 12h14M5 19h9"/></svg>
+          <span>Diary</span>
+        </div>
+        <div class="tab on">
+          <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8.5A1.5 1.5 0 0 1 5.5 7h2L9 5h6l1.5 2h2A1.5 1.5 0 0 1 20 8.5V17a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 17z"/><circle cx="12" cy="12.8" r="3"/></svg>
+          <span>Scan</span>
+        </div>
+        <div class="tab">
+          <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 19V11M12 19V6M19 19v-5"/></svg>
+          <span>Trends</span>
+        </div>
+      </nav>
+      <div class="railhelp">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.8 9a2.3 2.3 0 1 1 3.4 2c-.8.5-1.2 1-1.2 2"/><path d="M12 17h.01"/></svg>
+        <span>Scan help</span>
+      </div>
+    </aside>
+
+    <main class="main">
+      <div class="view-column">
+        <header class="topbar">
+          <div>
+            <h1>Scan Meal</h1>
+            <p>Point the camera at your full plate</p>
+          </div>
+          <div class="iconbtn" aria-label="Close">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1c1e21" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+          </div>
+        </header>
+
+        <section class="finder" aria-label="Camera viewfinder">
+          <div class="guide-label"><i></i><span>Center the full plate in the frame</span></div>
+          <div class="plate"></div>
+          <div class="frame">
+            <div class="c tl"></div><div class="c tr"></div>
+            <div class="c bl"></div><div class="c br"></div>
+          </div>
+          <div class="finder-footer">
+            <div class="status"><i></i><span>Focus locked · auto detect on</span></div>
+            <div class="flash" aria-label="Flash off">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1c1e21" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L4 14h6l-1 8 9-12h-6l1-8z"/></svg>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <aside>
+        <div class="control-panel">
+          <div class="panel-head">
+            <h2>Quick scan</h2>
+            <p>Choose a source, then capture when the frame is clear.</p>
+          </div>
+
+          <section class="section">
+            <h3>Scan mode</h3>
+            <div class="modes">
+              <div class="chip on"><i>M</i><span>Meal</span></div>
+              <div class="chip"><i>N</i><span>Nutrition label</span></div>
+              <div class="chip"><i>B</i><span>Barcode</span></div>
+            </div>
+          </section>
+
+          <section class="section">
+            <h3>Capture</h3>
+            <div class="capture-row">
+              <div class="tool thumb" aria-label="Choose from library"></div>
+              <div class="shutter" aria-label="Capture"><i></i></div>
+              <div class="tool" aria-label="Switch camera">
+                <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#4b5058" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8V6a2 2 0 0 1 2-2h3"/><path d="M20 16v2a2 2 0 0 1-2 2h-3"/><path d="M8 20H6a2 2 0 0 1-2-2v-2"/><path d="M16 4h2a2 2 0 0 1 2 2v2"/><circle cx="12" cy="12" r="3.2"/></svg>
+              </div>
+            </div>
+          </section>
+
+          <section class="history">
+            <div class="history-head">
+              <h3>Today’s history</h3>
+              <b>2 of 4</b>
+            </div>
+            <div class="total">
+              <strong>1,240 kcal</strong>
+              <span>Logged so far today</span>
+            </div>
+            <div class="meal">
+              <strong>Chicken bowl</strong>
+              <span>12:40 PM · 710 kcal</span>
+            </div>
+            <div class="meal">
+              <strong>Greek yogurt</strong>
+              <span>8:15 AM · 530 kcal</span>
+            </div>
+          </section>
+        </div>
+
+        <div class="note">For the best estimate, keep every edge of the plate visible and avoid strong shadows.</div>
+      </aside>
+    </main>
+  </div>
+</body>
+</html>

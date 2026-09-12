@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Learner Session Summary</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --taupe:#8A7A6D;
+    --ink:#25211E;
+    --muted:#6E6862;
+    --rule:#DCD6CE;
+    --paper:#FBFAF8;
+    --soft:#F1EDE8;
+    --green:#687762;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#EEECE8;
+    color:var(--ink);
+    font-family:'Source Serif 4', Georgia, serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .screen{
+    width:1024px;
+    height:768px;
+    padding:27px 36px 24px;
+    background:var(--paper);
+  }
+  .header{
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:30px;
+  }
+  .eyebrow{
+    margin:0 0 6px;
+    color:var(--taupe);
+    font-size:11px;
+    font-weight:600;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+  }
+  h1{
+    margin:0 0 4px;
+    font-size:26px;
+    font-weight:600;
+    line-height:1.2;
+  }
+  .sub{
+    margin:0;
+    color:var(--muted);
+    font-size:14px;
+    line-height:1.4;
+  }
+  .session-meta{
+    display:grid;
+    grid-template-columns:auto auto;
+    gap:4px 20px;
+    margin:1px 0 0;
+    font-size:13px;
+    line-height:1.4;
+  }
+  .session-meta dt{
+    color:var(--muted);
+  }
+  .session-meta dd{
+    margin:0;
+    font-weight:600;
+    text-align:right;
+  }
+  .course-panel{
+    margin-top:18px;
+    padding:14px 18px 15px;
+    border:1px solid var(--rule);
+    background:#F8F6F3;
+  }
+  .course-panel-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:12px;
+  }
+  .course-panel-head p{
+    margin:0;
+  }
+  .course-name{
+    font-size:14px;
+    font-weight:600;
+  }
+  .course-count{
+    color:var(--muted);
+    font-size:12px;
+  }
+  .course-path{
+    display:grid;
+    grid-template-columns:1fr 1fr 1.15fr 1fr 1fr;
+    align-items:start;
+  }
+  .course-step{
+    position:relative;
+    min-width:0;
+    text-align:center;
+  }
+  .course-step::before{
+    content:"";
+    position:absolute;
+    top:11px;
+    right:50%;
+    left:-50%;
+    height:1px;
+    background:var(--rule);
+  }
+  .course-step:first-child::before{
+    display:none;
+  }
+  .dot{
+    position:relative;
+    z-index:1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    width:23px;
+    height:23px;
+    margin:0 auto 6px;
+    border:1px solid var(--rule);
+    border-radius:50%;
+    background:var(--paper);
+    color:var(--muted);
+    font-size:10px;
+  }
+  .course-step.done .dot{
+    border-color:var(--green);
+    background:var(--green);
+    color:#fff;
+  }
+  .course-step.current .dot{
+    width:27px;
+    height:27px;
+    margin-top:-2px;
+    margin-bottom:5px;
+    border-color:var(--taupe);
+    background:var(--taupe);
+    color:#fff;
+    font-weight:600;
+  }
+  .step-name{
+    display:block;
+    padding:0 5px;
+    color:var(--muted);
+    font-size:11px;
+    line-height:1.25;
+  }
+  .current .step-name{
+    color:var(--ink);
+    font-weight:600;
+  }
+  .report-title-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-top:17px;
+    padding-bottom:10px;
+    border-bottom:1px solid var(--rule);
+  }
+  h2{
+    margin:0;
+    font-size:19px;
+    font-weight:600;
+  }
+  .level{
+    color:var(--muted);
+    font-size:12px;
+  }
+  .report-grid{
+    display:grid;
+    grid-template-columns:1.12fr .88fr;
+    gap:24px;
+    margin-top:14px;
+  }
+  .card{
+    border:1px solid var(--rule);
+    padding:14px 16px;
+  }
+  .card + .card{
+    margin-top:12px;
+  }
+  .card-title{
+    margin:0 0 10px;
+    font-size:14px;
+    font-weight:600;
+  }
+  .rubric-row{
+    display:grid;
+    grid-template-columns:144px 1fr 54px;
+    gap:12px;
+    align-items:center;
+    padding:8px 0;
+    border-top:1px solid var(--rule);
+  }
+  .rubric-row:first-of-type{
+    border-top:0;
+    padding-top:0;
+  }
+  .rubric-name{
+    font-size:13px;
+  }
+  .meter{
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    gap:4px;
+  }
+  .meter span{
+    height:8px;
+    background:#E7E2DC;
+  }
+  .meter span.fill{
+    background:var(--taupe);
+  }
+  .rubric-score{
+    color:var(--muted);
+    font-size:12px;
+    text-align:right;
+  }
+  .summary-box{
+    padding:12px 14px;
+    border-left:3px solid var(--taupe);
+    background:var(--soft);
+  }
+  .summary-box p{
+    margin:0;
+    font-size:13px;
+    line-height:1.5;
+  }
+  .evidence{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+    margin-top:12px;
+  }
+  .evidence-item{
+    padding:11px 12px;
+    border:1px solid var(--rule);
+  }
+  .mini-label{
+    margin:0 0 5px;
+    color:var(--taupe);
+    font-size:10px;
+    font-weight:600;
+    letter-spacing:.11em;
+    text-transform:uppercase;
+  }
+  .evidence-item p:last-child{
+    margin:0;
+    color:#4D4742;
+    font-size:12px;
+    line-height:1.45;
+  }
+  .choice-row{
+    display:flex;
+    gap:7px;
+  }
+  .choice{
+    flex:1;
+    padding:8px 5px;
+    border:1px solid var(--rule);
+    color:var(--muted);
+    font-size:12px;
+    text-align:center;
+  }
+  .choice.on{
+    border-color:var(--green);
+    background:#EDF1EB;
+    color:#455240;
+    font-weight:600;
+  }
+  .tag-list{
+    display:flex;
+    flex-wrap:wrap;
+    gap:7px;
+  }
+  .tag{
+    padding:6px 9px;
+    border:1px solid var(--rule);
+    color:var(--muted);
+    font-size:12px;
+  }
+  .tag.on{
+    border-color:var(--taupe);
+    background:var(--soft);
+    color:#4A423B;
+    font-weight:600;
+  }
+  .practice{
+    margin:0;
+    color:#4D4742;
+    font-size:13px;
+    line-height:1.5;
+  }
+  .footer{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-top:15px;
+  }
+  .footer-actions{
+    display:flex;
+    gap:10px;
+  }
+  button{
+    border:0;
+    padding:10px 18px;
+    font:600 14px 'Source Serif 4', Georgia, serif;
+  }
+  .secondary{
+    border:1px solid var(--rule);
+    background:transparent;
+    color:var(--muted);
+  }
+  .submit{
+    min-width:166px;
+    background:var(--taupe);
+    color:#fff;
+  }
+  .visibility-note{
+    margin:0;
+    color:var(--muted);
+    font-size:12px;
+    line-height:1.4;
+    white-space:nowrap;
+  }
+</style>
+</head>
+<body>
+  <div class="screen">
+    <header class="header">
+      <div>
+        <p class="eyebrow">Kestrel Language Lab · Tutor report</p>
+        <h1>Daniel Kim’s session summary</h1>
+        <p class="sub">Review progress, record evidence, and set the next learning focus.</p>
+      </div>
+      <dl class="session-meta">
+        <dt>Tutor</dt><dd>Marisol Vega</dd>
+        <dt>Session</dt><dd>March 12 · 4:00 PM</dd>
+        <dt>Duration</dt><dd>50 minutes</dd>
+      </dl>
+    </header>
+
+    <section class="course-panel">
+      <div class="course-panel-head">
+        <p class="course-name">Spanish Foundations II</p>
+        <p class="course-count">Today: lesson 14 of 20</p>
+      </div>
+      <div class="course-path">
+        <div class="course-step done">
+          <span class="dot">✓</span>
+          <span class="step-name">Lesson 12<br>Past routines</span>
+        </div>
+        <div class="course-step done">
+          <span class="dot">✓</span>
+          <span class="step-name">Lesson 13<br>Comparisons</span>
+        </div>
+        <div class="course-step current">
+          <span class="dot">14</span>
+          <span class="step-name">Conditional tense<br>Current session</span>
+        </div>
+        <div class="course-step">
+          <span class="dot">15</span>
+          <span class="step-name">Polite<br>requests</span>
+        </div>
+        <div class="course-step">
+          <span class="dot">16</span>
+          <span class="step-name">Advice and<br>suggestions</span>
+        </div>
+      </div>
+    </section>
+
+    <div class="report-title-row">
+      <h2>Post-session assessment</h2>
+      <span class="level">Learner level: Intermediate A2</span>
+    </div>
+
+    <main class="report-grid">
+      <div>
+        <section class="card">
+          <p class="card-title">Performance by learning goal</p>
+          <div class="rubric-row">
+            <span class="rubric-name">Grammar accuracy</span>
+            <div class="meter">
+              <span class="fill"></span><span class="fill"></span><span class="fill"></span><span class="fill"></span><span></span>
+            </div>
+            <span class="rubric-score">4 of 5</span>
+          </div>
+          <div class="rubric-row">
+            <span class="rubric-name">Spoken fluency</span>
+            <div class="meter">
+              <span class="fill"></span><span class="fill"></span><span class="fill"></span><span></span><span></span>
+            </div>
+            <span class="rubric-score">3 of 5</span>
+          </div>
+          <div class="rubric-row">
+            <span class="rubric-name">Listening response</span>
+            <div class="meter">
+              <span class="fill"></span><span class="fill"></span><span class="fill"></span><span class="fill"></span><span></span>
+            </div>
+            <span class="rubric-score">4 of 5</span>
+          </div>
+        </section>
+
+        <section class="card">
+          <p class="card-title">Summary for Daniel</p>
+          <div class="summary-box">
+            <p>You used conditional verb forms accurately in guided conversation and corrected several endings independently. Keep working on choosing between the conditional and imperfect in imagined situations.</p>
+          </div>
+          <div class="evidence">
+            <div class="evidence-item">
+              <p class="mini-label">Strong moment</p>
+              <p>Built a complete restaurant scenario with only one vocabulary prompt.</p>
+            </div>
+            <div class="evidence-item">
+              <p class="mini-label">Growth area</p>
+              <p>Paused when switching from prepared answers to spontaneous follow-up questions.</p>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div>
+        <section class="card">
+          <p class="card-title">Course readiness</p>
+          <div class="choice-row">
+            <span class="choice">Review lesson</span>
+            <span class="choice on">Continue</span>
+            <span class="choice">Add challenge</span>
+          </div>
+        </section>
+
+        <section class="card">
+          <p class="card-title">Skills demonstrated</p>
+          <div class="tag-list">
+            <span class="tag on">Conditional forms</span>
+            <span class="tag on">Polite phrasing</span>
+            <span class="tag">Speaking speed</span>
+            <span class="tag on">Self-correction</span>
+            <span class="tag">Follow-up questions</span>
+          </div>
+        </section>
+
+        <section class="card">
+          <p class="card-title">Focus for lesson 15</p>
+          <div class="tag-list">
+            <span class="tag on">Spontaneous speaking</span>
+            <span class="tag on">Verb contrast</span>
+          </div>
+        </section>
+
+        <section class="card">
+          <p class="card-title">Practice before the next session</p>
+          <p class="practice">Complete the six-sentence scenario exercise, then record one short response using three “would” phrases.</p>
+        </section>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <p class="visibility-note">The learner will see this summary.</p>
+      <div class="footer-actions">
+        <button class="secondary" type="button">Save draft</button>
+        <button class="submit" type="button">Share with Daniel</button>
+      </div>
+    </footer>
+  </div>
+</body>
+</html>

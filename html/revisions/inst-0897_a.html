@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Customer Reviews — Cyan Market</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #d9dede;
+      color: #172126;
+      font-family: 'Source Sans 3', system-ui, sans-serif;
+    }
+
+    button { color: inherit; font: inherit; }
+    svg { display: block; }
+
+    .screen {
+      width: 1024px;
+      height: 768px;
+      display: flex;
+      background: #f4f6f6;
+      box-shadow: 0 18px 46px rgba(31, 47, 52, .16);
+    }
+
+    .sidebar {
+      width: 214px;
+      flex: 0 0 214px;
+      display: flex;
+      flex-direction: column;
+      padding: 26px 18px 20px;
+      background: #17353b;
+      color: #eaf5f5;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 8px 25px;
+      border-bottom: 1px solid rgba(255,255,255,.14);
+    }
+
+    .brand-mark {
+      width: 30px;
+      height: 30px;
+      display: grid;
+      place-items: center;
+      background: #16bdc9;
+      color: #10353a;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 19px;
+      font-weight: 700;
+    }
+
+    .brand-name {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .nav-label {
+      margin: 23px 10px 8px;
+      color: #91acb0;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .11em;
+      text-transform: uppercase;
+    }
+
+    .primary-nav {
+      display: grid;
+      gap: 5px;
+    }
+
+    .nav-item {
+      width: 100%;
+      padding: 10px 11px;
+      border: 0;
+      background: transparent;
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      color: #bfd0d2;
+      text-align: left;
+      font-size: 14px;
+      cursor: default;
+    }
+
+    .nav-item.active {
+      background: #ffffff;
+      color: #126f78;
+      font-weight: 600;
+    }
+
+    .nav-count {
+      margin-left: auto;
+      min-width: 20px;
+      padding: 2px 6px;
+      background: rgba(255,255,255,.12);
+      color: inherit;
+      font-size: 11px;
+      text-align: center;
+    }
+
+    .nav-item.active .nav-count {
+      background: #d9f4f6;
+    }
+
+    .sidebar-note {
+      margin-top: auto;
+      padding: 15px 13px;
+      border: 1px solid rgba(255,255,255,.16);
+      color: #bdd0d2;
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .sidebar-note strong {
+      display: block;
+      margin-bottom: 3px;
+      color: #ffffff;
+      font-size: 13px;
+    }
+
+    .workspace {
+      min-width: 0;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .top-bar {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 15px 24px;
+      background: #ffffff;
+      border-bottom: 1px solid #dce3e4;
+    }
+
+    .page-heading {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .breadcrumbs {
+      margin: 0 0 2px;
+      color: #748186;
+      font-size: 12px;
+      line-height: 1.2;
+    }
+
+    .top-title {
+      margin: 0;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 24px;
+      line-height: 1.15;
+      font-weight: 700;
+    }
+
+    .header-action {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 8px 11px;
+      border: 1px solid #c7d0d2;
+      background: #ffffff;
+      color: #35464b;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    main {
+      min-width: 0;
+      padding: 22px 24px 24px;
+    }
+
+    .summary-panel {
+      display: grid;
+      grid-template-columns: 290px 1fr;
+      background: #ffffff;
+      border: 1px solid #dce3e4;
+      border-top: 3px solid #0cb5c4;
+    }
+
+    .product-card {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      padding: 19px;
+      border-right: 1px solid #e0e6e7;
+    }
+
+    .product-card img {
+      width: 64px;
+      height: 64px;
+      flex: 0 0 64px;
+      object-fit: cover;
+      display: block;
+      background: #d6dcdd;
+    }
+
+    .product-copy { min-width: 0; }
+
+    .eyebrow {
+      margin: 0 0 3px;
+      color: #637277;
+      font-size: 11px;
+      line-height: 1.3;
+      font-weight: 600;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+    }
+
+    .product-name {
+      margin: 0;
+      overflow: hidden;
+      font-size: 16px;
+      line-height: 1.25;
+      font-weight: 600;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .product-meta {
+      margin: 5px 0 0;
+      color: #5d6c71;
+      font-size: 13px;
+      line-height: 1.3;
+    }
+
+    .rating-card {
+      display: grid;
+      grid-template-columns: 160px 1fr;
+      align-items: center;
+      gap: 22px;
+      padding: 17px 20px;
+    }
+
+    .rating-score {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+    }
+
+    .rating-number {
+      margin: 0;
+      color: #078e9b;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 45px;
+      line-height: 1;
+      font-weight: 700;
+    }
+
+    .stars {
+      color: #08aebe;
+      font-size: 15px;
+      line-height: 1;
+      letter-spacing: 1px;
+      white-space: nowrap;
+    }
+
+    .rating-count {
+      margin: 5px 0 0;
+      color: #68777c;
+      font-size: 12px;
+      line-height: 1.25;
+    }
+
+    .distribution {
+      display: grid;
+      gap: 5px;
+    }
+
+    .distribution-row {
+      display: grid;
+      grid-template-columns: 30px 1fr 27px;
+      align-items: center;
+      gap: 8px;
+      color: #5b696e;
+      font-size: 11px;
+      line-height: 1;
+    }
+
+    .bar {
+      height: 6px;
+      background: #e6ebec;
+    }
+
+    .bar-fill {
+      height: 6px;
+      background: #0cb5c4;
+    }
+
+    .distribution-row:nth-child(1) .bar-fill { width: 68%; }
+    .distribution-row:nth-child(2) .bar-fill { width: 21%; }
+    .distribution-row:nth-child(3) .bar-fill { width: 7%; }
+    .distribution-row:nth-child(4) .bar-fill { width: 3%; }
+    .distribution-row:nth-child(5) .bar-fill { width: 1%; }
+
+    .review-heading {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 16px;
+      margin: 22px 0 11px;
+    }
+
+    .section-title {
+      margin: 0;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 21px;
+      line-height: 1.2;
+      font-weight: 700;
+    }
+
+    .review-total {
+      margin: 3px 0 0;
+      color: #68767b;
+      font-size: 12px;
+    }
+
+    .sort-button {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 10px;
+      border: 1px solid #bdc8ca;
+      background: #ffffff;
+      color: #334247;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .review-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 13px;
+    }
+
+    .review-card {
+      min-width: 0;
+      padding: 16px;
+      background: #ffffff;
+      border: 1px solid #dce3e4;
+    }
+
+    .standout {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      margin-bottom: 12px;
+      padding: 4px 7px;
+      background: #dff5f6;
+      color: #087b85;
+      font-size: 11px;
+      line-height: 1;
+      font-weight: 600;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+
+    .review-title {
+      margin: 0 0 7px;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 18px;
+      line-height: 1.25;
+      font-weight: 700;
+    }
+
+    .review-body {
+      margin: 0;
+      color: #4d5b60;
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    .review-footer {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      margin-top: 15px;
+      padding-top: 12px;
+      border-top: 1px solid #e5eaeb;
+    }
+
+    .monogram {
+      width: 30px;
+      height: 30px;
+      flex: 0 0 30px;
+      display: grid;
+      place-items: center;
+      background: #edf2f2;
+      color: #426167;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .reviewer { min-width: 0; flex: 1; }
+
+    .reviewer-name {
+      margin: 0;
+      font-size: 13px;
+      line-height: 1.2;
+      font-weight: 600;
+    }
+
+    .review-meta {
+      margin: 2px 0 0;
+      color: #78868a;
+      font-size: 11px;
+      line-height: 1.2;
+    }
+
+    .mini-stars {
+      color: #08aebe;
+      font-size: 11px;
+      letter-spacing: 1px;
+      white-space: nowrap;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark">C</div>
+        <div class="brand-name">Cyan Market</div>
+      </div>
+
+      <p class="nav-label">Browse</p>
+      <nav class="primary-nav" aria-label="Primary navigation">
+        <button class="nav-item" type="button">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M3 11L12 4L21 11V21H15V15H9V21H3V11Z" stroke="currentColor" stroke-width="1.6"/>
+          </svg>
+          Home
+        </button>
+        <button class="nav-item" type="button">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="10.5" cy="10.5" r="6.5" stroke="currentColor" stroke-width="1.7"/>
+            <path d="M15.5 15.5L21 21" stroke="currentColor" stroke-width="1.7"/>
+          </svg>
+          Shop
+        </button>
+        <button class="nav-item active" type="button" aria-current="page">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M5 4H19V20H5V4Z" stroke="currentColor" stroke-width="1.6"/>
+            <path d="M8 9H16M8 13H16M8 17H13" stroke="currentColor" stroke-width="1.6"/>
+          </svg>
+          Reviews
+          <span class="nav-count">96</span>
+        </button>
+        <button class="nav-item" type="button">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M4 6H6L8 16H18L20 9H7" stroke="currentColor" stroke-width="1.6"/>
+            <circle cx="9" cy="20" r="1.3" fill="currentColor"/>
+            <circle cx="17" cy="20" r="1.3" fill="currentColor"/>
+          </svg>
+          Cart
+          <span class="nav-count">2</span>
+        </button>
+        <button class="nav-item" type="button">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.6"/>
+            <path d="M4.5 21C5.2 16.7 7.7 14.5 12 14.5C16.3 14.5 18.8 16.7 19.5 21" stroke="currentColor" stroke-width="1.6"/>
+          </svg>
+          Account
+        </button>
+      </nav>
+
+      <div class="sidebar-note">
+        <strong>Verified feedback</strong>
+        Ratings shown here are from confirmed Cyan Market purchases.
+      </div>
+    </aside>
+
+    <div class="workspace">
+      <header class="top-bar">
+        <div class="page-heading">
+          <p class="breadcrumbs">Shop / Footwear / Canvas Daylight Sneakers</p>
+          <h1 class="top-title">Customer Reviews</h1>
+        </div>
+        <button class="header-action" type="button">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M12 15V4M12 4L8 8M12 4L16 8" stroke="currentColor" stroke-width="1.7"/>
+            <path d="M6 11V20H18V11" stroke="currentColor" stroke-width="1.7"/>
+          </svg>
+          Share
+        </button>
+      </header>
+
+      <main>
+        <section class="summary-panel" aria-label="Product and rating overview">
+          <div class="product-card">
+            <img src="https://loremflickr.com/64/64/sneakers?lock=11870" width="64" height="64" alt="White everyday sneakers viewed from the side">
+            <div class="product-copy">
+              <p class="eyebrow">Northline Goods</p>
+              <p class="product-name">Canvas Daylight Sneakers</p>
+              <p class="product-meta">Women's sizes 5–12 · $78.00</p>
+            </div>
+          </div>
+
+          <div class="rating-card">
+            <div class="rating-score">
+              <p class="rating-number">4.5</p>
+              <div>
+                <div class="stars" aria-label="4.5 out of 5 stars">★★★★<span style="opacity:.35">★</span></div>
+                <p class="rating-count">128 verified ratings</p>
+              </div>
+            </div>
+            <div class="distribution" aria-label="Rating distribution">
+              <div class="distribution-row"><span>5 star</span><div class="bar"><div class="bar-fill"></div></div><span>87</span></div>
+              <div class="distribution-row"><span>4 star</span><div class="bar"><div class="bar-fill"></div></div><span>27</span></div>
+              <div class="distribution-row"><span>3 star</span><div class="bar"><div class="bar-fill"></div></div><span>9</span></div>
+              <div class="distribution-row"><span>2 star</span><div class="bar"><div class="bar-fill"></div></div><span>4</span></div>
+              <div class="distribution-row"><span>1 star</span><div class="bar"><div class="bar-fill"></div></div><span>1</span></div>
+            </div>
+          </div>
+        </section>
+
+        <div class="review-heading">
+          <div>
+            <h2 class="section-title">What customers noticed</h2>
+            <p class="review-total">Three recent highlights from 96 written reviews</p>
+          </div>
+          <button class="sort-button" type="button">
+            Most helpful
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+              <path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="1.4"/>
+            </svg>
+          </button>
+        </div>
+
+        <section class="review-grid" aria-label="Written customer reviews">
+          <article class="review-card">
+            <div class="standout">Standout · Comfort</div>
+            <h3 class="review-title">Comfortable from the first wear</h3>
+            <p class="review-body">True to size with a soft lining. The sole feels supportive without being heavy.</p>
+            <div class="review-footer">
+              <div class="monogram" aria-hidden="true">AR</div>
+              <div class="reviewer">
+                <p class="reviewer-name">Avery Reed</p>
+                <p class="review-meta">Verified buyer · May 18, 2025</p>
+              </div>
+              <span class="mini-stars" aria-label="5 out of 5 stars">★★★★★</span>
+            </div>
+          </article>
+
+          <article class="review-card">
+            <div class="standout">Standout · Materials</div>
+            <h3 class="review-title">Clean shape and sturdy canvas</h3>
+            <p class="review-body">The color matches the photos. The heel was firm at first but softened after two walks.</p>
+            <div class="review-footer">
+              <div class="monogram" aria-hidden="true">JM</div>
+              <div class="reviewer">
+                <p class="reviewer-name">Jordan Miles</p>
+                <p class="review-meta">Verified buyer · May 11, 2025</p>
+              </div>
+              <span class="mini-stars" aria-label="4 out of 5 stars">★★★★<span style="color:#d9e1e2">★</span></span>
+            </div>
+          </article>
+
+          <article class="review-card">
+            <div class="standout">Standout · Easy care</div>
+            <h3 class="review-title">Reliable everyday pair</h3>
+            <p class="review-body">I have worn them for a month and the canvas still looks fresh. Easy to clean, too.</p>
+            <div class="review-footer">
+              <div class="monogram" aria-hidden="true">SK</div>
+              <div class="reviewer">
+                <p class="reviewer-name">Sloane Keller</p>
+                <p class="review-meta">Verified buyer · Apr 29, 2025</p>
+              </div>
+              <span class="mini-stars" aria-label="5 out of 5 stars">★★★★★</span>
+            </div>
+          </article>
+        </section>
+      </main>
+    </div>
+  </div>
+</body>
+</html>

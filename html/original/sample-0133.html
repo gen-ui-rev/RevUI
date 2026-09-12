@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LinguaLane Study Map</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #dfe2e4;
+      color: #202326;
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    }
+    button, input {
+      font: inherit;
+    }
+    button {
+      color: inherit;
+    }
+    .screen {
+      position: relative;
+      width: 390px;
+      height: 844px;
+      background: #f7f7f4;
+    }
+    .topbar {
+      position: relative;
+      z-index: 5;
+      background: #ffffff;
+      border-bottom: 1px solid #d9dcd9;
+    }
+    .title-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 16px 8px;
+    }
+    .icon-button {
+      width: 32px;
+      height: 32px;
+      padding: 6px;
+      border: 0;
+      background: transparent;
+      display: grid;
+      place-items: center;
+    }
+    .title-copy {
+      min-width: 0;
+      flex: 1;
+    }
+    .title-copy h1 {
+      margin: 0;
+      font-size: 19px;
+      line-height: 24px;
+      font-weight: 700;
+    }
+    .title-copy p {
+      margin: 1px 0 0;
+      color: #6c706f;
+      font-size: 12px;
+      line-height: 16px;
+    }
+    .filter-button {
+      width: 32px;
+      height: 32px;
+      padding: 6px;
+      border: 1px solid #d9dcd9;
+      border-radius: 4px;
+      background: #ffffff;
+      display: grid;
+      place-items: center;
+    }
+    .address-search {
+      margin: 0 16px 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+      padding: 9px 11px;
+      border: 1px solid #cfd3d0;
+      border-radius: 4px;
+      background: #f7f7f4;
+    }
+    .address-search svg {
+      flex: 0 0 auto;
+      color: #e85d16;
+    }
+    .address-copy {
+      min-width: 0;
+      flex: 1;
+    }
+    .address-label {
+      display: block;
+      margin-bottom: 1px;
+      color: #747876;
+      font-size: 12px;
+      line-height: 14px;
+      font-weight: 500;
+    }
+    .address-value {
+      display: block;
+      overflow: hidden;
+      color: #202326;
+      font-size: 14px;
+      line-height: 18px;
+      font-weight: 600;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .map {
+      position: absolute;
+      z-index: 1;
+      top: 109px;
+      right: 0;
+      bottom: 238px;
+      left: 0;
+      background: #e8e9e2;
+    }
+    .map-base {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+    .area-label {
+      position: absolute;
+      color: #777b77;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 600;
+      letter-spacing: .01em;
+    }
+    .area-one { top: 78px; left: 28px; }
+    .area-two { top: 240px; right: 31px; }
+    .area-three { top: 362px; left: 40px; }
+    .selected-label {
+      position: absolute;
+      top: 70px;
+      left: 156px;
+      padding: 7px 9px;
+      border: 1px solid #deded8;
+      border-radius: 4px;
+      background: #ffffff;
+      font-size: 12px;
+      line-height: 15px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .selected-label::after {
+      position: absolute;
+      bottom: -6px;
+      left: 23px;
+      width: 10px;
+      height: 10px;
+      content: "";
+      background: #ffffff;
+      border-right: 1px solid #deded8;
+      border-bottom: 1px solid #deded8;
+      transform: rotate(45deg);
+    }
+    .pin {
+      position: absolute;
+      width: 34px;
+      height: 42px;
+      border: 0;
+      padding: 0;
+      background: transparent;
+    }
+    .pin svg {
+      width: 34px;
+      height: 42px;
+      display: block;
+    }
+    .pin-selected { top: 108px; left: 181px; z-index: 3; }
+    .pin-two { top: 213px; left: 73px; }
+    .pin-three { top: 288px; right: 67px; }
+    .map-control {
+      position: absolute;
+      right: 16px;
+      bottom: 89px;
+      width: 40px;
+      height: 40px;
+      padding: 9px;
+      border: 1px solid #d5d8d5;
+      border-radius: 4px;
+      background: #ffffff;
+      display: grid;
+      place-items: center;
+    }
+    .distance-key {
+      position: absolute;
+      left: 16px;
+      bottom: 86px;
+      display: flex;
+      align-items: flex-end;
+      gap: 7px;
+      color: #646965;
+      font-size: 12px;
+      line-height: 14px;
+      font-weight: 600;
+    }
+    .scale-line {
+      width: 42px;
+      height: 7px;
+      border-right: 1px solid #646965;
+      border-bottom: 2px solid #646965;
+      border-left: 1px solid #646965;
+    }
+    .place-sheet {
+      position: absolute;
+      z-index: 4;
+      right: 0;
+      bottom: 59px;
+      left: 0;
+      padding: 14px 16px 12px;
+      background: #ffffff;
+      border-top: 3px solid #e85d16;
+    }
+    .sheet-heading {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #dedfdb;
+    }
+    .sheet-heading-copy {
+      min-width: 0;
+    }
+    .eyebrow {
+      margin: 0 0 3px;
+      color: #e85d16;
+      font-size: 12px;
+      line-height: 15px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+    .sheet-heading h2 {
+      margin: 0;
+      font-size: 19px;
+      line-height: 25px;
+      font-weight: 700;
+    }
+    .distance {
+      flex: 0 0 auto;
+      margin-top: 19px;
+      color: #4e5351;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 600;
+    }
+    .place-row {
+      display: flex;
+      gap: 13px;
+      padding: 13px 0;
+      border-bottom: 1px solid #dedfdb;
+    }
+    .place-row img {
+      width: 88px;
+      height: 72px;
+      flex: 0 0 88px;
+      display: block;
+      object-fit: cover;
+      border-radius: 4px;
+      background: #d6d6d0;
+    }
+    .place-info {
+      min-width: 0;
+      flex: 1;
+    }
+    .session-title {
+      margin: 0 0 4px;
+      font-size: 15px;
+      line-height: 20px;
+      font-weight: 700;
+    }
+    .session-meta,
+    .street-address {
+      margin: 0;
+      color: #616664;
+      font-size: 13px;
+      line-height: 18px;
+    }
+    .street-address {
+      margin-top: 3px;
+    }
+    .action-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding-top: 12px;
+    }
+    .directions-button {
+      flex: 1;
+      padding: 10px 14px;
+      border: 1px solid #e85d16;
+      border-radius: 4px;
+      background: #e85d16;
+      color: #ffffff;
+      font-size: 14px;
+      line-height: 18px;
+      font-weight: 700;
+    }
+    .save-button {
+      padding: 10px 14px;
+      border: 1px solid #cfd3d0;
+      border-radius: 4px;
+      background: #ffffff;
+      font-size: 14px;
+      line-height: 18px;
+      font-weight: 600;
+    }
+    .tabbar {
+      position: absolute;
+      z-index: 6;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      display: flex;
+      justify-content: space-around;
+      padding: 8px 18px 7px;
+      background: #ffffff;
+      border-top: 1px solid #d9dcd9;
+    }
+    .tab {
+      min-width: 62px;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: #747876;
+      text-align: center;
+    }
+    .tab svg {
+      display: block;
+      width: 21px;
+      height: 21px;
+      margin: 0 auto 3px;
+    }
+    .tab span {
+      display: block;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 600;
+    }
+    .tab.active {
+      color: #e85d16;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <div class="title-row">
+        <button class="icon-button" aria-label="Go back">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M15.5 5 8.5 12l7 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <div class="title-copy">
+          <h1>Find a study session</h1>
+          <p>In-person language practice nearby</p>
+        </div>
+        <button class="filter-button" aria-label="Filter study sessions">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M4 7h10M18 7h2M4 17h3M11 17h9M14 4v6M7 14v6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+      <div class="address-search" role="search">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M12 21s6-5.7 6-11a6 6 0 1 0-12 0c0 5.3 6 11 6 11Z" stroke="currentColor" stroke-width="1.7"/>
+          <circle cx="12" cy="10" r="2.2" stroke="currentColor" stroke-width="1.7"/>
+        </svg>
+        <div class="address-copy">
+          <span class="address-label">Search area</span>
+          <span class="address-value">742 Willow Street, Portland, OR 97205</span>
+        </div>
+      </div>
+    </header>
+
+    <main class="map" aria-label="Map showing nearby language study sessions">
+      <svg class="map-base" viewBox="0 0 390 497" preserveAspectRatio="none" aria-hidden="true">
+        <rect width="390" height="497" fill="#e8e9e2"/>
+        <path d="M0 41h112l38 34 83 3 42-38h115v77l-56 29-13 70 69 32v80l-90 9-48 51-108-20-48 31H0Z" fill="#e1e6dc"/>
+        <path d="M21 0 48 94l-12 87 25 91-7 113 15 112" fill="none" stroke="#ffffff" stroke-width="15"/>
+        <path d="M21 0 48 94l-12 87 25 91-7 113 15 112" fill="none" stroke="#c9cdca" stroke-width="1.2"/>
+        <path d="M147 0 155 72l-29 63 14 101-18 97 15 164" fill="none" stroke="#ffffff" stroke-width="12"/>
+        <path d="M147 0 155 72l-29 63 14 101-18 97 15 164" fill="none" stroke="#d0d3d0" stroke-width="1"/>
+        <path d="M280 0 265 77l18 74-9 84 30 86-18 176" fill="none" stroke="#ffffff" stroke-width="16"/>
+        <path d="M280 0 265 77l18 74-9 84 30 86-18 176" fill="none" stroke="#c9cdca" stroke-width="1.2"/>
+        <path d="M390 78 307 96l-71-5-93 27-143-8M390 202l-86-9-67 24-100-3-137 31M390 349l-91-12-74 25-89-10L0 377" fill="none" stroke="#ffffff" stroke-width="14"/>
+        <path d="M390 78 307 96l-71-5-93 27-143-8M390 202l-86-9-67 24-100-3-137 31M390 349l-91-12-74 25-89-10L0 377" fill="none" stroke="#cdd0cd" stroke-width="1.1"/>
+        <path d="M196 0v67m0 109v92m0 72v157M91 0l7 62m0 39 4 72m-2 96 7 79m-5 44 5 105M342 0l-8 57m-3 88-6 98m8 43-3 101m0 45-5 65" fill="none" stroke="#f8f8f5" stroke-width="6"/>
+        <path d="M0 161h76m35 0h103m40 0h136M0 297h94m52 0h82m42 0h120M0 432h124m51 0h96m30 0h89" fill="none" stroke="#f8f8f5" stroke-width="6"/>
+        <rect x="213" y="26" width="28" height="24" rx="2" fill="#d4dbcf"/>
+        <rect x="92" y="184" width="24" height="19" rx="2" fill="#d4dbcf"/>
+        <rect x="307" y="252" width="32" height="26" rx="2" fill="#d4dbcf"/>
+        <rect x="158" y="391" width="35" height="22" rx="2" fill="#d4dbcf"/>
+      </svg>
+
+      <span class="area-label area-one">Pearl District</span>
+      <span class="area-label area-two">Downtown</span>
+      <span class="area-label area-three">Goose Hollow</span>
+
+      <div class="selected-label">Cedar Reading Room</div>
+
+      <button class="pin pin-selected" aria-label="Selected location, Cedar Reading Room">
+        <svg viewBox="0 0 34 42" fill="none" aria-hidden="true">
+          <path d="M17 40S31 27 31 15A14 14 0 1 0 3 15c0 12 14 25 14 25Z" fill="#e85d16" stroke="#ffffff" stroke-width="2"/>
+          <circle cx="17" cy="15" r="5" fill="#ffffff"/>
+        </svg>
+      </button>
+      <button class="pin pin-two" aria-label="Language session location">
+        <svg viewBox="0 0 34 42" fill="none" aria-hidden="true">
+          <path d="M17 40S31 27 31 15A14 14 0 1 0 3 15c0 12 14 25 14 25Z" fill="#4f5552" stroke="#ffffff" stroke-width="2"/>
+          <circle cx="17" cy="15" r="4.5" fill="#ffffff"/>
+        </svg>
+      </button>
+      <button class="pin pin-three" aria-label="Language session location">
+        <svg viewBox="0 0 34 42" fill="none" aria-hidden="true">
+          <path d="M17 40S31 27 31 15A14 14 0 1 0 3 15c0 12 14 25 14 25Z" fill="#4f5552" stroke="#ffffff" stroke-width="2"/>
+          <circle cx="17" cy="15" r="4.5" fill="#ffffff"/>
+        </svg>
+      </button>
+
+      <div class="distance-key">
+        <span class="scale-line"></span>
+        <span>0.2 mi</span>
+      </div>
+
+      <button class="map-control" aria-label="Center map on my location">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="12" cy="12" r="4" stroke="#e85d16" stroke-width="1.8"/>
+          <path d="M12 3v3M12 18v3M3 12h3M18 12h3" stroke="#202326" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </main>
+
+    <section class="place-sheet" aria-labelledby="place-title">
+      <div class="sheet-heading">
+        <div class="sheet-heading-copy">
+          <p class="eyebrow">Selected location</p>
+          <h2 id="place-title">Cedar Reading Room</h2>
+        </div>
+        <span class="distance">0.3 mi</span>
+      </div>
+
+      <div class="place-row">
+        <img src="https://loremflickr.com/88/72/books?lock=2570" width="88" height="72" alt="Bookshelves inside the Cedar Reading Room">
+        <div class="place-info">
+          <p class="session-title">Spanish conversation circle</p>
+          <p class="session-meta">Today, 6:30 PM · Intermediate</p>
+          <p class="street-address">1180 Alder Avenue, Portland, OR 97205</p>
+        </div>
+      </div>
+
+      <div class="action-row">
+        <button class="directions-button">Get directions</button>
+        <button class="save-button">Save</button>
+      </div>
+    </section>
+
+    <nav class="tabbar" aria-label="Primary navigation">
+      <button class="tab" aria-label="Learn">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M4 5.5h11a3 3 0 0 1 3 3V20H7a3 3 0 0 1-3-3V5.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+          <path d="M7 8.5h7M7 12h7" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+        </svg>
+        <span>Learn</span>
+      </button>
+      <button class="tab active" aria-current="page" aria-label="Map">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="m3.5 6.5 5-2 7 2 5-2v13l-5 2-7-2-5 2v-13Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+          <path d="M8.5 4.5v13M15.5 6.5v13" stroke="currentColor" stroke-width="1.7"/>
+        </svg>
+        <span>Map</span>
+      </button>
+      <button class="tab" aria-label="Schedule">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <rect x="3.5" y="5" width="17" height="15" rx="2" stroke="currentColor" stroke-width="1.7"/>
+          <path d="M7.5 3v4M16.5 3v4M3.5 9.5h17" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+        </svg>
+        <span>Schedule</span>
+      </button>
+      <button class="tab" aria-label="Profile">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="12" cy="8" r="3.5" stroke="currentColor" stroke-width="1.7"/>
+          <path d="M5 20c.6-3.5 3.1-5.5 7-5.5s6.4 2 7 5.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+        </svg>
+        <span>Profile</span>
+      </button>
+    </nav>
+  </div>
+</body>
+</html>

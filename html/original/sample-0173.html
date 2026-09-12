@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Episode — Verba Daily</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --violet:#6321c8;
+    --violet-soft:#f0e9fb;
+    --ink:#17161a;
+    --muted:#6b6a74;
+    --line:#e4e3e8;
+    --ground:#ececed;
+  }
+  *{box-sizing:border-box;}
+  body{
+    min-height:100vh;display:flex;justify-content:center;align-items:flex-start;
+    padding:40px 0;margin:0;background:#4a4a4f;
+    font-family:'Source Serif 4', Georgia, serif;color:var(--ink);
+  }
+  .screen{
+    width:390px;height:844px;background:var(--ground);
+    position:relative;display:flex;flex-direction:column;
+  }
+
+  /* top bar */
+  .topbar{
+    height:52px;flex:none;background:#fff;border-bottom:1px solid var(--line);
+    display:flex;align-items:center;padding:0 12px;gap:10px;
+  }
+  .topbar .tb-title{font-size:15px;font-weight:600;flex:1;text-align:center;}
+  .iconbtn{
+    width:32px;height:32px;display:flex;align-items:center;justify-content:center;
+    color:var(--ink);flex:none;
+  }
+
+  /* body */
+  .body{flex:1;display:flex;flex-direction:column;gap:8px;}
+
+  .hero{position:relative;}
+  .hero img{width:390px;height:150px;object-fit:cover;display:block;background:#c9c9cd;}
+  .hero .kicker{
+    position:absolute;left:0;bottom:0;background:var(--violet);color:#fff;
+    font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;
+    padding:5px 10px;
+  }
+
+  .card{background:#fff;box-shadow:0 1px 3px rgba(20,18,30,.10);}
+
+  .lead{padding:14px 16px 16px;}
+  .series{font-size:12px;color:var(--violet);font-weight:600;letter-spacing:.03em;}
+  h1{font-size:22px;line-height:29px;margin:6px 0 0;font-weight:700;}
+  .meta{font-size:13px;color:var(--muted);margin-top:6px;}
+  .host{display:flex;align-items:center;gap:10px;margin-top:12px;}
+  .mono{
+    width:34px;height:34px;background:var(--violet-soft);color:var(--violet);
+    font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex:none;
+  }
+  .host .hn{font-size:14px;font-weight:600;line-height:17px;}
+  .host .hr{font-size:12px;color:var(--muted);line-height:16px;}
+
+  .prog{margin-top:14px;}
+  .prog .pl{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);}
+  .bar{height:4px;background:var(--line);margin-top:6px;}
+  .bar span{display:block;height:4px;width:43%;background:var(--violet);}
+
+  .actions{display:flex;gap:8px;margin-top:14px;}
+  .play{
+    flex:1;height:48px;background:var(--violet);color:#fff;border:0;
+    display:flex;align-items:center;justify-content:center;gap:9px;
+    font-family:inherit;font-size:15px;font-weight:600;
+  }
+  .sq{
+    width:48px;height:48px;border:1px solid var(--line);background:#fff;
+    display:flex;align-items:center;justify-content:center;color:var(--ink);flex:none;
+  }
+
+  .sec{padding:13px 16px 14px;}
+  .sechead{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;}
+  .sechead h2{font-size:13px;font-weight:700;margin:0;letter-spacing:.05em;text-transform:uppercase;}
+  .sechead .sh-r{font-size:12px;color:var(--muted);}
+
+  .row{
+    display:flex;align-items:center;gap:12px;height:42px;border-top:1px solid var(--line);
+  }
+  .row:first-of-type{border-top:0;}
+  .row .t{font-size:13px;color:var(--muted);width:44px;flex:none;}
+  .row .n{font-size:15px;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .row .d{font-size:12px;color:var(--muted);flex:none;}
+  .row.now .t,.row.now .n{color:var(--violet);font-weight:600;}
+
+  .nrow{display:flex;gap:12px;align-items:center;padding:8px 0;border-top:1px solid var(--line);}
+  .nrow:first-of-type{border-top:0;padding-top:2px;}
+  .nrow img{width:72px;height:56px;object-fit:cover;display:block;background:#c9c9cd;flex:none;}
+  .nrow .nt{font-size:15px;line-height:20px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .nrow .nm{font-size:12px;color:var(--muted);margin-top:3px;}
+  .nrow .txt{min-width:0;flex:1;}
+
+  /* tab bar */
+  .tabs{
+    height:64px;flex:none;background:#fff;border-top:1px solid var(--line);
+    display:flex;
+  }
+  .tab{
+    flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
+    font-size:12px;color:var(--muted);
+  }
+  .tab.on{color:var(--violet);font-weight:600;}
+</style>
+</head>
+<body>
+<div class="screen">
+
+  <div class="topbar">
+    <div class="iconbtn" aria-label="Back">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M15 4l-8 8 8 8"/></svg>
+    </div>
+    <div class="tb-title">Episode</div>
+    <div class="iconbtn" aria-label="Save">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 3h12v18l-6-5-6 5V3z"/></svg>
+    </div>
+  </div>
+
+  <div class="body">
+
+    <div class="hero">
+      <img src="https://loremflickr.com/390/150/library?lock=3040" width="390" height="150" alt="Reading room with long tables where the episode was recorded">
+      <div class="kicker">Season 3 · Episode 42</div>
+    </div>
+
+    <div class="card lead">
+      <div class="series">Verba Daily — Spanish B1</div>
+      <h1>At the Pharmacy: Asking for What You Actually Need</h1>
+      <div class="meta">28 min · Intermediate · Transcript and 14 drills</div>
+
+      <div class="host">
+        <div class="mono">MR</div>
+        <div>
+          <div class="hn">Marisol Reyes</div>
+          <div class="hr">Host · Course lead, Spanish B1</div>
+        </div>
+      </div>
+
+      <div class="prog">
+        <div class="pl"><span>16 min left</span><span>43% listened</span></div>
+        <div class="bar"><span></span></div>
+      </div>
+
+      <div class="actions">
+        <button class="play"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M6 3l15 9-15 9V3z"/></svg>Resume at 12:04</button>
+        <div class="sq" aria-label="Download">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v13m0 0l-5-5m5 5l5-5M4 20h16"/></svg>
+        </div>
+        <div class="sq" aria-label="Transcript">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 4h14v16H5z"/><path d="M8 9h8M8 13h8M8 17h5"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="card sec">
+      <div class="sechead"><h2>Chapters</h2><span class="sh-r">5 total</span></div>
+      <div class="row"><span class="t">00:00</span><span class="n">Warm-up: rolling the double r</span><span class="d">4:12</span></div>
+      <div class="row now"><span class="t">04:12</span><span class="n">Dialogue: at the pharmacy counter</span><span class="d">9:38</span></div>
+      <div class="row"><span class="t">13:50</span><span class="n">Grammar focus: past subjunctive</span><span class="d">7:05</span></div>
+      <div class="row"><span class="t">20:55</span><span class="n">Shadowing drill and review</span><span class="d">7:11</span></div>
+    </div>
+
+    <div class="card sec">
+      <div class="sechead"><h2>Next in this course</h2><span class="sh-r">Unit 6</span></div>
+      <div class="nrow">
+        <img src="https://loremflickr.com/72/56/books?lock=3041" width="72" height="56" alt="Stack of Spanish grammar workbooks">
+        <div class="txt">
+          <div class="nt">Episode 43 · Refills and Receipts</div>
+          <div class="nm">Verba Daily · 24 min · Releases March 14</div>
+        </div>
+      </div>
+      <div class="nrow">
+        <img src="https://loremflickr.com/72/56/study?lock=3042" width="72" height="56" alt="Notebook and headphones set up for a listening drill">
+        <div class="txt">
+          <div class="nt">Drill set · Pharmacy vocabulary</div>
+          <div class="nm">14 cards · 6 min · 0 of 14 reviewed</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="tabs">
+    <div class="tab">
+      <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 20V10l8-6 8 6v10H4z"/></svg>
+      Home
+    </div>
+    <div class="tab on">
+      <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 5h9a3 3 0 013 3v11H7a3 3 0 01-3-3V5z"/><path d="M20 8v11"/></svg>
+      Lessons
+    </div>
+    <div class="tab">
+      <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 19V9m5 10V5m5 14v-7m5 7V8"/></svg>
+      Progress
+    </div>
+    <div class="tab">
+      <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="8" r="4"/><path d="M4 20c1.5-3.6 4.4-5.4 8-5.4s6.5 1.8 8 5.4"/></svg>
+      Profile
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cartnest Office Setup Goal</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 32px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #e7e7e2;
+      color: #20221b;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      width: 768px;
+      height: 1024px;
+      display: flex;
+      flex-direction: column;
+      background: #fbfbf7;
+      box-shadow: 0 18px 50px rgba(44, 47, 35, 0.12);
+    }
+
+    .topbar {
+      padding: 21px 28px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+      border-bottom: 1px solid #e5e6dd;
+    }
+
+    .service-name {
+      margin: 0 0 3px;
+      color: #6b704f;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .topbar h1 {
+      margin: 0;
+      font-size: 27px;
+      line-height: 1.2;
+      font-weight: 680;
+      letter-spacing: -0.025em;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .icon-button,
+    .profile-button {
+      width: 44px;
+      height: 44px;
+      padding: 0;
+      border: 0;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      color: #4f5634;
+      background: rgba(112, 123, 70, 0.12);
+    }
+
+    .profile-button {
+      font-size: 14px;
+      font-weight: 750;
+    }
+
+    main {
+      min-height: 0;
+      flex: 1;
+      padding: 24px 28px 22px;
+    }
+
+    .workspace {
+      display: grid;
+      grid-template-columns: minmax(0, 1.62fr) minmax(240px, 0.9fr);
+      gap: 22px;
+      align-items: start;
+    }
+
+    .primary-column,
+    .side-column {
+      min-width: 0;
+    }
+
+    .goal-summary {
+      padding: 21px 22px;
+      border-radius: 14px;
+      background: rgba(112, 123, 70, 0.16);
+    }
+
+    .goal-topline {
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .goal-kicker {
+      margin: 0;
+      color: #62694a;
+      font-size: 13px;
+      line-height: 1.3;
+      font-weight: 700;
+    }
+
+    .shared-label {
+      padding: 5px 9px;
+      border-radius: 999px;
+      color: #59613d;
+      background: rgba(255, 255, 255, 0.66);
+      font-size: 11px;
+      line-height: 1.2;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .goal-summary h2 {
+      margin: 0;
+      font-size: 25px;
+      line-height: 1.22;
+      font-weight: 680;
+      letter-spacing: -0.02em;
+    }
+
+    .goal-description {
+      margin: 8px 0 17px;
+      color: #555a46;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .goal-meta {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px 20px;
+      color: #4d5337;
+      font-size: 13px;
+      font-weight: 650;
+    }
+
+    .goal-meta span {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .section {
+      margin-top: 22px;
+    }
+
+    .section-heading {
+      margin-bottom: 10px;
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .section-heading h3 {
+      margin: 0;
+      font-size: 17px;
+      line-height: 1.3;
+      font-weight: 680;
+    }
+
+    .section-count {
+      color: #747766;
+      font-size: 12px;
+      font-weight: 550;
+      white-space: nowrap;
+    }
+
+    .task-list {
+      display: grid;
+      gap: 9px;
+    }
+
+    .task-row {
+      min-width: 0;
+      padding: 12px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border: 1px solid rgba(112, 123, 70, 0.1);
+      border-radius: 12px;
+      background: rgba(112, 123, 70, 0.075);
+    }
+
+    .task-photo {
+      width: 60px;
+      height: 60px;
+      flex: 0 0 60px;
+      display: block;
+      object-fit: cover;
+      border-radius: 10px;
+      background: #d8d9cf;
+    }
+
+    .task-copy {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .task-title {
+      margin: 0 0 4px;
+      overflow: hidden;
+      color: #26281f;
+      font-size: 15px;
+      line-height: 1.3;
+      font-weight: 650;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .task-detail {
+      margin: 0;
+      overflow: hidden;
+      color: #6e7163;
+      font-size: 13px;
+      line-height: 1.35;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .assignment {
+      margin-top: 5px;
+      color: #59613d;
+      font-size: 12px;
+      line-height: 1.3;
+      font-weight: 650;
+    }
+
+    .stock-note {
+      color: #8a6632;
+    }
+
+    .check {
+      width: 34px;
+      height: 34px;
+      flex: 0 0 34px;
+      padding: 0;
+      border: 0;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      color: #707b46;
+      background: #ffffff;
+    }
+
+    .check.done {
+      color: #ffffff;
+      background: #707b46;
+    }
+
+    .panel {
+      padding: 18px;
+      border: 1px solid #e2e4d9;
+      border-radius: 14px;
+      background: #ffffff;
+    }
+
+    .panel + .panel {
+      margin-top: 16px;
+    }
+
+    .completed .task-row {
+      padding: 10px;
+      align-items: flex-start;
+      background: #f4f4ef;
+    }
+
+    .completed .task-title {
+      color: #65685b;
+      text-decoration: line-through;
+      white-space: normal;
+    }
+
+    .completed .task-detail {
+      white-space: normal;
+    }
+
+    .completed .task-photo {
+      opacity: 0.72;
+    }
+
+    .completed .check {
+      width: 30px;
+      height: 30px;
+      flex-basis: 30px;
+    }
+
+    .team-list {
+      display: grid;
+      gap: 13px;
+    }
+
+    .team-member {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .avatar {
+      width: 34px;
+      height: 34px;
+      flex: 0 0 34px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      color: #ffffff;
+      background: #717a4a;
+      font-size: 11px;
+      font-weight: 750;
+    }
+
+    .avatar.alt {
+      background: #8a7557;
+    }
+
+    .avatar.soft {
+      color: #59613d;
+      background: #dde0cf;
+    }
+
+    .member-copy {
+      min-width: 0;
+    }
+
+    .member-name {
+      margin: 0 0 2px;
+      font-size: 13px;
+      line-height: 1.25;
+      font-weight: 650;
+    }
+
+    .member-role {
+      margin: 0;
+      color: #777a6b;
+      font-size: 12px;
+      line-height: 1.3;
+    }
+
+    .budget-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .budget-value {
+      margin: 0;
+      font-size: 24px;
+      line-height: 1.2;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .budget-caption {
+      margin: 7px 0 0;
+      color: #727568;
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .tabbar {
+      flex-shrink: 0;
+      padding: 10px 22px 13px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border-top: 1px solid #e2e3da;
+      background: #f3f3ed;
+    }
+
+    .tab {
+      min-width: 0;
+      padding: 5px 0;
+      border: 0;
+      display: grid;
+      justify-items: center;
+      gap: 4px;
+      color: #7c7f72;
+      background: transparent;
+      font-size: 12px;
+      line-height: 1.2;
+      font-weight: 550;
+    }
+
+    .tab.active {
+      color: #66713e;
+      font-weight: 700;
+    }
+
+    svg {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <div>
+        <p class="service-name">Cartnest for teams</p>
+        <h1>Office setup goal</h1>
+      </div>
+      <div class="top-actions">
+        <button class="icon-button" type="button" aria-label="Search purchases">
+          <svg width="21" height="21" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="1.8"></circle>
+            <path d="M16 16L20.2 20.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
+          </svg>
+        </button>
+        <button class="icon-button" type="button" aria-label="Team notifications">
+          <svg width="21" height="21" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M6.5 10C6.5 6.8 8.6 4.5 12 4.5C15.4 4.5 17.5 6.8 17.5 10V14L19.5 17H4.5L6.5 14V10Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"></path>
+            <path d="M9.5 19C10.1 19.7 10.9 20 12 20C13.1 20 13.9 19.7 14.5 19" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"></path>
+          </svg>
+        </button>
+        <button class="profile-button" type="button" aria-label="Maren Cole profile">MC</button>
+      </div>
+    </header>
+
+    <main>
+      <div class="workspace">
+        <div class="primary-column">
+          <section class="goal-summary" aria-labelledby="goal-title-a">
+            <div class="goal-topline">
+              <p class="goal-kicker">Facilities team goal</p>
+              <span class="shared-label">Shared with 3 people</span>
+            </div>
+            <h2 id="goal-title-a">Finish the project room</h2>
+            <p class="goal-description">Coordinate the remaining furniture and equipment before the product team moves in.</p>
+            <div class="goal-meta">
+              <span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <rect x="4" y="5.5" width="16" height="14.5" rx="2" stroke="currentColor" stroke-width="1.7"></rect>
+                  <path d="M8 3.5V7.5M16 3.5V7.5M4 9.5H20" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"></path>
+                </svg>
+                Due June 21
+              </span>
+              <span>3 purchases left</span>
+              <span>$715 available</span>
+            </div>
+          </section>
+
+          <section class="section" aria-labelledby="to-buy-heading-a">
+            <div class="section-heading">
+              <h3 id="to-buy-heading-a">To purchase</h3>
+              <span class="section-count">3 assigned items</span>
+            </div>
+
+            <div class="task-list">
+              <article class="task-row">
+                <img class="task-photo" src="https://loremflickr.com/60/60/furniture?lock=8870" width="60" height="60" alt="Oak meeting room storage cabinet">
+                <div class="task-copy">
+                  <p class="task-title">Oak meeting room credenza</p>
+                  <p class="task-detail">Budget up to $420 · vendor quote ready</p>
+                  <p class="assignment">Assigned to Devon</p>
+                </div>
+                <button class="check" type="button" aria-label="Mark oak meeting room credenza complete">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M7 12.5L10.3 16L17.5 8.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                  </svg>
+                </button>
+              </article>
+
+              <article class="task-row">
+                <img class="task-photo" src="https://loremflickr.com/60/60/product?lock=8871" width="60" height="60" alt="Neutral acoustic panel samples">
+                <div class="task-copy">
+                  <p class="task-title">Neutral acoustic panel set</p>
+                  <p class="task-detail">Warm gray · budget up to $240</p>
+                  <p class="assignment stock-note">Priya is comparing two low-stock options</p>
+                </div>
+                <button class="check" type="button" aria-label="Mark neutral acoustic panel set complete">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M7 12.5L10.3 16L17.5 8.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                  </svg>
+                </button>
+              </article>
+
+              <article class="task-row">
+                <img class="task-photo" src="https://loremflickr.com/60/60/furniture?lock=8872" width="60" height="60" alt="Dimmable office floor lamp">
+                <div class="task-copy">
+                  <p class="task-title">Dimmable corner floor lamp</p>
+                  <p class="task-detail">Brass finish · budget up to $95</p>
+                  <p class="assignment">Assigned to Maren</p>
+                </div>
+                <button class="check" type="button" aria-label="Mark dimmable corner floor lamp complete">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M7 12.5L10.3 16L17.5 8.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                  </svg>
+                </button>
+              </article>
+            </div>
+          </section>
+        </div>
+
+        <aside class="side-column" aria-label="Goal coordination details">
+          <section class="panel completed" aria-labelledby="completed-heading-a">
+            <div class="section-heading">
+              <h3 id="completed-heading-a">Completed</h3>
+              <span class="section-count">1 item</span>
+            </div>
+            <div class="task-list">
+              <article class="task-row">
+                <img class="task-photo" src="https://loremflickr.com/60/60/product?lock=8873" width="60" height="60" alt="Office cable management kit">
+                <div class="task-copy">
+                  <p class="task-title">Cable management kit</p>
+                  <p class="task-detail">Purchased June 3 · $48.00</p>
+                  <p class="assignment">Completed by Priya</p>
+                </div>
+                <button class="check done" type="button" aria-label="Cable management kit completed">
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M6.5 12.5L10.2 16.2L17.8 8.4" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path>
+                  </svg>
+                </button>
+              </article>
+            </div>
+          </section>
+
+          <section class="panel" aria-labelledby="team-heading-a">
+            <div class="section-heading">
+              <h3 id="team-heading-a">Facilities team</h3>
+              <span class="section-count">3 members</span>
+            </div>
+            <div class="team-list">
+              <div class="team-member">
+                <span class="avatar">MC</span>
+                <div class="member-copy">
+                  <p class="member-name">Maren Cole</p>
+                  <p class="member-role">Goal owner · 1 item</p>
+                </div>
+              </div>
+              <div class="team-member">
+                <span class="avatar alt">DL</span>
+                <div class="member-copy">
+                  <p class="member-name">Devon Lee</p>
+                  <p class="member-role">Furniture · 1 item</p>
+                </div>
+              </div>
+              <div class="team-member">
+                <span class="avatar soft">PS</span>
+                <div class="member-copy">
+                  <p class="member-name">Priya Shah</p>
+                  <p class="member-role">Sourcing · 1 item</p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="panel" aria-labelledby="budget-heading-a">
+            <div class="section-heading">
+              <h3 id="budget-heading-a">Budget</h3>
+              <span class="section-count">Room 4B</span>
+            </div>
+            <div class="budget-row">
+              <p class="budget-value">$48</p>
+              <span class="section-count">of $763 spent</span>
+            </div>
+            <p class="budget-caption">Purchases use the Workplace Operations cost center.</p>
+          </section>
+        </aside>
+      </div>
+    </main>
+
+    <nav class="tabbar" aria-label="Primary navigation">
+      <button class="tab" type="button">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M4 10.5L12 4L20 10.5V20H14.8V14H9.2V20H4V10.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"></path>
+        </svg>
+        <span>Home</span>
+      </button>
+      <button class="tab" type="button">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="1.7"></circle>
+          <path d="M16 16L20 20" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"></path>
+        </svg>
+        <span>Browse</span>
+      </button>
+      <button class="tab active" type="button" aria-current="page">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <rect x="5" y="4" width="14" height="16" rx="2" stroke="currentColor" stroke-width="1.7"></rect>
+          <path d="M8.5 9.5L10.4 11.3L14.8 7.5M8.5 15.5H15.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></path>
+        </svg>
+        <span>Goals</span>
+      </button>
+      <button class="tab" type="button">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M6 8H18L17 20H7L6 8Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"></path>
+          <path d="M9 9V7C9 5.3 10.3 4 12 4C13.7 4 15 5.3 15 7V9" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"></path>
+        </svg>
+        <span>Cart</span>
+      </button>
+    </nav>
+  </div>
+</body>
+</html>

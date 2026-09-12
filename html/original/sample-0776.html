@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Wayfare — Explore</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --accent:#0276b8;
+    --tint:rgba(2,132,199,0.10);
+    --tint-strong:rgba(2,132,199,0.16);
+    --ink:#12181f;
+    --mid:#5d6874;
+    --line:#edeff2;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    padding:40px 0;
+    background:#e7e9ec;
+    font-family:'Inter',system-ui,sans-serif;
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+  }
+  .screen{
+    width:390px;
+    height:844px;
+    background:#fff;
+    display:flex;
+    flex-direction:column;
+  }
+
+  /* top bar */
+  .topbar{
+    padding:16px 16px 12px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+  }
+  .topbar h1{
+    margin:0;
+    font-size:22px;
+    line-height:26px;
+    font-weight:700;
+    letter-spacing:-0.01em;
+  }
+  .place{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    background:var(--tint);
+    color:var(--accent);
+    border-radius:6px;
+    padding:7px 10px;
+    font-size:13px;
+    line-height:14px;
+    font-weight:600;
+    max-width:180px;
+  }
+  .place span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+
+  /* chips */
+  .chips{
+    display:flex;
+    gap:8px;
+    padding:0 16px 14px;
+  }
+  .chip{
+    background:#f2f4f6;
+    color:var(--mid);
+    border-radius:6px;
+    padding:9px 12px;
+    font-size:13px;
+    line-height:14px;
+    font-weight:500;
+    white-space:nowrap;
+  }
+  .chip.on{background:var(--tint-strong);color:var(--accent);font-weight:600;}
+
+  .body{padding:0 16px;}
+
+  .shead{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    gap:10px;
+    margin-bottom:10px;
+  }
+  .shead h2{
+    margin:0;
+    font-size:13px;
+    line-height:14px;
+    font-weight:600;
+    letter-spacing:0.05em;
+    text-transform:uppercase;
+    color:var(--mid);
+  }
+  .shead a{
+    font-size:13px;
+    line-height:14px;
+    font-weight:600;
+    color:var(--accent);
+    text-decoration:none;
+  }
+
+  /* hero */
+  .hero{
+    background:var(--tint);
+    border-radius:6px;
+    margin-bottom:18px;
+  }
+  .hero img{
+    width:358px;
+    height:140px;
+    display:block;
+    object-fit:cover;
+    background:#c9d3da;
+    border-radius:6px 6px 0 0;
+  }
+  .hero .txt{padding:12px 14px 14px;}
+  .kicker{
+    font-size:12px;
+    line-height:14px;
+    font-weight:600;
+    color:var(--accent);
+    letter-spacing:0.04em;
+    text-transform:uppercase;
+  }
+  .hero h3{
+    margin:6px 0 4px;
+    font-size:17px;
+    line-height:21px;
+    font-weight:600;
+    letter-spacing:-0.01em;
+  }
+  .hero p{
+    margin:0;
+    font-size:13px;
+    line-height:16px;
+    color:var(--mid);
+  }
+
+  /* collections */
+  .tiles{
+    display:flex;
+    gap:11px;
+    margin-bottom:18px;
+  }
+  .tile{width:112px;}
+  .tile img{
+    width:112px;
+    height:78px;
+    display:block;
+    object-fit:cover;
+    background:#c9d3da;
+    border-radius:6px;
+  }
+  .tile b{
+    display:block;
+    margin-top:7px;
+    font-size:13px;
+    line-height:16px;
+    font-weight:600;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+  .tile span{
+    display:block;
+    font-size:12px;
+    line-height:15px;
+    color:var(--mid);
+  }
+
+  /* stay rows */
+  .row{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:8px 0;
+    border-bottom:1px solid var(--line);
+  }
+  .row:last-child{border-bottom:0;}
+  .row img{
+    width:56px;
+    height:56px;
+    display:block;
+    object-fit:cover;
+    background:#c9d3da;
+    border-radius:6px;
+    flex:none;
+  }
+  .row .info{min-width:0;flex:1;}
+  .row .name{
+    font-size:15px;
+    line-height:19px;
+    font-weight:600;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+  .row .sub{
+    font-size:13px;
+    line-height:17px;
+    color:var(--mid);
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+  .row .meta{
+    font-size:12px;
+    line-height:16px;
+    color:var(--mid);
+    display:flex;
+    align-items:center;
+    gap:6px;
+  }
+  .tag{
+    background:var(--tint-strong);
+    color:var(--accent);
+    border-radius:6px;
+    padding:2px 6px;
+    font-size:12px;
+    line-height:16px;
+    font-weight:600;
+  }
+  .price{
+    text-align:right;
+    flex:none;
+  }
+  .price b{
+    display:block;
+    font-size:15px;
+    line-height:19px;
+    font-weight:700;
+  }
+  .price span{
+    display:block;
+    font-size:12px;
+    line-height:16px;
+    color:var(--mid);
+  }
+
+  /* tab bar */
+  .tabs{
+    margin-top:auto;
+    border-top:1px solid var(--line);
+    display:flex;
+    padding:9px 8px 12px;
+  }
+  .tab{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:4px;
+    font-size:12px;
+    line-height:14px;
+    font-weight:500;
+    color:#8b949e;
+  }
+  .tab.on{color:var(--accent);font-weight:600;}
+  .tab svg{display:block;}
+</style>
+</head>
+<body>
+  <div class="screen">
+
+    <div class="topbar">
+      <h1>Explore</h1>
+      <div class="place">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0116 0z"/><circle cx="12" cy="10" r="3"/>
+        </svg>
+        <span>Monterey, CA</span>
+      </div>
+    </div>
+
+    <div class="chips">
+      <div class="chip on">All</div>
+      <div class="chip">Beachfront</div>
+      <div class="chip">Mountain</div>
+      <div class="chip">City</div>
+    </div>
+
+    <div class="body">
+
+      <div class="shead">
+        <h2>Featured collection</h2>
+      </div>
+      <div class="hero">
+        <img src="https://loremflickr.com/358/140/beach?lock=10340" width="358" height="140" alt="Cliffs above a cove on the Highway 1 coastline">
+        <div class="txt">
+          <div class="kicker">Curated by Wayfare</div>
+          <h3>Cliffside stays along Highway 1</h3>
+          <p>18 stays · Nights from $164 · Best March to June</p>
+        </div>
+      </div>
+
+      <div class="shead">
+        <h2>Browse by mood</h2>
+        <a href="#">All 12</a>
+      </div>
+      <div class="tiles">
+        <div class="tile">
+          <img src="https://loremflickr.com/112/78/beach?lock=10341" width="112" height="78" alt="Wide sandy beach at low tide">
+          <b>Coastal drives</b>
+          <span>24 stays</span>
+        </div>
+        <div class="tile">
+          <img src="https://loremflickr.com/112/78/mountain?lock=10342" width="112" height="78" alt="Forested mountain ridge under clouds">
+          <b>Mountain lodges</b>
+          <span>31 stays</span>
+        </div>
+        <div class="tile">
+          <img src="https://loremflickr.com/112/78/cityscape?lock=10343" width="112" height="78" alt="Downtown skyline at dusk">
+          <b>City nights</b>
+          <span>47 stays</span>
+        </div>
+      </div>
+
+      <div class="shead">
+        <h2>Popular this week</h2>
+        <a href="#">See all</a>
+      </div>
+
+      <div class="row">
+        <img src="https://loremflickr.com/56/56/hotel?lock=10344" width="56" height="56" alt="Harborview Loft living room with wide windows">
+        <div class="info">
+          <div class="name">Harborview Loft</div>
+          <div class="sub">Monterey · Sleeps 4</div>
+          <div class="meta">4.87 (128 reviews)</div>
+        </div>
+        <div class="price"><b>$186</b><span>per night</span></div>
+      </div>
+
+      <div class="row">
+        <img src="https://loremflickr.com/56/56/mountain?lock=10345" width="56" height="56" alt="Pine Ridge Cabin among tall trees">
+        <div class="info">
+          <div class="name">Pine Ridge Cabin</div>
+          <div class="sub">Big Sur · Sleeps 6</div>
+          <div class="meta">4.92 (86 reviews) <span class="tag">2 nights left</span></div>
+        </div>
+        <div class="price"><b>$214</b><span>per night</span></div>
+      </div>
+
+      <div class="row">
+        <img src="https://loremflickr.com/56/56/beach?lock=10346" width="56" height="56" alt="Sandbar Cottage porch facing the shore">
+        <div class="info">
+          <div class="name">Sandbar Cottage</div>
+          <div class="sub">Carmel-by-the-Sea · Sleeps 3</div>
+          <div class="meta">4.75 (211 reviews)</div>
+        </div>
+        <div class="price"><b>$158</b><span>per night</span></div>
+      </div>
+
+      <div class="row">
+        <img src="https://loremflickr.com/56/56/hotel?lock=10347" width="56" height="56" alt="Bay Kestrel Inn courtyard with seating">
+        <div class="info">
+          <div class="name">Bay Kestrel Inn</div>
+          <div class="sub">Pacific Grove · Sleeps 2</div>
+          <div class="meta">4.61 (74 reviews)</div>
+        </div>
+        <div class="price"><b>$132</b><span>per night</span></div>
+      </div>
+
+    </div>
+
+    <div class="tabs">
+      <div class="tab on">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="11" cy="11" r="7"/><path d="M14 8l-2.2 5.8L6 16l2.2-5.8z"/>
+        </svg>
+        Explore
+      </div>
+      <div class="tab">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M3 6l6-2 6 2 6-2v14l-6 2-6-2-6 2z"/><path d="M9 4v14M15 6v14"/>
+        </svg>
+        Map
+      </div>
+      <div class="tab">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M6 4h12v16l-6-4-6 4z"/>
+        </svg>
+        Saved
+      </div>
+      <div class="tab">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5h6v2"/>
+        </svg>
+        Trips
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

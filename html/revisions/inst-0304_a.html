@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Send Money — Gatherline</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #d8d9de;
+      color: #202127;
+      font-family: 'Inter', system-ui, sans-serif;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .screen {
+      width: 1024px;
+      height: 768px;
+      display: flex;
+      background: #f4f4f6;
+      border: 1px solid #c9cad0;
+      box-shadow: 0 18px 52px rgba(28, 29, 34, 0.14);
+    }
+
+    .sidebar {
+      width: 212px;
+      flex: 0 0 212px;
+      padding: 24px 16px 18px;
+      display: flex;
+      flex-direction: column;
+      background: #25252b;
+      color: #ffffff;
+    }
+
+    .brand {
+      padding: 0 10px 25px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 17px;
+      line-height: 22px;
+      font-weight: 700;
+    }
+
+    .brand-mark {
+      width: 30px;
+      height: 30px;
+      display: grid;
+      place-items: center;
+      border-radius: 8px;
+      background: #b31273;
+      font-size: 14px;
+    }
+
+    .side-nav {
+      display: grid;
+      gap: 5px;
+    }
+
+    .nav-item {
+      width: 100%;
+      padding: 10px 11px;
+      border: 0;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      background: transparent;
+      color: #bfc0c7;
+      font-size: 13px;
+      line-height: 20px;
+      font-weight: 500;
+      text-align: left;
+    }
+
+    .nav-item.active {
+      background: #3a2935;
+      color: #ffffff;
+      font-weight: 600;
+    }
+
+    .nav-icon {
+      width: 21px;
+      height: 21px;
+      flex: 0 0 21px;
+      display: grid;
+      place-items: center;
+    }
+
+    .nav-icon svg,
+    .back-button svg,
+    .search-icon svg {
+      width: 20px;
+      height: 20px;
+      display: block;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .sidebar-spacer {
+      flex: 1;
+    }
+
+    .account {
+      padding: 15px 10px 0;
+      border-top: 1px solid #414149;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .account-avatar {
+      width: 34px;
+      height: 34px;
+      flex: 0 0 34px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: #e2d5de;
+      color: #7f1557;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .account-copy {
+      min-width: 0;
+    }
+
+    .account-name,
+    .account-detail {
+      margin: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .account-name {
+      color: #ffffff;
+      font-size: 12px;
+      line-height: 17px;
+      font-weight: 600;
+    }
+
+    .account-detail {
+      margin-top: 1px;
+      color: #a9aab2;
+      font-size: 11px;
+      line-height: 16px;
+    }
+
+    .app {
+      min-width: 0;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .topbar {
+      padding: 14px 26px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: #ffffff;
+      border-bottom: 1px solid #dedee3;
+    }
+
+    .back-button {
+      width: 36px;
+      height: 36px;
+      padding: 8px;
+      display: grid;
+      place-items: center;
+      border: 1px solid #ddddE3;
+      border-radius: 6px;
+      background: #ffffff;
+      color: #43444c;
+    }
+
+    .title-block {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .page-title {
+      margin: 0;
+      font-size: 18px;
+      line-height: 24px;
+      font-weight: 700;
+    }
+
+    .page-subtitle {
+      margin: 2px 0 0;
+      color: #73757f;
+      font-size: 12px;
+      line-height: 17px;
+    }
+
+    .activity-button {
+      padding: 8px 12px;
+      border: 1px solid #d9d9df;
+      border-radius: 6px;
+      background: #ffffff;
+      color: #555761;
+      font-size: 12px;
+      line-height: 18px;
+      font-weight: 600;
+    }
+
+    main {
+      min-height: 0;
+      flex: 1;
+      padding: 22px 26px 24px;
+    }
+
+    .stages {
+      height: 100%;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.08fr);
+      gap: 20px;
+    }
+
+    .stage {
+      min-width: 0;
+      padding: 20px;
+      background: #ffffff;
+      border: 1px solid #dedee3;
+      border-radius: 9px;
+      box-shadow: 0 5px 16px rgba(38, 38, 44, 0.05);
+    }
+
+    .stage-head {
+      display: flex;
+      align-items: flex-start;
+      gap: 11px;
+    }
+
+    .stage-number {
+      width: 27px;
+      height: 27px;
+      flex: 0 0 27px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: #f0dce9;
+      color: #9b155f;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .stage-title {
+      margin: 0;
+      font-size: 15px;
+      line-height: 20px;
+      font-weight: 700;
+    }
+
+    .stage-description {
+      margin: 2px 0 0;
+      color: #7a7c85;
+      font-size: 12px;
+      line-height: 17px;
+    }
+
+    .field-label,
+    .section-title {
+      margin: 0;
+      color: #595b65;
+      font-size: 12px;
+      line-height: 17px;
+      font-weight: 600;
+    }
+
+    .search-box {
+      margin-top: 18px;
+      padding: 9px 11px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid #d8d8de;
+      border-radius: 6px;
+      color: #777984;
+      background: #fafafd;
+    }
+
+    .search-icon {
+      width: 20px;
+      height: 20px;
+      flex: 0 0 20px;
+    }
+
+    .search-box input {
+      min-width: 0;
+      flex: 1;
+      padding: 0;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      color: #33343b;
+      font-size: 12px;
+      line-height: 20px;
+    }
+
+    .selected-label {
+      margin-top: 15px;
+    }
+
+    .recipient-field {
+      margin-top: 7px;
+      padding: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border: 1px solid #cda7bf;
+      border-radius: 7px;
+      background: #fff8fc;
+    }
+
+    .monogram {
+      width: 38px;
+      height: 38px;
+      flex: 0 0 38px;
+      display: grid;
+      place-items: center;
+      border-radius: 7px;
+      background: #e9d8e3;
+      color: #8d145f;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .recipient-copy,
+    .person-copy {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .recipient-name,
+    .person-name {
+      margin: 0;
+      color: #25262c;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .recipient-handle,
+    .person-detail {
+      margin: 1px 0 0;
+      color: #777984;
+      font-size: 11px;
+      line-height: 16px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .change-button {
+      padding: 6px 7px;
+      border: 0;
+      background: transparent;
+      color: #a51269;
+      font-size: 11px;
+      line-height: 16px;
+      font-weight: 700;
+    }
+
+    .recent-heading {
+      margin-top: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .section-note {
+      color: #8a8c95;
+      font-size: 10px;
+      line-height: 15px;
+    }
+
+    .people-list {
+      margin-top: 7px;
+      border: 1px solid #e1e1e6;
+      border-radius: 7px;
+      background: #ffffff;
+    }
+
+    .person-row {
+      padding: 8px 9px;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      border-bottom: 1px solid #ededf0;
+    }
+
+    .person-row:last-child {
+      border-bottom: 0;
+    }
+
+    .person-row .monogram {
+      width: 32px;
+      height: 32px;
+      flex-basis: 32px;
+      border-radius: 6px;
+      background: #ebebee;
+      color: #555761;
+      font-size: 11px;
+    }
+
+    .person-action {
+      padding: 5px 8px;
+      border: 1px solid #d7d7dd;
+      border-radius: 5px;
+      background: #ffffff;
+      color: #555761;
+      font-size: 10px;
+      line-height: 15px;
+      font-weight: 600;
+    }
+
+    .amount-stage {
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      background: #ffffff;
+    }
+
+    .amount-stage .stage-head {
+      padding: 20px 20px 17px;
+    }
+
+    .amount-entry {
+      margin: 0 20px;
+      padding: 22px;
+      border-radius: 9px;
+      background: #30232c;
+      color: #ffffff;
+    }
+
+    .amount-label {
+      margin: 0;
+      color: #d7cbd2;
+      font-size: 12px;
+      line-height: 17px;
+      font-weight: 500;
+    }
+
+    .amount-value {
+      margin: 6px 0 13px;
+      font-size: 44px;
+      line-height: 51px;
+      font-weight: 700;
+      letter-spacing: -0.04em;
+    }
+
+    .amount-cursor {
+      width: 100%;
+      height: 2px;
+      background: #df4ca1;
+    }
+
+    .balance-line {
+      margin-top: 11px;
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      color: #d0c6cc;
+      font-size: 11px;
+      line-height: 16px;
+    }
+
+    .balance-value {
+      color: #ffffff;
+      font-weight: 600;
+    }
+
+    .quick-amounts {
+      margin-top: 13px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 7px;
+    }
+
+    .quick-amount {
+      padding: 7px 4px;
+      border: 1px solid #63505d;
+      border-radius: 5px;
+      background: #41313c;
+      color: #ffffff;
+      font-size: 11px;
+      line-height: 16px;
+      font-weight: 600;
+    }
+
+    .review {
+      margin: 18px 20px 0;
+      padding: 15px;
+      border: 1px solid #e2e2e7;
+      border-radius: 7px;
+      background: #fafafd;
+    }
+
+    .review-title {
+      margin: 0 0 8px;
+      font-size: 12px;
+      line-height: 17px;
+      font-weight: 700;
+    }
+
+    .review-row {
+      padding: 6px 0;
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      color: #686a74;
+      font-size: 11px;
+      line-height: 16px;
+    }
+
+    .review-row strong {
+      max-width: 62%;
+      color: #303139;
+      font-weight: 600;
+      text-align: right;
+    }
+
+    .review-row.total {
+      margin-top: 4px;
+      padding-top: 10px;
+      border-top: 1px solid #dedee4;
+      color: #303139;
+      font-weight: 700;
+    }
+
+    .review-row.total strong {
+      color: #a51269;
+      font-size: 13px;
+    }
+
+    .stage-action {
+      margin-top: auto;
+      padding: 18px 20px 20px;
+    }
+
+    .primary-action {
+      width: 100%;
+      padding: 11px 16px;
+      border: 0;
+      border-radius: 6px;
+      background: #b31273;
+      color: #ffffff;
+      font-size: 13px;
+      line-height: 20px;
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <aside class="sidebar">
+      <div class="brand">
+        <span class="brand-mark">G</span>
+        <span>Gatherline</span>
+      </div>
+
+      <nav class="side-nav" aria-label="Gatherline navigation">
+        <button class="nav-item" type="button">
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M3 11.5L12 4l9 7.5"></path>
+              <path d="M5.5 10.5V20h13v-9.5"></path>
+            </svg>
+          </span>
+          <span>Home</span>
+        </button>
+        <button class="nav-item" type="button">
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M7 8.5h10"></path>
+              <path d="M7 12h7"></path>
+              <path d="M5 19l-1 2 4-2h9a4 4 0 0 0 4-4V7a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v8a4 4 0 0 0 2 3.5z"></path>
+            </svg>
+          </span>
+          <span>Messages</span>
+        </button>
+        <button class="nav-item active" type="button" aria-current="page">
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 8h13"></path>
+              <path d="M13 4l4 4-4 4"></path>
+              <path d="M20 16H7"></path>
+              <path d="M11 12l-4 4 4 4"></path>
+            </svg>
+          </span>
+          <span>Send money</span>
+        </button>
+        <button class="nav-item" type="button">
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 7h16"></path>
+              <path d="M5 7v12h14V7"></path>
+              <path d="M8 4h8"></path>
+            </svg>
+          </span>
+          <span>Activity</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-spacer"></div>
+
+      <div class="account">
+        <div class="account-avatar">AK</div>
+        <div class="account-copy">
+          <p class="account-name">Alex Kim</p>
+          <p class="account-detail">$842.16 available</p>
+        </div>
+      </div>
+    </aside>
+
+    <div class="app">
+      <header class="topbar">
+        <button class="back-button" type="button" aria-label="Go back">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M15 18l-6-6 6-6"></path>
+          </svg>
+        </button>
+        <div class="title-block">
+          <h1 class="page-title">Send money</h1>
+          <p class="page-subtitle">Choose a recipient, enter an amount, and review the transfer.</p>
+        </div>
+        <button class="activity-button" type="button">View activity</button>
+      </header>
+
+      <main>
+        <div class="stages">
+          <section class="stage" aria-labelledby="recipient-stage-title">
+            <div class="stage-head">
+              <span class="stage-number">1</span>
+              <div>
+                <h2 class="stage-title" id="recipient-stage-title">Choose recipient</h2>
+                <p class="stage-description">Select a Gatherline friend to pay.</p>
+              </div>
+            </div>
+
+            <label class="search-box">
+              <span class="search-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <circle cx="11" cy="11" r="6.5"></circle>
+                  <path d="M16 16l4 4"></path>
+                </svg>
+              </span>
+              <input type="text" value="" placeholder="Search by name or @handle" aria-label="Search recipients">
+            </label>
+
+            <p class="field-label selected-label">Selected recipient</p>
+            <div class="recipient-field">
+              <div class="monogram" aria-hidden="true">EP</div>
+              <div class="recipient-copy">
+                <p class="recipient-name">Elena Park</p>
+                <p class="recipient-handle">@elenap · Gatherline friend</p>
+              </div>
+              <button class="change-button" type="button">Change</button>
+            </div>
+
+            <div class="recent-heading">
+              <h3 class="section-title">Recent people</h3>
+              <span class="section-note">From your circles</span>
+            </div>
+
+            <div class="people-list">
+              <div class="person-row">
+                <div class="monogram" aria-hidden="true">MC</div>
+                <div class="person-copy">
+                  <p class="person-name">Marcus Cole</p>
+                  <p class="person-detail">@marcus.c · Paid May 18</p>
+                </div>
+                <button class="person-action" type="button">Select</button>
+              </div>
+              <div class="person-row">
+                <div class="monogram" aria-hidden="true">NF</div>
+                <div class="person-copy">
+                  <p class="person-name">Nora Fields</p>
+                  <p class="person-detail">@noraf · Paid May 11</p>
+                </div>
+                <button class="person-action" type="button">Select</button>
+              </div>
+              <div class="person-row">
+                <div class="monogram" aria-hidden="true">JL</div>
+                <div class="person-copy">
+                  <p class="person-name">Jordan Lee</p>
+                  <p class="person-detail">@jordanl · Paid April 29</p>
+                </div>
+                <button class="person-action" type="button">Select</button>
+              </div>
+              <div class="person-row">
+                <div class="monogram" aria-hidden="true">RS</div>
+                <div class="person-copy">
+                  <p class="person-name">Riley Stone</p>
+                  <p class="person-detail">@rileystone · Paid April 22</p>
+                </div>
+                <button class="person-action" type="button">Select</button>
+              </div>
+            </div>
+          </section>
+
+          <section class="stage amount-stage" aria-labelledby="amount-stage-title">
+            <div class="stage-head">
+              <span class="stage-number">2</span>
+              <div>
+                <h2 class="stage-title" id="amount-stage-title">Amount and review</h2>
+                <p class="stage-description">Confirm the transfer details before continuing.</p>
+              </div>
+            </div>
+
+            <div class="amount-entry">
+              <p class="amount-label">Transfer amount</p>
+              <p class="amount-value">$125.00</p>
+              <div class="amount-cursor"></div>
+              <div class="balance-line">
+                <span>Gatherline balance</span>
+                <span class="balance-value">$842.16 available</span>
+              </div>
+              <div class="quick-amounts" aria-label="Quick amounts">
+                <button class="quick-amount" type="button">$25</button>
+                <button class="quick-amount" type="button">$50</button>
+                <button class="quick-amount" type="button">$100</button>
+                <button class="quick-amount" type="button">$200</button>
+              </div>
+            </div>
+
+            <div class="review">
+              <h3 class="review-title">Transfer review</h3>
+              <div class="review-row">
+                <span>Recipient</span>
+                <strong>Elena Park</strong>
+              </div>
+              <div class="review-row">
+                <span>Payment method</span>
+                <strong>Gatherline balance</strong>
+              </div>
+              <div class="review-row">
+                <span>Transfer fee</span>
+                <strong>$0.00</strong>
+              </div>
+              <div class="review-row total">
+                <span>Total</span>
+                <strong>$125.00</strong>
+              </div>
+            </div>
+
+            <div class="stage-action">
+              <button class="primary-action" type="button">Review $125.00 transfer</button>
+            </div>
+          </section>
+        </div>
+      </main>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wavefold Notification Permission</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #dededb;
+      color: #17191c;
+      font-family: 'Source Serif 4', Georgia, serif;
+    }
+
+    .screen {
+      position: relative;
+      width: 1024px;
+      height: 768px;
+      overflow: hidden;
+      background: #f7f7f4;
+    }
+
+    /* ---- desktop app behind the dialog ---- */
+    .app {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      background: #f7f7f4;
+    }
+
+    .app-bar {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      padding: 16px 28px;
+      border-bottom: 1px solid #dcdfe2;
+      background: #ffffff;
+    }
+
+    .app-mark {
+      color: #1769c2;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .app-tabs {
+      display: flex;
+      gap: 22px;
+      color: #6b7076;
+      font-size: 14px;
+    }
+
+    .app-tabs span.on {
+      color: #24282c;
+      font-weight: 600;
+    }
+
+    .app-user {
+      margin-left: auto;
+      color: #6b7076;
+      font-size: 13px;
+    }
+
+    .app-body {
+      flex: 1;
+      display: flex;
+      min-height: 0;
+    }
+
+    .app-nav {
+      width: 232px;
+      padding: 24px 22px;
+      border-right: 1px solid #dcdfe2;
+      background: #fbfbf9;
+    }
+
+    .nav-title {
+      margin: 0 0 14px;
+      color: #85898e;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .nav-item {
+      padding: 9px 0;
+      border-bottom: 1px solid #e6e8ea;
+      color: #4c5157;
+      font-size: 14px;
+    }
+
+    .app-main {
+      flex: 1;
+      padding: 26px 32px;
+      min-width: 0;
+    }
+
+    .app-main h2 {
+      margin: 0 0 4px;
+      font-size: 22px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+
+    .app-main .sub {
+      margin: 0 0 20px;
+      color: #6b7076;
+      font-size: 13px;
+    }
+
+    .ep {
+      padding: 14px 0;
+      border-top: 1px solid #e2e4e6;
+    }
+
+    .ep-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #24282c;
+    }
+
+    .ep-meta {
+      margin-top: 3px;
+      color: #7c8085;
+      font-size: 13px;
+    }
+
+    .scrim {
+      position: absolute;
+      inset: 0;
+      background: rgba(19, 23, 28, 0.58);
+    }
+
+    /* ---- decision dialog ---- */
+    .dialog {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 568px;
+      padding: 30px 36px 0;
+      border: 1px solid #b9bec3;
+      border-top: 4px solid #1769c2;
+      background: #ffffff;
+      box-shadow: 0 26px 64px rgba(12, 17, 23, 0.34);
+    }
+
+    .dialog-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    .service {
+      margin: 0;
+      color: #1769c2;
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1.3;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .kind {
+      color: #8b9096;
+      font-size: 12px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      max-width: 420px;
+      font-size: 30px;
+      font-weight: 600;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+    }
+
+    .description {
+      margin: 12px 0 0;
+      max-width: 460px;
+      color: #4c5157;
+      font-size: 15px;
+      line-height: 1.55;
+    }
+
+    details {
+      margin: 20px 0 0;
+      border: 1px solid #dfe1e3;
+      background: #fafbfc;
+    }
+
+    summary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 11px 14px;
+      color: #1f2429;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      list-style: none;
+    }
+
+    summary::-webkit-details-marker {
+      display: none;
+    }
+
+    summary::after {
+      content: 'Show';
+      color: #1769c2;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    details[open] summary::after {
+      content: 'Hide';
+    }
+
+    .note-body {
+      margin: 0;
+      padding: 0 14px 14px;
+      color: #4c5157;
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    .decision {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      margin: 26px -36px 0;
+      padding: 18px 36px;
+      border-top: 1px solid #dcdfe2;
+      background: #f2f5f8;
+    }
+
+    .decision-hint {
+      max-width: 210px;
+      color: #5c6views;
+      color: #5c6167;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .decision-buttons {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    button {
+      min-height: 42px;
+      padding: 10px 20px;
+      border-radius: 0;
+      font: inherit;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .later {
+      border: 1px solid #bfc3c7;
+      background: #ffffff;
+      color: #353a3f;
+    }
+
+    .allow {
+      border: 1px solid #1769c2;
+      background: #1769c2;
+      color: #ffffff;
+      padding: 10px 26px;
+      box-shadow: 0 2px 0 #10528f;
+    }
+
+    button:focus-visible {
+      outline: 2px solid #17191c;
+      outline-offset: 2px;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <div class="app" aria-hidden="true">
+      <div class="app-bar">
+        <span class="app-mark">Wavefold</span>
+        <div class="app-tabs">
+          <span class="on">Library</span>
+          <span>Discover</span>
+          <span>Downloads</span>
+          <span>Settings</span>
+        </div>
+        <span class="app-user">Ines Bakker</span>
+      </div>
+      <div class="app-body">
+        <div class="app-nav">
+          <p class="nav-title">Shows you follow</p>
+          <div class="nav-item">The Harbour Line</div>
+          <div class="nav-item">Field Notes Weekly</div>
+          <div class="nav-item">Slow Radio Hour</div>
+          <div class="nav-item">Cold Open Cinema</div>
+          <div class="nav-item">Paper Maps</div>
+        </div>
+        <div class="app-main">
+          <h2>New for you</h2>
+          <p class="sub">Updated 12 minutes ago</p>
+          <div class="ep">
+            <div class="ep-title">The Harbour Line — Episode 214: Night Ferry</div>
+            <div class="ep-meta">48 min · Released today</div>
+          </div>
+          <div class="ep">
+            <div class="ep-title">Field Notes Weekly — The Salt Marsh Survey</div>
+            <div class="ep-meta">31 min · Released yesterday</div>
+          </div>
+          <div class="ep">
+            <div class="ep-title">Slow Radio Hour — Rain on a Tin Roof</div>
+            <div class="ep-meta">62 min · 2 days ago</div>
+          </div>
+          <div class="ep">
+            <div class="ep-title">Cold Open Cinema — Sequels Nobody Asked For</div>
+            <div class="ep-meta">55 min · 3 days ago</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scrim"></div>
+
+    <section class="dialog" role="dialog" aria-modal="true" aria-labelledby="permission-title">
+      <div class="dialog-head">
+        <p class="service">Wavefold Podcasts</p>
+        <span class="kind">Permission request</span>
+      </div>
+      <h1 id="permission-title">Allow episode notifications</h1>
+      <p class="description">
+        Get an alert on this computer when a show you follow releases a new episode.
+      </p>
+      <details>
+        <summary>What Wavefold will send</summary>
+        <p class="note-body">
+          Only new episodes from shows you follow and the listening reminders you saved. No promotions. You can change this permission in Settings at any time.
+        </p>
+      </details>
+      <div class="decision">
+        <p class="decision-hint">Notifications appear in the corner of your desktop.</p>
+        <div class="decision-buttons">
+          <button class="later" type="button">Not now</button>
+          <button class="allow" type="button">Allow notifications</button>
+        </div>
+      </div>
+    </section>
+  </div>
+</body>
+</html>

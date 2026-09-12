@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Settings — Halden Money</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 40px 0;
+    margin: 0;
+    background: #D9D5DB;
+    font-family: 'Manrope', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .screen {
+    position: relative;
+    width: 1024px;
+    height: 768px;
+    background: #FFFFFF;
+    color: #1D1A20;
+    display: flex;
+    overflow: hidden;
+  }
+
+  /* ---------- sidebar ---------- */
+  .side {
+    width: 248px;
+    flex: 0 0 248px;
+    background: #FAF8FB;
+    border-right: 1px solid #EBE7EC;
+    display: flex;
+    flex-direction: column;
+    padding: 20px 16px 18px;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 4px 18px;
+  }
+  .logo {
+    width: 30px;
+    height: 30px;
+    border-radius: 4px;
+    background: #8B6A9C;
+    color: #FFFFFF;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+  }
+  .bname { font-size: 14px; line-height: 18px; font-weight: 700; }
+  .bsub { font-size: 11px; line-height: 14px; color: #8C8492; }
+
+  .acct {
+    background: #FFFFFF;
+    border: 1px solid #EBE7EC;
+    border-radius: 6px;
+    padding: 12px;
+  }
+  .acct .top { display: flex; align-items: center; gap: 10px; }
+  .mono {
+    width: 38px;
+    height: 38px;
+    border-radius: 4px;
+    background: #F0E9F3;
+    color: #7A5589;
+    font-size: 14px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    letter-spacing: 0.02em;
+  }
+  .acct .who { min-width: 0; }
+  .acct .name { font-size: 14px; line-height: 18px; font-weight: 700; }
+  .acct .meta {
+    font-size: 11px;
+    line-height: 15px;
+    color: #77707B;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .acct .link {
+    margin-top: 10px;
+    padding-top: 9px;
+    border-top: 1px solid #F2EEF3;
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 700;
+    color: #7A5589;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .nav { margin-top: 20px; display: flex; flex-direction: column; gap: 2px; }
+  .navitem {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding: 9px 12px;
+    border-radius: 5px;
+    font-size: 13px;
+    line-height: 18px;
+    font-weight: 500;
+    color: #5C5561;
+  }
+  .navitem.active {
+    background: #F0E9F3;
+    color: #7A5589;
+    font-weight: 700;
+  }
+  .navitem svg { flex: 0 0 auto; }
+
+  .sidefoot { margin-top: auto; padding: 0 4px; }
+  .out {
+    display: inline-block;
+    padding: 7px 14px;
+    border: 1px solid #DCD7DF;
+    border-radius: 4px;
+    background: #FFFFFF;
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 700;
+    color: #4A4550;
+  }
+  .ver { margin-top: 10px; font-size: 11px; line-height: 15px; color: #A29AA6; }
+
+  /* ---------- main ---------- */
+  .main { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; }
+  .mainhead {
+    padding: 22px 32px 18px;
+    border-bottom: 1px solid #EBE7EC;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 20px;
+  }
+  .mainhead h1 {
+    margin: 0;
+    font-size: 22px;
+    line-height: 28px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  .mainhead .sub {
+    margin: 3px 0 0;
+    font-size: 13px;
+    line-height: 18px;
+    color: #77707B;
+  }
+  .saved { font-size: 12px; line-height: 16px; font-weight: 500; color: #8B6A9C; }
+
+  .body { padding: 4px 32px 0; }
+
+  .grouplabel {
+    padding: 20px 0 6px;
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: #8B6A9C;
+  }
+  .grouplabel .hint {
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    text-transform: none;
+    color: #A29AA6;
+  }
+
+  .row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 11px 0;
+    border-bottom: 1px solid #EBE7EC;
+  }
+  .row.last { border-bottom: 0; }
+  .row .label { flex: 1 1 auto; min-width: 0; }
+  .row .t { font-size: 15px; line-height: 20px; font-weight: 500; }
+  .row .s {
+    font-size: 12px;
+    line-height: 16px;
+    color: #77707B;
+    margin-top: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .val { font-size: 14px; line-height: 20px; color: #77707B; white-space: nowrap; }
+  .btn {
+    flex: 0 0 auto;
+    padding: 5px 13px;
+    border: 1px solid #DCD7DF;
+    border-radius: 4px;
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 700;
+    color: #4A4550;
+    white-space: nowrap;
+  }
+
+  /* toggle, drawn at rest */
+  .sw {
+    flex: 0 0 auto;
+    width: 42px;
+    height: 24px;
+    border-radius: 4px;
+    background: #DCD7DF;
+    position: relative;
+  }
+  .sw i {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 18px;
+    height: 18px;
+    border-radius: 3px;
+    background: #FFFFFF;
+  }
+  .sw.on { background: #8B6A9C; }
+  .sw.on i { left: 21px; }
+</style>
+</head>
+<body>
+  <div class="screen">
+
+    <aside class="side">
+      <div class="brand">
+        <span class="logo">HM</span>
+        <div>
+          <div class="bname">Halden Money</div>
+          <div class="bsub">Personal banking</div>
+        </div>
+      </div>
+
+      <div class="acct">
+        <div class="top">
+          <div class="mono">MV</div>
+          <div class="who">
+            <div class="name">Marisol Vance</div>
+            <div class="meta">Personal account</div>
+          </div>
+        </div>
+        <div class="link">
+          <span>Limits and documents</span>
+          <svg width="7" height="12" viewBox="0 0 8 14" fill="none" aria-hidden="true">
+            <path d="M1.5 1L6.5 7L1.5 13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </div>
+
+      <nav class="nav">
+        <div class="navitem">
+          <svg width="20" height="20" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+            <path d="M3.5 9.2L11 3.5l7.5 5.7V18a.5.5 0 0 1-.5.5h-4.2v-5.3H8.2v5.3H4a.5.5 0 0 1-.5-.5V9.2Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+          </svg>
+          <span>Home</span>
+        </div>
+        <div class="navitem">
+          <svg width="20" height="20" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+            <rect x="2.8" y="5.2" width="16.4" height="11.6" rx="2" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M2.8 9.4h16.4" stroke="currentColor" stroke-width="1.5"/>
+          </svg>
+          <span>Spend</span>
+        </div>
+        <div class="navitem">
+          <svg width="20" height="20" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+            <path d="M3.4 15.6l4.4-4.7 3.3 2.6 5.6-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M13.4 7.5h3.6v3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span>Invest</span>
+        </div>
+        <div class="navitem active">
+          <svg width="20" height="20" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+            <path d="M3.5 6.5h11M17 6.5h1.5M3.5 15.5h4M10 15.5h8.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            <rect x="14.2" y="4.4" width="4.2" height="4.2" rx="1" stroke="currentColor" stroke-width="1.5"/>
+            <rect x="6.4" y="13.4" width="4.2" height="4.2" rx="1" stroke="currentColor" stroke-width="1.5"/>
+          </svg>
+          <span>Settings</span>
+        </div>
+      </nav>
+
+      <div class="sidefoot">
+        <span class="out">Sign out</span>
+        <div class="ver">Halden Money for Web · 4.2.1</div>
+      </div>
+    </aside>
+
+    <section class="main">
+      <header class="mainhead">
+        <div>
+          <h1>Settings</h1>
+          <p class="sub">Grouped by where each setting takes effect</p>
+        </div>
+        <span class="saved">Changes save automatically</span>
+      </header>
+
+      <div class="body">
+
+        <div class="grouplabel">Whole account <span class="hint">· every device you sign in from</span></div>
+        <div class="row">
+          <div class="label">
+            <div class="t">Confirm transfers with PIN</div>
+            <div class="s">For amounts over $200.00</div>
+          </div>
+          <span class="sw on"><i></i></span>
+        </div>
+        <div class="row">
+          <div class="label"><div class="t">Two-factor method</div></div>
+          <span class="val">Authenticator app</span>
+          <span class="btn">Change</span>
+        </div>
+        <div class="row">
+          <div class="label"><div class="t">Display currency</div></div>
+          <span class="val">USD ($)</span>
+          <span class="btn">Change</span>
+        </div>
+        <div class="row last">
+          <div class="label">
+            <div class="t">Round up to savings</div>
+            <div class="s">Nearest $1.00, into Emergency Fund</div>
+          </div>
+          <span class="sw on"><i></i></span>
+        </div>
+
+        <div class="grouplabel">This computer only <span class="hint">· Chrome on macOS</span></div>
+        <div class="row">
+          <div class="label"><div class="t">Face unlock</div></div>
+          <span class="sw on"><i></i></span>
+        </div>
+        <div class="row last">
+          <div class="label"><div class="t">Trusted devices</div></div>
+          <span class="val">3 active</span>
+          <span class="btn">Review</span>
+        </div>
+
+        <div class="grouplabel">Phone &amp; email alerts <span class="hint">· sent as notifications</span></div>
+        <div class="row">
+          <div class="label"><div class="t">Card purchases</div></div>
+          <span class="sw on"><i></i></span>
+        </div>
+        <div class="row">
+          <div class="label">
+            <div class="t">Low balance warning</div>
+            <div class="s">Checking drops below $150.00</div>
+          </div>
+          <span class="sw on"><i></i></span>
+        </div>
+        <div class="row last">
+          <div class="label"><div class="t">Weekly spending summary</div></div>
+          <span class="sw"><i></i></span>
+        </div>
+
+        <div class="grouplabel">Mailed documents <span class="hint">· statements and tax records</span></div>
+        <div class="row last">
+          <div class="label"><div class="t">Statement delivery</div></div>
+          <span class="val">Paperless</span>
+          <span class="btn">Change</span>
+        </div>
+
+      </div>
+    </section>
+
+  </div>
+</body>
+</html>

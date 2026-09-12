@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Activity Center | Verba Studio</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #e2e4e7;
+      color: #20242c;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      width: 1024px;
+      height: 768px;
+      display: flex;
+      flex-direction: column;
+      background: #fbfaf7;
+      box-shadow: 0 18px 55px rgba(31, 35, 42, 0.15);
+    }
+
+    .app-header {
+      display: flex;
+      align-items: center;
+      padding: 0 34px;
+      border-bottom: 1px solid #deddd8;
+      background: #ffffff;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-right: 42px;
+      padding: 17px 0;
+    }
+
+    .brand-mark {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: #f0b85b;
+      color: #432f12;
+      font-size: 16px;
+      font-weight: 850;
+    }
+
+    .brand-copy strong,
+    .brand-copy span {
+      display: block;
+    }
+
+    .brand-copy strong {
+      font-size: 16px;
+      line-height: 20px;
+    }
+
+    .brand-copy span {
+      color: #817b70;
+      font-size: 10px;
+      line-height: 14px;
+    }
+
+    .primary-nav {
+      align-self: stretch;
+      display: flex;
+      gap: 27px;
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      border-bottom: 3px solid transparent;
+      color: #77756f;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 650;
+    }
+
+    .nav-link.active {
+      border-bottom-color: #c27a22;
+      color: #2c2923;
+    }
+
+    .header-tools {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      margin-left: auto;
+    }
+
+    .search {
+      width: 180px;
+      padding: 8px 11px;
+      border: 1px solid #dddcd7;
+      border-radius: 7px;
+      color: #8a867d;
+      font-size: 12px;
+      line-height: 17px;
+    }
+
+    .header-avatar {
+      width: 33px;
+      height: 33px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: #2f4c58;
+      color: #ffffff;
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    main {
+      flex: 1;
+      padding: 25px 36px 28px;
+    }
+
+    .page-heading {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .page-kicker {
+      margin: 0 0 4px;
+      color: #a06521;
+      font-size: 11px;
+      line-height: 16px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      color: #25231f;
+      font-size: 31px;
+      line-height: 37px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .subtitle {
+      margin: 4px 0 0;
+      color: #77736b;
+      font-size: 13px;
+      line-height: 19px;
+    }
+
+    .heading-actions {
+      display: flex;
+      gap: 9px;
+    }
+
+    .settings-button,
+    .read-button {
+      padding: 8px 12px;
+      border: 1px solid #d6d3cb;
+      border-radius: 7px;
+      background: #ffffff;
+      color: #58544d;
+      font-size: 12px;
+      line-height: 17px;
+      font-weight: 750;
+    }
+
+    .read-button {
+      border-color: #2f4c58;
+      background: #2f4c58;
+      color: #ffffff;
+    }
+
+    .summary-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .summary-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 11px 14px;
+      border: 1px solid #dfddd7;
+      border-radius: 9px;
+      background: #ffffff;
+    }
+
+    .summary-number {
+      min-width: 34px;
+      color: #b46d1c;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 25px;
+      line-height: 30px;
+      font-weight: 700;
+    }
+
+    .summary-card strong,
+    .summary-card span {
+      display: block;
+    }
+
+    .summary-card strong {
+      color: #34312c;
+      font-size: 12px;
+      line-height: 17px;
+    }
+
+    .summary-card span {
+      color: #89847b;
+      font-size: 10px;
+      line-height: 15px;
+    }
+
+    .content-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 13px;
+    }
+
+    .filters {
+      display: flex;
+      gap: 17px;
+    }
+
+    .filter {
+      padding: 2px 0 5px;
+      border: 0;
+      border-bottom: 2px solid transparent;
+      background: transparent;
+      color: #88837a;
+      font-size: 12px;
+      line-height: 17px;
+      font-weight: 750;
+    }
+
+    .filter.active {
+      border-bottom-color: #c47b23;
+      color: #34312c;
+    }
+
+    .result-note {
+      color: #8c877e;
+      font-size: 11px;
+      line-height: 16px;
+    }
+
+    .notification-columns {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 22px;
+    }
+
+    .column-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 0 0 9px;
+      color: #4d4942;
+      font-size: 12px;
+      line-height: 17px;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .column-heading span {
+      color: #989188;
+      font-size: 10px;
+      font-weight: 650;
+      letter-spacing: 0;
+      text-transform: none;
+    }
+
+    .notification-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .notification {
+      padding: 14px;
+      border: 1px solid #dedbd4;
+      border-radius: 10px;
+      background: #ffffff;
+    }
+
+    .notification.unread {
+      border-color: #e0b578;
+      box-shadow: inset 3px 0 0 #d58b31;
+    }
+
+    .card-top {
+      display: flex;
+      align-items: flex-start;
+      gap: 11px;
+    }
+
+    .glyph {
+      width: 39px;
+      height: 39px;
+      flex: 0 0 39px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: #edf1f1;
+      color: #385764;
+    }
+
+    .unread .glyph {
+      background: #fff1da;
+      color: #a15f15;
+    }
+
+    .glyph svg {
+      width: 20px;
+      height: 20px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .card-main {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .card-label {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      margin-bottom: 2px;
+      color: #9a611e;
+      font-size: 9px;
+      line-height: 14px;
+      font-weight: 850;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .new-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #d48325;
+    }
+
+    .notification-title {
+      margin: 0;
+      color: #2c2924;
+      font-size: 14px;
+      line-height: 19px;
+      font-weight: 750;
+    }
+
+    .notification-copy {
+      margin: 4px 0 0;
+      color: #747068;
+      font-size: 12px;
+      line-height: 17px;
+    }
+
+    .information {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 7px 12px;
+      margin: 12px 0 0 50px;
+      padding-top: 10px;
+      border-top: 1px solid #ece9e3;
+    }
+
+    .information div {
+      min-width: 0;
+    }
+
+    .information dt {
+      margin: 0 0 1px;
+      color: #9a958c;
+      font-size: 9px;
+      line-height: 13px;
+      font-weight: 750;
+      text-transform: uppercase;
+    }
+
+    .information dd {
+      margin: 0;
+      color: #4c4943;
+      font-size: 11px;
+      line-height: 15px;
+      font-weight: 650;
+    }
+
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 10px 0 0 50px;
+    }
+
+    .timestamp {
+      color: #969188;
+      font-size: 10px;
+      line-height: 15px;
+    }
+
+    .card-link {
+      color: #9c5d17;
+      font-size: 11px;
+      line-height: 15px;
+      font-weight: 800;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="app-header">
+      <div class="brand">
+        <div class="brand-mark">V</div>
+        <div class="brand-copy">
+          <strong>Verba Studio</strong>
+          <span>Language learning, thoughtfully made</span>
+        </div>
+      </div>
+
+      <nav class="primary-nav" aria-label="Primary navigation">
+        <div class="nav-link">Dashboard</div>
+        <div class="nav-link">Courses</div>
+        <div class="nav-link">Practice</div>
+        <div class="nav-link active" aria-current="page">Activity</div>
+      </nav>
+
+      <div class="header-tools">
+        <div class="search">Search courses and lessons</div>
+        <div class="header-avatar">AM</div>
+      </div>
+    </header>
+
+    <main>
+      <div class="page-heading">
+        <div>
+          <p class="page-kicker">Activity center</p>
+          <h1>Your notifications</h1>
+          <p class="subtitle">Reviews, replies, goals, and course updates in one place.</p>
+        </div>
+        <div class="heading-actions">
+          <button class="settings-button" type="button">Notification settings</button>
+          <button class="read-button" type="button">Mark all read</button>
+        </div>
+      </div>
+
+      <div class="summary-row" aria-label="Notification summary">
+        <div class="summary-card">
+          <div class="summary-number">2</div>
+          <div>
+            <strong>Unread updates</strong>
+            <span>Both received today</span>
+          </div>
+        </div>
+        <div class="summary-card">
+          <div class="summary-number">5</div>
+          <div>
+            <strong>Lessons completed</strong>
+            <span>Your weekly target was met</span>
+          </div>
+        </div>
+        <div class="summary-card">
+          <div class="summary-number">12</div>
+          <div>
+            <strong>Day learning streak</strong>
+            <span>Your longest streak this month</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="content-bar">
+        <div class="filters" aria-label="Notification filters">
+          <button class="filter active" type="button" aria-current="page">All activity</button>
+          <button class="filter" type="button">Unread 2</button>
+          <button class="filter" type="button">Feedback</button>
+          <button class="filter" type="button">Course updates</button>
+        </div>
+        <span class="result-note">4 recent notifications</span>
+      </div>
+
+      <div class="notification-columns">
+        <section aria-labelledby="today-heading-b">
+          <h2 class="column-heading" id="today-heading-b">Today <span>2 unread</span></h2>
+          <div class="notification-list">
+            <article class="notification unread">
+              <div class="card-top">
+                <div class="glyph" aria-hidden="true">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M4 17.5h16"></path>
+                    <path d="M6.5 17.5V7.2c1.8-1 3.6-1.2 5.5-.2v10.5"></path>
+                    <path d="M17.5 17.5V7.2c-1.8-1-3.6-1.2-5.5-.2"></path>
+                    <path d="M8.5 10h1.5"></path>
+                    <path d="M14 10h1.5"></path>
+                  </svg>
+                </div>
+                <div class="card-main">
+                  <div class="card-label"><span class="new-dot"></span> Pronunciation review</div>
+                  <h3 class="notification-title">Your pronunciation review is ready</h3>
+                  <p class="notification-copy">See feedback for “Ordering at a Café.”</p>
+                </div>
+              </div>
+              <dl class="information">
+                <div>
+                  <dt>Course</dt>
+                  <dd>Beginner French</dd>
+                </div>
+                <div>
+                  <dt>Review score</dt>
+                  <dd>86% · Strong</dd>
+                </div>
+                <div>
+                  <dt>Reviewed by</dt>
+                  <dd>Tessa Rowan</dd>
+                </div>
+                <div>
+                  <dt>Focus area</dt>
+                  <dd>Vowel clarity</dd>
+                </div>
+              </dl>
+              <div class="card-footer">
+                <span class="timestamp">12 minutes ago</span>
+                <span class="card-link">View full feedback →</span>
+              </div>
+            </article>
+
+            <article class="notification unread">
+              <div class="card-top">
+                <div class="glyph" aria-hidden="true">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M5 6.5h14v9H10l-4.5 3v-3H5z"></path>
+                    <path d="M8 10h8"></path>
+                    <path d="M8 12.5h5"></path>
+                  </svg>
+                </div>
+                <div class="card-main">
+                  <div class="card-label"><span class="new-dot"></span> Discussion reply</div>
+                  <h3 class="notification-title">Tessa Rowan replied to your question</h3>
+                  <p class="notification-copy">A new answer was posted in Beginner French.</p>
+                </div>
+              </div>
+              <dl class="information">
+                <div>
+                  <dt>Discussion</dt>
+                  <dd>Partitive articles</dd>
+                </div>
+                <div>
+                  <dt>Replies</dt>
+                  <dd>4 total</dd>
+                </div>
+                <div>
+                  <dt>Lesson</dt>
+                  <dd>At the Market</dd>
+                </div>
+                <div>
+                  <dt>Instructor</dt>
+                  <dd>Tessa Rowan</dd>
+                </div>
+              </dl>
+              <div class="card-footer">
+                <span class="timestamp">1 hour ago</span>
+                <span class="card-link">Read the reply →</span>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section aria-labelledby="earlier-heading-b">
+          <h2 class="column-heading" id="earlier-heading-b">Earlier <span>Previously read</span></h2>
+          <div class="notification-list">
+            <article class="notification">
+              <div class="card-top">
+                <div class="glyph" aria-hidden="true">
+                  <svg viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="7.5"></circle>
+                    <path d="m8.5 12 2.2 2.2 4.8-5"></path>
+                  </svg>
+                </div>
+                <div class="card-main">
+                  <div class="card-label">Weekly progress</div>
+                  <h3 class="notification-title">Your weekly learning goal was completed</h3>
+                  <p class="notification-copy">You finished 5 lessons between May 20 and May 26.</p>
+                </div>
+              </div>
+              <dl class="information">
+                <div>
+                  <dt>Study time</dt>
+                  <dd>2 hours 35 minutes</dd>
+                </div>
+                <div>
+                  <dt>Lessons</dt>
+                  <dd>5 of 5 completed</dd>
+                </div>
+                <div>
+                  <dt>Current streak</dt>
+                  <dd>12 days</dd>
+                </div>
+                <div>
+                  <dt>Words reviewed</dt>
+                  <dd>148 words</dd>
+                </div>
+              </dl>
+              <div class="card-footer">
+                <span class="timestamp">Yesterday at 6:40 PM</span>
+                <span class="card-link">See weekly report →</span>
+              </div>
+            </article>
+
+            <article class="notification">
+              <div class="card-top">
+                <div class="glyph" aria-hidden="true">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M5.5 5.5h10a3 3 0 0 1 3 3v10h-10a3 3 0 0 1-3-3z"></path>
+                    <path d="M8.5 9h7"></path>
+                    <path d="M8.5 12h5"></path>
+                    <path d="M15.5 5.5v13"></path>
+                  </svg>
+                </div>
+                <div class="card-main">
+                  <div class="card-label">New lesson</div>
+                  <h3 class="notification-title">“Finding Your Way” was added</h3>
+                  <p class="notification-copy">The lesson is now available in Everyday French.</p>
+                </div>
+              </div>
+              <dl class="information">
+                <div>
+                  <dt>Level</dt>
+                  <dd>A2 · Elementary</dd>
+                </div>
+                <div>
+                  <dt>Estimated time</dt>
+                  <dd>18 minutes</dd>
+                </div>
+                <div>
+                  <dt>Skills</dt>
+                  <dd>Listening and vocabulary</dd>
+                </div>
+                <div>
+                  <dt>Exercises</dt>
+                  <dd>8 activities</dd>
+                </div>
+              </dl>
+              <div class="card-footer">
+                <span class="timestamp">May 25 at 9:15 AM</span>
+                <span class="card-link">Start the lesson →</span>
+              </div>
+            </article>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

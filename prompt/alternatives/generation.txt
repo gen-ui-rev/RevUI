@@ -1,0 +1,77 @@
+Revised alternatives generation
+===============================
+
+SYSTEM
+------
+You are implementing a UI modification request against an existing screen.
+
+You will receive one self-contained HTML screen and one modification request.
+Produce TWO alternative modified versions of the screen: VARIANT A and VARIANT B.
+
+Output format — follow it exactly, no code fences, no commentary:
+
+=== VARIANT A ===
+<!DOCTYPE html>
+... complete document ...
+</html>
+=== VARIANT B ===
+<!DOCTYPE html>
+... complete document ...
+</html>
+
+Rules for BOTH variants:
+- Apply the modification request. Where the request leaves room for
+  interpretation, A and B must take meaningfully different approaches —
+  not cosmetic recolors of the same idea.
+- One file, inline CSS only, no <script>.
+- The source UI's external resources stay exactly as they are — the Google Fonts <link> tags
+  in <head> and the photo <img> src on loremflickr.com. Copy them through untouched.
+  Never bring in a new host. Deleting them is a failure and a quiet one: the CSS still
+  names the font, so the screen falls back to a system font and looks like a different
+  design, and the photos turn into empty boxes.
+- Keep each <img>'s width and height attributes. If the image should be displayed at a
+  different size, change the numbers in the URL and in both attributes together — the
+  URL carries the pixel size, so changing one side alone breaks the layout.
+- All on-screen text stays in English. New labels or copy you add must be
+  English and realistic for the domain — never placeholder text (no "Item 1",
+  "Lorem ipsum", "TBD").
+- The screen is a static snapshot: no CSS animations, no @keyframes,
+  no loading/progress states.
+
+Fitting the canvas — the edit must not break the layout:
+- One container `<div class="screen">` holds the whole UI at exactly the size given in
+  [CANVAS]. Keep the class name "screen".
+- Everything fits inside it. The canvas does not grow, so adding something means taking
+  something out — cut entries or shorten copy. Never resize the container, scale the
+  design down, or clip it. A screen taller than the canvas is a failure, and so is a row
+  cut off halfway.
+- A box that holds text is as tall as its text: no height, max-height, or flex-basis on
+  a section, card, or header. Text drawn past its own background is a failure — the fix
+  is shorter copy, not a taller box.
+- Nothing spills out of the box holding it. Before committing to a row of chips or
+  values, check it fits; if not, use fewer items or shorter copy. Long text wraps or
+  gets an ellipsis.
+- overflow:hidden on an inner element is for an ellipsis on one line of text. It must
+  never clip a block of content vertically — if a box hides part of what is inside it,
+  the layout is wrong, not the box.
+- Keep top bars and tab bars inside the container with flex or position:absolute, never
+  position:fixed. No 100vw or 100vh inside the container — use 100%.
+
+USER TEMPLATE
+-------------
+[ORIGINAL HTML]
+{source_html}
+
+[MODIFICATION REQUEST]
+{instruction}
+
+[CANVAS]
+{canvas}
+
+CANVAS OPTION: no device change, inserted as {canvas}
+-----------------------------------------------------
+Same as the original: one <div class="screen"> sized exactly {w}x{h}px, centered on a neutral page background.
+
+CANVAS OPTION: device change, inserted as {canvas}
+--------------------------------------------------
+The request changes the target device. Re-lay out the UI for a {device} screen: one <div class="screen"> sized exactly {w}x{h}px, centered on a neutral page background. Adapt layout density and touch/click affordances to the device while preserving the product and its content.

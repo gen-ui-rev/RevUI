@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prescribed Knee Rehab Session</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #d8d4cf;
+      color: #252321;
+      font-family: 'Inter', system-ui, sans-serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      position: relative;
+      width: 390px;
+      height: 844px;
+      background: #faf9f7;
+    }
+
+    .topbar {
+      height: 56px;
+      padding: 0 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #faf9f7;
+    }
+
+    .topbar-title {
+      font-size: 16px;
+      line-height: 22px;
+      font-weight: 600;
+    }
+
+    .icon-button {
+      width: 40px;
+      height: 40px;
+      padding: 0;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      color: #2d2a27;
+      display: grid;
+      place-items: center;
+    }
+
+    .icon-button svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .player {
+      position: relative;
+      width: 390px;
+      height: 300px;
+      background: #746d66;
+    }
+
+    .player img {
+      width: 390px;
+      height: 300px;
+      object-fit: cover;
+      display: block;
+      background: #746d66;
+    }
+
+    .video-shade {
+      position: absolute;
+      inset: 0;
+      background: rgba(31, 28, 25, 0.32);
+    }
+
+    .set-badge {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      padding: 7px 9px;
+      color: #fff;
+      background: rgba(133, 117, 102, 0.82);
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 600;
+    }
+
+    .cast-button {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      color: #fff;
+      background: rgba(40, 36, 32, 0.56);
+    }
+
+    .center-controls {
+      position: absolute;
+      top: 108px;
+      left: 0;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+    }
+
+    .player-control {
+      width: 44px;
+      height: 44px;
+      padding: 0;
+      border: 0;
+      border-radius: 0;
+      color: #fff;
+      background: rgba(40, 36, 32, 0.58);
+      display: grid;
+      place-items: center;
+    }
+
+    .player-control svg {
+      width: 25px;
+      height: 25px;
+    }
+
+    .player-control.primary {
+      width: 58px;
+      height: 58px;
+      color: #fff;
+      background: #8c7b6d;
+    }
+
+    .player-control.primary svg {
+      width: 27px;
+      height: 27px;
+    }
+
+    .safety-pill {
+      position: absolute;
+      left: 14px;
+      bottom: 56px;
+      padding: 6px 9px;
+      color: #fff;
+      background: rgba(40, 36, 32, 0.62);
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 500;
+    }
+
+    .timeline {
+      position: absolute;
+      left: 14px;
+      right: 14px;
+      bottom: 15px;
+    }
+
+    .time-row {
+      margin-bottom: 7px;
+      display: flex;
+      justify-content: space-between;
+      color: #fff;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 500;
+    }
+
+    .track {
+      position: relative;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.38);
+    }
+
+    .track-fill {
+      width: 58%;
+      height: 4px;
+      background: #b5a494;
+    }
+
+    .track-knob {
+      position: absolute;
+      top: -4px;
+      left: calc(58% - 6px);
+      width: 12px;
+      height: 12px;
+      background: #f7f4f0;
+    }
+
+    .rx {
+      padding: 14px 16px 12px;
+    }
+
+    .rx h1 {
+      margin: 0;
+      font-size: 20px;
+      line-height: 27px;
+      font-weight: 600;
+      letter-spacing: -0.2px;
+    }
+
+    .rx-prescriber {
+      margin: 4px 0 12px;
+      overflow: hidden;
+      color: #6f6963;
+      font-size: 14px;
+      line-height: 20px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .dose-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .dose {
+      min-width: 0;
+      padding: 9px 10px;
+      border: 0;
+      border-radius: 0;
+      background: rgba(140, 123, 109, 0.13);
+      color: #393532;
+      text-align: left;
+    }
+
+    .dose-label {
+      display: block;
+      color: #756d66;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .dose-value {
+      display: block;
+      margin-top: 1px;
+      overflow: hidden;
+      font-size: 14px;
+      line-height: 19px;
+      font-weight: 600;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .adherence {
+      margin-top: 12px;
+    }
+
+    .adherence-row {
+      display: flex;
+      justify-content: space-between;
+      color: #6f6963;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 500;
+    }
+
+    .adherence-row strong {
+      color: #453e39;
+      font-weight: 600;
+    }
+
+    .adherence-track {
+      margin-top: 6px;
+      height: 4px;
+      background: rgba(140, 123, 109, 0.22);
+    }
+
+    .adherence-fill {
+      width: 71%;
+      height: 4px;
+      background: #8c7b6d;
+    }
+
+    .queue {
+      padding: 8px 16px 0;
+    }
+
+    .queue-heading {
+      margin: 0 0 8px;
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+    }
+
+    .queue-heading h2 {
+      margin: 0;
+      font-size: 16px;
+      line-height: 22px;
+      font-weight: 600;
+    }
+
+    .queue-heading span {
+      color: #7a746e;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .queue-list {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .queue-row {
+      min-height: 62px;
+      padding: 3px 0;
+      display: grid;
+      grid-template-columns: 88px minmax(0, 1fr) 52px;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .queue-row img {
+      width: 88px;
+      height: 56px;
+      object-fit: cover;
+      display: block;
+      background: #9d948b;
+    }
+
+    .queue-copy {
+      min-width: 0;
+    }
+
+    .queue-title {
+      margin: 0;
+      overflow: hidden;
+      color: #302d2a;
+      font-size: 14px;
+      line-height: 19px;
+      font-weight: 600;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .queue-meta {
+      margin: 3px 0 0;
+      overflow: hidden;
+      color: #77716b;
+      font-size: 12px;
+      line-height: 16px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .rx-dose {
+      color: #574b42;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 600;
+      text-align: right;
+    }
+
+    .tabbar {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 70px;
+      padding: 7px 8px 8px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      background: #f3f0ec;
+    }
+
+    .tab {
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      color: #78716b;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 500;
+    }
+
+    .tab svg {
+      width: 21px;
+      height: 21px;
+    }
+
+    .tab.active {
+      color: #574b42;
+      background: rgba(140, 123, 109, 0.15);
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <button class="icon-button" aria-label="Go back">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M15 5L8 12L15 19" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter"/>
+        </svg>
+      </button>
+      <div class="topbar-title">Prescribed session</div>
+      <button class="icon-button" aria-label="More options">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <circle cx="5" cy="12" r="1.7"/>
+          <circle cx="12" cy="12" r="1.7"/>
+          <circle cx="19" cy="12" r="1.7"/>
+        </svg>
+      </button>
+    </header>
+
+    <main>
+      <section class="player" aria-label="Prescribed exercise video">
+        <img src="https://loremflickr.com/390/300/gym?lock=12690" width="390" height="300" alt="Therapist guiding a patient through a supported knee mobility exercise">
+        <div class="video-shade"></div>
+
+        <div class="set-badge">Set 2 of 3 · 4 reps left</div>
+
+        <button class="icon-button cast-button" aria-label="Play on another device">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M4 18H4.01M4 14C7.3 14 10 16.7 10 20M4 10C9.5 10 14 14.5 14 20M5 5H19V17" stroke="currentColor" stroke-width="2" stroke-linecap="square"/>
+          </svg>
+        </button>
+
+        <div class="center-controls">
+          <button class="player-control" aria-label="Repeat previous rep">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M8 6H4V2M4.7 6.2A8 8 0 1 1 4 15" stroke="currentColor" stroke-width="2" stroke-linecap="square"/>
+              <path d="M9.5 10.5V15.5M13 11.5C13 10.8 13.5 10.5 14.2 10.5C14.9 10.5 15.4 10.8 15.4 11.5V14.5C15.4 15.2 14.9 15.5 14.2 15.5C13.5 15.5 13 15.2 13 14.5V11.5Z" stroke="currentColor" stroke-width="1.4"/>
+            </svg>
+          </button>
+
+          <button class="player-control primary" aria-label="Pause exercise">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <rect x="6" y="4" width="4" height="16"/>
+              <rect x="14" y="4" width="4" height="16"/>
+            </svg>
+          </button>
+
+          <button class="player-control" aria-label="Skip to next rep">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M16 6H20V2M19.3 6.2A8 8 0 1 0 20 15" stroke="currentColor" stroke-width="2" stroke-linecap="square"/>
+              <path d="M8.5 10.5V15.5M12 11.5C12 10.8 12.5 10.5 13.2 10.5C13.9 10.5 14.4 10.8 14.4 11.5V14.5C14.4 15.2 13.9 15.5 13.2 15.5C12.5 15.5 12 15.2 12 14.5V11.5Z" stroke="currentColor" stroke-width="1.4"/>
+            </svg>
+          </button>
+        </div>
+
+        <div class="safety-pill">Keep discomfort at 4 / 10 or below</div>
+
+        <div class="timeline">
+          <div class="time-row">
+            <span>Rep 6 of 10</span>
+            <span>5 sec hold</span>
+          </div>
+          <div class="track">
+            <div class="track-fill"></div>
+            <div class="track-knob"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="rx">
+        <h1>Knee Rehab · Phase 2</h1>
+        <p class="rx-prescriber">Prescribed by Dr. Alina Reyes · Post-op week 6</p>
+
+        <div class="dose-grid">
+          <button class="dose">
+            <span class="dose-label">Dose</span>
+            <span class="dose-value">3 × 10 reps</span>
+          </button>
+          <button class="dose">
+            <span class="dose-label">Tempo</span>
+            <span class="dose-value">5 sec hold</span>
+          </button>
+          <button class="dose">
+            <span class="dose-label">Frequency</span>
+            <span class="dose-value">2× daily</span>
+          </button>
+        </div>
+
+        <div class="adherence">
+          <div class="adherence-row">
+            <span>Adherence this week</span>
+            <span><strong>5 of 7 days</strong></span>
+          </div>
+          <div class="adherence-track">
+            <div class="adherence-fill"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="queue">
+        <div class="queue-heading">
+          <h2>Rest of prescription</h2>
+          <span>2 of 5 completed</span>
+        </div>
+
+        <div class="queue-list">
+          <article class="queue-row">
+            <img src="https://loremflickr.com/88/56/running?lock=12691" width="88" height="56" alt="Patient practising a standing hip opener with a rail for support">
+            <div class="queue-copy">
+              <p class="queue-title">Standing Hip Opener</p>
+              <p class="queue-meta">Mobility · pain-free range only</p>
+            </div>
+            <div class="rx-dose">3 × 8</div>
+          </article>
+
+          <article class="queue-row">
+            <img src="https://loremflickr.com/88/56/gym?lock=12692" width="88" height="56" alt="Exercise mat set up for floor-based rehabilitation work">
+            <div class="queue-copy">
+              <p class="queue-title">Glute Bridge Hold</p>
+              <p class="queue-meta">Strength · 5 sec hold at top</p>
+            </div>
+            <div class="rx-dose">3 × 10</div>
+          </article>
+
+          <article class="queue-row">
+            <img src="https://loremflickr.com/88/56/running?lock=12693" width="88" height="56" alt="Person stretching the calf and hamstring after rehab work">
+            <div class="queue-copy">
+              <p class="queue-title">Calf &amp; Hamstring Stretch</p>
+              <p class="queue-meta">Flexibility · each leg</p>
+            </div>
+            <div class="rx-dose">2 × 30s</div>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <nav class="tabbar" aria-label="Primary navigation">
+      <button class="tab">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M4 10L12 4L20 10V20H14V14H10V20H4V10Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="miter"/>
+        </svg>
+        <span>Today</span>
+      </button>
+
+      <button class="tab active" aria-current="page">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M7 5V19M17 5V19M4 8H7M4 16H7M17 8H20M17 16H20M7 12H17" stroke="currentColor" stroke-width="1.8" stroke-linecap="square"/>
+        </svg>
+        <span>Program</span>
+      </button>
+
+      <button class="tab">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M5 19V12H9V19M10 19V7H14V19M15 19V4H19V19M4 19H20" stroke="currentColor" stroke-width="1.8" stroke-linejoin="miter"/>
+        </svg>
+        <span>Progress</span>
+      </button>
+
+      <button class="tab">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.8"/>
+          <path d="M5 20C5.7 16.4 8.1 14.5 12 14.5C15.9 14.5 18.3 16.4 19 20" stroke="currentColor" stroke-width="1.8"/>
+        </svg>
+        <span>Care team</span>
+      </button>
+    </nav>
+  </div>
+</body>
+</html>

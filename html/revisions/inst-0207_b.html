@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calmstride Settings</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    :root {
+      --page: #ddd9d4;
+      --surface: #fbfaf8;
+      --surface-muted: #f2efeb;
+      --taupe: #806e60;
+      --taupe-light: #ded5ce;
+      --text: #272522;
+      --muted: #706c67;
+      --border: #dedad5;
+      --white: #ffffff;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: var(--page);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    .screen {
+      width: 768px;
+      height: 1024px;
+      display: flex;
+      background: var(--surface);
+      border: 1px solid #cec9c3;
+    }
+
+    .rail {
+      flex: 0 0 209px;
+      width: 209px;
+      display: flex;
+      flex-direction: column;
+      padding: 26px 18px 22px;
+      background: var(--surface-muted);
+      border-right: 1px solid var(--border);
+    }
+
+    .brand {
+      margin: 0 8px 18px;
+      color: var(--taupe);
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 17px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .rail-nav {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .rail-item {
+      padding: 13px 15px;
+      border-radius: 10px;
+      border: 1px solid transparent;
+      color: #6f6a65;
+      font-size: 15px;
+      font-weight: 600;
+      line-height: 20px;
+    }
+
+    .rail-item + .rail-item {
+      margin-top: 4px;
+    }
+
+    .rail-item.active {
+      background: var(--white);
+      border-color: var(--border);
+      color: var(--taupe);
+    }
+
+    .account-card {
+      margin-top: auto;
+      padding: 13px 15px;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+    }
+
+    .account-name {
+      margin: 0;
+      color: var(--text);
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 20px;
+    }
+
+    .account-plan {
+      margin: 2px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 17px;
+    }
+
+    .content {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .top-bar {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding: 26px 32px;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+    }
+
+    .head-text {
+      flex: 1;
+      min-width: 0;
+    }
+
+    h1 {
+      margin: 0;
+      color: var(--text);
+      font-size: 28px;
+      font-weight: 600;
+      line-height: 34px;
+      letter-spacing: -0.02em;
+    }
+
+    .header-copy {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 20px;
+    }
+
+    .reset-btn {
+      flex: 0 0 auto;
+      padding: 12px 18px;
+      background: var(--taupe);
+      color: var(--white);
+      border: 1px solid var(--taupe);
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 18px;
+      white-space: nowrap;
+    }
+
+    main {
+      flex: 1;
+      min-height: 0;
+      padding: 24px 32px 20px;
+    }
+
+    .settings-section + .settings-section {
+      margin-top: 20px;
+    }
+
+    .section-title {
+      margin: 0 2px 10px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 16px;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+    }
+
+    .settings-group {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+    }
+
+    .setting-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 13px 20px;
+      min-width: 0;
+    }
+
+    .setting-row + .setting-row {
+      border-top: 1px solid var(--border);
+    }
+
+    .setting-label {
+      flex: 1;
+      min-width: 0;
+      color: var(--text);
+      font-size: 15px;
+      font-weight: 400;
+      line-height: 21px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .setting-choice {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+      flex: 0 0 auto;
+      color: var(--muted);
+      font-size: 15px;
+      font-weight: 500;
+      line-height: 21px;
+      white-space: nowrap;
+    }
+
+    .chevron {
+      width: 16px;
+      height: 16px;
+      flex: 0 0 auto;
+      color: #938d87;
+    }
+
+    .toggle {
+      width: 48px;
+      padding: 3px;
+      display: flex;
+      flex: 0 0 auto;
+      border-radius: 999px;
+      background: #d5d1cc;
+      border: 1px solid #cbc6c0;
+    }
+
+    .toggle.on {
+      justify-content: flex-end;
+      background: var(--taupe);
+      border-color: var(--taupe);
+    }
+
+    .toggle.off {
+      justify-content: flex-start;
+    }
+
+    .toggle-knob {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--white);
+      border: 1px solid rgba(54, 47, 42, 0.08);
+    }
+
+    .foot {
+      flex-shrink: 0;
+      padding: 14px 32px;
+      border-top: 1px solid var(--border);
+      background: var(--surface-muted);
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 18px;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <nav class="rail" aria-label="Primary navigation">
+      <p class="brand">Calmstride</p>
+      <ul class="rail-nav">
+        <li class="rail-item">Today</li>
+        <li class="rail-item">Plan</li>
+        <li class="rail-item">Trends</li>
+        <li class="rail-item active" aria-current="page">Settings</li>
+      </ul>
+      <div class="account-card">
+        <p class="account-name">Ellery Vance</p>
+        <p class="account-plan">Calmstride Plus member</p>
+      </div>
+    </nav>
+
+    <div class="content">
+      <header class="top-bar">
+        <div class="head-text">
+          <h1>Settings</h1>
+          <p class="header-copy">Choose how your wellness plan works across the app.</p>
+        </div>
+        <button class="reset-btn" type="button">Reset all preferences</button>
+      </header>
+
+      <main>
+        <section class="settings-section" aria-labelledby="experience-title">
+          <h2 class="section-title" id="experience-title">App experience</h2>
+          <ul class="settings-group">
+            <li class="setting-row">
+              <span class="setting-label">Measurement units</span>
+              <span class="setting-choice">
+                US
+                <svg class="chevron" viewBox="0 0 16 16" aria-hidden="true">
+                  <path d="M6 3.5 10.5 8 6 12.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </span>
+            </li>
+            <li class="setting-row">
+              <span class="setting-label">Week begins</span>
+              <span class="setting-choice">
+                Sunday
+                <svg class="chevron" viewBox="0 0 16 16" aria-hidden="true">
+                  <path d="M6 3.5 10.5 8 6 12.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </span>
+            </li>
+            <li class="setting-row">
+              <span class="setting-label">Color theme</span>
+              <span class="setting-choice">
+                System
+                <svg class="chevron" viewBox="0 0 16 16" aria-hidden="true">
+                  <path d="M6 3.5 10.5 8 6 12.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </span>
+            </li>
+          </ul>
+        </section>
+
+        <section class="settings-section" aria-labelledby="plan-title">
+          <h2 class="section-title" id="plan-title">Plan preferences</h2>
+          <ul class="settings-group">
+            <li class="setting-row">
+              <span class="setting-label">Daily movement goal</span>
+              <span class="setting-choice">
+                45 min
+                <svg class="chevron" viewBox="0 0 16 16" aria-hidden="true">
+                  <path d="M6 3.5 10.5 8 6 12.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </span>
+            </li>
+            <li class="setting-row">
+              <span class="setting-label">Sleep target</span>
+              <span class="setting-choice">
+                8 hr
+                <svg class="chevron" viewBox="0 0 16 16" aria-hidden="true">
+                  <path d="M6 3.5 10.5 8 6 12.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </span>
+            </li>
+            <li class="setting-row">
+              <span class="setting-label">Adaptive training guidance</span>
+              <span class="toggle on" role="switch" aria-checked="true" aria-label="Adaptive training guidance on">
+                <span class="toggle-knob"></span>
+              </span>
+            </li>
+          </ul>
+        </section>
+
+        <section class="settings-section" aria-labelledby="reminders-title">
+          <h2 class="section-title" id="reminders-title">Reminders</h2>
+          <ul class="settings-group">
+            <li class="setting-row">
+              <span class="setting-label">Morning check-in</span>
+              <span class="setting-choice">
+                7:30 AM
+                <svg class="chevron" viewBox="0 0 16 16" aria-hidden="true">
+                  <path d="M6 3.5 10.5 8 6 12.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </span>
+            </li>
+            <li class="setting-row">
+              <span class="setting-label">Wind-down reminder</span>
+              <span class="setting-choice">
+                10:00 PM
+                <svg class="chevron" viewBox="0 0 16 16" aria-hidden="true">
+                  <path d="M6 3.5 10.5 8 6 12.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </span>
+            </li>
+            <li class="setting-row">
+              <span class="setting-label">Goal progress updates</span>
+              <span class="toggle on" role="switch" aria-checked="true" aria-label="Goal progress updates on">
+                <span class="toggle-knob"></span>
+              </span>
+            </li>
+            <li class="setting-row">
+              <span class="setting-label">Missed activity alerts</span>
+              <span class="toggle off" role="switch" aria-checked="false" aria-label="Missed activity alerts off">
+                <span class="toggle-knob"></span>
+              </span>
+            </li>
+          </ul>
+        </section>
+
+        <section class="settings-section" aria-labelledby="data-title">
+          <h2 class="section-title" id="data-title">Data and permissions</h2>
+          <ul class="settings-group">
+            <li class="setting-row">
+              <span class="setting-label">Health data sync</span>
+              <span class="toggle on" role="switch" aria-checked="true" aria-label="Health data sync on">
+                <span class="toggle-knob"></span>
+              </span>
+            </li>
+            <li class="setting-row">
+              <span class="setting-label">Anonymous research sharing</span>
+              <span class="toggle off" role="switch" aria-checked="false" aria-label="Anonymous research sharing off">
+                <span class="toggle-knob"></span>
+              </span>
+            </li>
+            <li class="setting-row">
+              <span class="setting-label">Export file format</span>
+              <span class="setting-choice">
+                CSV
+                <svg class="chevron" viewBox="0 0 16 16" aria-hidden="true">
+                  <path d="M6 3.5 10.5 8 6 12.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </span>
+            </li>
+          </ul>
+        </section>
+      </main>
+
+      <p class="foot">Calmstride 4.2.1 &middot; Last synced today at 6:12 AM</p>
+    </div>
+  </div>
+</body>
+</html>

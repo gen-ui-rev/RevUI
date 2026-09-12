@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Program Disbursement — Daymark</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #e7e7e4;
+      color: #171713;
+      font-family: 'Roboto', system-ui, sans-serif;
+    }
+
+    button {
+      color: inherit;
+      font: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #ffffff;
+    }
+
+    .topbar {
+      flex: 0 0 auto;
+      display: grid;
+      grid-template-columns: 44px 1fr 44px;
+      align-items: center;
+      padding: 17px 10px;
+      border-bottom: 1px solid #e7e7e1;
+    }
+
+    .topbar h1 {
+      margin: 0;
+      text-align: center;
+      font-size: 18px;
+      line-height: 24px;
+      font-weight: 700;
+    }
+
+    .icon-button {
+      width: 40px;
+      height: 24px;
+      padding: 0;
+      display: grid;
+      place-items: center;
+      border: 0;
+      background: transparent;
+    }
+
+    .icon-button svg {
+      width: 22px;
+      height: 22px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    main {
+      min-height: 0;
+      flex: 1 1 auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .amount-panel {
+      padding: 19px 20px 17px;
+      background: #f7cf34;
+      border-bottom: 1px solid #d6b01f;
+    }
+
+    .eyebrow {
+      margin: 0 0 8px;
+      color: #55490f;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 500;
+    }
+
+    .amount-line {
+      display: flex;
+      align-items: baseline;
+      min-width: 0;
+    }
+
+    .currency {
+      margin-right: 7px;
+      font-size: 30px;
+      line-height: 42px;
+      font-weight: 500;
+    }
+
+    .amount {
+      font-size: 44px;
+      line-height: 52px;
+      font-weight: 700;
+      letter-spacing: -1.2px;
+    }
+
+    .amount-meta {
+      margin: 8px 0 0;
+      color: #55490f;
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .participant-section {
+      flex: 0 0 auto;
+    }
+
+    .section-title {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      padding: 13px 20px 8px;
+    }
+
+    .section-title h2,
+    .details-title {
+      margin: 0;
+      font-size: 15px;
+      line-height: 20px;
+      font-weight: 700;
+    }
+
+    .section-title span {
+      color: #6b6b64;
+      font-size: 12px;
+      line-height: 18px;
+    }
+
+    .search-wrap {
+      padding: 2px 20px 8px;
+    }
+
+    .search {
+      height: 42px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 13px;
+      border: 1px solid #d9d9d2;
+      border-radius: 14px;
+      background: #f8f8f5;
+      color: #77776f;
+    }
+
+    .search svg {
+      width: 18px;
+      height: 18px;
+      flex: 0 0 auto;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+    }
+
+    .search span {
+      overflow: hidden;
+      font-size: 14px;
+      line-height: 20px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .participant-list {
+      margin: 0;
+      padding: 0 20px;
+      list-style: none;
+    }
+
+    .participant {
+      display: grid;
+      grid-template-columns: 42px minmax(0, 1fr) 24px;
+      gap: 12px;
+      align-items: center;
+      padding: 9px 0;
+      border-bottom: 1px solid #ecece7;
+    }
+
+    .participant:first-child {
+      border-top: 1px solid #ecece7;
+    }
+
+    .monogram {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      border-radius: 14px;
+      background: #e8e8e2;
+      color: #3d3d37;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 700;
+    }
+
+    .participant-copy {
+      min-width: 0;
+    }
+
+    .participant-name {
+      margin: 0;
+      overflow: hidden;
+      color: #1e1e1a;
+      font-size: 14px;
+      line-height: 19px;
+      font-weight: 500;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .participant-subline {
+      min-width: 0;
+      margin-top: 1px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .participant-detail {
+      min-width: 0;
+      overflow: hidden;
+      color: #77776f;
+      font-size: 12px;
+      line-height: 17px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .status {
+      flex: 0 0 auto;
+      padding: 1px 6px;
+      border-radius: 8px;
+      font-size: 10px;
+      line-height: 14px;
+      font-weight: 700;
+    }
+
+    .status.eligible {
+      background: #e4f3e6;
+      color: #24612f;
+    }
+
+    .status.review {
+      background: #fff1c7;
+      color: #715500;
+    }
+
+    .status.hold {
+      background: #f0e7e5;
+      color: #7b3d33;
+    }
+
+    .radio {
+      width: 20px;
+      height: 20px;
+      display: grid;
+      place-items: center;
+      border: 1.5px solid #b4b4ac;
+      border-radius: 50%;
+    }
+
+    .radio.selected {
+      border-color: #b58f00;
+      background: #f7cf34;
+    }
+
+    .radio svg {
+      width: 12px;
+      height: 12px;
+      fill: none;
+      stroke: #292308;
+      stroke-width: 2.2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .details {
+      margin-top: auto;
+      padding: 10px 20px 0;
+    }
+
+    .details-title {
+      margin-bottom: 5px;
+    }
+
+    .detail-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 5px 0;
+      border-bottom: 1px solid #ecece7;
+      font-size: 13px;
+      line-height: 18px;
+    }
+
+    .detail-label {
+      color: #6b6b64;
+    }
+
+    .detail-value {
+      min-width: 0;
+      overflow: hidden;
+      font-weight: 500;
+      text-align: right;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .action-area {
+      padding: 10px 20px;
+    }
+
+    .continue-button {
+      width: 100%;
+      height: 52px;
+      border: 0;
+      border-radius: 14px;
+      background: #171713;
+      color: #ffffff;
+      font-size: 15px;
+      line-height: 20px;
+      font-weight: 700;
+    }
+
+    .tabbar {
+      flex: 0 0 auto;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      padding: 14px 0;
+      border-top: 1px solid #deded8;
+      background: #ffffff;
+    }
+
+    .tab {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      color: #77776f;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 500;
+    }
+
+    .tab.active {
+      color: #171713;
+    }
+
+    .tab.active::before {
+      content: "";
+      position: absolute;
+      top: -14px;
+      width: 38px;
+      height: 3px;
+      border-radius: 0 0 3px 3px;
+      background: #f7cf34;
+    }
+
+    .tab svg {
+      width: 21px;
+      height: 21px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.7;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <button class="icon-button" type="button" aria-label="Go back">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M15 18l-6-6 6-6"></path>
+        </svg>
+      </button>
+      <h1>Program disbursement</h1>
+      <button class="icon-button" type="button" aria-label="Disbursement help">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="12" r="9"></circle>
+          <path d="M9.9 9a2.35 2.35 0 0 1 4.52.9c0 1.8-2.42 2.04-2.42 3.6"></path>
+          <path d="M12 17h.01"></path>
+        </svg>
+      </button>
+    </header>
+
+    <main>
+      <section class="amount-panel" aria-labelledby="amount-heading">
+        <p class="eyebrow" id="amount-heading">Participant payout</p>
+        <div class="amount-line">
+          <span class="currency">$</span>
+          <span class="amount">240.00</span>
+        </div>
+        <p class="amount-meta">Northstar Skills Fund available: $1,840.50</p>
+      </section>
+
+      <section class="participant-section" aria-labelledby="participant-heading">
+        <div class="section-title">
+          <h2 id="participant-heading">Choose a participant</h2>
+          <span>Current cohort</span>
+        </div>
+
+        <div class="search-wrap">
+          <div class="search" role="search">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="11" cy="11" r="6.5"></circle>
+              <path d="M16 16l4 4"></path>
+            </svg>
+            <span>Search participant name or email</span>
+          </div>
+        </div>
+
+        <ul class="participant-list">
+          <li class="participant">
+            <div class="monogram" aria-hidden="true">RC</div>
+            <div class="participant-copy">
+              <p class="participant-name">Riley Chen</p>
+              <div class="participant-subline">
+                <span class="participant-detail">Northstar cohort</span>
+                <span class="status eligible">Eligible</span>
+              </div>
+            </div>
+            <div class="radio selected" aria-label="Riley Chen selected">
+              <svg viewBox="0 0 16 16" aria-hidden="true">
+                <path d="M3.5 8.2l2.7 2.7 6.3-6.1"></path>
+              </svg>
+            </div>
+          </li>
+          <li class="participant">
+            <div class="monogram" aria-hidden="true">AM</div>
+            <div class="participant-copy">
+              <p class="participant-name">Avery Morgan</p>
+              <div class="participant-subline">
+                <span class="participant-detail">Northstar cohort</span>
+                <span class="status eligible">Eligible</span>
+              </div>
+            </div>
+            <div class="radio" aria-label="Select Avery Morgan"></div>
+          </li>
+          <li class="participant">
+            <div class="monogram" aria-hidden="true">JP</div>
+            <div class="participant-copy">
+              <p class="participant-name">Jordan Patel</p>
+              <div class="participant-subline">
+                <span class="participant-detail">Attendance pending</span>
+                <span class="status review">Review</span>
+              </div>
+            </div>
+            <div class="radio" aria-label="Select Jordan Patel"></div>
+          </li>
+          <li class="participant">
+            <div class="monogram" aria-hidden="true">ES</div>
+            <div class="participant-copy">
+              <p class="participant-name">Emerson Shaw</p>
+              <div class="participant-subline">
+                <span class="participant-detail">Northstar cohort</span>
+                <span class="status eligible">Eligible</span>
+              </div>
+            </div>
+            <div class="radio" aria-label="Select Emerson Shaw"></div>
+          </li>
+          <li class="participant">
+            <div class="monogram" aria-hidden="true">TB</div>
+            <div class="participant-copy">
+              <p class="participant-name">Taylor Brooks</p>
+              <div class="participant-subline">
+                <span class="participant-detail">Tax form missing</span>
+                <span class="status hold">On hold</span>
+              </div>
+            </div>
+            <div class="radio" aria-label="Select Taylor Brooks"></div>
+          </li>
+        </ul>
+      </section>
+
+      <section class="details" aria-labelledby="details-heading">
+        <h2 class="details-title" id="details-heading">Disbursement details</h2>
+        <div class="detail-row">
+          <span class="detail-label">Program</span>
+          <span class="detail-value">Northstar Skills Fund</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Release date</span>
+          <span class="detail-value">Today</span>
+        </div>
+      </section>
+
+      <div class="action-area">
+        <button class="continue-button" type="button">Review disbursement</button>
+      </div>
+    </main>
+
+    <nav class="tabbar" aria-label="Primary navigation">
+      <div class="tab">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M4 10.5L12 4l8 6.5"></path>
+          <path d="M6.5 9.5V20h11V9.5"></path>
+        </svg>
+        <span>Home</span>
+      </div>
+      <div class="tab">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <rect x="5" y="4" width="14" height="16" rx="2"></rect>
+          <path d="M8.5 9h7M8.5 13h7M8.5 17h4"></path>
+        </svg>
+        <span>Programs</span>
+      </div>
+      <div class="tab active" aria-current="page">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M5 8h11"></path>
+          <path d="M13 5l3 3-3 3"></path>
+          <path d="M19 16H8"></path>
+          <path d="M11 13l-3 3 3 3"></path>
+        </svg>
+        <span>Disburse</span>
+      </div>
+      <div class="tab">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <rect x="4" y="6" width="16" height="14" rx="2"></rect>
+          <path d="M8 4v4M16 4v4M4 10h16"></path>
+        </svg>
+        <span>Schedule</span>
+      </div>
+    </nav>
+  </div>
+</body>
+</html>

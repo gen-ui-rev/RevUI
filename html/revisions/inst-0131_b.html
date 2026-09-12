@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cedar Communities</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #e9edf2;
+      color: #172033;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #ffffff;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 16px 12px;
+      border-bottom: 1px solid #e4e8ee;
+    }
+
+    .topbar-title {
+      margin: 0;
+      font-size: 23px;
+      line-height: 28px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .icon-button {
+      width: 32px;
+      height: 32px;
+      padding: 5px;
+      display: grid;
+      place-items: center;
+      color: #344054;
+      background: transparent;
+      border: 0;
+      border-radius: 14px;
+    }
+
+    .icon-button svg,
+    .search-icon svg,
+    .nav-icon svg,
+    .sort-title-icon svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    main {
+      flex: 1;
+      min-height: 0;
+      padding: 10px 16px 0;
+    }
+
+    .search {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 9px 13px;
+      color: #687386;
+      background: #f5f7fa;
+      border: 1px solid #dfe4eb;
+      border-radius: 14px;
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .search-icon {
+      width: 18px;
+      height: 18px;
+      flex: 0 0 auto;
+    }
+
+    .sort-panel {
+      margin-top: 8px;
+      padding: 9px 10px 8px;
+      background: #f7f9fc;
+      border: 1px solid #dfe5ed;
+      border-radius: 15px;
+    }
+
+    .sort-panel-title {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      margin: 0 0 7px;
+      color: #28364b;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 700;
+    }
+
+    .sort-title-icon {
+      width: 17px;
+      height: 17px;
+      color: #1264d4;
+    }
+
+    .sort-options {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+    }
+
+    .sort-option {
+      position: relative;
+      min-width: 0;
+    }
+
+    .sort-option input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .sort-option span {
+      min-width: 0;
+      padding: 7px 5px;
+      display: block;
+      overflow: hidden;
+      color: #5f6c80;
+      background: #ffffff;
+      border: 1px solid #dce3ec;
+      border-radius: 10px;
+      font-size: 11px;
+      line-height: 16px;
+      font-weight: 700;
+      text-align: center;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .sort-option input:checked + span {
+      color: #ffffff;
+      background: #1264d4;
+      border-color: #1264d4;
+      box-shadow: 0 2px 5px rgba(18, 100, 212, 0.18);
+    }
+
+    .section-heading {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      padding: 9px 0 5px;
+    }
+
+    .section-heading h2 {
+      margin: 0;
+      font-size: 18px;
+      line-height: 22px;
+      font-weight: 700;
+      letter-spacing: -0.15px;
+    }
+
+    .section-heading span {
+      color: #1264d4;
+      font-size: 12px;
+      line-height: 18px;
+      font-weight: 700;
+    }
+
+    .group-list {
+      border-top: 1px solid #e4e8ee;
+    }
+
+    .group-row {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 3px 0;
+      border-bottom: 1px solid #e4e8ee;
+    }
+
+    .group-photo {
+      width: 52px;
+      height: 52px;
+      flex: 0 0 52px;
+      display: block;
+      object-fit: cover;
+      background: #dce3ea;
+      border-radius: 13px;
+    }
+
+    .group-info {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .group-name {
+      margin: 0;
+      overflow: hidden;
+      color: #182235;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 700;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .group-summary {
+      margin: 0;
+      overflow: hidden;
+      color: #697487;
+      font-size: 11px;
+      line-height: 16px;
+      font-weight: 400;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .activity {
+      color: #25704a;
+      font-weight: 700;
+    }
+
+    .join-button {
+      flex: 0 0 auto;
+      min-width: 50px;
+      padding: 6px 9px;
+      color: #1264d4;
+      background: #ffffff;
+      border: 1px solid #1264d4;
+      border-radius: 13px;
+      font-size: 12px;
+      line-height: 17px;
+      font-weight: 700;
+    }
+
+    .tabbar {
+      display: flex;
+      justify-content: space-around;
+      padding: 8px 8px 9px;
+      background: #ffffff;
+      border-top: 1px solid #dfe4eb;
+    }
+
+    .nav-item {
+      width: 78px;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      color: #737e90;
+      background: transparent;
+      border: 0;
+      font-size: 12px;
+      line-height: 15px;
+      font-weight: 600;
+    }
+
+    .nav-item.active {
+      color: #1264d4;
+    }
+
+    .nav-icon {
+      width: 22px;
+      height: 22px;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <h1 class="topbar-title">Communities</h1>
+      <div class="top-actions">
+        <button class="icon-button" type="button" aria-label="Create a community">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+        </button>
+        <button class="icon-button" type="button" aria-label="Community notifications">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M7.5 9.5a4.5 4.5 0 0 1 9 0c0 5 2 5.2 2 6.5h-13c0-1.3 2-1.5 2-6.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+            <path d="M10 19h4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <main>
+      <div class="search" role="search" aria-label="Search communities">
+        <span class="search-icon">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="10.8" cy="10.8" r="6.3" stroke="currentColor" stroke-width="1.8"/>
+            <path d="m15.5 15.5 4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+        </span>
+        <span>Search goals, topics, or groups</span>
+      </div>
+
+      <form class="sort-panel" aria-label="Choose the order of recommended groups">
+        <p class="sort-panel-title">
+          <span class="sort-title-icon">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M7 5v14m0 0-3-3m3 3 3-3M17 19V5m0 0-3 3m3-3 3 3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          Choose recommendation order
+        </p>
+        <div class="sort-options">
+          <label class="sort-option">
+            <input type="radio" name="order" checked>
+            <span>Best match</span>
+          </label>
+          <label class="sort-option">
+            <input type="radio" name="order">
+            <span>Most active</span>
+          </label>
+          <label class="sort-option">
+            <input type="radio" name="order">
+            <span>Largest</span>
+          </label>
+        </div>
+      </form>
+
+      <div class="section-heading">
+        <h2>Groups to join</h2>
+        <span>Best match</span>
+      </div>
+
+      <section class="group-list" aria-label="Recommended financial communities">
+        <article class="group-row">
+          <img class="group-photo" src="https://loremflickr.com/52/52/chart?lock=2550" width="52" height="52" alt="Market chart for the Index Fund Builders community">
+          <div class="group-info">
+            <h3 class="group-name">Index Fund Builders</h3>
+            <p class="group-summary">Long-term investing · <span class="activity">46 posts today</span></p>
+            <p class="group-summary">12,480 members</p>
+          </div>
+          <button class="join-button" type="button">Join</button>
+        </article>
+
+        <article class="group-row">
+          <img class="group-photo" src="https://loremflickr.com/52/52/city?lock=2551" width="52" height="52" alt="City skyline for the Debt-Free Together community">
+          <div class="group-info">
+            <h3 class="group-name">Debt-Free Together</h3>
+            <p class="group-summary">Payoff support · <span class="activity">31 posts today</span></p>
+            <p class="group-summary">8,216 members</p>
+          </div>
+          <button class="join-button" type="button">Join</button>
+        </article>
+
+        <article class="group-row">
+          <img class="group-photo" src="https://loremflickr.com/52/52/architecture?lock=2552" width="52" height="52" alt="Residential architecture for the First Home Fund community">
+          <div class="group-info">
+            <h3 class="group-name">First Home Fund</h3>
+            <p class="group-summary">Mortgages · <span class="activity">24 posts today</span></p>
+            <p class="group-summary">6,904 members</p>
+          </div>
+          <button class="join-button" type="button">Join</button>
+        </article>
+
+        <article class="group-row">
+          <img class="group-photo" src="https://loremflickr.com/52/52/office?lock=2553" width="52" height="52" alt="Shared workspace for the Freelance Money Club community">
+          <div class="group-info">
+            <h3 class="group-name">Freelance Money Club</h3>
+            <p class="group-summary">Taxes and income · <span class="activity">19 posts today</span></p>
+            <p class="group-summary">5,731 members</p>
+          </div>
+          <button class="join-button" type="button">Join</button>
+        </article>
+
+        <article class="group-row">
+          <img class="group-photo" src="https://loremflickr.com/52/52/chart?lock=2554" width="52" height="52" alt="Financial chart for the Market Learners community">
+          <div class="group-info">
+            <h3 class="group-name">Market Learners</h3>
+            <p class="group-summary">Investing basics · <span class="activity">38 posts today</span></p>
+            <p class="group-summary">9,105 members</p>
+          </div>
+          <button class="join-button" type="button">Join</button>
+        </article>
+
+        <article class="group-row">
+          <img class="group-photo" src="https://loremflickr.com/52/52/office?lock=2555" width="52" height="52" alt="Organized desk for the Budget Reset community">
+          <div class="group-info">
+            <h3 class="group-name">Budget Reset</h3>
+            <p class="group-summary">Monthly planning · <span class="activity">27 posts today</span></p>
+            <p class="group-summary">7,688 members</p>
+          </div>
+          <button class="join-button" type="button">Join</button>
+        </article>
+
+        <article class="group-row">
+          <img class="group-photo" src="https://loremflickr.com/52/52/city?lock=2556" width="52" height="52" alt="Urban neighborhood for the Smart Renters community">
+          <div class="group-info">
+            <h3 class="group-name">Smart Renters</h3>
+            <p class="group-summary">Housing costs · <span class="activity">15 posts today</span></p>
+            <p class="group-summary">4,392 members</p>
+          </div>
+          <button class="join-button" type="button">Join</button>
+        </article>
+
+        <article class="group-row">
+          <img class="group-photo" src="https://loremflickr.com/52/52/architecture?lock=2557" width="52" height="52" alt="Modern building for the Early Retirement Lab community">
+          <div class="group-info">
+            <h3 class="group-name">Early Retirement Lab</h3>
+            <p class="group-summary">Savings plans · <span class="activity">42 posts today</span></p>
+            <p class="group-summary">10,842 members</p>
+          </div>
+          <button class="join-button" type="button">Join</button>
+        </article>
+      </section>
+    </main>
+
+    <nav class="tabbar" aria-label="Primary navigation">
+      <button class="nav-item" type="button">
+        <span class="nav-icon">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="m4 10 8-6 8 6v9a1 1 0 0 1-1 1h-5v-6h-4v6H5a1 1 0 0 1-1-1v-9Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+          </svg>
+        </span>
+        <span>Home</span>
+      </button>
+
+      <button class="nav-item" type="button">
+        <span class="nav-icon">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M4 18V9m5 9V5m5 13v-6m5 6V3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+        </span>
+        <span>Invest</span>
+      </button>
+
+      <button class="nav-item active" type="button" aria-current="page">
+        <span class="nav-icon">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="8" cy="9" r="3" stroke="currentColor" stroke-width="1.7"/>
+            <circle cx="16.5" cy="8" r="2.5" stroke="currentColor" stroke-width="1.7"/>
+            <path d="M3.5 19c.3-3.1 2-5 4.5-5s4.2 1.9 4.5 5M13 14.5c.8-.8 1.8-1.2 3-1.2 2.4 0 4 1.7 4.3 4.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+          </svg>
+        </span>
+        <span>Groups</span>
+      </button>
+
+      <button class="nav-item" type="button">
+        <span class="nav-icon">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="12" cy="8" r="3.5" stroke="currentColor" stroke-width="1.7"/>
+            <path d="M5.5 20c.4-4.1 2.7-6.5 6.5-6.5s6.1 2.4 6.5 6.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+          </svg>
+        </span>
+        <span>Account</span>
+      </button>
+    </nav>
+  </div>
+</body>
+</html>

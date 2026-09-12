@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Saylo — Study reminder</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 40px 0;
+    margin: 0;
+    background: #d9d9de;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    color: #18181b;
+  }
+  .screen {
+    width: 390px;
+    height: 844px;
+    background: #f4f4f5;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* top bar */
+  .topbar {
+    background: #ffffff;
+    border-bottom: 1px solid #e4e4e7;
+    padding: 16px 16px 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .topbar .back { display: flex; color: #3f3f46; }
+  .topbar h1 {
+    margin: 0;
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: -0.2px;
+    flex: 1;
+  }
+  .save {
+    font-size: 15px;
+    font-weight: 600;
+    color: #27272a;
+  }
+
+  .content {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .card {
+    background: #ffffff;
+    border-radius: 6px;
+    box-shadow: 0 1px 2px rgba(24, 24, 27, 0.08);
+  }
+
+  /* hero */
+  .hero { padding: 18px 18px 16px; }
+  .hero-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .eyebrow {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: #71717a;
+  }
+  .time {
+    font-size: 44px;
+    font-weight: 600;
+    letter-spacing: -1.5px;
+    line-height: 1.05;
+    margin-top: 6px;
+  }
+  .time span {
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: -0.2px;
+    margin-left: 4px;
+  }
+  .hero-note {
+    margin-top: 10px;
+    font-size: 13px;
+    color: #71717a;
+  }
+  .switch {
+    width: 46px;
+    height: 28px;
+    border-radius: 14px;
+    background: #3f3f46;
+    position: relative;
+    flex: none;
+  }
+  .switch i {
+    position: absolute;
+    top: 3px;
+    left: 21px;
+    width: 22px;
+    height: 22px;
+    border-radius: 11px;
+    background: #ffffff;
+  }
+  .switch.off { background: #d4d4d8; }
+  .switch.off i { left: 3px; }
+
+  /* section head */
+  .sec-head {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: #71717a;
+    margin: 0 0 8px 2px;
+  }
+
+  /* repeat */
+  .repeat { padding: 16px 16px 18px; }
+  .days {
+    display: flex;
+    justify-content: space-between;
+  }
+  .day {
+    width: 40px;
+    height: 40px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 600;
+    background: #f4f4f5;
+    color: #a1a1aa;
+    border: 1px solid #e4e4e7;
+  }
+  .day.on {
+    background: #3f3f46;
+    border-color: #3f3f46;
+    color: #ffffff;
+  }
+  .repeat-note {
+    margin-top: 14px;
+    font-size: 13px;
+    color: #71717a;
+  }
+  .repeat-note b { color: #27272a; font-weight: 600; }
+
+  /* option rows */
+  .row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px 16px;
+    border-top: 1px solid #f4f4f5;
+  }
+  .row:first-child { border-top: 0; }
+  .row .label { font-size: 15px; font-weight: 400; }
+  .row .sub { font-size: 13px; color: #a1a1aa; margin-top: 2px; }
+  .row .value {
+    font-size: 15px;
+    color: #52525b;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+  }
+
+  /* other reminders */
+  .item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border-top: 1px solid #f4f4f5;
+  }
+  .item:first-child { border-top: 0; }
+  .mono {
+    width: 40px;
+    height: 40px;
+    border-radius: 6px;
+    background: #e4e4e7;
+    color: #52525b;
+    font-size: 14px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+  }
+  .item .body { flex: 1; min-width: 0; }
+  .item .t {
+    font-size: 15px;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .item .s { font-size: 13px; color: #a1a1aa; margin-top: 2px; }
+  .item .when { font-size: 13px; color: #52525b; white-space: nowrap; }
+
+  /* tab bar */
+  .tabbar {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    background: #ffffff;
+    border-top: 1px solid #e4e4e7;
+    display: flex;
+    padding: 10px 8px 14px;
+  }
+  .tab {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    color: #a1a1aa;
+  }
+  .tab.active { color: #27272a; font-weight: 600; }
+</style>
+</head>
+<body>
+  <div class="screen">
+
+    <div class="topbar">
+      <span class="back" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      </span>
+      <h1>Study reminder</h1>
+      <span class="save">Save</span>
+    </div>
+
+    <div class="content">
+
+      <div class="card hero">
+        <div class="hero-top">
+          <div>
+            <div class="eyebrow">Daily practice</div>
+            <div class="time">7:30<span>PM</span></div>
+          </div>
+          <div class="switch" aria-hidden="true"><i></i></div>
+        </div>
+        <div class="hero-note">Next alert today at 7:30 PM · Spanish B1 track</div>
+      </div>
+
+      <div>
+        <div class="sec-head">Repeat</div>
+        <div class="card repeat">
+          <div class="days">
+            <div class="day">S</div>
+            <div class="day on">M</div>
+            <div class="day on">T</div>
+            <div class="day on">W</div>
+            <div class="day on">T</div>
+            <div class="day on">F</div>
+            <div class="day on">S</div>
+          </div>
+          <div class="repeat-note">Repeats <b>6 days a week</b>, Monday through Saturday.</div>
+        </div>
+      </div>
+
+      <div>
+        <div class="sec-head">Alert</div>
+        <div class="card">
+          <div class="row">
+            <div>
+              <div class="label">Sound</div>
+              <div class="sub">Plays at full volume</div>
+            </div>
+            <div class="value">Soft chime
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#a1a1aa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+            </div>
+          </div>
+          <div class="row">
+            <div>
+              <div class="label">Remind again</div>
+              <div class="sub">If the lesson is not started</div>
+            </div>
+            <div class="value">After 15 min
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#a1a1aa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+            </div>
+          </div>
+          <div class="row">
+            <div>
+              <div class="label">Skip if goal met</div>
+              <div class="sub">No alert once 20 minutes are logged</div>
+            </div>
+            <div class="switch off" aria-hidden="true"><i></i></div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="sec-head">Other scheduled reminders</div>
+        <div class="card">
+          <div class="item">
+            <div class="mono">RM</div>
+            <div class="body">
+              <div class="t">Conversation lab with Rosa Medina</div>
+              <div class="s">Every other Thursday</div>
+            </div>
+            <div class="when">6:00 PM</div>
+          </div>
+          <div class="item">
+            <div class="mono">VC</div>
+            <div class="body">
+              <div class="t">Vocabulary review</div>
+              <div class="s">Sundays</div>
+            </div>
+            <div class="when">10:00 AM</div>
+          </div>
+          <div class="item">
+            <div class="mono">UT</div>
+            <div class="body">
+              <div class="t">Unit 4 placement test</div>
+              <div class="s">March 14, one time</div>
+            </div>
+            <div class="when">8:15 PM</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="tabbar">
+      <div class="tab">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h6a2 2 0 012 2v12a2 2 0 00-2-2H4z"/><path d="M20 5h-6a2 2 0 00-2 2v12a2 2 0 012-2h6z"/></svg>
+        Learn
+      </div>
+      <div class="tab">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 01-8 8H4l2.2-2.6A8 8 0 1121 12z"/></svg>
+        Practice
+      </div>
+      <div class="tab active">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></svg>
+        Reminders
+      </div>
+      <div class="tab">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M5 20c0-3.3 3.1-6 7-6s7 2.7 7 6"/></svg>
+        Profile
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

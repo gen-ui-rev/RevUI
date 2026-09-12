@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Payout Batch — Daymark</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #e7e7e4;
+      color: #171713;
+      font-family: 'Roboto', system-ui, sans-serif;
+    }
+
+    button {
+      color: inherit;
+      font: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #ffffff;
+    }
+
+    .topbar {
+      flex: 0 0 auto;
+      display: grid;
+      grid-template-columns: 44px 1fr 44px;
+      align-items: center;
+      padding: 17px 10px;
+      border-bottom: 1px solid #e7e7e1;
+    }
+
+    .topbar h1 {
+      margin: 0;
+      text-align: center;
+      font-size: 18px;
+      line-height: 24px;
+      font-weight: 700;
+    }
+
+    .icon-button {
+      width: 40px;
+      height: 24px;
+      padding: 0;
+      display: grid;
+      place-items: center;
+      border: 0;
+      background: transparent;
+    }
+
+    .icon-button svg {
+      width: 22px;
+      height: 22px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    main {
+      min-height: 0;
+      flex: 1 1 auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .program-summary {
+      padding: 16px 20px;
+      background: #f7cf34;
+      border-bottom: 1px solid #d6b01f;
+    }
+
+    .program-kicker {
+      margin: 0 0 3px;
+      color: #62520e;
+      font-size: 12px;
+      line-height: 17px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .45px;
+    }
+
+    .program-name {
+      margin: 0;
+      font-size: 20px;
+      line-height: 26px;
+      font-weight: 700;
+    }
+
+    .summary-grid {
+      margin-top: 13px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .summary-cell {
+      padding: 8px 10px;
+      border: 1px solid rgba(72, 59, 5, .18);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, .38);
+    }
+
+    .summary-label {
+      display: block;
+      margin-bottom: 1px;
+      color: #62520e;
+      font-size: 11px;
+      line-height: 15px;
+      font-weight: 500;
+    }
+
+    .summary-value {
+      display: block;
+      font-size: 18px;
+      line-height: 23px;
+      font-weight: 700;
+    }
+
+    .roster-heading {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      padding: 13px 20px 8px;
+    }
+
+    .roster-heading h2,
+    .batch-title {
+      margin: 0;
+      font-size: 15px;
+      line-height: 20px;
+      font-weight: 700;
+    }
+
+    .roster-heading span {
+      color: #6b6b64;
+      font-size: 12px;
+      line-height: 18px;
+    }
+
+    .filters {
+      display: flex;
+      gap: 7px;
+      padding: 0 20px 9px;
+    }
+
+    .filter {
+      padding: 5px 10px;
+      border: 1px solid #d9d9d2;
+      border-radius: 12px;
+      color: #66665f;
+      background: #ffffff;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 500;
+    }
+
+    .filter.active {
+      border-color: #171713;
+      background: #171713;
+      color: #ffffff;
+    }
+
+    .participant-list {
+      margin: 0;
+      padding: 0 20px;
+      list-style: none;
+    }
+
+    .participant {
+      display: grid;
+      grid-template-columns: 24px 38px minmax(0, 1fr);
+      gap: 10px;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid #ecece7;
+    }
+
+    .participant:first-child {
+      border-top: 1px solid #ecece7;
+    }
+
+    .check {
+      width: 20px;
+      height: 20px;
+      display: grid;
+      place-items: center;
+      border: 1.5px solid #b4b4ac;
+      border-radius: 6px;
+      background: #ffffff;
+    }
+
+    .check.selected {
+      border-color: #171713;
+      background: #171713;
+    }
+
+    .check svg {
+      width: 12px;
+      height: 12px;
+      fill: none;
+      stroke: #ffffff;
+      stroke-width: 2.2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .check.disabled {
+      border-color: #d6d6cf;
+      background: #f2f2ee;
+    }
+
+    .monogram {
+      width: 36px;
+      height: 36px;
+      display: grid;
+      place-items: center;
+      border-radius: 12px;
+      background: #e8e8e2;
+      color: #3d3d37;
+      font-size: 12px;
+      line-height: 17px;
+      font-weight: 700;
+    }
+
+    .participant-copy {
+      min-width: 0;
+    }
+
+    .participant-name {
+      margin: 0;
+      overflow: hidden;
+      font-size: 14px;
+      line-height: 19px;
+      font-weight: 500;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .participant-subline {
+      min-width: 0;
+      margin-top: 1px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .participant-detail {
+      min-width: 0;
+      overflow: hidden;
+      color: #77776f;
+      font-size: 12px;
+      line-height: 17px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .status {
+      flex: 0 0 auto;
+      padding: 1px 6px;
+      border-radius: 8px;
+      font-size: 10px;
+      line-height: 14px;
+      font-weight: 700;
+    }
+
+    .status.eligible {
+      background: #e4f3e6;
+      color: #24612f;
+    }
+
+    .status.review {
+      background: #fff1c7;
+      color: #715500;
+    }
+
+    .status.ineligible {
+      background: #f0e7e5;
+      color: #7b3d33;
+    }
+
+    .batch-details {
+      margin-top: auto;
+      padding: 10px 20px 0;
+    }
+
+    .batch-title {
+      margin-bottom: 5px;
+    }
+
+    .batch-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 5px 0;
+      border-bottom: 1px solid #ecece7;
+      font-size: 13px;
+      line-height: 18px;
+    }
+
+    .batch-label {
+      color: #6b6b64;
+    }
+
+    .batch-value {
+      min-width: 0;
+      overflow: hidden;
+      font-weight: 500;
+      text-align: right;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .action-area {
+      padding: 10px 20px;
+    }
+
+    .continue-button {
+      width: 100%;
+      height: 52px;
+      border: 0;
+      border-radius: 14px;
+      background: #171713;
+      color: #ffffff;
+      font-size: 15px;
+      line-height: 20px;
+      font-weight: 700;
+    }
+
+    .tabbar {
+      flex: 0 0 auto;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      padding: 14px 0;
+      border-top: 1px solid #deded8;
+      background: #ffffff;
+    }
+
+    .tab {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      color: #77776f;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 500;
+    }
+
+    .tab.active {
+      color: #171713;
+    }
+
+    .tab.active::before {
+      content: "";
+      position: absolute;
+      top: -14px;
+      width: 38px;
+      height: 3px;
+      border-radius: 0 0 3px 3px;
+      background: #f7cf34;
+    }
+
+    .tab svg {
+      width: 21px;
+      height: 21px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.7;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <button class="icon-button" type="button" aria-label="Go back">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M15 18l-6-6 6-6"></path>
+        </svg>
+      </button>
+      <h1>Create payout batch</h1>
+      <button class="icon-button" type="button" aria-label="Payout batch help">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="12" r="9"></circle>
+          <path d="M9.9 9a2.35 2.35 0 0 1 4.52.9c0 1.8-2.42 2.04-2.42 3.6"></path>
+          <path d="M12 17h.01"></path>
+        </svg>
+      </button>
+    </header>
+
+    <main>
+      <section class="program-summary" aria-labelledby="program-heading">
+        <p class="program-kicker">Active program</p>
+        <h2 class="program-name" id="program-heading">Community Skills Grant</h2>
+        <div class="summary-grid">
+          <div class="summary-cell">
+            <span class="summary-label">Payout per person</span>
+            <span class="summary-value">$240.00</span>
+          </div>
+          <div class="summary-cell">
+            <span class="summary-label">Selected total</span>
+            <span class="summary-value">$720.00</span>
+          </div>
+        </div>
+      </section>
+
+      <section aria-labelledby="roster-heading">
+        <div class="roster-heading">
+          <h2 id="roster-heading">Select participants</h2>
+          <span>3 of 5 selected</span>
+        </div>
+
+        <div class="filters" aria-label="Participant filters">
+          <span class="filter active">All participants</span>
+          <span class="filter">Eligible only</span>
+        </div>
+
+        <ul class="participant-list">
+          <li class="participant">
+            <div class="check selected" aria-label="Riley Chen selected">
+              <svg viewBox="0 0 16 16" aria-hidden="true">
+                <path d="M3.5 8.2l2.7 2.7 6.3-6.1"></path>
+              </svg>
+            </div>
+            <div class="monogram" aria-hidden="true">RC</div>
+            <div class="participant-copy">
+              <p class="participant-name">Riley Chen</p>
+              <div class="participant-subline">
+                <span class="participant-detail">Enrollment verified</span>
+                <span class="status eligible">Eligible</span>
+              </div>
+            </div>
+          </li>
+          <li class="participant">
+            <div class="check selected" aria-label="Avery Morgan selected">
+              <svg viewBox="0 0 16 16" aria-hidden="true">
+                <path d="M3.5 8.2l2.7 2.7 6.3-6.1"></path>
+              </svg>
+            </div>
+            <div class="monogram" aria-hidden="true">AM</div>
+            <div class="participant-copy">
+              <p class="participant-name">Avery Morgan</p>
+              <div class="participant-subline">
+                <span class="participant-detail">Enrollment verified</span>
+                <span class="status eligible">Eligible</span>
+              </div>
+            </div>
+          </li>
+          <li class="participant">
+            <div class="check disabled" aria-label="Jordan Patel unavailable"></div>
+            <div class="monogram" aria-hidden="true">JP</div>
+            <div class="participant-copy">
+              <p class="participant-name">Jordan Patel</p>
+              <div class="participant-subline">
+                <span class="participant-detail">Attendance check needed</span>
+                <span class="status review">Review</span>
+              </div>
+            </div>
+          </li>
+          <li class="participant">
+            <div class="check selected" aria-label="Emerson Shaw selected">
+              <svg viewBox="0 0 16 16" aria-hidden="true">
+                <path d="M3.5 8.2l2.7 2.7 6.3-6.1"></path>
+              </svg>
+            </div>
+            <div class="monogram" aria-hidden="true">ES</div>
+            <div class="participant-copy">
+              <p class="participant-name">Emerson Shaw</p>
+              <div class="participant-subline">
+                <span class="participant-detail">Enrollment verified</span>
+                <span class="status eligible">Eligible</span>
+              </div>
+            </div>
+          </li>
+          <li class="participant">
+            <div class="check disabled" aria-label="Taylor Brooks unavailable"></div>
+            <div class="monogram" aria-hidden="true">TB</div>
+            <div class="participant-copy">
+              <p class="participant-name">Taylor Brooks</p>
+              <div class="participant-subline">
+                <span class="participant-detail">Participation minimum unmet</span>
+                <span class="status ineligible">Ineligible</span>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </section>
+
+      <section class="batch-details" aria-labelledby="batch-heading">
+        <h2 class="batch-title" id="batch-heading">Batch details</h2>
+        <div class="batch-row">
+          <span class="batch-label">Funding source</span>
+          <span class="batch-value">Community Skills Grant</span>
+        </div>
+        <div class="batch-row">
+          <span class="batch-label">Release date</span>
+          <span class="batch-value">May 16</span>
+        </div>
+      </section>
+
+      <div class="action-area">
+        <button class="continue-button" type="button">Review 3 payouts</button>
+      </div>
+    </main>
+
+    <nav class="tabbar" aria-label="Primary navigation">
+      <div class="tab">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M4 10.5L12 4l8 6.5"></path>
+          <path d="M6.5 9.5V20h11V9.5"></path>
+        </svg>
+        <span>Home</span>
+      </div>
+      <div class="tab">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <rect x="5" y="4" width="14" height="16" rx="2"></rect>
+          <path d="M8.5 9h7M8.5 13h7M8.5 17h4"></path>
+        </svg>
+        <span>Programs</span>
+      </div>
+      <div class="tab active" aria-current="page">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M5 8h11"></path>
+          <path d="M13 5l3 3-3 3"></path>
+          <path d="M19 16H8"></path>
+          <path d="M11 13l-3 3 3 3"></path>
+        </svg>
+        <span>Payouts</span>
+      </div>
+      <div class="tab">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <rect x="4" y="6" width="16" height="14" rx="2"></rect>
+          <path d="M8 4v4M16 4v4M4 10h16"></path>
+        </svg>
+        <span>Schedule</span>
+      </div>
+    </nav>
+  </div>
+</body>
+</html>

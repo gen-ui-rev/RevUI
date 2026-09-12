@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Driftline Profile Setup</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 32px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #dcd8d3;
+      color: #282624;
+      font-family: 'Nunito Sans', system-ui, sans-serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      width: 768px;
+      height: 1024px;
+      display: flex;
+      background: #f3f2f0;
+      border: 1px solid #ccc7c1;
+    }
+
+    /* ---------- side rail ---------- */
+    .rail {
+      width: 264px;
+      flex: 0 0 264px;
+      display: flex;
+      flex-direction: column;
+      padding: 24px 20px 20px;
+      background: #ffffff;
+      border-right: 1px solid #e2dfdb;
+    }
+
+    .brand {
+      margin: 0;
+      font-size: 20px;
+      line-height: 26px;
+      font-weight: 700;
+      letter-spacing: 0.1px;
+    }
+
+    .brand-sub {
+      margin: 3px 0 0;
+      color: #7e6856;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 700;
+    }
+
+    .rail-divider {
+      height: 1px;
+      margin: 18px 0;
+      background: #ece9e6;
+    }
+
+    .vsteps {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .vstep {
+      position: relative;
+      display: grid;
+      grid-template-columns: 32px 1fr;
+      gap: 12px;
+      padding-bottom: 22px;
+    }
+
+    .vstep:last-child {
+      padding-bottom: 0;
+    }
+
+    .vstep::before {
+      content: "";
+      position: absolute;
+      left: 15px;
+      top: 36px;
+      bottom: 4px;
+      width: 2px;
+      background: #e6e1dc;
+    }
+
+    .vstep:last-child::before {
+      display: none;
+    }
+
+    .vstep.done::before {
+      background: #b8a294;
+    }
+
+    .vbullet {
+      width: 32px;
+      height: 32px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      border: 2px solid #d9d3cc;
+      background: #ffffff;
+      color: #857e77;
+      font-size: 13px;
+      line-height: 17px;
+      font-weight: 700;
+    }
+
+    .vbullet svg {
+      width: 15px;
+      height: 15px;
+      display: block;
+    }
+
+    .vstep.done .vbullet {
+      border-color: #8f7966;
+      background: #efe8e1;
+      color: #7e6856;
+    }
+
+    .vstep.current .vbullet {
+      border-color: #8f7966;
+      background: #8f7966;
+      color: #ffffff;
+    }
+
+    .vstep-title {
+      font-size: 15px;
+      line-height: 20px;
+      font-weight: 700;
+      color: #6a645e;
+    }
+
+    .vstep.current .vstep-title {
+      color: #282624;
+    }
+
+    .vstep-state {
+      margin-top: 2px;
+      color: #8b847d;
+      font-size: 12px;
+      line-height: 17px;
+      font-weight: 600;
+    }
+
+    .vstep.current .vstep-state {
+      color: #7e6856;
+    }
+
+    .substeps {
+      margin: 8px 0 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .substeps li {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 3px 0;
+      color: #5d5751;
+      font-size: 12px;
+      line-height: 17px;
+      font-weight: 600;
+    }
+
+    .tick {
+      width: 14px;
+      height: 14px;
+      flex: 0 0 14px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: #8f7966;
+      color: #ffffff;
+    }
+
+    .tick.open {
+      background: #ffffff;
+      border: 1px solid #c6bfb8;
+      color: transparent;
+    }
+
+    .tick svg {
+      width: 9px;
+      height: 9px;
+      display: block;
+    }
+
+    .rail-nav {
+      margin-top: auto;
+      padding-top: 18px;
+      border-top: 1px solid #ece9e6;
+    }
+
+    .rail-nav-label {
+      margin: 0 0 8px 2px;
+      color: #8b847d;
+      font-size: 11px;
+      line-height: 16px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .nav-item {
+      display: block;
+      padding: 11px 12px;
+      border-radius: 8px;
+      color: #5d5751;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 600;
+    }
+
+    .nav-item.active {
+      background: #f1eae4;
+      color: #7e6856;
+      font-weight: 700;
+    }
+
+    /* ---------- main content ---------- */
+    .content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 26px 28px 22px;
+    }
+
+    .content-top {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 16px;
+      align-items: start;
+    }
+
+    .content-top h1 {
+      margin: 0;
+      font-size: 27px;
+      line-height: 33px;
+      font-weight: 700;
+      letter-spacing: -0.2px;
+    }
+
+    .content-top p {
+      margin: 5px 0 0;
+      color: #68635e;
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .stage-chip {
+      padding: 7px 13px;
+      border-radius: 999px;
+      background: #efe8e1;
+      color: #7e6856;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .card {
+      background: #ffffff;
+      border: 1px solid #e4e0dc;
+      border-radius: 8px;
+      box-shadow: 0 3px 12px rgba(56, 49, 43, 0.07);
+    }
+
+    .profile-card {
+      margin-top: 18px;
+      padding: 14px 16px;
+      display: grid;
+      grid-template-columns: 60px 1fr auto;
+      gap: 14px;
+      align-items: center;
+    }
+
+    .monogram {
+      width: 60px;
+      height: 60px;
+      display: grid;
+      place-items: center;
+      border-radius: 8px;
+      background: #9a8674;
+      color: #ffffff;
+      font-size: 20px;
+      line-height: 24px;
+      font-weight: 700;
+    }
+
+    .field-label {
+      display: block;
+      margin-bottom: 2px;
+      color: #77716b;
+      font-size: 12px;
+      line-height: 17px;
+      font-weight: 600;
+    }
+
+    .field-value {
+      font-size: 17px;
+      line-height: 23px;
+      font-weight: 700;
+    }
+
+    .field-note {
+      margin-top: 1px;
+      color: #77716b;
+      font-size: 12px;
+      line-height: 17px;
+    }
+
+    .edit-button {
+      padding: 10px 18px;
+      border: 1px solid #c8c1ba;
+      border-radius: 8px;
+      background: #ffffff;
+      color: #554e48;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 700;
+    }
+
+    .section-heading {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin: 20px 2px 10px;
+      gap: 14px;
+    }
+
+    .section-heading h2 {
+      margin: 0;
+      font-size: 17px;
+      line-height: 23px;
+      font-weight: 700;
+    }
+
+    .section-heading span {
+      color: #77716b;
+      font-size: 13px;
+      line-height: 18px;
+      white-space: nowrap;
+    }
+
+    .interest-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    .interest {
+      position: relative;
+      padding: 12px;
+      background: #ffffff;
+      border: 1px solid #e4e0dc;
+      border-radius: 8px;
+      box-shadow: 0 3px 12px rgba(56, 49, 43, 0.07);
+    }
+
+    .interest.selected {
+      border-color: #8f7966;
+      background: #fdfaf7;
+      box-shadow: 0 3px 12px rgba(143, 121, 102, 0.16);
+    }
+
+    .interest img {
+      width: 192px;
+      height: 108px;
+      display: block;
+      object-fit: cover;
+      border-radius: 6px;
+      background: #d4d0cb;
+    }
+
+    .interest-name {
+      margin-top: 9px;
+      font-size: 15px;
+      line-height: 21px;
+      font-weight: 700;
+    }
+
+    .interest-detail {
+      margin-top: 2px;
+      color: #77716b;
+      font-size: 12px;
+      line-height: 17px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .badge {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      width: 26px;
+      height: 26px;
+      display: grid;
+      place-items: center;
+      border-radius: 8px;
+      border: 1px solid #cfc8c1;
+      background: rgba(255, 255, 255, 0.94);
+      color: transparent;
+    }
+
+    .badge.on {
+      border-color: #8f7966;
+      background: #8f7966;
+      color: #ffffff;
+    }
+
+    .badge svg {
+      width: 15px;
+      height: 15px;
+      display: block;
+    }
+
+    .settings-card {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .setting-cell {
+      padding: 14px 16px;
+    }
+
+    .setting-cell + .setting-cell {
+      border-left: 1px solid #ece9e6;
+    }
+
+    .setting-label {
+      font-size: 15px;
+      line-height: 20px;
+      font-weight: 700;
+    }
+
+    .setting-caption {
+      margin-top: 2px;
+      color: #77716b;
+      font-size: 12px;
+      line-height: 17px;
+    }
+
+    .setting-value {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 9px;
+      color: #625a53;
+      font-size: 14px;
+      line-height: 19px;
+      font-weight: 700;
+    }
+
+    .setting-value svg {
+      width: 16px;
+      height: 16px;
+      display: block;
+    }
+
+    .footer-bar {
+      margin-top: auto;
+      padding-top: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 18px;
+      border-top: 1px solid #e1ddd9;
+    }
+
+    .footer-note {
+      color: #6d6660;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 600;
+    }
+
+    .footer-note strong {
+      display: block;
+      color: #282624;
+      font-size: 14px;
+      line-height: 19px;
+    }
+
+    .footer-actions {
+      display: flex;
+      gap: 12px;
+    }
+
+    .ghost-button {
+      padding: 13px 20px;
+      border: 1px solid #c8c1ba;
+      border-radius: 8px;
+      background: #ffffff;
+      color: #554e48;
+      font-size: 15px;
+      line-height: 21px;
+      font-weight: 700;
+    }
+
+    .continue-button {
+      padding: 13px 24px;
+      border: 1px solid #8f7966;
+      border-radius: 8px;
+      background: #8f7966;
+      color: #ffffff;
+      font-size: 15px;
+      line-height: 21px;
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <aside class="rail">
+      <p class="brand">Driftline</p>
+      <p class="brand-sub">Account setup &middot; Step 2 of 3</p>
+
+      <div class="rail-divider"></div>
+
+      <ol class="vsteps" aria-label="Setup sequence">
+        <li class="vstep done">
+          <span class="vbullet" aria-hidden="true">
+            <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M3 8.3L6.3 11.5L13 4.8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          <div>
+            <div class="vstep-title">Account basics</div>
+            <div class="vstep-state">Completed</div>
+          </div>
+        </li>
+        <li class="vstep current" aria-current="step">
+          <span class="vbullet">2</span>
+          <div>
+            <div class="vstep-title">Personalize listening</div>
+            <div class="vstep-state">You are here</div>
+            <ul class="substeps">
+              <li>
+                <span class="tick" aria-hidden="true">
+                  <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                    <path d="M3 8.3L6.3 11.5L13 4.8" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </span>
+                Profile identity
+              </li>
+              <li>
+                <span class="tick" aria-hidden="true">
+                  <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                    <path d="M3 8.3L6.3 11.5L13 4.8" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </span>
+                Interests chosen
+              </li>
+              <li>
+                <span class="tick open" aria-hidden="true">
+                  <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                    <path d="M3 8.3L6.3 11.5L13 4.8" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </span>
+                Review defaults
+              </li>
+            </ul>
+          </div>
+        </li>
+        <li class="vstep">
+          <span class="vbullet">3</span>
+          <div>
+            <div class="vstep-title">Playback setup</div>
+            <div class="vstep-state">Up next</div>
+          </div>
+        </li>
+      </ol>
+
+      <nav class="rail-nav" aria-label="Primary navigation">
+        <p class="rail-nav-label">Driftline</p>
+        <span class="nav-item">Listen</span>
+        <span class="nav-item">Browse</span>
+        <span class="nav-item">Library</span>
+        <span class="nav-item active" aria-current="page">Account</span>
+      </nav>
+    </aside>
+
+    <main class="content">
+      <div class="content-top">
+        <div>
+          <h1>Personalize your listening</h1>
+          <p>Set your profile and choose what should shape your recommendations.</p>
+        </div>
+        <span class="stage-chip">Stage 2 of 3</span>
+      </div>
+
+      <section class="card profile-card" aria-label="Profile identity">
+        <div class="monogram" aria-label="Avery Rowen initials">AR</div>
+        <div>
+          <span class="field-label">Display name</span>
+          <div class="field-value">Avery Rowen</div>
+          <div class="field-note">Photo is optional</div>
+        </div>
+        <button class="edit-button" type="button">Edit</button>
+      </section>
+
+      <div class="section-heading">
+        <h2 id="interests-title">Listening interests</h2>
+        <span>3 selected &middot; minimum 3</span>
+      </div>
+
+      <section class="interest-grid" aria-labelledby="interests-title">
+        <div class="interest selected">
+          <img src="https://loremflickr.com/192/108/concert?lock=12430" width="192" height="108" alt="Crowd watching a live concert">
+          <div class="badge on" aria-label="Selected">
+            <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M3 8.3L6.3 11.5L13 4.8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="interest-name">Live recordings</div>
+          <div class="interest-detail">Concerts and festival sets</div>
+        </div>
+
+        <div class="interest selected">
+          <img src="https://loremflickr.com/192/108/vinyl?lock=12431" width="192" height="108" alt="Vinyl record on a turntable">
+          <div class="badge on" aria-label="Selected">
+            <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M3 8.3L6.3 11.5L13 4.8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="interest-name">Vinyl deep cuts</div>
+          <div class="interest-detail">Albums, B-sides, and reissues</div>
+        </div>
+
+        <div class="interest selected">
+          <img src="https://loremflickr.com/192/108/studio?lock=12432" width="192" height="108" alt="Recording equipment inside a music studio">
+          <div class="badge on" aria-label="Selected">
+            <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M3 8.3L6.3 11.5L13 4.8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="interest-name">Studio sessions</div>
+          <div class="interest-detail">Interviews and recording stories</div>
+        </div>
+
+        <div class="interest">
+          <img src="https://loremflickr.com/192/108/guitar?lock=12433" width="192" height="108" alt="Acoustic guitar ready to be played">
+          <div class="badge" aria-label="Not selected">
+            <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M3 8.3L6.3 11.5L13 4.8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="interest-name">Acoustic sets</div>
+          <div class="interest-detail">Unplugged, stripped-back tracks</div>
+        </div>
+      </section>
+
+      <div class="section-heading">
+        <h2 id="defaults-title">Listening defaults</h2>
+        <span>Change anytime</span>
+      </div>
+
+      <section class="card settings-card" aria-labelledby="defaults-title">
+        <div class="setting-cell">
+          <div class="setting-label">Audio language</div>
+          <div class="setting-caption">Used for spoken content</div>
+          <div class="setting-value">
+            English (US)
+            <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M6 3.5L10.5 8L6 12.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+        </div>
+        <div class="setting-cell">
+          <div class="setting-label">Content filter</div>
+          <div class="setting-caption">Controls explicit tracks</div>
+          <div class="setting-value">
+            Allow
+            <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M6 3.5L10.5 8L6 12.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+        </div>
+      </section>
+
+      <div class="footer-bar">
+        <div class="footer-note">
+          <strong>Stage 2 of 3 &middot; Personalize</strong>
+          One stage left after this one.
+        </div>
+        <div class="footer-actions">
+          <button class="ghost-button" type="button">Back</button>
+          <button class="continue-button" type="button">Continue to playback setup</button>
+        </div>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Workout Plan</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #e6e9e8;
+      color: #162321;
+      font-family: 'Source Sans 3', system-ui, sans-serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    svg {
+      display: block;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #fbfcfb;
+      border: 1px solid #d6dcda;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 11px 16px;
+      border-bottom: 1px solid #dce2e0;
+      background: #fbfcfb;
+    }
+
+    .topbar-title {
+      flex: 1;
+      margin: 0;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 20px;
+      line-height: 1.2;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    .icon-button {
+      width: 36px;
+      height: 36px;
+      padding: 7px;
+      border: 0;
+      background: transparent;
+      color: #263633;
+      display: grid;
+      place-items: center;
+    }
+
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+    }
+
+    .main {
+      flex: 1;
+      min-height: 0;
+      padding: 0 18px;
+    }
+
+    .intro {
+      padding: 13px 0 10px;
+    }
+
+    .eyebrow {
+      margin: 0 0 3px;
+      color: #087e72;
+      font-size: 12px;
+      line-height: 1.2;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+    }
+
+    .workout-title {
+      margin: 0;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 28px;
+      line-height: 1.08;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+    }
+
+    .workout-summary {
+      margin: 5px 0 0;
+      color: #5f6e6b;
+      font-size: 13px;
+      line-height: 1.3;
+    }
+
+    .facts-row {
+      display: grid;
+      grid-template-columns: 68px 72px minmax(0, 1fr);
+      border: 1px solid #cfe0dc;
+      border-radius: 12px;
+      background: #f1f8f6;
+    }
+
+    .fact {
+      min-width: 0;
+      padding: 8px 9px;
+    }
+
+    .fact + .fact {
+      border-left: 1px solid #cfe0dc;
+    }
+
+    .fact-label {
+      display: block;
+      color: #70807d;
+      font-size: 10px;
+      line-height: 1.15;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+
+    .fact-value {
+      display: block;
+      margin-top: 2px;
+      color: #20312e;
+      font-size: 12px;
+      line-height: 1.2;
+      font-weight: 600;
+    }
+
+    .start-button {
+      width: 100%;
+      margin-top: 10px;
+      padding: 10px 15px;
+      border: 0;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: #087e72;
+      color: #ffffff;
+      font-size: 15px;
+      line-height: 1.3;
+      font-weight: 600;
+    }
+
+    .schedule-heading {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      padding: 11px 0 6px;
+    }
+
+    .section-title {
+      margin: 0;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 20px;
+      line-height: 1.2;
+      font-weight: 600;
+    }
+
+    .schedule-meta {
+      color: #687774;
+      font-size: 12px;
+      line-height: 1.2;
+    }
+
+    .phase {
+      display: grid;
+      grid-template-columns: 68px minmax(0, 1fr);
+      border-top: 1px solid #dce2e0;
+    }
+
+    .phase-label {
+      padding: 9px 8px 8px 0;
+    }
+
+    .phase-number {
+      display: block;
+      color: #087e72;
+      font-size: 11px;
+      line-height: 1.15;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.45px;
+    }
+
+    .phase-name {
+      display: block;
+      margin-top: 2px;
+      color: #263633;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 15px;
+      line-height: 1.15;
+      font-weight: 600;
+    }
+
+    .phase-time {
+      display: block;
+      margin-top: 3px;
+      color: #7a8784;
+      font-size: 11px;
+      line-height: 1.15;
+    }
+
+    .phase-items {
+      border-left: 1px solid #dce2e0;
+      padding-left: 12px;
+    }
+
+    .movement {
+      position: relative;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 9px;
+      align-items: center;
+      padding: 7px 0 7px 12px;
+    }
+
+    .movement + .movement {
+      border-top: 1px solid #e5eae8;
+    }
+
+    .movement::before {
+      content: "";
+      position: absolute;
+      left: -16px;
+      top: 50%;
+      width: 7px;
+      height: 7px;
+      margin-top: -4px;
+      border: 2px solid #087e72;
+      border-radius: 50%;
+      background: #fbfcfb;
+    }
+
+    .movement-copy {
+      min-width: 0;
+    }
+
+    .movement-name {
+      margin: 0;
+      color: #20312e;
+      font-size: 14px;
+      line-height: 1.2;
+      font-weight: 600;
+    }
+
+    .movement-cue {
+      margin: 1px 0 0;
+      color: #71807d;
+      font-size: 11px;
+      line-height: 1.2;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .movement-dose {
+      color: #43534f;
+      font-size: 12px;
+      line-height: 1.2;
+      font-weight: 600;
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .finish-note {
+      margin: 8px 0 0;
+      padding: 7px 10px;
+      border-radius: 10px;
+      background: #f0f3f2;
+      color: #596865;
+      font-size: 12px;
+      line-height: 1.25;
+    }
+
+    .tabbar {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      padding: 8px 8px 9px;
+      border-top: 1px solid #d4dcda;
+      background: #fbfcfb;
+    }
+
+    .tab {
+      border: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      background: transparent;
+      color: #74817f;
+      font-size: 12px;
+      line-height: 1.2;
+    }
+
+    .tab svg {
+      width: 23px;
+      height: 23px;
+    }
+
+    .tab.active {
+      color: #087e72;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <button class="icon-button" aria-label="Go back">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M15 18l-6-6 6-6"></path>
+        </svg>
+      </button>
+
+      <h1 class="topbar-title">Workout plan</h1>
+
+      <div class="topbar-actions">
+        <button class="icon-button" aria-label="Save workout">
+          <svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M7 4.5h10a1 1 0 0 1 1 1v15l-6-3.8-6 3.8v-15a1 1 0 0 1 1-1z"></path>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <main class="main">
+      <section class="intro" aria-labelledby="workout-title-b">
+        <p class="eyebrow">Lower-body stability</p>
+        <h2 class="workout-title" id="workout-title-b">Steady Strength</h2>
+        <p class="workout-summary">Move through each phase from top to bottom. Rest only where noted.</p>
+      </section>
+
+      <div class="facts-row" aria-label="Workout facts">
+        <div class="fact">
+          <span class="fact-label">Time</span>
+          <span class="fact-value">24 min</span>
+        </div>
+        <div class="fact">
+          <span class="fact-label">Level</span>
+          <span class="fact-value">Beginner</span>
+        </div>
+        <div class="fact">
+          <span class="fact-label">Equipment</span>
+          <span class="fact-value">Chair, mini band and mat</span>
+        </div>
+      </div>
+
+      <button class="start-button" aria-label="Begin guided workout">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true">
+          <path d="M8 5.7v12.6c0 .8.9 1.3 1.6.9l9.3-6.3c.6-.4.6-1.3 0-1.7L9.6 4.8C8.9 4.4 8 4.9 8 5.7z"></path>
+        </svg>
+        Begin guided workout
+      </button>
+
+      <section aria-labelledby="schedule-heading-b">
+        <div class="schedule-heading">
+          <h2 class="section-title" id="schedule-heading-b">Your sequence</h2>
+          <span class="schedule-meta">6 movements</span>
+        </div>
+
+        <div class="phase">
+          <div class="phase-label">
+            <span class="phase-number">Phase 1</span>
+            <span class="phase-name">Prepare</span>
+            <span class="phase-time">4 min</span>
+          </div>
+          <div class="phase-items">
+            <article class="movement">
+              <div class="movement-copy">
+                <h3 class="movement-name">Chair-supported march</h3>
+                <p class="movement-cue">Stand tall and alternate knees</p>
+              </div>
+              <span class="movement-dose">60 sec</span>
+            </article>
+            <article class="movement">
+              <div class="movement-copy">
+                <h3 class="movement-name">Hip hinge reach</h3>
+                <p class="movement-cue">Push hips back with a long spine</p>
+              </div>
+              <span class="movement-dose">10 reps</span>
+            </article>
+          </div>
+        </div>
+
+        <div class="phase">
+          <div class="phase-label">
+            <span class="phase-number">Phase 2</span>
+            <span class="phase-name">Build</span>
+            <span class="phase-time">16 min</span>
+          </div>
+          <div class="phase-items">
+            <article class="movement">
+              <div class="movement-copy">
+                <h3 class="movement-name">Banded squat</h3>
+                <p class="movement-cue">Press knees gently into the band</p>
+              </div>
+              <span class="movement-dose">12 reps</span>
+            </article>
+            <article class="movement">
+              <div class="movement-copy">
+                <h3 class="movement-name">Supported split squat</h3>
+                <p class="movement-cue">Use the chair for balance</p>
+              </div>
+              <span class="movement-dose">8 / side</span>
+            </article>
+            <article class="movement">
+              <div class="movement-copy">
+                <h3 class="movement-name">Glute bridge</h3>
+                <p class="movement-cue">Pause for one count at the top</p>
+              </div>
+              <span class="movement-dose">12 reps</span>
+            </article>
+          </div>
+        </div>
+
+        <div class="phase">
+          <div class="phase-label">
+            <span class="phase-number">Phase 3</span>
+            <span class="phase-name">Reset</span>
+            <span class="phase-time">4 min</span>
+          </div>
+          <div class="phase-items">
+            <article class="movement">
+              <div class="movement-copy">
+                <h3 class="movement-name">Figure-four stretch</h3>
+                <p class="movement-cue">Breathe slowly and switch sides</p>
+              </div>
+              <span class="movement-dose">45 sec</span>
+            </article>
+          </div>
+        </div>
+
+        <p class="finish-note">Complete the Build phase twice, resting 45 seconds between rounds.</p>
+      </section>
+    </main>
+
+    <nav class="tabbar" aria-label="Primary navigation">
+      <button class="tab">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M3.5 10.5L12 4l8.5 6.5"></path>
+          <path d="M5.5 9.5v10h13v-10"></path>
+          <path d="M9.5 19.5v-6h5v6"></path>
+        </svg>
+        <span>Home</span>
+      </button>
+
+      <button class="tab">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="10.5" cy="10.5" r="6.5"></circle>
+          <path d="M15.5 15.5L21 21"></path>
+        </svg>
+        <span>Explore</span>
+      </button>
+
+      <button class="tab active" aria-current="page">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M4 9v6"></path>
+          <path d="M8 6v12"></path>
+          <path d="M16 6v12"></path>
+          <path d="M20 9v6"></path>
+          <path d="M8 12h8"></path>
+        </svg>
+        <span>Train</span>
+      </button>
+
+      <button class="tab">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="8" r="3.5"></circle>
+          <path d="M5.5 20c.8-4 3-6 6.5-6s5.7 2 6.5 6"></path>
+        </svg>
+        <span>Profile</span>
+      </button>
+    </nav>
+  </div>
+</body>
+</html>

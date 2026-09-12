@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Renal Meal Guide</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #e8edeb;
+      color: #17211d;
+      font-family: 'Roboto', system-ui, sans-serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      position: relative;
+      width: 390px;
+      height: 844px;
+      background: #ffffff;
+      border: 1px solid #d5ddda;
+    }
+
+    .topbar {
+      display: grid;
+      grid-template-columns: 40px 1fr 40px;
+      align-items: center;
+      padding: 11px 12px;
+      border-bottom: 1px solid #dce4e0;
+      background: #ffffff;
+    }
+
+    .topbar-title {
+      margin: 0;
+      text-align: center;
+      font-size: 16px;
+      line-height: 24px;
+      font-weight: 500;
+    }
+
+    .icon-button {
+      width: 36px;
+      padding: 6px;
+      display: grid;
+      place-items: center;
+      border: 0;
+      background: transparent;
+      color: #24322c;
+    }
+
+    .icon-button:last-child {
+      justify-self: end;
+    }
+
+    .icon-button svg {
+      width: 22px;
+      height: 22px;
+      display: block;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    main {
+      padding-bottom: 61px;
+    }
+
+    .guide-hero {
+      padding: 13px 16px 12px;
+      background: #f5f9f7;
+      border-bottom: 1px solid #dce4e0;
+    }
+
+    .eyebrow {
+      margin: 0 0 3px;
+      color: #176b56;
+      font-size: 11px;
+      line-height: 16px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 27px;
+      line-height: 33px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .summary {
+      margin: 3px 0 0;
+      color: #59665f;
+      font-size: 13px;
+      line-height: 18px;
+    }
+
+    .meal-fit {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 8px;
+      padding: 6px 8px;
+      border: 1px solid #cfe1da;
+      border-radius: 6px;
+      background: #ffffff;
+      color: #45544d;
+      font-size: 12px;
+      line-height: 17px;
+    }
+
+    .fit-icon {
+      width: 20px;
+      height: 20px;
+      display: grid;
+      flex: 0 0 auto;
+      place-items: center;
+      border-radius: 50%;
+      background: #dff0e9;
+      color: #176b56;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .nutrition-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      margin-top: 9px;
+    }
+
+    .nutrient {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 9px;
+      border: 1px solid #d8e2de;
+      border-radius: 6px;
+      background: #ffffff;
+    }
+
+    .nutrient-name {
+      display: block;
+      color: #5e6b65;
+      font-size: 11px;
+      line-height: 15px;
+    }
+
+    .nutrient-value {
+      display: block;
+      font-size: 14px;
+      line-height: 18px;
+      font-weight: 700;
+    }
+
+    .nutrient-level {
+      padding: 2px 5px;
+      border-radius: 4px;
+      background: #e5f2ed;
+      color: #176b56;
+      font-size: 10px;
+      line-height: 14px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .guide-tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      padding: 0 16px;
+      border-bottom: 1px solid #dce4e0;
+    }
+
+    .guide-tab {
+      position: relative;
+      padding: 9px 6px 8px;
+      border: 0;
+      background: transparent;
+      color: #66716c;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 500;
+    }
+
+    .guide-tab.active {
+      color: #176b56;
+    }
+
+    .guide-tab.active::after {
+      content: "";
+      position: absolute;
+      right: 28px;
+      bottom: -1px;
+      left: 28px;
+      height: 2px;
+      background: #176b56;
+    }
+
+    .guide-content {
+      padding: 11px 16px 0;
+    }
+
+    .section-heading {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: 17px;
+      line-height: 23px;
+      font-weight: 700;
+    }
+
+    .section-label {
+      color: #66736d;
+      font-size: 11px;
+      line-height: 16px;
+    }
+
+    .plate-card {
+      margin-top: 7px;
+      padding: 10px;
+      border: 1px solid #d8e2de;
+      border-radius: 8px;
+      background: #fbfdfc;
+    }
+
+    .plate-copy {
+      margin: 0 0 8px;
+      color: #59665f;
+      font-size: 12px;
+      line-height: 17px;
+    }
+
+    .plate-parts {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr 1fr;
+      gap: 6px;
+    }
+
+    .plate-part {
+      padding: 8px 6px;
+      border-radius: 6px;
+      text-align: center;
+    }
+
+    .plate-part.vegetables {
+      background: #e1f0e8;
+      color: #185e4c;
+    }
+
+    .plate-part.grain {
+      background: #f1eadb;
+      color: #69562d;
+    }
+
+    .plate-part.protein {
+      background: #e7ebf3;
+      color: #43516d;
+    }
+
+    .part-share {
+      display: block;
+      font-size: 16px;
+      line-height: 20px;
+      font-weight: 700;
+    }
+
+    .part-name {
+      display: block;
+      margin-top: 2px;
+      font-size: 11px;
+      line-height: 14px;
+      font-weight: 500;
+    }
+
+    .choices {
+      margin-top: 11px;
+    }
+
+    .choice-list {
+      margin: 6px 0 0;
+      padding: 0;
+      list-style: none;
+      border-top: 1px solid #dce4e0;
+    }
+
+    .choice {
+      display: grid;
+      grid-template-columns: 32px minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 0;
+      border-bottom: 1px solid #e5ebe8;
+    }
+
+    .choice-icon {
+      width: 30px;
+      height: 30px;
+      display: grid;
+      place-items: center;
+      border-radius: 6px;
+      background: #edf4f1;
+      color: #176b56;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .choice-title {
+      display: block;
+      color: #26332d;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 700;
+    }
+
+    .choice-copy {
+      display: block;
+      color: #64706a;
+      font-size: 11px;
+      line-height: 15px;
+    }
+
+    .choice-amount {
+      color: #45534c;
+      font-size: 12px;
+      line-height: 17px;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .smart-note {
+      margin-top: 10px;
+      padding: 8px 9px;
+      border-left: 3px solid #d2a84a;
+      border-radius: 0 6px 6px 0;
+      background: #faf6eb;
+      color: #5d543f;
+      font-size: 11px;
+      line-height: 15px;
+    }
+
+    .smart-note strong {
+      display: block;
+      margin-bottom: 1px;
+      color: #4f4734;
+      font-size: 12px;
+    }
+
+    .tabbar {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      padding: 7px 5px 8px;
+      border-top: 1px solid #d5ddda;
+      background: #ffffff;
+    }
+
+    .nav-item {
+      display: grid;
+      justify-items: center;
+      gap: 2px;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: #6a756f;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .nav-item.active {
+      color: #176b56;
+      font-weight: 500;
+    }
+
+    .nav-item svg {
+      width: 21px;
+      height: 21px;
+      display: block;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.7;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <button class="icon-button" type="button" aria-label="Go back">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M15 18l-6-6 6-6"></path>
+        </svg>
+      </button>
+      <p class="topbar-title">Renal Meal Guide</p>
+      <button class="icon-button" type="button" aria-label="Save guide">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M6.5 4.5h11v15l-5.5-3.4-5.5 3.4z"></path>
+        </svg>
+      </button>
+    </header>
+
+    <main>
+      <section class="guide-hero" aria-labelledby="guide-title">
+        <p class="eyebrow">Lunch Guide</p>
+        <h1 id="guide-title">Build a Kidney-Smart Bowl</h1>
+        <p class="summary">Use measured portions and fresh flavor to keep key renal nutrients in view.</p>
+
+        <div class="meal-fit">
+          <span class="fit-icon" aria-hidden="true">✓</span>
+          <span>Designed as one meal within an individualized renal care plan.</span>
+        </div>
+
+        <div class="nutrition-grid" aria-label="Estimated renal nutrition for one bowl">
+          <div class="nutrient">
+            <div>
+              <span class="nutrient-name">Sodium</span>
+              <span class="nutrient-value">290 mg</span>
+            </div>
+            <span class="nutrient-level">Lower</span>
+          </div>
+          <div class="nutrient">
+            <div>
+              <span class="nutrient-name">Potassium</span>
+              <span class="nutrient-value">470 mg</span>
+            </div>
+            <span class="nutrient-level">Moderate</span>
+          </div>
+          <div class="nutrient">
+            <div>
+              <span class="nutrient-name">Phosphorus</span>
+              <span class="nutrient-value">225 mg</span>
+            </div>
+            <span class="nutrient-level">Moderate</span>
+          </div>
+          <div class="nutrient">
+            <div>
+              <span class="nutrient-name">Protein</span>
+              <span class="nutrient-value">16 g</span>
+            </div>
+            <span class="nutrient-level">Portioned</span>
+          </div>
+        </div>
+      </section>
+
+      <div class="guide-tabs" role="tablist" aria-label="Guide sections">
+        <button class="guide-tab active" type="button" role="tab" aria-selected="true">Build the bowl</button>
+        <button class="guide-tab" type="button" role="tab" aria-selected="false">Renal tips</button>
+      </div>
+
+      <div class="guide-content">
+        <section aria-labelledby="plate-title">
+          <div class="section-heading">
+            <h2 id="plate-title">Your bowl at a glance</h2>
+            <span class="section-label">1 meal</span>
+          </div>
+
+          <div class="plate-card">
+            <p class="plate-copy">Fill most of the bowl with lower-potassium vegetables, then add measured grain and protein portions.</p>
+            <div class="plate-parts" aria-label="Suggested bowl proportions">
+              <div class="plate-part vegetables">
+                <span class="part-share">½ bowl</span>
+                <span class="part-name">Vegetables</span>
+              </div>
+              <div class="plate-part grain">
+                <span class="part-share">¼ bowl</span>
+                <span class="part-name">White rice</span>
+              </div>
+              <div class="plate-part protein">
+                <span class="part-share">¼ bowl</span>
+                <span class="part-name">Chicken</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="choices" aria-labelledby="choices-title">
+          <div class="section-heading">
+            <h2 id="choices-title">Suggested portions</h2>
+            <span class="section-label">No added salt</span>
+          </div>
+
+          <ul class="choice-list">
+            <li class="choice">
+              <span class="choice-icon" aria-hidden="true">V</span>
+              <span>
+                <span class="choice-title">Cabbage and bell pepper</span>
+                <span class="choice-copy">Sauté with garlic and olive oil.</span>
+              </span>
+              <span class="choice-amount">1½ cups</span>
+            </li>
+            <li class="choice">
+              <span class="choice-icon" aria-hidden="true">G</span>
+              <span>
+                <span class="choice-title">Cooked white rice</span>
+                <span class="choice-copy">A lower-phosphorus grain choice.</span>
+              </span>
+              <span class="choice-amount">½ cup</span>
+            </li>
+            <li class="choice">
+              <span class="choice-icon" aria-hidden="true">P</span>
+              <span>
+                <span class="choice-title">Fresh cooked chicken</span>
+                <span class="choice-copy">Choose unseasoned, not enhanced.</span>
+              </span>
+              <span class="choice-amount">2½ oz</span>
+            </li>
+          </ul>
+        </section>
+
+        <aside class="smart-note" aria-label="Kidney-smart reminder">
+          <strong>Check ingredient labels</strong>
+          Avoid products with “phos” additives, potassium chloride, or injected sodium solutions. Your personal limits may differ.
+        </aside>
+      </div>
+    </main>
+
+    <nav class="tabbar" aria-label="Primary navigation">
+      <button class="nav-item" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M4 11.5L12 5l8 6.5"></path>
+          <path d="M6.5 10.5v8h11v-8"></path>
+        </svg>
+        <span>Today</span>
+      </button>
+      <button class="nav-item active" type="button" aria-current="page">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M6 4.5h12v15H6z"></path>
+          <path d="M9 8h6M9 11.5h6M9 15h4"></path>
+        </svg>
+        <span>Meal Guide</span>
+      </button>
+      <button class="nav-item" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M5 19V9M12 19V5M19 19v-7"></path>
+        </svg>
+        <span>Trends</span>
+      </button>
+      <button class="nav-item" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="8" r="3.5"></circle>
+          <path d="M5.5 19c.8-3.4 3-5 6.5-5s5.7 1.6 6.5 5"></path>
+        </svg>
+        <span>Profile</span>
+      </button>
+    </nav>
+  </div>
+</body>
+</html>

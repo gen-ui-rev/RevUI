@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Verba Daily — Listening Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --screen:#050505;
+    --panel:#101010;
+    --raised:#202020;
+    --accent:#65f2b1;
+    --ink:#ffffff;
+    --muted:#e0e0e0;
+    --line:#707070;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    padding:40px 0;
+    background:#d4d3d0;
+    font-family:'Manrope', system-ui, sans-serif;
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+  }
+  button{font:inherit;}
+  .screen{
+    width:390px;
+    height:560px;
+    padding:16px 0;
+    background:var(--screen);
+  }
+  .card{
+    width:358px;
+    margin:0 auto;
+    padding:16px;
+    background:var(--panel);
+    border:1px solid #888;
+    border-radius:2px;
+  }
+  .eyebrow{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin:0 0 10px;
+    color:var(--accent);
+    font-size:12px;
+    font-weight:700;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+  }
+  .eyebrow::before{
+    width:9px;
+    height:9px;
+    border-radius:50%;
+    background:var(--accent);
+    content:"";
+  }
+  .head{
+    display:flex;
+    align-items:flex-start;
+    gap:15px;
+  }
+  .art{
+    display:block;
+    width:132px;
+    height:132px;
+    flex:0 0 132px;
+    object-fit:cover;
+    border:1px solid #fff;
+    border-radius:2px;
+    background:#333;
+  }
+  .meta{
+    min-width:0;
+    padding-top:3px;
+  }
+  .unit{
+    margin:0 0 7px;
+    color:var(--accent);
+    font-size:12px;
+    font-weight:700;
+  }
+  h1{
+    margin:0;
+    font-size:22px;
+    line-height:1.2;
+    font-weight:700;
+  }
+  .meta-run{
+    display:flex;
+    align-items:stretch;
+    margin-top:12px;
+    border:1px solid var(--line);
+    background:#000;
+  }
+  .run-item{
+    min-width:0;
+    flex:1;
+    padding:7px 10px;
+  }
+  .run-item + .run-item{
+    border-left:1px solid var(--line);
+  }
+  .run-label{
+    display:block;
+    margin-bottom:2px;
+    color:var(--accent);
+    font-size:9px;
+    font-weight:700;
+    letter-spacing:.09em;
+    text-transform:uppercase;
+  }
+  .run-value{
+    display:block;
+    overflow:hidden;
+    color:#fff;
+    font-size:12px;
+    font-weight:700;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+  .progress{margin-top:13px;}
+  .times{
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:7px;
+    color:#fff;
+    font-size:12px;
+    font-weight:700;
+  }
+  .track{
+    height:8px;
+    position:relative;
+    border:1px solid #aaa;
+    background:#282828;
+  }
+  .fill{
+    position:absolute;
+    top:-1px;
+    bottom:-1px;
+    left:-1px;
+    width:66%;
+    background:var(--accent);
+  }
+  .knob{
+    position:absolute;
+    top:-5px;
+    left:66%;
+    width:16px;
+    height:16px;
+    margin-left:-8px;
+    border:3px solid #000;
+    border-radius:50%;
+    background:#fff;
+  }
+  .controls{
+    display:grid;
+    grid-template-columns:44px 1fr 44px;
+    align-items:center;
+    gap:10px;
+    margin-top:13px;
+  }
+  .transport{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:13px;
+  }
+  .ghost{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:0;
+    border:1px solid transparent;
+    background:none;
+    color:#fff;
+    font-size:12px;
+    font-weight:700;
+  }
+  .side{
+    width:44px;
+    height:38px;
+    border-color:#fff;
+    border-radius:2px;
+    background:var(--raised);
+  }
+  .speed{
+    border-color:var(--accent);
+    color:var(--accent);
+  }
+  .play{
+    width:50px;
+    height:50px;
+    border:2px solid #fff;
+    border-radius:50%;
+    background:#fff;
+    color:#000;
+  }
+  .up{
+    width:358px;
+    margin:12px auto 0;
+  }
+  .up h2{
+    margin:0 0 7px;
+    color:var(--accent);
+    font-size:12px;
+    font-weight:700;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+  }
+  .rows{
+    border-top:1px solid #888;
+    border-bottom:1px solid #888;
+    background:var(--panel);
+  }
+  .row{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:7px 10px;
+    border-bottom:1px solid var(--line);
+  }
+  .row:last-child{border-bottom:none;}
+  .thumb{
+    display:block;
+    width:44px;
+    height:44px;
+    flex:0 0 44px;
+    object-fit:cover;
+    border:1px solid #fff;
+    border-radius:2px;
+    background:#333;
+  }
+  .rtext{
+    min-width:0;
+    flex:1;
+  }
+  .rtitle{
+    margin:0 0 2px;
+    overflow:hidden;
+    color:#fff;
+    font-size:13px;
+    font-weight:700;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+  .rsub{
+    margin:0;
+    color:var(--muted);
+    font-size:11px;
+    font-weight:500;
+  }
+  .dur{
+    flex:0 0 auto;
+    padding:3px 5px;
+    border:1px solid var(--line);
+    color:#fff;
+    font-size:11px;
+    font-weight:700;
+  }
+</style>
+</head>
+<body>
+  <div class="screen">
+    <div class="card">
+      <p class="eyebrow">Now playing</p>
+
+      <div class="head">
+        <img class="art" src="https://loremflickr.com/132/132/library?lock=9640" width="132" height="132" alt="Library reading room used as the lesson artwork">
+        <div class="meta">
+          <p class="unit">Unit 7 · Track 3 of 5</p>
+          <h1>Ordering at the Market</h1>
+        </div>
+      </div>
+
+      <div class="meta-run" aria-label="Course and narrator">
+        <div class="run-item">
+          <span class="run-label">Course</span>
+          <span class="run-value">Spanish B1</span>
+        </div>
+        <div class="run-item">
+          <span class="run-label">Narrator</span>
+          <span class="run-value">Rosa Calderón</span>
+        </div>
+      </div>
+
+      <div class="progress">
+        <div class="times">
+          <span>12:04 elapsed</span>
+          <span>6:11 left</span>
+        </div>
+        <div class="track">
+          <div class="fill"></div>
+          <div class="knob"></div>
+        </div>
+      </div>
+
+      <div class="controls">
+        <button class="ghost side" type="button" aria-label="Show transcript">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <path d="M4 6h16M4 11h16M4 16h10"></path>
+          </svg>
+        </button>
+
+        <div class="transport">
+          <button class="ghost" type="button" aria-label="Back 15 seconds">
+            <svg width="27" height="27" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 5v5h5"></path>
+              <path d="M4.6 10a7.6 7.6 0 1 1 1.4 6.6"></path>
+              <text x="12" y="15.5" font-family="Manrope, sans-serif" font-size="7" font-weight="700" fill="currentColor" stroke="none" text-anchor="middle">15</text>
+            </svg>
+          </button>
+          <button class="ghost play" type="button" aria-label="Pause">
+            <svg width="21" height="21" viewBox="0 0 24 24" fill="currentColor">
+              <rect x="7" y="5" width="3.6" height="14" rx="1"></rect>
+              <rect x="13.4" y="5" width="3.6" height="14" rx="1"></rect>
+            </svg>
+          </button>
+          <button class="ghost" type="button" aria-label="Forward 15 seconds">
+            <svg width="27" height="27" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 5v5h-5"></path>
+              <path d="M19.4 10a7.6 7.6 0 1 0-1.4 6.6"></path>
+              <text x="12" y="15.5" font-family="Manrope, sans-serif" font-size="7" font-weight="700" fill="currentColor" stroke="none" text-anchor="middle">15</text>
+            </svg>
+          </button>
+        </div>
+
+        <button class="ghost side speed" type="button" aria-label="Playback speed">1.25x</button>
+      </div>
+    </div>
+
+    <div class="up">
+      <h2>Up next</h2>
+      <div class="rows">
+        <div class="row">
+          <img class="thumb" src="https://loremflickr.com/44/44/books?lock=9641" width="44" height="44" alt="Stack of workbooks for the vocabulary drill track">
+          <div class="rtext">
+            <p class="rtitle">Vocabulary Drill: Weights</p>
+            <p class="rsub">Track 4 · Repeat after speaker</p>
+          </div>
+          <span class="dur">9:42</span>
+        </div>
+        <div class="row">
+          <img class="thumb" src="https://loremflickr.com/44/44/study?lock=9642" width="44" height="44" alt="Desk with notes for the closing review track">
+          <div class="rtext">
+            <p class="rtitle">Review and Shadowing</p>
+            <p class="rsub">Track 5 · Ends Unit 7</p>
+          </div>
+          <span class="dur">14:20</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

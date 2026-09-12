@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Loomcart Assistant</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --green:#17804a;
+    --green-dark:#12673b;
+    --ink:#1a1d1f;
+    --muted:#6b7280;
+    --line:#e5e7eb;
+    --ground:#f2f3f5;
+    --shadow:0 1px 3px rgba(16,24,40,.10);
+  }
+  *{box-sizing:border-box;}
+  body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    margin:0;
+    padding:24px 0;
+    background:#d7d9dd;
+    font-family:'Nunito Sans', system-ui, sans-serif;
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+  }
+  .screen{
+    width:1024px;
+    height:768px;
+    background:var(--ground);
+    display:flex;
+    position:relative;
+    border-radius:6px;
+    box-shadow:0 14px 44px rgba(16,24,40,.20);
+    overflow:hidden;
+  }
+
+  /* left rail */
+  .rail{
+    width:236px;
+    flex:none;
+    background:#fff;
+    border-right:1px solid var(--line);
+    display:flex;
+    flex-direction:column;
+    padding:18px 14px 16px;
+  }
+  .brand{
+    display:flex;align-items:center;gap:10px;
+    padding:0 6px 16px;
+  }
+  .logo{
+    width:30px;height:30px;border-radius:6px;
+    background:var(--green);color:#fff;
+    font-size:15px;font-weight:700;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .brand span{font-size:16px;font-weight:700;letter-spacing:.01em;}
+  .navlabel{
+    font-size:11px;font-weight:700;letter-spacing:.08em;
+    text-transform:uppercase;color:#9aa1a9;
+    padding:0 6px 8px;
+  }
+  .nav{display:flex;flex-direction:column;gap:2px;}
+  .nav-item{
+    display:flex;align-items:center;gap:10px;
+    padding:9px 10px;
+    border-radius:4px;
+    font-size:14px;
+    line-height:18px;
+    color:#4b5158;
+  }
+  .nav-item svg{flex:none;color:#8b9199;}
+  .nav-item.active{
+    background:#e8f3ec;color:var(--green-dark);font-weight:700;
+  }
+  .nav-item.active svg{color:var(--green);}
+  .count{
+    margin-left:auto;
+    font-size:11px;font-weight:700;
+    background:var(--ground);
+    color:var(--muted);
+    border-radius:999px;
+    padding:1px 7px;
+    line-height:16px;
+  }
+  .railfoot{margin-top:auto;padding-top:14px;border-top:1px solid var(--line);}
+  .acct{display:flex;align-items:center;gap:10px;padding:4px 6px;}
+  .av{
+    width:32px;height:32px;border-radius:50%;
+    background:#dcdfe4;color:#4b5158;
+    font-size:12px;font-weight:700;
+    display:flex;align-items:center;justify-content:center;
+    flex:none;
+  }
+  .an{font-size:13px;font-weight:700;line-height:17px;}
+  .ae{font-size:11px;color:var(--muted);line-height:15px;}
+
+  /* main column */
+  .main{flex:1;min-width:0;display:flex;flex-direction:column;}
+  .topbar{
+    background:#fff;
+    border-bottom:1px solid var(--line);
+    padding:16px 28px;
+    display:flex;
+    align-items:center;
+    gap:16px;
+  }
+  .titleblock{flex:1;min-width:0;}
+  .titleblock h1{
+    margin:0;font-size:18px;font-weight:700;line-height:24px;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .titleblock p{margin:1px 0 0;font-size:12px;color:var(--muted);line-height:16px;}
+  .dot{
+    display:inline-block;width:6px;height:6px;border-radius:50%;
+    background:var(--green);margin-right:6px;vertical-align:1px;
+  }
+  .ghostbtn{
+    display:flex;align-items:center;gap:7px;
+    border:1px solid var(--line);
+    border-radius:4px;
+    background:#fff;
+    padding:8px 12px;
+    font-size:13px;font-weight:700;color:#2b2f33;
+    line-height:18px;
+    white-space:nowrap;
+  }
+
+  /* thread */
+  .thread{
+    flex:1;
+    min-height:0;
+    padding:20px 28px 8px;
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+  }
+  .daymark{align-self:center;font-size:12px;color:var(--muted);line-height:16px;}
+  .row{display:flex;}
+  .row.me{justify-content:flex-end;}
+  .bubble{
+    max-width:560px;
+    border-radius:4px;
+    padding:12px 14px;
+    font-size:14px;
+    line-height:20px;
+  }
+  .bubble.bot{background:#fff;box-shadow:var(--shadow);}
+  .bubble.me{background:var(--green);color:#fff;font-weight:600;}
+  .bubble.wide{max-width:700px;}
+  .bubble p{margin:0;}
+  .bubble p + p{margin-top:6px;}
+
+  /* rearranged product rows -> three side-by-side cards */
+  .grid{
+    margin-top:12px;
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:12px;
+  }
+  .card{
+    border:1px solid var(--line);
+    border-radius:4px;
+    background:#fff;
+    overflow:hidden;
+  }
+  .banner{height:72px;}
+  .t1{background:#cfdfd4;}
+  .t2{background:#dcdfe4;}
+  .t3{background:#e2dbcf;}
+  .cbody{padding:10px 12px 12px;}
+  .cname{
+    font-size:14px;font-weight:700;line-height:18px;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .cmeta{
+    font-size:12px;color:var(--muted);line-height:16px;margin-top:2px;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .cprice{
+    display:flex;align-items:baseline;justify-content:space-between;
+    margin-top:8px;gap:8px;
+  }
+  .cprice b{font-size:16px;font-weight:700;line-height:20px;}
+  .cprice span{font-size:12px;color:var(--muted);line-height:16px;white-space:nowrap;}
+  .foot{margin-top:10px;font-size:12px;color:var(--muted);line-height:16px;}
+  .tag{
+    display:inline-block;margin-top:10px;
+    background:#e8f3ec;color:var(--green-dark);
+    font-size:12px;font-weight:700;line-height:16px;
+    padding:3px 8px;border-radius:4px;
+  }
+
+  /* suggestions — rounded outline pills with icons */
+  .suggest{padding:12px 28px 14px;}
+  .suggest .label{font-size:12px;color:var(--muted);line-height:16px;margin-bottom:8px;}
+  .chips{display:flex;gap:10px;flex-wrap:nowrap;}
+  .chip{
+    display:inline-flex;align-items:center;gap:7px;
+    background:#fff;
+    border:1px solid #cfe0d5;
+    color:var(--green-dark);
+    border-radius:999px;
+    padding:8px 15px;
+    font-size:13px;
+    font-weight:700;
+    line-height:18px;
+    white-space:nowrap;
+    box-shadow:0 1px 2px rgba(16,24,40,.06);
+  }
+  .chip svg{color:var(--green);flex:none;}
+
+  /* composer */
+  .composer{
+    background:#fff;
+    border-top:1px solid var(--line);
+    padding:14px 28px;
+    display:flex;
+    align-items:center;
+    gap:12px;
+  }
+  .field{
+    flex:1;
+    background:var(--ground);
+    border:1px solid var(--line);
+    border-radius:4px;
+    padding:12px 14px;
+    font-size:14px;
+    line-height:18px;
+    color:#9aa1a9;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .send{
+    width:44px;height:44px;flex:none;
+    background:var(--green);
+    border-radius:4px;
+    display:flex;align-items:center;justify-content:center;
+    color:#fff;
+  }
+</style>
+</head>
+<body>
+  <div class="screen">
+
+    <aside class="rail">
+      <div class="brand">
+        <div class="logo">L</div>
+        <span>Loomcart</span>
+      </div>
+      <div class="navlabel">Browse</div>
+      <nav class="nav">
+        <div class="nav-item">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5L12 4l8 6.5V20H4z"/></svg>
+          Home
+        </div>
+        <div class="nav-item">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6"/><path d="M20 20l-3.6-3.6"/></svg>
+          Search
+        </div>
+        <div class="nav-item active">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a7 7 0 0 1-7 7H8l-4 3v-4.6A7 7 0 0 1 11 5h2a7 7 0 0 1 7 7z"/></svg>
+          Assistant
+        </div>
+        <div class="nav-item">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8l8-4 8 4v8l-8 4-8-4z"/><path d="M4 8l8 4 8-4"/><path d="M12 12v8"/></svg>
+          Orders
+          <span class="count">2</span>
+        </div>
+        <div class="nav-item">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h2l2.2 10.2A2 2 0 0 0 10.2 17h7.3a2 2 0 0 0 2-1.6L21 8H7"/><circle cx="10.5" cy="20" r="1.2"/><circle cx="17.5" cy="20" r="1.2"/></svg>
+          Cart
+          <span class="count">3</span>
+        </div>
+      </nav>
+      <div class="railfoot">
+        <div class="acct">
+          <div class="av">MR</div>
+          <div>
+            <div class="an">Maya Reyes</div>
+            <div class="ae">Member since 2021</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <section class="main">
+      <header class="topbar">
+        <div class="titleblock">
+          <h1>Loomcart Assistant</h1>
+          <p><span class="dot"></span>Answers from live catalog</p>
+        </div>
+        <div class="ghostbtn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+          New conversation
+        </div>
+      </header>
+
+      <main class="thread">
+        <div class="daymark">Today, 2:14 PM</div>
+
+        <div class="row me">
+          <div class="bubble me">Trail running shoes under $120, women's size 8, good grip on wet rock.</div>
+        </div>
+
+        <div class="row">
+          <div class="bubble bot wide">
+            <p>Three in your size ship free and are in stock now.</p>
+            <div class="grid">
+              <div class="card">
+                <div class="banner t1"></div>
+                <div class="cbody">
+                  <div class="cname">Ridgeline Trail 4</div>
+                  <div class="cmeta">Lug 5 mm · 4.6 (812)</div>
+                  <div class="cprice"><b>$104</b><span>Free ship</span></div>
+                </div>
+              </div>
+              <div class="card">
+                <div class="banner t2"></div>
+                <div class="cbody">
+                  <div class="cname">Kestrel Grip GTX</div>
+                  <div class="cmeta">Waterproof · 4.4 (1,209)</div>
+                  <div class="cprice"><b>$118</b><span>2 left</span></div>
+                </div>
+              </div>
+              <div class="card">
+                <div class="banner t3"></div>
+                <div class="cbody">
+                  <div class="cname">Alder Path Low</div>
+                  <div class="cmeta">Lug 4 mm · 4.5 (367)</div>
+                  <div class="cprice"><b>$92</b><span>Free ship</span></div>
+                </div>
+              </div>
+            </div>
+            <p class="foot">Prices checked 8 minutes ago.</p>
+          </div>
+        </div>
+
+        <div class="row me">
+          <div class="bubble me">Which holds up best on wet rock?</div>
+        </div>
+
+        <div class="row">
+          <div class="bubble bot">
+            <p>The Kestrel Grip GTX. Its outsole compound stays soft below 50°F, and 78 reviews mention wet traction specifically.</p>
+            <p>Ridgeline Trail 4 drains faster but slips on smooth stone.</p>
+            <span class="tag">Returns free within 30 days</span>
+          </div>
+        </div>
+      </main>
+
+      <div class="suggest">
+        <div class="label">Suggested</div>
+        <div class="chips">
+          <div class="chip">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 19V9M12 19V5M19 19v-6"/></svg>
+            Compare picks
+          </div>
+          <div class="chip">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h10"/></svg>
+            Size guide
+          </div>
+          <div class="chip">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16M8 8l-4 4 4 4M16 8l4 4-4 4"/></svg>
+            Wide fit
+          </div>
+          <div class="chip">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></svg>
+            Delivery date
+          </div>
+        </div>
+      </div>
+
+      <div class="composer">
+        <div class="field">Ask about products, orders, or returns</div>
+        <div class="send" aria-label="Send">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</body>
+</html>

@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Private Feedback — Fablewave</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      border-radius: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #d9dcd5;
+      color: #f4f7ef;
+      font-family: 'Roboto', system-ui, sans-serif;
+    }
+
+    button,
+    textarea,
+    input {
+      font: inherit;
+    }
+
+    button {
+      border: 0;
+      cursor: default;
+    }
+
+    .screen {
+      position: relative;
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #11140f;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 17px 18px;
+      background: #171b14;
+    }
+
+    .icon-button {
+      width: 28px;
+      height: 28px;
+      padding: 2px;
+      display: grid;
+      place-items: center;
+      background: transparent;
+      color: #f4f7ef;
+    }
+
+    .topbar-title {
+      margin: 0;
+      font-size: 17px;
+      line-height: 22px;
+      font-weight: 500;
+    }
+
+    main {
+      flex: 1;
+      padding: 18px 18px 14px;
+    }
+
+    .intro h1 {
+      margin: 0;
+      font-size: 28px;
+      line-height: 34px;
+      font-weight: 700;
+      letter-spacing: -0.4px;
+    }
+
+    .intro p {
+      margin: 5px 0 0;
+      max-width: 330px;
+      color: #aeb6a8;
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .episode {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 16px;
+      padding: 10px;
+      background: rgba(183, 243, 74, 0.11);
+    }
+
+    .episode img {
+      width: 64px;
+      height: 64px;
+      flex: 0 0 64px;
+      object-fit: cover;
+      display: block;
+      background: #30382a;
+    }
+
+    .episode-copy {
+      min-width: 0;
+    }
+
+    .eyebrow {
+      margin: 0 0 4px;
+      color: #b7f34a;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.7px;
+    }
+
+    .episode-title {
+      margin: 0;
+      overflow: hidden;
+      color: #f4f7ef;
+      font-size: 15px;
+      line-height: 20px;
+      font-weight: 500;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .episode-meta {
+      margin: 3px 0 0;
+      color: #aeb6a8;
+      font-size: 13px;
+      line-height: 18px;
+    }
+
+    .form-section {
+      margin-top: 20px;
+    }
+
+    .section-title {
+      margin: 0;
+      font-size: 16px;
+      line-height: 20px;
+      font-weight: 500;
+    }
+
+    .section-help {
+      margin: 2px 0 0;
+      color: #8f988a;
+      font-size: 13px;
+      line-height: 18px;
+    }
+
+    .rating-options {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 7px;
+      margin-top: 10px;
+    }
+
+    .rating-options input,
+    .reason-grid input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .rating {
+      height: 52px;
+      display: grid;
+      place-items: center;
+      background: rgba(183, 243, 74, 0.10);
+      color: #d7ddcf;
+      font-size: 16px;
+      line-height: 20px;
+      font-weight: 500;
+    }
+
+    .rating-options input:checked + .rating {
+      background: #b7f34a;
+      color: #13170f;
+    }
+
+    .scale-labels {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 6px;
+      color: #7f887a;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .reason-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .reason {
+      min-height: 38px;
+      display: flex;
+      align-items: center;
+      padding: 9px 11px;
+      background: rgba(183, 243, 74, 0.09);
+      color: #dce3d6;
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .reason-grid input:checked + .reason {
+      background: rgba(183, 243, 74, 0.25);
+      color: #dfff9f;
+      font-weight: 500;
+    }
+
+    .comment-box {
+      width: 100%;
+      height: 80px;
+      margin-top: 8px;
+      padding: 11px 12px;
+      resize: none;
+      border: 0;
+      outline: 0;
+      background: rgba(183, 243, 74, 0.09);
+      color: #f4f7ef;
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .comment-box::placeholder {
+      color: #7f887a;
+      opacity: 1;
+    }
+
+    .privacy-note {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      margin: 10px 0 0;
+      color: #9da697;
+      font-size: 12px;
+      line-height: 18px;
+    }
+
+    .privacy-note svg {
+      flex: 0 0 16px;
+      margin-top: 1px;
+      color: #b7f34a;
+    }
+
+    .submit-button {
+      width: 100%;
+      min-height: 48px;
+      margin-top: 12px;
+      padding: 13px 18px;
+      background: #b7f34a;
+      color: #12160e;
+      font-size: 15px;
+      line-height: 20px;
+      font-weight: 700;
+    }
+
+    .tabbar {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      padding: 9px 8px 10px;
+      background: #171b14;
+    }
+
+    .tab {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      padding: 2px 4px;
+      color: #788172;
+      text-decoration: none;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 500;
+    }
+
+    .tab svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .tab.active {
+      color: #b7f34a;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <button class="icon-button" type="button" aria-label="Go back">
+        <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
+          <path d="M15 5 8 12l7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter"/>
+        </svg>
+      </button>
+      <p class="topbar-title">Private feedback</p>
+    </header>
+
+    <main>
+      <section class="intro" aria-labelledby="feedback-heading">
+        <h1 id="feedback-heading">How was this episode?</h1>
+        <p>Help Fablewave improve listening recommendations and playback quality.</p>
+      </section>
+
+      <article class="episode" aria-label="Episode being reviewed">
+        <img src="https://loremflickr.com/64/64/studio?lock=11670" width="64" height="64" alt="Podcast recording equipment in a studio">
+        <div class="episode-copy">
+          <p class="eyebrow">Recently played</p>
+          <p class="episode-title">Inside the Midnight Sessions</p>
+          <p class="episode-meta">Signal Room · Episode 42</p>
+        </div>
+      </article>
+
+      <form>
+        <section class="form-section" aria-labelledby="rating-title">
+          <h2 class="section-title" id="rating-title">Overall experience</h2>
+          <p class="section-help">Choose one rating.</p>
+          <div class="rating-options">
+            <input type="radio" name="rating" id="rating-1">
+            <label class="rating" for="rating-1">1</label>
+
+            <input type="radio" name="rating" id="rating-2">
+            <label class="rating" for="rating-2">2</label>
+
+            <input type="radio" name="rating" id="rating-3">
+            <label class="rating" for="rating-3">3</label>
+
+            <input type="radio" name="rating" id="rating-4" checked>
+            <label class="rating" for="rating-4">4</label>
+
+            <input type="radio" name="rating" id="rating-5">
+            <label class="rating" for="rating-5">5</label>
+          </div>
+          <div class="scale-labels">
+            <span>Poor</span>
+            <span>Excellent</span>
+          </div>
+        </section>
+
+        <section class="form-section" aria-labelledby="reason-title">
+          <h2 class="section-title" id="reason-title">What affected your rating?</h2>
+          <p class="section-help">Select any that apply.</p>
+          <div class="reason-grid">
+            <input type="checkbox" id="reason-audio" checked>
+            <label class="reason" for="reason-audio">Audio quality</label>
+
+            <input type="checkbox" id="reason-topic" checked>
+            <label class="reason" for="reason-topic">Topic relevance</label>
+
+            <input type="checkbox" id="reason-pacing">
+            <label class="reason" for="reason-pacing">Episode pacing</label>
+
+            <input type="checkbox" id="reason-playback">
+            <label class="reason" for="reason-playback">Playback controls</label>
+          </div>
+        </section>
+
+        <section class="form-section" aria-labelledby="comment-title">
+          <h2 class="section-title" id="comment-title">Add a note</h2>
+          <textarea class="comment-box" aria-label="Additional feedback" placeholder="Share details with the Fablewave team"></textarea>
+          <p class="privacy-note">
+            <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+              <rect x="5" y="10" width="14" height="10" fill="none" stroke="currentColor" stroke-width="2"/>
+              <path d="M8 10V7a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" stroke-width="2"/>
+            </svg>
+            <span>Your response is private and will not appear as a public review.</span>
+          </p>
+          <button class="submit-button" type="button">Submit feedback</button>
+        </section>
+      </form>
+    </main>
+
+    <nav class="tabbar" aria-label="Primary navigation">
+      <a class="tab" href="#" aria-label="Home">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M3 11 12 4l9 7v9H6v-9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="miter"/>
+        </svg>
+        <span>Home</span>
+      </a>
+      <a class="tab" href="#" aria-label="Search">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="1.8"/>
+          <path d="m15.5 15.5 5 5" fill="none" stroke="currentColor" stroke-width="1.8"/>
+        </svg>
+        <span>Search</span>
+      </a>
+      <a class="tab" href="#" aria-label="Library">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M5 4v16M10 4v16M15 5l4-1v16l-4 1V5Z" fill="none" stroke="currentColor" stroke-width="1.8"/>
+        </svg>
+        <span>Library</span>
+      </a>
+      <a class="tab active" href="#" aria-current="page" aria-label="You">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="1.8"/>
+          <path d="M4.5 21c.8-4 3.3-6 7.5-6s6.7 2 7.5 6" fill="none" stroke="currentColor" stroke-width="1.8"/>
+        </svg>
+        <span>You</span>
+      </a>
+    </nav>
+  </div>
+</body>
+</html>

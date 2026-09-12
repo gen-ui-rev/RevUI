@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Cart</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 40px 0;
+    margin: 0;
+    background: #d9dbdf;
+    font-family: 'Poppins', system-ui, sans-serif;
+    color: #16181c;
+  }
+  .screen {
+    width: 390px;
+    height: 844px;
+    background: #f1f2f4;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* top bar */
+  .topbar {
+    background: #ffffff;
+    padding: 16px 16px 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-bottom: 1px solid #e6e8eb;
+  }
+  .topbar .back { display: flex; align-items: center; }
+  .topbar h1 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: -0.2px;
+    flex: 1;
+  }
+  .topbar .count {
+    font-size: 13px;
+    color: #6b7280;
+  }
+
+  /* content */
+  .content {
+    flex: 1;
+    padding: 12px 16px 0;
+  }
+
+  .banner {
+    background: #e9f3ec;
+    border-radius: 4px;
+    padding: 11px 12px;
+    font-size: 13px;
+    color: #2f6a4a;
+    line-height: 1.3;
+    margin-bottom: 12px;
+  }
+  .banner b { font-weight: 600; color: #17673f; }
+
+  .card {
+    background: #ffffff;
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(16, 24, 40, 0.08);
+    margin-bottom: 12px;
+  }
+
+  .card-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding: 12px 14px 10px;
+    border-bottom: 1px solid #eef0f2;
+  }
+  .card-head h2 {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .card-head .edit {
+    font-size: 13px;
+    font-weight: 500;
+    color: #178a4c;
+  }
+
+  /* item row */
+  .item {
+    display: flex;
+    gap: 12px;
+    padding: 12px 14px;
+    border-bottom: 1px solid #eef0f2;
+  }
+  .item:last-child { border-bottom: 0; }
+  .thumb {
+    width: 56px;
+    height: 56px;
+    border-radius: 4px;
+    flex: 0 0 56px;
+  }
+  .t1 { background: #dceae1; }
+  .t2 { background: #e4e7ec; }
+  .t3 { background: #e9e3d8; }
+  .t4 { background: #dae3e9; }
+
+  .item-main { flex: 1; min-width: 0; }
+  .item-name {
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 1.25;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .item-sub {
+    margin-top: 2px;
+    font-size: 13px;
+    color: #6b7280;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .tag {
+    border: 1px solid #b9ddc7;
+    color: #178a4c;
+    font-size: 12px;
+    line-height: 1;
+    padding: 3px 6px;
+    border-radius: 4px;
+    flex: 0 0 auto;
+  }
+  .stepper {
+    margin-top: 8px;
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid #dfe2e6;
+    border-radius: 4px;
+    height: 28px;
+  }
+  .stepper button,
+  .stepper span.btn {
+    width: 28px;
+    height: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .stepper .qty {
+    width: 30px;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 500;
+    border-left: 1px solid #dfe2e6;
+    border-right: 1px solid #dfe2e6;
+    line-height: 26px;
+  }
+  .item-right {
+    text-align: right;
+    flex: 0 0 auto;
+    padding-left: 4px;
+  }
+  .price {
+    font-size: 15px;
+    font-weight: 500;
+  }
+  .unit {
+    margin-top: 2px;
+    font-size: 12px;
+    color: #8b909a;
+  }
+
+  /* summary */
+  .sum { padding: 12px 14px 14px; }
+  .sum-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-size: 14px;
+    padding: 5px 0;
+    color: #3d424b;
+  }
+  .sum-row .v { font-weight: 500; color: #16181c; }
+  .sum-row.green, .sum-row.green .v { color: #178a4c; }
+
+  /* checkout bar */
+  .checkout {
+    background: #ffffff;
+    border-top: 1px solid #e6e8eb;
+    padding: 12px 16px 14px;
+  }
+  .total-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 10px;
+  }
+  .total-row .label { font-size: 14px; color: #6b7280; }
+  .total-row .amount { font-size: 20px; font-weight: 600; letter-spacing: -0.3px; }
+  .cta {
+    display: block;
+    background: #178a4c;
+    color: #ffffff;
+    border-radius: 4px;
+    text-align: center;
+    font-size: 15px;
+    font-weight: 600;
+    padding: 14px 0;
+  }
+
+  /* tab bar */
+  .tabs {
+    background: #ffffff;
+    border-top: 1px solid #e6e8eb;
+    display: flex;
+    padding: 8px 0 10px;
+  }
+  .tab {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    color: #8b909a;
+  }
+  .tab.active { color: #178a4c; font-weight: 500; }
+</style>
+</head>
+<body>
+  <div class="screen">
+
+    <div class="topbar">
+      <span class="back">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#16181c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      </span>
+      <h1>Cart</h1>
+      <span class="count">5 items</span>
+    </div>
+
+    <div class="content">
+
+      <div class="banner">
+        Arrives <b>Thu, Mar 6</b> · Free shipping on refill orders over $50.00
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <h2>Your items</h2>
+          <span class="edit">Edit</span>
+        </div>
+
+        <div class="item">
+          <div class="thumb t1"></div>
+          <div class="item-main">
+            <div class="item-name">Magnesium Glycinate</div>
+            <div class="item-sub">400 mg · 60 capsules</div>
+            <div class="stepper">
+              <span class="btn"><svg width="12" height="12" viewBox="0 0 12 12" stroke="#6b7280" stroke-width="1.6" stroke-linecap="round"><path d="M2.5 6h7"/></svg></span>
+              <span class="qty">1</span>
+              <span class="btn"><svg width="12" height="12" viewBox="0 0 12 12" stroke="#16181c" stroke-width="1.6" stroke-linecap="round"><path d="M2.5 6h7M6 2.5v7"/></svg></span>
+            </div>
+          </div>
+          <div class="item-right">
+            <div class="price">$28.00</div>
+            <div class="unit">$28.00 each</div>
+          </div>
+        </div>
+
+        <div class="item">
+          <div class="thumb t2"></div>
+          <div class="item-main">
+            <div class="item-name">Vitamin D3 + K2</div>
+            <div class="item-sub">5,000 IU · 90 softgels<span class="tag">Auto-refill</span></div>
+            <div class="stepper">
+              <span class="btn"><svg width="12" height="12" viewBox="0 0 12 12" stroke="#6b7280" stroke-width="1.6" stroke-linecap="round"><path d="M2.5 6h7"/></svg></span>
+              <span class="qty">2</span>
+              <span class="btn"><svg width="12" height="12" viewBox="0 0 12 12" stroke="#16181c" stroke-width="1.6" stroke-linecap="round"><path d="M2.5 6h7M6 2.5v7"/></svg></span>
+            </div>
+          </div>
+          <div class="item-right">
+            <div class="price">$39.00</div>
+            <div class="unit">$19.50 each</div>
+          </div>
+        </div>
+
+        <div class="item">
+          <div class="thumb t3"></div>
+          <div class="item-main">
+            <div class="item-name">Sleep Blend Powder</div>
+            <div class="item-sub">Tart cherry · 30 servings</div>
+            <div class="stepper">
+              <span class="btn"><svg width="12" height="12" viewBox="0 0 12 12" stroke="#6b7280" stroke-width="1.6" stroke-linecap="round"><path d="M2.5 6h7"/></svg></span>
+              <span class="qty">1</span>
+              <span class="btn"><svg width="12" height="12" viewBox="0 0 12 12" stroke="#16181c" stroke-width="1.6" stroke-linecap="round"><path d="M2.5 6h7M6 2.5v7"/></svg></span>
+            </div>
+          </div>
+          <div class="item-right">
+            <div class="price">$34.00</div>
+            <div class="unit">$34.00 each</div>
+          </div>
+        </div>
+
+        <div class="item">
+          <div class="thumb t4"></div>
+          <div class="item-main">
+            <div class="item-name">Omega-3 Fish Oil</div>
+            <div class="item-sub">1,200 mg · 120 softgels</div>
+            <div class="stepper">
+              <span class="btn"><svg width="12" height="12" viewBox="0 0 12 12" stroke="#6b7280" stroke-width="1.6" stroke-linecap="round"><path d="M2.5 6h7"/></svg></span>
+              <span class="qty">1</span>
+              <span class="btn"><svg width="12" height="12" viewBox="0 0 12 12" stroke="#16181c" stroke-width="1.6" stroke-linecap="round"><path d="M2.5 6h7M6 2.5v7"/></svg></span>
+            </div>
+          </div>
+          <div class="item-right">
+            <div class="price">$24.75</div>
+            <div class="unit">$24.75 each</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="sum">
+          <div class="sum-row"><span>Subtotal</span><span class="v">$125.75</span></div>
+          <div class="sum-row green"><span>Refill plan discount (10%)</span><span class="v">−$12.58</span></div>
+          <div class="sum-row"><span>Shipping</span><span class="v">Free</span></div>
+          <div class="sum-row"><span>Estimated tax</span><span class="v">$9.53</span></div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="checkout">
+      <div class="total-row">
+        <span class="label">Total due today</span>
+        <span class="amount">$122.70</span>
+      </div>
+      <span class="cta">Continue to checkout</span>
+    </div>
+
+    <div class="tabs">
+      <div class="tab">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5L12 4l9 6.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>
+        Today
+      </div>
+      <div class="tab">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="16" rx="1.5"/><path d="M3.5 10h17M8 3.5v3M16 3.5v3"/></svg>
+        Plan
+      </div>
+      <div class="tab">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 8h15l-1.2 12.2a1 1 0 0 1-1 .8H6.7a1 1 0 0 1-1-.8z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>
+        Shop
+      </div>
+      <div class="tab active">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h2.2l2.3 11.2a1 1 0 0 0 1 .8h8.4a1 1 0 0 0 1-.78L19.8 7.5H6"/><circle cx="9.5" cy="19.5" r="1.3"/><circle cx="17" cy="19.5" r="1.3"/></svg>
+        Cart
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

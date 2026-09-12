@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Edit Study Plan — Lingotrail</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 40px 0;
+    margin: 0;
+    background: #d9dce2;
+    font-family: 'Poppins', system-ui, sans-serif;
+    color: #14181f;
+  }
+  .screen {
+    width: 390px;
+    height: 844px;
+    background: #eef0f4;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* top bar */
+  .topbar {
+    background: #ffffff;
+    padding: 18px 16px 16px;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    border-bottom: 1px solid #e3e6ec;
+  }
+  .topbar h1 {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0;
+    letter-spacing: -0.1px;
+  }
+  .tb-cancel { font-size: 14px; color: #6b7280; }
+  .tb-save { font-size: 14px; font-weight: 600; color: #1f5fe0; }
+
+  .content { padding: 14px 16px 0; }
+
+  .ctx {
+    margin: 0 0 14px;
+    font-size: 12px;
+    color: #6b7280;
+    line-height: 1.4;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  .ctx b { color: #1f5fe0; font-weight: 500; }
+  .ctx .meta {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .discard {
+    flex: none;
+    font-size: 12px;
+    font-weight: 500;
+    color: #b42318;
+  }
+
+  /* primary card */
+  .goal {
+    background: #1f5fe0;
+    border-radius: 10px;
+    padding: 14px 16px 16px;
+    box-shadow: 0 1px 3px rgba(16,24,40,0.10);
+    color: #ffffff;
+  }
+  .goal .lab {
+    font-size: 12px;
+    color: rgba(255,255,255,0.78);
+    margin-bottom: 2px;
+  }
+  .goal .val {
+    font-size: 28px;
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: -0.5px;
+  }
+  .goal .val span { font-size: 14px; font-weight: 400; color: rgba(255,255,255,0.8); }
+  .goal .sub {
+    font-size: 11px;
+    font-weight: 400;
+    color: rgba(255,255,255,0.58);
+    margin-top: 3px;
+  }
+  .opts { display: flex; gap: 6px; margin-top: 12px; }
+  .opt {
+    flex: 1;
+    text-align: center;
+    font-size: 13px;
+    padding: 8px 0;
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.45);
+    color: #ffffff;
+  }
+  .opt.sel {
+    background: #ffffff;
+    color: #1f5fe0;
+    font-weight: 600;
+    border-color: #ffffff;
+  }
+
+  .seclab {
+    font-size: 12px;
+    font-weight: 500;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin: 18px 0 6px 2px;
+  }
+
+  .card {
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 1px 3px rgba(16,24,40,0.08);
+  }
+  .row {
+    padding: 11px 14px;
+    border-bottom: 1px solid #eceef2;
+  }
+  .row:last-child { border-bottom: none; }
+  .row .flab {
+    font-size: 12px;
+    color: #6b7280;
+    margin-bottom: 2px;
+  }
+  .field {
+    width: 100%;
+    border: 1px solid #d5d9e0;
+    border-radius: 10px;
+    padding: 8px 10px;
+    font-family: inherit;
+    font-size: 14px;
+    color: #14181f;
+    background: #fff;
+  }
+  .field.focus { border-color: #1f5fe0; }
+
+  .nav-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  .nav-row .rlab { font-size: 14px; }
+  .nav-row .rval {
+    font-size: 14px;
+    color: #6b7280;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    max-width: 210px;
+  }
+  .rval .txt {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .chev { color: #aeb4bf; flex: none; }
+
+  .days { display: flex; gap: 5px; margin-top: 6px; }
+  .day {
+    flex: 1;
+    text-align: center;
+    font-size: 13px;
+    padding: 7px 0;
+    border-radius: 10px;
+    border: 1px solid #d5d9e0;
+    color: #6b7280;
+  }
+  .day.on {
+    background: #1f5fe0;
+    border-color: #1f5fe0;
+    color: #ffffff;
+    font-weight: 500;
+  }
+
+  .coach { display: flex; align-items: center; gap: 12px; }
+  .mono {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: #e3ebfb;
+    color: #1f5fe0;
+    font-size: 14px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+  }
+  .coach .cn { font-size: 14px; }
+  .coach .cs { font-size: 12px; color: #6b7280; margin-top: 1px; }
+  .link { font-size: 14px; color: #1f5fe0; font-weight: 500; margin-left: auto; }
+
+  .sw {
+    width: 42px;
+    height: 24px;
+    border-radius: 12px;
+    background: #d5d9e0;
+    display: flex;
+    align-items: center;
+    padding: 2px;
+    flex: none;
+  }
+  .sw .knob {
+    width: 20px;
+    height: 20px;
+    border-radius: 10px;
+    background: #ffffff;
+    box-shadow: 0 1px 2px rgba(16,24,40,0.2);
+  }
+  .sw.on { background: #1f5fe0; justify-content: flex-end; }
+
+  .archive {
+    text-align: center;
+    font-size: 14px;
+    color: #b42318;
+    padding: 18px 0 0;
+  }
+
+  /* tab bar */
+  .tabbar {
+    margin-top: auto;
+    background: #ffffff;
+    border-top: 1px solid #e3e6ec;
+    display: flex;
+    padding: 9px 8px 12px;
+  }
+  .tab {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    font-size: 12px;
+    color: #8a909c;
+  }
+  .tab.active { color: #1f5fe0; font-weight: 500; }
+</style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <span class="tb-cancel">Cancel</span>
+      <h1>Edit Study Plan</h1>
+      <span class="tb-save">Save</span>
+    </header>
+
+    <div class="content">
+      <p class="ctx">
+        <span class="meta">Spanish · B1 · <b>2 unsaved edits</b></span>
+        <span class="discard">Discard edits</span>
+      </p>
+
+      <section class="goal">
+        <div class="lab">Daily goal</div>
+        <div class="val">25 min <span>per day</span></div>
+        <div class="sub">Weekly target 2 h 5 min across 5 study days</div>
+        <div class="opts">
+          <div class="opt">10 min</div>
+          <div class="opt sel">25 min</div>
+          <div class="opt">40 min</div>
+          <div class="opt">60 min</div>
+        </div>
+      </section>
+
+      <div class="seclab">Plan</div>
+      <section class="card">
+        <div class="row">
+          <div class="flab">Plan name</div>
+          <input class="field focus" type="text" value="Weekday Spanish Sprint" readonly>
+        </div>
+        <div class="row nav-row">
+          <span class="rlab">Course</span>
+          <span class="rval">
+            <span class="txt">Spanish — Conversation</span>
+            <svg class="chev" width="8" height="13" viewBox="0 0 8 13" fill="none" aria-hidden="true"><path d="M1.5 1.5 6.5 6.5 1.5 11.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </div>
+        <div class="row">
+          <div class="flab">Study days</div>
+          <div class="days">
+            <span class="day on">Mon</span>
+            <span class="day on">Tue</span>
+            <span class="day on">Wed</span>
+            <span class="day on">Thu</span>
+            <span class="day on">Fri</span>
+            <span class="day">Sat</span>
+            <span class="day">Sun</span>
+          </div>
+        </div>
+        <div class="row coach">
+          <span class="mono">MV</span>
+          <span>
+            <span class="cn">Marisol Vega</span>
+            <div class="cs">Coach · Live check-in Thursdays</div>
+          </span>
+          <span class="link">Change</span>
+        </div>
+      </section>
+
+      <div class="seclab">Reminders</div>
+      <section class="card">
+        <div class="row nav-row">
+          <span class="rlab">Daily reminder</span>
+          <span class="sw on"><span class="knob"></span></span>
+        </div>
+        <div class="row nav-row">
+          <span class="rlab">Reminder time</span>
+          <span class="rval">
+            <span class="txt">7:30 PM</span>
+            <svg class="chev" width="8" height="13" viewBox="0 0 8 13" fill="none" aria-hidden="true"><path d="M1.5 1.5 6.5 6.5 1.5 11.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </div>
+        <div class="row nav-row">
+          <span class="rlab">Streak at-risk alerts</span>
+          <span class="sw"><span class="knob"></span></span>
+        </div>
+      </section>
+
+      <div class="archive">Archive this plan</div>
+    </div>
+
+    <nav class="tabbar">
+      <div class="tab">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 5.5A1.5 1.5 0 0 1 5.5 4H10a2 2 0 0 1 2 2v13a2 2 0 0 0-2-2H4V5.5Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M20 5.5A1.5 1.5 0 0 0 18.5 4H14a2 2 0 0 0-2 2v13a2 2 0 0 1 2-2h6V5.5Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+        Learn
+      </div>
+      <div class="tab">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 4a3 3 0 0 1 3 3v4a3 3 0 0 1-6 0V7a3 3 0 0 1 3-3Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M6 11a6 6 0 0 0 12 0M12 17v3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        Practice
+      </div>
+      <div class="tab active">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="4" y="5.5" width="16" height="14" rx="2.5" stroke="currentColor" stroke-width="1.5"/><path d="M8 3.5v4M16 3.5v4M4 10h16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        Plan
+      </div>
+      <div class="tab">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="8.5" r="3.5" stroke="currentColor" stroke-width="1.5"/><path d="M5 20c0-3.3 3.1-5.5 7-5.5s7 2.2 7 5.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        Profile
+      </div>
+    </nav>
+  </div>
+</body>
+</html>

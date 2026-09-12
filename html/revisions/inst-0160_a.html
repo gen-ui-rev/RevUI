@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cloverword Notifications</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #d9dcdf;
+      color: #25282b;
+      font-family: 'Poppins', system-ui, sans-serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      position: relative;
+      width: 390px;
+      height: 844px;
+      background: #f2f3f4;
+    }
+
+    .top-bar {
+      padding: 16px 20px 14px;
+      background: #ffffff;
+      border-bottom: 1px solid #e1e3e5;
+    }
+
+    .service-name {
+      margin: 0 0 3px;
+      color: #73787d;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 22px;
+      line-height: 1.35;
+      font-weight: 600;
+    }
+
+    .mark-read {
+      padding: 5px 0;
+      border: 0;
+      background: transparent;
+      color: #555b60;
+      font-size: 12px;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .filter-tabs {
+      position: relative;
+      display: flex;
+      align-items: stretch;
+      height: 49px;
+      padding: 0 20px;
+      background: #ffffff;
+      border-bottom: 1px solid #e1e3e5;
+    }
+
+    .tab-group {
+      display: flex;
+      align-items: stretch;
+      min-width: 0;
+    }
+
+    .filter-tab {
+      position: relative;
+      display: flex;
+      align-items: center;
+      margin-right: 26px;
+      border: 0;
+      padding: 0;
+      background: transparent;
+      color: #787d82;
+      font-size: 14px;
+      font-weight: 400;
+    }
+
+    .filter-tab:last-child {
+      margin-right: 0;
+    }
+
+    .filter-tab.active {
+      color: #303438;
+      font-weight: 600;
+    }
+
+    .filter-tab.active::after {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      height: 3px;
+      background: #555b60;
+      content: "";
+    }
+
+    .sort-btn {
+      display: flex;
+      align-self: center;
+      align-items: center;
+      gap: 6px;
+      margin-left: auto;
+      border: 1px solid #9ca2a7;
+      border-radius: 999px;
+      padding: 5px 10px;
+      background: #eceeef;
+      color: #33373b;
+      font-size: 12px;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .sort-btn svg {
+      width: 13px;
+      height: 13px;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .sort-menu {
+      position: absolute;
+      top: 45px;
+      right: 18px;
+      z-index: 6;
+      width: 182px;
+      padding: 6px;
+      background: #ffffff;
+      border: 1px solid #dcdee0;
+      border-radius: 8px;
+      box-shadow: 0 12px 26px rgba(24, 28, 32, 0.2);
+    }
+
+    .sort-menu-label {
+      margin: 4px 8px 6px;
+      color: #8a8f93;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+    }
+
+    .sort-option {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      width: 100%;
+      border: 0;
+      border-radius: 5px;
+      padding: 8px;
+      background: transparent;
+      color: #4c5155;
+      font-size: 13px;
+      font-weight: 400;
+      text-align: left;
+    }
+
+    .sort-option.selected {
+      background: #eef0f1;
+      color: #25282b;
+      font-weight: 600;
+    }
+
+    .sort-option svg {
+      flex: 0 0 auto;
+      width: 13px;
+      height: 13px;
+      stroke: #555b60;
+      stroke-width: 2.1;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    main {
+      padding: 18px 18px 94px;
+    }
+
+    .notification-section + .notification-section {
+      margin-top: 22px;
+    }
+
+    .section-heading {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin: 0 2px 8px;
+    }
+
+    .section-heading h2 {
+      margin: 0;
+      color: #363a3e;
+      font-size: 16px;
+      line-height: 1.4;
+      font-weight: 600;
+    }
+
+    .section-heading span {
+      color: #7c8186;
+      font-size: 12px;
+      line-height: 1.4;
+      font-weight: 400;
+    }
+
+    .notification-card {
+      background: #ffffff;
+      border: 1px solid #e6e7e8;
+      border-radius: 4px;
+      box-shadow: 0 2px 8px rgba(30, 34, 38, 0.07);
+    }
+
+    .notification-row {
+      display: grid;
+      grid-template-columns: 12px minmax(0, 1fr);
+      gap: 8px;
+      min-height: 88px;
+      padding: 13px 14px 12px;
+    }
+
+    .notification-row + .notification-row {
+      border-top: 1px solid #eceeef;
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      margin-top: 7px;
+      border-radius: 50%;
+      background: #555b60;
+    }
+
+    .notification-row.read .status-dot {
+      background: transparent;
+    }
+
+    .notification-copy {
+      min-width: 0;
+    }
+
+    .notification-title-line {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .notification-title {
+      min-width: 0;
+      margin: 0;
+      overflow: hidden;
+      color: #292d30;
+      font-size: 14px;
+      line-height: 1.45;
+      font-weight: 600;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .notification-row.read .notification-title {
+      color: #4c5155;
+      font-weight: 400;
+    }
+
+    .notification-time {
+      flex: 0 0 auto;
+      color: #8a8f93;
+      font-size: 12px;
+      line-height: 1.45;
+      font-weight: 400;
+      white-space: nowrap;
+    }
+
+    .notification-message {
+      margin: 3px 0 0;
+      overflow: hidden;
+      color: #656a6f;
+      font-size: 12px;
+      line-height: 1.45;
+      font-weight: 400;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .notification-source {
+      margin: 3px 0 0;
+      color: #8a8f93;
+      font-size: 12px;
+      line-height: 1.45;
+      font-weight: 400;
+    }
+
+    .bottom-nav {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      display: flex;
+      height: 76px;
+      background: #ffffff;
+      border-top: 1px solid #dfe1e3;
+    }
+
+    .nav-item {
+      position: relative;
+      display: flex;
+      flex: 1;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      border: 0;
+      padding: 8px 2px 7px;
+      background: transparent;
+      color: #858a8f;
+      font-size: 12px;
+      line-height: 1.2;
+      font-weight: 400;
+    }
+
+    .nav-item svg {
+      width: 21px;
+      height: 21px;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .nav-item.active {
+      color: #3d4246;
+      font-weight: 600;
+    }
+
+    .nav-item.active::before {
+      position: absolute;
+      top: 0;
+      width: 32px;
+      height: 3px;
+      background: #555b60;
+      content: "";
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="top-bar">
+      <p class="service-name">Cloverword</p>
+      <div class="title-row">
+        <h1>Notifications</h1>
+        <button class="mark-read" type="button">Mark all read</button>
+      </div>
+    </header>
+
+    <nav class="filter-tabs" aria-label="Notification filters">
+      <div class="tab-group">
+        <button class="filter-tab active" type="button">All</button>
+        <button class="filter-tab" type="button">Courses</button>
+        <button class="filter-tab" type="button">Discussions</button>
+      </div>
+
+      <button class="sort-btn" type="button" aria-expanded="true">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M4 7h13"></path>
+          <path d="M4 12h9"></path>
+          <path d="M4 17h5"></path>
+        </svg>
+        <span>Sort</span>
+      </button>
+
+      <div class="sort-menu" role="menu" aria-label="Sort notifications">
+        <p class="sort-menu-label">Sort by</p>
+        <button class="sort-option selected" type="button" role="menuitemradio" aria-checked="true">
+          <span>Newest first</span>
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="m5 13 4 4L19 7"></path>
+          </svg>
+        </button>
+        <button class="sort-option" type="button" role="menuitemradio" aria-checked="false">
+          <span>Oldest first</span>
+        </button>
+      </div>
+    </nav>
+
+    <main>
+      <section class="notification-section" aria-labelledby="unread-heading">
+        <div class="section-heading">
+          <h2 id="unread-heading">Unread</h2>
+          <span>3 new</span>
+        </div>
+
+        <div class="notification-card">
+          <article class="notification-row">
+            <span class="status-dot" aria-hidden="true"></span>
+            <div class="notification-copy">
+              <div class="notification-title-line">
+                <p class="notification-title">Pronunciation review ready</p>
+                <time class="notification-time">9:42 AM</time>
+              </div>
+              <p class="notification-message">Your coach added notes to Lesson 8.</p>
+              <p class="notification-source">Everyday English</p>
+            </div>
+          </article>
+
+          <article class="notification-row">
+            <span class="status-dot" aria-hidden="true"></span>
+            <div class="notification-copy">
+              <div class="notification-title-line">
+                <p class="notification-title">Tessa Vale replied</p>
+                <time class="notification-time">8:16 AM</time>
+              </div>
+              <p class="notification-message">She answered your question about past tense.</p>
+              <p class="notification-source">Course discussion</p>
+            </div>
+          </article>
+
+          <article class="notification-row">
+            <span class="status-dot" aria-hidden="true"></span>
+            <div class="notification-copy">
+              <div class="notification-title-line">
+                <p class="notification-title">Vocabulary goal reached</p>
+                <time class="notification-time">7:05 AM</time>
+              </div>
+              <p class="notification-message">You reviewed 40 words this week.</p>
+              <p class="notification-source">Learning activity</p>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="notification-section" aria-labelledby="read-heading">
+        <div class="section-heading">
+          <h2 id="read-heading">Read</h2>
+          <span>Earlier</span>
+        </div>
+
+        <div class="notification-card">
+          <article class="notification-row read">
+            <span class="status-dot" aria-hidden="true"></span>
+            <div class="notification-copy">
+              <div class="notification-title-line">
+                <p class="notification-title">Lesson feedback posted</p>
+                <time class="notification-time">May 20</time>
+              </div>
+              <p class="notification-message">Your dialogue exercise has been reviewed.</p>
+              <p class="notification-source">Speaking Foundations</p>
+            </div>
+          </article>
+
+          <article class="notification-row read">
+            <span class="status-dot" aria-hidden="true"></span>
+            <div class="notification-copy">
+              <div class="notification-title-line">
+                <p class="notification-title">New course unit added</p>
+                <time class="notification-time">May 18</time>
+              </div>
+              <p class="notification-message">Unit 6 is now available in your course.</p>
+              <p class="notification-source">Business English</p>
+            </div>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <nav class="bottom-nav" aria-label="Primary navigation">
+      <button class="nav-item" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H11v16H6.5A2.5 2.5 0 0 0 4 21.5z"></path>
+          <path d="M20 5.5A2.5 2.5 0 0 0 17.5 3H13v16h4.5a2.5 2.5 0 0 1 2.5 2.5z"></path>
+        </svg>
+        <span>Learn</span>
+      </button>
+
+      <button class="nav-item" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 3v3"></path>
+          <path d="M5.6 5.6 7.7 7.7"></path>
+          <path d="M3 12h3"></path>
+          <path d="M18 12h3"></path>
+          <path d="m16.3 7.7 2.1-2.1"></path>
+          <circle cx="12" cy="12" r="5"></circle>
+          <path d="M9 21h6"></path>
+          <path d="M10 17v4"></path>
+          <path d="M14 17v4"></path>
+        </svg>
+        <span>Practice</span>
+      </button>
+
+      <button class="nav-item active" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path>
+          <path d="M10 21h4"></path>
+        </svg>
+        <span>Notifications</span>
+      </button>
+
+      <button class="nav-item" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="8" r="4"></circle>
+          <path d="M4.5 21a7.5 7.5 0 0 1 15 0"></path>
+        </svg>
+        <span>Profile</span>
+      </button>
+    </nav>
+  </div>
+</body>
+</html>

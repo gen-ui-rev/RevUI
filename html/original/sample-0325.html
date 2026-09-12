@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Group Profile</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #e8e7e5;
+      color: #211d1d;
+      font-family: 'Roboto', system-ui, sans-serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      position: relative;
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #fffdfc;
+    }
+
+    .topbar {
+      height: 56px;
+      flex: 0 0 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+    }
+
+    .topbar-title {
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 24px;
+    }
+
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .icon-button {
+      width: 24px;
+      height: 24px;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: #3c3535;
+    }
+
+    .icon-button svg {
+      display: block;
+      width: 24px;
+      height: 24px;
+    }
+
+    main {
+      flex: 1 1 auto;
+      min-height: 0;
+    }
+
+    .profile {
+      margin: 0 16px;
+      padding: 16px;
+      border-radius: 10px;
+      background: #b5222212;
+    }
+
+    .profile-head {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+    }
+
+    .group-image {
+      width: 68px;
+      height: 68px;
+      flex: 0 0 68px;
+      border-radius: 10px;
+      background: #d99b9b;
+    }
+
+    .profile-copy {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .profile-copy h1 {
+      margin: 1px 0 4px;
+      font-size: 22px;
+      line-height: 28px;
+      font-weight: 700;
+    }
+
+    .profile-copy p {
+      margin: 0;
+      color: #6f6262;
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .join-button {
+      width: 74px;
+      height: 38px;
+      margin-top: 14px;
+      border: 0;
+      border-radius: 10px;
+      background: #b52222;
+      color: #ffffff;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      margin-top: 15px;
+    }
+
+    .stat {
+      min-width: 0;
+      text-align: center;
+    }
+
+    .stat + .stat {
+      border-left: 1px solid #e4cccc;
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 16px;
+      line-height: 20px;
+      font-weight: 700;
+    }
+
+    .stat span {
+      display: block;
+      margin-top: 2px;
+      color: #786969;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .profile-tabs {
+      height: 46px;
+      margin: 0 16px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      align-items: stretch;
+    }
+
+    .profile-tab {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #786d6d;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .profile-tab.active {
+      color: #a51e1e;
+      font-weight: 700;
+    }
+
+    .profile-tab.active::after {
+      content: "";
+      position: absolute;
+      right: 24px;
+      bottom: 0;
+      left: 24px;
+      height: 3px;
+      border-radius: 3px 3px 0 0;
+      background: #b52222;
+    }
+
+    .section {
+      padding: 18px 16px 0;
+    }
+
+    .section-heading {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .section-heading h2 {
+      margin: 0;
+      font-size: 16px;
+      line-height: 22px;
+      font-weight: 700;
+    }
+
+    .section-heading span {
+      color: #756969;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .weekly-card {
+      padding: 14px;
+      border-radius: 10px;
+      background: #b522220d;
+    }
+
+    .goal-line {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+    }
+
+    .goal-line strong {
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 700;
+    }
+
+    .goal-line span {
+      color: #6d6060;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .progress-track {
+      height: 8px;
+      margin: 10px 0 13px;
+      border-radius: 10px;
+      background: #eadada;
+    }
+
+    .progress-fill {
+      width: 74%;
+      height: 8px;
+      border-radius: 10px;
+      background: #b52222;
+    }
+
+    .week-days {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 6px;
+    }
+
+    .day {
+      text-align: center;
+      color: #807373;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .day-mark {
+      width: 26px;
+      height: 26px;
+      margin: 0 auto 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 10px;
+      background: #eadede;
+      color: #817575;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .day.complete .day-mark {
+      background: #b52222;
+      color: #ffffff;
+    }
+
+    .activity-section {
+      padding-top: 17px;
+    }
+
+    .activity-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .activity-row {
+      min-height: 57px;
+      display: grid;
+      grid-template-columns: 38px minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 11px;
+    }
+
+    .activity-row + .activity-row {
+      border-top: 1px solid #eee8e6;
+    }
+
+    .person-image {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: #d8adad;
+    }
+
+    .activity-row:nth-child(2) .person-image {
+      background: #cfa3a0;
+    }
+
+    .activity-row:nth-child(3) .person-image {
+      background: #dfb9b2;
+    }
+
+    .activity-row:nth-child(4) .person-image {
+      background: #c99b9b;
+    }
+
+    .activity-copy {
+      min-width: 0;
+    }
+
+    .activity-name {
+      overflow: hidden;
+      color: #2a2525;
+      font-size: 14px;
+      line-height: 19px;
+      font-weight: 500;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .activity-detail {
+      overflow: hidden;
+      color: #796e6e;
+      font-size: 12px;
+      line-height: 17px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .activity-value {
+      padding-left: 8px;
+      color: #3c3535;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 700;
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .tabbar {
+      height: 66px;
+      flex: 0 0 66px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border-top: 1px solid #ece6e4;
+      background: #fffdfc;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      color: #817676;
+      font-size: 12px;
+      line-height: 14px;
+      font-weight: 500;
+    }
+
+    .nav-item.active {
+      color: #b52222;
+    }
+
+    .nav-item svg {
+      width: 22px;
+      height: 22px;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <button class="icon-button" aria-label="Go back">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <div class="topbar-title">Group profile</div>
+      <div class="topbar-actions">
+        <button class="icon-button" aria-label="Share group">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M12 16V4M12 4L8 8M12 4L16 8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M6 12V19H18V12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <button class="icon-button" aria-label="More options">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <circle cx="5" cy="12" r="1.7"/>
+            <circle cx="12" cy="12" r="1.7"/>
+            <circle cx="19" cy="12" r="1.7"/>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <main>
+      <section class="profile" aria-labelledby="group-name">
+        <div class="profile-head">
+          <div class="group-image" role="img" aria-label="Group picture"></div>
+          <div class="profile-copy">
+            <h1 id="group-name">North Harbor Runners</h1>
+            <p>Public group · Portland, Oregon</p>
+            <button class="join-button">Join group</button>
+          </div>
+        </div>
+        <div class="stats" aria-label="Group statistics">
+          <div class="stat">
+            <strong>428</strong>
+            <span>Members</span>
+          </div>
+          <div class="stat">
+            <strong>1,306 mi</strong>
+            <span>This month</span>
+          </div>
+          <div class="stat">
+            <strong>4.8</strong>
+            <span>Runs weekly</span>
+          </div>
+        </div>
+      </section>
+
+      <nav class="profile-tabs" aria-label="Group profile sections">
+        <div class="profile-tab active">Overview</div>
+        <div class="profile-tab">Members</div>
+        <div class="profile-tab">Events</div>
+      </nav>
+
+      <section class="section" aria-labelledby="weekly-title">
+        <div class="section-heading">
+          <h2 id="weekly-title">Weekly group goal</h2>
+          <span>June 9–15</span>
+        </div>
+        <div class="weekly-card">
+          <div class="goal-line">
+            <strong>741 of 1,000 miles</strong>
+            <span>74% complete</span>
+          </div>
+          <div class="progress-track" aria-label="Weekly goal 74 percent complete">
+            <div class="progress-fill"></div>
+          </div>
+          <div class="week-days">
+            <div class="day complete"><div class="day-mark">M</div>186</div>
+            <div class="day complete"><div class="day-mark">T</div>154</div>
+            <div class="day complete"><div class="day-mark">W</div>171</div>
+            <div class="day complete"><div class="day-mark">T</div>142</div>
+            <div class="day"><div class="day-mark">F</div>88</div>
+            <div class="day"><div class="day-mark">S</div>0</div>
+            <div class="day"><div class="day-mark">S</div>0</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section activity-section" aria-labelledby="activity-title">
+        <div class="section-heading">
+          <h2 id="activity-title">Recent member activity</h2>
+          <span>Today</span>
+        </div>
+        <ul class="activity-list">
+          <li class="activity-row">
+            <div class="person-image" role="img" aria-label="Mara Ellison profile picture"></div>
+            <div class="activity-copy">
+              <div class="activity-name">Mara Ellison</div>
+              <div class="activity-detail">River Loop · 7:12 AM</div>
+            </div>
+            <div class="activity-value">6.4 mi</div>
+          </li>
+          <li class="activity-row">
+            <div class="person-image" role="img" aria-label="Calvin Rowe profile picture"></div>
+            <div class="activity-copy">
+              <div class="activity-name">Calvin Rowe</div>
+              <div class="activity-detail">Easy recovery run · 8:05 AM</div>
+            </div>
+            <div class="activity-value">3.1 mi</div>
+          </li>
+          <li class="activity-row">
+            <div class="person-image" role="img" aria-label="Nora Bell profile picture"></div>
+            <div class="activity-copy">
+              <div class="activity-name">Nora Bell</div>
+              <div class="activity-detail">Hill repeats · 9:18 AM</div>
+            </div>
+            <div class="activity-value">5.7 mi</div>
+          </li>
+          <li class="activity-row">
+            <div class="person-image" role="img" aria-label="Evan Mercer profile picture"></div>
+            <div class="activity-copy">
+              <div class="activity-name">Evan Mercer</div>
+              <div class="activity-detail">Waterfront tempo · 10:26 AM</div>
+            </div>
+            <div class="activity-value">8.2 mi</div>
+          </li>
+        </ul>
+      </section>
+    </main>
+
+    <nav class="tabbar" aria-label="Main navigation">
+      <div class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M4 10.5L12 4L20 10.5V20H14.5V14H9.5V20H4V10.5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+        </svg>
+        <span>Home</span>
+      </div>
+      <div class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M5 17L9 12L12 15L18 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M15 7H18V10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span>Activity</span>
+      </div>
+      <div class="nav-item active">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="8" cy="9" r="3" stroke="currentColor" stroke-width="1.8"/>
+          <circle cx="16.5" cy="10" r="2.5" stroke="currentColor" stroke-width="1.8"/>
+          <path d="M3.5 19C3.8 15.9 5.4 14.5 8 14.5C10.6 14.5 12.2 15.9 12.5 19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          <path d="M13.3 15.2C14.1 14.4 15.1 14 16.5 14C18.8 14 20.2 15.3 20.5 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+        <span>Groups</span>
+      </div>
+      <div class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="12" cy="8" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+          <path d="M5.5 20C5.9 15.8 8 14 12 14C16 14 18.1 15.8 18.5 20" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+        <span>Profile</span>
+      </div>
+    </nav>
+  </div>
+</body>
+</html>

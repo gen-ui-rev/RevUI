@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Northstar Learning Plans</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 28px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #172033;
+      background: #e7e9ed;
+      font-family: 'Source Sans 3', system-ui, sans-serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      width: 1024px;
+      height: 768px;
+      display: flex;
+      flex-direction: column;
+      background: #ffffff;
+      border: 1px solid #d9dee8;
+      box-shadow: 0 12px 34px rgba(25, 35, 55, 0.1);
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      gap: 34px;
+      padding: 13px 34px;
+      border-bottom: 1px solid #e2e6ed;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-right: auto;
+      color: #172033;
+      font-size: 18px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .brand-mark {
+      width: 30px;
+      height: 30px;
+      display: grid;
+      place-items: center;
+      flex: none;
+      color: #1e63d5;
+      border: 2px solid #1e63d5;
+      border-radius: 10px;
+    }
+
+    .primary-nav {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+    }
+
+    .primary-link {
+      color: #687389;
+      font-size: 14px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .primary-link.active {
+      color: #1e63d5;
+    }
+
+    .account-button {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 11px;
+      color: #344058;
+      background: #f6f8fb;
+      border: 1px solid #dbe1ea;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .account-button svg {
+      width: 18px;
+      height: 18px;
+      stroke: currentColor;
+    }
+
+    .page-tabs {
+      display: flex;
+      gap: 30px;
+      padding: 0 40px;
+      border-bottom: 1px solid #e3e7ee;
+    }
+
+    .page-tab {
+      position: relative;
+      padding: 10px 1px 9px;
+      color: #69758a;
+      font-size: 14px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .page-tab.active {
+      color: #1e63d5;
+    }
+
+    .page-tab.active::after {
+      content: "";
+      position: absolute;
+      right: 0;
+      bottom: -1px;
+      left: 0;
+      height: 3px;
+      background: #1e63d5;
+    }
+
+    main {
+      flex: 1;
+      padding: 18px 40px 16px;
+    }
+
+    .hero-row {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 36px;
+    }
+
+    .hero-copy {
+      max-width: 620px;
+    }
+
+    .eyebrow {
+      margin: 0 0 2px;
+      color: #1e63d5;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    h1,
+    h2 {
+      font-family: 'Playfair Display', Georgia, serif;
+    }
+
+    h1 {
+      margin: 0;
+      color: #15213a;
+      font-size: 30px;
+      line-height: 1.08;
+    }
+
+    .intro {
+      margin: 5px 0 0;
+      color: #5d687b;
+      font-size: 14px;
+      line-height: 1.35;
+    }
+
+    .billing-wrap {
+      flex: none;
+    }
+
+    .billing-label {
+      margin: 0 0 5px;
+      color: #667085;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .billing-control {
+      display: flex;
+      width: 268px;
+      padding: 4px;
+      background: #eef3fb;
+      border-radius: 9px;
+    }
+
+    .billing-option {
+      flex: 1;
+      padding: 6px 9px;
+      text-align: center;
+      color: #61708a;
+      font-size: 13px;
+      font-weight: 600;
+      border-radius: 6px;
+      white-space: nowrap;
+    }
+
+    .billing-option.selected {
+      color: #ffffff;
+      background: #1e63d5;
+    }
+
+    .plan-grid,
+    .feature-row,
+    .group-label {
+      display: grid;
+      grid-template-columns: 240px repeat(3, minmax(0, 1fr));
+    }
+
+    .plan-grid {
+      margin-top: 15px;
+      border: 1px solid #cfd7e3;
+      border-radius: 9px 9px 0 0;
+    }
+
+    .price-label {
+      display: flex;
+      align-items: center;
+      padding: 10px 16px;
+      color: #667187;
+      font-size: 13px;
+      line-height: 1.25;
+    }
+
+    .plan {
+      padding: 8px 8px 9px;
+      text-align: center;
+      border-left: 1px solid #e0e5ec;
+    }
+
+    .plan.featured {
+      padding-top: 5px;
+      background: #eef5ff;
+      border-top: 3px solid #1e63d5;
+    }
+
+    .plan-name {
+      color: #29354b;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .plan.featured .plan-name {
+      color: #1e63d5;
+    }
+
+    .price-line {
+      display: flex;
+      align-items: baseline;
+      justify-content: center;
+      gap: 5px;
+      margin-top: 3px;
+    }
+
+    .plan-price {
+      color: #14213a;
+      font-size: 22px;
+      line-height: 1;
+      font-weight: 600;
+    }
+
+    .plan-term {
+      color: #6c778c;
+      font-size: 12px;
+    }
+
+    .recommendation {
+      margin-top: 2px;
+      color: #1e63d5;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .comparison-title-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin: 12px 0 5px;
+    }
+
+    .comparison-heading {
+      margin: 0;
+      color: #17233b;
+      font-size: 19px;
+      line-height: 1.2;
+    }
+
+    .comparison-caption {
+      color: #7a8496;
+      font-size: 12px;
+    }
+
+    .comparison {
+      border: 1px solid #cfd7e3;
+      border-radius: 0 0 9px 9px;
+    }
+
+    .feature-group + .feature-group {
+      border-top: 1px solid #cfd7e3;
+    }
+
+    .group-label {
+      background: #f4f6f9;
+      border-bottom: 1px solid #dde3eb;
+    }
+
+    .group-label span {
+      grid-column: 1 / -1;
+      padding: 5px 13px;
+      color: #344159;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.055em;
+      text-transform: uppercase;
+    }
+
+    .feature-row {
+      align-items: center;
+    }
+
+    .feature-row + .feature-row {
+      border-top: 1px solid #e7eaf0;
+    }
+
+    .feature-label {
+      padding: 6px 13px;
+      color: #303b50;
+      font-size: 13px;
+      line-height: 1.15;
+    }
+
+    .feature-value {
+      padding: 6px 8px;
+      text-align: center;
+      color: #505d72;
+      font-size: 13px;
+      line-height: 1.15;
+      border-left: 1px solid #e8ebf0;
+    }
+
+    .feature-value.standard {
+      color: #174f9f;
+      background: #f3f7fd;
+      font-weight: 600;
+    }
+
+    .note {
+      margin: 8px 0 0;
+      color: #667085;
+      font-size: 12px;
+      line-height: 1.3;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
+            <path d="M5 6.5C8.2 6.5 10.2 7.2 12 9v9c-1.8-1.8-3.8-2.5-7-2.5v-9Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+            <path d="M19 6.5c-3.2 0-5.2.7-7 2.5v9c1.8-1.8 3.8-2.5 7-2.5v-9Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+          </svg>
+        </span>
+        <span>Northstar Learning</span>
+      </div>
+
+      <nav class="primary-nav" aria-label="Primary navigation">
+        <div class="primary-link">Home</div>
+        <div class="primary-link">Courses</div>
+        <div class="primary-link">Progress</div>
+        <div class="primary-link active">Account</div>
+      </nav>
+
+      <button class="account-button" type="button" aria-label="Open account">
+        <svg viewBox="0 0 24 24" fill="none">
+          <circle cx="12" cy="8" r="3.5" stroke-width="1.8"/>
+          <path d="M5.5 20c.5-4 2.7-6 6.5-6s6 2 6.5 6" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+        My account
+      </button>
+    </header>
+
+    <nav class="page-tabs" aria-label="Pricing sections">
+      <div class="page-tab active">Plans</div>
+      <div class="page-tab">Billing FAQ</div>
+      <div class="page-tab">For Teams</div>
+    </nav>
+
+    <main>
+      <div class="hero-row">
+        <div class="hero-copy">
+          <p class="eyebrow">Learning plans</p>
+          <h1>Compare course access</h1>
+          <p class="intro">Choose the lessons, feedback, and live instruction that fit your study routine.</p>
+        </div>
+
+        <div class="billing-wrap">
+          <p class="billing-label">Billing period</p>
+          <div class="billing-control" aria-label="Billing period">
+            <div class="billing-option">Monthly</div>
+            <div class="billing-option selected">Annual · Save 20%</div>
+          </div>
+        </div>
+      </div>
+
+      <section class="plan-grid" aria-label="Plan prices">
+        <div class="price-label">Price per month, billed annually</div>
+        <div class="plan">
+          <div class="plan-name">Starter</div>
+          <div class="price-line">
+            <span class="plan-price">$0</span>
+            <span class="plan-term">No charge</span>
+          </div>
+        </div>
+        <div class="plan featured">
+          <div class="plan-name">Standard</div>
+          <div class="price-line">
+            <span class="plan-price">$12</span>
+            <span class="plan-term">$144 yearly</span>
+          </div>
+          <div class="recommendation">Best fit</div>
+        </div>
+        <div class="plan">
+          <div class="plan-name">Complete</div>
+          <div class="price-line">
+            <span class="plan-price">$24</span>
+            <span class="plan-term">$288 yearly</span>
+          </div>
+        </div>
+      </section>
+
+      <div class="comparison-title-row">
+        <h2 class="comparison-heading">What each plan includes</h2>
+        <span class="comparison-caption">All limits reset monthly</span>
+      </div>
+
+      <section class="comparison" aria-label="Plan feature comparison">
+        <div class="feature-group">
+          <div class="group-label"><span>Course access</span></div>
+          <div class="feature-row">
+            <div class="feature-label">Course library</div>
+            <div class="feature-value">8 courses</div>
+            <div class="feature-value standard">60 courses</div>
+            <div class="feature-value">All 140+</div>
+          </div>
+          <div class="feature-row">
+            <div class="feature-label">Practice library</div>
+            <div class="feature-value">Core</div>
+            <div class="feature-value standard">Full</div>
+            <div class="feature-value">Full</div>
+          </div>
+          <div class="feature-row">
+            <div class="feature-label">Offline lessons</div>
+            <div class="feature-value">No</div>
+            <div class="feature-value standard">Yes</div>
+            <div class="feature-value">Yes</div>
+          </div>
+        </div>
+
+        <div class="feature-group">
+          <div class="group-label"><span>Learning support</span></div>
+          <div class="feature-row">
+            <div class="feature-label">Live classes</div>
+            <div class="feature-value">None</div>
+            <div class="feature-value standard">2 monthly</div>
+            <div class="feature-value">8 monthly</div>
+          </div>
+          <div class="feature-row">
+            <div class="feature-label">Writing feedback</div>
+            <div class="feature-value">3 monthly</div>
+            <div class="feature-value standard">Unlimited</div>
+            <div class="feature-value">Unlimited</div>
+          </div>
+          <div class="feature-row">
+            <div class="feature-label">Certificates</div>
+            <div class="feature-value">No</div>
+            <div class="feature-value standard">Included</div>
+            <div class="feature-value">Included</div>
+          </div>
+        </div>
+
+        <div class="feature-group">
+          <div class="group-label"><span>Account benefits</span></div>
+          <div class="feature-row">
+            <div class="feature-label">Learner profiles</div>
+            <div class="feature-value">1</div>
+            <div class="feature-value standard">1</div>
+            <div class="feature-value">4</div>
+          </div>
+          <div class="feature-row">
+            <div class="feature-label">Tutor session savings</div>
+            <div class="feature-value">None</div>
+            <div class="feature-value standard">10%</div>
+            <div class="feature-value">20%</div>
+          </div>
+        </div>
+      </section>
+
+      <p class="note">Annual plans renew every 12 months. Change plans from account settings before your next renewal date.</p>
+    </main>
+  </div>
+</body>
+</html>

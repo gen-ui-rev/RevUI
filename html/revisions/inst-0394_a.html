@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Roundup — Shoot Call Sheet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1c1a17;
+    --muted:#746f66;
+    --line:#e5e1d8;
+    --accent:#f2b84b;
+    --accent-soft:#fff3d8;
+    --soft:#f6f4ef;
+    --rail:#24221f;
+  }
+  *{box-sizing:border-box;}
+  body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    margin:0;
+    padding:32px 0;
+    background:#d8d5cf;
+    color:var(--ink);
+    font-family:'Nunito Sans', system-ui, sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .screen{
+    width:768px;
+    height:1024px;
+    position:relative;
+    display:flex;
+    background:#fff;
+  }
+
+  .rail{
+    width:88px;
+    flex:0 0 88px;
+    padding:22px 10px 20px;
+    background:var(--rail);
+    color:#d5d1c8;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+  }
+  .brand{
+    width:42px;
+    height:42px;
+    border-radius:13px;
+    background:var(--accent);
+    color:var(--ink);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:18px;
+    font-weight:700;
+    margin-bottom:28px;
+  }
+  .rail-nav{
+    width:100%;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  .rail-item{
+    min-height:62px;
+    border-radius:12px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:5px;
+    font-size:10px;
+    font-weight:600;
+    color:#aaa69e;
+    position:relative;
+  }
+  .rail-item.active{
+    background:#393631;
+    color:#fff;
+  }
+  .rail-item.active::before{
+    content:"";
+    position:absolute;
+    left:-10px;
+    width:4px;
+    height:30px;
+    border-radius:0 6px 6px 0;
+    background:var(--accent);
+  }
+  .rail-spacer{flex:1;}
+  .crew-avatar{
+    width:38px;
+    height:38px;
+    border-radius:50%;
+    background:#504c45;
+    border:2px solid #6b665e;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#fff;
+    font-size:12px;
+    font-weight:700;
+  }
+
+  .workspace{
+    width:680px;
+    min-width:0;
+    display:flex;
+    flex-direction:column;
+  }
+  .topbar{
+    padding:20px 24px 16px;
+    border-bottom:1px solid var(--line);
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+  }
+  .title-wrap{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    min-width:0;
+  }
+  .back{
+    width:38px;
+    height:38px;
+    flex:0 0 38px;
+    border:1px solid var(--line);
+    border-radius:10px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .eyebrow{
+    margin:0 0 2px;
+    color:var(--muted);
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:.8px;
+    text-transform:uppercase;
+  }
+  .topbar h1{
+    margin:0;
+    font-size:22px;
+    line-height:27px;
+    letter-spacing:-.4px;
+  }
+  .top-actions{
+    display:flex;
+    gap:10px;
+  }
+  .action{
+    min-height:38px;
+    padding:0 14px;
+    border:1px solid var(--line);
+    border-radius:10px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:7px;
+    font-size:13px;
+    font-weight:700;
+    background:#fff;
+  }
+  .action.primary{
+    border-color:var(--accent);
+    background:var(--accent);
+  }
+
+  .content{
+    padding:22px 24px 24px;
+  }
+  .columns{
+    display:grid;
+    grid-template-columns:348px 260px;
+    gap:24px;
+    align-items:start;
+  }
+
+  .hero{
+    width:348px;
+    border:1px solid var(--line);
+    border-radius:12px;
+    background:#fff;
+    position:relative;
+  }
+  .hero img{
+    display:block;
+    width:348px;
+    height:140px;
+    margin:-1px 0 0 -1px;
+    object-fit:cover;
+    background:#cbc7bf;
+    border-radius:12px 12px 0 0;
+  }
+  .badge{
+    position:absolute;
+    top:12px;
+    left:12px;
+    padding:6px 10px;
+    border-radius:8px;
+    background:var(--accent);
+    color:var(--ink);
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:.6px;
+  }
+  .hero-body{
+    padding:15px 16px 16px;
+  }
+  .hero-body h2{
+    margin:0;
+    font-size:20px;
+    line-height:25px;
+    letter-spacing:-.35px;
+  }
+  .hero-sub{
+    margin:5px 0 0;
+    color:var(--muted);
+    font-size:13px;
+    line-height:18px;
+  }
+  .call-row{
+    margin-top:13px;
+    padding-top:12px;
+    border-top:1px solid var(--line);
+    display:grid;
+    grid-template-columns:1fr 1fr 1fr;
+    gap:8px;
+  }
+  .call-time strong{
+    display:block;
+    font-size:16px;
+    line-height:20px;
+  }
+  .call-time span{
+    color:var(--muted);
+    font-size:10px;
+    font-weight:700;
+    letter-spacing:.5px;
+    text-transform:uppercase;
+  }
+
+  .section{
+    margin-top:20px;
+  }
+  .section-head{
+    margin-bottom:8px;
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+  }
+  .section-head h3{
+    margin:0;
+    font-size:13px;
+    letter-spacing:.7px;
+    text-transform:uppercase;
+  }
+  .section-head span{
+    color:var(--muted);
+    font-size:12px;
+  }
+  .info-card,
+  .contact-card,
+  .schedule-card,
+  .note-card{
+    border:1px solid var(--line);
+    border-radius:12px;
+    background:#fff;
+  }
+  .info-row{
+    padding:11px 13px;
+    border-bottom:1px solid var(--line);
+    display:grid;
+    grid-template-columns:94px 1fr;
+    gap:10px;
+    align-items:start;
+  }
+  .info-row:last-child{border-bottom:none;}
+  .info-row .label{
+    color:var(--muted);
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:.4px;
+    text-transform:uppercase;
+  }
+  .info-row .value{
+    font-size:13px;
+    font-weight:600;
+    line-height:18px;
+  }
+
+  .contact-card{
+    padding:4px 13px;
+  }
+  .contact{
+    padding:10px 0;
+    border-bottom:1px solid var(--line);
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .contact:last-child{border-bottom:none;}
+  .initials{
+    width:34px;
+    height:34px;
+    flex:0 0 34px;
+    border-radius:10px;
+    background:var(--soft);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:11px;
+    font-weight:700;
+  }
+  .contact-name{
+    min-width:0;
+    flex:1;
+  }
+  .contact-name strong{
+    display:block;
+    font-size:13px;
+  }
+  .contact-name span{
+    display:block;
+    color:var(--muted);
+    font-size:12px;
+  }
+  .phone{
+    color:var(--muted);
+    font-size:12px;
+  }
+
+  .right-column .section:first-child{margin-top:0;}
+  .schedule-card{
+    padding:0 14px;
+  }
+  .task{
+    padding:13px 0;
+    border-bottom:1px solid var(--line);
+    display:flex;
+    align-items:flex-start;
+    gap:10px;
+  }
+  .task:last-child{border-bottom:none;}
+  .done-circle{
+    width:23px;
+    height:23px;
+    flex:0 0 23px;
+    margin-top:1px;
+    border-radius:50%;
+    border:1.5px solid #c8c3b9;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .done-circle.done{
+    border-color:var(--accent);
+    background:var(--accent);
+  }
+  .task-copy{
+    min-width:0;
+    flex:1;
+  }
+  .task-copy strong{
+    display:block;
+    font-size:13px;
+    line-height:18px;
+  }
+  .task-copy span{
+    display:block;
+    margin-top:2px;
+    color:var(--muted);
+    font-size:11px;
+    line-height:15px;
+  }
+  .task.complete strong{
+    color:var(--muted);
+    text-decoration:line-through;
+    font-weight:400;
+  }
+  .owner{
+    width:30px;
+    height:30px;
+    flex:0 0 30px;
+    border-radius:9px;
+    background:var(--soft);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:10px;
+    font-weight:700;
+  }
+  .note-card{
+    padding:14px;
+    background:var(--soft);
+  }
+  .note-card h4{
+    margin:0 0 7px;
+    font-size:13px;
+  }
+  .note-card p{
+    margin:0;
+    color:#5f5a52;
+    font-size:12px;
+    line-height:18px;
+  }
+  .weather{
+    margin-top:12px;
+    padding-top:12px;
+    border-top:1px solid #dfdbd2;
+    display:flex;
+    justify-content:space-between;
+    gap:10px;
+    font-size:12px;
+  }
+  .weather strong{font-size:13px;}
+  .weather span{color:var(--muted);}
+</style>
+</head>
+<body>
+<div class="screen">
+  <aside class="rail" aria-label="Primary navigation">
+    <div class="brand">R</div>
+    <div class="rail-nav">
+      <div class="rail-item">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="4" width="18" height="7" rx="2"/><rect x="3" y="14" width="18" height="6" rx="2"/></svg>
+        Feed
+      </div>
+      <div class="rail-item">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="9" cy="9" r="3.4"/><path d="M3.5 19c.6-3 2.9-4.6 5.5-4.6s4.9 1.6 5.5 4.6"/><path d="M16 6.2a3.2 3.2 0 010 6"/><path d="M18 14.6c2 .6 3.2 2.2 3.5 4.4"/></svg>
+        Crew
+      </div>
+      <div class="rail-item active">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="4.5" width="17" height="16" rx="2.5"/><path d="M8 3v3M16 3v3M7.5 11h9M7.5 15h6"/></svg>
+        Sheets
+      </div>
+      <div class="rail-item">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M20.5 12.2c0 3.9-3.8 7-8.5 7-1 0-2-.15-2.9-.42L4 20.5l1.5-3.4A6.6 6.6 0 013.5 12.2c0-3.9 3.8-7 8.5-7s8.5 3.1 8.5 7z"/></svg>
+        Inbox
+      </div>
+    </div>
+    <div class="rail-spacer"></div>
+    <div class="crew-avatar">MK</div>
+  </aside>
+
+  <main class="workspace">
+    <header class="topbar">
+      <div class="title-wrap">
+        <div class="back" aria-hidden="true">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 5l-7 7 7 7"/></svg>
+        </div>
+        <div>
+          <p class="eyebrow">Production 07</p>
+          <h1>Shoot call sheet</h1>
+        </div>
+      </div>
+      <div class="top-actions">
+        <div class="action">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 3v12M7 10l5 5 5-5"/><path d="M5 20h14"/></svg>
+          Export
+        </div>
+        <div class="action primary">Share with crew</div>
+      </div>
+    </header>
+
+    <div class="content">
+      <div class="columns">
+        <div class="left-column">
+          <section class="hero">
+            <img src="https://loremflickr.com/348/140/party?lock=5541" width="348" height="140" alt="Rooftop location prepared for the evening production">
+            <div class="badge">CALL SHEET 07</div>
+            <div class="hero-body">
+              <h2>Rooftop Dinner — Night Exterior</h2>
+              <p class="hero-sub">Saturday, June 14 · Harbor House Rooftop</p>
+              <div class="call-row">
+                <div class="call-time"><span>Crew call</span><strong>4:30 PM</strong></div>
+                <div class="call-time"><span>Camera</span><strong>7:30 PM</strong></div>
+                <div class="call-time"><span>Wrap</span><strong>10:30 PM</strong></div>
+              </div>
+            </div>
+          </section>
+
+          <section class="section">
+            <div class="section-head">
+              <h3>Production details</h3>
+              <span>Updated 10:12 AM</span>
+            </div>
+            <div class="info-card">
+              <div class="info-row">
+                <div class="label">Location</div>
+                <div class="value">Harbor House, 88 Mercer Street, rooftop level</div>
+              </div>
+              <div class="info-row">
+                <div class="label">Parking</div>
+                <div class="value">Crew garage on Alder Street; validate at reception</div>
+              </div>
+              <div class="info-row">
+                <div class="label">Wardrobe</div>
+                <div class="value">Summer evening casual; avoid tight patterns</div>
+              </div>
+              <div class="info-row">
+                <div class="label">Safety</div>
+                <div class="value">Keep the north fire lane and roof access clear</div>
+              </div>
+            </div>
+          </section>
+
+          <section class="section">
+            <div class="section-head">
+              <h3>Key contacts</h3>
+              <span>Channel 1</span>
+            </div>
+            <div class="contact-card">
+              <div class="contact">
+                <div class="initials">MK</div>
+                <div class="contact-name"><strong>Maya Kim</strong><span>Producer</span></div>
+                <div class="phone">555-0142</div>
+              </div>
+              <div class="contact">
+                <div class="initials">DR</div>
+                <div class="contact-name"><strong>Devon Reed</strong><span>1st Assistant Director</span></div>
+                <div class="phone">555-0178</div>
+              </div>
+              <div class="contact">
+                <div class="initials">OB</div>
+                <div class="contact-name"><strong>Owen Brooks</strong><span>Location manager</span></div>
+                <div class="phone">555-0196</div>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <div class="right-column">
+          <section class="section">
+            <div class="section-head">
+              <h3>Pre-call checklist</h3>
+              <span>3 open</span>
+            </div>
+            <div class="schedule-card">
+              <div class="task">
+                <div class="done-circle"></div>
+                <div class="task-copy">
+                  <strong>Confirm rooftop access</strong>
+                  <span>Due 3:30 PM</span>
+                </div>
+                <div class="owner">MK</div>
+              </div>
+              <div class="task complete">
+                <div class="done-circle done">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#1c1a17" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4 10-10"/></svg>
+                </div>
+                <div class="task-copy">
+                  <strong>Send crew call times</strong>
+                  <span>Sent 9:41 AM</span>
+                </div>
+                <div class="owner">DR</div>
+              </div>
+              <div class="task complete">
+                <div class="done-circle done">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#1c1a17" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4 10-10"/></svg>
+                </div>
+                <div class="task-copy">
+                  <strong>Complete camera check</strong>
+                  <span>Verified 11:20 AM</span>
+                </div>
+                <div class="owner">TF</div>
+              </div>
+              <div class="task">
+                <div class="done-circle"></div>
+                <div class="task-copy">
+                  <strong>Print talent releases</strong>
+                  <span>Due 4:00 PM</span>
+                </div>
+                <div class="owner">PA</div>
+              </div>
+              <div class="task">
+                <div class="done-circle"></div>
+                <div class="task-copy">
+                  <strong>Stage practical lights</strong>
+                  <span>Due before camera call</span>
+                </div>
+                <div class="owner">JW</div>
+              </div>
+            </div>
+          </section>
+
+          <section class="section">
+            <div class="section-head">
+              <h3>Set notes</h3>
+              <span>For all crew</span>
+            </div>
+            <div class="note-card">
+              <h4>Arrival instructions</h4>
+              <p>Check in at the Mercer Street lobby. Freight elevator access begins at 4:15 PM. Catering is beside the south stairwell.</p>
+              <div class="weather">
+                <div><span>Forecast</span><br><strong>72°F · Clear</strong></div>
+                <div><span>Sunset</span><br><strong>8:27 PM</strong></div>
+              </div>
+            </div>
+          </section>
+
+          <section class="section">
+            <div class="section-head">
+              <h3>Emergency</h3>
+              <span>Nearest care</span>
+            </div>
+            <div class="note-card">
+              <h4>City Medical Center</h4>
+              <p>410 Pine Avenue · 6 minutes by car<br>Emergency services: 911</p>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+</body>
+</html>

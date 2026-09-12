@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Northline — Inbox</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 24px 0;
+    margin: 0;
+    background: #d8dcde;
+    font-family: 'Nunito Sans', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .screen {
+    width: 1024px;
+    height: 768px;
+    background: #ffffff;
+    position: relative;
+    display: flex;
+    box-shadow: 0 14px 44px rgba(24,24,27,.18);
+  }
+
+  /* ---------- left icon rail ---------- */
+  .rail {
+    width: 96px;
+    flex: 0 0 96px;
+    background: #f7f8f9;
+    border-right: 1px solid #e4e4e7;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 18px 12px 18px 12px;
+  }
+  .mark {
+    width: 36px; height: 36px;
+    border-radius: 11px;
+    background: #0e7490;
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 22px;
+  }
+  .railitem {
+    width: 72px;
+    padding: 9px 0 7px 0;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    color: #71717a;
+    font-size: 10.5px;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+  .railitem.active {
+    background: #e6f4f8;
+    color: #0e7490;
+    font-weight: 700;
+  }
+  .iconwrap { position: relative; display: flex; }
+  .pip {
+    position: absolute;
+    top: -6px; right: -11px;
+    min-width: 17px;
+    height: 17px;
+    border-radius: 9px;
+    background: #0e7490;
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 17px;
+    text-align: center;
+    padding: 0 4px;
+  }
+  .railfoot {
+    margin-top: auto;
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    background: #e4e4e7;
+    color: #3f3f46;
+    font-size: 12.5px;
+    font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  /* ---------- message list column ---------- */
+  .listcol {
+    width: 316px;
+    flex: 0 0 316px;
+    border-right: 1px solid #e4e4e7;
+    display: flex;
+    flex-direction: column;
+  }
+  .lhead { padding: 18px 16px 12px 16px; }
+  .lhead h1 {
+    margin: 0;
+    font-size: 18px;
+    line-height: 24px;
+    font-weight: 700;
+    color: #18181b;
+    letter-spacing: -0.2px;
+  }
+  .lhead .sub { margin-top: 2px; font-size: 11.5px; line-height: 15px; color: #a1a1aa; }
+  .search {
+    margin-top: 12px;
+    height: 32px;
+    border-radius: 9px;
+    background: #f4f4f5;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 0 10px;
+    font-size: 12px;
+    color: #a1a1aa;
+  }
+
+  /* filters — light, brand-tinted selection */
+  .filters {
+    padding: 0 16px 12px 16px;
+    display: flex;
+    gap: 4px;
+  }
+  .chip {
+    height: 30px;
+    padding: 0 8px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11.5px;
+    font-weight: 600;
+    color: #71717a;
+    background: transparent;
+    white-space: nowrap;
+  }
+  .chip.on {
+    background: #e6f4f8;
+    color: #0e7490;
+    font-weight: 700;
+  }
+  .chip.on::before {
+    content: "";
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: #0e7490;
+  }
+
+  .divider { height: 1px; background: #e4e4e7; }
+
+  .mrow {
+    height: 68px;
+    padding: 0 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 1px solid #f1f1f4;
+    border-left: 3px solid transparent;
+  }
+  .mrow.sel {
+    background: #e6f4f8;
+    border-left-color: #0e7490;
+    padding-left: 13px;
+  }
+  .mdot { flex: 0 0 10px; }
+  .mdot i {
+    display: block;
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: #0e7490;
+  }
+  .mono {
+    width: 32px; height: 32px;
+    flex: 0 0 32px;
+    border-radius: 9px;
+    background: #e4e4e7;
+    color: #3f3f46;
+    font-size: 11.5px;
+    font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    letter-spacing: .3px;
+  }
+  .mbody { flex: 1; min-width: 0; }
+  .line1 { display: flex; align-items: baseline; gap: 6px; }
+  .from {
+    flex: 1;
+    min-width: 0;
+    font-size: 12.5px;
+    line-height: 16px;
+    font-weight: 600;
+    color: #52525b;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .unread .from { color: #18181b; font-weight: 700; }
+  .time { flex: 0 0 46px; text-align: right; font-size: 11px; color: #a1a1aa; white-space: nowrap; }
+  .subj {
+    margin-top: 2px;
+    font-size: 12.5px;
+    line-height: 18px;
+    color: #52525b;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .unread .subj { color: #18181b; font-weight: 700; }
+  .prev {
+    margin-top: 1px;
+    font-size: 11.5px;
+    line-height: 16px;
+    color: #a1a1aa;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .clip { display: inline-flex; vertical-align: -2px; margin-right: 4px; color: #71717a; }
+  .lfoot {
+    margin-top: auto;
+    border-top: 1px solid #e4e4e7;
+    padding: 12px 16px;
+    font-size: 11px;
+    line-height: 15px;
+    color: #a1a1aa;
+  }
+
+  /* ---------- reading pane ---------- */
+  .reader { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+  .toolbar {
+    height: 56px;
+    flex: 0 0 56px;
+    border-bottom: 1px solid #e4e4e7;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 24px;
+  }
+  .tbtn {
+    height: 32px;
+    padding: 0 12px;
+    border-radius: 9px;
+    background: #f4f4f5;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #3f3f46;
+  }
+  .tbtn.primary { background: #0e7490; color: #ffffff; font-weight: 700; }
+  .tbtn.ghost { background: transparent; color: #71717a; margin-left: auto; }
+
+  .content { padding: 26px 28px 0 28px; }
+  .content h2 {
+    margin: 0;
+    font-size: 19px;
+    line-height: 25px;
+    font-weight: 700;
+    color: #18181b;
+    letter-spacing: -0.2px;
+  }
+  .meta {
+    margin-top: 14px;
+    display: flex;
+    align-items: center;
+    gap: 11px;
+  }
+  .meta .mono { width: 38px; height: 38px; flex: 0 0 38px; border-radius: 10px; font-size: 13px; }
+  .mname { font-size: 13.5px; font-weight: 700; color: #27272a; line-height: 18px; }
+  .maddr { font-size: 11.5px; color: #a1a1aa; line-height: 15px; }
+  .mtime { margin-left: auto; font-size: 11.5px; color: #a1a1aa; }
+  .hr { height: 1px; background: #e4e4e7; margin: 18px 0; }
+  .content p {
+    margin: 0 0 13px 0;
+    font-size: 13.5px;
+    line-height: 22px;
+    color: #3f3f46;
+  }
+  .attach {
+    margin-top: 5px;
+    border: 1px solid #e4e4e7;
+    border-radius: 11px;
+    padding: 12px 14px;
+    display: flex;
+    align-items: center;
+    gap: 11px;
+  }
+  .attach .aicon {
+    width: 34px; height: 34px;
+    flex: 0 0 34px;
+    border-radius: 9px;
+    background: #e6f4f8;
+    color: #0e7490;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .aname { font-size: 12.5px; font-weight: 700; color: #27272a; line-height: 17px; }
+  .asize { font-size: 11px; color: #a1a1aa; line-height: 14px; }
+  .adl { margin-left: auto; font-size: 12px; font-weight: 700; color: #0e7490; }
+  .replybox {
+    margin-top: 20px;
+    border: 1px solid #e4e4e7;
+    border-radius: 11px;
+    padding: 10px 10px 10px 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .replybox .ph { flex: 1; font-size: 12.5px; color: #a1a1aa; }
+  .sendbtn {
+    height: 32px;
+    padding: 0 14px;
+    border-radius: 9px;
+    background: #0e7490;
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 700;
+    display: flex; align-items: center;
+  }
+</style>
+</head>
+<body>
+  <div class="screen">
+
+    <aside class="rail">
+      <div class="mark">N</div>
+
+      <div class="railitem">
+        <span class="iconwrap"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="13" rx="2.5"/><path d="M3 10h18"/></svg></span>
+        <span>Accounts</span>
+      </div>
+      <div class="railitem">
+        <span class="iconwrap"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V5"/><path d="M4 19h16"/><path d="M8 15l4-5 3 3 4-6"/></svg></span>
+        <span>Invest</span>
+      </div>
+      <div class="railitem active">
+        <span class="iconwrap">
+          <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M4 7.5l8 5.5 8-5.5"/></svg>
+          <span class="pip">3</span>
+        </span>
+        <span>Inbox</span>
+      </div>
+      <div class="railitem">
+        <span class="iconwrap"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="9" r="3.5"/><path d="M5 20c1.5-3.5 4-5 7-5s5.5 1.5 7 5"/></svg></span>
+        <span>Profile</span>
+      </div>
+
+      <div class="railfoot">ME</div>
+    </aside>
+
+    <section class="listcol">
+      <div class="lhead">
+        <h1>Inbox</h1>
+        <div class="sub">Northline Wealth · 3 unread</div>
+        <div class="search">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M16.5 16.5 21 21"/></svg>
+          <span>Search mail</span>
+        </div>
+      </div>
+
+      <div class="filters">
+        <div class="chip on">All mail</div>
+        <div class="chip">Unread</div>
+        <div class="chip">Statements</div>
+        <div class="chip">Alerts</div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="mrow unread">
+        <div class="mdot"><i></i></div>
+        <div class="mono">NS</div>
+        <div class="mbody">
+          <div class="line1"><span class="from">Northline Statements</span><span class="time">9:42 AM</span></div>
+          <div class="subj">Your March statement is ready</div>
+          <div class="prev">Account summary for Feb 24 – Mar 23.</div>
+        </div>
+      </div>
+
+      <div class="mrow unread">
+        <div class="mdot"><i></i></div>
+        <div class="mono">SC</div>
+        <div class="mbody">
+          <div class="line1"><span class="from">Security Center</span><span class="time">8:15 AM</span></div>
+          <div class="subj">New device signed in</div>
+          <div class="prev">Laptop in Austin, TX approved at 8:11 AM.</div>
+        </div>
+      </div>
+
+      <div class="mrow unread sel">
+        <div class="mdot"><i></i></div>
+        <div class="mono">DW</div>
+        <div class="mbody">
+          <div class="line1"><span class="from">Dana Whitfield</span><span class="time">7:04 AM</span></div>
+          <div class="subj">Re: Rebalancing the growth sleeve</div>
+          <div class="prev">I moved 4% out of short-term bonds.</div>
+        </div>
+      </div>
+
+      <div class="mrow">
+        <div class="mdot"></div>
+        <div class="mono">TR</div>
+        <div class="mbody">
+          <div class="line1"><span class="from">Transfers</span><span class="time">Yest.</span></div>
+          <div class="subj">Transfer of $2,400.00 completed</div>
+          <div class="prev">Sent to Everyday Checking ••4417.</div>
+        </div>
+      </div>
+
+      <div class="mrow">
+        <div class="mdot"></div>
+        <div class="mono">CS</div>
+        <div class="mbody">
+          <div class="line1"><span class="from">Card Services</span><span class="time">Yest.</span></div>
+          <div class="subj">Statement credit applied</div>
+          <div class="prev">A $38.50 travel credit posted.</div>
+        </div>
+      </div>
+
+      <div class="mrow">
+        <div class="mdot"></div>
+        <div class="mono">ME</div>
+        <div class="mbody">
+          <div class="line1"><span class="from">Marcus Ellery</span><span class="time">Mar 20</span></div>
+          <div class="subj">Documents for the joint account</div>
+          <div class="prev"><span class="clip"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12 12.5 19.5a4 4 0 0 1-5.7-5.7l7.3-7.3a2.7 2.7 0 0 1 3.8 3.8l-7.4 7.4"/></svg></span>Signed forms and notarized page.</div>
+        </div>
+      </div>
+
+      <div class="mrow">
+        <div class="mdot"></div>
+        <div class="mono">TX</div>
+        <div class="mbody">
+          <div class="line1"><span class="from">Tax Documents</span><span class="time">Mar 19</span></div>
+          <div class="subj">Your 1099-B is available</div>
+          <div class="prev">Tax year 2024, including cost basis.</div>
+        </div>
+      </div>
+
+      <div class="mrow">
+        <div class="mdot"></div>
+        <div class="mono">RS</div>
+        <div class="mbody">
+          <div class="line1"><span class="from">Round-Up Savings</span><span class="time">Mar 18</span></div>
+          <div class="subj">You set aside $46.20 this month</div>
+          <div class="prev">From 61 rounded-up purchases.</div>
+        </div>
+      </div>
+
+      <div class="lfoot">8 conversations · Updated 9:44 AM</div>
+    </section>
+
+    <section class="reader">
+      <div class="toolbar">
+        <div class="tbtn primary">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5"/><path d="M4 9h9a7 7 0 0 1 7 7v3"/></svg>
+          <span>Reply</span>
+        </div>
+        <div class="tbtn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 14l5-5-5-5"/><path d="M20 9h-9a7 7 0 0 0-7 7v3"/></svg>
+          <span>Forward</span>
+        </div>
+        <div class="tbtn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="5" rx="1.5"/><path d="M5 9v10a1.5 1.5 0 0 0 1.5 1.5h11A1.5 1.5 0 0 0 19 19V9"/></svg>
+          <span>Archive</span>
+        </div>
+        <div class="tbtn ghost">Mark unread</div>
+      </div>
+
+      <div class="content">
+        <h2>Re: Rebalancing the growth sleeve</h2>
+
+        <div class="meta">
+          <div class="mono">DW</div>
+          <div>
+            <div class="mname">Dana Whitfield</div>
+            <div class="maddr">dana.whitfield@northline.com</div>
+          </div>
+          <div class="mtime">Today, 7:04 AM</div>
+        </div>
+
+        <div class="hr"></div>
+
+        <p>Hi Marcus,</p>
+        <p>I moved 4% out of short-term bonds this morning and put it to work in the growth sleeve, mostly the broad international fund we talked through in February.</p>
+        <p>That leaves the portfolio at 62/38 against a 60/40 target, which is where I want it while rates hold. Nothing else in the allocation changed.</p>
+        <p>Can you call me before Friday? I would like your sign-off before the quarterly review goes out to the joint account.</p>
+        <p>— Dana</p>
+
+        <div class="attach">
+          <div class="aicon">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg>
+          </div>
+          <div>
+            <div class="aname">Q1-rebalance-summary.pdf</div>
+            <div class="asize">PDF · 240 KB</div>
+          </div>
+          <div class="adl">Download</div>
+        </div>
+
+        <div class="replybox">
+          <div class="ph">Reply to Dana Whitfield…</div>
+          <div class="sendbtn">Send</div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</body>
+</html>

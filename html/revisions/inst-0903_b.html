@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Arrange Storefront Collections</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 32px 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #deded8;
+      color: #25271f;
+      font-family: 'Manrope', system-ui, sans-serif;
+    }
+
+    .screen {
+      width: 1024px;
+      height: 768px;
+      display: flex;
+      flex-direction: column;
+      background: #f5f4ef;
+    }
+
+    /* ---------- top bar ---------- */
+    .intro {
+      padding: 30px 44px 26px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 40px;
+      background: rgba(105, 112, 55, 0.14);
+    }
+
+    .intro-copy {
+      max-width: 560px;
+    }
+
+    .eyebrow {
+      margin: 0 0 9px;
+      color: #626a32;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      color: #34391d;
+      font-size: 32px;
+      font-weight: 700;
+      line-height: 1.15;
+      letter-spacing: -0.028em;
+    }
+
+    .description {
+      margin: 10px 0 0;
+      color: #5e6155;
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 1.55;
+    }
+
+    .intro-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .pending {
+      margin: 0;
+      color: #626a32;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .save-button {
+      padding: 12px 26px;
+      border: 0;
+      border-radius: 0;
+      background: #697037;
+      color: #ffffff;
+      font: inherit;
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 1.4;
+      text-align: center;
+      cursor: pointer;
+    }
+
+    /* ---------- work area ---------- */
+    .workspace {
+      flex: 1;
+      min-height: 0;
+      padding: 28px 44px 32px;
+      display: flex;
+      gap: 34px;
+    }
+
+    .list-pane {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .pane-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 14px;
+    }
+
+    .pane-title {
+      margin: 0;
+      color: #292c22;
+      font-size: 15px
+      ;font-weight: 700;
+      line-height: 1.3;
+    }
+
+    .pane-hint {
+      margin: 0;
+      color: #7b7f6d;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .reorder-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 10px;
+    }
+
+    .reorder-item {
+      min-width: 0;
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      background: rgba(105, 112, 55, 0.09);
+      border-left: 4px solid rgba(105, 112, 55, 0.35);
+    }
+
+    .reorder-item.is-featured {
+      background: rgba(105, 112, 55, 0.18);
+      border-left-color: #697037;
+    }
+
+    .drag-handle {
+      width: 22px;
+      flex: 0 0 22px;
+      color: #697037;
+      line-height: 0;
+      cursor: grab;
+    }
+
+    .drag-handle svg {
+      display: block;
+      width: 22px;
+      height: 22px;
+    }
+
+    .slot {
+      width: 46px;
+      flex: 0 0 46px;
+      padding: 7px 0 8px;
+      background: #697037;
+      color: #f5f4ef;
+      text-align: center;
+    }
+
+    .slot-num {
+      display: block;
+      font-size: 19px;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .slot-word {
+      display: block;
+      margin-top: 3px;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+    }
+
+    .item-copy {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .item-name {
+      margin: 0;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      color: #292c22;
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 1.3;
+    }
+
+    .item-detail {
+      margin: 4px 0 0;
+      color: #6a6d61;
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 1.4;
+    }
+
+    .item-detail strong {
+      color: #4f5530;
+      font-weight: 700;
+    }
+
+    .placement {
+      flex: 0 0 auto;
+      padding: 5px 10px;
+      border: 1px solid rgba(105, 112, 55, 0.4);
+      color: #4f5530;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    /* ---------- preview ---------- */
+    .preview-pane {
+      width: 296px;
+      flex: 0 0 296px;
+      padding: 20px 20px 22px;
+      background: rgba(105, 112, 55, 0.09);
+    }
+
+    .preview-title {
+      margin: 0;
+      color: #292c22;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .preview-sub {
+      margin: 7px 0 16px;
+      color: #6a6d61;
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 1.45;
+    }
+
+    .stack {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 7px;
+      background: #f5f4ef;
+      padding: 10px;
+    }
+
+    .band {
+      padding: 11px 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(105, 112, 55, 0.12);
+    }
+
+    .band.hero {
+      padding: 18px 12px;
+      background: rgba(105, 112, 55, 0.3);
+    }
+
+    .band-num {
+      width: 20px;
+      color: #4f5530;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .band-label {
+      min-width: 0;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      color: #34391d;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .fold {
+      margin: 9px 0 3px;
+      padding-top: 8px;
+      border-top: 1px dashed rgba(105, 112, 55, 0.55);
+      color: #7b7f6d;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+    }
+
+    .preview-note {
+      margin: 16px 0 0;
+      color: #7b7f6d;
+      font-size: 11px;
+      font-weight: 400;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="intro">
+      <div class="intro-copy">
+        <p class="eyebrow">Morrow Market storefront</p>
+        <h1 id="reorder-title">Arrange collections</h1>
+        <p class="description">Drag a handle to change a collection's storefront position. The preview shows where each position lands on the page.</p>
+      </div>
+      <div class="intro-actions">
+        <p class="pending">3 positions changed</p>
+        <button class="save-button" type="button">Save order</button>
+      </div>
+    </header>
+
+    <div class="workspace">
+      <main class="list-pane" aria-labelledby="reorder-title">
+        <div class="pane-head">
+          <h2 class="pane-title">Current order &mdash; 5 collections</h2>
+          <p class="pane-hint">Position 1 is the featured band</p>
+        </div>
+
+        <ol class="reorder-list" aria-label="Storefront collection order">
+          <li class="reorder-item is-featured" draggable="true">
+            <span class="drag-handle" aria-label="Drag New arrivals">
+              <svg viewBox="0 0 22 22" fill="none" aria-hidden="true">
+                <circle cx="7" cy="5" r="1.5" fill="currentColor"/>
+                <circle cx="15" cy="5" r="1.5" fill="currentColor"/>
+                <circle cx="7" cy="11" r="1.5" fill="currentColor"/>
+                <circle cx="15" cy="11" r="1.5" fill="currentColor"/>
+                <circle cx="7" cy="17" r="1.5" fill="currentColor"/>
+                <circle cx="15" cy="17" r="1.5" fill="currentColor"/>
+              </svg>
+            </span>
+            <p class="slot"><span class="slot-num">1</span><span class="slot-word">Slot</span></p>
+            <div class="item-copy">
+              <p class="item-name">New arrivals</p>
+              <p class="item-detail"><strong>Position 1 of 5</strong> &middot; 24 products</p>
+            </div>
+            <p class="placement">Featured</p>
+          </li>
+
+          <li class="reorder-item" draggable="true">
+            <span class="drag-handle" aria-label="Drag Home essentials">
+              <svg viewBox="0 0 22 22" fill="none" aria-hidden="true">
+                <circle cx="7" cy="5" r="1.5" fill="currentColor"/>
+                <circle cx="15" cy="5" r="1.5" fill="currentColor"/>
+                <circle cx="7" cy="11" r="1.5" fill="currentColor"/>
+                <circle cx="15" cy="11" r="1.5" fill="currentColor"/>
+                <circle cx="7" cy="17" r="1.5" fill="currentColor"/>
+                <circle cx="15" cy="17" r="1.5" fill="currentColor"/>
+              </svg>
+            </span>
+            <p class="slot"><span class="slot-num">2</span><span class="slot-word">Slot</span></p>
+            <div class="item-copy">
+              <p class="item-name">Home essentials</p>
+              <p class="item-detail"><strong>Position 2 of 5</strong> &middot; 18 products</p>
+            </div>
+            <p class="placement">Above fold</p>
+          </li>
+
+          <li class="reorder-item" draggable="true">
+            <span class="drag-handle" aria-label="Drag Under $30">
+              <svg viewBox="0 0 22 22" fill="none" aria-hidden="true">
+                <circle cx="7" cy="5" r="1.5" fill="currentColor"/>
+                <circle cx="15" cy="5" r="1.5" fill="currentColor"/>
+                <circle cx="7" cy="11" r="1.5" fill="currentColor"/>
+                <circle cx="15" cy="11" r="1.5" fill="currentColor"/>
+                <circle cx="7" cy="17" r="1.5" fill="currentColor"/>
+                <circle cx="15" cy="17" r="1.5" fill="currentColor"/>
+              </svg>
+            </span>
+            <p class="slot"><span class="slot-num">3</span><span class="slot-word">Slot</span></p>
+            <div class="item-copy">
+              <p class="item-name">Under $30</p>
+              <p class="item-detail"><strong>Position 3 of 5</strong> &middot; 31 products</p>
+            </div>
+            <p class="placement">Above fold</p>
+          </li>
+
+          <li class="reorder-item" draggable="true">
+            <span class="drag-handle" aria-label="Drag Kitchen and table">
+              <svg viewBox="0 0 22 22" fill="none" aria-hidden="true">
+                <circle cx="7" cy="5" r="1.5" fill="currentColor"/>
+                <circle cx="15" cy="5" r="1.5" fill="currentColor"/>
+                <circle cx="7" cy="11" r="1.5" fill="currentColor"/>
+                <circle cx="15" cy="11" r="1.5" fill="currentColor"/>
+                <circle cx="7" cy="17" r="1.5" fill="currentColor"/>
+                <circle cx="15" cy="17" r="1.5" fill="currentColor"/>
+              </svg>
+            </span>
+            <p class="slot"><span class="slot-num">4</span><span class="slot-word">Slot</span></p>
+            <div class="item-copy">
+              <p class="item-name">Kitchen &amp; table</p>
+              <p class="item-detail"><strong>Position 4 of 5</strong> &middot; 27 products</p>
+            </div>
+            <p class="placement">Below fold</p>
+          </li>
+
+          <li class="reorder-item" draggable="true">
+            <span class="drag-handle" aria-label="Drag Seasonal picks">
+              <svg viewBox="0 0 22 22" fill="none" aria-hidden="true">
+                <circle cx="7" cy="5" r="1.5" fill="currentColor"/>
+                <circle cx="15" cy="5" r="1.5" fill="currentColor"/>
+                <circle cx="7" cy="11" r="1.5" fill="currentColor"/>
+                <circle cx="15" cy="11" r="1.5" fill="currentColor"/>
+                <circle cx="7" cy="17" r="1.5" fill="currentColor"/>
+                <circle cx="15" cy="17" r="1.5" fill="currentColor"/>
+              </svg>
+            </span>
+            <p class="slot"><span class="slot-num">5</span><span class="slot-word">Slot</span></p>
+            <div class="item-copy">
+              <p class="item-name">Seasonal picks</p>
+              <p class="item-detail"><strong>Position 5 of 5</strong> &middot; 12 products</p>
+            </div>
+            <p class="placement">Below fold</p>
+          </li>
+        </ol>
+      </main>
+
+      <aside class="preview-pane" aria-label="Storefront position preview">
+        <h2 class="preview-title">Storefront preview</h2>
+        <p class="preview-sub">Desktop store page, top to bottom.</p>
+
+        <ol class="stack">
+          <li class="band hero"><span class="band-num">1</span><span class="band-label">New arrivals</span></li>
+          <li class="band"><span class="band-num">2</span><span class="band-label">Home essentials</span></li>
+          <li class="band"><span class="band-num">3</span><span class="band-label">Under $30</span></li>
+        </ol>
+        <p class="fold">Fold &mdash; 1280 &times; 800</p>
+        <ol class="stack">
+          <li class="band"><span class="band-num">4</span><span class="band-label">Kitchen &amp; table</span></li>
+          <li class="band"><span class="band-num">5</span><span class="band-label">Seasonal picks</span></li>
+        </ol>
+
+        <p class="preview-note">Shoppers reach positions 4 and 5 after scrolling. Last published Mar 4, 9:12 AM.</p>
+      </aside>
+    </div>
+  </div>
+</body>
+</html>

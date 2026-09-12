@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Waveframe Search</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 32px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #dfe3e8;
+      color: #18202a;
+      font-family: 'Source Sans 3', system-ui, sans-serif;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      color: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #ffffff;
+      border: 1px solid #cbd1d8;
+    }
+
+    .top-bar {
+      padding: 14px 20px 9px;
+      border-bottom: 1px solid #e3e6ea;
+    }
+
+    .service-name {
+      margin: 0 0 2px;
+      color: #66717e;
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 15px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    h1,
+    h2 {
+      font-family: 'Playfair Display', Georgia, serif;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 27px;
+      font-weight: 700;
+      line-height: 32px;
+    }
+
+    .search-form {
+      margin: 0 20px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 12px;
+      background: #f1f6fd;
+      border: 2px solid #1769d2;
+      border-radius: 6px;
+    }
+
+    .search-icon {
+      width: 20px;
+      height: 20px;
+      flex: 0 0 auto;
+      color: #1769d2;
+    }
+
+    .search-input {
+      min-width: 0;
+      flex: 1;
+      padding: 0;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      color: #162031;
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 22px;
+    }
+
+    .clear-button {
+      width: 26px;
+      height: 26px;
+      padding: 3px;
+      display: grid;
+      place-items: center;
+      border: 0;
+      background: transparent;
+      color: #697583;
+      cursor: default;
+    }
+
+    .clear-button svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .filters {
+      display: flex;
+      gap: 8px;
+      padding: 10px 20px;
+      border-bottom: 1px solid #e3e6ea;
+    }
+
+    .filter {
+      padding: 4px 12px;
+      border: 1px solid #cfd5dc;
+      border-radius: 6px;
+      background: #ffffff;
+      color: #4e5a67;
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 20px;
+      white-space: nowrap;
+    }
+
+    .filter.active {
+      border-color: #1769d2;
+      background: #1769d2;
+      color: #ffffff;
+    }
+
+    .results-heading {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 9px 20px 8px;
+      border-bottom: 1px solid #e3e6ea;
+    }
+
+    .results-heading h2 {
+      min-width: 0;
+      margin: 0;
+      font-size: 18px;
+      font-weight: 600;
+      line-height: 24px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .result-count {
+      flex: 0 0 auto;
+      color: #6a7480;
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .results {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .result-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 8px 20px;
+      border-bottom: 1px solid #e3e6ea;
+    }
+
+    .result-row img {
+      width: 54px;
+      height: 54px;
+      flex: 0 0 54px;
+      display: block;
+      object-fit: cover;
+      border-radius: 6px;
+      background-color: #c8d0d8;
+    }
+
+    .result-copy {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .result-title {
+      margin: 0 0 3px;
+      color: #18202a;
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 21px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .result-meta {
+      margin: 0;
+      color: #687380;
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 19px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .tab-bar {
+      margin-top: auto;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      padding: 7px 8px 8px;
+      border-top: 1px solid #cfd5dc;
+      background: #ffffff;
+    }
+
+    .tab {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: #687380;
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 15px;
+    }
+
+    .tab svg {
+      width: 20px;
+      height: 20px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .tab.active {
+      color: #1769d2;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="top-bar">
+      <p class="service-name">Waveframe</p>
+      <h1>Search</h1>
+    </header>
+
+    <main>
+      <form class="search-form" role="search">
+        <svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="11" cy="11" r="6.5" fill="none" stroke="currentColor" stroke-width="2"></circle>
+          <path d="M16 16l4.2 4.2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+        </svg>
+        <input class="search-input" type="text" value="midnight jazz" aria-label="Search music and podcasts">
+        <button class="clear-button" type="button" aria-label="Clear search">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="12" r="9" fill="currentColor" opacity="0.16"></circle>
+            <path d="M9 9l6 6M15 9l-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
+          </svg>
+        </button>
+      </form>
+
+      <div class="filters" aria-label="Search categories">
+        <button class="filter active" type="button">All</button>
+        <button class="filter" type="button">Songs</button>
+        <button class="filter" type="button">Albums</button>
+        <button class="filter" type="button">Episodes</button>
+      </div>
+
+      <div class="results-heading">
+        <h2>Results for “midnight jazz”</h2>
+        <span class="result-count">34 results</span>
+      </div>
+
+      <ul class="results">
+        <li class="result-row">
+          <img src="https://loremflickr.com/54/54/studio?lock=4130" width="54" height="54" alt="Dimly lit recording studio for Night Window">
+          <div class="result-copy">
+            <p class="result-title">Night Window</p>
+            <p class="result-meta">Mara Vale · Song</p>
+          </div>
+        </li>
+        <li class="result-row">
+          <img src="https://loremflickr.com/54/54/vinyl?lock=4131" width="54" height="54" alt="Vinyl record artwork for After Hours Blue">
+          <div class="result-copy">
+            <p class="result-title">After Hours Blue</p>
+            <p class="result-meta">The Northline Trio · Album</p>
+          </div>
+        </li>
+        <li class="result-row">
+          <img src="https://loremflickr.com/54/54/concert?lock=4132" width="54" height="54" alt="Jazz concert stage for Low Light, Live">
+          <div class="result-copy">
+            <p class="result-title">Low Light, Live</p>
+            <p class="result-meta">Orchard Street Set · Song</p>
+          </div>
+        </li>
+        <li class="result-row">
+          <img src="https://loremflickr.com/54/54/studio?lock=4133" width="54" height="54" alt="Podcast studio for Tape Room 17">
+          <div class="result-copy">
+            <p class="result-title">Tape Room 17: The Late Set</p>
+            <p class="result-meta">Signal Notes · Episode</p>
+          </div>
+        </li>
+        <li class="result-row">
+          <img src="https://loremflickr.com/54/54/guitar?lock=4134" width="54" height="54" alt="Guitar under stage lighting for City at 2 A.M.">
+          <div class="result-copy">
+            <p class="result-title">City at 2 A.M.</p>
+            <p class="result-meta">Ellis Rowan · Song</p>
+          </div>
+        </li>
+        <li class="result-row">
+          <img src="https://loremflickr.com/54/54/vinyl?lock=4135" width="54" height="54" alt="Stack of records for Nocturne Lane">
+          <div class="result-copy">
+            <p class="result-title">Nocturne Lane</p>
+            <p class="result-meta">June Mercer Quartet · Album</p>
+          </div>
+        </li>
+        <li class="result-row">
+          <img src="https://loremflickr.com/54/54/concert?lock=4136" width="54" height="54" alt="Blue concert lights for Midnight Session">
+          <div class="result-copy">
+            <p class="result-title">Midnight Session</p>
+            <p class="result-meta">Harbor Assembly · Song</p>
+          </div>
+        </li>
+        <li class="result-row">
+          <img src="https://loremflickr.com/54/54/studio?lock=4137" width="54" height="54" alt="Microphones in a studio for The Quiet Hour">
+          <div class="result-copy">
+            <p class="result-title">The Quiet Hour: Night Radio</p>
+            <p class="result-meta">Open Frequency · Episode</p>
+          </div>
+        </li>
+      </ul>
+    </main>
+
+    <nav class="tab-bar" aria-label="Primary navigation">
+      <button class="tab" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M4 5.5h6v6H4zM14 5.5h6v6h-6zM4 15.5h6M14 15.5h6M4 19h6M14 19h6"></path>
+        </svg>
+        <span>Browse</span>
+      </button>
+      <button class="tab active" type="button" aria-current="page">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="10.5" cy="10.5" r="6.5"></circle>
+          <path d="M15.5 15.5L21 21"></path>
+        </svg>
+        <span>Search</span>
+      </button>
+      <button class="tab" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M5 4.5h4v15H5zM9 6h5v13.5H9zM14 4.5h5v15h-5z"></path>
+        </svg>
+        <span>Library</span>
+      </button>
+      <button class="tab" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="8" r="3.5"></circle>
+          <path d="M5.5 20c.8-4 3-6 6.5-6s5.7 2 6.5 6"></path>
+        </svg>
+        <span>Profile</span>
+      </button>
+    </nav>
+  </div>
+</body>
+</html>

@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Loop — Group Call</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#101215;
+    --surface:#171a1e;
+    --line:rgba(255,255,255,0.15);
+    --text:#f1f3f5;
+    --muted:#98a1a9;
+    --sky:#38bdf8;
+  }
+  *{box-sizing:border-box;}
+  body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    padding:40px 0;
+    margin:0;
+    background:#d9dcdf;
+    font-family:'Source Sans 3', system-ui, sans-serif;
+  }
+  .screen{
+    width:390px;
+    height:844px;
+    background:var(--bg);
+    color:var(--text);
+    display:flex;
+    flex-direction:column;
+    border:1px solid rgba(0,0,0,.2);
+  }
+
+  /* top bar */
+  .topbar{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:14px 16px;
+    border-bottom:1px solid var(--line);
+  }
+  .iconbtn{
+    width:32px;height:32px;
+    display:flex;align-items:center;justify-content:center;
+    border:0;background:none;color:var(--text);
+    flex:0 0 auto;
+  }
+  .titlewrap{flex:1;min-width:0;}
+  .titlewrap h1{
+    font-family:'Playfair Display', Georgia, serif;
+    font-weight:700;
+    font-size:20px;
+    line-height:1.15;
+    margin:0;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .sub{
+    display:flex;align-items:center;gap:6px;
+    font-size:13px;color:var(--muted);
+    margin-top:2px;
+  }
+  .dot{width:7px;height:7px;background:var(--sky);flex:0 0 auto;}
+
+  /* hero */
+  .hero{position:relative;}
+  .hero img{
+    width:390px;height:264px;
+    object-fit:cover;display:block;background:#22262b;
+  }
+  .heroLabel{
+    position:absolute;left:0;bottom:0;
+    background:rgba(10,12,14,.72);
+    border-left:3px solid var(--sky);
+    padding:7px 12px;
+    display:flex;align-items:baseline;gap:8px;
+  }
+  .heroLabel .nm{font-size:14px;font-weight:600;}
+  .heroLabel .st{font-size:12px;color:var(--sky);}
+
+  /* thumbnails */
+  .thumbs{
+    display:grid;
+    grid-template-columns:repeat(3,118px);
+    gap:2px;
+    padding:12px 16px 0;
+  }
+  .thumbs img{
+    width:118px;height:88px;
+    object-fit:cover;display:block;background:#22262b;
+  }
+  .tname{
+    font-size:12px;color:var(--muted);
+    margin-top:6px;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+
+  /* participants */
+  .secthead{
+    font-size:12px;
+    letter-spacing:.09em;
+    text-transform:uppercase;
+    color:var(--muted);
+    padding:22px 16px 8px;
+  }
+  .row{
+    display:flex;align-items:center;gap:12px;
+    padding:0 16px;
+    height:52px;
+    border-top:1px solid var(--line);
+  }
+  .row:last-of-type{border-bottom:1px solid var(--line);}
+  .mono{
+    width:34px;height:34px;flex:0 0 auto;
+    background:var(--surface);
+    border:1px solid var(--line);
+    display:flex;align-items:center;justify-content:center;
+    font-size:13px;font-weight:600;color:#c3cbd2;
+    letter-spacing:.02em;
+  }
+  .rname{
+    flex:1;min-width:0;
+    font-size:15px;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .rstat{font-size:13px;color:var(--muted);flex:0 0 auto;}
+
+  .spacer{flex:1;}
+
+  /* controls */
+  .controls{
+    border-top:1px solid var(--line);
+    padding:16px 16px 14px;
+    display:grid;
+    grid-template-columns:repeat(5,66px);
+    gap:7px;
+  }
+  .ctl{
+    display:flex;flex-direction:column;align-items:center;gap:6px;
+  }
+  .ctlbox{
+    width:66px;height:60px;
+    border:1px solid var(--line);
+    display:flex;align-items:center;justify-content:center;
+    color:var(--text);
+  }
+  .ctlbox.on{background:var(--sky);border-color:var(--sky);color:#0b1116;}
+  .ctlbox.end{background:#d8453b;border-color:#d8453b;color:#fff;}
+  .ctl span{font-size:12px;color:var(--muted);}
+
+  /* tab bar */
+  .tabbar{
+    border-top:1px solid var(--line);
+    display:grid;grid-template-columns:repeat(4,1fr);
+    padding:9px 0 12px;
+  }
+  .tab{
+    display:flex;flex-direction:column;align-items:center;gap:4px;
+    color:var(--muted);font-size:12px;
+  }
+  .tab.active{color:var(--sky);}
+</style>
+</head>
+<body>
+<div class="screen">
+
+  <div class="topbar">
+    <button class="iconbtn" aria-label="Back">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M15 5l-7 7 7 7"/></svg>
+    </button>
+    <div class="titlewrap">
+      <h1>Sunset Crew</h1>
+      <div class="sub"><span class="dot"></span>Live · 12:47 · 7 on call</div>
+    </div>
+    <button class="iconbtn" aria-label="Invite someone">
+      <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="10" cy="8" r="3.4"/><path d="M3.5 19.5c.6-3.4 3.3-5.3 6.5-5.3 1 0 2 .2 2.9.6"/><path d="M18 14v6M15 17h6"/></svg>
+    </button>
+  </div>
+
+  <div class="hero">
+    <img src="https://loremflickr.com/390/264/cafe?lock=9360" width="390" height="264" alt="Live video from a corner table in a busy cafe">
+    <div class="heroLabel"><span class="nm">Marcy Aldridge</span><span class="st">Speaking</span></div>
+  </div>
+
+  <div class="thumbs">
+    <div>
+      <img src="https://loremflickr.com/118/88/street?lock=9361" width="118" height="88" alt="Video tile showing an evening street crossing">
+      <div class="tname">Devon Pruitt</div>
+    </div>
+    <div>
+      <img src="https://loremflickr.com/118/88/party?lock=9362" width="118" height="88" alt="Video tile showing a rooftop party">
+      <div class="tname">Iris Kwan</div>
+    </div>
+    <div>
+      <img src="https://loremflickr.com/118/88/friends?lock=9363" width="118" height="88" alt="Video tile showing a group gathered around a table">
+      <div class="tname">Theo Vance</div>
+    </div>
+  </div>
+
+  <div class="secthead">Also in this call</div>
+  <div class="row">
+    <div class="mono">NR</div>
+    <div class="rname">Nadia Reyes</div>
+    <div class="rstat">Muted</div>
+  </div>
+  <div class="row">
+    <div class="mono">GO</div>
+    <div class="rname">Gil Ostrander</div>
+    <div class="rstat">Camera off</div>
+  </div>
+  <div class="row">
+    <div class="mono">PR</div>
+    <div class="rname">Priya Raines</div>
+    <div class="rstat">Audio only</div>
+  </div>
+
+  <div class="spacer"></div>
+
+  <div class="controls">
+    <div class="ctl">
+      <div class="ctlbox on">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v3"/></svg>
+      </div>
+      <span>Mic on</span>
+    </div>
+    <div class="ctl">
+      <div class="ctlbox">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="6.5" width="12" height="11"/><path d="M15 11l6-3.5v9L15 13z"/></svg>
+      </div>
+      <span>Video</span>
+    </div>
+    <div class="ctl">
+      <div class="ctlbox">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 9.5h3.5L12 5.5v13L7.5 14.5H4z"/><path d="M16 9.5a4 4 0 0 1 0 5M18.7 7a7.5 7.5 0 0 1 0 10"/></svg>
+      </div>
+      <span>Speaker</span>
+    </div>
+    <div class="ctl">
+      <div class="ctlbox">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 12a8 8 0 0 1 13.7-5.6L20 8.5"/><path d="M20 4v4.5h-4.5"/><path d="M20 12a8 8 0 0 1-13.7 5.6L4 15.5"/><path d="M4 20v-4.5h4.5"/></svg>
+      </div>
+      <span>Flip</span>
+    </div>
+    <div class="ctl">
+      <div class="ctlbox end">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 14.2c5-4.3 13-4.3 18 0l-2.6 2.3-3.1-1.6v-2.6c-2.2-.8-4.4-.8-6.6 0v2.6l-3.1 1.6z"/></svg>
+      </div>
+      <span>Leave</span>
+    </div>
+  </div>
+
+  <nav class="tabbar">
+    <div class="tab">
+      <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 10.5 12 4l8 6.5V20h-5.5v-5.5h-5V20H4z"/></svg>
+      Feed
+    </div>
+    <div class="tab">
+      <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3.5" y="3.5" width="7" height="7"/><rect x="13.5" y="3.5" width="7" height="7"/><rect x="3.5" y="13.5" width="7" height="7"/><rect x="13.5" y="13.5" width="7" height="7"/></svg>
+      Rooms
+    </div>
+    <div class="tab active">
+      <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 3.5h4l1.5 4.5-2.2 1.7a12 12 0 0 0 6 6l1.7-2.2 4.5 1.5v4a1.5 1.5 0 0 1-1.6 1.5C10.6 19.9 4.1 13.4 3.5 5.1A1.5 1.5 0 0 1 5 3.5z"/></svg>
+      Calls
+    </div>
+    <div class="tab">
+      <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="8.5" r="3.6"/><path d="M4.5 20c.9-3.9 3.9-6 7.5-6s6.6 2.1 7.5 6"/></svg>
+      You
+    </div>
+  </nav>
+
+</div>
+</body>
+</html>

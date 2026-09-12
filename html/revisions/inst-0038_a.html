@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weekly Movement Leaderboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #dfe2e5;
+      color: #202327;
+      font-family: 'Nunito Sans', system-ui, sans-serif;
+    }
+
+    .screen {
+      width: 1024px;
+      height: 768px;
+      padding: 24px 36px;
+      background: #eef0f2;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      gap: 16px;
+    }
+
+    /* ---------- header ---------- */
+    .topbar {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 28px;
+    }
+
+    .eyebrow {
+      margin: 0 0 4px;
+      color: #d8343a;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 26px;
+      line-height: 1.2;
+      font-weight: 700;
+    }
+
+    .period {
+      margin: 5px 0 0;
+      color: #6c7177;
+      font-size: 13px;
+    }
+
+    .standing {
+      flex: 0 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 22px;
+      padding: 11px 20px;
+      background: #ffffff;
+      border-left: 4px solid #d8343a;
+      border-radius: 6px;
+      box-shadow: 0 6px 16px rgba(28, 32, 36, 0.08);
+    }
+
+    .standing-label {
+      margin: 0 0 2px;
+      color: #8a8f94;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+    }
+
+    .standing-copy {
+      margin: 0;
+      color: #4f4445;
+      font-size: 13px;
+    }
+
+    .standing-rank {
+      color: #d8343a;
+      font-size: 24px;
+      line-height: 1;
+      font-weight: 700;
+      text-align: right;
+    }
+
+    .standing-rank span {
+      display: block;
+      margin-top: 3px;
+      color: #8a8f94;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    /* ---------- podium (dark treatment) ---------- */
+    .podium {
+      padding: 18px 26px 24px;
+      background: linear-gradient(135deg, #161b21 0%, #232c36 100%);
+      border-radius: 8px;
+      box-shadow: 0 10px 24px rgba(18, 22, 27, 0.24);
+      color: #f2f5f8;
+    }
+
+    .podium-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 20px;
+      margin-bottom: 14px;
+    }
+
+    .podium-title {
+      margin: 0;
+      color: #f0b429;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.11em;
+      text-transform: uppercase;
+    }
+
+    .podium-note {
+      margin: 0;
+      color: #949daa;
+      font-size: 12px;
+    }
+
+    .podium-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.1fr 1fr;
+      align-items: end;
+      gap: 20px;
+    }
+
+    .pod {
+      padding: 16px 16px 18px;
+      background: #20262e;
+      border: 1px solid #2f3742;
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .pod.first {
+      padding-top: 22px;
+      padding-bottom: 22px;
+      background: #242a2e;
+      border-color: rgba(240, 180, 41, 0.6);
+    }
+
+    .medal {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .first .medal { background: #f0b429; color: #241c05; }
+    .second .medal { background: #c9ced6; color: #1d2229; }
+    .third .medal { background: #cf8b52; color: #241505; }
+
+    .pod-mono {
+      width: 46px;
+      height: 46px;
+      margin: 10px auto 8px;
+      display: grid;
+      place-items: center;
+      border-radius: 10px;
+      background: #303945;
+      color: #e6eaef;
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .first .pod-mono {
+      width: 52px;
+      height: 52px;
+      background: #f0b429;
+      color: #241c05;
+      font-size: 18px;
+    }
+
+    .pod-name {
+      margin: 0;
+      overflow: hidden;
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 1.2;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    .you {
+      display: inline-block;
+      margin-left: 6px;
+      padding: 1px 7px;
+      border-radius: 999px;
+      background: rgba(216, 52, 58, 0.22);
+      color: #ff8b8f;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      vertical-align: 2px;
+    }
+
+    .pod-steps {
+      margin: 3px 0 0;
+      color: #96a0ab;
+      font-size: 12px;
+    }
+
+    .pod-points {
+      margin: 10px 0 0;
+      font-size: 20px;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .first .pod-points { color: #f0b429; }
+
+    .pod-points span {
+      display: block;
+      margin-top: 3px;
+      color: #8d97a3;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    /* ---------- compact list ---------- */
+    .table {
+      background: #ffffff;
+      border-radius: 8px;
+      box-shadow: 0 8px 20px rgba(28, 32, 36, 0.08);
+    }
+
+    .columns {
+      display: grid;
+      grid-template-columns: 46px 1fr 130px 110px;
+      gap: 12px;
+      padding: 11px 22px;
+      border-bottom: 1px solid #e7e8ea;
+      color: #858a90;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+    }
+
+    .columns span:nth-child(3),
+    .columns span:nth-child(4) { text-align: right; }
+
+    .rankings {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .rank-row {
+      display: grid;
+      grid-template-columns: 46px 1fr 130px 110px;
+      align-items: center;
+      gap: 12px;
+      padding: 8px 22px;
+      border-top: 1px solid #f0f1f3;
+    }
+
+    .rank-row:first-child { border-top: none; }
+
+    .rank {
+      color: #5d6268;
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .person {
+      display: flex;
+      align-items: center;
+      min-width: 0;
+      gap: 11px;
+    }
+
+    .monogram {
+      width: 30px;
+      height: 30px;
+      flex: 0 0 30px;
+      display: grid;
+      place-items: center;
+      border-radius: 6px;
+      background: #e8eaed;
+      color: #4c5258;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .name {
+      margin: 0;
+      overflow: hidden;
+      color: #25292d;
+      font-size: 14px;
+      font-weight: 700;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    .steps {
+      color: #6c7177;
+      font-size: 13px;
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .score {
+      color: #25292d;
+      font-size: 14px;
+      font-weight: 700;
+      text-align: right;
+      white-space: nowrap;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">Pulse Harbor Community</p>
+        <h1>Weekly movement leaderboard</h1>
+        <p class="period">Steps recorded March 10–16, 2025 · 24 members enrolled</p>
+      </div>
+      <div class="standing">
+        <div>
+          <p class="standing-label">Your standing</p>
+          <p class="standing-copy">680 points behind second place</p>
+        </div>
+        <div class="standing-rank">
+          3rd
+          <span>of 24 members</span>
+        </div>
+      </div>
+    </header>
+
+    <section class="podium" aria-label="Top three members">
+      <div class="podium-head">
+        <p class="podium-title">Podium · Top three</p>
+        <p class="podium-note">Final placings lock Sunday at 11:59 PM</p>
+      </div>
+      <div class="podium-grid">
+        <article class="pod second">
+          <span class="medal">2nd place</span>
+          <div class="pod-mono" aria-hidden="true">NP</div>
+          <p class="pod-name">Nolan Pierce</p>
+          <p class="pod-steps">76,520 steps</p>
+          <p class="pod-points">8,740<span>points</span></p>
+        </article>
+
+        <article class="pod first">
+          <span class="medal">1st place</span>
+          <div class="pod-mono" aria-hidden="true">AL</div>
+          <p class="pod-name">Avery Larkin</p>
+          <p class="pod-steps">82,140 steps</p>
+          <p class="pod-points">9,180<span>points</span></p>
+        </article>
+
+        <article class="pod third">
+          <span class="medal">3rd place</span>
+          <div class="pod-mono" aria-hidden="true">JS</div>
+          <p class="pod-name">Jordan Sayer<span class="you">You</span></p>
+          <p class="pod-steps">71,980 steps</p>
+          <p class="pod-points">8,060<span>points</span></p>
+        </article>
+      </div>
+    </section>
+
+    <section class="table" aria-label="Members ranked four and below">
+      <div class="columns" aria-hidden="true">
+        <span>Rank</span>
+        <span>Member</span>
+        <span>Steps</span>
+        <span>Points</span>
+      </div>
+      <ol class="rankings">
+        <li class="rank-row">
+          <span class="rank">4</span>
+          <div class="person">
+            <div class="monogram" aria-hidden="true">CM</div>
+            <p class="name">Casey Merrin</p>
+          </div>
+          <div class="steps">68,410</div>
+          <div class="score">7,690</div>
+        </li>
+        <li class="rank-row">
+          <span class="rank">5</span>
+          <div class="person">
+            <div class="monogram" aria-hidden="true">PR</div>
+            <p class="name">Priya Raman</p>
+          </div>
+          <div class="steps">64,970</div>
+          <div class="score">7,240</div>
+        </li>
+        <li class="rank-row">
+          <span class="rank">6</span>
+          <div class="person">
+            <div class="monogram" aria-hidden="true">DH</div>
+            <p class="name">Devon Hollis</p>
+          </div>
+          <div class="steps">61,340</div>
+          <div class="score">6,880</div>
+        </li>
+        <li class="rank-row">
+          <span class="rank">7</span>
+          <div class="person">
+            <div class="monogram" aria-hidden="true">MV</div>
+            <p class="name">Marisol Vega</p>
+          </div>
+          <div class="steps">58,120</div>
+          <div class="score">6,510</div>
+        </li>
+        <li class="rank-row">
+          <span class="rank">8</span>
+          <div class="person">
+            <div class="monogram" aria-hidden="true">TB</div>
+            <p class="name">Theo Brandt</p>
+          </div>
+          <div class="steps">55,760</div>
+          <div class="score">6,190</div>
+        </li>
+        <li class="rank-row">
+          <span class="rank">9</span>
+          <div class="person">
+            <div class="monogram" aria-hidden="true">WO</div>
+            <p class="name">Wren Okafor</p>
+          </div>
+          <div class="steps">52,480</div>
+          <div class="score">5,930</div>
+        </li>
+      </ol>
+    </section>
+  </div>
+</body>
+</html>

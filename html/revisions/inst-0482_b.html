@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Threadwell Weekly Leaderboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #dfe1e4;
+      color: #202226;
+      font-family: 'Inter', system-ui, sans-serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      width: 1024px;
+      height: 768px;
+      display: grid;
+      grid-template-columns: 264px minmax(0, 1fr);
+      background: #f0f1f2;
+    }
+
+    .sidebar {
+      padding: 34px 28px;
+      background: #282b2f;
+      color: #ffffff;
+    }
+
+    .brand {
+      margin: 0;
+      color: #ffffff;
+      font-size: 17px;
+      line-height: 1.4;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .section-label {
+      margin: 38px 0 9px;
+      color: #aeb2b7;
+      font-size: 11px;
+      line-height: 1.4;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .period-picker {
+      border-top: 1px solid #4a4e53;
+      border-bottom: 1px solid #4a4e53;
+    }
+
+    .week-button {
+      width: 100%;
+      padding: 12px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      border: 0;
+      background: transparent;
+      color: #d6d8db;
+      cursor: pointer;
+      text-align: left;
+      font-size: 13px;
+      line-height: 1.4;
+      font-weight: 500;
+    }
+
+    .week-button:first-child {
+      border-bottom: 1px solid #3d4146;
+    }
+
+    .week-button:hover {
+      color: #ffffff;
+    }
+
+    .week-button:focus-visible {
+      outline: 2px solid #ffffff;
+      outline-offset: 3px;
+    }
+
+    .week-button span:last-child {
+      font-size: 18px;
+      line-height: 1;
+    }
+
+    .active-period {
+      padding: 18px 0;
+      border-bottom: 1px solid #3d4146;
+    }
+
+    .active-period span {
+      display: block;
+      color: #aeb2b7;
+      font-size: 11px;
+      line-height: 1.4;
+      font-weight: 600;
+    }
+
+    .active-period strong {
+      display: block;
+      margin-top: 4px;
+      color: #ffffff;
+      font-size: 17px;
+      line-height: 1.35;
+      font-weight: 600;
+    }
+
+    .rank-panel {
+      margin-top: 34px;
+      padding: 20px;
+      background: #ffffff;
+      color: #282b2f;
+    }
+
+    .rank-panel-label {
+      margin: 0;
+      color: #6f7379;
+      font-size: 11px;
+      line-height: 1.4;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+    }
+
+    .rank-number {
+      margin: 7px 0 0;
+      font-size: 42px;
+      line-height: 1;
+      font-weight: 600;
+      letter-spacing: -0.05em;
+    }
+
+    .rank-points {
+      margin: 12px 0 0;
+      color: #34373c;
+      font-size: 14px;
+      line-height: 1.4;
+      font-weight: 600;
+    }
+
+    .rank-points span {
+      display: block;
+      margin-top: 2px;
+      color: #777b81;
+      font-size: 12px;
+      font-weight: 400;
+    }
+
+    .gap-note {
+      margin: 24px 0 0;
+      color: #c9ccd0;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .content {
+      min-width: 0;
+      padding: 34px 38px 30px;
+    }
+
+    .content-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 30px;
+      padding-bottom: 22px;
+      border-bottom: 1px solid #d9dcdf;
+    }
+
+    .eyebrow {
+      margin: 0 0 7px;
+      color: #777b81;
+      font-size: 11px;
+      line-height: 1.4;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    h1 {
+      margin: 0;
+      color: #202226;
+      font-size: 29px;
+      line-height: 1.2;
+      font-weight: 600;
+      letter-spacing: -0.03em;
+    }
+
+    .content-header p:last-child {
+      margin: 7px 0 0;
+      color: #676b71;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .header-stat {
+      flex-shrink: 0;
+      text-align: right;
+    }
+
+    .header-stat span {
+      display: block;
+      color: #7a7e84;
+      font-size: 11px;
+      line-height: 1.4;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .header-stat strong {
+      display: block;
+      margin-top: 3px;
+      color: #2d3035;
+      font-size: 20px;
+      line-height: 1.3;
+      font-weight: 600;
+    }
+
+    .overview {
+      margin-top: 24px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 190px;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .leader-card {
+      background: #ffffff;
+      border: 1px solid #dfe1e4;
+      box-shadow: 0 6px 18px rgba(28, 31, 35, 0.05);
+    }
+
+    .card-header {
+      padding: 18px 20px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 16px;
+      border-bottom: 1px solid #e6e8ea;
+    }
+
+    .card-header h2 {
+      margin: 0;
+      font-size: 17px;
+      line-height: 1.4;
+      font-weight: 600;
+    }
+
+    .card-header span {
+      color: #787c82;
+      font-size: 11px;
+      line-height: 1.4;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .ranking {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .ranking li {
+      padding: 15px 20px;
+      display: grid;
+      grid-template-columns: 28px 38px minmax(0, 1fr) 78px;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1px solid #eceef0;
+    }
+
+    .ranking li:last-child {
+      border-bottom: 0;
+    }
+
+    .position {
+      color: #50545a;
+      font-size: 14px;
+      line-height: 1;
+      font-weight: 700;
+    }
+
+    .monogram {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      background: #e2e4e7;
+      color: #34373c;
+      font-size: 12px;
+      line-height: 1;
+      font-weight: 700;
+    }
+
+    .member {
+      min-width: 0;
+    }
+
+    .member-line {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .member-name {
+      margin: 0;
+      overflow: hidden;
+      color: #25282c;
+      font-size: 14px;
+      line-height: 1.35;
+      font-weight: 600;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .member-detail {
+      margin: 3px 0 0;
+      color: #777b81;
+      font-size: 11px;
+      line-height: 1.35;
+    }
+
+    .mini-track {
+      width: 90px;
+      height: 4px;
+      flex-shrink: 0;
+      background: #e4e6e8;
+    }
+
+    .mini-bar {
+      height: 4px;
+      background: #555a61;
+    }
+
+    .points {
+      color: #2d3035;
+      font-size: 14px;
+      line-height: 1.4;
+      font-weight: 700;
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .context-column {
+      display: grid;
+      gap: 14px;
+    }
+
+    .context-card {
+      padding: 18px;
+      background: #ffffff;
+      border: 1px solid #dfe1e4;
+    }
+
+    .context-label {
+      margin: 0;
+      color: #777b81;
+      font-size: 10px;
+      line-height: 1.4;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+    }
+
+    .context-value {
+      margin: 8px 0 0;
+      color: #2b2e33;
+      font-size: 23px;
+      line-height: 1.15;
+      font-weight: 600;
+      letter-spacing: -0.03em;
+    }
+
+    .context-copy {
+      margin: 7px 0 0;
+      color: #73777d;
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .position-card {
+      background: #dedfe1;
+      border-color: #d3d5d8;
+    }
+
+    .position-scale {
+      margin-top: 15px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .scale-mark {
+      height: 8px;
+      flex: 1;
+      background: #bfc2c6;
+    }
+
+    .scale-mark.active {
+      background: #282b2f;
+    }
+
+    .scale-caption {
+      margin: 8px 0 0;
+      display: flex;
+      justify-content: space-between;
+      color: #6f7379;
+      font-size: 10px;
+      line-height: 1.4;
+    }
+
+    .footer-note {
+      margin: 18px 0 0;
+      color: #777b81;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <aside class="sidebar" aria-label="Weekly standing summary">
+      <p class="brand">Threadwell</p>
+
+      <p class="section-label">Browse weeks</p>
+      <nav class="period-picker" aria-label="Select weekly period">
+        <button class="week-button" type="button" aria-label="Previous week">
+          <span>Previous week</span>
+          <span aria-hidden="true">↑</span>
+        </button>
+
+        <div class="active-period">
+          <span>Selected period</span>
+          <strong>May 12–18, 2025</strong>
+        </div>
+
+        <button class="week-button" type="button" aria-label="Next week">
+          <span>Next week</span>
+          <span aria-hidden="true">↓</span>
+        </button>
+      </nav>
+
+      <section class="rank-panel" aria-label="Your current rank">
+        <p class="rank-panel-label">Your rank</p>
+        <p class="rank-number">#7</p>
+        <p class="rank-points">1,840 points<span>earned this week</span></p>
+      </section>
+
+      <p class="gap-note">You are 42 points behind 6th place.</p>
+    </aside>
+
+    <main class="content">
+      <header class="content-header">
+        <div>
+          <p class="eyebrow">Community overview</p>
+          <h1>Weekly leaderboard</h1>
+          <p>Quickly compare posts and helpful replies across Threadwell.</p>
+        </div>
+        <div class="header-stat">
+          <span>Current leader</span>
+          <strong>Mira Bell</strong>
+        </div>
+      </header>
+
+      <div class="overview">
+        <section class="leader-card" aria-labelledby="top-members-title">
+          <div class="card-header">
+            <h2 id="top-members-title">Top members</h2>
+            <span>Points</span>
+          </div>
+
+          <ol class="ranking">
+            <li>
+              <span class="position">1</span>
+              <span class="monogram" aria-hidden="true">MB</span>
+              <div class="member">
+                <div class="member-line">
+                  <p class="member-name">Mira Bell</p>
+                  <div class="mini-track" aria-label="100 percent of leading score">
+                    <div class="mini-bar" style="width: 100%;"></div>
+                  </div>
+                </div>
+                <p class="member-detail">86 contributions</p>
+              </div>
+              <span class="points">2,940</span>
+            </li>
+
+            <li>
+              <span class="position">2</span>
+              <span class="monogram" aria-hidden="true">JR</span>
+              <div class="member">
+                <div class="member-line">
+                  <p class="member-name">Jonah Reed</p>
+                  <div class="mini-track" aria-label="92 percent of leading score">
+                    <div class="mini-bar" style="width: 92%;"></div>
+                  </div>
+                </div>
+                <p class="member-detail">79 contributions</p>
+              </div>
+              <span class="points">2,715</span>
+            </li>
+
+            <li>
+              <span class="position">3</span>
+              <span class="monogram" aria-hidden="true">TL</span>
+              <div class="member">
+                <div class="member-line">
+                  <p class="member-name">Tessa Lane</p>
+                  <div class="mini-track" aria-label="85 percent of leading score">
+                    <div class="mini-bar" style="width: 85%;"></div>
+                  </div>
+                </div>
+                <p class="member-detail">73 contributions</p>
+              </div>
+              <span class="points">2,490</span>
+            </li>
+          </ol>
+        </section>
+
+        <aside class="context-column" aria-label="Comparison details">
+          <section class="context-card">
+            <p class="context-label">Points to leader</p>
+            <p class="context-value">1,100</p>
+            <p class="context-copy">Your gap to Mira Bell.</p>
+          </section>
+
+          <section class="context-card">
+            <p class="context-label">Next position</p>
+            <p class="context-value">42</p>
+            <p class="context-copy">Points needed to reach 6th place.</p>
+          </section>
+
+          <section class="context-card position-card">
+            <p class="context-label">Your relative score</p>
+            <p class="context-value">63%</p>
+            <div class="position-scale" aria-label="Your score is 63 percent of the leader's score">
+              <span class="scale-mark active"></span>
+              <span class="scale-mark active"></span>
+              <span class="scale-mark active"></span>
+              <span class="scale-mark"></span>
+              <span class="scale-mark"></span>
+            </div>
+            <p class="scale-caption"><span>You</span><span>Leader</span></p>
+          </section>
+        </aside>
+      </div>
+
+      <p class="footer-note">Points reflect activity recorded during May 12–18, 2025.</p>
+    </main>
+  </div>
+</body>
+</html>

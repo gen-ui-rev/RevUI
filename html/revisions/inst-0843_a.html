@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Morrow English Quiz</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #e7e5e4;
+      color: #292524;
+      font-family: 'Roboto', system-ui, sans-serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #ffffff;
+    }
+
+    .topbar {
+      display: grid;
+      grid-template-columns: 44px 1fr 44px;
+      align-items: center;
+      padding: 14px 16px 12px;
+    }
+
+    .topbar-title {
+      min-width: 0;
+      text-align: center;
+    }
+
+    .service-name {
+      margin: 0;
+      font-size: 16px;
+      line-height: 20px;
+      font-weight: 700;
+    }
+
+    .screen-name {
+      margin: 2px 0 0;
+      color: #78716c;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .icon-button {
+      width: 44px;
+      padding: 10px;
+      border: 0;
+      border-radius: 14px;
+      background: transparent;
+      color: #57534e;
+      display: grid;
+      place-items: center;
+    }
+
+    .icon-button svg {
+      width: 22px;
+      height: 22px;
+      display: block;
+    }
+
+    main {
+      flex: 1;
+      min-height: 0;
+      padding: 8px 20px 16px;
+    }
+
+    .progress-section {
+      margin-bottom: 20px;
+    }
+
+    .progress-copy {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 9px;
+    }
+
+    .progress-label {
+      margin: 0;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 500;
+    }
+
+    .difficulty-label {
+      margin: 0;
+      padding: 4px 9px;
+      border-radius: 999px;
+      background: #f0efee;
+      color: #57534e;
+      font-size: 11px;
+      line-height: 14px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
+    .progress-track {
+      width: 100%;
+      padding: 0;
+      border-radius: 14px;
+      background: rgba(120, 113, 108, 0.14);
+    }
+
+    .progress-fill {
+      width: 60%;
+      padding: 4px 0;
+      border-radius: 14px;
+      background: #78716c;
+    }
+
+    .topic {
+      margin: 0 0 6px;
+      color: #78716c;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0 0 14px;
+      color: #292524;
+      font-size: 24px;
+      line-height: 30px;
+      font-weight: 700;
+    }
+
+    .prompt-note {
+      margin: 0 0 12px;
+      padding: 11px 14px;
+      border-radius: 12px;
+      background: rgba(120, 113, 108, 0.1);
+      color: #57534e;
+      font-size: 13px;
+      line-height: 19px;
+    }
+
+    .panel-stack {
+      display: grid;
+      gap: 12px;
+    }
+
+    .choices-panel,
+    .submission-panel {
+      border: 1px solid #e7e5e4;
+      border-radius: 16px;
+      background: #fafaf9;
+    }
+
+    .choices-panel {
+      padding: 10px;
+    }
+
+    .panel-label {
+      margin: 0 4px 8px;
+      color: #78716c;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 700;
+    }
+
+    .answers {
+      display: grid;
+      gap: 7px;
+      margin: 0;
+      padding: 0;
+      border: 0;
+    }
+
+    .answer {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 28px 1fr;
+      gap: 10px;
+      align-items: center;
+      padding: 10px 12px;
+      border: 0;
+      border-radius: 12px;
+      background: #ffffff;
+      color: #292524;
+      text-align: left;
+      cursor: default;
+    }
+
+    .answer.selected {
+      background: #e4e1df;
+      box-shadow: inset 0 0 0 1px #a8a29e;
+    }
+
+    .choice-marker {
+      width: 24px;
+      height: 24px;
+      border: 1px solid #d6d3d1;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: #ffffff;
+      color: #78716c;
+      font-size: 12px;
+      line-height: 12px;
+      font-weight: 700;
+    }
+
+    .selected .choice-marker {
+      border-color: #78716c;
+      background: #78716c;
+      color: #ffffff;
+    }
+
+    .answer-text {
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 400;
+    }
+
+    .selected .answer-text {
+      font-weight: 500;
+    }
+
+    .submission-panel {
+      padding: 12px;
+      background: #f5f5f4;
+    }
+
+    .check-button {
+      width: 100%;
+      padding: 13px 18px;
+      border: 0;
+      border-radius: 12px;
+      background: #78716c;
+      color: #ffffff;
+      font-size: 15px;
+      line-height: 20px;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .submit-help {
+      margin: 8px 0 0;
+      color: #78716c;
+      font-size: 12px;
+      line-height: 16px;
+      text-align: center;
+    }
+
+    .tabbar {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 4px;
+      padding: 8px 12px 12px;
+      background: #fafaf9;
+    }
+
+    .tab {
+      min-width: 0;
+      padding: 8px 4px 7px;
+      border: 0;
+      border-radius: 14px;
+      background: transparent;
+      color: #78716c;
+      display: grid;
+      justify-items: center;
+      gap: 4px;
+    }
+
+    .tab.active {
+      background: rgba(120, 113, 108, 0.15);
+      color: #44403c;
+    }
+
+    .tab svg {
+      width: 21px;
+      height: 21px;
+      display: block;
+    }
+
+    .tab span {
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 500;
+    }
+
+    .tab.active span {
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <button class="icon-button" type="button" aria-label="Go back">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+
+      <div class="topbar-title">
+        <p class="service-name">Morrow English</p>
+        <p class="screen-name">Daily grammar review</p>
+      </div>
+
+      <button class="icon-button" type="button" aria-label="More options">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <circle cx="5" cy="12" r="1.6"/>
+          <circle cx="12" cy="12" r="1.6"/>
+          <circle cx="19" cy="12" r="1.6"/>
+        </svg>
+      </button>
+    </header>
+
+    <main>
+      <section class="progress-section" aria-label="Quiz progress">
+        <div class="progress-copy">
+          <p class="progress-label">Question 6 of 10</p>
+          <p class="difficulty-label">Intermediate</p>
+        </div>
+        <div class="progress-track" role="progressbar" aria-label="Quiz completion" aria-valuemin="0" aria-valuemax="100" aria-valuenow="60">
+          <div class="progress-fill"></div>
+        </div>
+      </section>
+
+      <section class="quiz-section" aria-labelledby="question-title">
+        <p class="topic">Present perfect</p>
+        <h1 id="question-title">Which sentence is grammatically correct?</h1>
+
+        <p class="prompt-note">Choose the sentence that shows a completed action with a present result.</p>
+
+        <div class="panel-stack">
+          <section class="choices-panel" aria-labelledby="choices-title">
+            <p class="panel-label" id="choices-title">Choose one answer</p>
+            <fieldset class="answers" aria-label="Answer choices">
+              <button class="answer" type="button">
+                <span class="choice-marker">A</span>
+                <span class="answer-text">I finished my essay tomorrow.</span>
+              </button>
+
+              <button class="answer selected" type="button" aria-pressed="true">
+                <span class="choice-marker">B</span>
+                <span class="answer-text">I have finished my essay, so I can submit it now.</span>
+              </button>
+
+              <button class="answer" type="button">
+                <span class="choice-marker">C</span>
+                <span class="answer-text">I am finish my essay yesterday.</span>
+              </button>
+
+              <button class="answer" type="button">
+                <span class="choice-marker">D</span>
+                <span class="answer-text">I have finish my essay every Monday.</span>
+              </button>
+            </fieldset>
+          </section>
+
+          <section class="submission-panel" aria-label="Submit answer">
+            <button class="check-button" type="button">Check answer</button>
+            <p class="submit-help">You can change your choice before checking.</p>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <nav class="tabbar" aria-label="Primary navigation">
+      <button class="tab" type="button">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M4 10.5L12 4L20 10.5V20H14.5V14H9.5V20H4V10.5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+        </svg>
+        <span>Home</span>
+      </button>
+
+      <button class="tab" type="button">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M5 4.5H15.5C17.4 4.5 19 6.1 19 8V19.5H8.5C6.6 19.5 5 17.9 5 16V4.5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+          <path d="M8.5 16H19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+        <span>Courses</span>
+      </button>
+
+      <button class="tab active" type="button" aria-current="page">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M7 4.5H17C18.1 4.5 19 5.4 19 6.5V19.5H5V6.5C5 5.4 5.9 4.5 7 4.5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+          <path d="M8.5 9H15.5M8.5 13H13.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+        <span>Practice</span>
+      </button>
+
+      <button class="tab" type="button">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="12" cy="8" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+          <path d="M5.5 20C5.9 16.7 8.4 14.5 12 14.5C15.6 14.5 18.1 16.7 18.5 20" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+        <span>Profile</span>
+      </button>
+    </nav>
+  </div>
+</body>
+</html>

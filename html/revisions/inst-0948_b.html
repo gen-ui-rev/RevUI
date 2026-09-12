@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Course Series Detail</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 32px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #dce0e2;
+      color: #172026;
+      font-family: 'Nunito Sans', system-ui, sans-serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin: 0;
+    }
+
+    .screen {
+      width: 768px;
+      height: 1024px;
+      display: flex;
+      flex-direction: column;
+      background: #edf1f0;
+      border: 1px solid #cbd1d2;
+      box-shadow: 0 18px 48px rgba(31, 40, 43, 0.13);
+    }
+
+    .topbar {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 13px 20px;
+      color: #f8f5ed;
+      background: #173d3c;
+      border-bottom: 1px solid #29504e;
+    }
+
+    .topbar-title {
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 24px;
+      letter-spacing: 0.01em;
+    }
+
+    .topbar-context {
+      margin-top: 1px;
+      color: #bad0cb;
+      font-size: 11px;
+      line-height: 14px;
+      text-align: center;
+    }
+
+    .icon-button {
+      width: 44px;
+      height: 44px;
+      padding: 0;
+      display: grid;
+      place-items: center;
+      color: #f8f5ed;
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.13);
+      border-radius: 50%;
+    }
+
+    .icon-button svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    main {
+      flex: 1 1 auto;
+      min-height: 0;
+      display: grid;
+      grid-template-columns: 366px minmax(0, 1fr);
+      gap: 16px;
+      align-items: start;
+      padding: 18px 13px;
+    }
+
+    .series-card {
+      color: #f7f4eb;
+      background: #173d3c;
+      border-radius: 18px;
+      box-shadow: 0 10px 26px rgba(21, 50, 49, 0.17);
+    }
+
+    .hero-image {
+      width: 366px;
+      height: 124px;
+      display: block;
+      object-fit: cover;
+      background: #c8ccd1;
+      border-radius: 18px 18px 0 0;
+    }
+
+    .series-body {
+      padding: 20px;
+    }
+
+    .issue-line {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      color: #ebc77d;
+      font-size: 11px;
+      font-weight: 700;
+      line-height: 16px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .issue-line::before {
+      content: "";
+      width: 28px;
+      height: 2px;
+      background: #ebc77d;
+    }
+
+    h1 {
+      margin-top: 10px;
+      font-size: 34px;
+      font-weight: 700;
+      line-height: 37px;
+      letter-spacing: -0.04em;
+    }
+
+    .metadata {
+      margin-top: 9px;
+      color: #bad0cb;
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 20px;
+    }
+
+    .description {
+      margin-top: 18px;
+      color: #e1e9e5;
+      font-size: 15px;
+      line-height: 23px;
+    }
+
+    .editor-note {
+      margin-top: 20px;
+      padding: 16px 0;
+      border-top: 1px solid #41615f;
+      border-bottom: 1px solid #41615f;
+    }
+
+    .editor-note-label {
+      color: #ebc77d;
+      font-size: 10px;
+      font-weight: 700;
+      line-height: 14px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .editor-note p {
+      margin-top: 6px;
+      color: #f4f0e6;
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 21px;
+    }
+
+    .course-facts {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      margin-top: 20px;
+      border: 1px solid #41615f;
+      border-radius: 12px;
+    }
+
+    .fact {
+      min-width: 0;
+      padding: 11px 8px;
+      text-align: center;
+    }
+
+    .fact + .fact {
+      border-left: 1px solid #41615f;
+    }
+
+    .fact-value {
+      color: #ffffff;
+      font-size: 15px;
+      font-weight: 700;
+      line-height: 19px;
+    }
+
+    .fact-label {
+      margin-top: 2px;
+      color: #aac2bd;
+      font-size: 10px;
+      line-height: 14px;
+      text-transform: uppercase;
+    }
+
+    .progress-copy {
+      margin-top: 19px;
+      display: flex;
+      justify-content: space-between;
+      color: #cbdad6;
+      font-size: 13px;
+      font-weight: 600;
+      line-height: 18px;
+    }
+
+    .progress-copy strong {
+      color: #ebc77d;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 6px;
+      margin-top: 7px;
+      background: #345351;
+      border-radius: 8px;
+    }
+
+    .progress-fill {
+      width: 43%;
+      height: 6px;
+      background: #ebc77d;
+      border-radius: 8px;
+    }
+
+    .primary-button {
+      width: 100%;
+      min-height: 48px;
+      margin-top: 15px;
+      padding: 12px 16px;
+      color: #173d3c;
+      background: #f1cf89;
+      border: 0;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .right-column {
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .teachers-card,
+    .episodes-card {
+      background: #fffdfa;
+      border: 1px solid #dce2df;
+      border-radius: 18px;
+      box-shadow: 0 5px 16px rgba(32, 45, 45, 0.06);
+    }
+
+    .teachers-card,
+    .episodes-card {
+      padding: 17px;
+    }
+
+    .section-number {
+      color: #a66c23;
+      font-size: 10px;
+      font-weight: 700;
+      line-height: 14px;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+    }
+
+    .section-title {
+      margin-top: 3px;
+      font-size: 21px;
+      font-weight: 700;
+      line-height: 26px;
+      letter-spacing: -0.02em;
+    }
+
+    .teacher-list {
+      margin-top: 12px;
+    }
+
+    .teacher {
+      display: grid;
+      grid-template-columns: 42px minmax(0, 1fr);
+      gap: 10px;
+      align-items: center;
+      padding: 8px 0;
+    }
+
+    .teacher + .teacher {
+      border-top: 1px solid #e7ebe8;
+    }
+
+    .monogram {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      color: #ffffff;
+      background: #2d6260;
+      border-radius: 11px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .teacher-copy {
+      min-width: 0;
+    }
+
+    .teacher-name {
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 18px;
+    }
+
+    .teacher-role {
+      color: #6e7774;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .episodes-heading {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .season-label {
+      flex-shrink: 0;
+      padding: 4px 8px;
+      color: #496663;
+      background: #e8f0ed;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 700;
+      line-height: 16px;
+    }
+
+    .episode-list {
+      margin-top: 12px;
+    }
+
+    .episode {
+      position: relative;
+      padding: 12px;
+      background: #f4f6f3;
+      border: 1px solid #e1e6e2;
+      border-radius: 13px;
+    }
+
+    .episode + .episode {
+      margin-top: 9px;
+    }
+
+    .episode-main {
+      display: grid;
+      grid-template-columns: 82px minmax(0, 1fr);
+      gap: 11px;
+      align-items: center;
+    }
+
+    .episode-image {
+      width: 82px;
+      height: 52px;
+      display: block;
+      object-fit: cover;
+      background: #c8ccd1;
+      border-radius: 9px;
+    }
+
+    .episode-copy {
+      min-width: 0;
+    }
+
+    .episode-number {
+      color: #a66c23;
+      font-size: 10px;
+      font-weight: 700;
+      line-height: 14px;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+    }
+
+    .episode-title {
+      overflow: hidden;
+      margin-top: 2px;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 18px;
+    }
+
+    .episode-details {
+      margin-top: 2px;
+      color: #737c79;
+      font-size: 11px;
+      line-height: 15px;
+    }
+
+    .skill-focus {
+      margin-top: 9px;
+      padding-top: 8px;
+      border-top: 1px solid #dce2de;
+      color: #395451;
+      font-size: 12px;
+      line-height: 17px;
+    }
+
+    .skill-focus strong {
+      color: #173d3c;
+      font-weight: 700;
+    }
+
+    .tabbar {
+      flex-shrink: 0;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      background: #fffdfa;
+      border-top: 1px solid #d5dcda;
+    }
+
+    .tab {
+      min-height: 68px;
+      padding: 9px 0 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      color: #77807d;
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 15px;
+    }
+
+    .tab svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .tab.active {
+      color: #1f5754;
+      font-weight: 700;
+    }
+
+    .tab.active::after {
+      content: "";
+      width: 18px;
+      height: 2px;
+      margin-top: 1px;
+      background: #d09a47;
+      border-radius: 3px;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <button class="icon-button" type="button" aria-label="Go back">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M15 5L8 12L15 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <div>
+        <div class="topbar-title">The Language Detectives</div>
+        <div class="topbar-context">Course reader · Season 1</div>
+      </div>
+      <button class="icon-button" type="button" aria-label="Save series">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M7 4.75C7 3.78 7.78 3 8.75 3H15.25C16.22 3 17 3.78 17 4.75V21L12 17.75L7 21V4.75Z" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </header>
+
+    <main>
+      <section class="series-card" aria-labelledby="series-title">
+        <img class="hero-image" src="https://loremflickr.com/366/124/classroom?lock=12550" width="366" height="124" alt="Students discussing ideas in a bright classroom">
+        <div class="series-body">
+          <div class="issue-line">Intermediate English</div>
+          <h1 id="series-title">The Language Detectives</h1>
+          <p class="metadata">Season 1 · 6 episodes · 2 hr 18 min</p>
+          <p class="description">Follow a team of learners as they decode everyday English through clues, interviews, and practical challenges.</p>
+
+          <div class="editor-note">
+            <div class="editor-note-label">Learning brief</div>
+            <p>Read between the lines, test your interpretation, and explain the evidence behind every conclusion.</p>
+          </div>
+
+          <div class="course-facts" aria-label="Course facts">
+            <div class="fact">
+              <div class="fact-value">B1</div>
+              <div class="fact-label">Level</div>
+            </div>
+            <div class="fact">
+              <div class="fact-value">6</div>
+              <div class="fact-label">Lessons</div>
+            </div>
+            <div class="fact">
+              <div class="fact-value">3</div>
+              <div class="fact-label">Core skills</div>
+            </div>
+          </div>
+
+          <div class="progress-copy">
+            <span>2 of 6 episodes completed</span>
+            <strong>43%</strong>
+          </div>
+          <div class="progress-track" aria-label="Course progress: 43 percent">
+            <div class="progress-fill"></div>
+          </div>
+          <button class="primary-button" type="button">Resume The Tone Test</button>
+        </div>
+      </section>
+
+      <div class="right-column">
+        <section class="teachers-card" aria-labelledby="teachers-title">
+          <div class="section-number">01 · Your guides</div>
+          <h2 class="section-title" id="teachers-title">Meet the teaching team</h2>
+          <div class="teacher-list">
+            <div class="teacher">
+              <div class="monogram">MC</div>
+              <div class="teacher-copy">
+                <div class="teacher-name">Mara Cole</div>
+                <div class="teacher-role">Host · Leads each investigation</div>
+              </div>
+            </div>
+            <div class="teacher">
+              <div class="monogram">TN</div>
+              <div class="teacher-copy">
+                <div class="teacher-name">Theo Nash</div>
+                <div class="teacher-role">Coach · Builds practical fluency</div>
+              </div>
+            </div>
+            <div class="teacher">
+              <div class="monogram">IS</div>
+              <div class="teacher-copy">
+                <div class="teacher-name">Ivy Sloan</div>
+                <div class="teacher-role">Linguist · Explains language patterns</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="episodes-card" aria-labelledby="episodes-title">
+          <div class="episodes-heading">
+            <div>
+              <div class="section-number">02 · Study sequence</div>
+              <h2 class="section-title" id="episodes-title">Episode field notes</h2>
+            </div>
+            <div class="season-label">Season 1</div>
+          </div>
+
+          <div class="episode-list">
+            <article class="episode">
+              <div class="episode-main">
+                <img class="episode-image" src="https://loremflickr.com/82/52/library?lock=12551" width="82" height="52" alt="Library shelves featured in episode one">
+                <div class="episode-copy">
+                  <div class="episode-number">Episode 1</div>
+                  <div class="episode-title">The Missing Meaning</div>
+                  <div class="episode-details">22 min · Completed</div>
+                </div>
+              </div>
+              <div class="skill-focus"><strong>Skill focus:</strong> Infer unfamiliar vocabulary from nearby evidence.</div>
+            </article>
+
+            <article class="episode">
+              <div class="episode-main">
+                <img class="episode-image" src="https://loremflickr.com/82/52/books?lock=12552" width="82" height="52" alt="Open books featured in episode two">
+                <div class="episode-copy">
+                  <div class="episode-number">Episode 2</div>
+                  <div class="episode-title">Clues in Context</div>
+                  <div class="episode-details">24 min · Completed</div>
+                </div>
+              </div>
+              <div class="skill-focus"><strong>Skill focus:</strong> Connect details across sentences to confirm meaning.</div>
+            </article>
+
+            <article class="episode">
+              <div class="episode-main">
+                <img class="episode-image" src="https://loremflickr.com/82/52/study?lock=12553" width="82" height="52" alt="Study desk featured in episode three">
+                <div class="episode-copy">
+                  <div class="episode-number">Episode 3</div>
+                  <div class="episode-title">The Tone Test</div>
+                  <div class="episode-details">21 min · 8 min watched</div>
+                </div>
+              </div>
+              <div class="skill-focus"><strong>Skill focus:</strong> Identify attitude through stress and word choice.</div>
+            </article>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <nav class="tabbar" aria-label="Primary navigation">
+      <div class="tab">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M4 10.5L12 4L20 10.5V20H14.5V14H9.5V20H4V10.5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+        </svg>
+        <span>Home</span>
+      </div>
+      <div class="tab active">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <rect x="3.5" y="5" width="17" height="14" rx="2" stroke="currentColor" stroke-width="1.8"/>
+          <path d="M10 9L15 12L10 15V9Z" fill="currentColor"/>
+        </svg>
+        <span>Series</span>
+      </div>
+      <div class="tab">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M5 4H17C18.1 4 19 4.9 19 6V20H7C5.9 20 5 19.1 5 18V4Z" stroke="currentColor" stroke-width="1.8"/>
+          <path d="M7 16H19" stroke="currentColor" stroke-width="1.8"/>
+        </svg>
+        <span>Library</span>
+      </div>
+      <div class="tab">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="12" cy="8" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+          <path d="M5.5 20C5.9 16.6 8.4 14.5 12 14.5C15.6 14.5 18.1 16.6 18.5 20" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+        <span>Profile</span>
+      </div>
+    </nav>
+  </div>
+</body>
+</html>

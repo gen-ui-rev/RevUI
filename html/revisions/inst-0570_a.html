@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Northnest Stay Shop</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      border-radius: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #e7e4e6;
+      color: #211c20;
+      font-family: 'Inter', system-ui, sans-serif;
+    }
+
+    button,
+    select {
+      font: inherit;
+    }
+
+    .screen {
+      width: 1024px;
+      height: 768px;
+      display: flex;
+      flex-direction: column;
+      background: #fffdfd;
+      border: 1px solid #cfc7cc;
+      box-shadow: 0 18px 48px rgba(48, 37, 44, .12);
+    }
+
+    .app-header {
+      background: #875b74;
+      color: #ffffff;
+    }
+
+    .top-line {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      padding: 14px 24px;
+    }
+
+    .brand-block {
+      width: 210px;
+      flex: 0 0 210px;
+    }
+
+    .service-name {
+      margin: 0 0 1px;
+      color: #eadde4;
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 15px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 22px;
+      font-weight: 700;
+      line-height: 27px;
+      letter-spacing: -.02em;
+    }
+
+    .search-box {
+      height: 42px;
+      max-width: 480px;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 13px;
+      background: #ffffff;
+      border: 1px solid #70475f;
+      color: #655b61;
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .search-box svg {
+      width: 18px;
+      height: 18px;
+      flex: 0 0 auto;
+      color: #875b74;
+    }
+
+    .header-actions {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .host-link {
+      color: #f5edf1;
+      font-size: 13px;
+      font-weight: 600;
+      line-height: 20px;
+    }
+
+    .cart-button {
+      position: relative;
+      width: 38px;
+      height: 38px;
+      padding: 8px;
+      border: 1px solid rgba(255, 255, 255, .5);
+      background: transparent;
+      color: #ffffff;
+    }
+
+    .cart-button svg {
+      width: 20px;
+      height: 20px;
+      display: block;
+    }
+
+    .cart-count {
+      position: absolute;
+      top: -7px;
+      right: -7px;
+      min-width: 19px;
+      height: 19px;
+      padding: 0 4px;
+      display: grid;
+      place-items: center;
+      background: #ffffff;
+      color: #70475f;
+      border: 1px solid #70475f;
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 17px;
+    }
+
+    .tab-bar {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 0 20px;
+      border-bottom: 1px solid #d8cfd4;
+      background: #ffffff;
+    }
+
+    .tab {
+      height: 44px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 0 14px;
+      border-bottom: 3px solid transparent;
+      color: #6f646a;
+      font-size: 13px;
+      font-weight: 500;
+      line-height: 20px;
+    }
+
+    .tab svg {
+      width: 18px;
+      height: 18px;
+      display: block;
+    }
+
+    .tab.active {
+      border-bottom-color: #875b74;
+      color: #70475f;
+      font-weight: 700;
+    }
+
+    .categories {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 24px;
+      border-bottom: 1px solid #ded7db;
+      background: #faf7f8;
+    }
+
+    .category {
+      padding: 6px 12px;
+      border: 1px solid #cfc4ca;
+      background: #ffffff;
+      color: #51484d;
+      font-size: 13px;
+      font-weight: 500;
+      line-height: 20px;
+      white-space: nowrap;
+    }
+
+    .category.selected {
+      border-color: #875b74;
+      background: #f0e7ec;
+      color: #70475f;
+      font-weight: 600;
+    }
+
+    .category-label {
+      margin-right: 4px;
+      color: #756a70;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+    }
+
+    main {
+      width: 100%;
+      flex: 1;
+      padding: 18px 24px 20px;
+    }
+
+    .content-grid {
+      display: grid;
+      grid-template-columns: 382px minmax(0, 1fr);
+      gap: 26px;
+      align-items: start;
+    }
+
+    .featured-section {
+      padding-right: 23px;
+      border-right: 1px solid #ded7db;
+    }
+
+    .section-heading {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      padding: 0 0 10px;
+    }
+
+    .section-heading h2,
+    .deal-title h2 {
+      margin: 0;
+      font-size: 17px;
+      font-weight: 700;
+      line-height: 22px;
+      letter-spacing: -.01em;
+    }
+
+    .section-link {
+      color: #795168;
+      font-size: 13px;
+      font-weight: 600;
+      line-height: 18px;
+    }
+
+    .feature-card {
+      width: 358px;
+      background: #ffffff;
+    }
+
+    .feature-card img {
+      width: 358px;
+      height: 158px;
+      display: block;
+      object-fit: cover;
+      background: #d9d0d5;
+    }
+
+    .feature-info {
+      width: 358px;
+      padding: 11px 12px 12px;
+      border: 1px solid #d8cfd4;
+      border-top: 0;
+      background: #ffffff;
+    }
+
+    .feature-title-line,
+    .feature-meta-line {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .feature-title {
+      min-width: 0;
+      margin: 0;
+      overflow: hidden;
+      color: #241e22;
+      font-size: 15px;
+      font-weight: 700;
+      line-height: 20px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .stay-count {
+      flex: 0 0 auto;
+      color: #6f646a;
+      font-size: 13px;
+      line-height: 20px;
+    }
+
+    .feature-meta-line {
+      margin-top: 6px;
+    }
+
+    .feature-location {
+      color: #62585e;
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .feature-price {
+      flex: 0 0 auto;
+      color: #70475f;
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 20px;
+    }
+
+    .collection-note {
+      margin: 14px 0 0;
+      padding: 11px 12px;
+      border-left: 3px solid #875b74;
+      background: #f7f2f5;
+      color: #62585e;
+      font-size: 13px;
+      line-height: 19px;
+    }
+
+    .deal-heading {
+      padding-bottom: 11px;
+      border-bottom: 1px solid #ded7db;
+    }
+
+    .deal-title {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 9px;
+    }
+
+    .deal-note {
+      color: #756a70;
+      font-size: 12px;
+      line-height: 18px;
+      white-space: nowrap;
+    }
+
+    .filter-bar {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .filter-label {
+      margin-right: 2px;
+      color: #62585e;
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 30px;
+    }
+
+    .filter-control {
+      height: 32px;
+      padding: 0 28px 0 9px;
+      border: 1px solid #cfc4ca;
+      background: #ffffff;
+      color: #51484d;
+      font-size: 12px;
+      line-height: 30px;
+    }
+
+    .filter-button {
+      height: 32px;
+      padding: 0 10px;
+      border: 1px solid #875b74;
+      background: #f0e7ec;
+      color: #70475f;
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 30px;
+    }
+
+    .stay-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .stay-row {
+      position: relative;
+      display: flex;
+      gap: 13px;
+      margin-top: 10px;
+      padding: 10px;
+      border: 1px solid #ddd5d9;
+      background: #ffffff;
+    }
+
+    .stay-row img {
+      width: 104px;
+      height: 82px;
+      flex: 0 0 104px;
+      display: block;
+      object-fit: cover;
+      background: #d9d0d5;
+    }
+
+    .stay-row.value {
+      border-left: 4px solid #875b74;
+      padding-left: 7px;
+    }
+
+    .stay-row.premium {
+      border-color: #a98699;
+      background: #fbf6f9;
+    }
+
+    .stay-row.last-minute {
+      border-style: dashed;
+      background: #f8f7f4;
+    }
+
+    .stay-details {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .result-tag {
+      display: inline-block;
+      margin-bottom: 3px;
+      color: #795168;
+      font-size: 10px;
+      font-weight: 700;
+      line-height: 13px;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+    }
+
+    .premium .result-tag {
+      padding: 1px 5px;
+      background: #875b74;
+      color: #ffffff;
+    }
+
+    .last-minute .result-tag {
+      color: #6a613f;
+    }
+
+    .stay-name {
+      margin: 0 0 2px;
+      overflow: hidden;
+      color: #241e22;
+      font-size: 15px;
+      font-weight: 600;
+      line-height: 19px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .stay-place {
+      margin: 0 0 6px;
+      overflow: hidden;
+      color: #6f646a;
+      font-size: 12px;
+      line-height: 17px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .stay-bottom {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .stay-price {
+      color: #322a2f;
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 19px;
+    }
+
+    .stay-price span {
+      color: #71666c;
+      font-size: 11px;
+      font-weight: 400;
+    }
+
+    .stay-rating {
+      flex: 0 0 auto;
+      color: #655a60;
+      font-size: 12px;
+      line-height: 18px;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="app-header">
+      <div class="top-line">
+        <div class="brand-block">
+          <p class="service-name">Northnest</p>
+          <h1>Shop stays</h1>
+        </div>
+        <div class="search-box" role="search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square" aria-hidden="true">
+            <circle cx="10.5" cy="10.5" r="6.5"></circle>
+            <path d="M15.5 15.5 21 21"></path>
+          </svg>
+          <span>Search destinations and stays</span>
+        </div>
+        <div class="header-actions">
+          <span class="host-link">List your property</span>
+          <button class="cart-button" type="button" aria-label="View booking cart with 2 stays">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square" stroke-linejoin="miter" aria-hidden="true">
+              <path d="M3 4h2l2.2 10.2h10.9L21 7H6.1"></path>
+              <path d="M9 19.5h.01M18 19.5h.01"></path>
+            </svg>
+            <span class="cart-count">2</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <nav class="tab-bar" aria-label="Primary navigation">
+      <div class="tab active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square" stroke-linejoin="miter" aria-hidden="true">
+          <path d="M4 9h16v11H4z"></path>
+          <path d="M7 9V5h10v4M9 13h6"></path>
+        </svg>
+        <span>Shop</span>
+      </div>
+      <div class="tab">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square" stroke-linejoin="miter" aria-hidden="true">
+          <path d="M5 4h14v16H5z"></path>
+          <path d="M8 8h8M8 12h5"></path>
+        </svg>
+        <span>Trips</span>
+      </div>
+      <div class="tab">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square" stroke-linejoin="miter" aria-hidden="true">
+          <path d="M12 20 4.8 12.8a4.8 4.8 0 0 1 6.8-6.8l.4.4.4-.4a4.8 4.8 0 0 1 6.8 6.8z"></path>
+        </svg>
+        <span>Saved</span>
+      </div>
+      <div class="tab">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square" stroke-linejoin="miter" aria-hidden="true">
+          <circle cx="12" cy="8" r="4"></circle>
+          <path d="M5 21c.5-4 3-6 7-6s6.5 2 7 6"></path>
+        </svg>
+        <span>Account</span>
+      </div>
+    </nav>
+
+    <nav class="categories" aria-label="Stay categories">
+      <span class="category-label">Browse</span>
+      <button class="category selected" type="button">All stays</button>
+      <button class="category" type="button">Beach</button>
+      <button class="category" type="button">City</button>
+      <button class="category" type="button">Mountain</button>
+    </nav>
+
+    <main>
+      <div class="content-grid">
+        <section class="featured-section" aria-labelledby="featured-title-a">
+          <div class="section-heading">
+            <h2 id="featured-title-a">Featured collection</h2>
+            <span class="section-link">View all</span>
+          </div>
+          <article class="feature-card">
+            <img src="https://loremflickr.com/358/158/beach?lock=7630" width="358" height="158" alt="Beachfront lodging beside a sandy Gulf Coast beach">
+            <div class="feature-info">
+              <div class="feature-title-line">
+                <h3 class="feature-title">Gulf Coast waterfront stays</h3>
+                <span class="stay-count">18 stays</span>
+              </div>
+              <div class="feature-meta-line">
+                <span class="feature-location">Mobile Bay, Alabama</span>
+                <span class="feature-price">From $189 nightly</span>
+              </div>
+            </div>
+          </article>
+          <p class="collection-note">Curated waterfront properties with direct beach access and flexible weekend booking.</p>
+        </section>
+
+        <section aria-labelledby="deals-title-a">
+          <div class="deal-heading">
+            <div class="deal-title">
+              <h2 id="deals-title-a">Available this weekend</h2>
+              <span class="deal-note">3 stays · May 16–18</span>
+            </div>
+            <div class="filter-bar" aria-label="Filter weekend results">
+              <span class="filter-label">Filter results</span>
+              <select class="filter-control" aria-label="Maximum nightly price">
+                <option>Any price</option>
+                <option>Under $200</option>
+                <option>Under $250</option>
+                <option>Under $300</option>
+              </select>
+              <select class="filter-control" aria-label="Stay type">
+                <option>All stay types</option>
+                <option>Hotel</option>
+                <option>Lodge</option>
+              </select>
+              <button class="filter-button" type="button">4.8+ rating</button>
+            </div>
+          </div>
+
+          <ul class="stay-list">
+            <li class="stay-row value">
+              <img src="https://loremflickr.com/104/82/hotel?lock=7631" width="104" height="82" alt="Brick harbor hotel with large windows">
+              <div class="stay-details">
+                <span class="result-tag">Best value</span>
+                <h3 class="stay-name">Harborline House</h3>
+                <p class="stay-place">Portland, Maine · Free cancellation</p>
+                <div class="stay-bottom">
+                  <span class="stay-price">$214 <span>nightly</span></span>
+                  <span class="stay-rating">★ 4.8 rating</span>
+                </div>
+              </div>
+            </li>
+            <li class="stay-row premium">
+              <img src="https://loremflickr.com/104/82/mountain?lock=7632" width="104" height="82" alt="Mountain lodge surrounded by evergreen trees">
+              <div class="stay-details">
+                <span class="result-tag">Top rated</span>
+                <h3 class="stay-name">Juniper Ridge Lodge</h3>
+                <p class="stay-place">Aspen, Colorado · Breakfast included</p>
+                <div class="stay-bottom">
+                  <span class="stay-price">$286 <span>nightly</span></span>
+                  <span class="stay-rating">★ 4.9 rating</span>
+                </div>
+              </div>
+            </li>
+            <li class="stay-row last-minute">
+              <img src="https://loremflickr.com/104/82/cityscape?lock=7633" width="104" height="82" alt="Downtown hotel among tall city buildings">
+              <div class="stay-details">
+                <span class="result-tag">Last-minute rate</span>
+                <h3 class="stay-name">Civic Row Hotel</h3>
+                <p class="stay-place">Chicago, Illinois · Pay at property</p>
+                <div class="stay-bottom">
+                  <span class="stay-price">$173 <span>nightly</span></span>
+                  <span class="stay-rating">★ 4.7 rating</span>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </section>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

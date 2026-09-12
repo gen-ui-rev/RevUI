@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Radial — Nearby</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body {
+    min-height: 100vh;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #d8d4cc;
+    color: #1c1915;
+    font-family: 'Source Serif 4', Georgia, serif;
+  }
+  .screen {
+    width: 1024px;
+    height: 768px;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 18px 50px rgba(47, 40, 30, 0.14);
+  }
+
+  .topbar {
+    min-height: 74px;
+    padding: 0 26px;
+    border-bottom: 1px solid #dfdbd3;
+    display: flex;
+    align-items: center;
+  }
+  .logo {
+    margin-right: 42px;
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+  }
+  .tabs {
+    align-self: stretch;
+    display: flex;
+    align-items: stretch;
+    gap: 28px;
+  }
+  .tab {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    color: #756f66;
+    font-size: 14px;
+  }
+  .tab.on {
+    color: #a24c29;
+    font-weight: 700;
+  }
+  .tab.on::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 3px;
+    background: #a24c29;
+  }
+  .topright {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .search {
+    width: 185px;
+    min-height: 38px;
+    padding: 0 12px;
+    border: 1px solid #dcd6cd;
+    background: #faf8f3;
+    color: #827b71;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+  }
+  .avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: #5f653e;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  .content {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+  }
+
+  .discovery {
+    width: 370px;
+    flex: 0 0 370px;
+    padding: 24px 24px 18px;
+    border-right: 1px solid #dcd7ce;
+    display: flex;
+    flex-direction: column;
+    background: #fffdf9;
+  }
+  .headingline {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+  }
+  .headingline h1 {
+    margin: 0;
+    font-size: 27px;
+    line-height: 32px;
+    letter-spacing: -0.5px;
+  }
+  .filter {
+    width: 36px;
+    height: 36px;
+    border: 1px solid #ddd6cc;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .summary {
+    margin: 5px 0 18px;
+    color: #746e65;
+    font-size: 13px;
+  }
+
+  .featured {
+    padding: 18px;
+    background: #f2ece1;
+    border: 1px solid #ded4c3;
+  }
+  .kicker {
+    color: #a24c29;
+    font-size: 11px;
+    line-height: 15px;
+    font-weight: 700;
+    letter-spacing: 0.7px;
+    text-transform: uppercase;
+  }
+  .featured h2 {
+    margin: 6px 0 0;
+    font-size: 22px;
+    line-height: 27px;
+    letter-spacing: -0.3px;
+  }
+  .host {
+    margin: 5px 0 0;
+    color: #4f4941;
+    font-size: 14px;
+  }
+  .meta {
+    margin: 4px 0 0;
+    color: #777065;
+    font-size: 12px;
+    line-height: 18px;
+  }
+  .featureactions {
+    margin-top: 14px;
+    display: flex;
+    gap: 8px;
+  }
+  .join {
+    min-height: 40px;
+    flex: 1;
+    background: #a24c29;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+  }
+  .save {
+    width: 42px;
+    min-height: 40px;
+    border: 1px solid #cabfac;
+    background: #fffdf9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .listhead {
+    margin: 20px 0 6px;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+  }
+  .listhead strong {
+    color: #8d8579;
+    font-size: 11px;
+    letter-spacing: 0.7px;
+    text-transform: uppercase;
+  }
+  .listhead span {
+    color: #a24c29;
+    font-size: 12px;
+  }
+  .row {
+    min-height: 72px;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #e8e2d9;
+  }
+  .thumb {
+    width: 44px;
+    height: 44px;
+    flex: 0 0 44px;
+    background: linear-gradient(145deg, #bf704c, #673522);
+  }
+  .thumb.b { background: linear-gradient(145deg, #baa678, #63573a); }
+  .thumb.c { background: linear-gradient(145deg, #7f9773, #3f563a); }
+  .rowtext {
+    margin-left: 11px;
+    flex: 1;
+    min-width: 0;
+  }
+  .rowtitle {
+    font-size: 14px;
+    line-height: 19px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .rowsub {
+    color: #7a7369;
+    font-size: 12px;
+    line-height: 17px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .distance {
+    margin-left: 9px;
+    color: #7a7369;
+    font-size: 12px;
+    flex: 0 0 auto;
+  }
+  .update {
+    margin-top: auto;
+    padding-top: 12px;
+    color: #948c81;
+    font-size: 12px;
+  }
+
+  .map {
+    position: relative;
+    flex: 1;
+    min-width: 0;
+    background: #eee5d2;
+  }
+  .map > svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+  .maptitle {
+    position: absolute;
+    top: 22px;
+    left: 22px;
+    min-width: 208px;
+    padding: 12px 14px;
+    background: rgba(255,253,248,0.96);
+    border: 1px solid #d8cdbd;
+    box-shadow: 0 5px 16px rgba(73, 57, 36, 0.1);
+  }
+  .maptitle strong {
+    display: block;
+    font-size: 15px;
+  }
+  .maptitle span {
+    display: block;
+    margin-top: 2px;
+    color: #7c7163;
+    font-size: 12px;
+  }
+  .maptools {
+    position: absolute;
+    top: 22px;
+    right: 22px;
+    display: flex;
+  }
+  .maptools div {
+    width: 38px;
+    height: 38px;
+    background: #fffdf8;
+    border: 1px solid #d6cbb9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .maptools div + div { border-left: 0; }
+  .districts {
+    position: absolute;
+    right: 22px;
+    bottom: 22px;
+    padding: 9px 12px;
+    background: rgba(255,253,248,0.96);
+    border: 1px solid #d6cbb9;
+    color: #74695b;
+    font-size: 12px;
+  }
+</style>
+</head>
+<body>
+<div class="screen">
+  <header class="topbar">
+    <div class="logo">Radial</div>
+
+    <nav class="tabs" aria-label="Primary navigation">
+      <div class="tab">
+        <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="#756f66" stroke-width="1.4">
+          <path d="M3 8.5 10 3l7 5.5V17H3z"/>
+        </svg>
+        Home
+      </div>
+      <div class="tab">
+        <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="#756f66" stroke-width="1.4">
+          <circle cx="9" cy="9" r="5.5"/><path d="M13.2 13.2 17 17"/>
+        </svg>
+        Search
+      </div>
+      <div class="tab on">
+        <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="#a24c29" stroke-width="1.5">
+          <path d="M10 2.6c-3.1 0-5.6 2.4-5.6 5.4 0 4.2 5.6 9.4 5.6 9.4s5.6-5.2 5.6-9.4c0-3-2.5-5.4-5.6-5.4z"/>
+          <circle cx="10" cy="8" r="2.1"/>
+        </svg>
+        Nearby
+      </div>
+      <div class="tab">
+        <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="#756f66" stroke-width="1.4">
+          <path d="M4 3v14M7.5 3v14M11 3.4l5.6 13.2"/>
+        </svg>
+        Library
+      </div>
+    </nav>
+
+    <div class="topright">
+      <div class="search">
+        <svg width="15" height="15" viewBox="0 0 20 20" fill="none" stroke="#776f65" stroke-width="1.5">
+          <circle cx="9" cy="9" r="5.5"/><path d="M13.2 13.2 17 17"/>
+        </svg>
+        Search sessions or hosts
+      </div>
+      <div class="avatar" aria-label="Account">MR</div>
+    </div>
+  </header>
+
+  <div class="content">
+    <aside class="discovery">
+      <div class="headingline">
+        <h1>Live Nearby</h1>
+        <div class="filter" aria-label="Filter nearby sessions">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#544d44" stroke-width="1.4">
+            <path d="M2 4h12M4 8h8M6 12h4"/>
+          </svg>
+        </div>
+      </div>
+      <p class="summary">9 sessions playing within 2 miles of Foundry District</p>
+
+      <section class="featured">
+        <div class="kicker">Live now · 0.3 mi away</div>
+        <h2>Dusk Tempo at Foundry Hall</h2>
+        <p class="host">Hosted by Marisol Reyes</p>
+        <p class="meta">312 listening · Ambient / Downtempo · Ends 11:00 PM</p>
+        <div class="featureactions">
+          <div class="join">Join session</div>
+          <div class="save" aria-label="Save session">
+            <svg width="17" height="17" viewBox="0 0 20 20" fill="none" stroke="#665c50" stroke-width="1.5">
+              <path d="M5 3h10v14l-5-3-5 3z"/>
+            </svg>
+          </div>
+        </div>
+      </section>
+
+      <div class="listhead">
+        <strong>Also playing nearby</strong>
+        <span>See all 8</span>
+      </div>
+
+      <div class="row">
+        <div class="thumb"></div>
+        <div class="rowtext">
+          <div class="rowtitle">Night Freight Radio</div>
+          <div class="rowsub">Corwin Tsai · 88 listening</div>
+        </div>
+        <div class="distance">0.6 mi</div>
+      </div>
+
+      <div class="row">
+        <div class="thumb b"></div>
+        <div class="rowtext">
+          <div class="rowtitle">The Long Bridge, Episode 41</div>
+          <div class="rowsub">Talk · 1,204 listening</div>
+        </div>
+        <div class="distance">1.1 mi</div>
+      </div>
+
+      <div class="row">
+        <div class="thumb c"></div>
+        <div class="rowtext">
+          <div class="rowtitle">Warehouse Six: Vinyl Only</div>
+          <div class="rowsub">Delia Marsh · 47 listening</div>
+        </div>
+        <div class="distance">1.8 mi</div>
+      </div>
+
+      <div class="update">Nearby activity updated 2 minutes ago</div>
+    </aside>
+
+    <main class="map">
+      <svg viewBox="0 0 654 694" preserveAspectRatio="none" role="img" aria-label="Map of nearby live sessions">
+        <rect width="654" height="694" fill="#eee5d2"/>
+        <path d="M-15 520 C90 480 176 560 292 528 C410 494 512 575 670 530 L670 694 L-15 694 Z" fill="#b9d5cf"/>
+        <path d="M395 52h144v150H395z" fill="#ccd3ad"/>
+        <g stroke="#fffaf0" stroke-linecap="square">
+          <path d="M0 125 H654" stroke-width="18"/>
+          <path d="M0 319 H654" stroke-width="24"/>
+          <path d="M0 476 H654" stroke-width="14"/>
+          <path d="M151 0 V694" stroke-width="20"/>
+          <path d="M327 0 V694" stroke-width="14"/>
+          <path d="M545 0 V694" stroke-width="14"/>
+          <path d="M0 0 L260 694" stroke-width="12"/>
+        </g>
+        <g stroke="#e4d8c4" stroke-width="5">
+          <path d="M0 224 H654"/>
+          <path d="M0 402 H654"/>
+          <path d="M432 0 V694"/>
+          <path d="M78 125 V694"/>
+        </g>
+        <g fill="#dfd3bd">
+          <rect x="174" y="148" width="122" height="58"/>
+          <rect x="174" y="238" width="122" height="62"/>
+          <rect x="348" y="342" width="68" height="102"/>
+          <rect x="456" y="342" width="73" height="102"/>
+          <rect x="563" y="238" width="70" height="62"/>
+          <rect x="91" y="420" width="43" height="42"/>
+        </g>
+
+        <circle cx="254" cy="319" r="82" fill="#ad4e28" fill-opacity="0.12"/>
+        <g>
+          <circle cx="118" cy="194" r="9" fill="#a24c29" stroke="#fffaf3" stroke-width="3"/>
+          <circle cx="500" cy="266" r="9" fill="#a24c29" stroke="#fffaf3" stroke-width="3"/>
+          <circle cx="412" cy="533" r="9" fill="#a24c29" stroke="#fffaf3" stroke-width="3"/>
+          <circle cx="183" cy="609" r="9" fill="#a24c29" stroke="#fffaf3" stroke-width="3"/>
+          <circle cx="588" cy="139" r="9" fill="#a24c29" stroke="#fffaf3" stroke-width="3"/>
+        </g>
+        <path d="M254 268c-15 0-27 12-27 27 0 20 27 45 27 45s27-25 27-45c0-15-12-27-27-27z" fill="#a24c29" stroke="#fffaf3" stroke-width="4"/>
+        <circle cx="254" cy="295" r="8" fill="#fffaf3"/>
+        <circle cx="338" cy="443" r="15" fill="#303520" fill-opacity="0.15"/>
+        <circle cx="338" cy="443" r="6" fill="#4e552f" stroke="#fffaf3" stroke-width="3"/>
+      </svg>
+
+      <div class="maptitle">
+        <strong>Foundry District</strong>
+        <span>9 live sessions within 2 miles</span>
+      </div>
+
+      <div class="maptools">
+        <div aria-label="Recenter map">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="#665b4d" stroke-width="1.4">
+            <circle cx="9" cy="9" r="4.2"/>
+            <path d="M9 1v2.2M9 14.8V17M1 9h2.2M14.8 9H17"/>
+          </svg>
+        </div>
+        <div aria-label="Zoom in">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="#665b4d" stroke-width="1.4">
+            <path d="M9 3.5v11M3.5 9h11"/>
+          </svg>
+        </div>
+        <div aria-label="Zoom out">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="#665b4d" stroke-width="1.4">
+            <path d="M3.5 9h11"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="districts">Foundry Hall selected · 0.3 mi away</div>
+    </main>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daily Balance Protein</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #e9e8eb;
+      color: #28242a;
+      font-family: 'Nunito Sans', system-ui, sans-serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    svg {
+      display: block;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #ffffff;
+    }
+
+    .topbar {
+      flex-shrink: 0;
+      display: grid;
+      grid-template-columns: 42px 1fr 84px;
+      align-items: center;
+      padding: 10px 12px;
+      background: #ffffff;
+    }
+
+    .topbar h1 {
+      margin: 0;
+      text-align: center;
+      font-size: 17px;
+      line-height: 22px;
+      font-weight: 700;
+    }
+
+    .icon-button {
+      width: 38px;
+      height: 38px;
+      padding: 0;
+      border: 0;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      background: #f5f3f5;
+      color: #39343b;
+    }
+
+    .top-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 6px;
+    }
+
+    .top-actions .icon-button {
+      width: 36px;
+      height: 36px;
+      background: transparent;
+    }
+
+    main {
+      flex: 1 1 auto;
+      min-height: 0;
+      padding: 10px 16px;
+    }
+
+    .product-summary {
+      position: relative;
+      padding: 15px 15px 12px;
+      border: 1px solid #414844;
+      border-radius: 10px;
+      background: #ffffff;
+    }
+
+    .product-summary::before {
+      content: "";
+      position: absolute;
+      top: -1px;
+      left: -1px;
+      right: -1px;
+      height: 5px;
+      border-radius: 10px 10px 0 0;
+      background: #24533b;
+    }
+
+    .eyebrow {
+      margin: 0 0 2px;
+      color: #24533b;
+      font-size: 11px;
+      line-height: 15px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .product-summary h2 {
+      margin: 0;
+      font-size: 24px;
+      line-height: 28px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .description {
+      margin: 4px 0 0;
+      color: #665e66;
+      font-size: 13px;
+      line-height: 18px;
+    }
+
+    .price {
+      margin-top: 5px;
+      color: #24533b;
+      font-size: 20px;
+      line-height: 25px;
+      font-weight: 700;
+    }
+
+    .unit {
+      color: #665e66;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .summary-meta {
+      margin-top: 3px;
+      color: #665e66;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .purchase-setup {
+      margin-top: 11px;
+      padding: 11px;
+      border: 1px solid #ded9dd;
+      border-radius: 12px;
+      background: #faf9fa;
+    }
+
+    .section-title {
+      margin: 0 0 7px;
+      font-size: 15px;
+      line-height: 19px;
+      font-weight: 700;
+    }
+
+    .option-list {
+      display: grid;
+      gap: 5px;
+    }
+
+    .option {
+      width: 100%;
+      min-height: 45px;
+      padding: 6px 10px;
+      border: 1px solid transparent;
+      border-radius: 9px;
+      display: grid;
+      grid-template-columns: 21px 1fr auto;
+      align-items: center;
+      gap: 8px;
+      text-align: left;
+      color: #302a31;
+      background: #ffffff;
+    }
+
+    .option.selected {
+      border-color: #92ad9e;
+      background: #edf4ef;
+    }
+
+    .radio {
+      width: 17px;
+      height: 17px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: #e4dee3;
+    }
+
+    .selected .radio {
+      background: #24533b;
+    }
+
+    .selected .radio::after {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #ffffff;
+    }
+
+    .option-main {
+      min-width: 0;
+    }
+
+    .option-name {
+      display: block;
+      font-size: 13px;
+      line-height: 17px;
+      font-weight: 700;
+    }
+
+    .option-note {
+      display: block;
+      color: #746b73;
+      font-size: 11px;
+      line-height: 14px;
+    }
+
+    .option-price {
+      padding-left: 6px;
+      font-size: 13px;
+      line-height: 17px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .delivery-group {
+      margin-top: 10px;
+      padding-top: 9px;
+      border-top: 1px solid #ded9dd;
+    }
+
+    .delivery-heading {
+      margin: 0 0 6px;
+      color: #50494f;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .delivery-box {
+      padding: 7px 9px;
+      border-radius: 9px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 9px;
+      background: #ffffff;
+    }
+
+    .delivery-label {
+      display: block;
+      font-size: 13px;
+      line-height: 17px;
+      font-weight: 700;
+    }
+
+    .delivery-note {
+      display: block;
+      margin-top: 1px;
+      color: #746b73;
+      font-size: 11px;
+      line-height: 14px;
+    }
+
+    .stepper {
+      display: grid;
+      grid-template-columns: 28px 27px 28px;
+      align-items: center;
+      text-align: center;
+      border: 1px solid #ded9dd;
+      border-radius: 9px;
+      background: #ffffff;
+    }
+
+    .stepper button {
+      width: 28px;
+      height: 32px;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: #526158;
+      font-size: 18px;
+      line-height: 32px;
+    }
+
+    .stepper span {
+      font-size: 13px;
+      line-height: 32px;
+      font-weight: 700;
+    }
+
+    .details-section {
+      margin-top: 10px;
+    }
+
+    .facts {
+      margin: 0;
+    }
+
+    .fact-row {
+      min-height: 27px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .fact-row + .fact-row {
+      box-shadow: inset 0 1px 0 #eee9ed;
+    }
+
+    .fact-row dt,
+    .fact-row dd {
+      margin: 0;
+      font-size: 13px;
+      line-height: 18px;
+    }
+
+    .fact-row dt {
+      color: #746b73;
+    }
+
+    .fact-row dd {
+      font-weight: 700;
+      text-align: right;
+    }
+
+    .purchase-bar {
+      flex-shrink: 0;
+      padding: 9px 16px;
+      display: grid;
+      grid-template-columns: 154px 1fr;
+      align-items: center;
+      gap: 10px;
+      background: #ffffff;
+      box-shadow: inset 0 1px 0 #ded9dd;
+    }
+
+    .purchase-total {
+      min-width: 0;
+    }
+
+    .total-label {
+      display: block;
+      color: #746b73;
+      font-size: 11px;
+      line-height: 14px;
+    }
+
+    .total-value {
+      display: block;
+      font-size: 19px;
+      line-height: 22px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .billing-info {
+      display: block;
+      color: #526158;
+      font-size: 11px;
+      line-height: 14px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .purchase-button {
+      height: 50px;
+      padding: 0 12px;
+      border: 0;
+      border-radius: 10px;
+      background: #24533b;
+      color: #ffffff;
+      font-size: 15px;
+      line-height: 19px;
+      font-weight: 700;
+    }
+
+    .tabbar {
+      flex-shrink: 0;
+      min-height: 66px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      background: #faf9fa;
+      box-shadow: inset 0 1px 0 #eee9ed;
+    }
+
+    .tab {
+      border: 0;
+      padding: 8px 2px 6px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      background: transparent;
+      color: #857b83;
+      font-size: 12px;
+      line-height: 15px;
+      font-weight: 600;
+    }
+
+    .tab.active {
+      color: #24533b;
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <button class="icon-button" aria-label="Go back">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M15 5L8 12L15 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <h1>Product details</h1>
+      <div class="top-actions">
+        <button class="icon-button" aria-label="Save product">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M6.5 4.5C6.5 3.95 6.95 3.5 7.5 3.5H16.5C17.05 3.5 17.5 3.95 17.5 4.5V20L12 16.5L6.5 20V4.5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <button class="icon-button" aria-label="Open cart">
+          <svg width="21" height="21" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M4 5H6L8.1 15H17.8L20 8H7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="9.5" cy="19" r="1.4" fill="currentColor"/>
+            <circle cx="17" cy="19" r="1.4" fill="currentColor"/>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <main>
+      <section class="product-summary" aria-labelledby="product-name-a">
+        <p class="eyebrow">Nouriva nutrition</p>
+        <h2 id="product-name-a">Daily Balance Protein</h2>
+        <p class="description">30 vanilla servings with pea protein.</p>
+        <div class="price">$34.00 <span class="unit">per pouch</span></div>
+        <div class="summary-meta">20 g protein · 140 calories · No added sugar</div>
+      </section>
+
+      <section class="purchase-setup" aria-labelledby="purchase-setup-title-a">
+        <h3 class="section-title" id="purchase-setup-title-a">Purchase and delivery</h3>
+        <div class="option-list">
+          <button class="option selected" aria-pressed="true">
+            <span class="radio" aria-hidden="true"></span>
+            <span class="option-main">
+              <span class="option-name">Every 30 days</span>
+              <span class="option-note">Save $6 per pouch</span>
+            </span>
+            <span class="option-price">$28.00</span>
+          </button>
+          <button class="option" aria-pressed="false">
+            <span class="radio" aria-hidden="true"></span>
+            <span class="option-main">
+              <span class="option-name">Every 60 days</span>
+              <span class="option-note">Save $3 per pouch</span>
+            </span>
+            <span class="option-price">$31.00</span>
+          </button>
+          <button class="option" aria-pressed="false">
+            <span class="radio" aria-hidden="true"></span>
+            <span class="option-main">
+              <span class="option-name">One-time purchase</span>
+              <span class="option-note">No recurring delivery</span>
+            </span>
+            <span class="option-price">$34.00</span>
+          </button>
+        </div>
+
+        <div class="delivery-group">
+          <h4 class="delivery-heading">Delivery quantity</h4>
+          <div class="delivery-box">
+            <div>
+              <span class="delivery-label">1 pouch per delivery</span>
+              <span class="delivery-note">First delivery arrives Mar 12</span>
+            </div>
+            <div class="stepper" aria-label="Quantity selector">
+              <button aria-label="Decrease quantity">−</button>
+              <span>1</span>
+              <button aria-label="Increase quantity">+</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="details-section" aria-labelledby="details-title-a">
+        <h3 class="section-title" id="details-title-a">Product details</h3>
+        <dl class="facts">
+          <div class="fact-row">
+            <dt>Serving size</dt>
+            <dd>1 scoop, 42 g</dd>
+          </div>
+          <div class="fact-row">
+            <dt>Dietary profile</dt>
+            <dd>Vegan, gluten-free</dd>
+          </div>
+        </dl>
+      </section>
+    </main>
+
+    <aside class="purchase-bar" aria-label="Purchase summary">
+      <div class="purchase-total">
+        <span class="total-label">Due today</span>
+        <span class="total-value">$28.00</span>
+        <span class="billing-info">Renews at $28 every 30 days</span>
+      </div>
+      <button class="purchase-button">Subscribe</button>
+    </aside>
+
+    <nav class="tabbar" aria-label="Primary navigation">
+      <button class="tab">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M4 10.5L12 4L20 10.5V20H14.5V14H9.5V20H4V10.5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+        </svg>
+        <span>Home</span>
+      </button>
+      <button class="tab active" aria-current="page">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M5 8H19L18 20H6L5 8Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+          <path d="M9 9V6.5C9 4.57 10.34 3 12 3C13.66 3 15 4.57 15 6.5V9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+        <span>Shop</span>
+      </button>
+      <button class="tab">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M5 6H19V19H5V6Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+          <path d="M8 3V7M16 3V7M8 11H16M8 15H13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+        <span>Plan</span>
+      </button>
+      <button class="tab">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.8"/>
+          <path d="M5 20C5.7 16.5 8.1 14.5 12 14.5C15.9 14.5 18.3 16.5 19 20" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+        <span>Profile</span>
+      </button>
+    </nav>
+  </div>
+</body>
+</html>

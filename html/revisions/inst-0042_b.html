@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Loomcart Assistant</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --green:#17804a;
+    --green-dark:#12673b;
+    --ink:#1a1d1f;
+    --muted:#6b7280;
+    --line:#e5e7eb;
+    --ground:#f2f3f5;
+    --shadow:0 1px 3px rgba(16,24,40,.10);
+  }
+  *{box-sizing:border-box;}
+  body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    margin:0;
+    padding:24px 0;
+    background:#d7d9dd;
+    font-family:'Nunito Sans', system-ui, sans-serif;
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+  }
+  .screen{
+    width:1024px;
+    height:768px;
+    background:var(--ground);
+    display:flex;
+    flex-direction:column;
+    position:relative;
+    border-radius:6px;
+    box-shadow:0 14px 44px rgba(16,24,40,.20);
+    overflow:hidden;
+  }
+
+  /* app bar with horizontal nav */
+  .appbar{
+    background:#fff;
+    border-bottom:1px solid var(--line);
+    padding:12px 24px;
+    display:flex;
+    align-items:center;
+    gap:24px;
+  }
+  .brand{display:flex;align-items:center;gap:10px;flex:none;}
+  .logo{
+    width:32px;height:32px;border-radius:6px;
+    background:var(--green);color:#fff;
+    font-size:15px;font-weight:700;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .brand span{font-size:16px;font-weight:700;}
+  .tabs{display:flex;align-items:center;gap:4px;flex:1;min-width:0;}
+  .tab{
+    display:flex;align-items:center;gap:7px;
+    padding:8px 12px;
+    border-radius:4px;
+    font-size:13px;
+    line-height:18px;
+    color:#4b5158;
+    white-space:nowrap;
+  }
+  .tab svg{color:#8b9199;flex:none;}
+  .tab.active{background:#e8f3ec;color:var(--green-dark);font-weight:700;}
+  .tab.active svg{color:var(--green);}
+  .status{
+    flex:none;
+    font-size:12px;
+    color:var(--muted);
+    line-height:16px;
+    white-space:nowrap;
+  }
+  .dot{
+    display:inline-block;width:6px;height:6px;border-radius:50%;
+    background:var(--green);margin-right:6px;vertical-align:1px;
+  }
+  .av{
+    width:32px;height:32px;border-radius:50%;flex:none;
+    background:#dcdfe4;color:#4b5158;
+    font-size:12px;font-weight:700;
+    display:flex;align-items:center;justify-content:center;
+  }
+
+  .body{flex:1;min-height:0;display:flex;}
+
+  /* conversation sidebar */
+  .side{
+    width:264px;flex:none;
+    background:#fff;
+    border-right:1px solid var(--line);
+    padding:16px 14px;
+    display:flex;
+    flex-direction:column;
+  }
+  .newbtn{
+    display:flex;align-items:center;justify-content:center;gap:8px;
+    background:var(--green);color:#fff;
+    border-radius:4px;
+    padding:10px 12px;
+    font-size:13px;font-weight:700;line-height:18px;
+  }
+  .sidelabel{
+    font-size:11px;font-weight:700;letter-spacing:.08em;
+    text-transform:uppercase;color:#9aa1a9;
+    padding:16px 6px 8px;
+  }
+  .conv{
+    padding:9px 10px;
+    border-radius:4px;
+    border-left:3px solid transparent;
+  }
+  .conv.active{background:var(--ground);border-left-color:var(--green);}
+  .conv .ct{
+    font-size:13px;font-weight:700;line-height:18px;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .conv .cs{
+    font-size:12px;color:var(--muted);line-height:16px;margin-top:1px;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .conv .cd{font-size:11px;color:#9aa1a9;line-height:15px;margin-top:2px;}
+  .sidefoot{
+    margin-top:auto;
+    border-top:1px solid var(--line);
+    padding:12px 6px 0;
+    font-size:12px;
+    color:var(--muted);
+    line-height:17px;
+  }
+
+  /* chat column */
+  .chat{flex:1;min-width:0;display:flex;flex-direction:column;}
+  .thread{
+    flex:1;min-height:0;
+    padding:20px 24px 8px;
+    display:flex;flex-direction:column;gap:12px;
+  }
+  .daymark{align-self:center;font-size:12px;color:var(--muted);line-height:16px;}
+  .row{display:flex;gap:12px;align-items:flex-start;}
+  .row.me{justify-content:flex-end;}
+  .botav{
+    width:32px;height:32px;border-radius:50%;flex:none;
+    background:#e8f3ec;color:var(--green-dark);
+    font-size:11px;font-weight:700;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .bubble{
+    max-width:560px;
+    border-radius:4px;
+    padding:12px 14px;
+    font-size:14px;
+    line-height:20px;
+  }
+  .bubble.bot{background:#fff;box-shadow:var(--shadow);}
+  .bubble.me{background:var(--green);color:#fff;font-weight:600;}
+  .bubble.wide{max-width:640px;}
+  .bubble p{margin:0;}
+  .bubble p + p{margin-top:6px;}
+
+  /* rearranged product rows -> comparison table */
+  .cmp{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:12px;
+  }
+  .cmp th{
+    text-align:left;
+    font-size:11px;font-weight:700;letter-spacing:.06em;
+    text-transform:uppercase;color:#9aa1a9;
+    line-height:14px;
+    padding:0 8px 8px 0;
+  }
+  .cmp td{
+    font-size:13px;
+    line-height:17px;
+    color:#4b5158;
+    padding:6px 8px 6px 0;
+    border-top:1px solid var(--line);
+    white-space:nowrap;
+  }
+  .cmp th:last-child,.cmp td:last-child{padding-right:0;}
+  .cmp th:nth-child(2),.cmp td:nth-child(2){width:112px;}
+  .cmp th:nth-child(3),.cmp td:nth-child(3){width:96px;}
+  .cmp th:nth-child(4),.cmp td:nth-child(4){width:66px;}
+  .cmp th:nth-child(5),.cmp td:nth-child(5){width:82px;}
+  .mcell{
+    display:flex;align-items:center;gap:9px;
+    font-size:13px;font-weight:700;color:var(--ink);
+    min-width:0;
+  }
+  .mcell span{
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  }
+  .sw{width:26px;height:26px;border-radius:3px;flex:none;}
+  .t1{background:#cfdfd4;}
+  .t2{background:#dcdfe4;}
+  .t3{background:#e2dbcf;}
+  .p{font-weight:700;color:var(--ink);}
+  .foot{margin-top:10px;font-size:12px;color:var(--muted);line-height:16px;}
+  .tag{
+    display:inline-block;margin-top:10px;
+    background:#e8f3ec;color:var(--green-dark);
+    font-size:12px;font-weight:700;line-height:16px;
+    padding:3px 8px;border-radius:4px;
+  }
+
+  /* suggestions — flat cards with keyboard hints */
+  .suggest{padding:12px 24px 14px;}
+  .suggest .label{font-size:12px;color:var(--muted);line-height:16px;margin-bottom:8px;}
+  .chips{display:flex;gap:8px;}
+  .chip{
+    display:inline-flex;align-items:center;gap:8px;
+    background:#fff;
+    border:1px solid var(--line);
+    border-bottom:2px solid #cfd4da;
+    border-radius:4px;
+    color:var(--ink);
+    padding:7px 12px 6px 9px;
+    font-size:13px;
+    font-weight:600;
+    line-height:18px;
+    white-space:nowrap;
+  }
+  .kbd{
+    font-size:11px;font-weight:700;
+    color:var(--muted);
+    background:var(--ground);
+    border:1px solid var(--line);
+    border-radius:3px;
+    padding:0 5px;
+    line-height:16px;
+  }
+
+  /* composer */
+  .composer{
+    background:#fff;
+    border-top:1px solid var(--line);
+    padding:14px 24px;
+    display:flex;
+    align-items:center;
+    gap:12px;
+  }
+  .field{
+    flex:1;
+    background:var(--ground);
+    border:1px solid var(--line);
+    border-radius:4px;
+    padding:12px 14px;
+    font-size:14px;
+    line-height:18px;
+    color:#9aa1a9;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .sendbtn{
+    flex:none;
+    display:flex;align-items:center;gap:8px;
+    background:var(--green);color:#fff;
+    border-radius:4px;
+    padding:12px 18px;
+    font-size:14px;font-weight:700;line-height:18px;
+  }
+</style>
+</head>
+<body>
+  <div class="screen">
+
+    <header class="appbar">
+      <div class="brand">
+        <div class="logo">L</div>
+        <span>Loomcart</span>
+      </div>
+      <nav class="tabs">
+        <div class="tab">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5L12 4l8 6.5V20H4z"/></svg>
+          Home
+        </div>
+        <div class="tab">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6"/><path d="M20 20l-3.6-3.6"/></svg>
+          Search
+        </div>
+        <div class="tab active">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a7 7 0 0 1-7 7H8l-4 3v-4.6A7 7 0 0 1 11 5h2a7 7 0 0 1 7 7z"/></svg>
+          Assistant
+        </div>
+        <div class="tab">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8l8-4 8 4v8l-8 4-8-4z"/><path d="M4 8l8 4 8-4"/><path d="M12 12v8"/></svg>
+          Orders
+        </div>
+        <div class="tab">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h2l2.2 10.2A2 2 0 0 0 10.2 17h7.3a2 2 0 0 0 2-1.6L21 8H7"/><circle cx="10.5" cy="20" r="1.2"/><circle cx="17.5" cy="20" r="1.2"/></svg>
+          Cart
+        </div>
+      </nav>
+      <div class="status"><span class="dot"></span>Answers from live catalog</div>
+      <div class="av">MR</div>
+    </header>
+
+    <div class="body">
+
+      <aside class="side">
+        <div class="newbtn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+          New conversation
+        </div>
+        <div class="sidelabel">Recent</div>
+        <div class="conv active">
+          <div class="ct">Trail shoes for wet rock</div>
+          <div class="cs">3 picks under $120, size 8</div>
+          <div class="cd">Today, 2:14 PM</div>
+        </div>
+        <div class="conv">
+          <div class="ct">Return label for order 48192</div>
+          <div class="cs">Label emailed, drop off by Friday</div>
+          <div class="cd">Monday</div>
+        </div>
+        <div class="conv">
+          <div class="ct">Rain shell sizing</div>
+          <div class="cs">Medium runs long in the sleeve</div>
+          <div class="cd">Mar 2</div>
+        </div>
+        <div class="sidefoot">Stock and pricing refresh every 10 minutes.</div>
+      </aside>
+
+      <section class="chat">
+        <main class="thread">
+          <div class="daymark">Today, 2:14 PM</div>
+
+          <div class="row me">
+            <div class="bubble me">Trail running shoes under $120, women's size 8, good grip on wet rock.</div>
+          </div>
+
+          <div class="row">
+            <div class="botav">LA</div>
+            <div class="bubble bot wide">
+              <p>Three in your size ship free and are in stock now.</p>
+              <table class="cmp">
+                <thead>
+                  <tr>
+                    <th>Model</th>
+                    <th>Outsole</th>
+                    <th>Rating</th>
+                    <th>Price</th>
+                    <th>Stock</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><div class="mcell"><span class="sw t1"></span><span>Ridgeline Trail 4</span></div></td>
+                    <td>Lug 5 mm</td>
+                    <td>4.6 (812)</td>
+                    <td class="p">$104</td>
+                    <td>Free ship</td>
+                  </tr>
+                  <tr>
+                    <td><div class="mcell"><span class="sw t2"></span><span>Kestrel Grip GTX</span></div></td>
+                    <td>Waterproof</td>
+                    <td>4.4 (1,209)</td>
+                    <td class="p">$118</td>
+                    <td>2 left</td>
+                  </tr>
+                  <tr>
+                    <td><div class="mcell"><span class="sw t3"></span><span>Alder Path Low</span></div></td>
+                    <td>Lug 4 mm</td>
+                    <td>4.5 (367)</td>
+                    <td class="p">$92</td>
+                    <td>Free ship</td>
+                  </tr>
+                </tbody>
+              </table>
+              <p class="foot">Prices checked 8 minutes ago.</p>
+            </div>
+          </div>
+
+          <div class="row me">
+            <div class="bubble me">Which holds up best on wet rock?</div>
+          </div>
+
+          <div class="row">
+            <div class="botav">LA</div>
+            <div class="bubble bot">
+              <p>The Kestrel Grip GTX. Its outsole compound stays soft below 50°F, and 78 reviews mention wet traction specifically.</p>
+              <p>Ridgeline Trail 4 drains faster but slips on smooth stone.</p>
+              <span class="tag">Returns free within 30 days</span>
+            </div>
+          </div>
+        </main>
+
+        <div class="suggest">
+          <div class="label">Quick replies — press the number key to send</div>
+          <div class="chips">
+            <div class="chip"><span class="kbd">1</span>Compare picks</div>
+            <div class="chip"><span class="kbd">2</span>Size guide</div>
+            <div class="chip"><span class="kbd">3</span>Wide fit</div>
+            <div class="chip"><span class="kbd">4</span>Add Kestrel to cart</div>
+          </div>
+        </div>
+
+        <div class="composer">
+          <div class="field">Ask about products, orders, or returns</div>
+          <div class="sendbtn">
+            Send
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+  </div>
+</body>
+</html>

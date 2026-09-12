@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Circlestone Local Reads</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #e9e7ec;
+      color: #24312d;
+      font-family: 'Nunito Sans', system-ui, sans-serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #fbfdfb;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 16px 11px;
+      border-bottom: 1px solid #e1e8e2;
+    }
+
+    .brand {
+      color: #31634f;
+      font-size: 20px;
+      line-height: 28px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .icon-button {
+      width: 26px;
+      height: 26px;
+      padding: 1px;
+      border: 0;
+      background: transparent;
+      color: #485950;
+    }
+
+    .icon-button svg {
+      width: 24px;
+      height: 24px;
+      display: block;
+    }
+
+    main {
+      flex: 1;
+      padding: 12px 16px 8px;
+    }
+
+    .intro-line {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .intro {
+      min-width: 0;
+    }
+
+    .intro h1 {
+      margin: 0;
+      color: #20332b;
+      font-size: 26px;
+      line-height: 32px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+
+    .intro p {
+      margin: 2px 0 0;
+      color: #68776f;
+      font-size: 13px;
+      line-height: 18px;
+    }
+
+    .location {
+      flex: 0 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 6px 8px;
+      margin-top: 2px;
+      background: #e7f0ea;
+      color: #31634f;
+      font-size: 12px;
+      line-height: 18px;
+      font-weight: 700;
+    }
+
+    .location svg {
+      width: 15px;
+      height: 15px;
+    }
+
+    .search {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 9px 11px;
+      margin-bottom: 10px;
+      border: 1px solid #cedbd2;
+      background: #ffffff;
+      color: #718078;
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .search svg {
+      width: 19px;
+      height: 19px;
+      flex: 0 0 auto;
+      color: #31634f;
+    }
+
+    .schedule-filters {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 14px;
+    }
+
+    .schedule-filter {
+      padding: 6px 10px;
+      border: 1px solid #d4dfd7;
+      background: #ffffff;
+      color: #587066;
+      font-size: 12px;
+      line-height: 18px;
+      font-weight: 700;
+    }
+
+    .schedule-filter.active {
+      border-color: #31634f;
+      background: #31634f;
+      color: #ffffff;
+    }
+
+    .section-heading {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    .section-heading h2 {
+      margin: 0;
+      color: #293a33;
+      font-size: 17px;
+      line-height: 22px;
+      font-weight: 700;
+    }
+
+    .section-heading a {
+      color: #31634f;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .featured {
+      display: flex;
+      align-items: stretch;
+      margin-bottom: 14px;
+      border: 1px solid #d6e0d8;
+      background: #edf4ef;
+    }
+
+    .featured img {
+      width: 100px;
+      height: 116px;
+      flex: 0 0 100px;
+      object-fit: cover;
+      display: block;
+      background: #d2dcd5;
+    }
+
+    .featured-info {
+      min-width: 0;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 9px 8px 9px 10px;
+    }
+
+    .featured-copy {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .featured-eyebrow {
+      margin: 0 0 2px;
+      color: #527264;
+      font-size: 11px;
+      line-height: 15px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+
+    .featured-title {
+      margin: 0;
+      color: #21382e;
+      font-size: 15px;
+      line-height: 19px;
+      font-weight: 700;
+    }
+
+    .featured-book {
+      margin: 2px 0 0;
+      color: #68776f;
+      font-size: 12px;
+      line-height: 16px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .next-meeting {
+      display: inline-block;
+      margin-top: 5px;
+      padding: 3px 6px;
+      background: #d6e8dc;
+      color: #255b44;
+      font-size: 11px;
+      line-height: 16px;
+      font-weight: 700;
+    }
+
+    .join-button {
+      flex: 0 0 auto;
+      padding: 7px 9px;
+      border: 0;
+      background: #31634f;
+      color: #ffffff;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 700;
+    }
+
+    .club-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .club-card {
+      min-width: 0;
+      padding: 8px;
+      border: 1px solid #dce5de;
+      background: #ffffff;
+    }
+
+    .club-top {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    .club-card img {
+      width: 56px;
+      height: 56px;
+      flex: 0 0 56px;
+      object-fit: cover;
+      display: block;
+      background: #d2dcd5;
+    }
+
+    .genre {
+      min-width: 0;
+      padding-top: 2px;
+      color: #527264;
+      font-size: 11px;
+      line-height: 15px;
+      font-weight: 700;
+    }
+
+    .distance {
+      display: block;
+      margin-top: 4px;
+      color: #89958f;
+      font-size: 11px;
+      line-height: 15px;
+      font-weight: 600;
+    }
+
+    .club-name {
+      margin: 0;
+      color: #273a32;
+      font-size: 14px;
+      line-height: 18px;
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .club-book {
+      margin: 1px 0 0;
+      color: #6e7c75;
+      font-size: 11px;
+      line-height: 15px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .club-time {
+      margin: 4px 0 0;
+      color: #31634f;
+      font-size: 11px;
+      line-height: 15px;
+      font-weight: 700;
+    }
+
+    .tabbar {
+      display: flex;
+      align-items: stretch;
+      border-top: 1px solid #dce5de;
+      background: #f0f5f1;
+    }
+
+    .tab {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      padding: 8px 2px 9px;
+      color: #6c7b73;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 600;
+    }
+
+    .tab.active {
+      background: #dcebe1;
+      color: #24573f;
+    }
+
+    .tab svg {
+      width: 21px;
+      height: 21px;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <div class="brand">Circlestone Books</div>
+      <div class="top-actions">
+        <button class="icon-button" aria-label="Open notifications">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M18 9.5C18 6.19 15.31 3.5 12 3.5S6 6.19 6 9.5v3.2c0 .92-.33 1.82-.93 2.52L4 16.5h16l-1.07-1.28A3.9 3.9 0 0 1 18 12.7V9.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+            <path d="M9.5 19a2.8 2.8 0 0 0 5 0" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+          </svg>
+        </button>
+        <button class="icon-button" aria-label="Open account menu">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="12" cy="8" r="3.5" stroke="currentColor" stroke-width="1.7"/>
+            <path d="M5.5 20c.6-3.3 3-5.3 6.5-5.3s5.9 2 6.5 5.3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <main>
+      <div class="intro-line">
+        <section class="intro" aria-labelledby="page-title-b">
+          <h1 id="page-title-b">Read with your neighborhood</h1>
+          <p>Find welcoming clubs meeting close to home.</p>
+        </section>
+        <div class="location" aria-label="Current area">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M12 21s6-5.5 6-12a6 6 0 1 0-12 0c0 6.5 6 12 6 12Z" stroke="currentColor" stroke-width="1.8"/>
+            <circle cx="12" cy="9" r="2" stroke="currentColor" stroke-width="1.8"/>
+          </svg>
+          <span>Riverside</span>
+        </div>
+      </div>
+
+      <div class="search" role="search" aria-label="Search local book clubs">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="10.5" cy="10.5" r="6.5" stroke="currentColor" stroke-width="1.8"/>
+          <path d="m15.5 15.5 4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+        <span>Search by title, genre, or club</span>
+      </div>
+
+      <div class="schedule-filters" aria-label="Meeting schedule">
+        <button class="schedule-filter active">Any day</button>
+        <button class="schedule-filter">This week</button>
+        <button class="schedule-filter">Weekends</button>
+        <button class="schedule-filter">Evenings</button>
+      </div>
+
+      <section aria-labelledby="featured-heading-b">
+        <div class="section-heading">
+          <h2 id="featured-heading-b">Club of the week</h2>
+          <a href="#">View details</a>
+        </div>
+
+        <article class="featured">
+          <img src="https://loremflickr.com/100/116/concert?lock=8430" width="100" height="116" alt="A lively local gathering for an evening book discussion">
+          <div class="featured-info">
+            <div class="featured-copy">
+              <p class="featured-eyebrow">0.6 miles away</p>
+              <h3 class="featured-title">Riverside Readers</h3>
+              <p class="featured-book">Reading: Remarkably Bright Creatures</p>
+              <span class="next-meeting">Next: Wed, 6:45 PM</span>
+            </div>
+            <button class="join-button">Join</button>
+          </div>
+        </article>
+      </section>
+
+      <section aria-labelledby="nearby-heading-b">
+        <div class="section-heading">
+          <h2 id="nearby-heading-b">More clubs nearby</h2>
+          <a href="#">Open map</a>
+        </div>
+
+        <div class="club-grid">
+          <article class="club-card">
+            <div class="club-top">
+              <img src="https://loremflickr.com/56/56/vinyl?lock=8431" width="56" height="56" alt="A collection representing the club's classic book selections">
+              <div class="genre">
+                Classics
+                <span class="distance">0.9 mi</span>
+              </div>
+            </div>
+            <h3 class="club-name">Old Town Classics</h3>
+            <p class="club-book">Jane Eyre</p>
+            <p class="club-time">Thu · 7:00 PM</p>
+          </article>
+
+          <article class="club-card">
+            <div class="club-top">
+              <img src="https://loremflickr.com/56/56/studio?lock=8432" width="56" height="56" alt="A welcoming indoor space for a nonfiction book club">
+              <div class="genre">
+                Nonfiction
+                <span class="distance">1.2 mi</span>
+              </div>
+            </div>
+            <h3 class="club-name">Curious Minds</h3>
+            <p class="club-book">The Wager</p>
+            <p class="club-time">Sat · 11:00 AM</p>
+          </article>
+
+          <article class="club-card">
+            <div class="club-top">
+              <img src="https://loremflickr.com/56/56/guitar?lock=8433" width="56" height="56" alt="Creative imagery for a local arts and fiction reading group">
+              <div class="genre">
+                New fiction
+                <span class="distance">1.8 mi</span>
+              </div>
+            </div>
+            <h3 class="club-name">Paperback Social</h3>
+            <p class="club-book">James</p>
+            <p class="club-time">Sun · 3:30 PM</p>
+          </article>
+
+          <article class="club-card">
+            <div class="club-top">
+              <img src="https://loremflickr.com/56/56/concert?lock=8434" width="56" height="56" alt="A social gathering representing an energetic mystery book club">
+              <div class="genre">
+                Mystery
+                <span class="distance">2.1 mi</span>
+              </div>
+            </div>
+            <h3 class="club-name">Clues &amp; Coffee</h3>
+            <p class="club-book">The Hunter</p>
+            <p class="club-time">Fri · 6:30 PM</p>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <nav class="tabbar" aria-label="Primary navigation">
+      <div class="tab">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="m4 10 8-6 8 6v9H4v-9Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+          <path d="M9.5 19v-5h5v5" stroke="currentColor" stroke-width="1.7"/>
+        </svg>
+        <span>Home</span>
+      </div>
+      <div class="tab">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="10.5" cy="10.5" r="6.5" stroke="currentColor" stroke-width="1.7"/>
+          <path d="m15.5 15.5 4 4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+        </svg>
+        <span>Browse</span>
+      </div>
+      <div class="tab active">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="8" cy="8" r="3" stroke="currentColor" stroke-width="1.7"/>
+          <circle cx="16.5" cy="9" r="2.5" stroke="currentColor" stroke-width="1.7"/>
+          <path d="M2.8 19c.5-3.3 2.4-5 5.2-5s4.7 1.7 5.2 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+          <path d="M14 14.3c.7-.4 1.5-.6 2.5-.6 2.5 0 4.1 1.5 4.6 4.3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+        </svg>
+        <span>Local clubs</span>
+      </div>
+      <div class="tab">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M6 4h12v16l-6-3-6 3V4Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+        </svg>
+        <span>Reading list</span>
+      </div>
+    </nav>
+  </div>
+</body>
+</html>

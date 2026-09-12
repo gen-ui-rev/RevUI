@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cartnest Facilities Workspace</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 32px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #e7e7e2;
+      color: #20221b;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      width: 768px;
+      height: 1024px;
+      display: grid;
+      grid-template-columns: 180px minmax(0, 1fr);
+      background: #fbfbf7;
+      box-shadow: 0 18px 50px rgba(44, 47, 35, 0.12);
+    }
+
+    .sidebar {
+      min-width: 0;
+      padding: 26px 16px 20px;
+      display: flex;
+      flex-direction: column;
+      background: #f1f2e9;
+      border-right: 1px solid #dfe1d5;
+    }
+
+    .brand {
+      padding: 0 8px;
+    }
+
+    .service-name {
+      margin: 0 0 4px;
+      color: #697048;
+      font-size: 12px;
+      font-weight: 750;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .brand-name {
+      margin: 0;
+      font-size: 22px;
+      line-height: 1.2;
+      font-weight: 720;
+      letter-spacing: -0.02em;
+    }
+
+    .side-nav {
+      margin-top: 30px;
+      display: grid;
+      gap: 6px;
+    }
+
+    .nav-button {
+      width: 100%;
+      min-width: 0;
+      padding: 11px 10px;
+      border: 0;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #74786a;
+      background: transparent;
+      font-size: 13px;
+      line-height: 1.2;
+      font-weight: 600;
+      text-align: left;
+    }
+
+    .nav-button.active {
+      color: #556033;
+      background: #ffffff;
+      font-weight: 720;
+      box-shadow: 0 2px 8px rgba(52, 57, 36, 0.06);
+    }
+
+    .completed-panel {
+      margin-top: auto;
+      padding-top: 22px;
+      border-top: 1px solid #d9dccf;
+    }
+
+    .completed-heading {
+      margin-bottom: 10px;
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 6px;
+    }
+
+    .completed-heading h2 {
+      margin: 0;
+      font-size: 15px;
+      line-height: 1.25;
+      font-weight: 700;
+    }
+
+    .completed-heading span {
+      color: #777b6c;
+      font-size: 11px;
+      white-space: nowrap;
+    }
+
+    .completed-card {
+      padding: 10px;
+      border-radius: 12px;
+      background: #ffffff;
+    }
+
+    .completed-card .task-photo {
+      margin-bottom: 9px;
+      opacity: 0.72;
+    }
+
+    .completed-title {
+      margin: 0 0 4px;
+      color: #65685b;
+      font-size: 13px;
+      line-height: 1.35;
+      font-weight: 650;
+      text-decoration: line-through;
+    }
+
+    .completed-detail {
+      margin: 0;
+      color: #777a6e;
+      font-size: 11px;
+      line-height: 1.4;
+    }
+
+    .completed-by {
+      margin: 7px 0 0;
+      color: #5f6840;
+      font-size: 11px;
+      line-height: 1.3;
+      font-weight: 700;
+    }
+
+    .content {
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .topbar {
+      padding: 22px 25px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      border-bottom: 1px solid #e5e6dd;
+    }
+
+    .topbar-copy {
+      min-width: 0;
+    }
+
+    .eyebrow {
+      margin: 0 0 3px;
+      color: #6f735f;
+      font-size: 12px;
+      line-height: 1.3;
+      font-weight: 650;
+    }
+
+    .topbar h1 {
+      margin: 0;
+      font-size: 26px;
+      line-height: 1.2;
+      font-weight: 700;
+      letter-spacing: -0.025em;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+
+    .icon-button,
+    .profile-button {
+      width: 42px;
+      height: 42px;
+      padding: 0;
+      border: 0;
+      border-radius: 11px;
+      display: grid;
+      place-items: center;
+      color: #4f5634;
+      background: rgba(112, 123, 70, 0.12);
+    }
+
+    .profile-button {
+      font-size: 13px;
+      font-weight: 750;
+    }
+
+    main {
+      min-width: 0;
+      flex: 1;
+      padding: 22px 25px 24px;
+    }
+
+    .goal-summary {
+      padding: 20px 21px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 20px;
+      align-items: center;
+      border-radius: 14px;
+      background: #697348;
+      color: #ffffff;
+    }
+
+    .goal-kicker {
+      margin: 0 0 7px;
+      color: #e3e6d6;
+      font-size: 12px;
+      line-height: 1.3;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+
+    .goal-summary h2 {
+      margin: 0;
+      font-size: 24px;
+      line-height: 1.22;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .goal-description {
+      margin: 7px 0 0;
+      max-width: 350px;
+      color: #e8eadf;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .goal-stats {
+      display: grid;
+      grid-template-columns: repeat(2, 74px);
+      gap: 8px;
+    }
+
+    .stat {
+      padding: 10px 8px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.13);
+      text-align: center;
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 18px;
+      line-height: 1.2;
+      font-weight: 750;
+    }
+
+    .stat span {
+      display: block;
+      margin-top: 3px;
+      color: #e3e6d7;
+      font-size: 10px;
+      line-height: 1.25;
+    }
+
+    .meta-strip {
+      margin-top: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .meta-chip {
+      padding: 7px 10px;
+      border: 1px solid #e1e3d9;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: #626650;
+      background: #ffffff;
+      font-size: 11px;
+      line-height: 1.2;
+      font-weight: 650;
+    }
+
+    .section {
+      margin-top: 22px;
+    }
+
+    .section-heading {
+      margin-bottom: 10px;
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    .section-heading h3 {
+      margin: 0;
+      font-size: 17px;
+      line-height: 1.3;
+      font-weight: 700;
+    }
+
+    .section-count {
+      color: #777a6b;
+      font-size: 12px;
+      font-weight: 550;
+      white-space: nowrap;
+    }
+
+    .purchase-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .purchase-card {
+      min-width: 0;
+      padding: 12px;
+      border: 1px solid #e0e2d7;
+      border-radius: 13px;
+      background: #ffffff;
+    }
+
+    .card-top {
+      margin-bottom: 11px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .task-photo {
+      width: 60px;
+      height: 60px;
+      flex: 0 0 60px;
+      display: block;
+      object-fit: cover;
+      border-radius: 10px;
+      background: #d8d9cf;
+    }
+
+    .check {
+      width: 32px;
+      height: 32px;
+      flex: 0 0 32px;
+      padding: 0;
+      border: 0;
+      border-radius: 9px;
+      display: grid;
+      place-items: center;
+      color: #687342;
+      background: #eff1e6;
+    }
+
+    .task-title {
+      margin: 0 0 5px;
+      color: #282a21;
+      font-size: 14px;
+      line-height: 1.3;
+      font-weight: 680;
+    }
+
+    .task-detail {
+      margin: 0;
+      color: #727568;
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .assignee {
+      margin-top: 11px;
+      padding-top: 9px;
+      border-top: 1px solid #ecece6;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      color: #5e6448;
+      font-size: 11px;
+      line-height: 1.3;
+      font-weight: 650;
+    }
+
+    .mini-avatar {
+      width: 22px;
+      height: 22px;
+      flex: 0 0 22px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      color: #ffffff;
+      background: #747d4e;
+      font-size: 8px;
+      font-weight: 750;
+    }
+
+    .mini-avatar.brown {
+      background: #8a7557;
+    }
+
+    .mini-avatar.light {
+      color: #5e6640;
+      background: #dfe2d2;
+    }
+
+    .coordination {
+      display: grid;
+      grid-template-columns: 1.08fr 0.92fr;
+      gap: 12px;
+    }
+
+    .info-panel {
+      padding: 16px;
+      border: 1px solid #e1e2da;
+      border-radius: 13px;
+      background: #f6f6f1;
+    }
+
+    .info-panel h4 {
+      margin: 0 0 12px;
+      font-size: 14px;
+      line-height: 1.3;
+      font-weight: 700;
+    }
+
+    .activity-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .activity {
+      display: flex;
+      align-items: flex-start;
+      gap: 9px;
+    }
+
+    .activity-dot {
+      width: 8px;
+      height: 8px;
+      flex: 0 0 8px;
+      margin-top: 5px;
+      border-radius: 50%;
+      background: #798252;
+    }
+
+    .activity p {
+      margin: 0;
+      color: #666a5c;
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .activity strong {
+      color: #33362b;
+      font-weight: 680;
+    }
+
+    .budget-total {
+      margin: 0;
+      font-size: 28px;
+      line-height: 1.15;
+      font-weight: 740;
+      letter-spacing: -0.025em;
+    }
+
+    .budget-copy {
+      margin: 5px 0 13px;
+      color: #707365;
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .budget-line {
+      height: 7px;
+      border-radius: 999px;
+      background: #e0e2d7;
+    }
+
+    .budget-fill {
+      width: 7%;
+      height: 7px;
+      border-radius: 999px;
+      background: #717b49;
+    }
+
+    .approval-note {
+      margin: 12px 0 0;
+      color: #5e6448;
+      font-size: 11px;
+      line-height: 1.4;
+      font-weight: 650;
+    }
+
+    svg {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <aside class="sidebar">
+      <div class="brand">
+        <p class="service-name">Cartnest</p>
+        <p class="brand-name">Workplace</p>
+      </div>
+
+      <nav class="side-nav" aria-label="Primary navigation">
+        <button class="nav-button" type="button">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M4 10.5L12 4L20 10.5V20H14.8V14H9.2V20H4V10.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"></path>
+          </svg>
+          <span>Home</span>
+        </button>
+        <button class="nav-button" type="button">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="1.7"></circle>
+            <path d="M16 16L20 20" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"></path>
+          </svg>
+          <span>Browse</span>
+        </button>
+        <button class="nav-button active" type="button" aria-current="page">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <rect x="5" y="4" width="14" height="16" rx="2" stroke="currentColor" stroke-width="1.7"></rect>
+            <path d="M8.5 9.5L10.4 11.3L14.8 7.5M8.5 15.5H15.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></path>
+          </svg>
+          <span>Goals</span>
+        </button>
+        <button class="nav-button" type="button">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M6 8H18L17 20H7L6 8Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"></path>
+            <path d="M9 9V7C9 5.3 10.3 4 12 4C13.7 4 15 5.3 15 7V9" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"></path>
+          </svg>
+          <span>Cart</span>
+        </button>
+      </nav>
+
+      <section class="completed-panel" aria-labelledby="completed-heading-b">
+        <div class="completed-heading">
+          <h2 id="completed-heading-b">Completed</h2>
+          <span>1 item</span>
+        </div>
+        <article class="completed-card">
+          <img class="task-photo" src="https://loremflickr.com/60/60/product?lock=8873" width="60" height="60" alt="Office cable management kit">
+          <p class="completed-title">Cable management kit</p>
+          <p class="completed-detail">Purchased June 3<br>$48.00</p>
+          <p class="completed-by">Priya completed this</p>
+        </article>
+      </section>
+    </aside>
+
+    <div class="content">
+      <header class="topbar">
+        <div class="topbar-copy">
+          <p class="eyebrow">Facilities purchasing · Room 4B</p>
+          <h1>Project room setup</h1>
+        </div>
+        <div class="top-actions">
+          <button class="icon-button" type="button" aria-label="Search purchases">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="1.8"></circle>
+              <path d="M16 16L20.2 20.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
+            </svg>
+          </button>
+          <button class="profile-button" type="button" aria-label="Maren Cole profile">MC</button>
+        </div>
+      </header>
+
+      <main>
+        <section class="goal-summary" aria-labelledby="goal-title-b">
+          <div>
+            <p class="goal-kicker">Shared setup goal</p>
+            <h2 id="goal-title-b">Ready for the product team</h2>
+            <p class="goal-description">Source the remaining furniture and equipment before the team moves into its new project space.</p>
+          </div>
+          <div class="goal-stats" aria-label="Goal summary">
+            <div class="stat">
+              <strong>3</strong>
+              <span>purchases left</span>
+            </div>
+            <div class="stat">
+              <strong>Jun 21</strong>
+              <span>due date</span>
+            </div>
+          </div>
+        </section>
+
+        <div class="meta-strip" aria-label="Goal details">
+          <span class="meta-chip">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <circle cx="9" cy="8" r="3" stroke="currentColor" stroke-width="1.7"></circle>
+              <path d="M3.5 19C3.8 15.8 5.7 14 9 14C12.3 14 14.2 15.8 14.5 19" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"></path>
+              <path d="M15 6.5C17.3 6.7 18.5 8 18.5 10C18.5 11.9 17.4 13.1 15.5 13.5M16.5 15C19 15.4 20.2 16.7 20.5 19" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"></path>
+            </svg>
+            Maren, Devon and Priya
+          </span>
+          <span class="meta-chip">$715 remaining</span>
+          <span class="meta-chip">Workplace Operations</span>
+        </div>
+
+        <section class="section" aria-labelledby="to-buy-heading-b">
+          <div class="section-heading">
+            <h3 id="to-buy-heading-b">Assigned purchases</h3>
+            <span class="section-count">3 items awaiting purchase</span>
+          </div>
+
+          <div class="purchase-grid">
+            <article class="purchase-card">
+              <div class="card-top">
+                <img class="task-photo" src="https://loremflickr.com/60/60/furniture?lock=8870" width="60" height="60" alt="Oak meeting room storage cabinet">
+                <button class="check" type="button" aria-label="Mark oak meeting room credenza complete">
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M7 12.5L10.3 16L17.5 8.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                  </svg>
+                </button>
+              </div>
+              <p class="task-title">Oak meeting room credenza</p>
+              <p class="task-detail">Quote ready<br>Budget up to $420</p>
+              <div class="assignee">
+                <span class="mini-avatar brown">DL</span>
+                <span>Devon Lee</span>
+              </div>
+            </article>
+
+            <article class="purchase-card">
+              <div class="card-top">
+                <img class="task-photo" src="https://loremflickr.com/60/60/product?lock=8871" width="60" height="60" alt="Neutral acoustic panel samples">
+                <button class="check" type="button" aria-label="Mark neutral acoustic panel set complete">
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M7 12.5L10.3 16L17.5 8.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                  </svg>
+                </button>
+              </div>
+              <p class="task-title">Neutral acoustic panels</p>
+              <p class="task-detail">Two saved options<br>Budget up to $240</p>
+              <div class="assignee">
+                <span class="mini-avatar light">PS</span>
+                <span>Priya Shah</span>
+              </div>
+            </article>
+
+            <article class="purchase-card">
+              <div class="card-top">
+                <img class="task-photo" src="https://loremflickr.com/60/60/furniture?lock=8872" width="60" height="60" alt="Dimmable office floor lamp">
+                <button class="check" type="button" aria-label="Mark dimmable corner floor lamp complete">
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M7 12.5L10.3 16L17.5 8.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                  </svg>
+                </button>
+              </div>
+              <p class="task-title">Dimmable corner lamp</p>
+              <p class="task-detail">Brass finish<br>Budget up to $95</p>
+              <div class="assignee">
+                <span class="mini-avatar">MC</span>
+                <span>Maren Cole</span>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section class="section" aria-labelledby="coordination-heading-b">
+          <div class="section-heading">
+            <h3 id="coordination-heading-b">Coordination</h3>
+            <span class="section-count">Latest team updates</span>
+          </div>
+
+          <div class="coordination">
+            <article class="info-panel">
+              <h4>Recent activity</h4>
+              <div class="activity-list">
+                <div class="activity">
+                  <span class="activity-dot"></span>
+                  <p><strong>Devon</strong> attached the final credenza quote from Northline Office.</p>
+                </div>
+                <div class="activity">
+                  <span class="activity-dot"></span>
+                  <p><strong>Priya</strong> flagged the warm gray acoustic panels as low in stock.</p>
+                </div>
+                <div class="activity">
+                  <span class="activity-dot"></span>
+                  <p><strong>Maren</strong> confirmed delivery access for Friday afternoon.</p>
+                </div>
+              </div>
+            </article>
+
+            <article class="info-panel">
+              <h4>Goal budget</h4>
+              <p class="budget-total">$48 spent</p>
+              <p class="budget-copy">$715 remains from the approved $763 setup budget.</p>
+              <div class="budget-line" aria-hidden="true">
+                <div class="budget-fill"></div>
+              </div>
+              <p class="approval-note">Purchases over $400 require Maren’s approval.</p>
+            </article>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+</body>
+</html>

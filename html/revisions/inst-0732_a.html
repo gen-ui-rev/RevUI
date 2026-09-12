@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wanderdeck Field Ops — Dispatch Calendar</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 24px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #e6ecee;
+      color: #173139;
+      font-family: 'Manrope', system-ui, sans-serif;
+    }
+
+    button {
+      font: inherit;
+      cursor: pointer;
+    }
+
+    .screen {
+      width: 1024px;
+      height: 768px;
+      display: flex;
+      overflow: hidden;
+      border-radius: 18px;
+      background: #ffffff;
+      box-shadow: 0 18px 44px rgba(23, 49, 57, .14);
+    }
+
+    /* ---------- sidebar ---------- */
+    .sidenav {
+      width: 220px;
+      flex: none;
+      display: flex;
+      flex-direction: column;
+      padding: 20px 16px;
+      border-right: 1px solid #e3eff1;
+      background: #f5fafb;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 4px 18px;
+    }
+
+    .brand-mark {
+      width: 38px;
+      height: 38px;
+      flex: none;
+      display: grid;
+      place-items: center;
+      border-radius: 13px;
+      background: #d8f5f8;
+      color: #087f91;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .eyebrow {
+      margin: 0;
+      color: #168da0;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .06em;
+    }
+
+    .brand strong {
+      display: block;
+      color: #132d35;
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .nav-label {
+      margin: 0 0 8px;
+      padding-left: 8px;
+      color: #8a9da2;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .07em;
+    }
+
+    .nav-list {
+      display: grid;
+      gap: 4px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      height: 40px;
+      padding: 0 10px;
+      border-radius: 12px;
+      color: #5f787e;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .nav-item.active {
+      background: #d1f3f6;
+      color: #07899c;
+      font-weight: 700;
+    }
+
+    .nav-item svg {
+      width: 18px;
+      height: 18px;
+      flex: none;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.7;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .nav-count {
+      margin-left: auto;
+      color: #2f6d78;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .side-spacer {
+      flex: 1;
+      min-height: 12px;
+    }
+
+    .side-user {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px;
+      border-radius: 14px;
+      background: #ffffff;
+      border: 1px solid #e0edef;
+    }
+
+    .avatar {
+      width: 36px;
+      height: 36px;
+      flex: none;
+      display: grid;
+      place-items: center;
+      border-radius: 12px;
+      background: #d8f5f8;
+      color: #087f91;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .side-user strong {
+      display: block;
+      color: #173139;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .side-user span {
+      display: block;
+      color: #7b8f95;
+      font-size: 11.5px;
+      font-weight: 500;
+    }
+
+    /* ---------- workspace ---------- */
+    .workspace {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .workspace-head {
+      flex: none;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 20px 24px 16px;
+      border-bottom: 1px solid #e6f1f2;
+    }
+
+    .workspace-head h1 {
+      margin: 0;
+      color: #132d35;
+      font-size: 22px;
+      line-height: 1.25;
+      font-weight: 700;
+    }
+
+    .workspace-head p {
+      margin: 3px 0 0;
+      color: #71868b;
+      font-size: 12.5px;
+      font-weight: 500;
+    }
+
+    .head-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .ghost-button {
+      padding: 9px 14px;
+      border: 1px solid #cfe4e7;
+      border-radius: 12px;
+      background: #ffffff;
+      color: #2f6d78;
+      font-size: 12.5px;
+      font-weight: 700;
+    }
+
+    .primary-button {
+      padding: 10px 15px;
+      border: 0;
+      border-radius: 12px;
+      background: #087e90;
+      color: #ffffff;
+      font-size: 12.5px;
+      font-weight: 700;
+    }
+
+    .workspace-body {
+      flex: 1;
+      min-height: 0;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 296px;
+      gap: 20px;
+      align-items: start;
+      padding: 18px 24px 24px;
+    }
+
+    .calendar-tools {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2px 12px;
+    }
+
+    .month-control {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .month-control strong {
+      width: 130px;
+      text-align: center;
+      color: #173139;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .icon-button {
+      width: 30px;
+      height: 30px;
+      padding: 0;
+      display: grid;
+      place-items: center;
+      border: 0;
+      border-radius: 12px;
+      background: #edf9fa;
+      color: #38717b;
+    }
+
+    .icon-button svg {
+      width: 17px;
+      height: 17px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .view-switch {
+      display: flex;
+      gap: 2px;
+      padding: 3px;
+      border-radius: 12px;
+      background: #eef9fa;
+    }
+
+    .view-switch span {
+      padding: 6px 12px;
+      border-radius: 10px;
+      color: #678087;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .view-switch .active {
+      background: #cceff4;
+      color: #087e90;
+      font-weight: 700;
+    }
+
+    .calendar {
+      padding: 12px;
+      border-radius: 16px;
+      background: #f0fafb;
+    }
+
+    .weekdays,
+    .days {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+    }
+
+    .weekday {
+      height: 24px;
+      display: grid;
+      place-items: center;
+      color: #73888d;
+      font-size: 11.5px;
+      font-weight: 700;
+    }
+
+    .day {
+      min-width: 0;
+      height: 70px;
+      padding: 6px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 5px;
+      border-radius: 12px;
+      color: #29464d;
+    }
+
+    .day.muted {
+      color: #a6b4b7;
+    }
+
+    .day.has-event {
+      background: #def5f7;
+    }
+
+    .day.selected {
+      background: #9de6ee;
+      color: #064f5a;
+      box-shadow: inset 0 0 0 2px #3ec0d0;
+    }
+
+    .date-number {
+      font-size: 12.5px;
+      line-height: 16px;
+      font-weight: 500;
+    }
+
+    .selected .date-number {
+      font-weight: 700;
+    }
+
+    .job-chip {
+      max-width: 100%;
+      overflow: hidden;
+      padding: 1px 4px;
+      border-radius: 7px;
+      background: #cbeff4;
+      color: #0d6d7c;
+      font-size: 11px;
+      line-height: 15px;
+      font-weight: 700;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .selected .job-chip {
+      background: #ffffff;
+      color: #064f5a;
+    }
+
+    .stat-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    .stat {
+      padding: 12px 14px;
+      border-radius: 14px;
+      background: #effafb;
+    }
+
+    .stat p {
+      margin: 0;
+      color: #71868b;
+      font-size: 11.5px;
+      font-weight: 700;
+      letter-spacing: .04em;
+    }
+
+    .stat strong {
+      display: block;
+      margin: 2px 0 1px;
+      color: #132d35;
+      font-size: 22px;
+      line-height: 1.2;
+      font-weight: 700;
+    }
+
+    .stat span {
+      display: block;
+      overflow: hidden;
+      color: #688087;
+      font-size: 11.5px;
+      font-weight: 500;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* ---------- day pane ---------- */
+    .agenda-heading {
+      padding: 0 2px 12px;
+    }
+
+    .agenda-heading h2 {
+      margin: 0;
+      color: #173139;
+      font-size: 17px;
+      line-height: 1.25;
+      font-weight: 700;
+    }
+
+    .agenda-heading p {
+      margin: 3px 0 0;
+      color: #71868b;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .agenda-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .agenda-row {
+      display: grid;
+      grid-template-columns: 52px minmax(0, 1fr) 74px;
+      gap: 10px;
+      align-items: center;
+      padding: 10px;
+      border-radius: 14px;
+      background: #effafb;
+    }
+
+    .agenda-row img {
+      width: 52px;
+      height: 52px;
+      display: block;
+      object-fit: cover;
+      border-radius: 12px;
+      background: #cbdcdf;
+    }
+
+    .agenda-copy {
+      min-width: 0;
+    }
+
+    .agenda-title {
+      margin: 0;
+      overflow: hidden;
+      color: #173139;
+      font-size: 13.5px;
+      line-height: 19px;
+      font-weight: 700;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .agenda-meta {
+      margin: 2px 0 0;
+      overflow: hidden;
+      color: #688087;
+      font-size: 11.5px;
+      line-height: 16px;
+      font-weight: 400;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .agenda-time {
+      text-align: right;
+    }
+
+    .agenda-time strong {
+      display: block;
+      color: #176f7c;
+      font-size: 12px;
+      line-height: 17px;
+      font-weight: 700;
+    }
+
+    .agenda-time span {
+      display: block;
+      color: #7d9198;
+      font-size: 11px;
+      line-height: 15px;
+      font-weight: 500;
+    }
+
+    .crew-card {
+      margin-top: 18px;
+      padding: 14px;
+      border-radius: 16px;
+      background: #f5fafb;
+      border: 1px solid #e4eff1;
+    }
+
+    .crew-card h3 {
+      margin: 0 0 8px;
+      color: #173139;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .crew-item {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 5px 0;
+    }
+
+    .crew-item .dot {
+      width: 8px;
+      height: 8px;
+      flex: none;
+      border-radius: 50%;
+      background: #3fb6a2;
+    }
+
+    .crew-item .dot.busy {
+      background: #e2a13c;
+    }
+
+    .crew-item .dot.off {
+      background: #b6c5c9;
+    }
+
+    .crew-item strong {
+      color: #173139;
+      font-size: 12.5px;
+      font-weight: 700;
+    }
+
+    .crew-item span {
+      margin-left: auto;
+      color: #71868b;
+      font-size: 11.5px;
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <aside class="sidenav">
+      <div class="brand">
+        <div class="brand-mark">WD</div>
+        <div>
+          <p class="eyebrow">WANDERDECK</p>
+          <strong>Field Ops</strong>
+        </div>
+      </div>
+
+      <p class="nav-label">WORKSPACE</p>
+      <nav class="nav-list" aria-label="Primary navigation">
+        <div class="nav-item">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M3 11.5 12 4l9 7.5"></path>
+            <path d="M5.5 10v10h13V10"></path>
+          </svg>
+          <span>Dispatch board</span>
+        </div>
+        <div class="nav-item active">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="3.5" y="5.5" width="17" height="15" rx="3"></rect>
+            <path d="M8 3.5v4M16 3.5v4M3.5 10h17"></path>
+          </svg>
+          <span>Schedule</span>
+        </div>
+        <div class="nav-item">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="5" y="4" width="14" height="17" rx="3"></rect>
+            <path d="M9 9h6M9 13h6M9 17h3"></path>
+          </svg>
+          <span>Work orders</span>
+          <span class="nav-count">27</span>
+        </div>
+        <div class="nav-item">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="8" r="4"></circle>
+            <path d="M5 20c.8-4 3.1-6 7-6s6.2 2 7 6"></path>
+          </svg>
+          <span>Technicians</span>
+        </div>
+        <div class="nav-item">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 20h16"></path>
+            <path d="M7 20v-8M12 20V7M17 20v-6"></path>
+          </svg>
+          <span>Reports</span>
+        </div>
+      </nav>
+
+      <div class="side-spacer"></div>
+
+      <div class="side-user">
+        <div class="avatar" aria-label="Mara Bell">MB</div>
+        <div>
+          <strong>Mara Bell</strong>
+          <span>Service coordinator</span>
+        </div>
+      </div>
+    </aside>
+
+    <div class="workspace">
+      <header class="workspace-head">
+        <div>
+          <h1>Dispatch calendar</h1>
+          <p>North District crew · 27 work orders scheduled this month</p>
+        </div>
+        <div class="head-actions">
+          <button class="ghost-button" type="button">Today</button>
+          <button class="primary-button" type="button">New work order</button>
+        </div>
+      </header>
+
+      <div class="workspace-body">
+        <section>
+          <div class="calendar-tools">
+            <div class="month-control">
+              <button class="icon-button" type="button" aria-label="Previous month">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="m15 18-6-6 6-6"></path>
+                </svg>
+              </button>
+              <strong>September 2025</strong>
+              <button class="icon-button" type="button" aria-label="Next month">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="m9 18 6-6-6-6"></path>
+                </svg>
+              </button>
+            </div>
+            <div class="view-switch" aria-label="Calendar view">
+              <span class="active">Month</span>
+              <span>Week</span>
+              <span>Day</span>
+            </div>
+          </div>
+
+          <div class="calendar" aria-label="September 2025 dispatch calendar">
+            <div class="weekdays">
+              <div class="weekday">Sun</div>
+              <div class="weekday">Mon</div>
+              <div class="weekday">Tue</div>
+              <div class="weekday">Wed</div>
+              <div class="weekday">Thu</div>
+              <div class="weekday">Fri</div>
+              <div class="weekday">Sat</div>
+            </div>
+            <div class="days">
+              <div class="day muted"><span class="date-number">31</span></div>
+              <div class="day has-event"><span class="date-number">1</span><span class="job-chip">3 jobs</span></div>
+              <div class="day"><span class="date-number">2</span></div>
+              <div class="day has-event"><span class="date-number">3</span><span class="job-chip">2 jobs</span></div>
+              <div class="day"><span class="date-number">4</span></div>
+              <div class="day has-event"><span class="date-number">5</span><span class="job-chip">4 jobs</span></div>
+              <div class="day"><span class="date-number">6</span></div>
+
+              <div class="day"><span class="date-number">7</span></div>
+              <div class="day has-event"><span class="date-number">8</span><span class="job-chip">2 jobs</span></div>
+              <div class="day"><span class="date-number">9</span></div>
+              <div class="day has-event"><span class="date-number">10</span><span class="job-chip">5 jobs</span></div>
+              <div class="day has-event"><span class="date-number">11</span><span class="job-chip">3 jobs</span></div>
+              <div class="day"><span class="date-number">12</span></div>
+              <div class="day has-event"><span class="date-number">13</span><span class="job-chip">1 job</span></div>
+
+              <div class="day"><span class="date-number">14</span></div>
+              <div class="day has-event"><span class="date-number">15</span><span class="job-chip">4 jobs</span></div>
+              <div class="day has-event"><span class="date-number">16</span><span class="job-chip">2 jobs</span></div>
+              <div class="day selected"><span class="date-number">17</span><span class="job-chip">4 jobs</span></div>
+              <div class="day has-event"><span class="date-number">18</span><span class="job-chip">6 jobs</span></div>
+              <div class="day"><span class="date-number">19</span></div>
+              <div class="day has-event"><span class="date-number">20</span><span class="job-chip">1 job</span></div>
+
+              <div class="day"><span class="date-number">21</span></div>
+              <div class="day"><span class="date-number">22</span></div>
+              <div class="day has-event"><span class="date-number">23</span><span class="job-chip">3 jobs</span></div>
+              <div class="day"><span class="date-number">24</span></div>
+              <div class="day has-event"><span class="date-number">25</span><span class="job-chip">2 jobs</span></div>
+              <div class="day has-event"><span class="date-number">26</span><span class="job-chip">5 jobs</span></div>
+              <div class="day"><span class="date-number">27</span></div>
+
+              <div class="day"><span class="date-number">28</span></div>
+              <div class="day has-event"><span class="date-number">29</span><span class="job-chip">4 jobs</span></div>
+              <div class="day has-event"><span class="date-number">30</span><span class="job-chip">2 jobs</span></div>
+              <div class="day muted"><span class="date-number">1</span></div>
+              <div class="day muted"><span class="date-number">2</span></div>
+              <div class="day muted"><span class="date-number">3</span></div>
+              <div class="day muted"><span class="date-number">4</span></div>
+            </div>
+          </div>
+
+          <div class="stat-row">
+            <div class="stat">
+              <p>SCHEDULED</p>
+              <strong>27</strong>
+              <span>jobs in September</span>
+            </div>
+            <div class="stat">
+              <p>UNASSIGNED</p>
+              <strong>3</strong>
+              <span>waiting for a tech</span>
+            </div>
+            <div class="stat">
+              <p>SLA AT RISK</p>
+              <strong>1</strong>
+              <span>Chiller leak repair</span>
+            </div>
+          </div>
+        </section>
+
+        <section aria-label="Assignments for Wednesday, September 17">
+          <div class="agenda-heading">
+            <h2>Wednesday assignments</h2>
+            <p>Sep 17 · 4 work orders · 41 mi route</p>
+          </div>
+
+          <div class="agenda-list">
+            <article class="agenda-row">
+              <img src="https://loremflickr.com/52/52/cityscape?lock=9750" width="52" height="52" alt="Harbor Mills plant exterior">
+              <div class="agenda-copy">
+                <p class="agenda-title">Boiler pressure test</p>
+                <p class="agenda-meta">Harbor Mills · R. Ortiz</p>
+              </div>
+              <div class="agenda-time">
+                <strong>7:30 AM</strong>
+                <span>Completed</span>
+              </div>
+            </article>
+
+            <article class="agenda-row">
+              <img src="https://loremflickr.com/52/52/hotel?lock=9751" width="52" height="52" alt="Northgate Plaza building entrance">
+              <div class="agenda-copy">
+                <p class="agenda-title">HVAC filter service</p>
+                <p class="agenda-meta">Northgate Plaza, Unit 4 · D. Ruiz</p>
+              </div>
+              <div class="agenda-time">
+                <strong>9:45 AM</strong>
+                <span>On site</span>
+              </div>
+            </article>
+
+            <article class="agenda-row">
+              <img src="https://loremflickr.com/52/52/cityscape?lock=9752" width="52" height="52" alt="Lantern Square Tower service entrance">
+              <div class="agenda-copy">
+                <p class="agenda-title">Elevator safety audit</p>
+                <p class="agenda-meta">Lantern Square Tower · K. Adeyemi</p>
+              </div>
+              <div class="agenda-time">
+                <strong>1:00 PM</strong>
+                <span>Scheduled</span>
+              </div>
+            </article>
+
+            <article class="agenda-row">
+              <img src="https://loremflickr.com/52/52/beach?lock=9753" width="52" height="52" alt="West Beach depot generator yard">
+              <div class="agenda-copy">
+                <p class="agenda-title">Generator load test</p>
+                <p class="agenda-meta">West Beach Depot · T. Nakai</p>
+              </div>
+              <div class="agenda-time">
+                <strong>4:15 PM</strong>
+                <span>Scheduled</span>
+              </div>
+            </article>
+          </div>
+
+          <div class="crew-card">
+            <h3>Crew on shift</h3>
+            <div class="crew-item">
+              <span class="dot"></span>
+              <strong>R. Ortiz</strong>
+              <span>Boilers · Available</span>
+            </div>
+            <div class="crew-item">
+              <span class="dot busy"></span>
+              <strong>D. Ruiz</strong>
+              <span>HVAC · On site</span>
+            </div>
+            <div class="crew-item">
+              <span class="dot off"></span>
+              <strong>T. Nakai</strong>
+              <span>Electrical · En route</span>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

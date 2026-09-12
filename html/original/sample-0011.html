@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Palaver — Today</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ground:#EFEEF1;
+    --card:#ffffff;
+    --ink:#1D1A20;
+    --muted:#79737F;
+    --line:#E7E4EA;
+    --mauve:#8A6A9C;
+    --mauve-deep:#6F5480;
+    --mauve-tint:#F1EAF5;
+    --shadow:0 2px 8px rgba(29,26,32,0.06);
+  }
+  *{box-sizing:border-box;}
+  body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    padding:40px 0;
+    margin:0;
+    background:#D9D7DD;
+    font-family:'Manrope', system-ui, sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .screen{
+    position:relative;
+    width:390px;
+    height:844px;
+    background:var(--ground);
+    color:var(--ink);
+  }
+
+  /* top bar */
+  .topbar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:20px 20px 14px;
+  }
+  .topbar .eyebrow{
+    font-size:13px;
+    color:var(--muted);
+    letter-spacing:.02em;
+  }
+  .topbar h1{
+    margin:2px 0 0;
+    font-size:26px;
+    font-weight:700;
+    letter-spacing:-0.02em;
+  }
+  .monogram{
+    width:38px;
+    height:38px;
+    border-radius:14px;
+    background:var(--mauve-tint);
+    color:var(--mauve-deep);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:14px;
+    font-weight:700;
+    letter-spacing:.02em;
+  }
+
+  .body{padding:0 20px;}
+
+  /* hero */
+  .hero{
+    background:var(--mauve);
+    border-radius:14px;
+    padding:18px 20px 20px;
+    color:#fff;
+    box-shadow:var(--shadow);
+  }
+  .hero .label{
+    font-size:13px;
+    font-weight:500;
+    color:#E7DCEE;
+  }
+  .hero .count{
+    margin-top:6px;
+    font-size:30px;
+    font-weight:700;
+    letter-spacing:-0.02em;
+  }
+  .hero .count span{
+    font-size:15px;
+    font-weight:500;
+    color:#E2D4EA;
+    margin-left:6px;
+  }
+  .track{
+    margin-top:16px;
+    height:8px;
+    border-radius:14px;
+    background:rgba(255,255,255,0.28);
+  }
+  .track > i{
+    display:block;
+    width:75%;
+    height:100%;
+    border-radius:14px;
+    background:#fff;
+  }
+  .hero .foot{
+    margin-top:12px;
+    font-size:13px;
+    color:#E7DCEE;
+  }
+
+  /* sections */
+  .sechead{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    margin:26px 2px 10px;
+  }
+  .sechead h2{
+    margin:0;
+    font-size:15px;
+    font-weight:700;
+    letter-spacing:-0.01em;
+  }
+  .sechead .note{
+    font-size:13px;
+    color:var(--muted);
+  }
+
+  .card{
+    background:var(--card);
+    border-radius:14px;
+    box-shadow:var(--shadow);
+  }
+
+  .row{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    padding:15px 16px;
+    border-bottom:1px solid var(--line);
+  }
+  .row:last-child{border-bottom:none;}
+
+  .check{
+    flex:0 0 auto;
+    width:24px;
+    height:24px;
+    border-radius:50%;
+    border:1.5px solid #CFCAD6;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .check.on{
+    background:var(--mauve);
+    border-color:var(--mauve);
+  }
+  .rowtext{min-width:0;flex:1;}
+  .rowtext .t{
+    font-size:15px;
+    font-weight:500;
+    letter-spacing:-0.01em;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .rowtext .m{
+    margin-top:3px;
+    font-size:13px;
+    color:var(--muted);
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .done .t{color:var(--muted);text-decoration:line-through;text-decoration-color:#C6C1CE;}
+  .due{
+    flex:0 0 auto;
+    font-size:12px;
+    font-weight:700;
+    color:var(--mauve-deep);
+    background:var(--mauve-tint);
+    border-radius:14px;
+    padding:5px 10px;
+  }
+
+  .mono-lg{
+    flex:0 0 auto;
+    width:44px;
+    height:44px;
+    border-radius:14px;
+    background:var(--mauve-tint);
+    color:var(--mauve-deep);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:15px;
+    font-weight:700;
+  }
+
+  /* tab bar */
+  .tabs{
+    position:absolute;
+    left:0;
+    bottom:0;
+    width:100%;
+    display:flex;
+    background:#fff;
+    border-top:1px solid var(--line);
+    padding:10px 8px 16px;
+  }
+  .tab{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:5px;
+    font-size:12px;
+    font-weight:500;
+    color:#9A94A2;
+  }
+  .tab.active{color:var(--mauve-deep);font-weight:700;}
+</style>
+</head>
+<body>
+  <div class="screen">
+
+    <div class="topbar">
+      <div>
+        <div class="eyebrow">Tuesday, March 11</div>
+        <h1>Today's plan</h1>
+      </div>
+      <div class="monogram">MR</div>
+    </div>
+
+    <div class="body">
+
+      <div class="hero">
+        <div class="label">Spanish · Unit 4, Past tense</div>
+        <div class="count">3 of 4 done <span>one task left</span></div>
+        <div class="track"><i></i></div>
+        <div class="foot">Finish by 9:00 PM to keep your 26-day streak.</div>
+      </div>
+
+      <div class="sechead">
+        <h2>Tasks</h2>
+        <div class="note">32 min total</div>
+      </div>
+
+      <div class="card">
+        <div class="row done">
+          <div class="check on">
+            <svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M3.5 8.4l3 3 6-6.8" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="rowtext">
+            <div class="t">Review 20 flashcards</div>
+            <div class="m">Vocabulary · 8 min</div>
+          </div>
+        </div>
+
+        <div class="row done">
+          <div class="check on">
+            <svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M3.5 8.4l3 3 6-6.8" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="rowtext">
+            <div class="t">Listening drill: market dialogue</div>
+            <div class="m">Listening · 12 min</div>
+          </div>
+        </div>
+
+        <div class="row done">
+          <div class="check on">
+            <svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M3.5 8.4l3 3 6-6.8" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="rowtext">
+            <div class="t">Write 5 sentences in the preterite</div>
+            <div class="m">Writing · 10 min</div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="check"></div>
+          <div class="rowtext">
+            <div class="t">Unit 4 checkpoint quiz</div>
+            <div class="m">Grammar · 12 questions</div>
+          </div>
+          <div class="due">6:30 PM</div>
+        </div>
+      </div>
+
+      <div class="sechead">
+        <h2>Coming up</h2>
+        <div class="note">Thursday</div>
+      </div>
+
+      <div class="card">
+        <div class="row">
+          <div class="mono-lg">DO</div>
+          <div class="rowtext">
+            <div class="t">Speaking session with Dana Okafor</div>
+            <div class="m">Mar 13 · 7:00 PM · 25 min</div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="mono-lg">U5</div>
+          <div class="rowtext">
+            <div class="t">Unit 5 opens: Talking about travel</div>
+            <div class="m">Unlocks after the checkpoint quiz</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="tabs">
+      <div class="tab">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M4 6.5C4 5.7 4.7 5 5.5 5H10c1.1 0 2 .9 2 2v11c0-1.1-.9-2-2-2H4V6.5z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+          <path d="M20 6.5c0-.8-.7-1.5-1.5-1.5H14c-1.1 0-2 .9-2 2v11c0-1.1.9-2 2-2h6V6.5z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+        </svg>
+        Learn
+      </div>
+      <div class="tab active">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <rect x="4" y="4" width="16" height="16" rx="4" stroke="currentColor" stroke-width="1.8"/>
+          <path d="M8.5 12.2l2.3 2.3 4.7-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Tasks
+      </div>
+      <div class="tab">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M12 4v9.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          <path d="M8.5 7.5A3.5 3.5 0 0112 4a3.5 3.5 0 013.5 3.5v3A3.5 3.5 0 0112 14a3.5 3.5 0 01-3.5-3.5v-3z" stroke="currentColor" stroke-width="1.8"/>
+          <path d="M6 11.5a6 6 0 0012 0M12 17.5V20" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+        Practice
+      </div>
+      <div class="tab">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="12" cy="8.5" r="3.6" stroke="currentColor" stroke-width="1.8"/>
+          <path d="M5 19.5c.9-3.2 3.6-5 7-5s6.1 1.8 7 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+        Profile
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

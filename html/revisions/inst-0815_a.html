@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Connections</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 32px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #e9eeed;
+      color: #172321;
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      color: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #ffffff;
+      border: 1px solid #d9e1df;
+    }
+
+    .top-bar {
+      display: grid;
+      grid-template-columns: 44px 1fr 44px;
+      align-items: center;
+      padding: 10px 12px;
+      border-bottom: 1px solid #e2e8e6;
+    }
+
+    .icon-button {
+      width: 40px;
+      height: 40px;
+      padding: 0;
+      display: grid;
+      place-items: center;
+      background: transparent;
+      border: 0;
+      border-radius: 6px;
+    }
+
+    .top-bar h1 {
+      margin: 0;
+      text-align: center;
+      font-size: 18px;
+      line-height: 24px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .profile-button {
+      width: 34px;
+      height: 34px;
+      justify-self: end;
+      display: grid;
+      place-items: center;
+      border: 1px solid #bad4cf;
+      border-radius: 6px;
+      background: #e7f3f1;
+      color: #116f66;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .connection-tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      padding: 0 18px;
+      border-bottom: 1px solid #e2e8e6;
+    }
+
+    .connection-tab {
+      position: relative;
+      padding: 16px 8px 14px;
+      border: 0;
+      background: transparent;
+      color: #687572;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    .connection-tab.active {
+      color: #0d776d;
+    }
+
+    .connection-tab.active::after {
+      content: "";
+      position: absolute;
+      right: 25px;
+      bottom: -1px;
+      left: 25px;
+      height: 2px;
+      background: #13877c;
+    }
+
+    main {
+      padding: 16px 18px 0;
+    }
+
+    .search {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 12px;
+      border: 1px solid #ccd7d4;
+      border-radius: 6px;
+      background: #fbfcfc;
+      color: #75817f;
+    }
+
+    .search svg {
+      flex: 0 0 auto;
+    }
+
+    .search input {
+      width: 100%;
+      padding: 11px 0;
+      border: 0;
+      outline: none;
+      background: transparent;
+      color: #24312f;
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .search input::placeholder {
+      color: #7a8583;
+      opacity: 1;
+    }
+
+    .list-section {
+      margin-top: 20px;
+    }
+
+    .section-heading {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 4px;
+    }
+
+    .section-heading h2 {
+      margin: 0;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 700;
+    }
+
+    .section-heading span {
+      color: #7a8583;
+      font-size: 12px;
+      line-height: 18px;
+      font-weight: 500;
+    }
+
+    .people-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .person-row {
+      display: grid;
+      grid-template-columns: 48px minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 12px;
+      min-height: 72px;
+      border-bottom: 1px solid #e7eceb;
+    }
+
+    .avatar {
+      width: 48px;
+      height: 48px;
+      display: grid;
+      place-items: center;
+      border: 1px solid transparent;
+      border-radius: 6px;
+      background: #dcecea;
+      color: #156d65;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
+    /* Each connection carries its own monogram color token */
+    .avatar.tone-teal {
+      background: #dbeceа;
+      background-color: #dbecea;
+      border-color: #bcd9d5;
+      color: #0f635c;
+    }
+
+    .avatar.tone-indigo {
+      background-color: #e6e6f8;
+      border-color: #c8c9ea;
+      color: #414596;
+    }
+
+    .avatar.tone-clay {
+      background-color: #fceadd;
+      border-color: #eed3bf;
+      color: #98552b;
+    }
+
+    .avatar.tone-azure {
+      background-color: #dfeaf9;
+      border-color: #c3d6ee;
+      color: #2a578c;
+    }
+
+    .avatar.tone-plum {
+      background-color: #fbe4ec;
+      border-color: #eec7d6;
+      color: #8f3d63;
+    }
+
+    .avatar.tone-moss {
+      background-color: #e4efd8;
+      border-color: #c9dcb6;
+      color: #4c6b2c;
+    }
+
+    .person-info {
+      min-width: 0;
+    }
+
+    .person-name {
+      margin: 0;
+      overflow: hidden;
+      color: #172321;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 700;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .person-detail {
+      margin: 2px 0 0;
+      overflow: hidden;
+      color: #73807d;
+      font-size: 12px;
+      line-height: 18px;
+      font-weight: 400;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .follow-button {
+      min-width: 88px;
+      padding: 8px 10px;
+      border: 1px solid #13877c;
+      border-radius: 6px;
+      background: #13877c;
+      color: #ffffff;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .follow-button.secondary {
+      border-color: #bdcac7;
+      background: #ffffff;
+      color: #3e4c49;
+    }
+
+    .bottom-tabs {
+      margin-top: auto;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border-top: 1px solid #dfe6e4;
+      background: #ffffff;
+    }
+
+    .bottom-tab {
+      min-height: 68px;
+      padding: 9px 4px 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      border: 0;
+      background: transparent;
+      color: #73807d;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 500;
+    }
+
+    .bottom-tab.active {
+      color: #0f7f74;
+      font-weight: 700;
+    }
+
+    svg {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="top-bar">
+      <button class="icon-button" type="button" aria-label="Go back">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <h1>Connections</h1>
+      <div class="profile-button" aria-label="Your profile">AR</div>
+    </header>
+
+    <nav class="connection-tabs" aria-label="Connection lists">
+      <button class="connection-tab active" type="button">Followers 248</button>
+      <button class="connection-tab" type="button">Following 181</button>
+    </nav>
+
+    <main>
+      <label class="search">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="1.7"/>
+          <path d="M16 16L20 20" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+        </svg>
+        <input type="text" placeholder="Search followers" aria-label="Search followers">
+      </label>
+
+      <section class="list-section" aria-labelledby="new-followers">
+        <div class="section-heading">
+          <h2 id="new-followers">New followers</h2>
+          <span>Past 7 days</span>
+        </div>
+        <ul class="people-list">
+          <li class="person-row">
+            <div class="avatar tone-teal" aria-hidden="true">MP</div>
+            <div class="person-info">
+              <p class="person-name">Mara Pierce</p>
+              <p class="person-detail">@marapierce · 4 mutuals</p>
+            </div>
+            <button class="follow-button" type="button">Follow back</button>
+          </li>
+          <li class="person-row">
+            <div class="avatar tone-indigo" aria-hidden="true">JL</div>
+            <div class="person-info">
+              <p class="person-name">Jonah Lane</p>
+              <p class="person-detail">@jonahlane · 2 mutuals</p>
+            </div>
+            <button class="follow-button" type="button">Follow back</button>
+          </li>
+        </ul>
+      </section>
+
+      <section class="list-section" aria-labelledby="all-followers">
+        <div class="section-heading">
+          <h2 id="all-followers">All followers</h2>
+          <span>Sorted by recent</span>
+        </div>
+        <ul class="people-list">
+          <li class="person-row">
+            <div class="avatar tone-clay" aria-hidden="true">NS</div>
+            <div class="person-info">
+              <p class="person-name">Nora Sutton</p>
+              <p class="person-detail">@norasutton · 8 mutuals</p>
+            </div>
+            <button class="follow-button secondary" type="button">Following</button>
+          </li>
+          <li class="person-row">
+            <div class="avatar tone-azure" aria-hidden="true">EC</div>
+            <div class="person-info">
+              <p class="person-name">Ellis Cole</p>
+              <p class="person-detail">@elliscole · 1 mutual</p>
+            </div>
+            <button class="follow-button" type="button">Follow back</button>
+          </li>
+          <li class="person-row">
+            <div class="avatar tone-plum" aria-hidden="true">TW</div>
+            <div class="person-info">
+              <p class="person-name">Tessa Ward</p>
+              <p class="person-detail">@tessaward · 6 mutuals</p>
+            </div>
+            <button class="follow-button secondary" type="button">Following</button>
+          </li>
+          <li class="person-row">
+            <div class="avatar tone-moss" aria-hidden="true">DK</div>
+            <div class="person-info">
+              <p class="person-name">Devin Kohl</p>
+              <p class="person-detail">@devinkohl · 3 mutuals</p>
+            </div>
+            <button class="follow-button" type="button">Follow back</button>
+          </li>
+        </ul>
+      </section>
+    </main>
+
+    <nav class="bottom-tabs" aria-label="Main navigation">
+      <button class="bottom-tab" type="button">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M4 10.5L12 4L20 10.5V20H14.5V14.5H9.5V20H4V10.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+        </svg>
+        <span>Feed</span>
+      </button>
+      <button class="bottom-tab" type="button">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="1.7"/>
+          <path d="M16 16L20 20" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+        </svg>
+        <span>Explore</span>
+      </button>
+      <button class="bottom-tab" type="button">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M5 5H19V16H10L6 19V16H5V5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+        </svg>
+        <span>Messages</span>
+      </button>
+      <button class="bottom-tab active" type="button">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="12" cy="8" r="3.5" stroke="currentColor" stroke-width="1.7"/>
+          <path d="M5.5 20C5.8 15.9 8 14 12 14C16 14 18.2 15.9 18.5 20" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+        </svg>
+        <span>Profile</span>
+      </button>
+    </nav>
+  </div>
+</body>
+</html>

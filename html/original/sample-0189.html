@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Speaking Practice — Lingua Loop</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --accent:#E5397F;
+    --tint:rgba(229,57,127,0.10);
+    --tint-strong:rgba(229,57,127,0.22);
+    --ink:#17151A;
+    --muted:#6E6A73;
+    --line:#EAE7EC;
+  }
+  *{box-sizing:border-box;}
+  body{
+    min-height:100vh;display:flex;justify-content:center;align-items:flex-start;
+    padding:40px 0;margin:0;background:#D7D5DA;
+    font-family:'Roboto',system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .screen{
+    width:390px;height:844px;background:#FFFFFF;position:relative;
+    display:flex;flex-direction:column;color:var(--ink);
+  }
+
+  /* top bar */
+  .topbar{
+    display:flex;align-items:center;gap:12px;
+    padding:18px 16px 14px 16px;
+  }
+  .topbar .back{display:flex;align-items:center;justify-content:center;width:24px;height:24px;color:var(--ink);}
+  .topbar h1{font-size:17px;font-weight:500;margin:0;flex:1;line-height:24px;}
+  .topbar .unit{font-size:13px;color:var(--muted);}
+
+  .content{padding:0 16px;}
+
+  /* recorder card */
+  .rec{
+    background:var(--tint);border-radius:4px;padding:20px;
+  }
+  .rec-top{display:flex;align-items:center;gap:8px;}
+  .dot{width:8px;height:8px;border-radius:4px;background:var(--accent);}
+  .rec-label{font-size:12px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);}
+  .rec-step{margin-left:auto;font-size:12px;color:var(--muted);}
+  .prompt{font-size:18px;line-height:26px;font-weight:500;margin:12px 0 0 0;}
+  .prompt-sub{font-size:13px;line-height:19px;color:var(--muted);margin:6px 0 0 0;}
+
+  .time-row{display:flex;align-items:baseline;gap:8px;margin-top:18px;}
+  .time{font-size:40px;font-weight:700;color:var(--accent);letter-spacing:-0.02em;line-height:44px;}
+  .time-max{font-size:14px;color:var(--muted);}
+  .time-note{margin-left:auto;font-size:12px;color:var(--muted);}
+
+  .wave{display:flex;align-items:center;gap:3px;height:64px;margin-top:12px;}
+  .wave span{flex:1;min-width:0;border-radius:1px;background:var(--accent);}
+  .wave span.q{background:var(--tint-strong);}
+
+  /* controls */
+  .controls{display:flex;align-items:flex-start;justify-content:center;gap:44px;margin-top:26px;}
+  .ctl{display:flex;flex-direction:column;align-items:center;gap:8px;width:76px;}
+  .btn-sm{width:52px;height:52px;border-radius:26px;background:var(--tint);display:flex;align-items:center;justify-content:center;color:var(--accent);}
+  .btn-lg{width:76px;height:76px;border-radius:38px;background:var(--accent);display:flex;align-items:center;justify-content:center;color:#fff;}
+  .ctl span{font-size:12px;color:var(--muted);line-height:16px;}
+
+  /* section */
+  .sec-head{display:flex;align-items:baseline;margin:30px 0 10px 0;}
+  .sec-head h2{font-size:15px;font-weight:500;margin:0;}
+  .sec-head .link{margin-left:auto;font-size:13px;color:var(--accent);font-weight:500;}
+
+  .row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--line);}
+  .row:last-child{border-bottom:none;}
+  .row img{width:56px;height:56px;border-radius:4px;object-fit:cover;display:block;background:#DDD9E0;flex:none;}
+  .row .body{flex:1;min-width:0;}
+  .row .title{font-size:14px;font-weight:500;line-height:20px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .row .meta{font-size:12px;color:var(--muted);line-height:18px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .row .dur{font-size:13px;color:var(--muted);flex:none;}
+  .chip{display:inline-block;background:var(--tint);color:var(--accent);font-size:12px;font-weight:500;line-height:16px;padding:2px 6px;border-radius:4px;margin-top:4px;}
+
+  /* tab bar */
+  .tabs{
+    position:absolute;left:0;bottom:0;width:100%;height:64px;
+    border-top:1px solid var(--line);background:#fff;
+    display:flex;align-items:center;
+  }
+  .tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--muted);}
+  .tab.active{color:var(--accent);}
+  .tab em{font-style:normal;font-size:12px;line-height:16px;font-weight:500;}
+</style>
+</head>
+<body>
+<div class="screen">
+
+  <div class="topbar">
+    <span class="back" aria-hidden="true">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
+    </span>
+    <h1>Speaking Practice</h1>
+    <span class="unit">Unit 4 · Past Tense</span>
+  </div>
+
+  <div class="content">
+
+    <div class="rec">
+      <div class="rec-top">
+        <span class="dot"></span>
+        <span class="rec-label">Recording</span>
+        <span class="rec-step">Prompt 2 of 5</span>
+      </div>
+      <p class="prompt">Describe what you did yesterday morning, from waking up to leaving the house.</p>
+      <p class="prompt-sub">Use at least four verbs in the simple past.</p>
+
+      <div class="time-row">
+        <span class="time">01:12</span>
+        <span class="time-max">/ 02:00</span>
+        <span class="time-note">Input level normal</span>
+      </div>
+
+      <div class="wave" aria-hidden="true">
+        <span style="height:14px"></span><span style="height:26px"></span><span style="height:38px"></span>
+        <span style="height:20px"></span><span style="height:48px"></span><span style="height:34px"></span>
+        <span style="height:56px"></span><span style="height:30px"></span><span style="height:18px"></span>
+        <span style="height:42px"></span><span style="height:60px"></span><span style="height:36px"></span>
+        <span style="height:22px"></span><span style="height:50px"></span><span style="height:44px"></span>
+        <span style="height:16px"></span><span style="height:32px"></span><span style="height:54px"></span>
+        <span style="height:40px"></span><span style="height:24px"></span><span style="height:46px"></span>
+        <span style="height:62px"></span><span style="height:28px"></span><span style="height:20px"></span>
+        <span style="height:36px"></span><span style="height:52px"></span><span style="height:30px"></span>
+        <span style="height:44px"></span><span style="height:18px"></span><span style="height:38px"></span>
+        <span class="q" style="height:8px"></span><span class="q" style="height:8px"></span>
+        <span class="q" style="height:8px"></span><span class="q" style="height:8px"></span>
+        <span class="q" style="height:8px"></span><span class="q" style="height:8px"></span>
+        <span class="q" style="height:8px"></span><span class="q" style="height:8px"></span>
+        <span class="q" style="height:8px"></span><span class="q" style="height:8px"></span>
+      </div>
+    </div>
+
+    <div class="controls">
+      <div class="ctl">
+        <div class="btn-sm" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5v6h6"/><path d="M4 11a8 8 0 1 1 2.3 5.7"/></svg>
+        </div>
+        <span>Restart</span>
+      </div>
+      <div class="ctl">
+        <div class="btn-lg" aria-hidden="true">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="1"/></svg>
+        </div>
+        <span>Stop &amp; save</span>
+      </div>
+      <div class="ctl">
+        <div class="btn-sm" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4h12v16l-6-4-6 4z"/></svg>
+        </div>
+        <span>Mark spot</span>
+      </div>
+    </div>
+
+    <div class="sec-head">
+      <h2>Recent takes</h2>
+      <span class="link">All 12</span>
+    </div>
+
+    <div class="row">
+      <img src="https://loremflickr.com/56/56/study?lock=3240" width="56" height="56" alt="Notebook and pen on a desk, thumbnail for the morning routine take">
+      <div class="body">
+        <div class="title">Morning routine — Take 2</div>
+        <div class="meta">Yesterday, 8:14 PM · Unit 4</div>
+        <span class="chip">Needs review</span>
+      </div>
+      <span class="dur">1:04</span>
+    </div>
+
+    <div class="row">
+      <img src="https://loremflickr.com/56/56/library?lock=3241" width="56" height="56" alt="Library shelves, thumbnail for the weekend trip take">
+      <div class="body">
+        <div class="title">Weekend trip story</div>
+        <div class="meta">Mar 14 · Scored by Maya Ortiz</div>
+      </div>
+      <span class="dur">1:47</span>
+    </div>
+
+    <div class="row">
+      <img src="https://loremflickr.com/56/56/books?lock=3242" width="56" height="56" alt="Stack of textbooks, thumbnail for the reading aloud take">
+      <div class="body">
+        <div class="title">Reading aloud — Chapter 3</div>
+        <div class="meta">Mar 12 · Unit 3</div>
+      </div>
+      <span class="dur">2:00</span>
+    </div>
+
+  </div>
+
+  <div class="tabs">
+    <div class="tab">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5L12 4l9 6.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>
+      <em>Learn</em>
+    </div>
+    <div class="tab active">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><path d="M12 18v3"/></svg>
+      <em>Practice</em>
+    </div>
+    <div class="tab">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h6a2 2 0 0 1 2 2v12a2 2 0 0 0-2-2H4z"/><path d="M20 5h-6a2 2 0 0 0-2 2v12a2 2 0 0 1 2-2h6z"/></svg>
+      <em>Library</em>
+    </div>
+    <div class="tab">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6 8-6s8 2 8 6"/></svg>
+      <em>Profile</em>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

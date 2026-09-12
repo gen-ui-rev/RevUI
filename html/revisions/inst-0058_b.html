@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TallyMint Household Dining Story</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #d8d6d2;
+      color: #20201f;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      position: relative;
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #f1f0ed;
+    }
+
+    .top {
+      padding: 14px 16px 0;
+    }
+
+    .progress {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 5px;
+    }
+
+    .progress-segment {
+      height: 4px;
+      background: #d2cfca;
+    }
+
+    .progress-segment.complete,
+    .progress-segment.current {
+      background: #ed6b2d;
+    }
+
+    .progress-segment.current {
+      position: relative;
+    }
+
+    .progress-segment.current::after {
+      content: "";
+      position: absolute;
+      inset: 0 42% 0 0;
+      background: #b94516;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 17px 0 14px;
+    }
+
+    .story-meta {
+      min-width: 0;
+    }
+
+    .service-name {
+      margin: 0;
+      font-size: 15px;
+      line-height: 20px;
+      font-weight: 600;
+    }
+
+    .story-count {
+      margin: 2px 0 0;
+      color: #6c6965;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 400;
+    }
+
+    .close-button {
+      width: 40px;
+      height: 40px;
+      padding: 8px;
+      display: grid;
+      place-items: center;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      color: #20201f;
+    }
+
+    .close-button svg {
+      width: 24px;
+      height: 24px;
+    }
+
+    main {
+      flex: 1;
+      padding: 4px 16px 20px;
+    }
+
+    .story-card {
+      padding: 20px;
+      background: #ffffff;
+      box-shadow: 0 7px 20px rgba(37, 34, 30, 0.09);
+    }
+
+    .visual {
+      width: 100%;
+      height: 110px;
+      background: #f3b08d;
+    }
+
+    .content {
+      padding-top: 25px;
+    }
+
+    .eyebrow {
+      margin: 0 0 9px;
+      color: #c64f1c;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      max-width: 290px;
+      margin: 0;
+      color: #1f1f1e;
+      font-size: 28px;
+      line-height: 34px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+
+    .summary {
+      margin: 13px 0 0;
+      color: #5f5c58;
+      font-size: 15px;
+      line-height: 22px;
+      font-weight: 400;
+    }
+
+    .amount-row {
+      margin-top: 22px;
+      padding-top: 19px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      border-top: 1px solid #e5e2de;
+    }
+
+    .amount-label {
+      margin: 0 0 3px;
+      color: #6c6965;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 400;
+    }
+
+    .amount {
+      margin: 0;
+      color: #20201f;
+      font-size: 22px;
+      line-height: 27px;
+      font-weight: 600;
+    }
+
+    .change {
+      margin: 0 0 3px;
+      color: #c64f1c;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 600;
+    }
+
+    .split {
+      margin-top: 20px;
+    }
+
+    .split-head {
+      margin: 0 0 10px;
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      color: #6c6965;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 400;
+    }
+
+    .split-head strong {
+      color: #20201f;
+      font-weight: 600;
+    }
+
+    .split-bar {
+      display: flex;
+      gap: 2px;
+      height: 24px;
+    }
+
+    .split-bar span {
+      display: grid;
+      place-items: center;
+      color: #ffffff;
+      font-size: 11px;
+      line-height: 14px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+
+    .seg-1 {
+      background: #b94516;
+    }
+
+    .seg-2 {
+      background: #ed6b2d;
+    }
+
+    .seg-3 {
+      background: #f3b08d;
+      color: #7a3411;
+    }
+
+    .tiles {
+      margin-top: 16px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .tile {
+      padding: 12px 10px;
+      background: #faf8f5;
+      border-top: 3px solid #ed6b2d;
+    }
+
+    .tile.t1 {
+      border-top-color: #b94516;
+    }
+
+    .tile.t3 {
+      border-top-color: #f3b08d;
+    }
+
+    .initials {
+      width: 30px;
+      height: 30px;
+      display: grid;
+      place-items: center;
+      background: #ffffff;
+      color: #b94516;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 600;
+    }
+
+    .tile-name {
+      margin: 8px 0 0;
+      color: #20201f;
+      font-size: 13px;
+      line-height: 17px;
+      font-weight: 600;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .tile-delta {
+      margin: 2px 0 0;
+      color: #c64f1c;
+      font-size: 15px;
+      line-height: 20px;
+      font-weight: 600;
+    }
+
+    .tile-note {
+      margin: 4px 0 0;
+      color: #6c6965;
+      font-size: 11px;
+      line-height: 15px;
+      font-weight: 400;
+    }
+
+    .primary-action {
+      width: 100%;
+      margin-top: 23px;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border: 0;
+      border-radius: 0;
+      background: #ed6b2d;
+      color: #ffffff;
+      font-size: 15px;
+      line-height: 20px;
+      font-weight: 600;
+      text-align: left;
+    }
+
+    .primary-action svg {
+      width: 20px;
+      height: 20px;
+      flex: 0 0 auto;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="top">
+      <div class="progress" aria-label="Story 2 of 4">
+        <span class="progress-segment complete"></span>
+        <span class="progress-segment current"></span>
+        <span class="progress-segment"></span>
+        <span class="progress-segment"></span>
+      </div>
+
+      <div class="topbar">
+        <div class="story-meta">
+          <p class="service-name">TallyMint Household Brief</p>
+          <p class="story-count">Story 2 of 4 · June 9–15 · Brady home</p>
+        </div>
+        <button class="close-button" type="button" aria-label="Close story">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M5 5L19 19M19 5L5 19" stroke="currentColor" stroke-width="1.8" stroke-linecap="square"/>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <main>
+      <section class="story-card" aria-labelledby="story-title">
+        <div class="visual" role="img" aria-label="Warm orange editorial image"></div>
+
+        <div class="content">
+          <p class="eyebrow">Shared dining recap</p>
+          <h1 id="story-title">Your household ate out more</h1>
+          <p class="summary">Four restaurant purchases from three members lifted shared dining above last week.</p>
+
+          <div class="amount-row">
+            <div>
+              <p class="amount-label">Household dining this week</p>
+              <p class="amount">$186.40</p>
+            </div>
+            <p class="change">+$52.10</p>
+          </div>
+
+          <div class="split">
+            <p class="split-head">
+              <span>Share of the <strong>$52.10</strong> increase</span>
+              <span>3 members</span>
+            </p>
+            <div class="split-bar" role="img" aria-label="Nina 51 percent, Marcus 35 percent, Tess 14 percent">
+              <span class="seg-1" style="width: 51%;">51%</span>
+              <span class="seg-2" style="width: 35%;">35%</span>
+              <span class="seg-3" style="width: 14%;">14%</span>
+            </div>
+
+            <div class="tiles">
+              <div class="tile t1">
+                <span class="initials" aria-hidden="true">NB</span>
+                <p class="tile-name">Nina</p>
+                <p class="tile-delta">+$26.40</p>
+                <p class="tile-note">2 orders · $84.60</p>
+              </div>
+              <div class="tile t2">
+                <span class="initials" aria-hidden="true">MB</span>
+                <p class="tile-name">Marcus</p>
+                <p class="tile-delta">+$18.30</p>
+                <p class="tile-note">1 order · $62.90</p>
+              </div>
+              <div class="tile t3">
+                <span class="initials" aria-hidden="true">TB</span>
+                <p class="tile-name">Tess</p>
+                <p class="tile-delta">+$7.40</p>
+                <p class="tile-note">1 order · $38.90</p>
+              </div>
+            </div>
+          </div>
+
+          <button class="primary-action" type="button">
+            <span>See the shared dining log</span>
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M5 12H19M14 7L19 12L14 17" stroke="currentColor" stroke-width="1.8" stroke-linecap="square" stroke-linejoin="miter"/>
+            </svg>
+          </button>
+        </div>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

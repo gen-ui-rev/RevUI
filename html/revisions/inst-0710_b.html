@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Lingua Ledger — Study Time</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 40px 0;
+    margin: 0;
+    background: #6a6668;
+    font-family: 'Source Serif 4', Georgia, serif;
+  }
+  .screen {
+    width: 390px;
+    height: 844px;
+    background: #efedec;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    color: #1b1a1a;
+  }
+
+  /* top bar */
+  .topbar {
+    background: #ffffff;
+    border-bottom: 1px solid #e2dedd;
+    padding: 15px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .topbar .ttl {
+    font-size: 17px;
+    font-weight: 600;
+    flex: 1;
+    min-width: 0;
+    line-height: 22px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .topbar .ttl .who {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .badge {
+    flex: none;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 14px;
+    letter-spacing: 0.3px;
+    padding: 2px 7px;
+    background: #fbe4ee;
+    color: #a8154f;
+    border: 1px solid #f2c6da;
+  }
+  .icobtn { display: flex; color: #1b1a1a; }
+
+  /* range chips */
+  .ranges {
+    display: flex;
+    gap: 8px;
+    padding: 12px 16px 14px;
+  }
+  .chip {
+    font-size: 13px;
+    line-height: 16px;
+    padding: 7px 14px;
+    border: 1px solid #d8d3d2;
+    background: #ffffff;
+    color: #55504f;
+  }
+  .chip.on {
+    background: #d61f6a;
+    border-color: #d61f6a;
+    color: #ffffff;
+    font-weight: 600;
+  }
+
+  .card {
+    background: #ffffff;
+    margin: 0 16px;
+    padding: 16px;
+    box-shadow: 0 1px 3px rgba(28,24,24,0.13);
+  }
+
+  .cap { font-size: 12px; color: #7a7472; line-height: 16px; }
+  .big { font-size: 34px; font-weight: 600; line-height: 40px; letter-spacing: -0.5px; }
+  .big span { font-size: 15px; font-weight: 400; color: #7a7472; }
+  .sub { font-size: 13px; color: #55504f; line-height: 18px; margin-top: 2px; }
+
+  /* last practice panel */
+  .card.recent {
+    margin-bottom: 12px;
+    padding: 14px 16px;
+    border-left: 4px solid #d61f6a;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .card.recent .ic { flex: none; color: #d61f6a; margin-top: 2px; }
+  .card.recent .txt { min-width: 0; }
+  .card.recent .when {
+    font-size: 15px; font-weight: 600; line-height: 20px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .card.recent .what {
+    font-size: 13px; color: #55504f; line-height: 18px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+
+  /* chart */
+  .plotwrap { display: flex; margin-top: 18px; }
+  .yaxis {
+    width: 26px;
+    height: 152px;
+    position: relative;
+  }
+  .yaxis i {
+    position: absolute;
+    right: 6px;
+    font-size: 11px;
+    font-style: normal;
+    color: #918a88;
+    line-height: 11px;
+  }
+  .plot {
+    flex: 1;
+    height: 152px;
+    position: relative;
+    border-bottom: 1px solid #cfc9c7;
+  }
+  .grid { position: absolute; left: 0; right: 0; height: 1px; background: #eae6e4; }
+  .goal { position: absolute; left: 0; right: 0; height: 0; border-top: 1px dashed #d61f6a; }
+  .goaltag {
+    position: absolute; right: 0; bottom: 92px;
+    font-size: 10px; color: #d61f6a; line-height: 12px;
+  }
+  .bars {
+    position: absolute; inset: 0;
+    display: flex; align-items: flex-end; justify-content: space-between;
+  }
+  .bar { width: 24px; display: flex; flex-direction: column; justify-content: flex-end; }
+  .s2 { background: #f7bcd3; }
+  .s1 { background: #d61f6a; }
+
+  .xaxis {
+    display: flex; justify-content: space-between;
+    margin: 7px 0 0 26px;
+  }
+  .xaxis span {
+    width: 24px; text-align: center;
+    font-size: 11px; color: #7a7472; line-height: 14px;
+  }
+  .xaxis span.hi { color: #1b1a1a; font-weight: 600; }
+
+  .legend {
+    display: flex; align-items: center; gap: 16px;
+    margin-top: 14px; padding-top: 12px; border-top: 1px solid #eae6e4;
+  }
+  .legend div { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #55504f; line-height: 16px; }
+  .sw { width: 10px; height: 10px; display: block; }
+  .swline { width: 12px; height: 0; border-top: 1px dashed #d61f6a; display: block; }
+
+  /* skills */
+  .card.skills { margin-top: 12px; padding-bottom: 8px; }
+  .shead { display: flex; align-items: baseline; justify-content: space-between; }
+  .shead h2 { font-size: 15px; font-weight: 600; margin: 0; line-height: 20px; }
+  .row {
+    display: grid;
+    grid-template-columns: 84px 1fr 54px;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid #f0ecea;
+  }
+  .row:last-child { border-bottom: 0; }
+  .row .nm { font-size: 14px; line-height: 18px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .track { height: 8px; background: #f1eceb; }
+  .fill { height: 8px; background: #d61f6a; }
+  .row .vl { font-size: 14px; text-align: right; line-height: 18px; }
+  .row .vl b { font-weight: 600; }
+  .row .vl em { font-style: normal; font-size: 12px; color: #7a7472; }
+
+  /* tab bar */
+  .tabs {
+    position: absolute;
+    left: 0; bottom: 0; width: 100%;
+    background: #ffffff;
+    border-top: 1px solid #e2dedd;
+    display: flex;
+    padding: 9px 0 12px;
+  }
+  .tab {
+    flex: 1;
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    font-size: 11px; line-height: 14px; color: #8a8382;
+  }
+  .tab.on { color: #d61f6a; font-weight: 600; }
+</style>
+</head>
+<body>
+<div class="screen">
+
+  <div class="topbar">
+    <span class="icobtn" aria-hidden="true">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M15 4 L7 12 L15 20"/></svg>
+    </span>
+    <div class="ttl">
+      <span class="who">Mara Ellis</span>
+      <span class="badge">SPANISH B1</span>
+    </div>
+    <span class="icobtn" aria-hidden="true">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 7h16M4 12h16M4 17h10"/></svg>
+    </span>
+  </div>
+
+  <div class="ranges">
+    <span class="chip on">Week</span>
+    <span class="chip">Month</span>
+    <span class="chip">Quarter</span>
+    <span class="chip">Year</span>
+  </div>
+
+  <div class="card recent">
+    <span class="ic" aria-hidden="true">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.2V12l3.4 2.2"/></svg>
+    </span>
+    <div class="txt">
+      <div class="cap">Last practice</div>
+      <div class="when">Yesterday, 8:40 PM</div>
+      <div class="what">Speaking drills · 45 min · 92% correct</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="cap">Mar 4 – Mar 10 · weekly total</div>
+    <div class="big">390 <span>min</span></div>
+    <div class="sub">42 min more than the week before</div>
+
+    <div class="plotwrap">
+      <div class="yaxis">
+        <i style="bottom:132px">90</i>
+        <i style="bottom:87px">60</i>
+        <i style="bottom:42px">30</i>
+        <i style="bottom:-3px">0</i>
+      </div>
+      <div class="plot">
+        <span class="grid" style="bottom:135px"></span>
+        <span class="grid" style="bottom:45px"></span>
+        <span class="goal" style="bottom:90px"></span>
+        <span class="goaltag">goal 60</span>
+        <div class="bars">
+          <div class="bar"><span class="s2" style="height:33px"></span><span class="s1" style="height:60px"></span></div>
+          <div class="bar"><span class="s2" style="height:18px"></span><span class="s1" style="height:39px"></span></div>
+          <div class="bar"><span class="s2" style="height:39px"></span><span class="s1" style="height:72px"></span></div>
+          <div class="bar"><span class="s2" style="height:11px"></span><span class="s1" style="height:27px"></span></div>
+          <div class="bar"><span class="s2" style="height:30px"></span><span class="s1" style="height:53px"></span></div>
+          <div class="bar"><span class="s2" style="height:48px"></span><span class="s1" style="height:87px"></span></div>
+          <div class="bar"><span class="s2" style="height:24px"></span><span class="s1" style="height:45px"></span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="xaxis">
+      <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span class="hi">Sat</span><span>Sun</span>
+    </div>
+
+    <div class="legend">
+      <div><span class="sw" style="background:#d61f6a"></span>Lessons</div>
+      <div><span class="sw" style="background:#f7bcd3"></span>Review</div>
+      <div><span class="swline"></span>Daily goal</div>
+    </div>
+  </div>
+
+  <div class="card skills">
+    <div class="shead">
+      <h2>Minutes by skill</h2>
+      <span class="cap">4 of 7 days on goal</span>
+    </div>
+    <div class="row">
+      <span class="nm">Speaking</span>
+      <span class="track"><span class="fill" style="width:100%"></span></span>
+      <span class="vl"><b>96</b> <em>m</em></span>
+    </div>
+    <div class="row">
+      <span class="nm">Listening</span>
+      <span class="track"><span class="fill" style="width:88%"></span></span>
+      <span class="vl"><b>84</b> <em>m</em></span>
+    </div>
+    <div class="row">
+      <span class="nm">Vocabulary</span>
+      <span class="track"><span class="fill" style="width:81%"></span></span>
+      <span class="vl"><b>78</b> <em>m</em></span>
+    </div>
+    <div class="row">
+      <span class="nm">Grammar</span>
+      <span class="track"><span class="fill" style="width:54%"></span></span>
+      <span class="vl"><b>52</b> <em>m</em></span>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <div class="tab">
+      <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 11 L12 4 L20 11 V20 H4 Z"/></svg>
+      Home
+    </div>
+    <div class="tab">
+      <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 5h6a2 2 0 0 1 2 2v12a2 2 0 0 0-2-2H5z"/><path d="M19 5h-6a2 2 0 0 0-2 2v12a2 2 0 0 1 2-2h6z"/></svg>
+      Lessons
+    </div>
+    <div class="tab on">
+      <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 19V10M12 19V5M19 19v-6"/></svg>
+      Progress
+    </div>
+    <div class="tab">
+      <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8.5" r="3.6"/><path d="M5 20c1.3-3.6 4-5.2 7-5.2s5.7 1.6 7 5.2"/></svg>
+      Profile
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

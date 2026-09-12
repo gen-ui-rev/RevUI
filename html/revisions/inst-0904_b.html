@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Sleep stages — Lumora</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box}
+  body{
+    min-height:100vh;display:flex;justify-content:center;align-items:flex-start;
+    padding:40px 0;margin:0;background:#CFCDD4;
+    font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased;
+  }
+  .screen{
+    width:390px;height:844px;background:#F2F1F4;position:relative;
+    display:flex;flex-direction:column;color:#1E1B20;
+  }
+  .topbar{
+    background:#FFFFFF;padding:14px 16px 12px;display:flex;align-items:flex-start;
+    justify-content:space-between;border-bottom:1px solid #E7E5EA
+  }
+  .topbar h1{margin:0;font-size:18px;font-weight:600;line-height:22px}
+  .topbar .range{margin:2px 0 0;font-size:13px;color:#6E6873;line-height:16px}
+  .iconbtn{
+    width:32px;height:32px;border-radius:10px;display:flex;align-items:center;
+    justify-content:center;background:#F4F2F6;flex:none
+  }
+  .seg{display:flex;gap:8px;padding:12px 16px 4px}
+  .seg span{
+    font-size:13px;font-weight:500;color:#6E6873;background:#FFFFFF;
+    padding:8px 14px;border-radius:10px;border:1px solid #E7E5EA
+  }
+  .seg span.on{background:#7A5679;color:#FFFFFF;border-color:#7A5679;font-weight:600}
+  .card{
+    background:#FFFFFF;border-radius:10px;margin:12px 16px 0;padding:16px;
+    box-shadow:0 1px 3px rgba(30,27,32,.07)
+  }
+  .chead{display:flex;align-items:flex-end;justify-content:space-between}
+  .clabel{font-size:12px;color:#6E6873;line-height:15px}
+  .cbig{
+    font-size:26px;font-weight:700;line-height:31px;letter-spacing:-.5px;
+    margin-top:2px
+  }
+  .cgoal{font-size:12px;color:#6E6873;line-height:15px;text-align:right}
+  .cgoal b{display:block;font-size:13px;font-weight:600;color:#1E1B20;line-height:17px}
+  .comparison{
+    margin-top:10px;padding:7px 10px;border-radius:8px;background:#F8ECEE;
+    display:flex;align-items:center;justify-content:space-between;
+    color:#70424B;font-size:12px;line-height:16px
+  }
+  .comparison strong{display:flex;align-items:center;gap:5px;font-weight:700}
+  .comparison span{color:#825E65}
+  .plotwrap{display:flex;margin-top:12px}
+  .axis{width:26px;position:relative;height:154px;flex:none}
+  .axis i{
+    position:absolute;right:6px;font-size:12px;font-style:normal;color:#9A939F;
+    line-height:12px
+  }
+  .plot{flex:1;position:relative;height:154px}
+  .grid{position:absolute;left:0;right:0;height:1px;background:#EDEBF0}
+  .bars{
+    position:absolute;left:0;right:0;bottom:0;display:flex;gap:12px;
+    align-items:flex-end
+  }
+  .bar{
+    flex:1;display:flex;flex-direction:column;justify-content:flex-end;
+    border-radius:10px;overflow:hidden
+  }
+  .s-awake{background:#E4D7E3}
+  .s-rem{background:#C3A7C2}
+  .s-light{background:#9C7A9B}
+  .s-deep{background:#6E4C6D}
+  .days{display:flex;gap:12px;margin:8px 0 0 26px}
+  .days span{flex:1;text-align:center;font-size:12px;color:#6E6873}
+  .days span.hi{color:#1E1B20;font-weight:600}
+  .legend{
+    display:flex;justify-content:space-between;margin-top:12px;padding-top:10px;
+    border-top:1px solid #EDEBF0
+  }
+  .legend div{display:flex;align-items:center;gap:6px;font-size:12px;color:#4C4752}
+  .sw{width:10px;height:10px;border-radius:3px;flex:none}
+  .shead{
+    display:flex;align-items:baseline;justify-content:space-between;
+    padding:16px 16px 8px
+  }
+  .shead h2{margin:0;font-size:15px;font-weight:600}
+  .shead a{font-size:13px;color:#7A5679;text-decoration:none;font-weight:500}
+  .rows{
+    background:#FFFFFF;border-radius:10px;margin:0 16px;
+    box-shadow:0 1px 3px rgba(30,27,32,.07)
+  }
+  .rowhead{
+    display:grid;grid-template-columns:112px 1fr;gap:12px;padding:9px 16px 7px;
+    border-bottom:1px solid #EFEDF2;font-size:10px;line-height:14px;
+    font-weight:700;letter-spacing:.45px;text-transform:uppercase;color:#8A838F
+  }
+  .row{
+    display:grid;grid-template-columns:112px 1fr;gap:12px;align-items:center;
+    padding:9px 16px;border-top:1px solid #EFEDF2
+  }
+  .rowhead + .row{border-top:none}
+  .total b{
+    display:block;font-size:17px;font-weight:700;line-height:21px;
+    letter-spacing:-.2px
+  }
+  .total span{display:block;font-size:11px;color:#8A838F;line-height:15px;margin-top:1px}
+  .date{text-align:left;min-width:0}
+  .date b{display:block;font-size:13px;font-weight:600;line-height:17px}
+  .date span{
+    display:block;font-size:11px;color:#6E6873;line-height:15px;margin-top:1px;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis
+  }
+  .tabs{
+    margin-top:auto;background:#FFFFFF;border-top:1px solid #E7E5EA;
+    display:flex;padding:8px 0 12px
+  }
+  .tab{
+    flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;
+    font-size:11px;color:#8A838F
+  }
+  .tab.on{color:#7A5679;font-weight:600}
+</style>
+</head>
+<body>
+<div class="screen">
+
+  <div class="topbar">
+    <div>
+      <h1>Sleep stages</h1>
+      <p class="range">Mar 10 – Mar 16, 2025</p>
+    </div>
+    <div class="iconbtn" aria-hidden="true">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#4C4752" stroke-width="1.6" stroke-linecap="round">
+        <rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/>
+        <path d="M8 3v3M16 3v3M3.5 10h17"/>
+      </svg>
+    </div>
+  </div>
+
+  <div class="seg">
+    <span class="on">Week</span>
+    <span>2 Weeks</span>
+    <span>Month</span>
+  </div>
+
+  <div class="card">
+    <div class="chead">
+      <div>
+        <div class="clabel">Average time asleep</div>
+        <div class="cbig">7h 07m</div>
+      </div>
+      <div class="cgoal">Nightly goal<b>7h 30m</b></div>
+    </div>
+
+    <div class="comparison">
+      <strong>
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M6 2v8M2.8 6.8 6 10l3.2-3.2"/>
+        </svg>
+        Down 23m
+      </strong>
+      <span>from last week</span>
+    </div>
+
+    <div class="plotwrap">
+      <div class="axis">
+        <i style="top:-5px">8h</i>
+        <i style="top:68px">4h</i>
+        <i style="top:137px">0</i>
+      </div>
+      <div class="plot">
+        <div class="grid" style="top:0"></div>
+        <div class="grid" style="top:73px"></div>
+        <div class="grid" style="top:142px"></div>
+        <div class="bars">
+          <div class="bar">
+            <div class="s-awake" style="height:6px"></div>
+            <div class="s-rem" style="height:26px"></div>
+            <div class="s-light" style="height:68px"></div>
+            <div class="s-deep" style="height:22px"></div>
+          </div>
+          <div class="bar">
+            <div class="s-awake" style="height:6px"></div>
+            <div class="s-rem" style="height:30px"></div>
+            <div class="s-light" style="height:72px"></div>
+            <div class="s-deep" style="height:27px"></div>
+          </div>
+          <div class="bar">
+            <div class="s-awake" style="height:5px"></div>
+            <div class="s-rem" style="height:21px"></div>
+            <div class="s-light" style="height:63px"></div>
+            <div class="s-deep" style="height:17px"></div>
+          </div>
+          <div class="bar">
+            <div class="s-awake" style="height:5px"></div>
+            <div class="s-rem" style="height:27px"></div>
+            <div class="s-light" style="height:72px"></div>
+            <div class="s-deep" style="height:25px"></div>
+          </div>
+          <div class="bar">
+            <div class="s-awake" style="height:7px"></div>
+            <div class="s-rem" style="height:32px"></div>
+            <div class="s-light" style="height:75px"></div>
+            <div class="s-deep" style="height:30px"></div>
+          </div>
+          <div class="bar">
+            <div class="s-awake" style="height:7px"></div>
+            <div class="s-rem" style="height:29px"></div>
+            <div class="s-light" style="height:76px"></div>
+            <div class="s-deep" style="height:28px"></div>
+          </div>
+          <div class="bar">
+            <div class="s-awake" style="height:5px"></div>
+            <div class="s-rem" style="height:24px"></div>
+            <div class="s-light" style="height:68px"></div>
+            <div class="s-deep" style="height:21px"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="days">
+      <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span>
+      <span>Fri</span><span>Sat</span><span class="hi">Sun</span>
+    </div>
+
+    <div class="legend">
+      <div><i class="sw s-deep"></i>Deep</div>
+      <div><i class="sw s-light"></i>Light</div>
+      <div><i class="sw s-rem"></i>REM</div>
+      <div><i class="sw s-awake"></i>Awake</div>
+    </div>
+  </div>
+
+  <div class="shead">
+    <h2>Nightly detail</h2>
+    <a href="#">All nights</a>
+  </div>
+
+  <div class="rows">
+    <div class="rowhead">
+      <span>Total sleep</span>
+      <span>Date</span>
+    </div>
+    <div class="row">
+      <div class="total">
+        <b>6h 36m</b>
+        <span>In bed 6h 58m</span>
+      </div>
+      <div class="date">
+        <b>Sun, Mar 16</b>
+        <span>11:48 PM – 6:24 AM</span>
+      </div>
+    </div>
+    <div class="row">
+      <div class="total">
+        <b>7h 48m</b>
+        <span>In bed 8h 06m</span>
+      </div>
+      <div class="date">
+        <b>Sat, Mar 15</b>
+        <span>10:54 PM – 6:42 AM</span>
+      </div>
+    </div>
+    <div class="row">
+      <div class="total">
+        <b>8h 02m</b>
+        <span>In bed 8h 24m</span>
+      </div>
+      <div class="date">
+        <b>Fri, Mar 14</b>
+        <span>11:12 PM – 7:14 AM</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <div class="tab">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20 14.5A8 8 0 0 1 9.5 4a8.2 8.2 0 1 0 10.5 10.5z"/>
+      </svg>
+      Tonight
+    </div>
+    <div class="tab on">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 19V5"/><path d="M4 19h16"/>
+        <path d="M8 16v-5M12 16V7M16 16v-8"/>
+      </svg>
+      Trends
+    </div>
+    <div class="tab">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="4" y="4" width="16" height="16.5" rx="2.5"/>
+        <path d="M8.5 10h7M8.5 14h4.5"/>
+      </svg>
+      Journal
+    </div>
+    <div class="tab">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="8.5" r="3.6"/>
+        <path d="M5 20c1.2-3.4 3.8-5 7-5s5.8 1.6 7 5"/>
+      </svg>
+      Profile
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

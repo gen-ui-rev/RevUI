@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Move Document</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #e9e7e5;
+      color: #272328;
+      font-family: 'Source Sans 3', system-ui, sans-serif;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 560px;
+      padding: 18px 24px;
+      background: #f5f3f2;
+    }
+
+    .move-panel {
+      position: relative;
+      width: 100%;
+      padding: 18px;
+      background: #ffffff;
+      border: 1px solid #d9d4d7;
+      border-radius: 10px;
+    }
+
+    .context-label {
+      margin: 0 40px 3px 0;
+      color: #a20f60;
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1.3;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0 40px 4px 0;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 25px;
+      font-weight: 600;
+      line-height: 1.2;
+    }
+
+    .instruction {
+      margin: 0;
+      color: #686167;
+      font-size: 13.5px;
+      line-height: 1.4;
+    }
+
+    .close-button {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      display: grid;
+      place-items: center;
+      width: 32px;
+      padding: 7px;
+      color: #5e575c;
+      background: #ffffff;
+      border: 1px solid #d9d4d7;
+      border-radius: 10px;
+      cursor: default;
+    }
+
+    .close-button svg {
+      width: 16px;
+      height: 16px;
+      display: block;
+    }
+
+    .item-context {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .item-context img {
+      width: 56px;
+      height: 56px;
+      flex: 0 0 56px;
+      display: block;
+      object-fit: cover;
+      background: #ddd8d5;
+      border-radius: 10px;
+    }
+
+    .item-copy {
+      min-width: 0;
+    }
+
+    .item-name {
+      margin: 0;
+      overflow: hidden;
+      color: #272328;
+      font-size: 15px;
+      font-weight: 600;
+      line-height: 1.35;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .item-origin {
+      margin: 3px 0 0;
+      overflow: hidden;
+      color: #756e73;
+      font-size: 13.5px;
+      line-height: 1.35;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    fieldset {
+      min-width: 0;
+      margin: 14px 0 0;
+      padding: 0;
+      border: 0;
+    }
+
+    legend {
+      padding: 0;
+      color: #3d373c;
+      font-size: 13px;
+      font-weight: 600;
+      line-height: 1.35;
+    }
+
+    .destination-list {
+      margin-top: 8px;
+      overflow: hidden;
+      border: 1px solid #d9d4d7;
+      border-radius: 10px;
+    }
+
+    .destination {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      padding: 10px 13px;
+      color: #332e32;
+      font-size: 15px;
+      line-height: 1.35;
+      cursor: default;
+    }
+
+    .destination + .destination {
+      border-top: 1px solid #e3dfe1;
+    }
+
+    .destination:has(input:checked) {
+      color: #971058;
+      background: #fff3f9;
+    }
+
+    .destination input {
+      width: 18px;
+      height: 18px;
+      flex: 0 0 18px;
+      margin: 0;
+      appearance: none;
+      background: #ffffff;
+      border: 1px solid #aaa3a7;
+      border-radius: 50%;
+    }
+
+    .destination input:checked {
+      border: 5px solid #b51268;
+    }
+
+    .destination-name {
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+      font-weight: 600;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .item-count {
+      color: #7b7479;
+      font-size: 13.5px;
+      font-weight: 400;
+      white-space: nowrap;
+    }
+
+    .create-option {
+      border-top: 1px solid #e3dfe1;
+    }
+
+    .create-fields {
+      padding: 0 13px 12px 42px;
+      background: #fff3f9;
+    }
+
+    .create-fields input {
+      width: 100%;
+      padding: 7px 10px;
+      color: #272328;
+      background: #ffffff;
+      border: 1px solid #dcaac7;
+      border-radius: 8px;
+      font-size: 14px;
+      line-height: 1.35;
+    }
+
+    .field-hint {
+      margin: 6px 0 0;
+      color: #8d5a76;
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    .move-button {
+      width: 100%;
+      margin-top: 14px;
+      padding: 9px 16px;
+      color: #ffffff;
+      background: #b51268;
+      border: 1px solid #b51268;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 600;
+      line-height: 1.4;
+      cursor: default;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <main class="move-panel" aria-labelledby="move-title">
+      <button class="close-button" type="button" aria-label="Close">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M6 6L18 18M18 6L6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+      </button>
+
+      <p class="context-label">Vela Market · Team drive</p>
+      <h1 id="move-title">Move document</h1>
+      <p class="instruction">Pick a shared folder. Access follows it.</p>
+
+      <div class="item-context">
+        <img src="https://loremflickr.com/56/56/fashion?lock=2810" width="56" height="56" alt="Autumn lookbook cover">
+        <div class="item-copy">
+          <p class="item-name">Autumn lookbook v4.pdf</p>
+          <p class="item-origin">In Drafts · Edited by Mara T.</p>
+        </div>
+      </div>
+
+      <form>
+        <fieldset>
+          <legend>Move to</legend>
+          <div class="destination-list">
+            <label class="destination">
+              <input type="radio" name="destination">
+              <span class="destination-name">Campaign assets</span>
+              <span class="item-count">6 members</span>
+            </label>
+            <label class="destination">
+              <input type="radio" name="destination">
+              <span class="destination-name">Retail rollout</span>
+              <span class="item-count">4 members</span>
+            </label>
+            <label class="destination">
+              <input type="radio" name="destination">
+              <span class="destination-name">Brand library</span>
+              <span class="item-count">11 members</span>
+            </label>
+            <label class="destination create-option">
+              <input type="radio" name="destination" checked>
+              <span class="destination-name">Create a new folder</span>
+            </label>
+            <div class="create-fields">
+              <input type="text" value="Autumn campaign" aria-label="New folder name">
+              <p class="field-hint">Shared with the Q4 Launch team · 6 members can edit</p>
+            </div>
+          </div>
+        </fieldset>
+
+        <button class="move-button" type="button">Create folder and move</button>
+      </form>
+    </main>
+  </div>
+</body>
+</html>

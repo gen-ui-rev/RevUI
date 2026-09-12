@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Delete Vocabulary Set</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #e7e6e9;
+      color: #29262b;
+      font-family: 'Poppins', system-ui, sans-serif;
+    }
+
+    .screen {
+      position: relative;
+      width: 1024px;
+      height: 768px;
+      background: #f3f2f4;
+      overflow: hidden;
+    }
+
+    /* ---------- app context behind the dialog ---------- */
+    .app {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .app-bar {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      padding: 0 32px;
+      height: 62px;
+      background: #ffffff;
+      border-bottom: 1px solid #e3dfe6;
+    }
+
+    .brand {
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+
+    .brand span {
+      color: #d92f78;
+    }
+
+    .search {
+      flex: 1;
+      max-width: 320px;
+      padding: 8px 14px;
+      background: #f3f2f4;
+      border-radius: 8px;
+      color: #948e97;
+      font-size: 13px;
+    }
+
+    .bar-spacer {
+      flex: 1;
+    }
+
+    .bar-link {
+      color: #6c666f;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #d5d1d9;
+      color: #55505a;
+      font-size: 12px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .app-body {
+      flex: 1;
+      display: flex;
+      min-height: 0;
+    }
+
+    .app-nav {
+      width: 216px;
+      padding: 22px 18px;
+      background: #ffffff;
+      border-right: 1px solid #e3dfe6;
+    }
+
+    .nav-label {
+      margin: 0 0 12px;
+      color: #a09aa4;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .nav-item {
+      padding: 9px 12px;
+      border-radius: 8px;
+      color: #5d5762;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .nav-item.active {
+      background: #f7e8f0;
+      color: #b32763;
+      font-weight: 600;
+    }
+
+    .app-main {
+      flex: 1;
+      padding: 26px 32px;
+      min-width: 0;
+    }
+
+    .main-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 18px;
+    }
+
+    .main-head h2 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .main-head p {
+      margin: 0;
+      color: #86808b;
+      font-size: 12px;
+    }
+
+    .set-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    .set-card {
+      padding: 16px 18px;
+      background: #ffffff;
+      border: 1px solid #e6e2e9;
+      border-radius: 12px;
+    }
+
+    .set-card h3 {
+      margin: 0 0 6px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .set-card p {
+      margin: 0;
+      color: #86808b;
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    .set-card.target {
+      border-color: #eec7dc;
+      box-shadow: inset 0 0 0 1px #f8e4ee;
+    }
+
+    /* ---------- scrim + modal surface ---------- */
+    .scrim {
+      position: absolute;
+      inset: 0;
+      background: rgba(36, 28, 38, 0.52);
+    }
+
+    .dialog {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 520px;
+      background: #ffffff;
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 32px 70px rgba(24, 16, 28, 0.34), 0 0 0 1px rgba(255, 255, 255, 0.6);
+    }
+
+    .dialog-head {
+      padding: 22px 32px 20px;
+      background: #fdf1f6;
+      border-bottom: 1px solid #f1d8e5;
+    }
+
+    .eyebrow {
+      margin: 0 0 8px;
+      color: #d92f78;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      color: #29262b;
+      font-size: 21px;
+      font-weight: 600;
+      line-height: 1.3;
+    }
+
+    .dialog-body {
+      padding: 22px 32px 24px;
+    }
+
+    .item-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 12px 14px;
+      border: 1px solid #e6e2e9;
+      border-radius: 12px;
+      background: #fbfafc;
+    }
+
+    .tile {
+      width: 38px;
+      height: 38px;
+      flex: none;
+      border-radius: 10px;
+      background: #d92f78;
+      color: #ffffff;
+      font-size: 13px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .item-name {
+      margin: 0;
+      color: #29262b;
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 1.4;
+    }
+
+    .item-meta {
+      margin: 3px 0 0;
+      color: #86808b;
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .warning {
+      margin: 18px 0 0;
+      color: #69636b;
+      font-size: 13.5px;
+      font-weight: 400;
+      line-height: 1.7;
+    }
+
+    .removal-list {
+      margin: 14px 0 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 7px;
+    }
+
+    .removal-list li {
+      position: relative;
+      padding-left: 18px;
+      color: #55505a;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .removal-list li::before {
+      content: "";
+      position: absolute;
+      left: 2px;
+      top: 8px;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #e79ac0;
+    }
+
+    .dialog-foot {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 12px;
+      padding: 16px 32px;
+      background: #faf9fb;
+      border-top: 1px solid #e9e5ec;
+    }
+
+    button {
+      padding: 10px 20px;
+      border-radius: 10px;
+      font-family: inherit;
+      font-size: 13.5px;
+      font-weight: 600;
+      line-height: 1.4;
+      cursor: pointer;
+    }
+
+    .delete-button {
+      border: 1px solid #d92f78;
+      background: #d92f78;
+      color: #ffffff;
+    }
+
+    .cancel-button {
+      border: 1px solid #d8d4da;
+      background: #ffffff;
+      color: #4a454c;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <div class="app">
+      <header class="app-bar">
+        <div class="brand">Lex<span>io</span></div>
+        <div class="search">Search sets, terms, tags</div>
+        <div class="bar-spacer"></div>
+        <div class="bar-link">Practice</div>
+        <div class="bar-link">Progress</div>
+        <div class="avatar">MR</div>
+      </header>
+      <div class="app-body">
+        <aside class="app-nav">
+          <p class="nav-label">Library</p>
+          <div class="nav-item active">All sets</div>
+          <div class="nav-item">Spanish</div>
+          <div class="nav-item">Japanese</div>
+          <div class="nav-item">Shared with me</div>
+          <div class="nav-item">Archive</div>
+        </aside>
+        <main class="app-main">
+          <div class="main-head">
+            <h2>All sets</h2>
+            <p>12 sets · 486 terms</p>
+          </div>
+          <div class="set-grid">
+            <article class="set-card target">
+              <h3>Travel Phrases · Spanish A2</h3>
+              <p>42 terms · Reviewed 3 days ago</p>
+            </article>
+            <article class="set-card">
+              <h3>Kitchen Verbs · Spanish A2</h3>
+              <p>36 terms · Reviewed yesterday</p>
+            </article>
+            <article class="set-card">
+              <h3>Office Small Talk · Spanish B1</h3>
+              <p>58 terms · Reviewed today</p>
+            </article>
+            <article class="set-card">
+              <h3>Hiragana Basics · Japanese N5</h3>
+              <p>46 terms · Reviewed 6 days ago</p>
+            </article>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <div class="scrim"></div>
+
+    <section class="dialog" aria-labelledby="delete-title">
+      <div class="dialog-head">
+        <p class="eyebrow">Permanent action</p>
+        <h1 id="delete-title">Delete this vocabulary set?</h1>
+      </div>
+      <div class="dialog-body">
+        <div class="item-row">
+          <div class="tile">ES</div>
+          <div>
+            <p class="item-name">Travel Phrases · Spanish A2</p>
+            <p class="item-meta">42 terms · Created Feb 4 · Reviewed 3 days ago</p>
+          </div>
+        </div>
+        <p class="warning">
+          This will permanently remove all 42 terms and your review progress. The set will not be moved to Archive and cannot be restored.
+        </p>
+        <ul class="removal-list">
+          <li>42 terms with example sentences and audio</li>
+          <li>Review streak, mastery levels and test scores</li>
+          <li>3 shared study links used by your classmates</li>
+        </ul>
+      </div>
+      <div class="dialog-foot">
+        <button class="cancel-button" type="button">Cancel</button>
+        <button class="delete-button" type="button">Delete permanently</button>
+      </div>
+    </section>
+  </div>
+</body>
+</html>

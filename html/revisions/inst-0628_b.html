@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Save Analysis</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #dcd9d5;
+      color: #252321;
+      font-family: 'Inter', system-ui, sans-serif;
+    }
+
+    .screen {
+      width: 390px;
+      height: 560px;
+      padding: 20px 24px;
+      background: #ebe9e6;
+    }
+
+    .save-card {
+      width: 100%;
+      padding: 20px;
+      border-top: 4px solid #948579;
+      background: #ffffff;
+      box-shadow: 0 10px 24px rgba(50, 45, 41, 0.10);
+    }
+
+    .eyebrow {
+      margin: 0 0 6px;
+      color: #77695f;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 22px;
+      line-height: 1.25;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .intro {
+      margin: 6px 0 10px;
+      color: #68625d;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+      padding: 10px;
+      border: 1px solid #ddd8d3;
+      background: #faf9f7;
+    }
+
+    .item-icon {
+      width: 32px;
+      height: 32px;
+      flex: 0 0 32px;
+      display: grid;
+      place-items: center;
+      background: #d9d1ca;
+      color: #62584f;
+    }
+
+    .item-icon svg {
+      width: 17px;
+      height: 17px;
+    }
+
+    .item-copy {
+      min-width: 0;
+    }
+
+    .item-title {
+      margin: 0 0 3px;
+      overflow: hidden;
+      color: #2d2a27;
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 1.35;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .item-meta {
+      margin: 0;
+      color: #77716c;
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    fieldset {
+      min-width: 0;
+      margin: 0;
+      padding: 0;
+      border: 0;
+    }
+
+    legend {
+      width: 100%;
+      margin: 0 0 8px;
+      padding: 0;
+      color: #403c38;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .location {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+      padding: 10px 0;
+      border-bottom: 1px solid #ebe7e3;
+      cursor: pointer;
+    }
+
+    .location:first-of-type {
+      border-top: 1px solid #ebe7e3;
+    }
+
+    .location input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .radio {
+      width: 18px;
+      height: 18px;
+      flex: 0 0 18px;
+      border: 1.5px solid #aaa098;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+    }
+
+    .location input:checked + .radio {
+      border-color: #827267;
+    }
+
+    .location input:checked + .radio::after {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #827267;
+      content: "";
+    }
+
+    .location-name {
+      flex: 1;
+      color: #35312e;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.4;
+    }
+
+    .location-count {
+      color: #827b75;
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .add-list {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+      margin-top: 12px;
+      padding: 10px;
+      height: auto;
+      border: 1px dashed #b6aaa1;
+      background: #f7f4f1;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .add-icon {
+      width: 32px;
+      height: 32px;
+      flex: 0 0 32px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: #d9d1ca;
+      color: #5b5249;
+    }
+
+    .add-icon svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .add-copy {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .add-title {
+      margin: 0 0 3px;
+      color: #35312e;
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 1.35;
+    }
+
+    .add-sub {
+      margin: 0;
+      overflow: hidden;
+      color: #77716c;
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 1.35;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .chevron {
+      width: 14px;
+      height: 14px;
+      flex: 0 0 14px;
+      color: #8d857e;
+    }
+
+    .boundary-note {
+      margin: 8px 0 16px;
+      color: #77716c;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    button {
+      height: 44px;
+      border: 0;
+      border-radius: 0;
+      font: inherit;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .cancel {
+      width: 92px;
+      border: 1px solid #d6d0cb;
+      background: #ffffff;
+      color: #514c47;
+    }
+
+    .save {
+      flex: 1;
+      background: #8b7b70;
+      color: #ffffff;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <main class="save-card" aria-labelledby="save-title">
+      <p class="eyebrow">Save for later</p>
+      <h1 id="save-title">Save this analysis</h1>
+      <p class="intro">Choose where to store this analysis.</p>
+
+      <div class="item">
+        <div class="item-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M5 19V10M12 19V5M19 19v-7" stroke="currentColor" stroke-width="1.8" stroke-linecap="square"/>
+          </svg>
+        </div>
+        <div class="item-copy">
+          <p class="item-title">Municipal bond outlook for 2025</p>
+          <p class="item-meta">Market analysis · Updated May 16, 2025</p>
+        </div>
+      </div>
+
+      <fieldset>
+        <legend>Save to</legend>
+
+        <label class="location">
+          <input type="radio" name="location" checked>
+          <span class="radio" aria-hidden="true"></span>
+          <span class="location-name">Saved analyses</span>
+          <span class="location-count">12 items</span>
+        </label>
+
+        <label class="location">
+          <input type="radio" name="location">
+          <span class="radio" aria-hidden="true"></span>
+          <span class="location-name">Tax planning</span>
+          <span class="location-count">6 items</span>
+        </label>
+
+        <label class="location">
+          <input type="radio" name="location">
+          <span class="radio" aria-hidden="true"></span>
+          <span class="location-name">Income portfolio</span>
+          <span class="location-count">9 items</span>
+        </label>
+      </fieldset>
+
+      <button class="add-list" type="button">
+        <span class="add-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="square"/>
+          </svg>
+        </span>
+        <span class="add-copy">
+          <span class="add-title">Create a new list</span>
+          <span class="add-sub">Name it for a client or a strategy</span>
+        </span>
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M9 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="square"/>
+        </svg>
+      </button>
+
+      <p class="boundary-note">Saving adds to a list, not to favorites.</p>
+
+      <div class="actions">
+        <button class="cancel" type="button">Cancel</button>
+        <button class="save" type="button">Save analysis</button>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

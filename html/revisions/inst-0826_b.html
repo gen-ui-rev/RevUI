@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Delete Account — Threadwell</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #d8d7d0;
+      color: #24251f;
+      font-family: 'Source Serif 4', Georgia, serif;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #fbfaf5;
+      border: 1px solid #c9c8c0;
+    }
+
+    .topbar {
+      flex: 0 0 58px;
+      display: grid;
+      grid-template-columns: 48px 1fr 48px;
+      align-items: center;
+      padding: 0 8px;
+      border-bottom: 1px solid #deddd4;
+    }
+
+    .icon-button {
+      width: 40px;
+      height: 40px;
+      padding: 0;
+      display: grid;
+      place-items: center;
+      border: 0;
+      background: transparent;
+      color: #34362d;
+    }
+
+    .topbar-title {
+      margin: 0;
+      text-align: center;
+      font-size: 16px;
+      line-height: 1.25;
+      font-weight: 600;
+    }
+
+    .brand-mark {
+      width: 24px;
+      height: 24px;
+      margin-left: auto;
+      display: grid;
+      place-items: center;
+      border: 1px solid #68733f;
+      border-radius: 4px;
+      color: #68733f;
+    }
+
+    .account-tabs {
+      flex: 0 0 44px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      padding: 0 24px;
+      border-bottom: 1px solid #deddd4;
+    }
+
+    .account-tab {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #68695f;
+      font-size: 14px;
+      line-height: 1;
+      text-decoration: none;
+    }
+
+    .account-tab.active {
+      color: #4d572d;
+      font-weight: 600;
+    }
+
+    .account-tab.active::after {
+      content: "";
+      position: absolute;
+      right: 20px;
+      bottom: -1px;
+      left: 20px;
+      height: 3px;
+      background: #68733f;
+    }
+
+    main {
+      flex: 1 1 auto;
+      min-height: 0;
+      padding: 15px 24px 11px;
+    }
+
+    .eyebrow {
+      margin: 0 0 3px;
+      color: #68733f;
+      font-size: 11px;
+      line-height: 1.3;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 29px;
+      line-height: 1.12;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+
+    .intro {
+      margin: 5px 0 0;
+      color: #5d5e55;
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
+    .account-card {
+      margin-top: 11px;
+      padding: 10px 11px;
+      border: 1px solid #d6d5ca;
+      border-radius: 5px;
+      background: #f5f4ec;
+    }
+
+    .identity {
+      display: grid;
+      grid-template-columns: 36px minmax(0, 1fr);
+      gap: 10px;
+      align-items: center;
+    }
+
+    .monogram {
+      width: 36px;
+      height: 36px;
+      display: grid;
+      place-items: center;
+      border-radius: 4px;
+      background: #dfe2ce;
+      color: #4d572d;
+      font-size: 15px;
+      line-height: 1;
+      font-weight: 600;
+    }
+
+    .account-name,
+    .account-email {
+      margin: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .account-name {
+      color: #292a24;
+      font-size: 14px;
+      line-height: 1.3;
+      font-weight: 600;
+    }
+
+    .account-email {
+      margin-top: 1px;
+      color: #707168;
+      font-size: 12px;
+      line-height: 1.3;
+    }
+
+    .workspace-line {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin-top: 8px;
+      min-width: 0;
+    }
+
+    .workspace-label {
+      flex: 0 0 auto;
+      color: #63655a;
+      font-size: 11px;
+      line-height: 1;
+      font-weight: 600;
+    }
+
+    .workspace-chip {
+      min-width: 0;
+      padding: 3px 6px;
+      border: 1px solid #c8cbb5;
+      border-radius: 10px;
+      color: #4d572d;
+      background: #fbfaf5;
+      font-size: 10px;
+      line-height: 1;
+      white-space: nowrap;
+    }
+
+    section {
+      margin-top: 12px;
+    }
+
+    h2 {
+      margin: 0;
+      color: #2b2c25;
+      font-size: 18px;
+      line-height: 1.25;
+      font-weight: 600;
+    }
+
+    .timeline {
+      margin-top: 6px;
+      padding: 0;
+      list-style: none;
+    }
+
+    .timeline-step {
+      position: relative;
+      display: grid;
+      grid-template-columns: 25px minmax(0, 1fr);
+      gap: 9px;
+      padding-bottom: 7px;
+    }
+
+    .timeline-step:last-child {
+      padding-bottom: 0;
+    }
+
+    .timeline-step:not(:last-child)::after {
+      content: "";
+      position: absolute;
+      top: 21px;
+      bottom: 0;
+      left: 10px;
+      width: 1px;
+      background: #bfc2ab;
+    }
+
+    .timeline-marker {
+      position: relative;
+      z-index: 1;
+      width: 21px;
+      height: 21px;
+      display: grid;
+      place-items: center;
+      border-radius: 4px;
+      background: #68733f;
+      color: #ffffff;
+      font-size: 11px;
+      line-height: 1;
+      font-weight: 700;
+    }
+
+    .timeline-text {
+      padding-top: 1px;
+      min-width: 0;
+    }
+
+    .timeline-title {
+      margin: 0;
+      color: #34362d;
+      font-size: 13px;
+      line-height: 1.2;
+      font-weight: 600;
+    }
+
+    .timeline-detail {
+      margin: 1px 0 0;
+      color: #6b6c63;
+      font-size: 11px;
+      line-height: 1.3;
+    }
+
+    .confirmation {
+      padding-top: 11px;
+      border-top: 1px solid #bfc2ab;
+    }
+
+    .confirmation-copy {
+      margin: 3px 0 7px;
+      color: #66675e;
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    .field-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 112px;
+      gap: 10px;
+      align-items: end;
+    }
+
+    .field-label {
+      display: block;
+      color: #36372f;
+      font-size: 12px;
+      line-height: 1.3;
+      font-weight: 600;
+    }
+
+    .field-hint {
+      display: block;
+      margin-top: 2px;
+      color: #77786f;
+      font-size: 10px;
+      line-height: 1.25;
+      font-weight: 400;
+    }
+
+    .confirmation-input {
+      width: 112px;
+      height: 38px;
+      padding: 7px 10px;
+      border: 1px solid #93977a;
+      border-radius: 4px;
+      outline: none;
+      background: #ffffff;
+      color: #26271f;
+      text-align: center;
+      font-size: 13px;
+      line-height: 1;
+      font-weight: 600;
+    }
+
+    .consent {
+      display: grid;
+      grid-template-columns: 18px minmax(0, 1fr);
+      gap: 8px;
+      align-items: start;
+      margin-top: 8px;
+      color: #4f5048;
+      font-size: 11px;
+      line-height: 1.3;
+    }
+
+    .consent input {
+      width: 16px;
+      height: 16px;
+      margin: 0;
+      accent-color: #68733f;
+    }
+
+    .action-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 108px;
+      gap: 9px;
+      margin-top: 9px;
+    }
+
+    .delete-button,
+    .deactivate-button {
+      height: 40px;
+      border-radius: 4px;
+      font-size: 13px;
+      line-height: 1;
+      font-weight: 600;
+    }
+
+    .delete-button {
+      border: 1px solid #596335;
+      background: #68733f;
+      color: #ffffff;
+    }
+
+    .deactivate-button {
+      border: 1px solid #a8aa99;
+      background: transparent;
+      color: #4d572d;
+    }
+
+    .tabbar {
+      flex: 0 0 68px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border-top: 1px solid #d5d4cb;
+      background: #f7f6f0;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      color: #77786f;
+      font-size: 12px;
+      line-height: 1;
+      text-decoration: none;
+    }
+
+    .nav-item.active {
+      color: #566131;
+      font-weight: 600;
+    }
+
+    .nav-item svg {
+      width: 21px;
+      height: 21px;
+      stroke: currentColor;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <button class="icon-button" type="button" aria-label="Go back">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M15 5L8 12L15 19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <p class="topbar-title">Account controls</p>
+      <div class="brand-mark" aria-label="Threadwell">
+        <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M3 4H13M3 8H10M3 12H12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </div>
+    </header>
+
+    <nav class="account-tabs" aria-label="Account control options">
+      <a class="account-tab" href="#">Deactivate</a>
+      <a class="account-tab active" href="#" aria-current="page">Delete</a>
+    </nav>
+
+    <main>
+      <p class="eyebrow">Account-level action</p>
+      <h1>Delete your account</h1>
+      <p class="intro">Review the affected account, workspaces, and deletion sequence.</p>
+
+      <div class="account-card" aria-label="Account and shared workspaces affected">
+        <div class="identity">
+          <div class="monogram" aria-hidden="true">AM</div>
+          <div>
+            <p class="account-name">Avery Mercer</p>
+            <p class="account-email">avery.mercer@example.com</p>
+          </div>
+        </div>
+        <div class="workspace-line" aria-label="Affected shared workspaces">
+          <span class="workspace-label">Workspaces</span>
+          <span class="workspace-chip">Northstar</span>
+          <span class="workspace-chip">Editorial</span>
+          <span class="workspace-chip">Client Ops</span>
+        </div>
+      </div>
+
+      <section aria-labelledby="impact-title-b">
+        <h2 id="impact-title-b">What happens next</h2>
+        <ol class="timeline">
+          <li class="timeline-step">
+            <span class="timeline-marker">1</span>
+            <div class="timeline-text">
+              <p class="timeline-title">Shared access is removed</p>
+              <p class="timeline-detail">You are removed from all 3 workspaces immediately.</p>
+            </div>
+          </li>
+          <li class="timeline-step">
+            <span class="timeline-marker">2</span>
+            <div class="timeline-text">
+              <p class="timeline-title">Private content is erased</p>
+              <p class="timeline-detail">142 notes and 18 files are queued for deletion.</p>
+            </div>
+          </li>
+          <li class="timeline-step">
+            <span class="timeline-marker">3</span>
+            <div class="timeline-text">
+              <p class="timeline-title">Recovery remains available</p>
+              <p class="timeline-detail">Sign in within 14 days to cancel the request.</p>
+            </div>
+          </li>
+        </ol>
+      </section>
+
+      <section class="confirmation" aria-labelledby="confirm-title-b">
+        <h2 id="confirm-title-b">Confirm deletion</h2>
+        <p class="confirmation-copy">The request will be scheduled for April 28, 2026.</p>
+
+        <div class="field-row">
+          <label class="field-label" for="delete-confirmation-b">
+            Confirmation word
+            <span class="field-hint">Enter DELETE to continue.</span>
+          </label>
+          <input class="confirmation-input" id="delete-confirmation-b" type="text" value="DELETE" readonly>
+        </div>
+
+        <label class="consent">
+          <input type="checkbox" checked>
+          <span>I understand that private content cannot be restored after 14 days.</span>
+        </label>
+
+        <div class="action-row">
+          <button class="delete-button" type="button">Delete account</button>
+          <button class="deactivate-button" type="button">Deactivate</button>
+        </div>
+      </section>
+    </main>
+
+    <nav class="tabbar" aria-label="Primary navigation">
+      <a class="nav-item" href="#">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M5 4.5H19V19.5H5V4.5Z" stroke-width="1.6"/>
+          <path d="M8 2.8V6.2M16 2.8V6.2M5 9H19" stroke-width="1.6" stroke-linecap="round"/>
+        </svg>
+        <span>Today</span>
+      </a>
+      <a class="nav-item" href="#">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M5 4H19V20H5V4Z" stroke-width="1.6"/>
+          <path d="M8 8H16M8 12H16M8 16H13" stroke-width="1.6" stroke-linecap="round"/>
+        </svg>
+        <span>Notes</span>
+      </a>
+      <a class="nav-item" href="#">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M6 4H18V20H6V4Z" stroke-width="1.6"/>
+          <path d="M9 2.8V6M15 2.8V6M9 10H15M9 14H15" stroke-width="1.6" stroke-linecap="round"/>
+        </svg>
+        <span>Schedule</span>
+      </a>
+      <a class="nav-item active" href="#" aria-current="page">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="12" cy="8" r="3.2" stroke-width="1.6"/>
+          <path d="M5.5 20C6 16.6 8.2 14.5 12 14.5C15.8 14.5 18 16.6 18.5 20" stroke-width="1.6" stroke-linecap="round"/>
+        </svg>
+        <span>Account</span>
+      </a>
+    </nav>
+  </div>
+</body>
+</html>

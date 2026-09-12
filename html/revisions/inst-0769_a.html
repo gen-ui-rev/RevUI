@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit Course — Amberleaf Learning</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #d8d6d1;
+      color: #24221f;
+      font-family: 'Roboto', system-ui, sans-serif;
+    }
+
+    button,
+    input,
+    textarea,
+    select {
+      font: inherit;
+    }
+
+    button {
+      color: inherit;
+      cursor: pointer;
+    }
+
+    .screen {
+      width: 1024px;
+      height: 768px;
+      display: grid;
+      grid-template-columns: 216px minmax(0, 1fr);
+      background: #f7f5f0;
+      border: 1px solid #c8c4bc;
+      box-shadow: 0 12px 34px rgba(46, 42, 35, 0.12);
+    }
+
+    .sidebar {
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      padding: 22px 14px 18px;
+      background: #fffdf9;
+      border-right: 1px solid #d8d3ca;
+    }
+
+    .brand {
+      padding: 0 10px 22px;
+      border-bottom: 1px solid #ded9cf;
+    }
+
+    .brand-mark {
+      width: 34px;
+      height: 34px;
+      margin-bottom: 10px;
+      display: grid;
+      place-items: center;
+      background: #e8a526;
+      color: #39270a;
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .brand strong {
+      display: block;
+      font-size: 16px;
+      line-height: 21px;
+    }
+
+    .brand span {
+      display: block;
+      margin-top: 2px;
+      color: #746f66;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .side-nav {
+      margin-top: 18px;
+      display: grid;
+      gap: 5px;
+    }
+
+    .side-link {
+      width: 100%;
+      padding: 10px 11px;
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      border: 1px solid transparent;
+      background: transparent;
+      color: #5f5a52;
+      text-align: left;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 500;
+    }
+
+    .side-link svg {
+      width: 20px;
+      height: 20px;
+      flex: 0 0 auto;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.7;
+      stroke-linecap: square;
+      stroke-linejoin: miter;
+    }
+
+    .side-link.active {
+      border-color: #d3b77d;
+      background: #fff4dc;
+      color: #8c5900;
+    }
+
+    .profile-link {
+      margin-top: auto;
+      border-top: 1px solid #ded9cf;
+      padding-top: 14px;
+    }
+
+    .workspace {
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .topbar {
+      padding: 13px 24px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: #fffdf9;
+      border-bottom: 1px solid #d8d3ca;
+    }
+
+    .back-button,
+    .more-button {
+      width: 38px;
+      height: 38px;
+      padding: 0;
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      border: 1px solid #cbc6bc;
+      background: #fffdf9;
+    }
+
+    .back-button svg,
+    .more-button svg {
+      width: 20px;
+      height: 20px;
+      fill: none;
+      stroke: #292722;
+      stroke-width: 1.8;
+      stroke-linecap: square;
+      stroke-linejoin: miter;
+    }
+
+    .title-block {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .title-block h1 {
+      margin: 0;
+      font-size: 21px;
+      line-height: 27px;
+      font-weight: 700;
+    }
+
+    .title-block p {
+      margin: 1px 0 0;
+      color: #746f66;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .header-save {
+      padding: 9px 18px;
+      border: 1px solid #b97200;
+      background: #e8a526;
+      color: #2d210d;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 700;
+    }
+
+    main {
+      min-height: 0;
+      padding: 20px 24px 22px;
+    }
+
+    form {
+      margin: 0;
+    }
+
+    .course-context {
+      margin-bottom: 16px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .course-context h2 {
+      margin: 0;
+      font-size: 18px;
+      line-height: 24px;
+      font-weight: 700;
+    }
+
+    .eyebrow {
+      margin: 0 0 3px;
+      color: #a86500;
+      font-size: 12px;
+      line-height: 15px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .context-line {
+      margin: 0;
+      color: #6b665e;
+      font-size: 13px;
+      line-height: 18px;
+      white-space: nowrap;
+    }
+
+    .editor-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.18fr) minmax(300px, 0.82fr);
+      gap: 18px;
+      align-items: start;
+    }
+
+    .panel {
+      min-width: 0;
+      padding: 18px;
+      background: #fffdf9;
+      border: 1px solid #d8d3ca;
+    }
+
+    .panel-heading {
+      margin: 0 0 15px;
+      color: #4a463f;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .cover-row {
+      display: grid;
+      grid-template-columns: 104px minmax(0, 1fr);
+      column-gap: 14px;
+      align-items: center;
+      padding-bottom: 16px;
+      margin-bottom: 15px;
+      border-bottom: 1px solid #ded9cf;
+    }
+
+    .cover-row img {
+      width: 104px;
+      height: 72px;
+      display: block;
+      object-fit: cover;
+      background: #d6d0c4;
+    }
+
+    .cover-details {
+      min-width: 0;
+    }
+
+    .cover-details strong {
+      display: block;
+      margin-bottom: 3px;
+      font-size: 14px;
+      line-height: 18px;
+      font-weight: 500;
+    }
+
+    .cover-details p {
+      margin: 0 0 7px;
+      color: #746f66;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .replace-button {
+      padding: 0 0 2px;
+      border: 0;
+      border-bottom: 1px solid #bd7800;
+      background: transparent;
+      color: #9b6200;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 500;
+    }
+
+    .field-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .field {
+      min-width: 0;
+      margin-bottom: 14px;
+    }
+
+    .field.full {
+      grid-column: 1 / -1;
+    }
+
+    .field label {
+      display: block;
+      margin-bottom: 5px;
+      color: #625d55;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 500;
+    }
+
+    .field input,
+    .field textarea,
+    .field select {
+      width: 100%;
+      margin: 0;
+      padding: 9px 10px;
+      border: 1px solid #c9c4ba;
+      border-radius: 0;
+      outline: 0;
+      background: #ffffff;
+      color: #24221f;
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .field textarea {
+      display: block;
+      resize: none;
+    }
+
+    .field select {
+      appearance: none;
+      padding-right: 30px;
+      background-image:
+        linear-gradient(45deg, transparent 50%, #5d584f 50%),
+        linear-gradient(135deg, #5d584f 50%, transparent 50%);
+      background-position:
+        calc(100% - 15px) 16px,
+        calc(100% - 10px) 16px;
+      background-size: 5px 5px, 5px 5px;
+      background-repeat: no-repeat;
+    }
+
+    .setting-list {
+      border-top: 1px solid #ded9cf;
+    }
+
+    .setting-row {
+      padding: 14px 0;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 16px;
+      border-bottom: 1px solid #ded9cf;
+    }
+
+    .setting-copy {
+      min-width: 0;
+    }
+
+    .setting-copy strong {
+      display: block;
+      font-size: 14px;
+      line-height: 19px;
+      font-weight: 500;
+    }
+
+    .setting-copy span {
+      display: block;
+      margin-top: 2px;
+      color: #746f66;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .switch {
+      position: relative;
+      width: 40px;
+      height: 23px;
+      display: block;
+      border: 1px solid #9d978d;
+      background: #ebe7df;
+    }
+
+    .switch.checked {
+      border-color: #c67d00;
+      background: #e8a526;
+    }
+
+    .switch::after {
+      content: "";
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 15px;
+      height: 15px;
+      background: #ffffff;
+      border: 1px solid #817b72;
+    }
+
+    .switch.checked::after {
+      left: 20px;
+      border-color: #8d5900;
+    }
+
+    .switch input {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      margin: 0;
+      opacity: 0;
+    }
+
+    .access-note {
+      margin: 15px 0 0;
+      padding: 11px 12px;
+      background: #f5f1e8;
+      color: #625d55;
+      font-size: 12px;
+      line-height: 17px;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark">A</div>
+        <strong>Amberleaf Learning</strong>
+        <span>Instructor workspace</span>
+      </div>
+
+      <nav class="side-nav" aria-label="Primary navigation">
+        <button class="side-link" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 5.5h6.5c1 0 1.5.6 1.5 1.5v12c0-.9-.6-1.5-1.5-1.5H4z"></path>
+            <path d="M20 5.5h-6.5c-1 0-1.5.6-1.5 1.5v12c0-.9.6-1.5 1.5-1.5H20z"></path>
+          </svg>
+          <span>Learn</span>
+        </button>
+
+        <button class="side-link" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M5 4h14v16H5z"></path>
+            <path d="M8 8h8M8 12h8M8 16h5"></path>
+          </svg>
+          <span>Library</span>
+        </button>
+
+        <button class="side-link active" type="button" aria-current="page">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="m3 8.5 9-4 9 4-9 4z"></path>
+            <path d="M6.5 10.2v5.3c2.8 2.3 8.2 2.3 11 0v-5.3"></path>
+            <path d="M21 8.5v6"></path>
+          </svg>
+          <span>Teaching</span>
+        </button>
+      </nav>
+
+      <div class="profile-link">
+        <button class="side-link" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="8" r="3.5"></circle>
+            <path d="M5 20c.6-4 3-6 7-6s6.4 2 7 6"></path>
+          </svg>
+          <span>Profile</span>
+        </button>
+      </div>
+    </aside>
+
+    <div class="workspace">
+      <header class="topbar">
+        <button class="back-button" type="button" aria-label="Go back">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M15.5 4.5 8 12l7.5 7.5"></path>
+          </svg>
+        </button>
+
+        <div class="title-block">
+          <h1>Edit course</h1>
+          <p>Practical English for Work</p>
+        </div>
+
+        <button class="header-save" type="submit" form="course-form">Save changes</button>
+
+        <button class="more-button" type="button" aria-label="More options">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="5" cy="12" r="1.2" fill="#292722" stroke="none"></circle>
+            <circle cx="12" cy="12" r="1.2" fill="#292722" stroke="none"></circle>
+            <circle cx="19" cy="12" r="1.2" fill="#292722" stroke="none"></circle>
+          </svg>
+        </button>
+      </header>
+
+      <main>
+        <form id="course-form">
+          <section class="course-context" aria-label="Course status">
+            <div>
+              <p class="eyebrow">Published course</p>
+              <h2>Course details and learner access</h2>
+            </div>
+            <p class="context-line">Editing existing details · Last updated May 18, 2025</p>
+          </section>
+
+          <div class="editor-grid">
+            <section class="panel" aria-labelledby="details-heading-a">
+              <h3 class="panel-heading" id="details-heading-a">Course details</h3>
+
+              <div class="cover-row">
+                <img src="https://loremflickr.com/104/72/study?lock=10250" width="104" height="72" alt="Open study notebook and learning materials">
+                <div class="cover-details">
+                  <strong>Course cover</strong>
+                  <p>Shown in search and learner libraries.</p>
+                  <button class="replace-button" type="button">Replace cover</button>
+                </div>
+              </div>
+
+              <div class="field-grid">
+                <div class="field full">
+                  <label for="course-title-a">Course title</label>
+                  <input id="course-title-a" type="text" value="Practical English for Work">
+                </div>
+
+                <div class="field">
+                  <label for="language-a">Language</label>
+                  <select id="language-a">
+                    <option selected>English</option>
+                    <option>French</option>
+                    <option>German</option>
+                  </select>
+                </div>
+
+                <div class="field">
+                  <label for="level-a">Level</label>
+                  <select id="level-a">
+                    <option>Beginner</option>
+                    <option selected>Intermediate</option>
+                    <option>Advanced</option>
+                  </select>
+                </div>
+
+                <div class="field full">
+                  <label for="description-a">Course description</label>
+                  <textarea id="description-a" rows="2">Build clear workplace speaking skills through short lessons, guided practice, and realistic conversations.</textarea>
+                </div>
+
+                <div class="field full">
+                  <label for="instructor-a">Lead instructor</label>
+                  <input id="instructor-a" type="text" value="Riley Bennett">
+                </div>
+              </div>
+            </section>
+
+            <section class="panel" aria-labelledby="access-heading-a">
+              <h3 class="panel-heading" id="access-heading-a">Learner access</h3>
+
+              <div class="setting-list">
+                <label class="setting-row">
+                  <span class="setting-copy">
+                    <strong>Course published</strong>
+                    <span>Available to enrolled learners</span>
+                  </span>
+                  <span class="switch checked" aria-hidden="true">
+                    <input type="checkbox" checked>
+                  </span>
+                </label>
+
+                <label class="setting-row">
+                  <span class="setting-copy">
+                    <strong>Allow lesson downloads</strong>
+                    <span>Learners can study offline</span>
+                  </span>
+                  <span class="switch checked" aria-hidden="true">
+                    <input type="checkbox" checked>
+                  </span>
+                </label>
+
+                <label class="setting-row">
+                  <span class="setting-copy">
+                    <strong>Completion certificate</strong>
+                    <span>Issued after all 12 lessons</span>
+                  </span>
+                  <span class="switch" aria-hidden="true">
+                    <input type="checkbox">
+                  </span>
+                </label>
+              </div>
+
+              <p class="access-note">Publishing changes updates the course for currently enrolled learners.</p>
+            </section>
+          </div>
+        </form>
+      </main>
+    </div>
+  </div>
+</body>
+</html>

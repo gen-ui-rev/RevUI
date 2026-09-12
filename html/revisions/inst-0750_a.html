@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Morrow Audio Player</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #dfe3e8;
+      color: #152033;
+      font-family: 'Source Sans 3', system-ui, sans-serif;
+    }
+
+    button {
+      margin: 0;
+      padding: 0;
+      border: 0;
+      color: inherit;
+      font: inherit;
+      background: transparent;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #ffffff;
+    }
+
+    .topbar {
+      height: 60px;
+      flex: 0 0 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 18px;
+      border-bottom: 1px solid #e0e5ec;
+    }
+
+    .topbar-title {
+      margin: 0;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 19px;
+      font-weight: 600;
+      line-height: 1;
+    }
+
+    .icon-button {
+      width: 36px;
+      height: 36px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+    }
+
+    .icon-button svg,
+    .control-button svg,
+    .tab-item svg {
+      display: block;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .main {
+      flex: 1;
+      padding: 14px 20px 10px;
+    }
+
+    /* --- cover: dark ink panel with gold rule and level bars --- */
+    .cover {
+      width: 232px;
+      height: 232px;
+      margin: 0 auto;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      border-radius: 18px;
+      background: radial-gradient(125% 105% at 18% 0%, #263b62 0%, #14243f 55%, #0b1526 100%);
+      color: #e8eefb;
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16), 0 14px 26px rgba(16, 32, 58, 0.3);
+    }
+
+    .cover-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: #ecc489;
+    }
+
+    .cover-title {
+      margin: 0;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 29px;
+      font-weight: 700;
+      line-height: 1.1;
+      color: #ffffff;
+    }
+
+    .cover-footer {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      padding-top: 10px;
+      border-top: 1px solid rgba(255, 255, 255, 0.24);
+      color: #b7c6df;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .cover-wave {
+      display: flex;
+      align-items: flex-end;
+      gap: 3px;
+      height: 16px;
+    }
+
+    .cover-wave i {
+      display: block;
+      width: 3px;
+      border-radius: 2px;
+      background: #ecc489;
+    }
+
+    .track-meta {
+      margin-top: 12px;
+      text-align: center;
+    }
+
+    .now-playing {
+      margin: 0 0 2px;
+      color: #2767c5;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .track-title {
+      margin: 0;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 25px;
+      font-weight: 700;
+      line-height: 1.15;
+      color: #121b2a;
+    }
+
+    .track-byline {
+      margin: 3px 0 0;
+      color: #667184;
+      font-size: 14px;
+      line-height: 1.3;
+    }
+
+    .progress-area {
+      margin-top: 12px;
+    }
+
+    .progress-track {
+      position: relative;
+      width: 100%;
+      height: 4px;
+      border-radius: 2px;
+      background: #dfe5ed;
+    }
+
+    .progress-fill {
+      width: 55%;
+      height: 4px;
+      border-radius: 2px;
+      background: #2468cf;
+    }
+
+    .progress-thumb {
+      position: absolute;
+      top: 50%;
+      left: 55%;
+      width: 12px;
+      height: 12px;
+      border: 2px solid #2468cf;
+      border-radius: 50%;
+      background: #ffffff;
+      transform: translate(-50%, -50%);
+    }
+
+    .time-row {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 6px;
+      color: #6c7583;
+      font-size: 12px;
+      line-height: 1.3;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .controls {
+      height: 56px;
+      margin-top: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+    }
+
+    .control-button {
+      width: 40px;
+      height: 40px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      color: #26344a;
+    }
+
+    .control-button.muted {
+      color: #7a8493;
+    }
+
+    .control-button.primary {
+      width: 56px;
+      height: 56px;
+      color: #ffffff;
+      background: #2468cf;
+    }
+
+    .skip-mark {
+      position: relative;
+      width: 32px;
+      height: 32px;
+      display: grid;
+      place-items: center;
+    }
+
+    .skip-mark svg {
+      position: absolute;
+      inset: 0;
+    }
+
+    .skip-number {
+      position: relative;
+      top: 1px;
+      font-size: 11px;
+      font-weight: 600;
+      line-height: 1;
+    }
+
+    .player-options {
+      height: 40px;
+      margin-top: 10px;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .option-button {
+      min-width: 108px;
+      height: 40px;
+      padding: 0 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      border: 1px solid #dce2ea;
+      border-radius: 14px;
+      color: #445064;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .option-button svg {
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .up-next {
+      margin-top: 14px;
+    }
+
+    .queue-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+    }
+
+    .section-heading {
+      margin: 0;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 18px;
+      font-weight: 600;
+      line-height: 22px;
+    }
+
+    .queue-count {
+      color: #7b8595;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    /* --- featured next episode --- */
+    .next-card {
+      margin-top: 6px;
+      padding: 10px 12px;
+      display: grid;
+      grid-template-columns: 34px minmax(0, 1fr) 18px;
+      align-items: center;
+      column-gap: 10px;
+      border: 1px solid #cfdffb;
+      border-radius: 12px;
+      background: #eef4ff;
+    }
+
+    .next-badge {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      border-radius: 10px;
+      background: #2468cf;
+      color: #ffffff;
+      font-size: 13px;
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .next-go {
+      display: block;
+      fill: none;
+      stroke: #2468cf;
+      stroke-width: 1.9;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .later-head {
+      margin-top: 12px;
+      color: #7b8595;
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 15px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .queue-list {
+      margin-top: 2px;
+      border-top: 1px solid #e2e6ec;
+    }
+
+    .queue-row {
+      height: 44px;
+      display: grid;
+      grid-template-columns: 26px minmax(0, 1fr) auto;
+      align-items: center;
+      column-gap: 8px;
+      border-bottom: 1px solid #e2e6ec;
+    }
+
+    .queue-number {
+      color: #8a93a1;
+      font-size: 13px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .queue-copy {
+      min-width: 0;
+    }
+
+    .queue-title,
+    .queue-subtitle {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .queue-title {
+      color: #1a2638;
+      font-size: 15px;
+      font-weight: 600;
+      line-height: 1.25;
+    }
+
+    .queue-subtitle {
+      margin-top: 2px;
+      color: #737d8c;
+      font-size: 12px;
+      line-height: 1.25;
+    }
+
+    .queue-duration {
+      color: #657083;
+      font-size: 13px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .tabbar {
+      height: 72px;
+      flex: 0 0 72px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border-top: 1px solid #dfe4eb;
+      background: #ffffff;
+    }
+
+    .tab-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      color: #727c8b;
+      font-size: 12px;
+      line-height: 1;
+    }
+
+    .tab-item.active {
+      color: #2468cf;
+      font-weight: 600;
+    }
+
+    .tab-item svg {
+      width: 22px;
+      height: 22px;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <button class="icon-button" aria-label="Go back">
+        <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M15 5l-7 7 7 7"></path>
+        </svg>
+      </button>
+      <h1 class="topbar-title">Morrow Audio</h1>
+      <button class="icon-button" aria-label="More options">
+        <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="5" cy="12" r="1"></circle>
+          <circle cx="12" cy="12" r="1"></circle>
+          <circle cx="19" cy="12" r="1"></circle>
+        </svg>
+      </button>
+    </header>
+
+    <main class="main">
+      <section aria-label="Audio player">
+        <div class="cover" aria-label="Field Notes audio cover">
+          <div class="cover-label">Morrow Market Presents</div>
+          <h2 class="cover-title">Field Notes on Everyday Goods</h2>
+          <div class="cover-footer">
+            <span>Season Three · Ep 08</span>
+            <span class="cover-wave" aria-hidden="true">
+              <i style="height:6px"></i>
+              <i style="height:11px"></i>
+              <i style="height:16px"></i>
+              <i style="height:9px"></i>
+              <i style="height:14px"></i>
+              <i style="height:7px"></i>
+              <i style="height:12px"></i>
+            </span>
+          </div>
+        </div>
+
+        <div class="track-meta">
+          <p class="now-playing">Now Playing</p>
+          <h2 class="track-title">How Linen Gets Priced</h2>
+          <p class="track-byline">Hosted by Nora Vale · Released Nov 14, 2024</p>
+        </div>
+
+        <div class="progress-area" aria-label="18 minutes 42 seconds of 34 minutes 10 seconds">
+          <div class="progress-track">
+            <div class="progress-fill"></div>
+            <div class="progress-thumb"></div>
+          </div>
+          <div class="time-row">
+            <span>18:42</span>
+            <span>34:10</span>
+          </div>
+        </div>
+
+        <div class="controls" aria-label="Playback controls">
+          <button class="control-button muted" aria-label="Shuffle">
+            <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 7h3c4.5 0 5.5 10 10 10h3"></path>
+              <path d="M17 14l3 3-3 3"></path>
+              <path d="M4 17h3c1.6 0 2.7-1.3 3.7-3"></path>
+              <path d="M14 7c.9-1.6 1.8-3 3-3h3"></path>
+              <path d="M17 1l3 3-3 3"></path>
+            </svg>
+          </button>
+
+          <button class="control-button" aria-label="Go back 15 seconds">
+            <span class="skip-mark">
+              <svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true">
+                <path d="M10 8H5V3"></path>
+                <path d="M6 8a11 11 0 1 1-1 12"></path>
+              </svg>
+              <span class="skip-number">15</span>
+            </span>
+          </button>
+
+          <button class="control-button primary" aria-label="Pause">
+            <svg width="25" height="25" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M9 6v12"></path>
+              <path d="M15 6v12"></path>
+            </svg>
+          </button>
+
+          <button class="control-button" aria-label="Go forward 30 seconds">
+            <span class="skip-mark">
+              <svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true">
+                <path d="M22 8h5V3"></path>
+                <path d="M26 8a11 11 0 1 0 1 12"></path>
+              </svg>
+              <span class="skip-number">30</span>
+            </span>
+          </button>
+
+          <button class="control-button muted" aria-label="Repeat">
+            <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M17 3l3 3-3 3"></path>
+              <path d="M4 11V9a3 3 0 0 1 3-3h13"></path>
+              <path d="M7 21l-3-3 3-3"></path>
+              <path d="M20 13v2a3 3 0 0 1-3 3H4"></path>
+            </svg>
+          </button>
+        </div>
+
+        <div class="player-options">
+          <button class="option-button" aria-label="Playback speed 1 times">
+            <span>1× Speed</span>
+          </button>
+          <button class="option-button" aria-label="Set sleep timer">
+            <svg width="17" height="17" viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="12" cy="12" r="8"></circle>
+              <path d="M12 8v5l3 2"></path>
+            </svg>
+            <span>Sleep Timer</span>
+          </button>
+        </div>
+      </section>
+
+      <section class="up-next" aria-labelledby="up-next-title">
+        <div class="queue-head">
+          <h2 class="section-heading" id="up-next-title">Playing Next</h2>
+          <span class="queue-count">Auto-play on</span>
+        </div>
+
+        <div class="next-card">
+          <span class="next-badge">09</span>
+          <div class="queue-copy">
+            <div class="queue-title">The Cost of a Good Button</div>
+            <div class="queue-subtitle">29:24 · Released Nov 21, 2024</div>
+          </div>
+          <svg class="next-go" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M9 5l7 7-7 7"></path>
+          </svg>
+        </div>
+
+        <div class="later-head">Later This Season</div>
+        <div class="queue-list">
+          <div class="queue-row">
+            <div class="queue-number">10</div>
+            <div class="queue-copy">
+              <div class="queue-title">Inside a Small-Batch Workshop</div>
+              <div class="queue-subtitle">Released Nov 28, 2024</div>
+            </div>
+            <div class="queue-duration">31:08</div>
+          </div>
+          <div class="queue-row">
+            <div class="queue-number">11</div>
+            <div class="queue-copy">
+              <div class="queue-title">What Makes a Chair Last</div>
+              <div class="queue-subtitle">Released Dec 5, 2024</div>
+            </div>
+            <div class="queue-duration">27:46</div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <nav class="tabbar" aria-label="Main navigation">
+      <button class="tab-item" aria-label="Shop">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M4 10h16l-1 10H5L4 10z"></path>
+          <path d="M8 10V8a4 4 0 0 1 8 0v2"></path>
+        </svg>
+        <span>Shop</span>
+      </button>
+      <button class="tab-item" aria-label="Search">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="10.5" cy="10.5" r="6.5"></circle>
+          <path d="M15.5 15.5L21 21"></path>
+        </svg>
+        <span>Search</span>
+      </button>
+      <button class="tab-item active" aria-label="Audio" aria-current="page">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="12" r="9"></circle>
+          <path d="M10 8.5l6 3.5-6 3.5v-7z"></path>
+        </svg>
+        <span>Audio</span>
+      </button>
+      <button class="tab-item" aria-label="Bag">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M5 8h14l1 13H4L5 8z"></path>
+          <path d="M9 8V6a3 3 0 0 1 6 0v2"></path>
+        </svg>
+        <span>Bag</span>
+      </button>
+    </nav>
+  </div>
+</body>
+</html>

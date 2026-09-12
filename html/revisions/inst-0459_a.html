@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Comments — Loftline</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body {
+    min-height: 100vh;
+    margin: 0;
+    padding: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #E7E6E1;
+    color: #1A1A16;
+    font-family: 'Roboto', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .screen {
+    width: 1024px;
+    height: 768px;
+    padding: 34px 38px;
+    background: #FFFFFF;
+    border: 1px solid #D9D8D1;
+    box-shadow: 0 18px 50px rgba(42, 42, 34, 0.08);
+  }
+
+  .topbar {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+    padding-bottom: 22px;
+    border-bottom: 1px solid #E5E4DD;
+  }
+  .eyebrow {
+    margin: 0 0 6px;
+    color: #6B7538;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .topbar h1 {
+    margin: 0;
+    font-size: 25px;
+    line-height: 1.2;
+    letter-spacing: -0.45px;
+  }
+  .sort {
+    color: #5F663B;
+    font-size: 13px;
+    white-space: nowrap;
+  }
+
+  .layout {
+    display: grid;
+    grid-template-columns: 292px minmax(0, 1fr);
+    gap: 40px;
+    padding-top: 28px;
+  }
+
+  .summary {
+    padding-right: 30px;
+    border-right: 1px solid #E5E4DD;
+  }
+  .thumbs {
+    display: grid;
+    grid-template-columns: repeat(2, 56px);
+    gap: 8px;
+    margin-bottom: 18px;
+  }
+  .thumbs img {
+    width: 56px;
+    height: 56px;
+    display: block;
+    object-fit: cover;
+    border-radius: 14px;
+    background: #D8D7D0;
+  }
+  .summary h2 {
+    margin: 0;
+    font-size: 21px;
+    line-height: 1.32;
+    letter-spacing: -0.25px;
+  }
+  .author {
+    margin: 9px 0 24px;
+    color: #77776F;
+    font-size: 13px;
+  }
+  .event-card {
+    padding: 16px;
+    border-radius: 16px;
+    background: #F3F4EA;
+  }
+  .event-label {
+    margin: 0 0 13px;
+    color: #6B7538;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+  }
+  .event-row + .event-row {
+    margin-top: 13px;
+    padding-top: 13px;
+    border-top: 1px solid #DFE1CF;
+  }
+  .event-key {
+    display: block;
+    margin-bottom: 3px;
+    color: #86877C;
+    font-size: 11px;
+    text-transform: uppercase;
+  }
+  .event-value {
+    display: block;
+    color: #25261E;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.35;
+  }
+  .count {
+    margin: 18px 0 0;
+    color: #77776F;
+    font-size: 13px;
+  }
+
+  .discussion {
+    min-width: 0;
+  }
+  .discussion-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 13px;
+  }
+  .discussion-head h2 {
+    margin: 0;
+    font-size: 17px;
+  }
+  .discussion-head span {
+    color: #8B8B82;
+    font-size: 12px;
+  }
+
+  .pinned {
+    display: flex;
+    gap: 14px;
+    padding: 18px;
+    border: 1px solid #DCE0C8;
+    border-radius: 16px;
+    background: #F5F6ED;
+  }
+  .pin-label {
+    display: inline-block;
+    margin-bottom: 7px;
+    color: #66702F;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+  }
+
+  .mono {
+    flex: none;
+    width: 38px;
+    height: 38px;
+    border-radius: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #E9EBDC;
+    color: #5D6630;
+    font-size: 13px;
+    font-weight: 700;
+  }
+  .c-main {
+    min-width: 0;
+    flex: 1;
+  }
+  .c-head {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+  }
+  .name {
+    font-size: 14px;
+    font-weight: 700;
+  }
+  .time {
+    color: #8B8B82;
+    font-size: 12px;
+  }
+  .c-body {
+    margin: 5px 0 0;
+    color: #292920;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  .at { color: #687332; }
+  .c-meta {
+    margin: 8px 0 0;
+    color: #898980;
+    font-size: 12px;
+  }
+  .act { color: #45453D; }
+  .replies { color: #687332; }
+
+  .thread-title {
+    margin: 22px 0 2px;
+    color: #77776F;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+  }
+  .thread {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .thread li {
+    display: flex;
+    gap: 14px;
+    padding: 16px 0;
+    border-bottom: 1px solid #ECEBE5;
+  }
+
+  .composer {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    margin-top: 18px;
+  }
+  .field {
+    flex: 1;
+    min-width: 0;
+    padding: 12px 15px;
+    border: 1px solid #E1E1D9;
+    border-radius: 13px;
+    background: #F7F7F3;
+    color: #85857D;
+    font-size: 13px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .send {
+    flex: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #6B7538;
+  }
+</style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">Saturday evening · The Half Note, Brooklyn</p>
+        <h1>Comments</h1>
+      </div>
+      <span class="sort">Newest first</span>
+    </header>
+
+    <main class="layout">
+      <aside class="summary" aria-label="Post summary">
+        <div class="thumbs">
+          <img src="https://loremflickr.com/56/56/party?lock=6320" width="56" height="56" alt="Crowd on the rooftop during the late set">
+          <img src="https://loremflickr.com/56/56/friends?lock=6323" width="56" height="56" alt="Four friends leaning on the roof railing">
+        </div>
+        <h2>Rooftop set at the Half Note, third year running</h2>
+        <p class="author">Posted by Nora Vance</p>
+
+        <div class="event-card">
+          <p class="event-label">Event details</p>
+          <div class="event-row">
+            <span class="event-key">Evening</span>
+            <span class="event-value">Saturday, August 17<br>8:30 PM</span>
+          </div>
+          <div class="event-row">
+            <span class="event-key">Place</span>
+            <span class="event-value">The Half Note Rooftop<br>Brooklyn, New York</span>
+          </div>
+        </div>
+        <p class="count">14 comments</p>
+      </aside>
+
+      <section class="discussion" aria-label="Comment thread">
+        <div class="discussion-head">
+          <h2>Conversation</h2>
+          <span>14 comments</span>
+        </div>
+
+        <article class="pinned">
+          <div class="mono">DK</div>
+          <div class="c-main">
+            <span class="pin-label">Pinned by Nora</span>
+            <div class="c-head">
+              <span class="name">Devin Kalloway</span>
+              <span class="time">2h</span>
+            </div>
+            <p class="c-body">Second photo is the whole night in one frame. Was that right after the encore?</p>
+            <p class="c-meta"><span class="act">Like</span> · <span class="act">Reply</span> · 12 likes · <span class="replies">2 replies</span></p>
+          </div>
+        </article>
+
+        <p class="thread-title">Latest comments</p>
+        <ul class="thread">
+          <li>
+            <div class="mono">MR</div>
+            <div class="c-main">
+              <div class="c-head">
+                <span class="name">Marisol Reyes</span>
+                <span class="time">3h</span>
+              </div>
+              <p class="c-body"><span class="at">@nora</span> the doors opened late so we missed the first two songs. Still worth the climb.</p>
+              <p class="c-meta"><span class="act">Like</span> · <span class="act">Reply</span> · 5 likes</p>
+            </div>
+          </li>
+          <li>
+            <div class="mono">TA</div>
+            <div class="c-main">
+              <div class="c-head">
+                <span class="name">Theo Amundsen</span>
+                <span class="time">5h</span>
+              </div>
+              <p class="c-body">Bringing the folding chairs again in August. Save me a corner.</p>
+              <p class="c-meta"><span class="act">Like</span> · <span class="act">Reply</span> · 3 likes</p>
+            </div>
+          </li>
+        </ul>
+
+        <div class="composer">
+          <div class="mono">JL</div>
+          <div class="field">Add a comment to this conversation</div>
+          <div class="send" aria-label="Post comment">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M10 16V4.5"></path>
+              <path d="M5 9.5 10 4.5l5 5"></path>
+            </svg>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

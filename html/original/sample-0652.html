@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scout Shopping Assistant</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #d9dde2;
+      color: #202630;
+      font-family: 'Inter', system-ui, sans-serif;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      cursor: default;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #f1f3f5;
+      border: 1px solid #cbd1d8;
+    }
+
+    .topbar {
+      flex: 0 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 14px;
+      background: #ffffff;
+      border-bottom: 1px solid #e1e5e9;
+    }
+
+    .icon-button {
+      width: 36px;
+      height: 36px;
+      padding: 0;
+      display: grid;
+      place-items: center;
+      border: 0;
+      border-radius: 10px;
+      background: transparent;
+      color: #4c5665;
+    }
+
+    .title-block {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .title-row {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .title-row h1 {
+      margin: 0;
+      font-size: 17px;
+      line-height: 21px;
+      font-weight: 700;
+      color: #1e2631;
+    }
+
+    .ai-label {
+      padding: 2px 6px;
+      border-radius: 6px;
+      background: #e7ebef;
+      color: #526071;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 600;
+    }
+
+    .subtitle {
+      margin: 2px 0 0;
+      font-size: 12px;
+      line-height: 15px;
+      color: #788391;
+    }
+
+    .chat {
+      min-height: 0;
+      flex: 1 1 auto;
+      padding: 12px 14px 8px;
+    }
+
+    .message-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .message-row.user {
+      justify-content: flex-end;
+    }
+
+    .bot-mark {
+      flex: 0 0 auto;
+      width: 32px;
+      height: 32px;
+      display: grid;
+      place-items: center;
+      border-radius: 14px;
+      background: #596779;
+      color: #ffffff;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .bubble {
+      max-width: 282px;
+      padding: 10px 12px;
+      border-radius: 14px;
+      background: #ffffff;
+      color: #303946;
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .user .bubble {
+      max-width: 288px;
+      background: #566476;
+      color: #ffffff;
+    }
+
+    .prompt-row {
+      display: flex;
+      gap: 7px;
+      margin: 8px 0 10px 40px;
+    }
+
+    .prompt-row.bottom {
+      margin-top: 8px;
+      margin-bottom: 0;
+    }
+
+    .prompt {
+      min-width: 0;
+      padding: 7px 10px;
+      border: 1px solid #d6dce2;
+      border-radius: 14px;
+      background: #ffffff;
+      color: #4e5a69;
+      font-size: 12px;
+      line-height: 18px;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .assistant-copy {
+      margin-top: 8px;
+    }
+
+    .product-panel {
+      margin: 8px 0 8px 40px;
+      border-radius: 14px;
+      background: #ffffff;
+      box-shadow: 0 3px 12px rgba(36, 44, 54, 0.08);
+    }
+
+    .panel-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 11px;
+      border-bottom: 1px solid #e6e9ed;
+    }
+
+    .panel-heading h2 {
+      margin: 0;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 700;
+      color: #29323e;
+    }
+
+    .panel-heading span {
+      font-size: 12px;
+      line-height: 17px;
+      color: #7a8491;
+    }
+
+    .product-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px;
+    }
+
+    .product-row + .product-row {
+      border-top: 1px solid #eceff2;
+    }
+
+    .product-row img {
+      width: 64px;
+      height: 64px;
+      flex: 0 0 64px;
+      display: block;
+      object-fit: cover;
+      border-radius: 10px;
+      background: #d9dde1;
+    }
+
+    .product-info {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .product-name {
+      margin: 0;
+      overflow: hidden;
+      color: #29323e;
+      font-size: 14px;
+      line-height: 19px;
+      font-weight: 600;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    .product-meta {
+      margin: 3px 0 0;
+      color: #788391;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .price {
+      margin: 4px 0 0;
+      color: #455365;
+      font-size: 14px;
+      line-height: 18px;
+      font-weight: 700;
+    }
+
+    .save-button {
+      width: 32px;
+      height: 32px;
+      flex: 0 0 auto;
+      padding: 0;
+      display: grid;
+      place-items: center;
+      border: 1px solid #d9dee4;
+      border-radius: 10px;
+      background: #ffffff;
+      color: #657181;
+    }
+
+    .composer {
+      flex: 0 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      background: #ffffff;
+      border-top: 1px solid #e0e4e8;
+    }
+
+    .input-shell {
+      min-width: 0;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 11px 12px;
+      border: 1px solid #d8dde3;
+      border-radius: 14px;
+      background: #f7f8f9;
+      color: #8a939e;
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .input-shell span {
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    .send-button {
+      width: 42px;
+      height: 42px;
+      flex: 0 0 auto;
+      padding: 0;
+      display: grid;
+      place-items: center;
+      border: 0;
+      border-radius: 14px;
+      background: #566476;
+      color: #ffffff;
+    }
+
+    .tabbar {
+      flex: 0 0 auto;
+      display: flex;
+      justify-content: space-around;
+      padding: 7px 8px 8px;
+      background: #ffffff;
+      border-top: 1px solid #e3e6ea;
+    }
+
+    .tab {
+      width: 78px;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      border: 0;
+      background: transparent;
+      color: #8a939e;
+      font-size: 12px;
+      line-height: 15px;
+      font-weight: 500;
+    }
+
+    .tab.active {
+      color: #526174;
+      font-weight: 700;
+    }
+
+    svg {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <button class="icon-button" aria-label="Go back">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M15 18 9 12l6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+
+      <div class="title-block">
+        <div class="title-row">
+          <h1>Scout</h1>
+          <span class="ai-label">AI</span>
+        </div>
+        <p class="subtitle">Morrow Market shopping assistant</p>
+      </div>
+
+      <button class="icon-button" aria-label="Start a new assistant chat">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </header>
+
+    <main class="chat">
+      <div class="message-row">
+        <div class="bot-mark" aria-hidden="true">S</div>
+        <div class="bubble">What are you shopping for today?</div>
+      </div>
+
+      <div class="prompt-row" aria-label="Suggested prompts">
+        <button class="prompt">Running shoes</button>
+        <button class="prompt">Desk chairs</button>
+        <button class="prompt">Spring jackets</button>
+      </div>
+
+      <div class="message-row user">
+        <div class="bubble">Find neutral running shoes under $120 for daily walks.</div>
+      </div>
+
+      <div class="message-row assistant-copy">
+        <div class="bot-mark" aria-hidden="true">S</div>
+        <div class="bubble">These three match your budget, color preference, and everyday cushioning.</div>
+      </div>
+
+      <section class="product-panel" aria-labelledby="matches-title">
+        <div class="panel-heading">
+          <h2 id="matches-title">Best matches</h2>
+          <span>3 results</span>
+        </div>
+
+        <article class="product-row">
+          <img src="https://loremflickr.com/64/64/sneakers?lock=8670" width="64" height="64" alt="Cream-colored everyday sneakers">
+          <div class="product-info">
+            <p class="product-name">Linden Pace Walker</p>
+            <p class="product-meta">Oatmeal · Sizes 6–11</p>
+            <p class="price">$84.00</p>
+          </div>
+          <button class="save-button" aria-label="Save Linden Pace Walker">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M7 4.75h10a1 1 0 0 1 1 1v14l-6-3.6-6 3.6v-14a1 1 0 0 1 1-1Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </article>
+
+        <article class="product-row">
+          <img src="https://loremflickr.com/64/64/sneakers?lock=8671" width="64" height="64" alt="Light gray cushioned running shoes">
+          <div class="product-info">
+            <p class="product-name">Northline Cloud Step</p>
+            <p class="product-meta">Stone · Sizes 5–10</p>
+            <p class="price">$108.00</p>
+          </div>
+          <button class="save-button" aria-label="Save Northline Cloud Step">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M7 4.75h10a1 1 0 0 1 1 1v14l-6-3.6-6 3.6v-14a1 1 0 0 1 1-1Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </article>
+
+        <article class="product-row">
+          <img src="https://loremflickr.com/64/64/sneakers?lock=8672" width="64" height="64" alt="Taupe low-top walking shoes">
+          <div class="product-info">
+            <p class="product-name">Harbor Daily Runner</p>
+            <p class="product-meta">Taupe · Sizes 6–12</p>
+            <p class="price">$116.00</p>
+          </div>
+          <button class="save-button" aria-label="Save Harbor Daily Runner">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M7 4.75h10a1 1 0 0 1 1 1v14l-6-3.6-6 3.6v-14a1 1 0 0 1 1-1Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </article>
+      </section>
+
+      <div class="message-row">
+        <div class="bot-mark" aria-hidden="true">S</div>
+        <div class="bubble">Want a size comparison or more options under $100?</div>
+      </div>
+
+      <div class="prompt-row bottom" aria-label="Follow-up prompts">
+        <button class="prompt">Compare sizing</button>
+        <button class="prompt">Only under $100</button>
+      </div>
+    </main>
+
+    <div class="composer">
+      <div class="input-shell" aria-label="Message field">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+        </svg>
+        <span>Ask Scout about these results</span>
+      </div>
+      <button class="send-button" aria-label="Send message">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="m5 12 14-7-4.5 14-2.7-5.2L5 12Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+
+    <nav class="tabbar" aria-label="Main navigation">
+      <button class="tab">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M4 9.5 12 4l8 5.5V20H4V9.5Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+          <path d="M9 20v-6h6v6" stroke="currentColor" stroke-width="1.6"/>
+        </svg>
+        <span>Shop</span>
+      </button>
+
+      <button class="tab">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M7 4.5h10a1 1 0 0 1 1 1v14l-6-3.6-6 3.6v-14a1 1 0 0 1 1-1Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+        </svg>
+        <span>Saved</span>
+      </button>
+
+      <button class="tab active" aria-current="page">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M5 6.5h14a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-7l-4.5 3v-3H5a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+          <path d="M8 12h8M12 8v8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <span>Assistant</span>
+      </button>
+
+      <button class="tab">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M5 7h14v13H5V7Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+          <path d="M8 4v6M16 4v6M5 11h14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+        </svg>
+        <span>Orders</span>
+      </button>
+    </nav>
+  </div>
+</body>
+</html>

@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Order Detail</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --accent:#8E6284;
+    --ink:#211D24;
+    --ink2:#6E6873;
+    --ink3:#948E99;
+    --line:#E7E4E9;
+    --card:#FFFFFF;
+  }
+  *{box-sizing:border-box;}
+  body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    padding:40px 0;
+    margin:0;
+    background:#CFCBD2;
+    font-family:'Plus Jakarta Sans', system-ui, sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .screen{
+    width:390px;
+    height:844px;
+    background:#F2F1F3;
+    display:flex;
+    flex-direction:column;
+    position:relative;
+    color:var(--ink);
+  }
+
+  /* top bar */
+  .topbar{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:16px;
+    background:#F2F1F3;
+  }
+  .topbar h1{
+    margin:0;
+    font-size:17px;
+    font-weight:700;
+    letter-spacing:-0.2px;
+    flex:1;
+  }
+  .iconbtn{
+    width:24px;height:24px;
+    color:var(--ink);
+    display:flex;align-items:center;justify-content:center;
+  }
+
+  .content{
+    padding:12px 16px 0;
+  }
+  .meta{
+    font-size:13px;
+    line-height:18px;
+    color:var(--ink2);
+    margin-bottom:12px;
+  }
+
+  /* hero */
+  .hero{
+    background:var(--accent);
+    border-radius:10px;
+    padding:16px;
+    color:#fff;
+    box-shadow:0 1px 3px rgba(23,20,26,.10);
+    margin-bottom:14px;
+  }
+  .hero .stat{
+    display:flex;align-items:center;gap:8px;
+    font-size:13px;font-weight:600;
+    line-height:20px;
+    color:rgba(255,255,255,.88);
+  }
+  .hero h2{
+    margin:4px 0 0;
+    font-size:18px;
+    line-height:24px;
+    font-weight:700;
+    letter-spacing:-0.2px;
+  }
+  .hero .track-no{
+    margin-top:4px;
+    font-size:12px;
+    line-height:16px;
+    color:rgba(255,255,255,.78);
+  }
+  .steps{
+    margin-top:16px;
+  }
+  .rail{
+    position:relative;
+    height:10px;
+  }
+  .rail .base{
+    position:absolute;left:5px;right:5px;top:4px;height:2px;
+    background:rgba(255,255,255,.34);
+  }
+  .rail .done{
+    position:absolute;left:5px;top:4px;height:2px;width:66%;
+    background:#fff;
+  }
+  .dots{
+    position:relative;
+    display:flex;justify-content:space-between;
+  }
+  .dot{
+    width:10px;height:10px;border-radius:50%;
+    background:#fff;
+  }
+  .dot.pending{
+    background:var(--accent);
+    border:2px solid rgba(255,255,255,.55);
+  }
+  .steplabels{
+    display:flex;justify-content:space-between;
+    margin-top:6px;
+    font-size:12px;line-height:16px;
+  }
+  .steplabels span{width:80px;color:rgba(255,255,255,.68);font-weight:500;}
+  .steplabels span:first-child{text-align:left;}
+  .steplabels span:last-child{text-align:right;}
+  .steplabels span.on{color:#fff;font-weight:600;}
+
+  /* sections */
+  .label{
+    font-size:12px;
+    line-height:16px;
+    font-weight:700;
+    letter-spacing:0.6px;
+    text-transform:uppercase;
+    color:var(--ink3);
+    margin-bottom:8px;
+  }
+  .card{
+    background:var(--card);
+    border-radius:10px;
+    box-shadow:0 1px 3px rgba(23,20,26,.07);
+    margin-bottom:14px;
+  }
+
+  /* item rows */
+  .item{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:11px 14px;
+    border-bottom:1px solid var(--line);
+  }
+  .item:last-child{border-bottom:none;}
+  .glyph{
+    width:38px;height:38px;
+    flex:none;
+    border-radius:10px;
+    background:#F4EFF4;
+    color:var(--accent);
+    display:flex;align-items:center;justify-content:center;
+  }
+  .itxt{flex:1;min-width:0;}
+  .itxt .nm{
+    font-size:14px;font-weight:600;line-height:19px;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .itxt .sub{
+    font-size:12px;line-height:16px;color:var(--ink2);
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .iamt{
+    text-align:right;flex:none;
+  }
+  .iamt .pr{font-size:14px;font-weight:600;line-height:19px;}
+  .iamt .qt{font-size:12px;line-height:16px;color:var(--ink3);}
+
+  /* payment */
+  .pay{padding:14px 16px;}
+  .prow{
+    display:flex;justify-content:space-between;align-items:baseline;
+    font-size:14px;line-height:20px;
+    margin-bottom:8px;
+  }
+  .prow span:first-child{color:var(--ink2);}
+  .prow span:last-child{font-weight:500;}
+  .prow.credit span:last-child{color:var(--accent);font-weight:600;}
+  .div{height:1px;background:var(--line);margin:12px 0;}
+  .total{
+    display:flex;justify-content:space-between;align-items:baseline;
+  }
+  .total .tl{font-size:14px;font-weight:600;}
+  .total .tv{font-size:18px;font-weight:700;letter-spacing:-0.3px;}
+
+  /* ship to */
+  .ship{
+    display:flex;gap:12px;padding:12px 16px;align-items:flex-start;
+  }
+  .ship .pin{color:var(--accent);flex:none;margin-top:2px;}
+  .ship .cap{font-size:12px;line-height:16px;color:var(--ink3);font-weight:600;}
+  .ship .who{font-size:14px;line-height:18px;font-weight:600;}
+  .ship .addr{font-size:12px;line-height:16px;color:var(--ink2);}
+
+  /* tab bar */
+  .tabbar{
+    position:absolute;left:0;bottom:0;width:100%;
+    height:64px;
+    background:#fff;
+    border-top:1px solid var(--line);
+    display:flex;
+  }
+  .tab{
+    flex:1;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:3px;
+    color:var(--ink3);
+  }
+  .tab span{font-size:12px;line-height:14px;font-weight:500;}
+  .tab.on{color:var(--accent);}
+  .tab.on span{font-weight:700;}
+</style>
+</head>
+<body>
+<div class="screen">
+
+  <div class="topbar">
+    <div class="iconbtn" aria-hidden="true">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 5 8 12 15 19"/></svg>
+    </div>
+    <h1>Order Detail</h1>
+    <div class="iconbtn" aria-hidden="true">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a7.5 7.5 0 0 1-10.9 6.7L4.5 20l1.3-4.4A7.5 7.5 0 1 1 20 12z"/></svg>
+    </div>
+  </div>
+
+  <div class="content">
+    <div class="meta">Order #VL-48210 &middot; Placed March 12, 2025</div>
+
+    <div class="hero">
+      <div class="stat">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h10v9H3z"/><path d="M13 10h4l3 3v3h-7z"/><circle cx="7" cy="18" r="1.6"/><circle cx="17" cy="18" r="1.6"/></svg>
+        In transit
+      </div>
+      <h2>Arriving today by 6:00 PM</h2>
+      <div class="track-no">Tracking 9241 8830 4471 &middot; Northline Courier</div>
+
+      <div class="steps">
+        <div class="rail">
+          <div class="base"></div>
+          <div class="done"></div>
+          <div class="dots">
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot pending"></div>
+          </div>
+        </div>
+        <div class="steplabels">
+          <span class="on">Ordered</span>
+          <span class="on">Packed</span>
+          <span class="on">In transit</span>
+          <span>Delivered</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="label">Items &middot; 3</div>
+    <div class="card">
+      <div class="item">
+        <div class="glyph">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="8.5" width="19" height="7" rx="3.5" transform="rotate(-30 12 12)"/><path d="M9.3 14.7 14.7 9.3"/></svg>
+        </div>
+        <div class="itxt">
+          <div class="nm">Magnesium Glycinate</div>
+          <div class="sub">120 capsules &middot; Monthly refill</div>
+        </div>
+        <div class="iamt">
+          <div class="pr">$28.00</div>
+          <div class="qt">Qty 1</div>
+        </div>
+      </div>
+      <div class="item">
+        <div class="glyph">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5c0 0-5.5 6.4-5.5 10.2a5.5 5.5 0 0 0 11 0C17.5 9.9 12 3.5 12 3.5z"/><path d="M9.5 14.2a2.5 2.5 0 0 0 2.5 2.5"/></svg>
+        </div>
+        <div class="itxt">
+          <div class="nm">Omega-3 Ultra</div>
+          <div class="sub">60 softgels &middot; Monthly refill</div>
+        </div>
+        <div class="iamt">
+          <div class="pr">$44.00</div>
+          <div class="qt">Qty 2</div>
+        </div>
+      </div>
+      <div class="item">
+        <div class="glyph">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 5.5h11v13h-11z"/><path d="M6.5 8.5h11"/><path d="M9.5 12h5"/></svg>
+        </div>
+        <div class="itxt">
+          <div class="nm">Sleep Support Blend</div>
+          <div class="sub">30 sachets &middot; One time</div>
+        </div>
+        <div class="iamt">
+          <div class="pr">$19.00</div>
+          <div class="qt">Qty 1</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="label">Payment</div>
+    <div class="card">
+      <div class="pay">
+        <div class="prow"><span>Subtotal</span><span>$91.00</span></div>
+        <div class="prow"><span>Shipping</span><span>Free</span></div>
+        <div class="prow credit"><span>Member discount</span><span>&minus;$9.10</span></div>
+        <div class="prow"><span>Estimated tax</span><span>$5.87</span></div>
+        <div class="div"></div>
+        <div class="total">
+          <div class="tl">Charged to Visa 4417</div>
+          <div class="tv">$87.77</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="ship">
+        <div class="pin">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s6.5-6.1 6.5-10.5a6.5 6.5 0 1 0-13 0C5.5 14.9 12 21 12 21z"/><circle cx="12" cy="10.4" r="2.4"/></svg>
+        </div>
+        <div>
+          <div class="cap">Ship to</div>
+          <div class="who">Ellis Vandermeer</div>
+          <div class="addr">214 Rosewood Ave &middot; Portland, OR 97214</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tabbar">
+    <div class="tab">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5 12 4l8 6.5V20h-5v-5.5h-6V20H4z"/></svg>
+      <span>Today</span>
+    </div>
+    <div class="tab">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3.5v3M15 3.5v3"/></svg>
+      <span>Plan</span>
+    </div>
+    <div class="tab on">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8.2 12 4l8 4.2v7.6L12 20l-8-4.2z"/><path d="M4 8.2 12 12.4l8-4.2M12 12.4V20"/></svg>
+      <span>Orders</span>
+    </div>
+    <div class="tab">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8.5" r="3.8"/><path d="M5 20c0-3.3 3.1-5.5 7-5.5s7 2.2 7 5.5"/></svg>
+      <span>Profile</span>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

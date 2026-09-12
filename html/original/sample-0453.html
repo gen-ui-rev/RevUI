@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Learning Profile Setup</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #dfe3e1;
+      color: #1d2925;
+      font-family: 'Poppins', system-ui, sans-serif;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      color: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #f3f5f4;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      background: #ffffff;
+      border-bottom: 1px solid #e3e8e5;
+    }
+
+    .icon-button {
+      width: 32px;
+      height: 32px;
+      flex: 0 0 32px;
+      display: grid;
+      place-items: center;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      cursor: default;
+    }
+
+    .icon-button svg,
+    .button-icon,
+    .select-chevron {
+      width: 20px;
+      height: 20px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .topbar-title {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .topbar-title h1 {
+      margin: 0;
+      font-size: 18px;
+      line-height: 1.35;
+      font-weight: 600;
+      color: #17231f;
+    }
+
+    .topbar-title p {
+      margin: 2px 0 0;
+      font-size: 12px;
+      line-height: 1.35;
+      color: #6a7772;
+    }
+
+    .help-button {
+      border: 0;
+      padding: 6px 0 6px 8px;
+      background: transparent;
+      color: #087a59;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .progress-strip {
+      padding: 9px 16px 10px;
+      background: #ffffff;
+      border-bottom: 1px solid #e3e8e5;
+    }
+
+    .progress-meta {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 7px;
+      font-size: 12px;
+      line-height: 1.3;
+      color: #65726d;
+    }
+
+    .progress-meta strong {
+      color: #087a59;
+      font-weight: 600;
+    }
+
+    .progress-track {
+      height: 5px;
+      border-radius: 10px;
+      background: #dfe6e2;
+    }
+
+    .progress-value {
+      width: 66.666%;
+      height: 5px;
+      border-radius: 10px;
+      background: #0b8a64;
+    }
+
+    .content {
+      flex: 1;
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .card {
+      padding: 13px;
+      border: 1px solid #e2e8e5;
+      border-radius: 10px;
+      background: #ffffff;
+      box-shadow: 0 3px 10px rgba(28, 48, 40, 0.06);
+    }
+
+    .section-heading {
+      margin: 0 0 11px;
+      font-size: 15px;
+      line-height: 1.4;
+      font-weight: 600;
+      color: #1d2925;
+    }
+
+    .profile-row {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+    }
+
+    .avatar-wrap {
+      position: relative;
+      flex: 0 0 66px;
+    }
+
+    .avatar {
+      width: 66px;
+      height: 66px;
+      display: grid;
+      place-items: center;
+      border: 1px solid #c9d8d1;
+      border-radius: 50%;
+      background: #eaf4f0;
+      color: #28775f;
+    }
+
+    .avatar svg {
+      width: 43px;
+      height: 43px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.6;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .edit-avatar {
+      position: absolute;
+      right: -2px;
+      bottom: -1px;
+      width: 26px;
+      height: 26px;
+      display: grid;
+      place-items: center;
+      padding: 0;
+      border: 2px solid #ffffff;
+      border-radius: 50%;
+      background: #0b8a64;
+      color: #ffffff;
+    }
+
+    .edit-avatar svg {
+      width: 13px;
+      height: 13px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .field {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .field-label {
+      display: block;
+      margin: 0 0 6px;
+      font-size: 12px;
+      line-height: 1.3;
+      color: #68756f;
+    }
+
+    .text-input,
+    .select-control {
+      width: 100%;
+      min-width: 0;
+      border: 1px solid #cfd8d4;
+      border-radius: 10px;
+      background: #ffffff;
+      color: #202d28;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .text-input {
+      padding: 10px 11px;
+      outline: none;
+    }
+
+    .language-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 9px;
+    }
+
+    .select-control {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      padding: 10px 9px 10px 11px;
+      text-align: left;
+    }
+
+    .select-control span {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .select-chevron {
+      width: 16px;
+      height: 16px;
+      flex: 0 0 16px;
+      color: #64716c;
+    }
+
+    .subgroup {
+      margin-top: 11px;
+    }
+
+    .segmented {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      padding: 3px;
+      border: 1px solid #d6dfdb;
+      border-radius: 10px;
+      background: #f2f5f3;
+    }
+
+    .segment {
+      padding: 7px 4px;
+      border: 0;
+      border-radius: 7px;
+      background: transparent;
+      color: #5e6c66;
+      font-size: 13px;
+      font-weight: 500;
+      text-align: center;
+    }
+
+    .segment.selected {
+      background: #ffffff;
+      color: #087a59;
+      box-shadow: 0 1px 4px rgba(28, 48, 40, 0.09);
+    }
+
+    .topic-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+    }
+
+    .topic {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 10px;
+      border: 1px solid #cfd9d5;
+      border-radius: 10px;
+      background: #ffffff;
+      color: #4d5b55;
+      font-size: 13px;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .topic.selected {
+      border-color: #0b8a64;
+      background: #e9f5f0;
+      color: #076e51;
+    }
+
+    .topic svg {
+      width: 14px;
+      height: 14px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .routine-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 11px;
+    }
+
+    .reminder-row {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      padding-top: 11px;
+      border-top: 1px solid #e5eae7;
+    }
+
+    .reminder-icon {
+      width: 34px;
+      height: 34px;
+      flex: 0 0 34px;
+      display: grid;
+      place-items: center;
+      border-radius: 10px;
+      background: #eaf4f0;
+      color: #16775a;
+    }
+
+    .reminder-icon svg {
+      width: 19px;
+      height: 19px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .reminder-copy {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .reminder-copy strong {
+      display: block;
+      font-size: 13px;
+      line-height: 1.35;
+      font-weight: 500;
+      color: #26332e;
+    }
+
+    .reminder-copy span {
+      display: block;
+      margin-top: 1px;
+      font-size: 12px;
+      line-height: 1.35;
+      color: #73807b;
+    }
+
+    .switch {
+      width: 42px;
+      height: 24px;
+      flex: 0 0 42px;
+      padding: 3px;
+      border: 0;
+      border-radius: 12px;
+      background: #0b8a64;
+    }
+
+    .switch-knob {
+      display: block;
+      width: 18px;
+      height: 18px;
+      margin-left: 18px;
+      border-radius: 50%;
+      background: #ffffff;
+    }
+
+    .bottom-nav {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px 12px;
+      border-top: 1px solid #dce3df;
+      background: #ffffff;
+    }
+
+    .back-button,
+    .continue-button {
+      min-height: 46px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .back-button {
+      width: 96px;
+      border: 1px solid #cbd5d1;
+      background: #ffffff;
+      color: #4e5c56;
+    }
+
+    .continue-button {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border: 1px solid #0b8a64;
+      background: #0b8a64;
+      color: #ffffff;
+    }
+
+    .continue-button .button-icon {
+      width: 17px;
+      height: 17px;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <button class="icon-button" type="button" aria-label="Close profile setup">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M6 6l12 12M18 6L6 18"></path>
+        </svg>
+      </button>
+      <div class="topbar-title">
+        <h1>Set up your learning profile</h1>
+        <p>Tailor lessons to your goals</p>
+      </div>
+      <button class="help-button" type="button">Help</button>
+    </header>
+
+    <div class="progress-strip" aria-label="Setup progress">
+      <div class="progress-meta">
+        <span><strong>Step 2 of 3</strong></span>
+        <span>Learning preferences</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-value"></div>
+      </div>
+    </div>
+
+    <main class="content">
+      <section class="card" aria-labelledby="profile-heading">
+        <h2 class="section-heading" id="profile-heading">Your profile</h2>
+        <div class="profile-row">
+          <div class="avatar-wrap">
+            <div class="avatar" aria-label="Profile picture placeholder">
+              <svg viewBox="0 0 48 48" aria-hidden="true">
+                <circle cx="24" cy="17" r="8"></circle>
+                <path d="M10 40c1.5-8 6.4-12 14-12s12.5 4 14 12"></path>
+                <path d="M14 10c2.4-3.6 5.8-5.5 10-5.5S31.6 6.4 34 10"></path>
+              </svg>
+            </div>
+            <button class="edit-avatar" type="button" aria-label="Change profile picture">
+              <svg viewBox="0 0 16 16" aria-hidden="true">
+                <path d="M3 11.8l.5-2.6L10.8 2l3.2 3.2-7.3 7.2-2.7.6z"></path>
+                <path d="M9.8 3l3.2 3.2"></path>
+              </svg>
+            </button>
+          </div>
+          <label class="field">
+            <span class="field-label">Display name</span>
+            <input class="text-input" type="text" value="Maren Ellis" aria-label="Display name">
+          </label>
+        </div>
+      </section>
+
+      <section class="card" aria-labelledby="preferences-heading">
+        <h2 class="section-heading" id="preferences-heading">Language preferences</h2>
+
+        <div class="language-grid">
+          <div class="field">
+            <span class="field-label">I speak</span>
+            <button class="select-control" type="button" aria-label="Native language, English">
+              <span>English</span>
+              <svg class="select-chevron" viewBox="0 0 20 20" aria-hidden="true">
+                <path d="M5 7.5l5 5 5-5"></path>
+              </svg>
+            </button>
+          </div>
+          <div class="field">
+            <span class="field-label">I am learning</span>
+            <button class="select-control" type="button" aria-label="Learning language, Spanish">
+              <span>Spanish</span>
+              <svg class="select-chevron" viewBox="0 0 20 20" aria-hidden="true">
+                <path d="M5 7.5l5 5 5-5"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="subgroup">
+          <span class="field-label">Current level</span>
+          <div class="segmented" aria-label="Current language level">
+            <button class="segment" type="button">Beginner</button>
+            <button class="segment selected" type="button">Intermediate</button>
+            <button class="segment" type="button">Advanced</button>
+          </div>
+        </div>
+
+        <div class="subgroup">
+          <span class="field-label">Topics you want to practice</span>
+          <div class="topic-list">
+            <button class="topic selected" type="button">
+              <svg viewBox="0 0 16 16" aria-hidden="true">
+                <path d="M3 8.2l3 3L13 4.8"></path>
+              </svg>
+              Conversation
+            </button>
+            <button class="topic selected" type="button">
+              <svg viewBox="0 0 16 16" aria-hidden="true">
+                <path d="M3 8.2l3 3L13 4.8"></path>
+              </svg>
+              Travel
+            </button>
+            <button class="topic" type="button">Culture</button>
+            <button class="topic" type="button">Business</button>
+            <button class="topic selected" type="button">
+              <svg viewBox="0 0 16 16" aria-hidden="true">
+                <path d="M3 8.2l3 3L13 4.8"></path>
+              </svg>
+              Reading
+            </button>
+            <button class="topic" type="button">Exams</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="card" aria-labelledby="routine-heading">
+        <h2 class="section-heading" id="routine-heading">Learning routine</h2>
+        <div class="routine-grid">
+          <div>
+            <span class="field-label">Weekly lesson goal</span>
+            <div class="segmented" aria-label="Weekly lesson goal">
+              <button class="segment" type="button">3 lessons</button>
+              <button class="segment selected" type="button">5 lessons</button>
+              <button class="segment" type="button">Daily</button>
+            </div>
+          </div>
+
+          <div class="reminder-row">
+            <div class="reminder-icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M18 8a6 6 0 00-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path>
+                <path d="M10 20h4"></path>
+              </svg>
+            </div>
+            <div class="reminder-copy">
+              <strong>Practice reminder</strong>
+              <span>Weekdays at 7:30 PM</span>
+            </div>
+            <button class="switch" type="button" aria-label="Practice reminders enabled">
+              <span class="switch-knob"></span>
+            </button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <nav class="bottom-nav" aria-label="Profile setup navigation">
+      <button class="back-button" type="button">Back</button>
+      <button class="continue-button" type="button">
+        Continue
+        <svg class="button-icon" viewBox="0 0 20 20" aria-hidden="true">
+          <path d="M4 10h12M11 5l5 5-5 5"></path>
+        </svg>
+      </button>
+    </nav>
+  </div>
+</body>
+</html>

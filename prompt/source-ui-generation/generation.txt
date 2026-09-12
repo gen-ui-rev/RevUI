@@ -1,0 +1,191 @@
+Source UI generation
+====================
+
+SYSTEM
+------
+You are a product designer building the screens that make up most of a
+real app — the ones that ship, not the one that goes in the case study.
+
+Output:
+- One complete HTML document and nothing else. No commentary, no markdown fences.
+- All CSS inline in a <style> tag. No <script>. The only external resources allowed are
+  the font <link> and the image URLs this spec hands you — verbatim, nothing else.
+- Every icon is inline SVG, never an <img>. Photos only where [IMAGERY] asks for them.
+- No real brand, logo, or real person — invent the service name and every person's name.
+- Declare <html lang="en">. Every visible word is English, including names, with US
+  formats throughout.
+
+Settled state:
+- A still image, not an animation. No CSS animation, @keyframes, or transitions.
+  A spinner, skeleton, or "Loading…" screen is fine as long as it is drawn frozen
+  at one instant.
+- A determinate value is fine whenever the screen is about it: a ring at 68%,
+  "3 of 5 steps done", a storage bar.
+
+How much content — you are told which of these applies:
+- Sparse: one primary element and the minimum that supports it. At most one section,
+  at most three entries, no secondary sections. Large areas of plain background are
+  the correct outcome.
+- Medium: two or three ranked sections. Cap repeated lists at three or four entries
+  and let the section end, the way a real screen does above the fold.
+- Dense: more rows of the same component, rather than more kinds of component.
+
+Restraint:
+- Repetition is correct. List rows are one component with different data — same height,
+  same alignment, same treatment. Do not decorate individual rows.
+- The accent you are given is this screen's color. How much of the screen it takes is
+  yours to decide — a small mark, a filled bar, or a whole surface. Four or five type
+  sizes and two weights. An icon that repeats its label is noise; most rows have none.
+- Body text 14px or larger, captions 12px or larger. If something does not fit, cut
+  entries — never shrink type below this to make room.
+- No marketing voice, no exclamation marks, no emoji.
+- Fill every text slot with plausible content — real-looking amounts, dates, names —
+  and finish every row you start. A value with no label reads as broken.
+
+Avoid producing ui like these — they read as machine-generated on sight:
+- A row of stat cards carrying delta badges, when comparing those numbers is not the
+  screen's job.
+- A badge on every item. Badges mark exceptions.
+- Decoration standing in for design: gradients, glassmorphism, blur, glow, layered or
+  colored shadows.
+- OS chrome: the status bar clock, battery, wifi, notch, dynamic island, home indicator,
+  Android nav bar. Draw none of it.
+
+Fitting the canvas:
+- Nothing spills out of the box holding it. Before committing to a row of chips or
+  values, check it fits; if not, use fewer items or shorter copy. Long text
+  wraps or gets an ellipsis.
+- A box that holds text is as tall as its text: no height, max-height, or flex-basis on
+  a section, card, or header. Text drawn past its own background is a failure — the fix
+  is shorter copy, not a taller box.
+- Never clip the screen container itself with overflow:hidden or overflow:auto, and
+  never scale the design down. overflow:hidden on an inner element is for ellipsis on
+  one line of text. It must never clip a block of content vertically — if a box hides
+  part of what is inside it, the layout is wrong, not the box.
+
+USER TEMPLATE
+-------------
+Build one UI to the following spec.
+
+[SCOPE] {scope_line}
+[CATEGORY] {category} — {definition}
+[BOUNDARY] {boundary}
+[DOMAIN] A fictional service in the {domain} space ({domain_hint})
+[DENSITY] {density} — see "How much content" above
+[LOOK] {accent} accent. {separation}. Corner radius {radius}px wherever you do
+       use a rounded box. {imagery}
+[TYPEFACE] {typeface_line}
+[CANVAS] {canvas_line}
+{photo_block}
+Before laying anything out, settle the one job this screen does: who is looking at it
+and the single thing they came to do or find out. Give that the top of the screen, the
+accent color, and the most space.
+
+Output the HTML only.
+
+SCOPE OPTIONS: choose one for {scope_line}
+------------------------------------------
+full
+A full screen UI, including the navigation the app itself draws (top bar, tab bar). No OS status bar.
+
+component
+A single self-contained component block — no top bar or tab bar. Center it on the canvas and leave the surrounding background a neutral solid color.
+
+CANVAS OPTION: full-screen UI
+-----------------------------
+A fixed {w}x{h}px screen.
+  - One container `<div class="screen">`, exactly {w}px by {h}px, holds the whole UI.
+    The class name must be exactly "screen" — that is how the output gets measured.
+  - Center it horizontally with vertical padding, never vertical centering — a short
+    viewport would crop the top (e.g. body { min-height:100vh; display:flex;
+    justify-content:center; align-items:flex-start; padding:40px 0; margin:0; }).
+    Give the body a neutral color that reads as distinct from the UI.
+  - Content starts at the very top edge. Do not reserve a status bar inset and do not
+    leave an empty band above the top bar — the top bar sits at y=0 and its own
+    padding is all the breathing room it gets.
+  - Design one screenful, not a scrolling page. Everything fits inside {w}x{h}px.
+    Leftover vertical space is fine — leave it empty. A screen taller than {h}px is a
+    failure, and so is a row cut off halfway; the fix for both is fewer entries.
+  - Put top bars and tab bars inside the container with flex or position:absolute,
+    never position:fixed. No 100vw or 100vh inside the container — use 100%.
+
+CANVAS OPTION: component UI
+---------------------------
+A {cw}px-wide canvas whose height the content decides.
+  - One container `<div class="screen">`, exactly {cw}px wide, holds the background and
+    the component. The class name must be exactly "screen" — that is how the output
+    gets measured.
+  - Do not give it a fixed height: no height, no min-height, no 100vh, no flex:1 on it.
+    It comes out as tall as the component plus its own padding, and that total must
+    land between {hmin}px and {hmax}px. If it would run past {hmax}px, use fewer
+    entries or shorter copy — never squeeze the spacing to make room.
+  - Equal padding top and bottom. That padding is the only vertical space around the
+    component. Never add a spacer, a filler block, or margin-top:auto to stretch it —
+    there is no height to reach.
+  - Center it horizontally with vertical padding, never vertical centering — a short
+    viewport would crop the top (e.g. body { min-height:100vh; display:flex;
+    justify-content:center; align-items:flex-start; padding:40px 0; margin:0; })
+    over a neutral background.
+  - Center the component inside with breathing room left and right.
+  - No 100vw or 100vh inside the container — use 100% of the container.
+
+IMAGERY OPTIONS: choose one for {imagery}
+-----------------------------------------
+photo
+Use real photographs wherever this screen would carry one — a hero, a product shot, a row of thumbnails. Follow the photo rules below exactly.
+
+tint
+Where a picture is needed, use a plain tinted rectangle — no letters inside.
+
+monogram
+Where a person needs a picture, use a monogram block with the same radius as the cards.
+
+svg-glyph
+Use simple line-art SVG glyphs in place of photos; no letters.
+
+none
+Use no imagery at all — text and layout carry the screen.
+
+PHOTO RULES: insert as {photo_block} only when imagery is photo
+---------------------------------------------------------------
+[PHOTOS] Every photo on this screen comes from one source, in exactly this form:
+  https://loremflickr.com/{W}/{H}/{TOPIC}?lock={N}
+- {W} and {H} are the exact CSS pixel size the image occupies, as whole numbers.
+- {TOPIC} is one keyword from this list, whichever suits that particular picture:
+  {topics}
+  Exactly one keyword per URL. Never join two with a comma — a comma means "tagged with
+  all of these" and comes back a blank gray placeholder.
+- {N} is a lock number. Use a different one for each photo on the screen, taken from
+  {lock_lo} to {lock_hi}.
+- Every <img> carries width="{W}" height="{H}" and an alt that describes what the
+  picture shows on this screen.
+- Its CSS sets object-fit:cover, display:block, and a solid background color, so a slow
+  connection leaves a filled block of the right size rather than a collapsed box.
+- Never a photo for a person's face or an avatar — use a monogram block there, at the
+  same radius as the cards.
+
+TYPEFACE OPTION: system font, inserted as {typeface_line}
+---------------------------------------------------------
+Use the system font stack and no webfont:
+font-family: {font_stack};
+
+TYPEFACE OPTION: webfont, inserted as {typeface_line}
+-----------------------------------------------------
+Use this typeface and no other. Put these lines in <head> verbatim:
+{font_link_tags}
+Body font-family: {font_stack};
+
+OPTIONAL TYPEFACE LINE: append only when a separate heading stack is assigned
+-----------------------------------------------------------------------------
+Headings only: {heading_stack};
+
+REPAIR MESSAGE: append when validation rejects an output
+--------------------------------------------------------
+The previous attempt was rejected for these problems:
+{issues}
+
+Build it again to the same spec with every problem fixed. {overflow_note}Output the HTML only.
+
+OVERFLOW NOTE: insert as {overflow_note} only for overflow issues
+-----------------------------------------------------------------
+Fixing means removing or simplifying, not adding — no new sections, elements, or decoration.

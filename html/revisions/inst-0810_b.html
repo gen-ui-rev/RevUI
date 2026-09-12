@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Halcyon — Weekly Standings</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#18181B;
+    --muted:#71717A;
+    --rule:#E4E4E7;
+    --accent:#E11D48;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    padding:40px 0;
+    background:#F4F4F5;
+    font-family:'Plus Jakarta Sans', system-ui, sans-serif;
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+  }
+  .screen{
+    width:390px;
+    height:560px;
+    background:#FFFFFF;
+    padding:20px;
+  }
+
+  .head{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    gap:12px;
+  }
+  .title{
+    font-size:19px;
+    line-height:24px;
+    font-weight:700;
+    letter-spacing:-0.2px;
+    margin:0;
+  }
+  .head .when{
+    font-size:11px;
+    line-height:24px;
+    color:var(--muted);
+    white-space:nowrap;
+  }
+  .circle{
+    margin:3px 0 0;
+    font-size:12px;
+    line-height:16px;
+    color:var(--muted);
+  }
+
+  /* the progress IS the block — a single hero element */
+  .hero{
+    position:relative;
+    margin-top:12px;
+    padding:14px 16px;
+    border-radius:8px;
+    background:#F4F4F5;
+  }
+  .hero .fill{
+    position:absolute;
+    left:0;
+    top:0;
+    bottom:0;
+    width:68%;
+    border-radius:8px 0 0 8px;
+    background:#FCE7EC;
+  }
+  .herotop{
+    position:relative;
+    display:flex;
+    align-items:center;
+    gap:14px;
+  }
+  .rankbig{
+    font-size:38px;
+    line-height:40px;
+    font-weight:700;
+    color:var(--accent);
+    letter-spacing:-1.5px;
+    flex:none;
+  }
+  .rankbig span{
+    font-size:15px;
+    font-weight:600;
+    letter-spacing:0;
+    vertical-align:top;
+    line-height:1;
+  }
+  .hlines{min-width:0;}
+  .melabel{
+    font-size:11px;
+    line-height:14px;
+    font-weight:700;
+    color:#52525B;
+    text-transform:uppercase;
+    letter-spacing:0.7px;
+  }
+  .mepoints{
+    font-size:14px;
+    line-height:18px;
+    font-weight:600;
+  }
+  .herofoot{
+    position:relative;
+    margin-top:8px;
+    font-size:11px;
+    line-height:15px;
+    font-weight:500;
+    color:#3F3F46;
+  }
+
+  /* stronger section headers: filled bands */
+  .sechead{
+    margin-top:16px;
+    padding:6px 10px;
+    border-radius:4px;
+    background:#18181B;
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    gap:10px;
+  }
+  .sechead h2{
+    margin:0;
+    font-size:11px;
+    line-height:15px;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:0.9px;
+    color:#FFFFFF;
+  }
+  .sechead .col{
+    font-size:10px;
+    line-height:15px;
+    font-weight:600;
+    text-transform:uppercase;
+    letter-spacing:0.8px;
+    color:#D4D4D8;
+    white-space:nowrap;
+  }
+
+  .row{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    height:38px;
+    border-bottom:1px solid var(--rule);
+  }
+  .rk{
+    width:16px;
+    font-size:14px;
+    font-weight:600;
+    color:var(--muted);
+    text-align:right;
+    font-variant-numeric:tabular-nums;
+    flex:none;
+  }
+  .mono{
+    width:28px;
+    height:28px;
+    border-radius:4px;
+    background:#F4F4F5;
+    color:#3F3F46;
+    font-size:11px;
+    font-weight:700;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex:none;
+  }
+  .name{
+    flex:1;
+    min-width:0;
+    font-size:14px;
+    font-weight:500;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .delta{
+    flex:none;
+    width:38px;
+    text-align:right;
+    font-size:12px;
+    line-height:16px;
+    font-weight:700;
+    font-variant-numeric:tabular-nums;
+  }
+  .delta.up{color:#15803D;}
+  .delta.down{color:#B91C1C;}
+  .delta.flat{color:#A1A1AA;font-weight:600;}
+  .pts{
+    flex:none;
+    width:44px;
+    text-align:right;
+    font-size:14px;
+    font-weight:600;
+    font-variant-numeric:tabular-nums;
+  }
+
+  .thumbs{
+    margin-top:12px;
+    display:flex;
+    gap:10px;
+  }
+  .thumb{width:110px;}
+  .thumb img{
+    display:block;
+    width:110px;
+    height:62px;
+    border-radius:4px;
+    object-fit:cover;
+    background:#E4E4E7;
+  }
+  .thumb .t1{
+    margin-top:6px;
+    font-size:12px;
+    line-height:16px;
+    font-weight:500;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .thumb .t2{
+    margin-top:2px;
+    font-size:11px;
+    line-height:15px;
+    color:var(--muted);
+  }
+</style>
+</head>
+<body>
+  <div class="screen">
+    <div class="head">
+      <h1 class="title">Weekly Standings</h1>
+      <div class="when">Ends Sunday, 11:59 PM</div>
+    </div>
+    <p class="circle">Nightowls circle · 128 members</p>
+
+    <div class="hero">
+      <i class="fill"></i>
+      <div class="herotop">
+        <div class="rankbig">7<span>th</span></div>
+        <div class="hlines">
+          <div class="melabel">Your rank this week</div>
+          <div class="mepoints">2,480 points · up 3 spots</div>
+        </div>
+      </div>
+      <div class="herofoot">68% of the way to #6 — 180 points behind Rosa Villar</div>
+    </div>
+
+    <div class="sechead">
+      <h2>Top of the circle</h2>
+      <div class="col">This week · Points</div>
+    </div>
+    <div class="row">
+      <div class="rk">1</div>
+      <div class="mono">TF</div>
+      <div class="name">Talia Fenwick</div>
+      <div class="delta up">▲2</div>
+      <div class="pts">4,210</div>
+    </div>
+    <div class="row">
+      <div class="rk">2</div>
+      <div class="mono">OM</div>
+      <div class="name">Owen Marsh</div>
+      <div class="delta down">▼1</div>
+      <div class="pts">3,880</div>
+    </div>
+    <div class="row">
+      <div class="rk">3</div>
+      <div class="mono">PR</div>
+      <div class="name">Priya Raval</div>
+      <div class="delta up">▲4</div>
+      <div class="pts">3,645</div>
+    </div>
+    <div class="row">
+      <div class="rk">4</div>
+      <div class="mono">DK</div>
+      <div class="name">Dane Kolar</div>
+      <div class="delta flat">held</div>
+      <div class="pts">3,120</div>
+    </div>
+
+    <div class="sechead">
+      <h2>Posts driving the lead</h2>
+      <div class="col">Boosts</div>
+    </div>
+    <div class="thumbs">
+      <div class="thumb">
+        <img src="https://loremflickr.com/110/62/party?lock=10780" width="110" height="62" alt="Crowd dancing at the rooftop meetup Talia posted">
+        <div class="t1">Rooftop hour</div>
+        <div class="t2">412 boosts</div>
+      </div>
+      <div class="thumb">
+        <img src="https://loremflickr.com/110/62/cafe?lock=10781" width="110" height="62" alt="Corner table at the morning cafe thread Owen started">
+        <div class="t1">Slow morning</div>
+        <div class="t2">296 boosts</div>
+      </div>
+      <div class="thumb">
+        <img src="https://loremflickr.com/110/62/street?lock=10782" width="110" height="62" alt="Night street walk photo shared by Priya">
+        <div class="t1">Late walk</div>
+        <div class="t2">241 boosts</div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

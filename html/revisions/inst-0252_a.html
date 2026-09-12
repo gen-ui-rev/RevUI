@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weekly Movement Goal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #e9ebef;
+      color: #20212a;
+      font-family: 'Manrope', system-ui, sans-serif;
+    }
+
+    .screen {
+      width: 390px;
+      height: 560px;
+      padding: 28px;
+      background: #fafafa;
+    }
+
+    .component {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .eyebrow {
+      margin: 0 0 6px;
+      color: #5146d9;
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1.4;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      color: #20212a;
+      font-size: 24px;
+      font-weight: 700;
+      line-height: 1.28;
+      letter-spacing: -0.02em;
+    }
+
+    /* summary card: ring at left, facts stacked at right */
+    .summary {
+      margin-top: 20px;
+      padding: 18px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      background: #ffffff;
+      border: 1px solid #e2e3ea;
+      border-radius: 18px;
+    }
+
+    .progress-wrap {
+      position: relative;
+      flex: 0 0 132px;
+      width: 132px;
+    }
+
+    .progress-ring {
+      display: block;
+      width: 132px;
+      height: 132px;
+    }
+
+    .track {
+      fill: none;
+      stroke: #e4e4eb;
+      stroke-width: 11;
+    }
+
+    .value {
+      fill: none;
+      stroke: #5146d9;
+      stroke-width: 11;
+      stroke-linecap: round;
+      stroke-dasharray: 68 100;
+    }
+
+    .ring-copy {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .percentage {
+      color: #20212a;
+      font-size: 30px;
+      font-weight: 700;
+      line-height: 1;
+      letter-spacing: -0.04em;
+    }
+
+    .ring-label {
+      margin-top: 6px;
+      color: #676975;
+      font-size: 11px;
+      font-weight: 500;
+      line-height: 1.4;
+    }
+
+    .facts {
+      flex: 1 1 auto;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .detail-label {
+      margin: 0 0 2px;
+      color: #777985;
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 1.4;
+    }
+
+    .detail-value {
+      margin: 0;
+      color: #282934;
+      font-size: 15px;
+      font-weight: 700;
+      line-height: 1.4;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* daily breakdown */
+    .breakdown {
+      margin-top: 22px;
+    }
+
+    .breakdown h2 {
+      margin: 0 0 12px;
+      color: #777985;
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1.4;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .day-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .day {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .day-name {
+      flex: 0 0 34px;
+      color: #4a4c58;
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1.4;
+    }
+
+    .day-bar {
+      flex: 1 1 auto;
+      height: 7px;
+      background: #e4e4eb;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .day-fill {
+      display: block;
+      height: 100%;
+      background: #5146d9;
+      border-radius: 4px;
+    }
+
+    .day-fill.rest {
+      background: #cfd0d9;
+    }
+
+    .day-value {
+      flex: 0 0 48px;
+      color: #676975;
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 1.4;
+      text-align: right;
+    }
+
+    .footnote {
+      margin: 16px 0 0;
+      padding-top: 14px;
+      border-top: 1px solid #dedfe5;
+      color: #676975;
+      font-size: 13px;
+      font-weight: 500;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <main class="component" aria-labelledby="goal-title">
+      <header>
+        <p class="eyebrow">Weekly activity</p>
+        <h1 id="goal-title">Movement goal</h1>
+      </header>
+
+      <section class="summary">
+        <div class="progress-wrap" role="img" aria-label="68 percent of weekly movement goal completed">
+          <svg class="progress-ring" viewBox="0 0 132 132" aria-hidden="true">
+            <circle class="track" cx="66" cy="66" r="56"></circle>
+            <circle class="value" cx="66" cy="66" r="56" pathLength="100" transform="rotate(-90 66 66)"></circle>
+          </svg>
+          <div class="ring-copy">
+            <span class="percentage">68%</span>
+            <span class="ring-label">complete</span>
+          </div>
+        </div>
+
+        <div class="facts">
+          <div class="detail">
+            <p class="detail-label">Completed</p>
+            <p class="detail-value">102 of 150 min</p>
+          </div>
+          <div class="detail">
+            <p class="detail-label">Remaining</p>
+            <p class="detail-value">48 active min</p>
+          </div>
+          <div class="detail">
+            <p class="detail-label">Goal ends</p>
+            <p class="detail-value">Sunday</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="breakdown">
+        <h2>Daily minutes</h2>
+        <div class="day-list">
+          <div class="day">
+            <span class="day-name">Mon</span>
+            <span class="day-bar"><span class="day-fill" style="width:60%"></span></span>
+            <span class="day-value">24 min</span>
+          </div>
+          <div class="day">
+            <span class="day-name">Tue</span>
+            <span class="day-bar"><span class="day-fill" style="width:45%"></span></span>
+            <span class="day-value">18 min</span>
+          </div>
+          <div class="day">
+            <span class="day-name">Wed</span>
+            <span class="day-bar"><span class="day-fill rest" style="width:4%"></span></span>
+            <span class="day-value">Rest</span>
+          </div>
+          <div class="day">
+            <span class="day-name">Thu</span>
+            <span class="day-bar"><span class="day-fill" style="width:80%"></span></span>
+            <span class="day-value">32 min</span>
+          </div>
+          <div class="day">
+            <span class="day-name">Fri</span>
+            <span class="day-bar"><span class="day-fill" style="width:70%"></span></span>
+            <span class="day-value">28 min</span>
+          </div>
+        </div>
+      </section>
+
+      <p class="footnote">Two 24-minute walks this weekend will close the ring before Sunday night.</p>
+    </main>
+  </div>
+</body>
+</html>

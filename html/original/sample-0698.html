@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Private Feedback — Morrow Audio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #d9d9d6;
+      color: #242424;
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    }
+
+    button,
+    textarea,
+    input {
+      font: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #f2f2f0;
+    }
+
+    .topbar {
+      flex: 0 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 15px 18px;
+      background: #ffffff;
+      border-bottom: 1px solid #dededb;
+    }
+
+    .back-button {
+      width: 32px;
+      height: 32px;
+      padding: 0;
+      display: grid;
+      place-items: center;
+      color: #303030;
+      background: transparent;
+      border: 0;
+    }
+
+    .back-button svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .topbar-copy {
+      min-width: 0;
+    }
+
+    .service-name {
+      margin: 0 0 2px;
+      color: #717171;
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1.2;
+      letter-spacing: 0.02em;
+    }
+
+    .page-name {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 1.3;
+    }
+
+    main {
+      flex: 1 1 auto;
+      min-height: 0;
+      padding: 18px;
+    }
+
+    .intro {
+      margin-bottom: 15px;
+    }
+
+    .intro h1 {
+      margin: 0 0 7px;
+      color: #292929;
+      font-size: 24px;
+      font-weight: 700;
+      line-height: 1.22;
+      letter-spacing: -0.025em;
+    }
+
+    .intro p {
+      margin: 0;
+      color: #666663;
+      font-size: 14px;
+      line-height: 1.48;
+    }
+
+    .episode {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+      padding: 10px;
+      background: #ffffff;
+      border: 1px solid #dededb;
+      border-radius: 4px;
+    }
+
+    .episode img {
+      width: 64px;
+      height: 64px;
+      flex: 0 0 64px;
+      display: block;
+      object-fit: cover;
+      background: #c8c8c5;
+      border-radius: 4px;
+    }
+
+    .episode-copy {
+      min-width: 0;
+    }
+
+    .episode-kicker {
+      margin: 0 0 4px;
+      color: #767673;
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1.25;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .episode-title {
+      margin: 0 0 4px;
+      color: #292929;
+      font-size: 15px;
+      font-weight: 700;
+      line-height: 1.35;
+    }
+
+    .episode-meta {
+      margin: 0;
+      color: #6c6c69;
+      font-size: 13px;
+      line-height: 1.3;
+    }
+
+    .feedback-card {
+      padding: 16px;
+      background: #ffffff;
+      border-radius: 4px;
+      box-shadow: 0 3px 12px rgba(26, 26, 26, 0.09);
+    }
+
+    .field-group {
+      margin: 0;
+      padding: 0;
+      border: 0;
+    }
+
+    .field-label {
+      display: block;
+      margin: 0 0 5px;
+      color: #292929;
+      font-size: 15px;
+      font-weight: 700;
+      line-height: 1.35;
+    }
+
+    .field-help {
+      margin: 0 0 11px;
+      color: #70706d;
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    .rating-row {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 7px;
+    }
+
+    .rating {
+      min-width: 0;
+      height: 46px;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      color: #656562;
+      background: #f7f7f5;
+      border: 1px solid #d7d7d3;
+      border-radius: 4px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .rating svg {
+      width: 15px;
+      height: 15px;
+    }
+
+    .rating.selected {
+      color: #ffffff;
+      background: #4a4a48;
+      border-color: #4a4a48;
+    }
+
+    .divider {
+      height: 1px;
+      margin: 15px 0;
+      background: #e5e5e2;
+    }
+
+    .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+    }
+
+    .chip {
+      padding: 8px 10px;
+      color: #555552;
+      background: #f7f7f5;
+      border: 1px solid #d7d7d3;
+      border-radius: 4px;
+      font-size: 13px;
+      font-weight: 600;
+      line-height: 1.2;
+    }
+
+    .chip.selected {
+      color: #2f2f2e;
+      background: #dededb;
+      border-color: #9b9b97;
+    }
+
+    .feedback-text {
+      width: 100%;
+      height: 88px;
+      margin: 2px 0 0;
+      padding: 11px 12px;
+      resize: none;
+      color: #383837;
+      background: #fafaf8;
+      border: 1px solid #d4d4d0;
+      border-radius: 4px;
+      outline: none;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .follow-up {
+      display: flex;
+      align-items: flex-start;
+      gap: 9px;
+      margin: 13px 0;
+      color: #555552;
+      font-size: 13px;
+      line-height: 1.42;
+    }
+
+    .follow-up input {
+      width: 16px;
+      height: 16px;
+      flex: 0 0 16px;
+      margin: 2px 0 0;
+      accent-color: #4a4a48;
+    }
+
+    .submit-button {
+      width: 100%;
+      height: 46px;
+      padding: 0 16px;
+      color: #ffffff;
+      background: #464644;
+      border: 1px solid #464644;
+      border-radius: 4px;
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .privacy-note {
+      display: flex;
+      align-items: flex-start;
+      gap: 7px;
+      margin: 11px 0 0;
+      color: #777774;
+      font-size: 12px;
+      line-height: 1.42;
+    }
+
+    .privacy-note svg {
+      width: 15px;
+      height: 15px;
+      flex: 0 0 15px;
+      margin-top: 1px;
+    }
+
+    .tabbar {
+      flex: 0 0 auto;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      padding: 8px 8px 10px;
+      background: #ffffff;
+      border-top: 1px solid #dededb;
+    }
+
+    .tab {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      padding: 2px 0;
+      color: #8a8a86;
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1.2;
+    }
+
+    .tab svg {
+      width: 21px;
+      height: 21px;
+    }
+
+    .tab.active {
+      color: #383837;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <button class="back-button" type="button" aria-label="Go back">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <div class="topbar-copy">
+        <p class="service-name">Morrow Audio</p>
+        <p class="page-name">Private feedback</p>
+      </div>
+    </header>
+
+    <main>
+      <section class="intro">
+        <h1>How was your listening experience?</h1>
+        <p>Share feedback about this episode with our listening team.</p>
+      </section>
+
+      <section class="episode" aria-label="Episode being reviewed">
+        <img src="https://loremflickr.com/64/64/studio?lock=9330" width="64" height="64" alt="Podcast recording equipment in a studio">
+        <div class="episode-copy">
+          <p class="episode-kicker">Recently played</p>
+          <p class="episode-title">After Hours: Building Better Habits</p>
+          <p class="episode-meta">The Daily Current · 42 min</p>
+        </div>
+      </section>
+
+      <form class="feedback-card">
+        <fieldset class="field-group">
+          <legend class="field-label">Overall experience</legend>
+          <p class="field-help">Select one rating. You chose 4 out of 5.</p>
+          <div class="rating-row">
+            <button class="rating" type="button" aria-label="Rate 1 out of 5">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M12 3.8L14.5 8.9L20.1 9.7L16 13.7L17 19.3L12 16.7L7 19.3L8 13.7L3.9 9.7L9.5 8.9L12 3.8Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+              </svg>
+              1
+            </button>
+            <button class="rating" type="button" aria-label="Rate 2 out of 5">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M12 3.8L14.5 8.9L20.1 9.7L16 13.7L17 19.3L12 16.7L7 19.3L8 13.7L3.9 9.7L9.5 8.9L12 3.8Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+              </svg>
+              2
+            </button>
+            <button class="rating" type="button" aria-label="Rate 3 out of 5">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M12 3.8L14.5 8.9L20.1 9.7L16 13.7L17 19.3L12 16.7L7 19.3L8 13.7L3.9 9.7L9.5 8.9L12 3.8Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+              </svg>
+              3
+            </button>
+            <button class="rating selected" type="button" aria-label="Rate 4 out of 5, selected">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M12 3.8L14.5 8.9L20.1 9.7L16 13.7L17 19.3L12 16.7L7 19.3L8 13.7L3.9 9.7L9.5 8.9L12 3.8Z"/>
+              </svg>
+              4
+            </button>
+            <button class="rating" type="button" aria-label="Rate 5 out of 5">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M12 3.8L14.5 8.9L20.1 9.7L16 13.7L17 19.3L12 16.7L7 19.3L8 13.7L3.9 9.7L9.5 8.9L12 3.8Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+              </svg>
+              5
+            </button>
+          </div>
+        </fieldset>
+
+        <div class="divider"></div>
+
+        <fieldset class="field-group">
+          <legend class="field-label">What influenced your rating?</legend>
+          <div class="chip-row">
+            <button class="chip selected" type="button">Playback</button>
+            <button class="chip selected" type="button">Audio quality</button>
+            <button class="chip" type="button">Episode info</button>
+          </div>
+        </fieldset>
+
+        <div class="divider"></div>
+
+        <label class="field-label" for="feedback-detail">Add details</label>
+        <textarea class="feedback-text" id="feedback-detail">The episode resumed in the right place, but the audio briefly became quiet after an ad break.</textarea>
+
+        <label class="follow-up">
+          <input type="checkbox" checked>
+          <span>Morrow Audio may contact me about this feedback.</span>
+        </label>
+
+        <button class="submit-button" type="submit">Submit private feedback</button>
+
+        <p class="privacy-note">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <rect x="5.5" y="10" width="13" height="10" rx="1" stroke="currentColor" stroke-width="1.7"/>
+            <path d="M8.5 10V7.5C8.5 5.57 10.07 4 12 4C13.93 4 15.5 5.57 15.5 7.5V10" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+          </svg>
+          <span>Your response is not posted publicly or shared with the show.</span>
+        </p>
+      </form>
+    </main>
+
+    <nav class="tabbar" aria-label="Primary navigation">
+      <a class="tab" href="#">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M4 10.5L12 4L20 10.5V20H14.5V14H9.5V20H4V10.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+        </svg>
+        <span>Home</span>
+      </a>
+      <a class="tab" href="#">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="10.5" cy="10.5" r="6.5" stroke="currentColor" stroke-width="1.7"/>
+          <path d="M15.5 15.5L20 20" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+        </svg>
+        <span>Search</span>
+      </a>
+      <a class="tab" href="#">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M5 5.5H9V19H5V5.5ZM10.5 5.5H14.5V19H10.5V5.5ZM16 7L19 6V19H16V7Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+        </svg>
+        <span>Library</span>
+      </a>
+      <a class="tab active" href="#" aria-current="page">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="12" cy="8" r="3.5" stroke="currentColor" stroke-width="1.7"/>
+          <path d="M5.5 20C5.9 16.7 8.4 14.5 12 14.5C15.6 14.5 18.1 16.7 18.5 20" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+        </svg>
+        <span>You</span>
+      </a>
+    </nav>
+  </div>
+</body>
+</html>

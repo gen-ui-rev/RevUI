@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Driftwell Table Search</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #e9e6e2;
+      color: #292522;
+      font-family: 'Source Serif 4', Georgia, serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      width: 1024px;
+      height: 768px;
+      display: flex;
+      background: #fffdfb;
+      border: 1px solid #d8d3ce;
+    }
+
+    .rail {
+      width: 78px;
+      flex: 0 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      padding: 16px 0 18px;
+      background: #292522;
+    }
+
+    .mark {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      margin-bottom: 14px;
+      border-radius: 11px;
+      background: #c7352e;
+      color: #ffffff;
+      font-size: 19px;
+      font-weight: 700;
+    }
+
+    .rail-btn {
+      width: 62px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 8px 0;
+      border: 0;
+      border-radius: 10px;
+      background: transparent;
+      color: #a89f97;
+      font-size: 11px;
+      line-height: 1.3;
+      cursor: pointer;
+    }
+
+    .rail-btn svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .rail-btn.active {
+      background: #3b3531;
+      color: #ffffff;
+      font-weight: 600;
+    }
+
+    .rail-foot {
+      margin-top: auto;
+    }
+
+    .main {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .top-bar {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 17px 24px;
+      border-bottom: 1px solid #e1ddd8;
+    }
+
+    .combo {
+      height: 44px;
+      flex: 0 0 auto;
+      display: flex;
+      align-items: center;
+      padding: 0 4px 0 0;
+      border: 1px solid #d8d3ce;
+      border-radius: 999px;
+      background: #ffffff;
+    }
+
+    .combo-cell {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 16px;
+      border: 0;
+      background: transparent;
+      color: #4d4742;
+      font-size: 14px;
+      line-height: 1.35;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+
+    .combo-cell.place {
+      color: #24201e;
+      font-weight: 600;
+    }
+
+    .combo-cell svg {
+      width: 16px;
+      height: 16px;
+      flex: 0 0 auto;
+      color: #c7352e;
+    }
+
+    .divider {
+      width: 1px;
+      height: 22px;
+      flex: 0 0 auto;
+      background: #e1ddd8;
+    }
+
+    .go {
+      width: 36px;
+      height: 36px;
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      padding: 0;
+      border: 0;
+      border-radius: 50%;
+      background: #c7352e;
+      color: #ffffff;
+      cursor: pointer;
+    }
+
+    .go svg {
+      width: 17px;
+      height: 17px;
+    }
+
+    .clear-search {
+      width: 24px;
+      height: 24px;
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      padding: 0;
+      margin-left: 2px;
+      border: 0;
+      border-radius: 8px;
+      background: #f1eeeb;
+      color: #746d67;
+      cursor: pointer;
+    }
+
+    .clear-search svg {
+      width: 13px;
+      height: 13px;
+    }
+
+    .top-right {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      margin-left: auto;
+    }
+
+    .top-note {
+      margin: 0;
+      color: #8a827b;
+      font-size: 12px;
+      line-height: 1.4;
+      white-space: nowrap;
+    }
+
+    .top-action {
+      border: 0;
+      padding: 3px 0;
+      background: transparent;
+      color: #c7352e;
+      font-size: 14px;
+      line-height: 1.4;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .toolbar {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 18px 24px 12px;
+    }
+
+    .toolbar h1 {
+      margin: 0;
+      font-size: 23px;
+      line-height: 1.2;
+      font-weight: 600;
+      letter-spacing: -0.3px;
+    }
+
+    .toolbar .count {
+      margin: 3px 0 0;
+      color: #766f69;
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .sort {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 7px 12px;
+      border: 1px solid #d8d3ce;
+      border-radius: 8px;
+      background: #fffdfb;
+      color: #4d4742;
+      font-size: 13px;
+      line-height: 1.35;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+
+    .sort svg {
+      width: 13px;
+      height: 13px;
+      color: #746d67;
+    }
+
+    .listing-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding: 0 24px 18px;
+    }
+
+    .listing {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 11px 16px;
+      border: 1px solid #e4dfda;
+      border-left: 3px solid #c7352e;
+      background: #ffffff;
+    }
+
+    .listing.limited {
+      border-left-color: #b8b1aa;
+      background: #faf8f6;
+    }
+
+    .listing img {
+      width: 128px;
+      height: 88px;
+      flex: 0 0 auto;
+      display: block;
+      object-fit: cover;
+      border-radius: 4px;
+      background: #d8d1ca;
+    }
+
+    .listing-main {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .listing-main h2 {
+      margin: 0;
+      overflow: hidden;
+      font-size: 17px;
+      line-height: 1.3;
+      font-weight: 600;
+      letter-spacing: -0.1px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .meta {
+      margin: 3px 0 0;
+      overflow: hidden;
+      color: #746d67;
+      font-size: 12.5px;
+      line-height: 1.35;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .rating {
+      margin: 4px 0 0;
+      overflow: hidden;
+      color: #4d4742;
+      font-size: 12.5px;
+      line-height: 1.35;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .rating strong {
+      color: #292522;
+      font-weight: 600;
+    }
+
+    .slots {
+      width: 316px;
+      flex: 0 0 auto;
+      text-align: right;
+    }
+
+    .slots-label {
+      display: block;
+      margin-bottom: 7px;
+      color: #8a827b;
+      font-size: 10.5px;
+      line-height: 1.3;
+      font-weight: 600;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+    }
+
+    .slot-row {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+
+    .slot {
+      padding: 6px 10px;
+      border: 1px solid #c7352e;
+      border-radius: 8px;
+      background: #ffffff;
+      color: #c7352e;
+      font-size: 12.5px;
+      line-height: 1.3;
+      font-weight: 600;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+
+    .slot.waitlist {
+      border-color: #c4bdb6;
+      background: #f1eeeb;
+      color: #5b544e;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <nav class="rail" aria-label="Primary navigation">
+      <div class="mark" aria-hidden="true">D</div>
+      <button class="rail-btn active" type="button" aria-current="page">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="10.5" cy="10.5" r="6.5" stroke="currentColor" stroke-width="1.7"></circle>
+          <path d="M15.5 15.5L21 21" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"></path>
+        </svg>
+        Search
+      </button>
+      <button class="rail-btn" type="button">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <rect x="4" y="5.5" width="16" height="14" rx="2.5" stroke="currentColor" stroke-width="1.6"></rect>
+          <path d="M4 10H20M8.5 4V7M15.5 4V7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path>
+        </svg>
+        Bookings
+      </button>
+      <button class="rail-btn" type="button">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M12 20S4.5 15.7 4.5 9.5C4.5 6.9 6.3 5 8.8 5C10.3 5 11.4 5.8 12 6.8C12.6 5.8 13.7 5 15.2 5C17.7 5 19.5 6.9 19.5 9.5C19.5 15.7 12 20 12 20Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"></path>
+        </svg>
+        Saved
+      </button>
+      <button class="rail-btn rail-foot" type="button">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="12" cy="8" r="3.5" stroke="currentColor" stroke-width="1.6"></circle>
+          <path d="M5.5 20C6 16.4 8.2 14.5 12 14.5C15.8 14.5 18 16.4 18.5 20" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path>
+        </svg>
+        Account
+      </button>
+    </nav>
+
+    <div class="main">
+      <header class="top-bar">
+        <div class="combo" role="search" aria-label="Table search">
+          <span class="combo-cell place">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M12 21C12 21 19 15.5 19 10.2C19 6.5 15.9 3.6 12 3.6C8.1 3.6 5 6.5 5 10.2C5 15.5 12 21 12 21Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"></path>
+              <circle cx="12" cy="10" r="2.4" stroke="currentColor" stroke-width="1.7"></circle>
+            </svg>
+            Santa Barbara, California
+            <button class="clear-search" type="button" aria-label="Clear location">
+              <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M4 4L12 12M12 4L4 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
+              </svg>
+            </button>
+          </span>
+          <span class="divider" aria-hidden="true"></span>
+          <button class="combo-cell" type="button">Tue, May 18</button>
+          <span class="divider" aria-hidden="true"></span>
+          <button class="combo-cell" type="button">7:00 PM</button>
+          <span class="divider" aria-hidden="true"></span>
+          <button class="combo-cell" type="button">2 guests</button>
+          <button class="go" type="button" aria-label="Find openings">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <circle cx="10.5" cy="10.5" r="6.5" stroke="currentColor" stroke-width="2"></circle>
+              <path d="M15.5 15.5L21 21" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+            </svg>
+          </button>
+        </div>
+        <div class="top-right">
+          <p class="top-note">Openings refreshed at 4:52 PM</p>
+          <button class="top-action" type="button">Map view</button>
+        </div>
+      </header>
+
+      <section class="toolbar" aria-labelledby="results-title">
+        <div>
+          <h1 id="results-title">Tables available tonight</h1>
+          <p class="count">48 restaurants in Santa Barbara · party of 2</p>
+        </div>
+        <button class="sort" type="button">
+          Sort: Earliest opening
+          <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+          </svg>
+        </button>
+      </section>
+
+      <div class="listing-list">
+        <article class="listing">
+          <img src="https://loremflickr.com/128/88/hotel?lock=1030" width="128" height="88" alt="Harborside oyster bar dining terrace">
+          <div class="listing-main">
+            <h2>Harbor House Oyster Bar</h2>
+            <p class="meta">Seafood · $$$ · West Beach</p>
+            <p class="rating"><strong>4.8</strong> · 214 reviews · Booked 39 times today</p>
+          </div>
+          <div class="slots">
+            <span class="slots-label">4 openings tonight</span>
+            <div class="slot-row">
+              <button class="slot" type="button">5:45 PM</button>
+              <button class="slot" type="button">6:30 PM</button>
+              <button class="slot" type="button">7:45 PM</button>
+              <button class="slot" type="button">8:15 PM</button>
+            </div>
+          </div>
+        </article>
+
+        <article class="listing">
+          <img src="https://loremflickr.com/128/88/beach?lock=1031" width="128" height="88" alt="Beachfront dining room with open windows">
+          <div class="listing-main">
+            <h2>Bungalow Ten</h2>
+            <p class="meta">Californian · $$ · East Beach</p>
+            <p class="rating"><strong>4.7</strong> · 168 reviews · Booked 24 times today</p>
+          </div>
+          <div class="slots">
+            <span class="slots-label">3 openings tonight</span>
+            <div class="slot-row">
+              <button class="slot" type="button">6:00 PM</button>
+              <button class="slot" type="button">7:15 PM</button>
+              <button class="slot" type="button">9:00 PM</button>
+            </div>
+          </div>
+        </article>
+
+        <article class="listing">
+          <img src="https://loremflickr.com/128/88/hotel?lock=1032" width="128" height="88" alt="Garden courtyard set for dinner service">
+          <div class="listing-main">
+            <h2>Mesa Garden Trattoria</h2>
+            <p class="meta">Italian · $$$ · The Mesa</p>
+            <p class="rating"><strong>4.6</strong> · 302 reviews · Patio seating open</p>
+          </div>
+          <div class="slots">
+            <span class="slots-label">4 openings tonight</span>
+            <div class="slot-row">
+              <button class="slot" type="button">5:30 PM</button>
+              <button class="slot" type="button">6:45 PM</button>
+              <button class="slot" type="button">8:00 PM</button>
+              <button class="slot" type="button">8:30 PM</button>
+            </div>
+          </div>
+        </article>
+
+        <article class="listing">
+          <img src="https://loremflickr.com/128/88/cityscape?lock=1033" width="128" height="88" alt="Downtown tapas restaurant on State Street">
+          <div class="listing-main">
+            <h2>State Street Tapas</h2>
+            <p class="meta">Spanish · $$ · Downtown</p>
+            <p class="rating"><strong>4.5</strong> · 447 reviews · Booked 61 times today</p>
+          </div>
+          <div class="slots">
+            <span class="slots-label">3 openings tonight</span>
+            <div class="slot-row">
+              <button class="slot" type="button">6:15 PM</button>
+              <button class="slot" type="button">7:30 PM</button>
+              <button class="slot" type="button">9:15 PM</button>
+            </div>
+          </div>
+        </article>
+
+        <article class="listing limited">
+          <img src="https://loremflickr.com/128/88/mountain?lock=1034" width="128" height="88" alt="Hillside grill room with canyon views">
+          <div class="listing-main">
+            <h2>Mission Canyon Grill</h2>
+            <p class="meta">Steakhouse · $$$$ · Upper East</p>
+            <p class="rating"><strong>4.9</strong> · 126 reviews · Nearly fully booked</p>
+          </div>
+          <div class="slots">
+            <span class="slots-label">2 openings tonight</span>
+            <div class="slot-row">
+              <button class="slot" type="button">5:15 PM</button>
+              <button class="slot" type="button">8:45 PM</button>
+              <button class="slot waitlist" type="button">Join waitlist</button>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daily Market Audio Player</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #e3e7eb;
+      color: #17212b;
+      font-family: 'Roboto', system-ui, sans-serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 560px;
+      padding: 24px;
+      background: #eef1f4;
+    }
+
+    .player-card {
+      width: 100%;
+      padding: 12px;
+      background: #ffffff;
+      box-shadow: 0 8px 22px rgba(28, 42, 56, 0.10);
+    }
+
+    .episode-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .cover-art {
+      width: 80px;
+      height: 80px;
+      flex: 0 0 80px;
+      object-fit: cover;
+      display: block;
+      background: #cbd5dc;
+    }
+
+    .episode-copy {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .eyebrow {
+      margin: 0 0 4px;
+      color: #1689c9;
+      font-size: 11px;
+      font-weight: 700;
+      line-height: 15px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      color: #17212b;
+      font-size: 21px;
+      font-weight: 700;
+      line-height: 26px;
+    }
+
+    .publisher {
+      margin: 4px 0 0;
+      color: #64717d;
+      font-size: 13px;
+      line-height: 18px;
+    }
+
+    .summary {
+      margin-top: 14px;
+      padding: 10px 12px;
+      background: #f4f7f9;
+      border-left: 3px solid #2da9e8;
+    }
+
+    .summary-label {
+      margin: 0 0 3px;
+      color: #4c5a65;
+      font-size: 11px;
+      font-weight: 700;
+      line-height: 15px;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+    }
+
+    .summary-text {
+      margin: 0;
+      color: #3c4a55;
+      font-size: 13px;
+      line-height: 18px;
+    }
+
+    .progress-area {
+      margin-top: 14px;
+    }
+
+    .progress-track {
+      position: relative;
+      width: 100%;
+      height: 4px;
+      background: #dce3e8;
+    }
+
+    .progress-fill {
+      width: 38%;
+      height: 4px;
+      background: #2da9e8;
+    }
+
+    .progress-knob {
+      position: absolute;
+      top: -4px;
+      left: calc(38% - 6px);
+      width: 12px;
+      height: 12px;
+      background: #2da9e8;
+      border: 2px solid #ffffff;
+      border-radius: 50%;
+    }
+
+    .time-row {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 6px;
+      color: #6b7782;
+      font-size: 12px;
+      line-height: 17px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .controls {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      margin-top: 12px;
+    }
+
+    .control-button {
+      width: 40px;
+      height: 40px;
+      padding: 0;
+      display: grid;
+      place-items: center;
+      border: 1px solid #d4dce2;
+      border-radius: 0;
+      background: #ffffff;
+      color: #33414d;
+    }
+
+    .control-button.primary {
+      width: 44px;
+      height: 44px;
+      border-color: #2da9e8;
+      background: #2da9e8;
+      color: #ffffff;
+    }
+
+    .control-button svg {
+      width: 20px;
+      height: 20px;
+      display: block;
+    }
+
+    .primary svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .speed-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 14px;
+      padding: 7px 10px;
+      background: #f4f7f9;
+      border: 1px solid #e4e9ed;
+    }
+
+    .speed-bar-label {
+      color: #55636e;
+      font-size: 12px;
+      line-height: 17px;
+    }
+
+    .speed-button {
+      width: 52px;
+      height: 28px;
+      padding: 0;
+      border: 1px solid #cfd8de;
+      border-radius: 0;
+      background: #ffffff;
+      color: #27343e;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .queue {
+      margin-top: 16px;
+      padding-top: 14px;
+      border-top: 1px solid #e2e7eb;
+    }
+
+    .queue-title {
+      margin: 0 0 4px;
+      color: #293641;
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 19px;
+    }
+
+    .queue-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 9px 0;
+      border-top: 1px solid #edf0f2;
+    }
+
+    .queue-row:first-of-type {
+      border-top: 0;
+    }
+
+    .queue-index {
+      width: 18px;
+      flex: 0 0 18px;
+      color: #1689c9;
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 18px;
+    }
+
+    .queue-copy {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .queue-name {
+      margin: 0;
+      overflow: hidden;
+      color: #27343e;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 18px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .duration {
+      color: #67737d;
+      font-size: 12px;
+      line-height: 17px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .visually-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      white-space: nowrap;
+      border: 0;
+      clip: rect(0 0 0 0);
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <main class="player-card" aria-label="Northbank daily market audio player">
+      <div class="episode-header">
+        <img
+          class="cover-art"
+          src="https://loremflickr.com/80/80/chart?lock=5690"
+          width="80"
+          height="80"
+          alt="Financial market chart displayed across several monitors"
+        >
+        <div class="episode-copy">
+          <p class="eyebrow">Northbank Daily Audio</p>
+          <h1>Market Open: Rates Hold Steady</h1>
+          <p class="publisher">Morning Briefing · Apr 18</p>
+        </div>
+      </div>
+
+      <section class="summary" aria-labelledby="summary-heading">
+        <h2 class="summary-label" id="summary-heading">In this episode</h2>
+        <p class="summary-text">The Fed held rates a third straight meeting. Inside: the bond reaction, bank earnings Friday, and levels to watch.</p>
+      </section>
+
+      <div class="progress-area">
+        <div
+          class="progress-track"
+          role="progressbar"
+          aria-label="Playback progress"
+          aria-valuemin="0"
+          aria-valuemax="100"
+          aria-valuenow="38"
+        >
+          <div class="progress-fill"></div>
+          <div class="progress-knob"></div>
+        </div>
+        <div class="time-row">
+          <span>4:28</span>
+          <span>11:42</span>
+        </div>
+      </div>
+
+      <div class="controls" aria-label="Playback controls">
+        <button class="control-button" type="button" aria-label="Rewind 15 seconds">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M8 7H4V3" stroke="currentColor" stroke-width="1.8" stroke-linecap="square" stroke-linejoin="miter"/>
+            <path d="M4.7 7.2A8 8 0 1 1 4 15" stroke="currentColor" stroke-width="1.8" stroke-linecap="square"/>
+            <path d="M9 10.2v4.2M12.5 10.2h2v4.2h-2" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/>
+          </svg>
+        </button>
+
+        <button class="control-button primary" type="button" aria-label="Pause">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M8 6v12M16 6v12" stroke="currentColor" stroke-width="2.5" stroke-linecap="square"/>
+          </svg>
+        </button>
+
+        <button class="control-button" type="button" aria-label="Forward 30 seconds">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M16 7h4V3" stroke="currentColor" stroke-width="1.8" stroke-linecap="square" stroke-linejoin="miter"/>
+            <path d="M19.3 7.2A8 8 0 1 0 20 15" stroke="currentColor" stroke-width="1.8" stroke-linecap="square"/>
+            <path d="M8.5 10.2h2v4.2h-2M13 10.2h2v4.2h-2" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="speed-bar">
+        <span class="speed-bar-label">Playback speed</span>
+        <button class="speed-button" type="button" aria-label="Change playback speed, currently one times">1×</button>
+      </div>
+
+      <section class="queue" aria-labelledby="queue-heading">
+        <h2 class="queue-title" id="queue-heading">Up next</h2>
+
+        <div class="queue-row">
+          <span class="queue-index">01</span>
+          <div class="queue-copy">
+            <p class="queue-name">What Lower Bond Yields Mean</p>
+          </div>
+          <span class="duration">8:16</span>
+        </div>
+
+        <div class="queue-row">
+          <span class="queue-index">02</span>
+          <div class="queue-copy">
+            <p class="queue-name">Your Friday Portfolio Checklist</p>
+          </div>
+          <span class="duration">6:34</span>
+        </div>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

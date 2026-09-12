@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Filter Stays Step by Step</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #d9dce1;
+      color: #202124;
+      font-family: 'Roboto', system-ui, sans-serif;
+    }
+
+    button {
+      color: inherit;
+      font: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #f1f2f4;
+      box-shadow: 0 8px 24px rgba(26, 30, 36, 0.14);
+    }
+
+    .topbar {
+      padding: 14px 16px;
+      display: grid;
+      grid-template-columns: 32px 1fr auto;
+      align-items: center;
+      gap: 8px;
+      background: #ffffff;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    .icon-button {
+      width: 28px;
+      height: 28px;
+      padding: 2px;
+      display: grid;
+      place-items: center;
+      border: 0;
+      background: transparent;
+    }
+
+    .topbar h1 {
+      margin: 0;
+      font-size: 20px;
+      line-height: 24px;
+      font-weight: 700;
+    }
+
+    .reset-button {
+      padding: 4px 0;
+      border: 0;
+      background: transparent;
+      color: #b31569;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 500;
+    }
+
+    .trip-context {
+      padding: 9px 16px 10px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 12px;
+      background: #ffffff;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    .trip-copy {
+      min-width: 0;
+    }
+
+    .trip-title {
+      margin: 0;
+      overflow: hidden;
+      font-size: 15px;
+      line-height: 20px;
+      font-weight: 500;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .trip-meta {
+      margin: 1px 0 0;
+      color: #69707a;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .result-count {
+      color: #b31569;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .flow {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      background: #ffffff;
+      border-bottom: 1px solid #dfe1e5;
+    }
+
+    .flow-step {
+      position: relative;
+      padding: 10px 5px 9px;
+      min-width: 0;
+      text-align: center;
+      color: #777c84;
+      background: #f8f8f9;
+      border-right: 1px solid #e1e3e6;
+    }
+
+    .flow-step:last-child {
+      border-right: 0;
+    }
+
+    .flow-step.current {
+      color: #9d125b;
+      background: #ffffff;
+      box-shadow: inset 0 -4px #c21875;
+    }
+
+    .step-number {
+      width: 24px;
+      height: 24px;
+      margin: 0 auto 4px;
+      display: grid;
+      place-items: center;
+      border: 1px solid #b9bdc3;
+      background: #ffffff;
+      font-size: 12px;
+      line-height: 18px;
+      font-weight: 700;
+    }
+
+    .current .step-number {
+      border-color: #c21875;
+      background: #c21875;
+      color: #ffffff;
+    }
+
+    .step-name {
+      display: block;
+      font-size: 11px;
+      line-height: 14px;
+      font-weight: 700;
+    }
+
+    .step-state {
+      display: block;
+      margin-top: 1px;
+      font-size: 10px;
+      line-height: 13px;
+      font-weight: 500;
+    }
+
+    .filters {
+      flex: 1;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .step-heading {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 12px;
+    }
+
+    .eyebrow {
+      margin: 0 0 2px;
+      color: #b31569;
+      font-size: 11px;
+      line-height: 15px;
+      font-weight: 700;
+      letter-spacing: .5px;
+      text-transform: uppercase;
+    }
+
+    .step-heading h2 {
+      margin: 0;
+      font-size: 20px;
+      line-height: 25px;
+      font-weight: 700;
+    }
+
+    .required-label {
+      color: #6f747b;
+      font-size: 12px;
+      line-height: 16px;
+      white-space: nowrap;
+    }
+
+    .filter-card,
+    .plan-card {
+      background: #ffffff;
+      border: 1px solid #e0e2e6;
+    }
+
+    .option-row {
+      padding: 10px 12px;
+      display: grid;
+      grid-template-columns: 20px 1fr;
+      align-items: center;
+      gap: 10px;
+      border-top: 1px solid #eff0f2;
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .option-row:first-child {
+      border-top: 0;
+    }
+
+    .selection-box {
+      width: 18px;
+      height: 18px;
+      display: grid;
+      place-items: center;
+      border: 1px solid #a9adb4;
+      background: #ffffff;
+    }
+
+    .selection-box.selected {
+      border-color: #c21875;
+      background: #c21875;
+    }
+
+    .selection-box svg {
+      width: 13px;
+      height: 13px;
+      stroke: #ffffff;
+    }
+
+    .plan-title {
+      margin: 0;
+      padding: 10px 12px 8px;
+      color: #555b63;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .35px;
+    }
+
+    .plan-row {
+      padding: 9px 12px;
+      display: grid;
+      grid-template-columns: 28px 1fr auto;
+      align-items: center;
+      gap: 9px;
+      border-top: 1px solid #eff0f2;
+      background: #fafafa;
+    }
+
+    .plan-number {
+      width: 24px;
+      height: 24px;
+      display: grid;
+      place-items: center;
+      border: 1px solid #c3c6cb;
+      background: #ffffff;
+      color: #686e76;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 700;
+    }
+
+    .plan-copy {
+      min-width: 0;
+    }
+
+    .plan-name {
+      display: block;
+      font-size: 14px;
+      line-height: 18px;
+      font-weight: 500;
+    }
+
+    .plan-detail {
+      display: block;
+      margin-top: 1px;
+      overflow: hidden;
+      color: #747980;
+      font-size: 12px;
+      line-height: 16px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .pending {
+      padding: 3px 6px;
+      color: #686e76;
+      background: #eceef1;
+      font-size: 10px;
+      line-height: 14px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .flow-note {
+      margin: 0;
+      color: #666c74;
+      font-size: 12px;
+      line-height: 17px;
+    }
+
+    .actionbar {
+      padding: 10px 12px;
+      display: grid;
+      grid-template-columns: 92px 1fr;
+      gap: 8px;
+      background: #ffffff;
+      border-top: 1px solid #dfe1e5;
+    }
+
+    .action {
+      min-height: 48px;
+      padding: 11px 10px;
+      border: 1px solid #b8bcc2;
+      background: #ffffff;
+      font-size: 15px;
+      line-height: 24px;
+      font-weight: 500;
+    }
+
+    .action.primary {
+      border-color: #c21875;
+      background: #c21875;
+      color: #ffffff;
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <button class="icon-button" type="button" aria-label="Close filter flow">
+        <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
+          <path d="M6 6L18 18M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"/>
+        </svg>
+      </button>
+      <h1>Filter stays</h1>
+      <button class="reset-button" type="button">Reset</button>
+    </header>
+
+    <section class="trip-context" aria-label="Current stay search">
+      <div class="trip-copy">
+        <p class="trip-title">North Harbor, Bellweather</p>
+        <p class="trip-meta">Jun 18–21 · 2 guests · 1 room</p>
+      </div>
+      <div class="result-count">128 stays</div>
+    </section>
+
+    <nav class="flow" aria-label="Four filter stages">
+      <div class="flow-step current" aria-current="step">
+        <span class="step-number">1</span>
+        <span class="step-name">Sort</span>
+        <span class="step-state">Current</span>
+      </div>
+      <div class="flow-step">
+        <span class="step-number">2</span>
+        <span class="step-name">Price</span>
+        <span class="step-state">Next</span>
+      </div>
+      <div class="flow-step">
+        <span class="step-number">3</span>
+        <span class="step-name">Property</span>
+        <span class="step-state">Later</span>
+      </div>
+      <div class="flow-step">
+        <span class="step-number">4</span>
+        <span class="step-name">Stay details</span>
+        <span class="step-state">Later</span>
+      </div>
+    </nav>
+
+    <main class="filters">
+      <div class="step-heading">
+        <div>
+          <p class="eyebrow">Stage 1 of 4</p>
+          <h2>Choose a sort order</h2>
+        </div>
+        <span class="required-label">Choose one</span>
+      </div>
+
+      <section class="filter-card" aria-label="Sort options">
+        <div class="option-row">
+          <span class="selection-box selected" aria-hidden="true">
+            <svg viewBox="0 0 16 16">
+              <path d="M3 8.5L6.5 12L13 4.5" fill="none" stroke-width="2"/>
+            </svg>
+          </span>
+          <span>Recommended</span>
+        </div>
+        <div class="option-row">
+          <span class="selection-box" aria-hidden="true"></span>
+          <span>Price: low to high</span>
+        </div>
+        <div class="option-row">
+          <span class="selection-box" aria-hidden="true"></span>
+          <span>Guest rating</span>
+        </div>
+        <div class="option-row">
+          <span class="selection-box" aria-hidden="true"></span>
+          <span>Distance from North Harbor</span>
+        </div>
+      </section>
+
+      <section class="plan-card" aria-labelledby="remaining-title">
+        <h3 class="plan-title" id="remaining-title">Remaining stages</h3>
+        <div class="plan-row">
+          <span class="plan-number">2</span>
+          <span class="plan-copy">
+            <span class="plan-name">Nightly price</span>
+            <span class="plan-detail">Set your minimum and maximum</span>
+          </span>
+          <span class="pending">Next</span>
+        </div>
+        <div class="plan-row">
+          <span class="plan-number">3</span>
+          <span class="plan-copy">
+            <span class="plan-name">Property type</span>
+            <span class="plan-detail">Hotel, apartment, resort and more</span>
+          </span>
+          <span class="pending">Later</span>
+        </div>
+        <div class="plan-row">
+          <span class="plan-number">4</span>
+          <span class="plan-copy">
+            <span class="plan-name">Amenities &amp; guest rating</span>
+            <span class="plan-detail">Choose stay features and rating</span>
+          </span>
+          <span class="pending">Later</span>
+        </div>
+      </section>
+
+      <p class="flow-note">Your selections are saved as you continue through each stage.</p>
+    </main>
+
+    <footer class="actionbar">
+      <button class="action" type="button">Cancel</button>
+      <button class="action primary" type="button">Continue to price</button>
+    </footer>
+  </div>
+</body>
+</html>

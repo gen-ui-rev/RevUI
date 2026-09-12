@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Note Actions</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 0;
+      padding: 24px 0;
+      background: #d6d4d8;
+      color: #29262a;
+      font-family: 'Poppins', system-ui, sans-serif;
+    }
+
+    .screen {
+      position: relative;
+      width: 1024px;
+      height: 768px;
+      overflow: hidden;
+      background: #efedef;
+    }
+
+    /* ---------- workspace behind ---------- */
+    .desktop {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      background: #f4f1f4;
+    }
+
+    .menubar {
+      display: flex;
+      align-items: center;
+      gap: 22px;
+      height: 30px;
+      padding: 0 18px;
+      background: #e7e2e6;
+      border-bottom: 1px solid #d8d2d7;
+      color: #6d666b;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .menubar .app { color: #875f79; font-weight: 600; }
+    .menubar .clock { margin-left: auto; color: #8d858b; }
+
+    .board { flex: 1; padding: 26px 40px; min-height: 0; }
+
+    .board-top {
+      display: flex;
+      align-items: baseline;
+      gap: 14px;
+      margin-bottom: 4px;
+    }
+
+    .board-top h2 {
+      margin: 0;
+      color: #302c2f;
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+    .board-top span { color: #8d858b; font-size: 12px; }
+
+    .board-sub {
+      margin: 0 0 20px;
+      color: #8d858b;
+      font-size: 12px;
+      letter-spacing: 0.02em;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+
+    .card {
+      padding: 14px 15px;
+      background: #ffffff;
+      border: 1px solid #e6e0e5;
+      border-radius: 8px;
+    }
+
+    .card.selected { border-color: #b992ab; box-shadow: 0 0 0 2px rgba(135, 95, 121, 0.22); }
+
+    .card strong {
+      display: block;
+      margin-bottom: 6px;
+      color: #332f32;
+      font-size: 13px;
+      font-weight: 500;
+      line-height: 1.35;
+    }
+
+    .card p {
+      margin: 0;
+      color: #8b838a;
+      font-size: 11px;
+      line-height: 1.5;
+    }
+
+    .scrim { position: absolute; inset: 0; background: rgba(38, 32, 37, 0.5); }
+
+    /* ---------- stacked dialog + detached danger panel ---------- */
+    .modal-stack {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 484px;
+    }
+
+    .action-sheet {
+      width: 100%;
+      background: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0 24px 54px rgba(30, 24, 29, 0.32);
+      overflow: hidden;
+    }
+
+    .sheet-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 22px 26px 18px;
+      border-bottom: 1px solid #e8e3e7;
+    }
+
+    .context {
+      margin: 0 0 6px;
+      color: #6d666b;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+    }
+
+    h1 {
+      margin: 0;
+      color: #875f79;
+      font-size: 21px;
+      line-height: 1.3;
+      font-weight: 600;
+    }
+
+    .note-name {
+      margin: 8px 0 0;
+      color: #504a4e;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .safe-tag {
+      flex: none;
+      margin-top: 4px;
+      padding: 5px 11px;
+      border-radius: 20px;
+      background: #eef2ec;
+      color: #4d6b4b;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+    }
+
+    .actions { padding: 6px 0 8px; }
+
+    .action {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      width: 100%;
+      padding: 12px 26px;
+      border: 0;
+      background: transparent;
+      color: inherit;
+      font: inherit;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .action + .action { border-top: 1px solid #f2eef1; }
+
+    .action .labels { flex: 1; min-width: 0; }
+
+    .action-title {
+      display: block;
+      margin-bottom: 2px;
+      color: #302c2f;
+      font-size: 14px;
+      line-height: 1.4;
+      font-weight: 500;
+    }
+
+    .action-description {
+      display: block;
+      color: #777075;
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .chevron { flex: none; color: #b1a9af; font-size: 15px; }
+
+    .action:focus-visible { outline: 2px solid #875f79; outline-offset: -4px; }
+
+    .sheet-footer {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 10px;
+      padding: 13px 26px 15px;
+      border-top: 1px solid #e8e3e7;
+      background: #fbfafb;
+    }
+
+    .btn {
+      padding: 8px 18px;
+      border-radius: 6px;
+      font: inherit;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+    }
+
+    .btn-ghost { border: 1px solid #d8d2d6; background: #ffffff; color: #4f4a4d; }
+    .btn-primary { border: 1px solid #7a5569; background: #875f79; color: #ffffff; }
+
+    /* detached, visually separate destructive panel */
+    .danger-panel {
+      margin-top: 16px;
+      padding: 16px 20px 18px;
+      border: 1px solid #e3c3c9;
+      border-left: 4px solid #a03040;
+      border-radius: 8px;
+      background: #fcf1f2;
+      box-shadow: 0 14px 30px rgba(30, 24, 29, 0.2);
+    }
+
+    .danger-head {
+      margin: 0 0 6px;
+      color: #a03040;
+      font-size: 12px
+      ;font-weight: 600;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+    }
+
+    .danger-copy {
+      margin: 0 0 12px;
+      color: #7c5a60;
+      font-size: 12px;
+      line-height: 1.55;
+    }
+
+    .confirm-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .confirm-label {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      color: #7b4b53;
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .checkbox {
+      flex: none;
+      width: 15px;
+      height: 15px;
+      border: 1.5px solid #c08d95;
+      border-radius: 3px;
+      background: #ffffff;
+    }
+
+    .btn-destructive {
+      flex: none;
+      padding: 8px 16px;
+      border: 1px solid #dbb6bc;
+      border-radius: 6px;
+      background: #f6e3e5;
+      color: #b4737d;
+      font: inherit;
+      font-size: 13px;
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <div class="desktop" aria-hidden="true">
+      <div class="menubar">
+        <span class="app">Lattice Notes</span>
+        <span>File</span><span>Edit</span><span>View</span><span>Note</span><span>Help</span>
+        <span class="clock">Thu 9:42</span>
+      </div>
+      <div class="board">
+        <div class="board-top">
+          <h2>Product planning</h2>
+          <span>18 notes · 4 collaborators</span>
+        </div>
+        <p class="board-sub">Sorted by last updated</p>
+        <div class="grid">
+          <div class="card selected">
+            <strong>Weekly project planning</strong>
+            <p>Dana Whitfield · 12 min ago</p>
+          </div>
+          <div class="card">
+            <strong>Roadmap assumptions</strong>
+            <p>Priya Raman · Yesterday</p>
+          </div>
+          <div class="card">
+            <strong>Sprint 24 retro notes</strong>
+            <p>Marcus Hale · 2 days ago</p>
+          </div>
+          <div class="card">
+            <strong>Onboarding metrics review</strong>
+            <p>Dana Whitfield · 5 days ago</p>
+          </div>
+          <div class="card">
+            <strong>Customer interview digest</strong>
+            <p>Sofia Bergen · Last week</p>
+          </div>
+          <div class="card">
+            <strong>Pricing experiment brief</strong>
+            <p>Marcus Hale · Last week</p>
+          </div>
+          <div class="card">
+            <strong>Q3 hiring plan</strong>
+            <p>Priya Raman · 2 weeks ago</p>
+          </div>
+          <div class="card">
+            <strong>Support escalation log</strong>
+            <p>Sofia Bergen · 3 weeks ago</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scrim"></div>
+
+    <div class="modal-stack">
+      <section class="action-sheet" aria-labelledby="action-title" role="dialog" aria-modal="true">
+        <header class="sheet-header">
+          <div>
+            <p class="context">Lattice Notes</p>
+            <h1 id="action-title">Choose an action</h1>
+            <p class="note-name">For “Weekly project planning”</p>
+          </div>
+          <span class="safe-tag">All reversible</span>
+        </header>
+
+        <div class="actions" role="menu" aria-label="Note actions">
+          <button class="action" type="button" role="menuitem">
+            <span class="labels">
+              <span class="action-title">Move to another project</span>
+              <span class="action-description">Choose a different workspace location</span>
+            </span>
+            <span class="chevron">›</span>
+          </button>
+          <button class="action" type="button" role="menuitem">
+            <span class="labels">
+              <span class="action-title">Make a copy</span>
+              <span class="action-description">Keep the original and create a duplicate</span>
+            </span>
+            <span class="chevron">›</span>
+          </button>
+          <button class="action" type="button" role="menuitem">
+            <span class="labels">
+              <span class="action-title">Archive note</span>
+              <span class="action-description">Restore it any time from Archive</span>
+            </span>
+            <span class="chevron">›</span>
+          </button>
+        </div>
+
+        <footer class="sheet-footer">
+          <button class="btn btn-ghost" type="button">Cancel</button>
+          <button class="btn btn-primary" type="button">Open note</button>
+        </footer>
+      </section>
+
+      <section class="danger-panel" aria-label="Permanent deletion">
+        <p class="danger-head">Permanent deletion</p>
+        <p class="danger-copy">Deleting removes the note, its 14 revisions and every comment for all 4 collaborators. It is not sent to Trash and cannot be restored by support.</p>
+        <div class="confirm-row">
+          <span class="confirm-label"><span class="checkbox"></span>I understand this cannot be undone</span>
+          <button class="btn-destructive" type="button">Delete permanently</button>
+        </div>
+      </section>
+    </div>
+  </div>
+</body>
+</html>

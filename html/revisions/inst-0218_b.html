@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Commonly Nearby</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      border-radius: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #d8dcdd;
+      color: #1e292d;
+      font-family: 'Source Sans 3', system-ui, sans-serif;
+    }
+
+    button {
+      font: inherit;
+      color: inherit;
+    }
+
+    .screen {
+      position: relative;
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #eef0ef;
+    }
+
+    .topbar {
+      position: relative;
+      z-index: 5;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 11px 16px;
+      background: #ffffff;
+      border-bottom: 1px solid #d8dddc;
+    }
+
+    .title-block {
+      min-width: 0;
+    }
+
+    h1,
+    h2 {
+      margin: 0;
+      font-family: 'Playfair Display', Georgia, serif;
+    }
+
+    h1 {
+      font-size: 24px;
+      line-height: 28px;
+      font-weight: 700;
+    }
+
+    .subtitle {
+      margin: 1px 0 0;
+      color: #657176;
+      font-size: 14px;
+      line-height: 18px;
+    }
+
+    .top-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .icon-button {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      padding: 0;
+      border: 1px solid #d2d8d8;
+      background: #ffffff;
+    }
+
+    .icon-button svg {
+      width: 20px;
+      height: 20px;
+      fill: none;
+      stroke: #263438;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .map {
+      position: relative;
+      flex: 1;
+      min-height: 0;
+      background: #e7e9e7;
+    }
+
+    .map-art {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .search-panel {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      right: 14px;
+      z-index: 3;
+      padding: 9px;
+      background: #ffffff;
+      border: 1px solid #cfd6d5;
+      box-shadow: 0 4px 14px rgba(40, 53, 57, 0.1);
+    }
+
+    .search-row {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      color: #425156;
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .search-row svg {
+      width: 19px;
+      height: 19px;
+      flex: none;
+      fill: none;
+      stroke: #334348;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .access-filters {
+      display: flex;
+      gap: 6px;
+      margin-top: 9px;
+      padding-top: 8px;
+      border-top: 1px solid #e1e5e4;
+    }
+
+    .filter-chip {
+      flex: 1;
+      padding: 5px 4px;
+      border: 1px solid #c3cfcd;
+      background: #f5f7f6;
+      color: #42565a;
+      font-size: 11px;
+      font-weight: 600;
+      line-height: 15px;
+      white-space: nowrap;
+    }
+
+    .filter-chip.active {
+      border-color: #68878d;
+      background: #dfeceb;
+      color: #29484e;
+    }
+
+    .locate-button {
+      position: absolute;
+      top: 116px;
+      right: 14px;
+      z-index: 2;
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      padding: 0;
+      background: #ffffff;
+      border: 1px solid #cfd6d5;
+    }
+
+    .locate-button svg {
+      width: 19px;
+      height: 19px;
+      fill: none;
+      stroke: #334348;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .map-marker {
+      position: absolute;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      border: 0;
+      padding: 0;
+      background: transparent;
+    }
+
+    .map-marker svg {
+      width: 34px;
+      height: 41px;
+      display: block;
+      overflow: visible;
+    }
+
+    .marker-fill {
+      fill: #ffffff;
+      stroke: #718d94;
+      stroke-width: 2;
+    }
+
+    .marker-dot {
+      fill: #718d94;
+    }
+
+    .selected .marker-fill {
+      fill: #496b72;
+      stroke: #29464c;
+    }
+
+    .selected .marker-dot {
+      fill: #ffffff;
+    }
+
+    .marker-label {
+      margin-top: 2px;
+      padding: 3px 6px;
+      background: #ffffff;
+      border: 1px solid #cfd5d4;
+      color: #2c3b3f;
+      font-size: 11px;
+      font-weight: 600;
+      line-height: 15px;
+      white-space: nowrap;
+    }
+
+    .marker-label.access-match::before {
+      content: "✓";
+      margin-right: 4px;
+      color: #32614e;
+    }
+
+    .marker-one {
+      top: 171px;
+      left: 165px;
+    }
+
+    .marker-two {
+      top: 255px;
+      left: 53px;
+    }
+
+    .marker-three {
+      top: 164px;
+      right: 49px;
+    }
+
+    .marker-four {
+      top: 344px;
+      right: 65px;
+    }
+
+    .gathering-card {
+      position: absolute;
+      z-index: 4;
+      left: 14px;
+      right: 14px;
+      bottom: 14px;
+      padding: 14px;
+      background: #ffffff;
+      border: 1px solid #cbd3d1;
+      box-shadow: 0 8px 22px rgba(40, 53, 57, 0.15);
+    }
+
+    .match-banner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin: -14px -14px 12px;
+      padding: 8px 12px;
+      background: #dfece7;
+      border-bottom: 1px solid #bdd0c8;
+      color: #294b3f;
+      font-size: 13px;
+      font-weight: 600;
+      line-height: 17px;
+    }
+
+    .match-note {
+      font-weight: 400;
+      white-space: nowrap;
+    }
+
+    .event-row {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+    .event-photo {
+      width: 112px;
+      height: 86px;
+      flex: none;
+      display: block;
+      object-fit: cover;
+      background: #c9cecd;
+    }
+
+    .event-copy {
+      min-width: 0;
+      flex: 1;
+    }
+
+    h2 {
+      font-size: 20px;
+      line-height: 23px;
+      font-weight: 700;
+    }
+
+    .event-meta {
+      margin: 4px 0 0;
+      color: #58666a;
+      font-size: 13px;
+      line-height: 17px;
+    }
+
+    .event-time {
+      margin: 5px 0 0;
+      color: #344b50;
+      font-size: 13px;
+      font-weight: 600;
+      line-height: 17px;
+    }
+
+    .access-section {
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 1px solid #e0e4e3;
+    }
+
+    .access-title-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .access-title {
+      margin: 0;
+      color: #2c4045;
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 18px;
+    }
+
+    .host-confirmed {
+      color: #647176;
+      font-size: 11px;
+      line-height: 15px;
+      white-space: nowrap;
+    }
+
+    .access-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+    }
+
+    .access-item {
+      display: grid;
+      grid-template-columns: 18px minmax(0, 1fr);
+      column-gap: 7px;
+      align-items: start;
+      padding: 7px;
+      border: 1px solid #d6dcda;
+      background: #f7f8f7;
+    }
+
+    .status-icon {
+      width: 18px;
+      height: 18px;
+      display: grid;
+      place-items: center;
+      background: #dcebe4;
+      color: #2f644e;
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 18px;
+    }
+
+    .status-icon.ask {
+      background: #eee9dc;
+      color: #6b5b2f;
+    }
+
+    .access-name {
+      color: #2e3f43;
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 15px;
+    }
+
+    .access-status {
+      grid-column: 2;
+      color: #647176;
+      font-size: 11px;
+      line-height: 14px;
+    }
+
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 11px;
+    }
+
+    .distance {
+      color: #58666a;
+      font-size: 13px;
+      line-height: 17px;
+    }
+
+    .primary-action {
+      flex: none;
+      padding: 8px 12px;
+      border: 1px solid #486d75;
+      background: #5f858c;
+      color: #ffffff;
+      font-size: 13px;
+      font-weight: 600;
+      line-height: 17px;
+    }
+
+    .tabbar {
+      position: relative;
+      z-index: 5;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      padding: 7px 4px 8px;
+      background: #ffffff;
+      border-top: 1px solid #d5dcda;
+    }
+
+    .tab {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      padding: 2px 0;
+      color: #687478;
+      font-size: 12px;
+      line-height: 15px;
+      text-decoration: none;
+    }
+
+    .tab svg {
+      width: 22px;
+      height: 22px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .tab.active {
+      color: #3f646d;
+      font-weight: 600;
+    }
+
+    .tab.active::before {
+      content: "";
+      position: absolute;
+      top: -9px;
+      width: 42px;
+      height: 3px;
+      background: #8da8ae;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <div class="title-block">
+        <h1>Near you</h1>
+        <p class="subtitle">Find a gathering that works for you</p>
+      </div>
+      <div class="top-actions">
+        <button class="icon-button" aria-label="Open notifications">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path>
+            <path d="M10 21h4"></path>
+          </svg>
+        </button>
+        <button class="icon-button" aria-label="Open profile">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="8" r="3.5"></circle>
+            <path d="M5 20c.7-4 3-6 7-6s6.3 2 7 6"></path>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <main class="map" aria-label="Map of nearby community gatherings filtered by accessibility">
+      <svg class="map-art" viewBox="0 0 390 719" preserveAspectRatio="none" aria-hidden="true">
+        <rect width="390" height="719" fill="#e7e9e7"></rect>
+        <path d="M0 102 C70 89 122 101 178 135 C233 168 302 170 390 138 L390 215 C302 238 229 224 169 188 C110 152 56 145 0 157 Z" fill="#d5dbd9"></path>
+        <path d="M273 0 C261 82 256 152 266 223 C277 304 312 391 390 455 L390 0 Z" fill="#dde3e0"></path>
+        <path d="M0 436 C73 413 132 415 195 448 C247 476 299 487 390 471 L390 557 C312 568 236 552 174 520 C112 489 54 489 0 506 Z" fill="#dbe1df"></path>
+        <rect x="22" y="180" width="90" height="70" fill="#dfe2df"></rect>
+        <rect x="119" y="205" width="87" height="57" fill="#dfe2df"></rect>
+        <rect x="291" y="245" width="72" height="99" fill="#dfe2df"></rect>
+        <rect x="43" y="326" width="87" height="76" fill="#dfe2df"></rect>
+        <rect x="149" y="318" width="87" height="89" fill="#dfe2df"></rect>
+        <rect x="252" y="376" width="79" height="61" fill="#dfe2df"></rect>
+        <path d="M-18 303 C75 267 149 270 220 304 C290 337 344 336 408 310" fill="none" stroke="#ffffff" stroke-width="25"></path>
+        <path d="M-18 303 C75 267 149 270 220 304 C290 337 344 336 408 310" fill="none" stroke="#c8cfcd" stroke-width="1.5"></path>
+        <path d="M137 -20 C125 90 132 168 164 244 C191 309 202 381 179 466 C162 529 169 622 198 739" fill="none" stroke="#ffffff" stroke-width="20"></path>
+        <path d="M137 -20 C125 90 132 168 164 244 C191 309 202 381 179 466 C162 529 169 622 198 739" fill="none" stroke="#c8cfcd" stroke-width="1.5"></path>
+        <path d="M-12 557 C81 526 168 534 237 578 C286 609 339 621 404 602" fill="none" stroke="#ffffff" stroke-width="17"></path>
+        <path d="M-12 557 C81 526 168 534 237 578 C286 609 339 621 404 602" fill="none" stroke="#c8cfcd" stroke-width="1.3"></path>
+        <path d="M256 85 C219 134 206 189 215 249" fill="none" stroke="#ffffff" stroke-width="12"></path>
+        <path d="M25 391 C93 368 147 366 203 386" fill="none" stroke="#ffffff" stroke-width="11"></path>
+        <path d="M290 181 C316 226 325 276 321 335" fill="none" stroke="#ffffff" stroke-width="11"></path>
+        <rect x="222" y="179" width="93" height="67" fill="#cfdad4"></rect>
+        <path d="M231 230 C250 202 278 196 307 205" fill="none" stroke="#b9cbc1" stroke-width="4"></path>
+        <text x="247" y="194" fill="#74817d" font-size="12" font-family="Source Sans 3, sans-serif">Willow Park</text>
+        <text x="15" y="288" fill="#7a8583" font-size="12" font-family="Source Sans 3, sans-serif">Juniper Avenue</text>
+        <text x="151" y="79" fill="#7a8583" font-size="12" font-family="Source Sans 3, sans-serif" transform="rotate(80 151 79)">North Lane</text>
+        <text x="265" y="591" fill="#7a8583" font-size="12" font-family="Source Sans 3, sans-serif">Harbor Street</text>
+        <circle cx="190" cy="281" r="26" fill="#8da8ae" opacity="0.18"></circle>
+        <circle cx="190" cy="281" r="8" fill="#ffffff" stroke="#53737b" stroke-width="2"></circle>
+        <circle cx="190" cy="281" r="3" fill="#53737b"></circle>
+      </svg>
+
+      <section class="search-panel" aria-label="Search and accessibility filters">
+        <div class="search-row">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="11" cy="11" r="6.5"></circle>
+            <path d="m16 16 4 4"></path>
+          </svg>
+          <span>Search this area</span>
+        </div>
+        <div class="access-filters" aria-label="Selected accessibility needs">
+          <button class="filter-chip active">Step-free</button>
+          <button class="filter-chip active">Restroom</button>
+          <button class="filter-chip">Low sensory</button>
+        </div>
+      </section>
+
+      <button class="locate-button" aria-label="Center on my location">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="12" r="4"></circle>
+          <path d="M12 3v3M12 18v3M3 12h3M18 12h3"></path>
+        </svg>
+      </button>
+
+      <button class="map-marker selected marker-one" aria-label="Coffee and New Neighbors matches both selected accessibility needs">
+        <svg viewBox="0 0 36 43" aria-hidden="true">
+          <path class="marker-fill" d="M18 1C8.8 1 2 7.8 2 16.4 2 27 18 41 18 41s16-14 16-24.6C34 7.8 27.2 1 18 1Z"></path>
+          <circle class="marker-dot" cx="18" cy="16" r="5"></circle>
+        </svg>
+        <span class="marker-label access-match">2 needs matched</span>
+      </button>
+
+      <button class="map-marker marker-two" aria-label="Park sketch circle matches step-free access">
+        <svg viewBox="0 0 36 43" aria-hidden="true">
+          <path class="marker-fill" d="M18 1C8.8 1 2 7.8 2 16.4 2 27 18 41 18 41s16-14 16-24.6C34 7.8 27.2 1 18 1Z"></path>
+          <circle class="marker-dot" cx="18" cy="16" r="5"></circle>
+        </svg>
+        <span class="marker-label access-match">Step-free</span>
+      </button>
+
+      <button class="map-marker marker-three" aria-label="Weekend walkers accessibility information not confirmed">
+        <svg viewBox="0 0 36 43" aria-hidden="true">
+          <path class="marker-fill" d="M18 1C8.8 1 2 7.8 2 16.4 2 27 18 41 18 41s16-14 16-24.6C34 7.8 27.2 1 18 1Z"></path>
+          <circle class="marker-dot" cx="18" cy="16" r="5"></circle>
+        </svg>
+        <span class="marker-label">Access unknown</span>
+      </button>
+
+      <button class="map-marker marker-four" aria-label="Local book exchange matches accessible restroom need">
+        <svg viewBox="0 0 36 43" aria-hidden="true">
+          <path class="marker-fill" d="M18 1C8.8 1 2 7.8 2 16.4 2 27 18 41 18 41s16-14 16-24.6C34 7.8 27.2 1 18 1Z"></path>
+          <circle class="marker-dot" cx="18" cy="16" r="5"></circle>
+        </svg>
+        <span class="marker-label access-match">Restroom</span>
+      </button>
+
+      <article class="gathering-card">
+        <div class="match-banner">
+          <span>✓ Matches your 2 selected needs</span>
+          <span class="match-note">Host confirmed</span>
+        </div>
+
+        <div class="event-row">
+          <img class="event-photo" src="https://loremflickr.com/112/86/cafe?lock=3570" width="112" height="86" alt="Tables and warm lights inside the gathering cafe">
+          <div class="event-copy">
+            <h2>Coffee and New Neighbors</h2>
+            <p class="event-meta">Juniper Cafe · 0.3 mi</p>
+            <p class="event-time">Today at 6:30 PM</p>
+          </div>
+        </div>
+
+        <section class="access-section" aria-labelledby="access-heading-b">
+          <div class="access-title-row">
+            <p class="access-title" id="access-heading-b">Accessibility at this venue</p>
+            <span class="host-confirmed">Updated today</span>
+          </div>
+
+          <div class="access-grid">
+            <div class="access-item">
+              <span class="status-icon" aria-hidden="true">✓</span>
+              <span class="access-name">Step-free entry</span>
+              <span class="access-status">Available</span>
+            </div>
+            <div class="access-item">
+              <span class="status-icon" aria-hidden="true">✓</span>
+              <span class="access-name">Accessible restroom</span>
+              <span class="access-status">Available</span>
+            </div>
+            <div class="access-item">
+              <span class="status-icon" aria-hidden="true">✓</span>
+              <span class="access-name">Quiet seating</span>
+              <span class="access-status">On request</span>
+            </div>
+            <div class="access-item">
+              <span class="status-icon ask" aria-hidden="true">?</span>
+              <span class="access-name">ASL support</span>
+              <span class="access-status">Ask the host</span>
+            </div>
+          </div>
+        </section>
+
+        <div class="card-footer">
+          <span class="distance">7 people are joining</span>
+          <button class="primary-action">Contact host</button>
+        </div>
+      </article>
+    </main>
+
+    <nav class="tabbar" aria-label="Primary navigation">
+      <a class="tab active" href="#" aria-current="page">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 21s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12Z"></path>
+          <circle cx="12" cy="9" r="2.5"></circle>
+        </svg>
+        <span>Nearby</span>
+      </a>
+      <a class="tab" href="#">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M4 5h16v11H8l-4 4Z"></path>
+        </svg>
+        <span>Messages</span>
+      </a>
+      <a class="tab" href="#">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="9" cy="9" r="3"></circle>
+          <circle cx="17" cy="10" r="2.5"></circle>
+          <path d="M3.5 20c.5-4 2.2-6 5.5-6s5 2 5.5 6"></path>
+          <path d="M15 15c3.1 0 4.8 1.7 5.3 5"></path>
+        </svg>
+        <span>Circles</span>
+      </a>
+      <a class="tab" href="#">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="8" r="3.5"></circle>
+          <path d="M5 20c.7-4 3-6 7-6s6.3 2 7 6"></path>
+        </svg>
+        <span>Profile</span>
+      </a>
+    </nav>
+  </div>
+</body>
+</html>

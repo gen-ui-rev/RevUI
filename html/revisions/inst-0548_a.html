@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Account — Morrow Health</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 32px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #dedbd9;
+      color: #2d2929;
+      font-family: 'Source Sans 3', system-ui, sans-serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      width: 768px;
+      height: 1024px;
+      display: flex;
+      flex-direction: column;
+      background: #fffdfc;
+      border: 1px solid #d7d1cf;
+    }
+
+    h1,
+    h2,
+    h3 {
+      margin: 0;
+      color: #282324;
+      font-family: 'Playfair Display', Georgia, serif;
+    }
+
+    svg {
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      stroke-linecap: square;
+      stroke-linejoin: miter;
+    }
+
+    .topbar {
+      flex: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 28px;
+      border-bottom: 1px solid #e7dfdd;
+    }
+
+    .topbar h1 {
+      font-size: 28px;
+      line-height: 34px;
+      font-weight: 700;
+    }
+
+    .settings-button {
+      min-width: 104px;
+      min-height: 44px;
+      padding: 8px 14px;
+      border: 1px solid #ddd4d2;
+      border-radius: 6px;
+      background: #fffdfc;
+      color: #5e5658;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-weight: 600;
+    }
+
+    .settings-button svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    main {
+      flex: 1;
+      min-height: 0;
+    }
+
+    .profile {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      padding: 18px 28px;
+      border-bottom: 1px solid #e7dfdd;
+    }
+
+    .portrait {
+      flex: none;
+      width: 68px;
+      height: 68px;
+      border: 1px solid #d9afb5;
+      border-radius: 6px;
+      background: #e7c6ca;
+    }
+
+    .identity {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .identity h2 {
+      font-size: 23px;
+      line-height: 29px;
+      font-weight: 600;
+    }
+
+    .identity-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 3px 18px;
+      margin-top: 4px;
+      color: #6f6668;
+      font-size: 15px;
+      line-height: 20px;
+    }
+
+    .edit {
+      flex: none;
+      min-width: 74px;
+      min-height: 44px;
+      padding: 9px 16px;
+      border: 1px solid #cf8b98;
+      border-radius: 6px;
+      background: transparent;
+      color: #a63d52;
+      font-weight: 600;
+    }
+
+    .weekly {
+      padding: 18px 28px 20px;
+      background: #fbf0f1;
+      border-bottom: 1px solid #e2d2d4;
+    }
+
+    .weekly-header,
+    .section-heading {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .weekly-header h3,
+    .section-heading h3 {
+      font-size: 19px;
+      line-height: 25px;
+      font-weight: 600;
+    }
+
+    .weekly-header p {
+      margin: 0;
+      color: #6f6265;
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .comparison {
+      display: grid;
+      grid-template-columns: 1fr 132px 1fr;
+      gap: 14px;
+      align-items: stretch;
+      margin-top: 14px;
+    }
+
+    .week-card {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 14px 16px;
+      border: 1px solid #dfcdd0;
+      border-radius: 8px;
+      background: #fffaf9;
+    }
+
+    .week-card.current {
+      border-color: #c66b7b;
+      background: #fffdfc;
+      box-shadow: inset 4px 0 0 #b4475b;
+    }
+
+    .ring {
+      position: relative;
+      flex: none;
+      width: 88px;
+      height: 88px;
+    }
+
+    .ring svg {
+      width: 88px;
+      height: 88px;
+      transform: rotate(-90deg);
+    }
+
+    .ring-track {
+      fill: none;
+      stroke: #eadadd;
+      stroke-width: 7;
+    }
+
+    .ring-value {
+      fill: none;
+      stroke: #b4475b;
+      stroke-width: 7;
+      stroke-linecap: butt;
+    }
+
+    .current-ring {
+      stroke-dasharray: 150 220;
+    }
+
+    .previous-ring {
+      stroke: #9a8589;
+      stroke-dasharray: 119 220;
+    }
+
+    .ring-label {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-content: center;
+      text-align: center;
+    }
+
+    .ring-label strong {
+      color: #95384a;
+      font-size: 22px;
+      line-height: 23px;
+      font-weight: 600;
+    }
+
+    .previous .ring-label strong {
+      color: #665d5f;
+    }
+
+    .ring-label span {
+      margin-top: 2px;
+      color: #756a6c;
+      font-size: 11px;
+      line-height: 14px;
+    }
+
+    .week-copy {
+      min-width: 0;
+    }
+
+    .week-copy .label {
+      color: #6d6264;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+
+    .week-copy strong {
+      display: block;
+      margin-top: 3px;
+      color: #2f292a;
+      font-size: 16px;
+      line-height: 21px;
+    }
+
+    .week-copy span {
+      display: block;
+      margin-top: 3px;
+      color: #786d6f;
+      font-size: 13px;
+      line-height: 17px;
+    }
+
+    .delta {
+      display: grid;
+      place-content: center;
+      padding: 12px;
+      border: 1px solid #dca7b0;
+      border-radius: 8px;
+      background: #f8e1e5;
+      color: #873447;
+      text-align: center;
+    }
+
+    .delta strong {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 27px;
+      line-height: 30px;
+    }
+
+    .delta span {
+      margin-top: 2px;
+      font-size: 13px;
+      line-height: 17px;
+      font-weight: 600;
+    }
+
+    .delta small {
+      margin-top: 5px;
+      color: #745f63;
+      font-size: 12px;
+      line-height: 15px;
+    }
+
+    .dashboard {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      padding: 20px 28px 18px;
+    }
+
+    .panel {
+      padding: 16px 18px 8px;
+      border: 1px solid #e1d9d7;
+      border-radius: 8px;
+      background: #fffdfc;
+    }
+
+    .section-heading span {
+      color: #817577;
+      font-size: 13px;
+      line-height: 18px;
+      white-space: nowrap;
+    }
+
+    .list {
+      margin-top: 8px;
+    }
+
+    .data-row,
+    .activity-row,
+    .link-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-height: 52px;
+      border-top: 1px solid #eee7e5;
+    }
+
+    .data-label {
+      flex: 1;
+      min-width: 0;
+      color: #4e4748;
+      font-size: 15px;
+      line-height: 20px;
+    }
+
+    .data-value {
+      color: #292526;
+      font-size: 15px;
+      line-height: 19px;
+      font-weight: 600;
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .data-note {
+      display: block;
+      color: #8a7f81;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 400;
+    }
+
+    .activity-date {
+      flex: none;
+      width: 48px;
+      color: #877b7d;
+      font-size: 13px;
+      line-height: 18px;
+    }
+
+    .activity-detail {
+      flex: 1;
+      min-width: 0;
+      color: #494244;
+      font-size: 14px;
+      line-height: 19px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .activity-detail strong {
+      color: #292526;
+      font-weight: 600;
+    }
+
+    .activity-value {
+      flex: none;
+      color: #2f2a2b;
+      font-size: 14px;
+      line-height: 19px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .account-panel {
+      grid-column: 1 / -1;
+      padding-bottom: 8px;
+    }
+
+    .account-links {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0 28px;
+    }
+
+    .link-row {
+      color: #403a3b;
+      font-size: 15px;
+      line-height: 20px;
+    }
+
+    .link-row span:first-child {
+      flex: 1;
+    }
+
+    .secondary {
+      color: #847a7c;
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    .chevron {
+      flex: none;
+      width: 17px;
+      height: 17px;
+      color: #9a8f91;
+    }
+
+    .tabbar {
+      flex: none;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      padding: 8px 18px 9px;
+      border-top: 1px solid #ded6d4;
+      background: #fffdfc;
+    }
+
+    .tab {
+      min-height: 54px;
+      padding: 5px 8px;
+      border: 0;
+      border-radius: 6px;
+      background: transparent;
+      color: #817779;
+      text-align: center;
+      font-size: 13px;
+      line-height: 17px;
+    }
+
+    .tab svg {
+      display: block;
+      width: 23px;
+      height: 23px;
+      margin: 0 auto 2px;
+    }
+
+    .tab.active {
+      background: #fbf0f1;
+      color: #b4475b;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <h1>Account</h1>
+      <button class="settings-button" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="12" r="3"></circle>
+          <path d="M19 13.5v-3l-2.1-.7a7.5 7.5 0 0 0-.7-1.7l1-2-2.1-2.1-2 1a7.5 7.5 0 0 0-1.7-.7L10.5 2h-3l-.7 2.3a7.5 7.5 0 0 0-1.7.7l-2-1L1 6.1l1 2a7.5 7.5 0 0 0-.7 1.7L-1 10.5v3l2.3.7a7.5 7.5 0 0 0 .7 1.7l-1 2L3.1 20l2-1a7.5 7.5 0 0 0 1.7.7l.7 2.3h3l.7-2.3a7.5 7.5 0 0 0 1.7-.7l2 1 2.1-2.1-1-2a7.5 7.5 0 0 0 .7-1.7L19 13.5z" transform="translate(2 0) scale(.83)"></path>
+        </svg>
+        Settings
+      </button>
+    </header>
+
+    <main>
+      <section class="profile" aria-labelledby="profile-name">
+        <div class="portrait" aria-hidden="true"></div>
+        <div class="identity">
+          <h2 id="profile-name">Marin Holloway</h2>
+          <div class="identity-meta">
+            <span>marin.holloway@example.com</span>
+            <span>Member since March 2023</span>
+          </div>
+        </div>
+        <button class="edit" type="button">Edit profile</button>
+      </section>
+
+      <section class="weekly" aria-labelledby="weekly-title">
+        <div class="weekly-header">
+          <h3 id="weekly-title">This week compared with last week</h3>
+          <p>May 12–18 vs. May 5–11</p>
+        </div>
+
+        <div class="comparison">
+          <article class="week-card current">
+            <div class="ring" aria-label="This week: 68 percent complete">
+              <svg viewBox="0 0 80 80" aria-hidden="true">
+                <circle class="ring-track" cx="40" cy="40" r="35"></circle>
+                <circle class="ring-value current-ring" cx="40" cy="40" r="35"></circle>
+              </svg>
+              <div class="ring-label">
+                <strong>68%</strong>
+                <span>complete</span>
+              </div>
+            </div>
+            <div class="week-copy">
+              <div class="label">This week</div>
+              <strong>4 of 6 goals met</strong>
+              <span>Movement logged on 5 days</span>
+            </div>
+          </article>
+
+          <div class="delta" aria-label="14 percentage points higher than last week">
+            <strong>+14</strong>
+            <span>percentage points</span>
+            <small>Better than last week</small>
+          </div>
+
+          <article class="week-card previous">
+            <div class="ring" aria-label="Last week: 54 percent complete">
+              <svg viewBox="0 0 80 80" aria-hidden="true">
+                <circle class="ring-track" cx="40" cy="40" r="35"></circle>
+                <circle class="ring-value previous-ring" cx="40" cy="40" r="35"></circle>
+              </svg>
+              <div class="ring-label">
+                <strong>54%</strong>
+                <span>complete</span>
+              </div>
+            </div>
+            <div class="week-copy">
+              <div class="label">Last week</div>
+              <strong>3 of 6 goals met</strong>
+              <span>Movement logged on 4 days</span>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <div class="dashboard">
+        <section class="panel" aria-labelledby="metrics-title">
+          <div class="section-heading">
+            <h3 id="metrics-title">Health summary</h3>
+            <span>Last 7 days</span>
+          </div>
+          <div class="list">
+            <div class="data-row">
+              <div class="data-label">Daily movement</div>
+              <div class="data-value">7,420 steps<span class="data-note">Goal: 8,000</span></div>
+            </div>
+            <div class="data-row">
+              <div class="data-label">Average sleep</div>
+              <div class="data-value">7 hr 18 min<span class="data-note">Goal: 7 hr 30 min</span></div>
+            </div>
+            <div class="data-row">
+              <div class="data-label">Meals logged</div>
+              <div class="data-value">17 of 21<span class="data-note">81% complete</span></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel" aria-labelledby="activity-title">
+          <div class="section-heading">
+            <h3 id="activity-title">Recent activity</h3>
+            <span>View all</span>
+          </div>
+          <div class="list">
+            <div class="activity-row">
+              <div class="activity-date">May 18</div>
+              <div class="activity-detail"><strong>Outdoor walk</strong> · 42 min</div>
+              <div class="activity-value">2.1 mi</div>
+            </div>
+            <div class="activity-row">
+              <div class="activity-date">May 17</div>
+              <div class="activity-detail"><strong>Sleep recorded</strong></div>
+              <div class="activity-value">7 hr 36 min</div>
+            </div>
+            <div class="activity-row">
+              <div class="activity-date">May 16</div>
+              <div class="activity-detail"><strong>Strength session</strong></div>
+              <div class="activity-value">31 min</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel account-panel" aria-labelledby="details-title">
+          <div class="section-heading">
+            <h3 id="details-title">Account details</h3>
+          </div>
+          <div class="account-links">
+            <div class="link-row">
+              <span>Health goals</span>
+              <span class="secondary">3 active</span>
+              <svg class="chevron" viewBox="0 0 16 16" aria-hidden="true">
+                <path d="m6 3 5 5-5 5"></path>
+              </svg>
+            </div>
+            <div class="link-row">
+              <span>Connected devices</span>
+              <span class="secondary">1 device</span>
+              <svg class="chevron" viewBox="0 0 16 16" aria-hidden="true">
+                <path d="m6 3 5 5-5 5"></path>
+              </svg>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <nav class="tabbar" aria-label="Primary navigation">
+      <button class="tab" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M3 11.5 12 4l9 7.5"></path>
+          <path d="M5.5 10v10h13V10"></path>
+          <path d="M9.5 20v-6h5v6"></path>
+        </svg>
+        Today
+      </button>
+      <button class="tab" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M4 19V9"></path>
+          <path d="M10 19V4"></path>
+          <path d="M16 19v-7"></path>
+          <path d="M22 19V7"></path>
+        </svg>
+        Trends
+      </button>
+      <button class="tab" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M4 5.5h16v14H4z"></path>
+          <path d="M8 3v5M16 3v5M4 10h16"></path>
+          <path d="M8 14h3M14 14h2"></path>
+        </svg>
+        Plan
+      </button>
+      <button class="tab active" type="button" aria-current="page">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="8" r="4"></circle>
+          <path d="M4.5 21c.7-4.2 3.2-6.3 7.5-6.3s6.8 2.1 7.5 6.3"></path>
+        </svg>
+        Account
+      </button>
+    </nav>
+  </div>
+</body>
+</html>

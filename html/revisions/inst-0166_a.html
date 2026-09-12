@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Violet Frame Player</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 40px 0;
+      margin: 0;
+      background: #ecebef;
+      color: #211f26;
+      font-family: 'Roboto', system-ui, sans-serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      width: 768px;
+      height: 1024px;
+      padding: 32px;
+      background: #f8f7fa;
+      display: flex;
+    }
+
+    .player {
+      width: 100%;
+    }
+
+    .video-stage {
+      position: relative;
+      width: 704px;
+      border-radius: 20px;
+      overflow: hidden;
+      background: #29262e;
+    }
+
+    .video-stage img {
+      width: 704px;
+      height: 396px;
+      object-fit: cover;
+      display: block;
+      background: #302d35;
+    }
+
+    .video-overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 22px 24px;
+      background: rgba(20, 17, 24, 0.38);
+    }
+
+    .video-heading {
+      min-width: 0;
+      color: #ffffff;
+    }
+
+    .video-heading p {
+      margin: 0 0 4px;
+      font-size: 14px;
+      line-height: 19px;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.84);
+    }
+
+    .video-heading h1 {
+      margin: 0;
+      overflow: hidden;
+      font-size: 24px;
+      line-height: 31px;
+      font-weight: 500;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .center-control {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 78px;
+      height: 78px;
+      display: grid;
+      place-items: center;
+      padding: 0;
+      border: 1px solid rgba(255, 255, 255, 0.72);
+      border-radius: 50%;
+      background: #7651d6;
+      color: #ffffff;
+      transform: translate(-50%, -50%);
+    }
+
+    .center-control svg {
+      width: 36px;
+      height: 36px;
+      margin-left: 3px;
+    }
+
+    .playback {
+      color: #ffffff;
+    }
+
+    .progress-track {
+      position: relative;
+      width: 100%;
+      height: 6px;
+      margin-bottom: 14px;
+      border-radius: 3px;
+      background: rgba(255, 255, 255, 0.38);
+    }
+
+    .progress-fill {
+      width: 42%;
+      height: 6px;
+      border-radius: 3px;
+      background: #9f7aea;
+    }
+
+    .progress-thumb {
+      position: absolute;
+      top: 50%;
+      left: 42%;
+      width: 16px;
+      height: 16px;
+      border: 3px solid #ffffff;
+      border-radius: 50%;
+      background: #7651d6;
+      transform: translate(-50%, -50%);
+    }
+
+    .playback-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .time {
+      margin: 0;
+      font-size: 15px;
+      line-height: 22px;
+      font-weight: 500;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .video-actions {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .icon-button {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      padding: 0;
+      border: 0;
+      border-radius: 10px;
+      background: transparent;
+      color: #ffffff;
+    }
+
+    .icon-button svg {
+      width: 26px;
+      height: 26px;
+    }
+
+    .content-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 264px;
+      gap: 24px;
+      align-items: start;
+      margin-top: 24px;
+    }
+
+    .now-playing {
+      min-width: 0;
+      padding-right: 8px;
+    }
+
+    .now-playing-label {
+      margin: 0 0 8px;
+      color: #7651d6;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .now-playing h2 {
+      margin: 0 0 10px;
+      font-size: 26px;
+      line-height: 34px;
+      font-weight: 700;
+    }
+
+    .meta-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 0 0 14px;
+      padding: 0;
+      list-style: none;
+    }
+
+    .meta-chips li {
+      padding: 5px 12px;
+      border: 1px solid #dedbe4;
+      border-radius: 999px;
+      background: #ffffff;
+      color: #6a6670;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 500;
+    }
+
+    .synopsis {
+      margin: 0;
+      color: #4c4854;
+      font-size: 16px;
+      line-height: 26px;
+    }
+
+    .prefs {
+      padding: 8px;
+      border: 1px solid #dedbe4;
+      border-radius: 18px;
+      background: #ffffff;
+    }
+
+    .prefs h3 {
+      margin: 10px 12px 8px;
+      color: #77727e;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .pref-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      width: 100%;
+      padding: 13px 12px;
+      border: 0;
+      border-radius: 12px;
+      background: #ffffff;
+      text-align: left;
+    }
+
+    .pref-row + .pref-row {
+      border-top: 1px solid #eeecf2;
+    }
+
+    .pref-copy {
+      min-width: 0;
+    }
+
+    .pref-label {
+      display: block;
+      color: #77727e;
+      font-size: 13px;
+      line-height: 18px;
+    }
+
+    .pref-value {
+      display: block;
+      overflow: hidden;
+      color: #29262e;
+      font-size: 16px;
+      line-height: 23px;
+      font-weight: 500;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .pref-row svg {
+      width: 20px;
+      height: 20px;
+      flex: 0 0 auto;
+      color: #7651d6;
+      transform: rotate(-90deg);
+    }
+
+    .up-next {
+      margin-top: 24px;
+    }
+
+    .up-next h3 {
+      margin: 0 0 12px;
+      color: #77727e;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .up-next-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .up-next-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      min-width: 0;
+      padding: 16px 18px;
+      border: 1px solid #dedbe4;
+      border-radius: 16px;
+      background: #ffffff;
+    }
+
+    .up-next-card strong {
+      display: block;
+      overflow: hidden;
+      font-size: 16px;
+      line-height: 22px;
+      font-weight: 500;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .up-next-card span {
+      display: block;
+      color: #77727e;
+      font-size: 13px;
+      line-height: 18px;
+    }
+
+    .up-next-card em {
+      flex: 0 0 auto;
+      color: #7651d6;
+      font-size: 14px;
+      line-height: 20px;
+      font-style: normal;
+      font-weight: 500;
+      font-variant-numeric: tabular-nums;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <main class="player" aria-label="Violet Frame video player">
+      <section class="video-stage" aria-label="Paused video">
+        <img src="https://loremflickr.com/704/396/concert?lock=2970" width="704" height="396" alt="Musicians performing under stage lights during a live session">
+        <div class="video-overlay">
+          <div class="video-heading">
+            <p>Violet Frame Original</p>
+            <h1>The Quiet Frequency</h1>
+          </div>
+
+          <button class="center-control" type="button" aria-label="Play video">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M8 5.4v13.2c0 .75.82 1.2 1.45.8l10.1-6.6a.95.95 0 0 0 0-1.6L9.45 4.6A.95.95 0 0 0 8 5.4Z"/>
+            </svg>
+          </button>
+
+          <div class="playback">
+            <div class="progress-track" aria-label="42 percent played">
+              <div class="progress-fill"></div>
+              <div class="progress-thumb"></div>
+            </div>
+            <div class="playback-row">
+              <p class="time">18:42 / 44:10</p>
+              <div class="video-actions">
+                <button class="icon-button" type="button" aria-label="Mute">
+                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M4 10v4h4l5 4V6L8 10H4Z" fill="currentColor"/>
+                    <path d="M16 9.2c1.1 1.45 1.1 4.15 0 5.6M18.7 7c2.25 2.75 2.25 7.25 0 10" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+                  </svg>
+                </button>
+                <button class="icon-button" type="button" aria-label="Subtitles">
+                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <rect x="3.2" y="5.2" width="17.6" height="13.6" rx="2.6" stroke="currentColor" stroke-width="1.7"/>
+                    <path d="M6.6 11.4h4.2M6.6 14.6h7.4M13.4 11.4h4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+                  </svg>
+                </button>
+                <button class="icon-button" type="button" aria-label="Full screen">
+                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M8.5 4.5h-4v4M15.5 4.5h4v4M8.5 19.5h-4v-4M15.5 19.5h4v-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="content-grid">
+        <section class="now-playing" aria-labelledby="episode-title">
+          <p class="now-playing-label">Now playing</p>
+          <h2 id="episode-title">Episode 4: After the Last Set</h2>
+          <ul class="meta-chips">
+            <li>Paused at 18:42</li>
+            <li>25 min remaining</li>
+            <li>1080p HD</li>
+          </ul>
+          <p class="synopsis">The band books a rehearsal room at two in the morning and plays the set nobody bought a ticket for. Between takes, the drummer explains why the quietest room in the city is the only place she can hear the song, while the tour manager counts what is left of the budget on the back of a setlist.</p>
+        </section>
+
+        <aside class="prefs" aria-label="Playback preferences">
+          <h3>Playback preferences</h3>
+          <button class="pref-row" type="button">
+            <span class="pref-copy">
+              <span class="pref-label">Subtitles</span>
+              <span class="pref-value">English</span>
+            </span>
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="m8 10 4 4 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <button class="pref-row" type="button">
+            <span class="pref-copy">
+              <span class="pref-label">Playback speed</span>
+              <span class="pref-value">1×</span>
+            </span>
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="m8 10 4 4 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <button class="pref-row" type="button">
+            <span class="pref-copy">
+              <span class="pref-label">Audio track</span>
+              <span class="pref-value">English stereo</span>
+            </span>
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="m8 10 4 4 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <button class="pref-row" type="button">
+            <span class="pref-copy">
+              <span class="pref-label">Video quality</span>
+              <span class="pref-value">1080p HD</span>
+            </span>
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="m8 10 4 4 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </aside>
+      </div>
+
+      <section class="up-next" aria-label="Up next in this series">
+        <h3>Up next in this series</h3>
+        <div class="up-next-grid">
+          <article class="up-next-card">
+            <span>
+              <strong>Episode 5: Sound Check</strong>
+              <span>Recorded in Portland</span>
+            </span>
+            <em>41:20</em>
+          </article>
+          <article class="up-next-card">
+            <span>
+              <strong>Episode 6: The Encore Tape</strong>
+              <span>Season finale</span>
+            </span>
+            <em>38:05</em>
+          </article>
+        </div>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

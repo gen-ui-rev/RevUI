@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nookline Workflow Quiz</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #e9e8ed;
+      color: #25232b;
+      font-family: 'Poppins', system-ui, sans-serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      position: relative;
+      width: 390px;
+      height: 844px;
+      background: #ffffff;
+      overflow: hidden;
+    }
+
+    .flow-rail {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: #ece7fa;
+    }
+
+    .flow-rail span {
+      display: block;
+      width: 50%;
+      height: 4px;
+      background: #6f4bd8;
+    }
+
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 16px 20px 12px;
+      background: #ffffff;
+    }
+
+    .top-action {
+      width: 30px;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: #403c49;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+    }
+
+    .top-heading {
+      flex: 1;
+      min-width: 0;
+      text-align: center;
+    }
+
+    .top-title {
+      margin: 0;
+      font-size: 15px;
+      line-height: 22px;
+      font-weight: 600;
+    }
+
+    .top-sub {
+      margin: 0;
+      color: #85808c;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 500;
+    }
+
+    .pause-action {
+      width: auto;
+      justify-content: flex-end;
+      color: #6f4bd8;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 600;
+    }
+
+    .content {
+      padding: 12px 20px 24px;
+    }
+
+    .timer-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      margin-bottom: 14px;
+      border-radius: 8px;
+      background: #f5f2fc;
+    }
+
+    .timer-ring {
+      position: relative;
+      flex: 0 0 auto;
+      width: 44px;
+      height: 44px;
+    }
+
+    .timer-ring svg {
+      display: block;
+    }
+
+    .timer-value {
+      margin: 0;
+      color: #302d37;
+      font-size: 15px;
+      line-height: 22px;
+      font-weight: 600;
+    }
+
+    .timer-note {
+      margin: 0;
+      color: #716d79;
+      font-size: 12px;
+      line-height: 17px;
+    }
+
+    .trail {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      margin-bottom: 14px;
+      color: #a09bab;
+      font-size: 12px;
+      line-height: 18px;
+      font-weight: 500;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    .trail-now {
+      color: #5631bf;
+      font-weight: 600;
+    }
+
+    .trail-done {
+      color: #8f8a99;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 24px;
+      line-height: 34px;
+      font-weight: 600;
+      letter-spacing: -0.35px;
+    }
+
+    .scenario-image {
+      width: 350px;
+      height: 150px;
+      margin-top: 14px;
+      border-radius: 6px;
+      object-fit: cover;
+      display: block;
+      background: #dedbe5;
+    }
+
+    .answers {
+      margin-top: 16px;
+    }
+
+    .answer-instruction {
+      margin: 0 0 10px;
+      color: #716d79;
+      font-size: 13px;
+      line-height: 20px;
+    }
+
+    .answer-list {
+      display: grid;
+      gap: 9px;
+    }
+
+    .answer {
+      width: 100%;
+      border: 0;
+      border-radius: 6px;
+      padding: 12px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: #f5f2fc;
+      color: #302d37;
+      text-align: left;
+      font-size: 14px;
+      line-height: 22px;
+      font-weight: 500;
+    }
+
+    .answer.selected {
+      background: #e9e1ff;
+      color: #5631bf;
+    }
+
+    .answer-marker {
+      flex: 0 0 auto;
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #e8e1f7;
+      color: #655e70;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .selected .answer-marker {
+      background: #6f4bd8;
+      color: #ffffff;
+    }
+
+    .answer-text {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .feedback {
+      margin-top: 12px;
+      padding: 12px 14px;
+      border-radius: 6px;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      background: #f0ebff;
+    }
+
+    .feedback-icon {
+      flex: 0 0 auto;
+      margin-top: 1px;
+      color: #6f4bd8;
+    }
+
+    .feedback-title {
+      margin: 0 0 2px;
+      color: #5631bf;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 600;
+    }
+
+    .feedback-copy {
+      margin: 0;
+      color: #5f5969;
+      font-size: 13px;
+      line-height: 19px;
+    }
+
+    .action-bar {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 20px 16px;
+      border-top: 1px solid #eeecf3;
+      background: #ffffff;
+    }
+
+    .save-button {
+      flex: 0 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 12px 14px;
+      border: 1px solid #d5cbef;
+      border-radius: 6px;
+      background: #ffffff;
+      color: #5631bf;
+      font-size: 14px;
+      line-height: 22px;
+      font-weight: 600;
+    }
+
+    .next-button {
+      flex: 1;
+      padding: 13px 18px;
+      border: 0;
+      border-radius: 6px;
+      background: #6f4bd8;
+      color: #ffffff;
+      font-size: 15px;
+      line-height: 22px;
+      font-weight: 600;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <div class="flow-rail" role="progressbar" aria-label="Quiz progress" aria-valuemin="0" aria-valuemax="6" aria-valuenow="3"><span></span></div>
+
+    <header class="top-bar">
+      <button class="top-action" type="button" aria-label="Exit quiz">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M7 7L17 17M17 7L7 17" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+      </button>
+      <div class="top-heading">
+        <p class="top-title">Team workflows</p>
+        <p class="top-sub">Question 3 of 6</p>
+      </div>
+      <button class="top-action pause-action" type="button">Pause</button>
+    </header>
+
+    <main class="content">
+      <section aria-labelledby="quiz-question">
+        <div class="timer-card">
+          <div class="timer-ring">
+            <svg width="44" height="44" viewBox="0 0 44 44" fill="none" aria-hidden="true">
+              <circle cx="22" cy="22" r="16" stroke="#e2daf7" stroke-width="4"/>
+              <circle cx="22" cy="22" r="16" stroke="#6f4bd8" stroke-width="4" stroke-linecap="round"
+                      stroke-dasharray="100.5" stroke-dashoffset="47" transform="rotate(-90 22 22)"/>
+            </svg>
+          </div>
+          <div>
+            <p class="timer-value">3:48 left in this quiz</p>
+            <p class="timer-note">Roughly 55 seconds for each of the 4 questions left.</p>
+          </div>
+        </div>
+
+        <p class="trail">
+          <span class="trail-done">Naming files ✓</span>
+          <span aria-hidden="true">→</span>
+          <span class="trail-now">Shared spaces</span>
+          <span aria-hidden="true">→</span>
+          <span>Permissions</span>
+        </p>
+
+        <h1 id="quiz-question">Where should Maya save notes the whole project team needs?</h1>
+
+        <img
+          class="scenario-image"
+          src="https://loremflickr.com/350/150/meeting?lock=10270"
+          width="350"
+          height="150"
+          alt="A project team reviewing notes during a meeting"
+        >
+
+        <div class="answers">
+          <p class="answer-instruction">Choose the best location.</p>
+          <div class="answer-list">
+            <button class="answer" type="button">
+              <span class="answer-marker">A</span>
+              <span class="answer-text">Her private notebook</span>
+            </button>
+
+            <button class="answer selected" type="button" aria-pressed="true">
+              <span class="answer-marker">
+                <svg width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                  <path d="M4.5 10.2L8.2 13.8L15.6 6.4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </span>
+              <span class="answer-text">The project’s shared team space</span>
+            </button>
+
+            <button class="answer" type="button">
+              <span class="answer-marker">C</span>
+              <span class="answer-text">A direct message to Jordan</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="feedback" role="status">
+          <svg class="feedback-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="12" cy="12" r="9" fill="currentColor"/>
+            <path d="M8 12.2L10.7 14.8L16.2 9.2" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <div>
+            <p class="feedback-title">Correct</p>
+            <p class="feedback-copy">Shared spaces keep decisions visible and easy for teammates to find later.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <div class="action-bar">
+      <button class="save-button" type="button" aria-pressed="false">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M7 4H17C17.6 4 18 4.4 18 5V20L12 16.4L6 20V5C6 4.4 6.4 4 7 4Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+        </svg>
+        Save
+      </button>
+      <button class="next-button" type="button">Next question</button>
+    </div>
+  </div>
+</body>
+</html>

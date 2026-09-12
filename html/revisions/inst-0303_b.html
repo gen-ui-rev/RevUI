@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Halfmoon — Link preview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --violet:#6338D6;
+    --violet-soft:rgba(99,56,214,0.10);
+    --violet-softer:rgba(99,56,214,0.06);
+    --ink:#17141F;
+    --muted:#6C6880;
+    --line:#EDEBF3;
+    --panel:#F8F7FB;
+  }
+  *{box-sizing:border-box;}
+  body{
+    min-height:100vh;
+    margin:0;
+    padding:24px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#E4E3E8;
+    font-family:'Poppins',system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .screen{
+    width:1024px;
+    height:768px;
+    position:relative;
+    display:flex;
+    flex-direction:column;
+    color:var(--ink);
+    background:#FFFFFF;
+    border:1px solid #D7D4DF;
+    border-radius:12px;
+    box-shadow:0 22px 60px rgba(31,27,43,.17);
+  }
+
+  .titlebar{
+    flex:none;
+    display:grid;
+    grid-template-columns:150px 1fr 150px;
+    align-items:center;
+    padding:10px 14px;
+    background:#F5F4F7;
+    border-bottom:1px solid var(--line);
+    border-radius:12px 12px 0 0;
+  }
+  .window-controls{display:flex;gap:7px;align-items:center;}
+  .window-dot{width:11px;height:11px;border-radius:50%;}
+  .window-dot.close{background:#FF625A;}
+  .window-dot.minimize{background:#FFBD2E;}
+  .window-dot.expand{background:#28C840;}
+  .titlebar strong{
+    text-align:center;
+    font-size:12px;
+    font-weight:500;
+    color:var(--muted);
+  }
+  .privacy{
+    justify-self:end;
+    display:flex;
+    align-items:center;
+    gap:6px;
+    font-size:11px;
+    color:var(--muted);
+  }
+
+  .address-row{
+    flex:none;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:9px 14px;
+    border-bottom:1px solid var(--line);
+  }
+  .close-preview,.top-button{
+    width:34px;
+    height:34px;
+    flex:none;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:8px;
+    color:var(--violet);
+    background:var(--violet-softer);
+  }
+  .address{
+    flex:1;
+    min-width:0;
+    height:36px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding:0 13px;
+    border:1px solid var(--line);
+    border-radius:8px;
+    background:#FAF9FC;
+  }
+  .address span{
+    min-width:0;
+    font-size:13px;
+    font-weight:500;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .address em{font-style:normal;font-weight:400;color:var(--muted);}
+
+  .desktop-body{
+    flex:1;
+    min-height:0;
+    display:flex;
+    border-radius:0 0 12px 12px;
+  }
+  .side-tools{
+    width:64px;
+    flex:none;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:9px;
+    padding:17px 0;
+    background:#F8F7FA;
+    border-right:1px solid var(--line);
+    border-radius:0 0 0 12px;
+  }
+  .side-tool{
+    width:38px;
+    height:38px;
+    flex:none;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:9px;
+    color:var(--ink);
+  }
+  .side-tool.off{color:#C5C1D2;}
+  .side-tool.mark{
+    color:#FFFFFF;
+    background:var(--violet);
+  }
+  .side-divider{width:26px;height:1px;background:var(--line);margin:3px 0;}
+
+  .content{
+    flex:1;
+    min-width:0;
+    padding:20px 26px 22px;
+    background:#FFFFFF;
+    border-radius:0 0 12px 0;
+  }
+  .shared{
+    display:flex;
+    align-items:center;
+    gap:11px;
+    padding:10px 12px;
+    border-radius:10px;
+    background:var(--violet-soft);
+  }
+  .mono{
+    flex:none;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:9px;
+    color:var(--violet);
+    background:rgba(99,56,214,.17);
+    font-weight:600;
+  }
+  .mono.sm{width:32px;height:32px;font-size:12px;}
+  .mono.md{width:36px;height:36px;font-size:13px;}
+  .shared-copy{min-width:0;}
+  .shared-copy b{display:block;font-size:13px;font-weight:500;line-height:1.35;}
+  .shared-copy span{display:block;font-size:12px;color:var(--muted);line-height:1.4;}
+  .shared-time{margin-left:auto;font-size:12px;color:var(--muted);}
+
+  .feature{
+    display:grid;
+    grid-template-columns:minmax(0,1fr) 350px;
+    gap:30px;
+    align-items:start;
+    margin-top:20px;
+  }
+  .kicker{
+    display:inline-block;
+    padding:4px 10px;
+    border-radius:8px;
+    background:var(--violet-soft);
+    color:var(--violet);
+    font-size:12px;
+    font-weight:500;
+  }
+  h1{
+    margin:10px 0 0;
+    font-size:27px;
+    line-height:1.24;
+    letter-spacing:-.4px;
+    font-weight:600;
+  }
+  .byline{display:flex;align-items:center;gap:10px;margin-top:14px;}
+  .byline b{display:block;font-size:13px;font-weight:500;line-height:1.35;}
+  .byline span{display:block;font-size:12px;color:var(--muted);line-height:1.4;}
+  .lede{
+    margin:13px 0 0;
+    font-size:13px;
+    line-height:1.6;
+    color:#3D3950;
+  }
+  .hero-wrap{
+    padding:8px;
+    border:1px solid var(--line);
+    border-radius:12px;
+    background:var(--panel);
+  }
+  .hero{
+    width:350px;
+    height:170px;
+    display:block;
+    object-fit:cover;
+    border-radius:8px;
+    background:#D8D4E2;
+  }
+  .image-caption{
+    display:flex;
+    justify-content:space-between;
+    gap:12px;
+    padding:8px 3px 1px;
+    font-size:11px;
+    color:var(--muted);
+  }
+
+  .section-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-top:20px;
+    margin-bottom:10px;
+  }
+  .section-head b{
+    font-size:12px;
+    font-weight:500;
+    letter-spacing:.6px;
+    text-transform:uppercase;
+    color:var(--muted);
+  }
+  .section-head span{font-size:11px;color:var(--violet);}
+
+  .suggestions{
+    display:grid;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:12px;
+  }
+  .suggestion{
+    min-width:0;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:10px;
+    border:1px solid var(--line);
+    border-radius:10px;
+    background:#FFFFFF;
+  }
+  .suggestion img{
+    width:56px;
+    height:56px;
+    flex:none;
+    display:block;
+    object-fit:cover;
+    border-radius:8px;
+    background:#D8D4E2;
+  }
+  .suggestion .txt{min-width:0;}
+  .suggestion b{
+    display:block;
+    font-size:12px;
+    line-height:1.4;
+    font-weight:500;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .suggestion span{
+    display:block;
+    margin-top:3px;
+    font-size:10px;
+    line-height:1.45;
+    color:var(--muted);
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+</style>
+</head>
+<body>
+  <div class="screen">
+    <div class="titlebar">
+      <div class="window-controls" aria-label="Window controls">
+        <span class="window-dot close"></span>
+        <span class="window-dot minimize"></span>
+        <span class="window-dot expand"></span>
+      </div>
+      <strong>Halfmoon</strong>
+      <div class="privacy">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#6338D6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v5c0 4.7-2.8 8-7 10-4.2-2-7-5.3-7-10V6l7-3z"/></svg>
+        Private preview
+      </div>
+    </div>
+
+    <div class="address-row">
+      <div class="close-preview" aria-label="Close">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M5 5l14 14M19 5L5 19"/></svg>
+      </div>
+      <div class="address">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#6338D6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10.5" width="16" height="10" rx="2.5"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/></svg>
+        <span>citymeetups.co<em>/rooftops</em></span>
+      </div>
+      <div class="top-button" aria-label="Reload">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 1 1-2.6-5.9"/><path d="M20 4v5h-5"/></svg>
+      </div>
+      <div class="top-button" aria-label="More options">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg>
+      </div>
+    </div>
+
+    <div class="desktop-body">
+      <aside class="side-tools" aria-label="Preview actions">
+        <div class="side-tool" aria-label="Back">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
+        </div>
+        <div class="side-tool off" aria-label="Forward">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg>
+        </div>
+        <div class="side-divider"></div>
+        <div class="side-tool" aria-label="Share">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V4"/><path d="M8 8l4-4 4 4"/><path d="M5 14v4.5A1.5 1.5 0 0 0 6.5 20h11a1.5 1.5 0 0 0 1.5-1.5V14"/></svg>
+        </div>
+        <div class="side-tool mark" aria-label="Saved">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor"><path d="M7 3h10a1.5 1.5 0 0 1 1.5 1.5V21l-6.5-4-6.5 4V4.5A1.5 1.5 0 0 1 7 3z"/></svg>
+        </div>
+        <div class="side-tool" aria-label="Open in browser">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"/><path d="M20 4l-8.5 8.5"/><path d="M18 14v5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 4 19V8a1.5 1.5 0 0 1 1.5-1.5H10"/></svg>
+        </div>
+      </aside>
+
+      <main class="content">
+        <div class="shared">
+          <div class="mono sm">DW</div>
+          <div class="shared-copy">
+            <b>Dana Whitlock shared this link</b>
+            <span>Night Owls · 41 members</span>
+          </div>
+          <div class="shared-time">2h ago</div>
+        </div>
+
+        <article>
+          <div class="feature">
+            <div>
+              <span class="kicker">City guide</span>
+              <h1>Twelve rooftops worth the walk this spring</h1>
+
+              <div class="byline">
+                <div class="mono md">RM</div>
+                <div>
+                  <b>Rosa Mendel</b>
+                  <span>March 14, 2025 · 6 min read</span>
+                </div>
+              </div>
+
+              <p class="lede">Terrace season starts earlier than most people plan for. These are the twelve places our members keep going back to, and the nights they are actually worth showing up for.</p>
+            </div>
+
+            <div class="hero-wrap">
+              <img class="hero" src="https://loremflickr.com/350/170/party?lock=4520" width="350" height="170" alt="People gathered on a lit rooftop terrace at dusk">
+              <div class="image-caption">
+                <span>Riverside rooftop at dusk</span>
+                <span>City Meetups</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="section-head">
+            <b>Three to try this week</b>
+            <span>Community favorites</span>
+          </div>
+
+          <div class="suggestions">
+            <div class="suggestion">
+              <img src="https://loremflickr.com/56/56/cafe?lock=4521" width="56" height="56" alt="Corner cafe terrace with small tables">
+              <div class="txt">
+                <b>Sunset Terrace at Colby &amp; Vine</b>
+                <span>Thu, 6:30 PM · Riverside</span>
+              </div>
+            </div>
+
+            <div class="suggestion">
+              <img src="https://loremflickr.com/56/56/street?lock=4522" width="56" height="56" alt="Narrow street with outdoor seating">
+              <div class="txt">
+                <b>The Back Patio Book Swap</b>
+                <span>Sat, 11:00 AM · Fulton Park</span>
+              </div>
+            </div>
+
+            <div class="suggestion">
+              <img src="https://loremflickr.com/56/56/friends?lock=4523" width="56" height="56" alt="Group of people talking over coffee">
+              <div class="txt">
+                <b>Late Shift Coffee Club</b>
+                <span>Sun, 8:00 AM · Warehouse District</span>
+              </div>
+            </div>
+          </div>
+        </article>
+      </main>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Choose Your Lesson Time</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #deddd9;
+      color: #292c2e;
+      font-family: 'Source Serif 4', Georgia, serif;
+    }
+
+    button { font: inherit; }
+
+    .screen {
+      width: 768px;
+      height: 1024px;
+      padding: 32px;
+      background: #f4f3f0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 20px 24px;
+      background: #ffffff;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+
+    .topbar h1 {
+      margin: 0;
+      color: #525b60;
+      font-size: 27px;
+      font-weight: 600;
+      line-height: 1.15;
+      letter-spacing: -0.3px;
+    }
+
+    .topbar p {
+      margin: 5px 0 0;
+      color: #686d70;
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .step {
+      padding: 8px 12px;
+      background: rgba(82, 91, 96, 0.11);
+      border-radius: 20px;
+      color: #5a6165;
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1.2;
+      text-transform: uppercase;
+      letter-spacing: 0.7px;
+      white-space: nowrap;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 1fr 272px;
+      gap: 24px;
+      align-items: start;
+    }
+
+    .panel {
+      background: #ffffff;
+      border-radius: 8px;
+      padding: 24px;
+    }
+
+    fieldset {
+      margin: 0;
+      padding: 0;
+      border: 0;
+    }
+
+    legend {
+      width: 100%;
+      margin: 0 0 12px;
+      padding: 0;
+      color: #353a3d;
+      font-size: 18px;
+      font-weight: 600;
+      line-height: 1.25;
+    }
+
+    legend .num {
+      display: inline-block;
+      width: 22px;
+      margin-right: 8px;
+      background: #596267;
+      border-radius: 4px;
+      color: #ffffff;
+      font-size: 13px;
+      line-height: 22px;
+      text-align: center;
+      vertical-align: 2px;
+    }
+
+    .block + .block {
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid #e4e2dd;
+    }
+
+    .cal-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .nav-btn {
+      width: 42px;
+      height: 42px;
+      border: 1px solid #d5d3ce;
+      border-radius: 6px;
+      background: #ffffff;
+      color: #525b60;
+      font-size: 19px;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    .cal-month {
+      flex: 1;
+      text-align: center;
+      color: #444a4e;
+      font-size: 17px;
+      font-weight: 600;
+      line-height: 1.3;
+    }
+
+    .cal-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 6px;
+    }
+
+    .dow {
+      color: #8b9093;
+      font-size: 11px;
+      font-weight: 600;
+      line-height: 1.4;
+      text-align: center;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .day {
+      padding: 7px 0 6px;
+      border: 0;
+      border-radius: 6px;
+      background: rgba(82, 91, 96, 0.09);
+      color: #3f4548;
+      font-size: 15px;
+      font-weight: 600;
+      line-height: 1.2;
+      text-align: center;
+      cursor: pointer;
+    }
+
+    .day .dot {
+      display: block;
+      width: 4px;
+      height: 4px;
+      margin: 4px auto 0;
+      border-radius: 50%;
+      background: #7d888d;
+    }
+
+    .day.is-selected {
+      background: #596267;
+      color: #ffffff;
+    }
+
+    .day.is-selected .dot { background: #ffffff; }
+
+    .day.is-muted {
+      background: transparent;
+      color: #b0b3b5;
+      font-weight: 400;
+    }
+
+    .day.is-muted .dot { background: transparent; }
+
+    .day.is-off {
+      background: transparent;
+      border: 1px dashed #dcdad5;
+      color: #a4a8aa;
+      font-weight: 400;
+    }
+
+    .day.is-off .dot { background: transparent; }
+
+    .cal-hint {
+      margin: 12px 0 0;
+      color: #7c8285;
+      font-size: 12.5px;
+      line-height: 1.45;
+    }
+
+    .slot-note {
+      margin: 0 0 12px;
+      color: #777c7f;
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    .slot-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .slot-list li + li { margin-top: 8px; }
+
+    .slot {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+      padding: 11px 14px;
+      border: 1px solid #e0ded9;
+      border-radius: 6px;
+      background: #ffffff;
+      color: #3f4548;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .radio {
+      flex: 0 0 auto;
+      width: 17px;
+      height: 17px;
+      border: 1px solid #b9bcbd;
+      border-radius: 50%;
+      background: #ffffff;
+    }
+
+    .slot-time {
+      flex: 1;
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 1.3;
+    }
+
+    .slot-meta {
+      color: #7c8285;
+      font-size: 12.5px;
+      line-height: 1.3;
+      white-space: nowrap;
+    }
+
+    .slot.is-selected {
+      background: #596267;
+      border-color: #596267;
+      color: #ffffff;
+    }
+
+    .slot.is-selected .radio {
+      border-color: #ffffff;
+      background: #ffffff;
+      box-shadow: inset 0 0 0 4px #596267;
+    }
+
+    .slot.is-selected .slot-meta { color: #dbe0e2; }
+
+    .slot.is-off {
+      border-style: dashed;
+      border-color: #dcdad5;
+      color: #a4a8aa;
+    }
+
+    .slot.is-off .slot-time { font-weight: 400; }
+
+    .slot.is-off .radio { border-color: #dcdad5; }
+
+    .side-title {
+      margin: 0 0 14px;
+      color: #353a3d;
+      font-size: 17px;
+      font-weight: 600;
+      line-height: 1.25;
+    }
+
+    .pick {
+      padding: 14px 15px;
+      background: rgba(82, 91, 96, 0.11);
+      border-radius: 6px;
+    }
+
+    .pick-label {
+      display: block;
+      color: #6c7275;
+      font-size: 11.5px;
+      font-weight: 600;
+      line-height: 1.3;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+    }
+
+    .pick-value {
+      display: block;
+      margin-top: 4px;
+      color: #394044;
+      font-size: 19px;
+      font-weight: 600;
+      line-height: 1.25;
+    }
+
+    .pick-detail {
+      display: block;
+      margin-top: 3px;
+      color: #686d70;
+      font-size: 13.5px;
+      line-height: 1.4;
+    }
+
+    .facts {
+      margin: 16px 0 0;
+      padding: 0;
+    }
+
+    .facts .row {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .facts .row + .row { margin-top: 9px; }
+
+    .facts dt {
+      color: #7c8285;
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    .facts dd {
+      margin: 0;
+      color: #3f4548;
+      font-size: 13px;
+      font-weight: 600;
+      line-height: 1.4;
+      text-align: right;
+    }
+
+    .fees {
+      margin-top: 16px;
+      padding-top: 14px;
+      border-top: 1px solid #e4e2dd;
+    }
+
+    .fee-row {
+      display: flex;
+      justify-content: space-between;
+      color: #6c7275;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .fee-row.total {
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px solid #e4e2dd;
+      color: #353a3d;
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .confirm {
+      width: 100%;
+      margin-top: 18px;
+      padding: 15px 16px;
+      border: 0;
+      border-radius: 6px;
+      background: #596267;
+      color: #ffffff;
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 1.3;
+      text-align: center;
+      cursor: pointer;
+    }
+
+    .link-btn {
+      display: block;
+      width: 100%;
+      margin-top: 10px;
+      padding: 6px 0;
+      border: 0;
+      background: transparent;
+      color: #5a6165;
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 1.3;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+
+    .policy {
+      margin: 12px 0 0;
+      color: #7c8285;
+      font-size: 12px;
+      line-height: 1.45;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <div>
+        <h1>Choose your lesson time</h1>
+        <p>45-minute French conversation lesson with Rowan Hale.</p>
+      </div>
+      <span class="step">Step 2 of 3</span>
+    </header>
+
+    <div class="layout">
+      <main class="panel" aria-label="Date and time choices">
+        <form>
+          <fieldset class="block">
+            <legend><span class="num">1</span>Select a date</legend>
+            <div class="cal-nav">
+              <button class="nav-btn" type="button" aria-label="Go to March 2025">‹</button>
+              <span class="cal-month">April 2025</span>
+              <button class="nav-btn" type="button" aria-label="Go to May 2025">›</button>
+            </div>
+            <div class="cal-grid">
+              <span class="dow">Sun</span>
+              <span class="dow">Mon</span>
+              <span class="dow">Tue</span>
+              <span class="dow">Wed</span>
+              <span class="dow">Thu</span>
+              <span class="dow">Fri</span>
+              <span class="dow">Sat</span>
+
+              <button class="day is-muted" type="button" aria-disabled="true">30<span class="dot"></span></button>
+              <button class="day is-muted" type="button" aria-disabled="true">31<span class="dot"></span></button>
+              <button class="day is-muted" type="button" aria-disabled="true">1<span class="dot"></span></button>
+              <button class="day is-muted" type="button" aria-disabled="true">2<span class="dot"></span></button>
+              <button class="day is-muted" type="button" aria-disabled="true">3<span class="dot"></span></button>
+              <button class="day is-muted" type="button" aria-disabled="true">4<span class="dot"></span></button>
+              <button class="day is-muted" type="button" aria-disabled="true">5<span class="dot"></span></button>
+
+              <button class="day is-muted" type="button" aria-disabled="true">6<span class="dot"></span></button>
+              <button class="day is-muted" type="button" aria-disabled="true">7<span class="dot"></span></button>
+              <button class="day is-muted" type="button" aria-disabled="true">8<span class="dot"></span></button>
+              <button class="day is-muted" type="button" aria-disabled="true">9<span class="dot"></span></button>
+              <button class="day is-muted" type="button" aria-disabled="true">10<span class="dot"></span></button>
+              <button class="day is-muted" type="button" aria-disabled="true">11<span class="dot"></span></button>
+              <button class="day is-muted" type="button" aria-disabled="true">12<span class="dot"></span></button>
+
+              <button class="day is-muted" type="button" aria-disabled="true">13<span class="dot"></span></button>
+              <button class="day is-muted" type="button" aria-disabled="true">14<span class="dot"></span></button>
+              <button class="day is-muted" type="button" aria-disabled="true">15<span class="dot"></span></button>
+              <button class="day is-muted" type="button" aria-disabled="true">16<span class="dot"></span></button>
+              <button class="day is-muted" type="button" aria-disabled="true">17<span class="dot"></span></button>
+              <button class="day is-muted" type="button" aria-disabled="true">18<span class="dot"></span></button>
+              <button class="day is-muted" type="button" aria-disabled="true">19<span class="dot"></span></button>
+
+              <button class="day" type="button">20<span class="dot"></span></button>
+              <button class="day" type="button">21<span class="dot"></span></button>
+              <button class="day is-selected" type="button" aria-pressed="true">22<span class="dot"></span></button>
+              <button class="day" type="button">23<span class="dot"></span></button>
+              <button class="day" type="button">24<span class="dot"></span></button>
+              <button class="day" type="button">25<span class="dot"></span></button>
+              <button class="day is-off" type="button" aria-disabled="true">26<span class="dot"></span></button>
+
+              <button class="day is-off" type="button" aria-disabled="true">27<span class="dot"></span></button>
+              <button class="day" type="button">28<span class="dot"></span></button>
+              <button class="day" type="button">29<span class="dot"></span></button>
+              <button class="day" type="button">30<span class="dot"></span></button>
+              <button class="day is-muted" type="button" aria-disabled="true">1<span class="dot"></span></button>
+              <button class="day is-muted" type="button" aria-disabled="true">2<span class="dot"></span></button>
+              <button class="day is-muted" type="button" aria-disabled="true">3<span class="dot"></span></button>
+            </div>
+            <p class="cal-hint">A dot marks a day with open slots. Use the arrows to book into May or a later month.</p>
+          </fieldset>
+
+          <fieldset class="block">
+            <legend><span class="num">2</span>Select a start time</legend>
+            <p class="slot-note">Tuesday, April 22 · all times shown in Eastern Time (ET).</p>
+            <ul class="slot-list">
+              <li>
+                <button class="slot" type="button">
+                  <span class="radio"></span>
+                  <span class="slot-time">4:00 PM – 4:45 PM</span>
+                  <span class="slot-meta">2 slots left</span>
+                </button>
+              </li>
+              <li>
+                <button class="slot" type="button">
+                  <span class="radio"></span>
+                  <span class="slot-time">5:15 PM – 6:00 PM</span>
+                  <span class="slot-meta">3 slots left</span>
+                </button>
+              </li>
+              <li>
+                <button class="slot is-selected" type="button" aria-pressed="true">
+                  <span class="radio"></span>
+                  <span class="slot-time">6:30 PM – 7:15 PM</span>
+                  <span class="slot-meta">Selected</span>
+                </button>
+              </li>
+              <li>
+                <button class="slot is-off" type="button" aria-disabled="true">
+                  <span class="radio"></span>
+                  <span class="slot-time">7:15 PM – 8:00 PM</span>
+                  <span class="slot-meta">Booked</span>
+                </button>
+              </li>
+              <li>
+                <button class="slot" type="button">
+                  <span class="radio"></span>
+                  <span class="slot-time">8:00 PM – 8:45 PM</span>
+                  <span class="slot-meta">1 slot left</span>
+                </button>
+              </li>
+              <li>
+                <button class="slot" type="button">
+                  <span class="radio"></span>
+                  <span class="slot-time">8:45 PM – 9:30 PM</span>
+                  <span class="slot-meta">4 slots left</span>
+                </button>
+              </li>
+            </ul>
+          </fieldset>
+        </form>
+      </main>
+
+      <aside class="panel" aria-label="Booking summary and confirmation">
+        <h2 class="side-title">Booking summary</h2>
+
+        <div class="pick">
+          <span class="pick-label">Your selection</span>
+          <span class="pick-value">Tue, April 22</span>
+          <span class="pick-detail">6:30 – 7:15 PM Eastern Time</span>
+        </div>
+
+        <dl class="facts">
+          <div class="row"><dt>Tutor</dt><dd>Rowan Hale</dd></div>
+          <div class="row"><dt>Lesson</dt><dd>French conversation</dd></div>
+          <div class="row"><dt>Level</dt><dd>Intermediate B1</dd></div>
+          <div class="row"><dt>Format</dt><dd>Online classroom</dd></div>
+        </dl>
+
+        <div class="fees">
+          <div class="fee-row"><span>Lesson fee</span><span>$26.00</span></div>
+          <div class="fee-row"><span>Platform fee</span><span>$2.00</span></div>
+          <div class="fee-row total"><span>Total</span><span>$28.00</span></div>
+        </div>
+
+        <button class="confirm" type="button">Confirm and book</button>
+        <button class="link-btn" type="button">Change tutor or lesson type</button>
+        <p class="policy">Free cancellation up to 12 hours before the lesson starts.</p>
+      </aside>
+    </div>
+  </div>
+</body>
+</html>

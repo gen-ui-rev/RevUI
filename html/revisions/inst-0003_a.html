@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gatherpost Volunteer Schedule</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #d7d7d7;
+      color: #202020;
+      font-family: 'Inter', system-ui, sans-serif;
+    }
+
+    button {
+      margin: 0;
+      border: 0;
+      padding: 0;
+      background: none;
+      color: inherit;
+      font: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #f1f1f1;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 11px 14px 10px 16px;
+      background: #1c3a29;
+      border-bottom: 1px solid #16301f;
+    }
+
+    .brand {
+      margin: 0 0 2px;
+      color: #a9c6b4;
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 15px;
+    }
+
+    h1 {
+      margin: 0;
+      color: #ffffff;
+      font-size: 23px;
+      font-weight: 700;
+      line-height: 27px;
+      letter-spacing: -0.3px;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .icon-button {
+      width: 36px;
+      height: 36px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(255, 255, 255, 0.45);
+      background: transparent;
+      color: #ffffff;
+    }
+
+    .icon-button.primary {
+      border-color: #ffffff;
+      background: rgba(255, 255, 255, 0.18);
+      color: #ffffff;
+    }
+
+    .icon-button svg {
+      width: 19px;
+      height: 19px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .mail-tabs {
+      display: flex;
+      gap: 25px;
+      padding: 0 16px;
+      background: #ffffff;
+      border-bottom: 1px solid #dddddd;
+    }
+
+    .mail-tab {
+      position: relative;
+      padding: 12px 0 10px;
+      color: #797979;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 17px;
+    }
+
+    .mail-tab.active {
+      color: #1c3a29;
+      font-weight: 600;
+    }
+
+    .mail-tab.active::after {
+      content: "";
+      position: absolute;
+      right: 0;
+      bottom: -1px;
+      left: 0;
+      height: 3px;
+      background: #1c3a29;
+    }
+
+    .mailbox {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .mail-tools {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 9px 14px;
+      color: #656565;
+      font-size: 14px;
+      line-height: 18px;
+    }
+
+    .mail-tools strong {
+      color: #1c3a29;
+      font-weight: 600;
+    }
+
+    .filter-button {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      color: #515151;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .filter-button svg {
+      width: 15px;
+      height: 15px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.7;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .message-list {
+      margin: 0 10px;
+      background: #ffffff;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.09);
+    }
+
+    .day-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      background: #eaf1ec;
+      border-top: 1px solid #dde6e0;
+      border-bottom: 1px solid #dde6e0;
+      color: #21432f;
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 15px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .day-heading:first-child {
+      border-top: 0;
+    }
+
+    .day-heading .day-total {
+      color: #63796b;
+      font-weight: 500;
+      letter-spacing: 0;
+      text-transform: none;
+    }
+
+    .message-row {
+      display: grid;
+      grid-template-columns: 38px minmax(0, 1fr);
+      gap: 10px;
+      padding: 7px 10px;
+      border-bottom: 1px solid #e7e7e7;
+      background: #ffffff;
+    }
+
+    .message-row:last-child {
+      border-bottom: 0;
+    }
+
+    .avatar {
+      width: 38px;
+      height: 38px;
+      margin-top: 2px;
+      display: grid;
+      place-items: center;
+      border: 1px solid #c8d5cb;
+      background: #f4f7f4;
+      color: #4a6b56;
+    }
+
+    .avatar svg {
+      width: 25px;
+      height: 25px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .message-content {
+      min-width: 0;
+    }
+
+    .sender-line {
+      display: flex;
+      align-items: center;
+      min-width: 0;
+      line-height: 17px;
+    }
+
+    .sender {
+      min-width: 0;
+      flex: 1;
+      overflow: hidden;
+      color: #333333;
+      font-size: 14px;
+      font-weight: 500;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .message-row.unread .sender {
+      color: #161616;
+      font-weight: 700;
+    }
+
+    .date {
+      margin-left: 8px;
+      color: #858585;
+      font-size: 12px;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .unread-dot {
+      width: 6px;
+      height: 6px;
+      margin-right: 7px;
+      flex: 0 0 auto;
+      background: #a8642c;
+    }
+
+    .subject,
+    .preview {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .subject {
+      margin-top: 1px;
+      color: #1c3a29;
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 18px;
+    }
+
+    .preview {
+      color: #747474;
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 17px;
+    }
+
+    .bottom-nav {
+      margin-top: auto;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      padding: 8px 4px 9px;
+      border-top: 1px solid #d7d7d7;
+      background: #ffffff;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      color: #818181;
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 14px;
+    }
+
+    .nav-item.active {
+      color: #1c3a29;
+      font-weight: 600;
+    }
+
+    .nav-item svg {
+      width: 21px;
+      height: 21px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.7;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .nav-item.active .mail-fill {
+      fill: #e6ede8;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <div>
+        <p class="brand">Harvest Table Food Bank</p>
+        <h1>My Shifts</h1>
+      </div>
+      <div class="top-actions">
+        <button class="icon-button" type="button" aria-label="Search shifts">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="10.5" cy="10.5" r="6.5"></circle>
+            <path d="M15.5 15.5 21 21"></path>
+          </svg>
+        </button>
+        <button class="icon-button primary" type="button" aria-label="Sign up for a shift">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 5v14"></path>
+            <path d="M5 12h14"></path>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <nav class="mail-tabs" aria-label="Schedule views">
+      <button class="mail-tab active" type="button">My Shifts</button>
+      <button class="mail-tab" type="button">Open Shifts</button>
+      <button class="mail-tab" type="button">History</button>
+    </nav>
+
+    <main class="mailbox">
+      <div class="mail-tools">
+        <span><strong>2 to confirm</strong> of 8 shifts</span>
+        <button class="filter-button" type="button">
+          This week
+          <svg viewBox="0 0 20 20" aria-hidden="true">
+            <path d="m6 8 4 4 4-4"></path>
+          </svg>
+        </button>
+      </div>
+
+      <section class="message-list" aria-label="Volunteer shifts">
+        <h2 class="day-heading">
+          <span>Today · Wed May 21</span>
+          <span class="day-total">3 shifts · 7.5 hrs</span>
+        </h2>
+
+        <article class="message-row unread">
+          <div class="avatar">
+            <svg viewBox="0 0 28 28" aria-hidden="true">
+              <path d="M4 9l10-5 10 5v10l-10 5-10-5z"></path>
+              <path d="M4 9l10 5 10-5"></path>
+              <path d="M14 14v10"></path>
+            </svg>
+          </div>
+          <div class="message-content">
+            <div class="sender-line">
+              <span class="unread-dot"></span>
+              <span class="sender">Morning Sort Line</span>
+              <span class="date">3 hrs</span>
+            </div>
+            <div class="subject">8:00 AM – 11:00 AM</div>
+            <div class="preview">Warehouse Bay 2 · with Dana Reyes</div>
+          </div>
+        </article>
+
+        <article class="message-row">
+          <div class="avatar">
+            <svg viewBox="0 0 28 28" aria-hidden="true">
+              <circle cx="10" cy="10" r="3.2"></circle>
+              <circle cx="18.5" cy="11" r="2.8"></circle>
+              <path d="M4.5 22c.7-4.3 2.5-6.5 5.8-6.5 3.4 0 5.2 2.2 5.9 6.5"></path>
+              <path d="M16 17c3.8-.6 6.1 1.1 6.8 5"></path>
+            </svg>
+          </div>
+          <div class="message-content">
+            <div class="sender-line">
+              <span class="sender">Client Pickup Desk</span>
+              <span class="date">2 hrs</span>
+            </div>
+            <div class="subject">11:30 AM – 1:30 PM</div>
+            <div class="preview">Front Lobby · greeter station</div>
+          </div>
+        </article>
+
+        <article class="message-row unread">
+          <div class="avatar">
+            <svg viewBox="0 0 28 28" aria-hidden="true">
+              <path d="M3 8h12v9H3z"></path>
+              <path d="M15 11h4l3 3v3h-7z"></path>
+              <circle cx="8" cy="20" r="2"></circle>
+              <circle cx="18.5" cy="20" r="2"></circle>
+            </svg>
+          </div>
+          <div class="message-content">
+            <div class="sender-line">
+              <span class="unread-dot"></span>
+              <span class="sender">Produce Rescue Run</span>
+              <span class="date">2.5 hrs</span>
+            </div>
+            <div class="subject">2:00 PM – 4:30 PM</div>
+            <div class="preview">Loading Dock A · van route west</div>
+          </div>
+        </article>
+
+        <h2 class="day-heading">
+          <span>Tomorrow · Thu May 22</span>
+          <span class="day-total">3 shifts · 7 hrs</span>
+        </h2>
+
+        <article class="message-row">
+          <div class="avatar">
+            <svg viewBox="0 0 28 28" aria-hidden="true">
+              <path d="M5 21h18"></path>
+              <path d="M7 21V10l7-5 7 5v11"></path>
+              <path d="M11 21v-6h6v6"></path>
+            </svg>
+          </div>
+          <div class="message-content">
+            <div class="sender-line">
+              <span class="sender">Pantry Restock</span>
+              <span class="date">3 hrs</span>
+            </div>
+            <div class="subject">9:00 AM – 12:00 PM</div>
+            <div class="preview">Aisles 3–5 · canned goods</div>
+          </div>
+        </article>
+
+        <article class="message-row">
+          <div class="avatar">
+            <svg viewBox="0 0 28 28" aria-hidden="true">
+              <path d="M4 9l10-5 10 5v10l-10 5-10-5z"></path>
+              <path d="M4 9l10 5 10-5"></path>
+              <path d="M14 14v10"></path>
+            </svg>
+          </div>
+          <div class="message-content">
+            <div class="sender-line">
+              <span class="sender">Kids Snack Packs</span>
+              <span class="date">2 hrs</span>
+            </div>
+            <div class="subject">1:00 PM – 3:00 PM</div>
+            <div class="preview">Community Room · packing tables</div>
+          </div>
+        </article>
+
+        <article class="message-row">
+          <div class="avatar">
+            <svg viewBox="0 0 28 28" aria-hidden="true">
+              <path d="M3 8h12v9H3z"></path>
+              <path d="M15 11h4l3 3v3h-7z"></path>
+              <circle cx="8" cy="20" r="2"></circle>
+              <circle cx="18.5" cy="20" r="2"></circle>
+            </svg>
+          </div>
+          <div class="message-content">
+            <div class="sender-line">
+              <span class="sender">Evening Delivery Prep</span>
+              <span class="date">2 hrs</span>
+            </div>
+            <div class="subject">5:00 PM – 7:00 PM</div>
+            <div class="preview">Loading Dock B · 40 home boxes</div>
+          </div>
+        </article>
+
+        <h2 class="day-heading">
+          <span>Fri May 23</span>
+          <span class="day-total">2 shifts · 4 hrs</span>
+        </h2>
+
+        <article class="message-row">
+          <div class="avatar">
+            <svg viewBox="0 0 28 28" aria-hidden="true">
+              <circle cx="14" cy="9" r="4"></circle>
+              <path d="M6.5 23c.8-5 3.3-7.5 7.5-7.5s6.7 2.5 7.5 7.5"></path>
+            </svg>
+          </div>
+          <div class="message-content">
+            <div class="sender-line">
+              <span class="sender">Volunteer Orientation</span>
+              <span class="date">1 hr</span>
+            </div>
+            <div class="subject">10:00 AM – 11:00 AM</div>
+            <div class="preview">Training Room · new team intake</div>
+          </div>
+        </article>
+
+        <article class="message-row">
+          <div class="avatar">
+            <svg viewBox="0 0 28 28" aria-hidden="true">
+              <path d="M4 9l10-5 10 5v10l-10 5-10-5z"></path>
+              <path d="M4 9l10 5 10-5"></path>
+              <path d="M14 14v10"></path>
+            </svg>
+          </div>
+          <div class="message-content">
+            <div class="sender-line">
+              <span class="sender">Weekend Box Build</span>
+              <span class="date">3 hrs</span>
+            </div>
+            <div class="subject">12:00 PM – 3:00 PM</div>
+            <div class="preview">Warehouse Bay 1 · 120 boxes</div>
+          </div>
+        </article>
+      </section>
+    </main>
+
+    <nav class="bottom-nav" aria-label="Main navigation">
+      <button class="nav-item" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="m3 11 9-7 9 7"></path>
+          <path d="M5 10v10h14V10"></path>
+          <path d="M9 20v-6h6v6"></path>
+        </svg>
+        <span>Home</span>
+      </button>
+      <button class="nav-item" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="8" cy="9" r="3"></circle>
+          <circle cx="16.5" cy="10" r="2.5"></circle>
+          <path d="M2.5 20c.6-4.3 2.4-6.5 5.7-6.5s5.2 2.2 5.8 6.5"></path>
+          <path d="M14 15c4-.5 6.5 1.2 7.2 5"></path>
+        </svg>
+        <span>Team</span>
+      </button>
+      <button class="nav-item active" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path class="mail-fill" d="M3 5h18v15H3z"></path>
+          <path d="M3 5h18v15H3z"></path>
+          <path d="M3 10h18"></path>
+          <path d="M8 3v4M16 3v4"></path>
+        </svg>
+        <span>Schedule</span>
+      </button>
+      <button class="nav-item" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="8" r="4"></circle>
+          <path d="M4.5 21c.8-5.2 3.3-7.8 7.5-7.8s6.7 2.6 7.5 7.8"></path>
+        </svg>
+        <span>Profile</span>
+      </button>
+    </nav>
+  </div>
+</body>
+</html>

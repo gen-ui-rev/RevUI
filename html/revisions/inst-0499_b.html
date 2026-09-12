@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Location access — Wanderloop</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:24px;
+    background:#e8e6ea;
+    font-family:'Plus Jakarta Sans', system-ui, sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .screen{
+    position:relative;
+    width:768px;
+    height:1024px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#f7f5f8;
+    border:1px solid #d7d4da;
+    box-shadow:0 18px 50px rgba(38,34,43,.16);
+  }
+  .underlay{
+    position:absolute;
+    inset:0;
+    padding:52px 48px;
+    color:#302b36;
+    background:
+      radial-gradient(circle at 84% 22%, #ded1fa 0 110px, transparent 111px),
+      radial-gradient(circle at 11% 79%, #dbe8e0 0 145px, transparent 146px),
+      #f7f5f8;
+  }
+  .underlay-bar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+  }
+  .underlay-brand{
+    font-size:20px;
+    font-weight:700;
+    color:#322b3d;
+  }
+  .underlay-avatar{
+    width:40px;
+    height:40px;
+    border-radius:50%;
+    background:#d9d3df;
+  }
+  .underlay-title{
+    margin:72px 0 0;
+    font-size:34px;
+    line-height:1.2;
+    letter-spacing:-.03em;
+  }
+  .underlay-search{
+    margin-top:24px;
+    padding:18px 20px;
+    border-radius:16px;
+    background:#ffffff;
+    box-shadow:0 8px 25px rgba(44,38,50,.08);
+    font-size:14px;
+    color:#6f6976;
+  }
+  .underlay-cards{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:18px;
+    margin-top:30px;
+  }
+  .underlay-card{
+    padding:24px;
+    border-radius:20px;
+    background:#ffffff;
+    box-shadow:0 8px 25px rgba(44,38,50,.07);
+  }
+  .underlay-card strong{
+    display:block;
+    font-size:16px;
+  }
+  .underlay-card span{
+    display:block;
+    margin-top:7px;
+    font-size:13px;
+    color:#77717d;
+  }
+  .shade{
+    position:absolute;
+    inset:0;
+    background:rgba(29,26,33,.68);
+  }
+  .card{
+    position:relative;
+    z-index:1;
+    width:700px;
+    padding:38px 36px 34px;
+    border-radius:28px;
+    background:#ffffff;
+    box-shadow:0 30px 80px rgba(9,8,11,.42);
+  }
+  .intro{
+    text-align:center;
+  }
+  .mark{
+    width:92px;
+    height:92px;
+    margin:0 auto;
+    border-radius:50%;
+    background:#6d28d9;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#ffffff;
+    box-shadow:0 10px 25px rgba(109,40,217,.23);
+  }
+  .eyebrow{
+    margin:17px 0 0;
+    font-size:12px;
+    font-weight:700;
+    letter-spacing:.11em;
+    text-transform:uppercase;
+    color:#6d28d9;
+  }
+  h1{
+    max-width:540px;
+    margin:8px auto 0;
+    font-size:28px;
+    line-height:1.22;
+    font-weight:700;
+    letter-spacing:-.025em;
+    color:#17151b;
+  }
+  .lede{
+    max-width:540px;
+    margin:11px auto 0;
+    font-size:14px;
+    line-height:1.5;
+    color:#625d69;
+  }
+  .facts{
+    display:grid;
+    grid-template-columns:repeat(3, minmax(0,1fr));
+    gap:10px;
+    margin-top:26px;
+  }
+  .fact{
+    padding:17px 15px;
+    border:1px solid #e6e2e9;
+    border-radius:16px;
+    background:#fbfafc;
+  }
+  .fact-number{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    width:28px;
+    height:28px;
+    border-radius:9px;
+    background:#eee7fb;
+    color:#6d28d9;
+    font-size:12px;
+    font-weight:700;
+  }
+  .fact-title{
+    margin-top:12px;
+    font-size:14px;
+    font-weight:700;
+    color:#221f28;
+  }
+  .fact-body{
+    margin-top:5px;
+    font-size:12.5px;
+    line-height:1.45;
+    color:#6b6672;
+  }
+  .actions{
+    display:grid;
+    grid-template-columns:1.55fr 1fr 1fr;
+    gap:10px;
+    margin-top:26px;
+  }
+  .btn{
+    min-width:0;
+    border:0;
+    border-radius:13px;
+    font-family:inherit;
+    font-size:13px;
+    font-weight:600;
+    line-height:1.25;
+    padding:14px 10px;
+    text-align:center;
+    cursor:pointer;
+  }
+  .btn-primary{
+    background:#6d28d9;
+    color:#ffffff;
+  }
+  .btn-quiet{
+    background:#f0edf3;
+    color:#3f3a48;
+  }
+  .btn-deny{
+    background:#ffffff;
+    box-shadow:inset 0 0 0 1px #dcd7e0;
+    color:#77717f;
+    font-weight:500;
+  }
+  .note{
+    margin:14px 0 0;
+    font-size:12px;
+    line-height:1.5;
+    color:#8a8593;
+    text-align:center;
+  }
+</style>
+</head>
+<body>
+  <div class="screen">
+    <div class="underlay" aria-hidden="true">
+      <div class="underlay-bar">
+        <div class="underlay-brand">Wanderloop</div>
+        <div class="underlay-avatar"></div>
+      </div>
+      <h2 class="underlay-title">Where will you wander next?</h2>
+      <div class="underlay-search">Search cities, stays, and experiences</div>
+      <div class="underlay-cards">
+        <div class="underlay-card">
+          <strong>Lisbon weekend</strong>
+          <span>4 saved places</span>
+        </div>
+        <div class="underlay-card">
+          <strong>Nearby favorites</strong>
+          <span>Recommended for today</span>
+        </div>
+      </div>
+    </div>
+    <div class="shade" aria-hidden="true"></div>
+
+    <main class="card" aria-labelledby="location-title">
+      <header class="intro">
+        <div class="mark" aria-hidden="true">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 21s7-5.6 7-11a7 7 0 1 0-14 0c0 5.4 7 11 7 11z"/>
+            <circle cx="12" cy="10" r="2.6"/>
+          </svg>
+        </div>
+        <p class="eyebrow">Wanderloop</p>
+        <h1 id="location-title">Use your location while you're on a trip?</h1>
+        <p class="lede">We only read your position while the app is open, and never store a history of where you've been.</p>
+      </header>
+
+      <div class="facts">
+        <div class="fact">
+          <div class="fact-number" aria-hidden="true">01</div>
+          <div class="fact-title">Stays near you</div>
+          <div class="fact-body">See Lisbon rooms sorted by walking time from your position.</div>
+        </div>
+        <div class="fact">
+          <div class="fact-number" aria-hidden="true">02</div>
+          <div class="fact-title">Offline maps</div>
+          <div class="fact-body">Save the 3-mile area around you before the signal drops.</div>
+        </div>
+        <div class="fact">
+          <div class="fact-number" aria-hidden="true">03</div>
+          <div class="fact-title">Local highlights</div>
+          <div class="fact-body">Find useful stops and recommended places close to your route.</div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn btn-primary" type="button">Allow while using app</button>
+        <button class="btn btn-quiet" type="button">Allow once</button>
+        <button class="btn btn-deny" type="button">Don't allow</button>
+      </div>
+
+      <p class="note">You can change this anytime in Settings, under Privacy.</p>
+    </main>
+  </div>
+</body>
+</html>

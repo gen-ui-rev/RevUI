@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Compare Northline Plans</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      border-radius: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #dfe5e8;
+      color: #10242b;
+      font-family: 'Nunito Sans', system-ui, sans-serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #ffffff;
+      border: 1px solid #cbd5d9;
+    }
+
+    .topbar {
+      display: grid;
+      grid-template-columns: 36px 1fr 36px;
+      align-items: center;
+      padding: 13px 16px;
+      border-bottom: 1px solid #dce4e7;
+    }
+
+    .topbar-title {
+      margin: 0;
+      text-align: center;
+      font-size: 17px;
+      line-height: 24px;
+      font-weight: 700;
+    }
+
+    .icon-button {
+      width: 36px;
+      padding: 5px;
+      border: 0;
+      background: transparent;
+      color: #284149;
+      display: grid;
+      place-items: center;
+    }
+
+    .icon-button svg {
+      width: 22px;
+      height: 22px;
+      display: block;
+    }
+
+    main {
+      flex: 1;
+      padding: 0 16px;
+    }
+
+    .intro {
+      padding: 16px 0 14px;
+    }
+
+    .intro h1 {
+      margin: 0;
+      font-size: 26px;
+      line-height: 32px;
+      font-weight: 700;
+      letter-spacing: -0.4px;
+    }
+
+    .intro p {
+      margin: 4px 0 0;
+      color: #52686f;
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .billing-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .billing-label {
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 700;
+    }
+
+    .billing-options {
+      display: flex;
+      border: 1px solid #b9c8cd;
+    }
+
+    .billing-option {
+      min-width: 76px;
+      padding: 7px 10px;
+      border: 0;
+      border-left: 1px solid #b9c8cd;
+      background: #ffffff;
+      color: #41565d;
+      text-align: center;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 600;
+    }
+
+    .billing-option:first-child {
+      border-left: 0;
+    }
+
+    .billing-option.active {
+      background: #0891b2;
+      color: #ffffff;
+    }
+
+    .plan-grid,
+    .comparison-row,
+    .comparison-heading {
+      display: grid;
+      grid-template-columns: 112px repeat(3, 82px);
+    }
+
+    .plan-grid {
+      border-top: 2px solid #15343e;
+      border-bottom: 1px solid #cbd7da;
+    }
+
+    .plan-cell {
+      min-width: 0;
+      padding: 10px 6px 11px;
+      border-left: 1px solid #e0e7e9;
+      text-align: center;
+    }
+
+    .plan-cell:first-child {
+      border-left: 0;
+      padding-left: 0;
+      text-align: left;
+    }
+
+    .plan-cell.accent {
+      border-top: 3px solid #06b6d4;
+      margin-top: -2px;
+      background: #ecfeff;
+    }
+
+    .plan-label {
+      display: block;
+      color: #61747a;
+      font-size: 12px;
+      line-height: 17px;
+      font-weight: 600;
+    }
+
+    .plan-name {
+      display: block;
+      font-size: 14px;
+      line-height: 19px;
+      font-weight: 700;
+    }
+
+    .price {
+      display: block;
+      margin-top: 3px;
+      font-size: 20px;
+      line-height: 25px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+    }
+
+    .price small {
+      font-size: 12px;
+      font-weight: 600;
+      color: #5d7076;
+    }
+
+    .annual-total {
+      display: block;
+      margin-top: 2px;
+      color: #66797f;
+      font-size: 12px;
+      line-height: 17px;
+    }
+
+    .current {
+      color: #0786a1;
+      font-weight: 700;
+    }
+
+    .comparison-heading {
+      align-items: end;
+      padding: 14px 0 8px;
+      border-bottom: 1px solid #aebdc2;
+    }
+
+    .comparison-heading h2 {
+      grid-column: 1 / -1;
+      margin: 0;
+      font-size: 16px;
+      line-height: 22px;
+      font-weight: 700;
+    }
+
+    .group-band {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin: 0 -16px;
+      padding: 7px 16px 5px;
+      background: #f1f6f8;
+      border-bottom: 1px solid #cbd7da;
+      color: #3c5259;
+      font-size: 11px;
+      line-height: 15px;
+      font-weight: 700;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+    }
+
+    .group-count {
+      color: #6b7f85;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0;
+      text-transform: none;
+    }
+
+    .comparison-row {
+      border-bottom: 1px solid #e0e7e9;
+    }
+
+    .comparison-row > div {
+      min-width: 0;
+      padding: 9px 5px;
+      border-left: 1px solid #eef2f3;
+      text-align: center;
+      color: #31484f;
+      font-size: 13px;
+      line-height: 20px;
+    }
+
+    .comparison-row > div:first-child {
+      padding-left: 0;
+      border-left: 0;
+      text-align: left;
+      color: #172f37;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .comparison-row .accent {
+      background: #ecfeff;
+      color: #075d6d;
+      font-weight: 700;
+    }
+
+    .dash {
+      color: #93a2a6;
+    }
+
+    .plan-note {
+      margin: 0;
+      padding: 11px 0 10px;
+      color: #60747a;
+      font-size: 12px;
+      line-height: 18px;
+    }
+
+    .tabbar {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border-top: 1px solid #cbd7da;
+      background: #ffffff;
+    }
+
+    .tab {
+      padding: 8px 2px 9px;
+      color: #65777d;
+      text-align: center;
+      text-decoration: none;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 600;
+    }
+
+    .tab svg {
+      width: 21px;
+      height: 21px;
+      margin: 0 auto 2px;
+      display: block;
+    }
+
+    .tab.active {
+      color: #078cab;
+      border-top: 3px solid #06b6d4;
+      padding-top: 5px;
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <button class="icon-button" aria-label="Go back">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="square" stroke-linejoin="miter" aria-hidden="true">
+          <path d="M15 5 8 12l7 7"></path>
+        </svg>
+      </button>
+      <p class="topbar-title">Northline plans</p>
+      <button class="icon-button" aria-label="Plan information">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+          <circle cx="12" cy="12" r="9"></circle>
+          <path d="M12 10.5v6"></path>
+          <path d="M12 7.5h.01"></path>
+        </svg>
+      </button>
+    </header>
+
+    <main>
+      <section class="intro" aria-labelledby="page-title">
+        <h1 id="page-title">Compare account plans</h1>
+        <p>Limits, tools, and support grouped by area.</p>
+      </section>
+
+      <div class="billing-row" aria-label="Billing frequency">
+        <span class="billing-label">Prices shown</span>
+        <div class="billing-options">
+          <button class="billing-option" type="button">Monthly</button>
+          <button class="billing-option active" type="button" aria-pressed="true">Annual</button>
+        </div>
+      </div>
+
+      <section aria-label="Plan pricing">
+        <div class="plan-grid">
+          <div class="plan-cell">
+            <span class="plan-label">Annual billing</span>
+          </div>
+          <div class="plan-cell">
+            <span class="plan-name">Cash</span>
+            <span class="price">$0</span>
+            <span class="annual-total current">Current plan</span>
+          </div>
+          <div class="plan-cell">
+            <span class="plan-name">Core</span>
+            <span class="price">$5<small>/mo</small></span>
+            <span class="annual-total">$60 per year</span>
+          </div>
+          <div class="plan-cell accent">
+            <span class="plan-name">Plus</span>
+            <span class="price">$10<small>/mo</small></span>
+            <span class="annual-total">$120 per year</span>
+          </div>
+        </div>
+      </section>
+
+      <section aria-labelledby="included-heading">
+        <div class="comparison-heading">
+          <h2 id="included-heading">What each plan includes</h2>
+        </div>
+
+        <div class="group-band">
+          Accounts &amp; data
+          <span class="group-count">3 features</span>
+        </div>
+        <div class="comparison-row">
+          <div>Linked accounts</div>
+          <div>2</div>
+          <div>10</div>
+          <div class="accent">Unlimited</div>
+        </div>
+        <div class="comparison-row">
+          <div>History</div>
+          <div>12 months</div>
+          <div>5 years</div>
+          <div class="accent">Unlimited</div>
+        </div>
+        <div class="comparison-row">
+          <div>Exports</div>
+          <div>CSV</div>
+          <div>CSV, PDF</div>
+          <div class="accent">All types</div>
+        </div>
+
+        <div class="group-band">
+          Budgeting &amp; goals
+          <span class="group-count">2 features</span>
+        </div>
+        <div class="comparison-row">
+          <div>Budgets</div>
+          <div>3</div>
+          <div>Unlimited</div>
+          <div class="accent">Unlimited</div>
+        </div>
+        <div class="comparison-row">
+          <div>Goals</div>
+          <div>1</div>
+          <div>5</div>
+          <div class="accent">Unlimited</div>
+        </div>
+
+        <div class="group-band">
+          Insights &amp; support
+          <span class="group-count">3 features</span>
+        </div>
+        <div class="comparison-row">
+          <div>Credit score</div>
+          <div>Monthly</div>
+          <div>Weekly</div>
+          <div class="accent">Daily</div>
+        </div>
+        <div class="comparison-row">
+          <div>Investments</div>
+          <div class="dash">None</div>
+          <div>Holdings</div>
+          <div class="accent">Tax lots</div>
+        </div>
+        <div class="comparison-row">
+          <div>Support</div>
+          <div>Standard</div>
+          <div>Priority</div>
+          <div class="accent">Dedicated</div>
+        </div>
+
+        <p class="plan-note">Prices exclude taxes. Changes start next billing period.</p>
+      </section>
+    </main>
+
+    <nav class="tabbar" aria-label="Primary navigation">
+      <a class="tab" href="#" aria-label="Overview">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
+          <path d="M4 11 12 4l8 7v9H4z"></path>
+          <path d="M9 20v-6h6v6"></path>
+        </svg>
+        Overview
+      </a>
+      <a class="tab" href="#" aria-label="Activity">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
+          <path d="M5 5v14h15"></path>
+          <path d="m7 15 4-4 3 2 5-6"></path>
+        </svg>
+        Activity
+      </a>
+      <a class="tab active" href="#" aria-current="page" aria-label="Plans">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
+          <path d="M4 6h16v13H4z"></path>
+          <path d="M4 10h16"></path>
+          <path d="M8 15h4"></path>
+        </svg>
+        Plans
+      </a>
+      <a class="tab" href="#" aria-label="Profile">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
+          <circle cx="12" cy="8" r="3.5"></circle>
+          <path d="M5.5 20c.5-4 2.7-6 6.5-6s6 2 6.5 6"></path>
+        </svg>
+        Profile
+      </a>
+    </nav>
+  </div>
+</body>
+</html>

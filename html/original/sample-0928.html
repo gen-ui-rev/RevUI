@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Ratings &amp; Reviews</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#16161a;
+    --muted:#6d6d70;
+    --line:#e5e5e2;
+    --track:#ededea;
+  }
+  *{box-sizing:border-box;}
+  body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    padding:40px 0;
+    margin:0;
+    background:#ececea;
+    font-family:'Nunito Sans', system-ui, sans-serif;
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+  }
+  .screen{
+    width:390px;
+    height:844px;
+    background:#ffffff;
+    position:relative;
+    display:flex;
+    flex-direction:column;
+  }
+
+  /* top bar */
+  .topbar{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:16px 16px;
+    border-bottom:1px solid var(--line);
+  }
+  .topbar svg{display:block;}
+  .topbar h1{
+    margin:0;
+    font-size:16px;
+    font-weight:700;
+    letter-spacing:.1px;
+  }
+
+  /* album header */
+  .album{
+    display:flex;
+    gap:14px;
+    align-items:center;
+    padding:16px 16px 18px;
+  }
+  .album img{
+    width:80px;
+    height:80px;
+    display:block;
+    object-fit:cover;
+    background:#d9d9d6;
+    border-radius:14px;
+  }
+  .album .meta{min-width:0;}
+  .album .title{
+    font-size:18px;
+    font-weight:700;
+    line-height:24px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .album .artist{
+    font-size:14px;
+    color:var(--muted);
+    margin-top:2px;
+  }
+  .album .sub{
+    font-size:12px;
+    color:var(--muted);
+    margin-top:6px;
+  }
+
+  /* rating summary */
+  .summary{
+    display:flex;
+    gap:20px;
+    align-items:flex-start;
+    padding:0 16px;
+  }
+  .score{
+    width:96px;
+    flex:none;
+  }
+  .score .num{
+    font-size:40px;
+    line-height:42px;
+    font-weight:700;
+    letter-spacing:-1px;
+  }
+  .score .stars{margin-top:4px;}
+  .score .count{
+    font-size:12px;
+    color:var(--muted);
+    margin-top:6px;
+  }
+  .stars{display:flex;gap:2px;}
+  .stars svg{display:block;}
+  .bars{flex:1;padding-top:2px;}
+  .bar{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-bottom:7px;
+  }
+  .bar:last-child{margin-bottom:0;}
+  .bar .lab{
+    font-size:12px;
+    color:var(--muted);
+    width:10px;
+    text-align:right;
+    flex:none;
+  }
+  .bar .track{
+    flex:1;
+    height:6px;
+    border-radius:3px;
+    background:var(--track);
+  }
+  .bar .fill{
+    height:6px;
+    border-radius:3px;
+    background:var(--ink);
+  }
+  .bar .val{
+    font-size:12px;
+    color:var(--muted);
+    width:38px;
+    text-align:right;
+    flex:none;
+  }
+
+  .write{
+    margin:18px 16px 0;
+    padding:13px 0;
+    text-align:center;
+    border:1px solid var(--ink);
+    border-radius:14px;
+    font-size:15px;
+    font-weight:700;
+  }
+
+  /* reviews */
+  .sectionhead{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:20px 16px 12px;
+    margin-top:6px;
+  }
+  .sectionhead h2{
+    margin:0;
+    font-size:15px;
+    font-weight:700;
+  }
+  .sort{
+    display:flex;
+    align-items:center;
+    gap:4px;
+    font-size:13px;
+    color:var(--muted);
+  }
+  .review{
+    padding:14px 16px;
+    border-top:1px solid var(--line);
+  }
+  .rhead{
+    display:flex;
+    gap:12px;
+    align-items:center;
+  }
+  .mono{
+    width:36px;
+    height:36px;
+    flex:none;
+    border-radius:14px;
+    background:#f1f1ee;
+    border:1px solid var(--line);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:13px;
+    font-weight:700;
+    color:var(--ink);
+  }
+  .rname{
+    font-size:15px;
+    font-weight:600;
+    line-height:20px;
+  }
+  .rmeta{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    margin-top:2px;
+    font-size:12px;
+    color:var(--muted);
+  }
+  .rbody{
+    font-size:14px;
+    line-height:20px;
+    color:#2f2f33;
+    margin-top:8px;
+  }
+
+  /* tab bar */
+  .tabbar{
+    margin-top:auto;
+    display:flex;
+    border-top:1px solid var(--line);
+    padding:10px 0 14px;
+  }
+  .tab{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:4px;
+    font-size:12px;
+    color:var(--muted);
+  }
+  .tab.on{color:var(--ink);font-weight:600;}
+  .tab svg{display:block;}
+</style>
+</head>
+<body>
+  <div class="screen">
+
+    <div class="topbar">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#16161a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
+      <h1>Ratings &amp; Reviews</h1>
+    </div>
+
+    <div class="album">
+      <img src="https://loremflickr.com/80/80/vinyl?lock=12280" width="80" height="80" alt="Cover art for the album Paper Lanterns, a vinyl record sleeve">
+      <div class="meta">
+        <div class="title">Paper Lanterns</div>
+        <div class="artist">Nyla Verhoeven</div>
+        <div class="sub">Album &middot; 12 tracks &middot; 2025</div>
+      </div>
+    </div>
+
+    <div class="summary">
+      <div class="score">
+        <div class="num">4.3</div>
+        <div class="stars">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="#16161a"><path d="M12 2l2.9 6.1 6.6.9-4.8 4.6 1.2 6.6L12 17.1 6.1 20.2l1.2-6.6L2.5 9l6.6-.9z"/></svg>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="#16161a"><path d="M12 2l2.9 6.1 6.6.9-4.8 4.6 1.2 6.6L12 17.1 6.1 20.2l1.2-6.6L2.5 9l6.6-.9z"/></svg>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="#16161a"><path d="M12 2l2.9 6.1 6.6.9-4.8 4.6 1.2 6.6L12 17.1 6.1 20.2l1.2-6.6L2.5 9l6.6-.9z"/></svg>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="#16161a"><path d="M12 2l2.9 6.1 6.6.9-4.8 4.6 1.2 6.6L12 17.1 6.1 20.2l1.2-6.6L2.5 9l6.6-.9z"/></svg>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="#d5d5d2"><path d="M12 2l2.9 6.1 6.6.9-4.8 4.6 1.2 6.6L12 17.1 6.1 20.2l1.2-6.6L2.5 9l6.6-.9z"/></svg>
+        </div>
+        <div class="count">2,184 ratings</div>
+      </div>
+      <div class="bars">
+        <div class="bar"><span class="lab">5</span><span class="track"><span class="fill" style="width:62%"></span></span><span class="val">1,354</span></div>
+        <div class="bar"><span class="lab">4</span><span class="track"><span class="fill" style="width:21%"></span></span><span class="val">459</span></div>
+        <div class="bar"><span class="lab">3</span><span class="track"><span class="fill" style="width:9%"></span></span><span class="val">197</span></div>
+        <div class="bar"><span class="lab">2</span><span class="track"><span class="fill" style="width:5%"></span></span><span class="val">109</span></div>
+        <div class="bar"><span class="lab">1</span><span class="track"><span class="fill" style="width:3%"></span></span><span class="val">65</span></div>
+      </div>
+    </div>
+
+    <div class="write">Write a review</div>
+
+    <div class="sectionhead">
+      <h2>312 written reviews</h2>
+      <span class="sort">Most recent
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6d6d70" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+      </span>
+    </div>
+
+    <div class="review">
+      <div class="rhead">
+        <div class="mono">ME</div>
+        <div>
+          <div class="rname">Marcus Ely</div>
+          <div class="rmeta">
+            <span class="stars">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="#16161a"><path d="M12 2l2.9 6.1 6.6.9-4.8 4.6 1.2 6.6L12 17.1 6.1 20.2l1.2-6.6L2.5 9l6.6-.9z"/></svg>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="#16161a"><path d="M12 2l2.9 6.1 6.6.9-4.8 4.6 1.2 6.6L12 17.1 6.1 20.2l1.2-6.6L2.5 9l6.6-.9z"/></svg>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="#16161a"><path d="M12 2l2.9 6.1 6.6.9-4.8 4.6 1.2 6.6L12 17.1 6.1 20.2l1.2-6.6L2.5 9l6.6-.9z"/></svg>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="#16161a"><path d="M12 2l2.9 6.1 6.6.9-4.8 4.6 1.2 6.6L12 17.1 6.1 20.2l1.2-6.6L2.5 9l6.6-.9z"/></svg>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="#16161a"><path d="M12 2l2.9 6.1 6.6.9-4.8 4.6 1.2 6.6L12 17.1 6.1 20.2l1.2-6.6L2.5 9l6.6-.9z"/></svg>
+            </span>
+            <span>Mar 14, 2025</span>
+          </div>
+        </div>
+      </div>
+      <div class="rbody">The mix on the back half is the clearest she has ever sounded. Track seven alone justifies the four-year wait.</div>
+    </div>
+
+    <div class="review">
+      <div class="rhead">
+        <div class="mono">PR</div>
+        <div>
+          <div class="rname">Priya Raman</div>
+          <div class="rmeta">
+            <span class="stars">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="#16161a"><path d="M12 2l2.9 6.1 6.6.9-4.8 4.6 1.2 6.6L12 17.1 6.1 20.2l1.2-6.6L2.5 9l6.6-.9z"/></svg>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="#16161a"><path d="M12 2l2.9 6.1 6.6.9-4.8 4.6 1.2 6.6L12 17.1 6.1 20.2l1.2-6.6L2.5 9l6.6-.9z"/></svg>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="#16161a"><path d="M12 2l2.9 6.1 6.6.9-4.8 4.6 1.2 6.6L12 17.1 6.1 20.2l1.2-6.6L2.5 9l6.6-.9z"/></svg>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="#16161a"><path d="M12 2l2.9 6.1 6.6.9-4.8 4.6 1.2 6.6L12 17.1 6.1 20.2l1.2-6.6L2.5 9l6.6-.9z"/></svg>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="#d5d5d2"><path d="M12 2l2.9 6.1 6.6.9-4.8 4.6 1.2 6.6L12 17.1 6.1 20.2l1.2-6.6L2.5 9l6.6-.9z"/></svg>
+            </span>
+            <span>Mar 9, 2025</span>
+          </div>
+        </div>
+      </div>
+      <div class="rbody">Warmer than the last record, though the two interludes break the momentum more than they bridge it.</div>
+    </div>
+
+    <div class="review">
+      <div class="rhead">
+        <div class="mono">DW</div>
+        <div>
+          <div class="rname">Dana Whitfield</div>
+          <div class="rmeta">
+            <span class="stars">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="#16161a"><path d="M12 2l2.9 6.1 6.6.9-4.8 4.6 1.2 6.6L12 17.1 6.1 20.2l1.2-6.6L2.5 9l6.6-.9z"/></svg>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="#16161a"><path d="M12 2l2.9 6.1 6.6.9-4.8 4.6 1.2 6.6L12 17.1 6.1 20.2l1.2-6.6L2.5 9l6.6-.9z"/></svg>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="#16161a"><path d="M12 2l2.9 6.1 6.6.9-4.8 4.6 1.2 6.6L12 17.1 6.1 20.2l1.2-6.6L2.5 9l6.6-.9z"/></svg>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="#d5d5d2"><path d="M12 2l2.9 6.1 6.6.9-4.8 4.6 1.2 6.6L12 17.1 6.1 20.2l1.2-6.6L2.5 9l6.6-.9z"/></svg>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="#d5d5d2"><path d="M12 2l2.9 6.1 6.6.9-4.8 4.6 1.2 6.6L12 17.1 6.1 20.2l1.2-6.6L2.5 9l6.6-.9z"/></svg>
+            </span>
+            <span>Feb 28, 2025</span>
+          </div>
+        </div>
+      </div>
+      <div class="rbody">Beautifully produced, but I keep reaching for the singles instead of sitting with the whole thing.</div>
+    </div>
+
+    <div class="tabbar">
+      <div class="tab">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#6d6d70" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5L12 4l8 6.5V20a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1z"/></svg>
+        Home
+      </div>
+      <div class="tab">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#6d6d70" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4 4"/></svg>
+        Search
+      </div>
+      <div class="tab on">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#16161a" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4v16M9 4v16"/><path d="M13.5 5.2l4.3 15.2"/></svg>
+        Library
+      </div>
+      <div class="tab">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#6d6d70" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8.5" r="3.8"/><path d="M5 20c.9-3.6 3.6-5.4 7-5.4S18.1 16.4 19 20"/></svg>
+        Profile
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

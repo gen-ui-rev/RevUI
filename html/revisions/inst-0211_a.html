@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Planloom Shared Note</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #dfe0e5;
+      color: #24232a;
+      font-family: 'Poppins', system-ui, sans-serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #f3f3f6;
+      border: 1px solid #d3d3d9;
+    }
+
+    .browser-chrome {
+      flex: 0 0 auto;
+      background: #ffffff;
+      border-bottom: 1px solid #dddde3;
+    }
+
+    .viewer-bar {
+      display: grid;
+      grid-template-columns: 72px 1fr 72px;
+      align-items: center;
+      padding: 10px 12px;
+    }
+
+    .done-button {
+      padding: 3px 0;
+      border: 0;
+      background: transparent;
+      color: #6f47c7;
+      font-size: 14px;
+      font-weight: 600;
+      text-align: left;
+    }
+
+    .viewer-title {
+      margin: 0;
+      color: #313039;
+      font-size: 14px;
+      font-weight: 500;
+      text-align: center;
+    }
+
+    .menu-button {
+      width: 30px;
+      height: 28px;
+      margin-left: auto;
+      padding: 4px;
+      display: grid;
+      place-items: center;
+      border: 0;
+      background: transparent;
+      color: #55535e;
+    }
+
+    .address-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 12px 9px;
+    }
+
+    .address-field {
+      min-width: 0;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 9px 10px;
+      border-radius: 4px;
+      background: #f1f1f4;
+      color: #52515a;
+    }
+
+    .address-field svg {
+      flex: 0 0 auto;
+      color: #77747f;
+    }
+
+    .address-text {
+      min-width: 0;
+      overflow: hidden;
+      color: #4c4a54;
+      font-size: 12px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .refresh-button {
+      width: 36px;
+      height: 36px;
+      padding: 7px;
+      display: grid;
+      place-items: center;
+      border: 0;
+      background: transparent;
+      color: #595761;
+    }
+
+    .webview {
+      min-height: 0;
+      flex: 1;
+      background: #f3f3f6;
+    }
+
+    .service-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 11px 16px;
+      background: #ffffff;
+      border-bottom: 1px solid #e1e1e6;
+    }
+
+    .service-name {
+      margin: 0;
+      color: #28262f;
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .access-label {
+      padding: 4px 7px;
+      border: 1px solid #d8d6de;
+      border-radius: 4px;
+      color: #696672;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .page-content {
+      padding: 12px 16px 14px;
+    }
+
+    .followup-card {
+      padding: 16px;
+      border-radius: 4px;
+      background: #ffffff;
+      box-shadow: 0 5px 16px rgba(40, 34, 54, 0.09);
+    }
+
+    .hero-image {
+      width: 326px;
+      height: 96px;
+      display: block;
+      object-fit: cover;
+      border-radius: 4px;
+      background: #d7d5dc;
+    }
+
+    .eyebrow {
+      margin: 11px 0 2px;
+      color: #6f47c7;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      color: #27242d;
+      font-size: 26px;
+      font-weight: 600;
+      line-height: 1.25;
+    }
+
+    .intro {
+      margin: 3px 0 11px;
+      color: #696672;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .task-list {
+      border-top: 1px solid #e7e5ea;
+    }
+
+    .task-row {
+      display: grid;
+      grid-template-columns: 22px minmax(0, 1fr);
+      gap: 10px;
+      align-items: start;
+      padding: 9px 0;
+      border-bottom: 1px solid #e7e5ea;
+    }
+
+    .task-row:last-child {
+      padding-bottom: 0;
+      border-bottom: 0;
+    }
+
+    .checkbox {
+      width: 19px;
+      height: 19px;
+      margin-top: 2px;
+      border: 2px solid #7650c9;
+      border-radius: 4px;
+      background: #ffffff;
+    }
+
+    .task-title {
+      margin: 0;
+      color: #302e36;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.45;
+    }
+
+    .task-meta {
+      margin: 1px 0 0;
+      color: #77737e;
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .section-heading {
+      margin: 14px 0 7px;
+      color: #33313a;
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .recap-card {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border: 1px solid #dcd4ed;
+      border-left: 4px solid #7650c9;
+      border-radius: 4px;
+      background: #f5f1fc;
+    }
+
+    .recap-row {
+      padding: 11px 12px;
+    }
+
+    .recap-row + .recap-row {
+      border-left: 1px solid #dcd4ed;
+    }
+
+    .recap-label {
+      margin: 0 0 3px;
+      color: #7650c9;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .recap-value {
+      margin: 0;
+      color: #34313a;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .browser-tabs {
+      flex: 0 0 auto;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      padding: 8px 10px 7px;
+      background: #ffffff;
+      border-top: 1px solid #dcdce2;
+    }
+
+    .tab-button {
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      border: 0;
+      background: transparent;
+      color: #65626c;
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    .tab-button.active {
+      color: #6f47c7;
+    }
+
+    .tab-button svg {
+      width: 20px;
+      height: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="browser-chrome">
+      <div class="viewer-bar">
+        <button class="done-button" type="button">Done</button>
+        <p class="viewer-title">Shared note</p>
+        <button class="menu-button" type="button" aria-label="More options">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <circle cx="4" cy="10" r="1.5" fill="currentColor"/>
+            <circle cx="10" cy="10" r="1.5" fill="currentColor"/>
+            <circle cx="16" cy="10" r="1.5" fill="currentColor"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="address-row">
+        <div class="address-field">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+            <rect x="2.5" y="6" width="9" height="6.5" rx="1" stroke="currentColor" stroke-width="1.3"/>
+            <path d="M4.5 6V4.4C4.5 2.9 5.55 1.8 7 1.8C8.45 1.8 9.5 2.9 9.5 4.4V6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+          </svg>
+          <span class="address-text">share.planloom.work/p/weekly-planning</span>
+        </div>
+        <button class="refresh-button" type="button" aria-label="Refresh page">
+          <svg width="21" height="21" viewBox="0 0 21 21" fill="none" aria-hidden="true">
+            <path d="M17 6.5V2.8M17 2.8H13.3M17 2.8L14.7 5.1C13.55 3.95 11.97 3.25 10.2 3.25C6.67 3.25 3.8 6.12 3.8 9.65C3.8 13.18 6.67 16.05 10.2 16.05C13.05 16.05 15.46 14.19 16.29 11.61" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <main class="webview">
+      <div class="service-bar">
+        <p class="service-name">Planloom</p>
+        <span class="access-label">Read only</span>
+      </div>
+
+      <div class="page-content">
+        <section class="followup-card" aria-labelledby="followup-title-a">
+          <img class="hero-image" src="https://loremflickr.com/326/96/meeting?lock=3470" width="326" height="96" alt="Team planning materials arranged on a meeting table">
+          <p class="eyebrow">Weekly planning · March 10</p>
+          <h1 id="followup-title-a">Your follow-ups</h1>
+          <p class="intro">Three items were assigned to you during today’s planning review.</p>
+
+          <div class="task-list">
+            <div class="task-row">
+              <span class="checkbox" aria-hidden="true"></span>
+              <div>
+                <p class="task-title">Draft the handoff checklist</p>
+                <p class="task-meta">Due March 14 · Assigned by Morgan Wells</p>
+              </div>
+            </div>
+            <div class="task-row">
+              <span class="checkbox" aria-hidden="true"></span>
+              <div>
+                <p class="task-title">Send the revised launch timeline</p>
+                <p class="task-meta">Due March 12 · Assigned by Rowan Blake</p>
+              </div>
+            </div>
+            <div class="task-row">
+              <span class="checkbox" aria-hidden="true"></span>
+              <div>
+                <p class="task-title">Confirm research session owners</p>
+                <p class="task-meta">Due March 13 · Assigned by Avery Stone</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section aria-labelledby="recap-heading-a">
+          <h2 class="section-heading" id="recap-heading-a">Meeting recap</h2>
+          <div class="recap-card">
+            <div class="recap-row">
+              <p class="recap-label">Decision</p>
+              <p class="recap-value">Pilot stays set for March 24.</p>
+            </div>
+            <div class="recap-row">
+              <p class="recap-label">Next review</p>
+              <p class="recap-value">March 14 at 10:30 AM</p>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <nav class="browser-tabs" aria-label="Browser controls">
+      <button class="tab-button active" type="button">
+        <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+          <path d="M12.5 4.5L7 10L12.5 15.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span>Back</span>
+      </button>
+      <button class="tab-button" type="button">
+        <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+          <path d="M7.5 4.5L13 10L7.5 15.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span>Forward</span>
+      </button>
+      <button class="tab-button" type="button">
+        <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+          <path d="M10 12.5V2.8M10 2.8L6.8 6M10 2.8L13.2 6M5 8.8H3.8C3.14 8.8 2.6 9.34 2.6 10V16C2.6 16.66 3.14 17.2 3.8 17.2H16.2C16.86 17.2 17.4 16.66 17.4 16V10C17.4 9.34 16.86 8.8 16.2 8.8H15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span>Share</span>
+      </button>
+      <button class="tab-button" type="button">
+        <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+          <path d="M5 3.2H15V17L10 13.8L5 17V3.2Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+        </svg>
+        <span>Save</span>
+      </button>
+      <button class="tab-button" type="button">
+        <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+          <rect x="4.2" y="4.2" width="11.6" height="11.6" rx="1" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M7.5 1.9H16.3C17.3 1.9 18.1 2.7 18.1 3.7V12.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <span>Tabs</span>
+      </button>
+    </nav>
+  </div>
+</body>
+</html>

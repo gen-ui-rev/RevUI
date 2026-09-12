@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Wayfare Voice Note</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 40px 0;
+    margin: 0;
+    background: #e8e9ea;
+    font-family: 'Inter', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .screen {
+    width: 390px;
+    height: 844px;
+    background: #ffffff;
+    position: relative;
+    color: #1d2126;
+  }
+
+  /* top bar */
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 20px 14px;
+    border-bottom: 1px solid #e4e6e8;
+  }
+  .topbar .title {
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: -0.1px;
+  }
+  .iconbtn {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #4b5158;
+  }
+  .discard {
+    font-size: 14px;
+    font-weight: 500;
+    color: #6f767d;
+  }
+
+  /* recorder card */
+  .card {
+    margin: 16px 20px 0;
+    border: 1px solid #e4e6e8;
+    border-radius: 10px;
+    padding: 18px 18px 20px;
+  }
+  .context {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #eeeff0;
+  }
+  .context .place {
+    font-size: 14px;
+    font-weight: 500;
+    color: #3d4348;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .context .day {
+    margin-left: auto;
+    font-size: 12px;
+    color: #83898f;
+    white-space: nowrap;
+  }
+  .status {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    margin-top: 18px;
+  }
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #4b5158;
+  }
+  .status span {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.7px;
+    text-transform: uppercase;
+    color: #4b5158;
+  }
+  .timer {
+    font-size: 46px;
+    font-weight: 600;
+    letter-spacing: -1.5px;
+    line-height: 1.1;
+    margin-top: 4px;
+    font-variant-numeric: tabular-nums;
+  }
+  .meta {
+    font-size: 13px;
+    color: #83898f;
+    margin-top: 4px;
+  }
+
+  /* waveform */
+  .wave {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    height: 72px;
+    margin-top: 18px;
+  }
+  .wave i {
+    display: block;
+    width: 3px;
+    border-radius: 2px;
+    background: #b9bdc1;
+  }
+  .wave i.on { background: #4b5158; }
+  .ruler {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+    font-size: 12px;
+    color: #9ba1a7;
+  }
+
+  /* controls */
+  .controls {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 40px;
+    margin-top: 26px;
+  }
+  .ctrl {
+    width: 76px;
+    text-align: center;
+  }
+  .ctrl .btn {
+    width: 56px;
+    height: 56px;
+    margin: 0 auto 8px;
+    border-radius: 50%;
+    border: 1px solid #d5d8db;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #4b5158;
+  }
+  .ctrl.main .btn {
+    width: 72px;
+    height: 72px;
+    background: #4b5158;
+    border-color: #4b5158;
+    color: #ffffff;
+  }
+  .ctrl .lbl {
+    font-size: 12px;
+    color: #6f767d;
+  }
+  .ctrl.main .lbl {
+    color: #1d2126;
+    font-weight: 500;
+  }
+
+  /* markers */
+  .sec {
+    margin-top: 28px;
+    padding: 0 20px;
+  }
+  .sechead {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding-bottom: 8px;
+  }
+  .sechead h2 {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .sechead .count {
+    font-size: 12px;
+    color: #9ba1a7;
+  }
+  .row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 15px 0;
+    border-top: 1px solid #eeeff0;
+  }
+  .row .t {
+    font-size: 13px;
+    font-weight: 500;
+    color: #6f767d;
+    font-variant-numeric: tabular-nums;
+    width: 44px;
+    flex: 0 0 44px;
+  }
+  .row .txt {
+    font-size: 14px;
+    color: #1d2126;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* tab bar */
+  .tabbar {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    border-top: 1px solid #e4e6e8;
+    padding: 10px 0 16px;
+    background: #ffffff;
+  }
+  .tab {
+    flex: 1;
+    text-align: center;
+    color: #9ba1a7;
+    font-size: 12px;
+  }
+  .tab svg { display: block; margin: 0 auto 4px; }
+  .tab.active { color: #1d2126; font-weight: 500; }
+</style>
+</head>
+<body>
+<div class="screen">
+
+  <div class="topbar">
+    <div class="iconbtn">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
+    </div>
+    <div class="title">Voice Note</div>
+    <div class="discard">Discard</div>
+  </div>
+
+  <div class="card">
+    <div class="context">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#83898f" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 1116 0z"/><circle cx="12" cy="10" r="2.6"/></svg>
+      <div class="place">Hotel Marisol, Lisbon</div>
+      <div class="day">Day 3 · Mar 14</div>
+    </div>
+
+    <div class="status"><span class="dot"></span><span>Recording</span></div>
+    <div class="timer">02:14</div>
+    <div class="meta">Mono · 128 kbps · 3.1 MB</div>
+
+    <div class="wave">
+      <i class="on" style="height:12px"></i><i class="on" style="height:20px"></i><i class="on" style="height:30px"></i>
+      <i class="on" style="height:16px"></i><i class="on" style="height:38px"></i><i class="on" style="height:48px"></i>
+      <i class="on" style="height:34px"></i><i class="on" style="height:24px"></i><i class="on" style="height:14px"></i>
+      <i class="on" style="height:22px"></i><i class="on" style="height:42px"></i><i class="on" style="height:56px"></i>
+      <i class="on" style="height:50px"></i><i class="on" style="height:30px"></i><i class="on" style="height:18px"></i>
+      <i class="on" style="height:26px"></i><i class="on" style="height:40px"></i><i class="on" style="height:46px"></i>
+      <i class="on" style="height:54px"></i><i class="on" style="height:32px"></i><i class="on" style="height:20px"></i>
+      <i class="on" style="height:12px"></i><i class="on" style="height:24px"></i><i class="on" style="height:36px"></i>
+      <i class="on" style="height:48px"></i><i class="on" style="height:58px"></i><i class="on" style="height:44px"></i>
+      <i class="on" style="height:28px"></i><i class="on" style="height:16px"></i><i class="on" style="height:22px"></i>
+      <i class="on" style="height:34px"></i><i class="on" style="height:50px"></i><i class="on" style="height:42px"></i>
+      <i class="on" style="height:26px"></i><i class="on" style="height:14px"></i><i class="on" style="height:18px"></i>
+      <i class="on" style="height:30px"></i><i class="on" style="height:44px"></i><i class="on" style="height:52px"></i>
+      <i class="on" style="height:36px"></i><i class="on" style="height:22px"></i><i class="on" style="height:12px"></i>
+      <i style="height:26px"></i><i style="height:38px"></i><i style="height:50px"></i>
+      <i style="height:32px"></i><i style="height:20px"></i><i style="height:14px"></i>
+      <i style="height:24px"></i><i style="height:36px"></i><i style="height:46px"></i>
+      <i style="height:28px"></i>
+    </div>
+    <div class="ruler"><span>60s ago</span><span>Now</span></div>
+  </div>
+
+  <div class="controls">
+    <div class="ctrl">
+      <div class="btn">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 21V4h12l-2.5 4.5L18 13H6"/></svg>
+      </div>
+      <div class="lbl">Marker</div>
+    </div>
+    <div class="ctrl main">
+      <div class="btn">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><rect x="7" y="5" width="3.6" height="14" rx="1"/><rect x="13.4" y="5" width="3.6" height="14" rx="1"/></svg>
+      </div>
+      <div class="lbl">Pause</div>
+    </div>
+    <div class="ctrl">
+      <div class="btn">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>
+      </div>
+      <div class="lbl">Stop &amp; save</div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sechead">
+      <h2>Markers</h2>
+      <div class="count">3 in this note</div>
+    </div>
+    <div class="row"><div class="t">00:18</div><div class="txt">Front desk hours, late check-in</div></div>
+    <div class="row"><div class="t">01:02</div><div class="txt">Tram 28 stop, two blocks downhill</div></div>
+    <div class="row"><div class="t">01:47</div><div class="txt">Breakfast served 7 to 10</div></div>
+  </div>
+
+  <div class="tabbar">
+    <div class="tab">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M16.5 16.5L21 21"/></svg>
+      Explore
+    </div>
+    <div class="tab">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4L3.8 6v14L9 18l6 2 5.2-2V4L15 6 9 4z"/><path d="M9 4v14M15 6v14"/></svg>
+      Map
+    </div>
+    <div class="tab active">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 12a6.5 6.5 0 0013 0M12 18.5V21"/></svg>
+      Notes
+    </div>
+    <div class="tab">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16v13H4zM8 7V4h8v3"/><path d="M4 12h16"/></svg>
+      Trips
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

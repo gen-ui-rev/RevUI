@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pinned Marketplace Item — Lattice Market Console</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #d9d6d0;
+      color: #25231f;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    .screen {
+      width: 1024px;
+      height: 768px;
+      display: flex;
+      background: #f2f0ec;
+      box-shadow: 0 18px 46px rgba(42, 37, 29, 0.16);
+    }
+
+    /* ---------- sidebar ---------- */
+    .sidebar {
+      width: 236px;
+      flex: 0 0 236px;
+      padding: 30px 20px 24px;
+      display: flex;
+      flex-direction: column;
+      background: #e9e6e0;
+      border-right: 1px solid #dbd7cf;
+    }
+
+    .brand {
+      margin: 0 0 26px;
+      padding-left: 12px;
+      color: #7a7267;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .side-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 12px;
+      border-radius: 8px;
+      color: #4b463d;
+      font-size: 14px;
+      line-height: 1.4;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .nav-item .dot {
+      width: 6px;
+      height: 6px;
+      flex: 0 0 6px;
+      border-radius: 50%;
+      background: #c3bcaf;
+    }
+
+    .nav-item.is-active {
+      background: #ffffff;
+      color: #25231f;
+      font-weight: 600;
+      box-shadow: inset 3px 0 0 #d88908;
+    }
+
+    .nav-item.is-active .dot {
+      background: #d88908;
+    }
+
+    .nav-count {
+      margin-left: auto;
+      color: #8a8377;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .sidebar-foot {
+      margin: auto 0 0;
+      padding: 14px 12px 0;
+      border-top: 1px solid #dcd8d0;
+      color: #8a8377;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    /* ---------- main ---------- */
+    .main {
+      flex: 1;
+      min-width: 0;
+      padding: 30px 40px 26px;
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid #e0dcd4;
+    }
+
+    .crumb {
+      margin: 0 0 6px;
+      color: #8a8377;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      color: #25231f;
+      font-size: 26px;
+      font-weight: 600;
+      line-height: 1.2;
+    }
+
+    .topbar-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .ghost-btn {
+      padding: 8px 14px;
+      border: 1px solid #d5d0c7;
+      border-radius: 7px;
+      background: #ffffff;
+      color: #4b463d;
+      font: inherit;
+      font-size: 13px;
+      line-height: 1.3;
+      cursor: pointer;
+    }
+
+    /* ---------- pinned card ---------- */
+    .pin-card {
+      padding: 22px 24px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      background: #ffffff;
+      border: 1px solid #e6e2da;
+      border-radius: 12px;
+      box-shadow: 0 1px 2px rgba(42, 37, 29, 0.05);
+    }
+
+    .pin-flag {
+      align-self: flex-start;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 5px 12px;
+      border: 1px solid #f0dfbc;
+      border-radius: 999px;
+      background: #fdf3e0;
+      color: #8a5a02;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+    }
+
+    .pin-flag svg {
+      width: 14px;
+      height: 14px;
+      flex: 0 0 14px;
+    }
+
+    .pin-body {
+      display: flex;
+      gap: 26px;
+    }
+
+    .product-visual {
+      width: 116px;
+      height: 116px;
+      flex: 0 0 116px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid #e6e2da;
+      border-radius: 10px;
+      background: #faf9f7;
+      color: #514c44;
+    }
+
+    .product-visual svg {
+      width: 92px;
+      height: 92px;
+    }
+
+    .product-copy {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .product-name {
+      margin: 0 0 6px;
+      overflow: hidden;
+      color: #292722;
+      font-size: 20px;
+      font-weight: 600;
+      line-height: 1.3;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .product-detail {
+      margin: 0 0 10px;
+      color: #706a61;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .product-price {
+      margin: 0;
+      color: #292722;
+      font-size: 22px;
+      font-weight: 600;
+      line-height: 1.2;
+    }
+
+    .chips {
+      margin: 14px 0 0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .chip {
+      padding: 5px 10px;
+      border-radius: 6px;
+      background: #f4f2ee;
+      color: #5c564d;
+      font-size: 12px;
+      line-height: 1.3;
+    }
+
+    .pin-side {
+      width: 254px;
+      flex: 0 0 254px;
+      padding-left: 24px;
+      border-left: 1px solid #eeebe4;
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+    }
+
+    .meta-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 12.5px;
+      line-height: 1.4;
+    }
+
+    .meta-row span:first-child {
+      color: #8a8377;
+    }
+
+    .meta-row span:last-child {
+      color: #34312b;
+      font-weight: 600;
+    }
+
+    .unpin-button {
+      width: 100%;
+      margin-top: 8px;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      border: 0;
+      border-radius: 8px;
+      background: #d88908;
+      color: #251b0c;
+      font: inherit;
+      font-size: 13.5px;
+      font-weight: 600;
+      line-height: 1.4;
+      cursor: pointer;
+    }
+
+    .unpin-button svg {
+      width: 16px;
+      height: 16px;
+      flex: 0 0 16px;
+    }
+
+    .secondary-btn {
+      width: 100%;
+      padding: 9px 16px;
+      border: 1px solid #d5d0c7;
+      border-radius: 8px;
+      background: #ffffff;
+      color: #4b463d;
+      font: inherit;
+      font-size: 13.5px;
+      line-height: 1.4;
+      cursor: pointer;
+    }
+
+    /* ---------- list ---------- */
+    .list-card {
+      padding: 18px 24px 6px;
+      background: #ffffff;
+      border: 1px solid #e6e2da;
+      border-radius: 12px;
+    }
+
+    .list-card h2 {
+      margin: 0 0 4px;
+      color: #8a8377;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 12px 0;
+      border-top: 1px solid #f0ede7;
+    }
+
+    .row-thumb {
+      width: 44px;
+      height: 44px;
+      flex: 0 0 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      background: #f4f2ee;
+      color: #6d675e;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+    }
+
+    .row-copy {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .row-name {
+      margin: 0 0 3px;
+      overflow: hidden;
+      color: #292722;
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 1.35;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .row-detail {
+      margin: 0;
+      color: #8a8377;
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    .row-price {
+      color: #34312b;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .boundary-note {
+      margin: auto 0 0;
+      color: #8a8377;
+      font-size: 12.5px;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <aside class="sidebar">
+      <p class="brand">Lattice Market</p>
+      <nav class="side-nav">
+        <a class="nav-item" href="#"><span class="dot"></span>Browse listings</a>
+        <a class="nav-item is-active" href="#"><span class="dot"></span>Recently viewed<span class="nav-count">12</span></a>
+        <a class="nav-item" href="#"><span class="dot"></span>Saved lists<span class="nav-count">4</span></a>
+        <a class="nav-item" href="#"><span class="dot"></span>Messages</a>
+        <a class="nav-item" href="#"><span class="dot"></span>Selling</a>
+      </nav>
+      <p class="sidebar-foot">Pins are private to your account. Nothing is saved to a list and no public reaction is posted.</p>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div>
+          <p class="crumb">Recently viewed / Pinned</p>
+          <h1>Pinned to the top</h1>
+        </div>
+        <div class="topbar-actions">
+          <button class="ghost-btn" type="button">Manage pins</button>
+          <button class="ghost-btn" type="button">Sort by date viewed</button>
+        </div>
+      </header>
+
+      <section class="pin-card" aria-labelledby="pinned-item">
+        <p class="pin-flag">
+          <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <path d="M7.6 3.2h4.8l-.5 4.4 2.3 2.6v1.3H5.8v-1.3l2.3-2.6-.5-4.4Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+            <path d="M10 11.5v5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+          </svg>
+          First in Recently viewed
+        </p>
+
+        <div class="pin-body">
+          <div class="product-visual" aria-hidden="true">
+            <svg viewBox="0 0 76 76" fill="none">
+              <path d="M23 37.5V26.8c0-3.2 2.5-5.8 5.7-5.8h18.6c3.2 0 5.7 2.6 5.7 5.8v10.7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M19 35.5c0-2.2 1.8-4 4-4s4 1.8 4 4V42h22v-6.5c0-2.2 1.8-4 4-4s4 1.8 4 4V51H19V35.5Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+              <path d="M23 51v6M53 51v6M27 42h22" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </div>
+
+          <div class="product-copy">
+            <h2 class="product-name" id="pinned-item">Oak Lounge Chair</h2>
+            <p class="product-detail">This listing stays first in your Recently viewed items for faster access.</p>
+            <p class="product-price">$185.00</p>
+            <p class="chips">
+              <span class="chip">Pre-owned</span>
+              <span class="chip">Cedar Falls, IA</span>
+              <span class="chip">Local pickup</span>
+            </p>
+          </div>
+
+          <div class="pin-side">
+            <p class="meta-row"><span>Pinned</span><span>Mar 14, 2:40 PM</span></p>
+            <p class="meta-row"><span>Position</span><span>1 of 12</span></p>
+            <p class="meta-row"><span>Visibility</span><span>Private</span></p>
+            <p class="meta-row"><span>Seller</span><span>H. Marchetti</span></p>
+            <button class="unpin-button" type="button" aria-label="Remove pin from Oak Lounge Chair">
+              <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                <path d="M7.6 3.2h4.8l-.5 4.4 2.3 2.6v1.3H5.8v-1.3l2.3-2.6-.5-4.4Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+                <path d="M10 11.5v5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+              </svg>
+              Remove pin
+            </button>
+            <button class="secondary-btn" type="button">Open listing</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="list-card">
+        <h2>Also in Recently viewed</h2>
+        <div class="row">
+          <div class="row-thumb" aria-hidden="true">TBL</div>
+          <div class="row-copy">
+            <p class="row-name">Walnut Side Table</p>
+            <p class="row-detail">Pre-owned · Waterloo, IA</p>
+          </div>
+          <span class="row-price">$74.00</span>
+          <button class="ghost-btn" type="button">Pin</button>
+        </div>
+        <div class="row">
+          <div class="row-thumb" aria-hidden="true">PAN</div>
+          <div class="row-copy">
+            <p class="row-name">Cast Iron Skillet, 10 in</p>
+            <p class="row-detail">Good condition · Hudson, IA</p>
+          </div>
+          <span class="row-price">$28.50</span>
+          <button class="ghost-btn" type="button">Pin</button>
+        </div>
+        <div class="row">
+          <div class="row-thumb" aria-hidden="true">RUG</div>
+          <div class="row-copy">
+            <p class="row-name">Wool Area Rug, 5 × 8 ft</p>
+            <p class="row-detail">Pre-owned · Cedar Falls, IA</p>
+          </div>
+          <span class="row-price">$120.00</span>
+          <button class="ghost-btn" type="button">Pin</button>
+        </div>
+      </section>
+
+      <p class="boundary-note">Only one item can hold the top position. Pinning another listing moves this one back into date order.</p>
+    </main>
+  </div>
+</body>
+</html>

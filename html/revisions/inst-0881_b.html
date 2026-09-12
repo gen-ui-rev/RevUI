@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Wanderline — Trip Plan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{ --blue:#2f6bff; --ink:#17202c; --muted:#687383; }
+  *{ box-sizing:border-box; }
+  body{
+    min-height:100vh; display:flex; justify-content:center; align-items:flex-start;
+    padding:40px 0; margin:0; background:#e6e7ea;
+    font-family:'Plus Jakarta Sans', system-ui, sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .screen{
+    width:390px; height:844px; position:relative; background:#eef1f5; color:var(--ink);
+  }
+
+  .trip{ position:absolute; inset:0 0 64px; }
+  .trip img.hero{
+    position:absolute; inset:0; width:390px; height:780px;
+    object-fit:cover; display:block; background:#1a2029;
+  }
+  .image-shade{
+    position:absolute; left:0; right:0; top:0; bottom:0;
+    background:linear-gradient(to bottom, rgba(10,17,25,.65) 0, rgba(10,17,25,.18) 46%, rgba(10,17,25,.52) 100%);
+  }
+
+  .journey-progress{
+    position:absolute; top:0; left:0; right:0;
+    padding:12px 15px 13px; background:#fff;
+    box-shadow:0 4px 16px rgba(15,25,38,.2);
+  }
+  .progress-line{
+    display:flex; align-items:flex-end; justify-content:space-between;
+    margin-bottom:8px;
+  }
+  .progress-line .trip-name{
+    font-size:11px; line-height:14px; font-weight:700;
+    letter-spacing:.07em; text-transform:uppercase; color:var(--muted);
+  }
+  .progress-line .value{
+    font-size:16px; line-height:18px; font-weight:700; color:var(--blue);
+  }
+  .bar{
+    height:9px; border-radius:10px; background:#dce3ee;
+    box-shadow:inset 0 0 0 1px rgba(42,56,76,.06);
+  }
+  .bar span{
+    display:block; width:40%; height:9px; border-radius:10px;
+    background:var(--blue);
+  }
+  .day-scale{
+    margin-top:6px; display:flex; justify-content:space-between;
+    color:#8b95a3; font-size:10px; line-height:13px; font-weight:600;
+  }
+  .day-scale .active{ color:var(--blue); }
+
+  .head{
+    position:absolute; top:92px; left:14px; right:14px;
+    display:flex; align-items:center; gap:10px; color:#fff;
+  }
+  .brand{
+    width:36px; height:36px; border-radius:50%; background:var(--blue);
+    border:2px solid rgba(255,255,255,.8);
+    display:flex; align-items:center; justify-content:center; flex:none;
+    font-size:11px; font-weight:700;
+  }
+  .who{ flex:1; min-width:0; }
+  .who .name{
+    font-size:14px; line-height:19px; font-weight:700;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  }
+  .who .meta{
+    font-size:12px; line-height:16px; color:rgba(255,255,255,.78);
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  }
+  .edit{
+    flex:none; padding:7px 10px; border-radius:18px;
+    background:rgba(11,18,27,.6); border:1px solid rgba(255,255,255,.32);
+    color:#fff; font-size:11px; font-weight:700;
+  }
+
+  .plan-card{
+    position:absolute; left:12px; right:12px; bottom:14px;
+    padding:14px; border-radius:12px; background:#fff;
+    box-shadow:0 10px 28px rgba(8,15,25,.28);
+  }
+  .plan-top{
+    display:flex; align-items:flex-start; justify-content:space-between; gap:10px;
+  }
+  .kicker{
+    font-size:11px; line-height:14px; font-weight:700; color:var(--blue);
+    text-transform:uppercase; letter-spacing:.07em;
+  }
+  .plan-card h1{
+    margin:3px 0 0; font-size:21px; line-height:27px; font-weight:700;
+  }
+  .duration{
+    flex:none; padding:5px 8px; border-radius:5px; background:#edf2ff;
+    color:var(--blue); font-size:11px; line-height:14px; font-weight:700;
+  }
+  .summary{
+    margin:8px 0 0; color:#566170; font-size:13px; line-height:19px;
+  }
+  .facts{
+    display:flex; gap:7px; margin-top:11px;
+  }
+  .fact{
+    flex:1; padding:7px 6px; border-radius:6px; background:#f1f4f8;
+    text-align:center; color:#5d6877; font-size:10px; line-height:13px; font-weight:600;
+  }
+  .fact strong{
+    display:block; margin-bottom:1px; color:var(--ink);
+    font-size:12px; line-height:15px;
+  }
+  .stay{
+    margin-top:11px; padding-top:11px; border-top:1px solid #e5e9ef;
+    display:flex; align-items:center; gap:10px;
+  }
+  .stay img{
+    width:48px; height:48px; border-radius:7px; object-fit:cover;
+    display:block; background:#1a2029; flex:none;
+  }
+  .stay .txt{ flex:1; min-width:0; }
+  .stay .label{
+    color:#8a94a2; font-size:10px; line-height:13px;
+    font-weight:700; text-transform:uppercase; letter-spacing:.05em;
+  }
+  .stay .name{
+    margin-top:2px; font-size:13px; line-height:17px; font-weight:700;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  }
+  .stay .meta{
+    color:#697483; font-size:11px; line-height:15px;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  }
+  .open{
+    flex:none; padding:8px 10px; border-radius:6px;
+    background:var(--blue); color:#fff; font-size:11px; font-weight:700;
+  }
+
+  .tabs{
+    position:absolute; left:0; right:0; bottom:0; height:64px;
+    display:flex; align-items:center; background:#fff;
+    border-top:1px solid #dbe0e7;
+  }
+  .tab{
+    flex:1; display:flex; flex-direction:column; align-items:center; gap:4px;
+    color:#8a94a2; font-size:11px; font-weight:500;
+  }
+  .tab.on{ color:var(--blue); font-weight:700; }
+  .tab svg{ display:block; }
+</style>
+</head>
+<body>
+  <div class="screen">
+    <main class="trip">
+      <img class="hero" src="https://loremflickr.com/390/780/mountain?lock=11661" width="390" height="780" alt="Morning fog over the ridge trail above Halvard Fjord">
+      <div class="image-shade"></div>
+
+      <section class="journey-progress" aria-label="Two of five trip days completed">
+        <div class="progress-line">
+          <div class="trip-name">Norway Fjord Escape</div>
+          <div class="value">40%</div>
+        </div>
+        <div class="bar"><span></span></div>
+        <div class="day-scale">
+          <span>Day 1</span>
+          <span class="active">Day 2</span>
+          <span>Day 3</span>
+          <span>Day 4</span>
+          <span>Day 5</span>
+        </div>
+      </section>
+
+      <header class="head">
+        <div class="brand">WL</div>
+        <div class="who">
+          <div class="name">Your self-guided itinerary</div>
+          <div class="meta">Halvard Fjord · September 12–16</div>
+        </div>
+        <div class="edit">Edit trip</div>
+      </header>
+
+      <section class="plan-card">
+        <div class="plan-top">
+          <div>
+            <div class="kicker">Day 2 · Today</div>
+            <h1>Ridge overlook walk</h1>
+          </div>
+          <div class="duration">3 hr</div>
+        </div>
+
+        <p class="summary">Start at the lodge gate at 7:00 a.m. for the clearest views, then return by the lower forest path.</p>
+
+        <div class="facts">
+          <div class="fact"><strong>5.8 mi</strong>Distance</div>
+          <div class="fact"><strong>Moderate</strong>Difficulty</div>
+          <div class="fact"><strong>8°C</strong>Forecast</div>
+        </div>
+
+        <div class="stay">
+          <img src="https://loremflickr.com/48/48/hotel?lock=11664" width="48" height="48" alt="Vantia Ridge Lodge exterior">
+          <div class="txt">
+            <div class="label">Reserved tonight</div>
+            <div class="name">Vantia Ridge Lodge</div>
+            <div class="meta">Check-in from 3:00 p.m.</div>
+          </div>
+          <div class="open">Open</div>
+        </div>
+      </section>
+    </main>
+
+    <nav class="tabs" aria-label="Primary navigation">
+      <div class="tab">
+        <svg width="21" height="21" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 6.5h14M6 3.5v3M16 3.5v3"/><rect x="3.5" y="5" width="15" height="13.5" rx="2.5"/><path d="M7 10h3M12.5 10h2.5M7 14h3"/>
+        </svg>
+        Today
+      </div>
+      <div class="tab">
+        <svg width="21" height="21" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3.5 5.5l5-2 5 2 5-2v13l-5 2-5-2-5 2z"/><path d="M8.5 3.5v13M13.5 5.5v13"/>
+        </svg>
+        Map
+      </div>
+      <div class="tab on">
+        <svg width="21" height="21" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="4" y="3.5" width="14" height="15" rx="2"/><path d="M7.5 8h7M7.5 11.5h7M7.5 15h4"/>
+        </svg>
+        Plan
+      </div>
+      <div class="tab">
+        <svg width="21" height="21" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 6.5h14v11H4z"/><path d="M7 6.5V4h8v2.5M8 11h6"/>
+        </svg>
+        Bookings
+      </div>
+    </nav>
+  </div>
+</body>
+</html>

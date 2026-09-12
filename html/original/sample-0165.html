@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Portmarrow Stays — Map</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --amber:#E08A00;
+    --amber-soft:rgba(224,138,0,.14);
+    --amber-softer:rgba(224,138,0,.08);
+    --ink:#20201D;
+    --muted:#77746C;
+  }
+  *{box-sizing:border-box;}
+  body{
+    min-height:100vh;display:flex;justify-content:center;align-items:flex-start;
+    padding:40px 0;margin:0;background:#d9d7d2;
+    font-family:'Nunito Sans',system-ui,sans-serif;color:var(--ink);
+  }
+  .screen{
+    position:relative;width:390px;height:844px;background:#ecebe6;
+  }
+
+  /* ---------- map ---------- */
+  .map{position:absolute;inset:0;background:#e7e5df;overflow:hidden;}
+  .water{position:absolute;left:-40px;top:520px;width:520px;height:340px;background:#d5e0e3;transform:rotate(-8deg);}
+  .park{position:absolute;background:var(--amber-soft);border-radius:14px;}
+  .p1{left:24px;top:120px;width:150px;height:110px;}
+  .p2{left:236px;top:262px;width:170px;height:130px;}
+  .p3{left:118px;top:396px;width:120px;height:80px;}
+  .road{position:absolute;background:#f6f5f1;}
+  .r1{left:-30px;top:196px;width:460px;height:22px;transform:rotate(6deg);}
+  .r2{left:-30px;top:318px;width:460px;height:16px;transform:rotate(-4deg);}
+  .r3{left:112px;top:60px;width:20px;height:520px;transform:rotate(8deg);}
+  .r4{left:272px;top:60px;width:14px;height:520px;transform:rotate(-6deg);}
+  .r5{left:-20px;top:452px;width:440px;height:14px;transform:rotate(3deg);}
+  .block{position:absolute;background:#dedcd5;border-radius:14px;}
+  .b1{left:150px;top:236px;width:74px;height:56px;}
+  .b2{left:36px;top:264px;width:60px;height:42px;}
+  .b3{left:300px;top:150px;width:70px;height:52px;}
+  .b4{left:44px;top:380px;width:56px;height:44px;}
+
+  .maplabel{position:absolute;font-size:12px;color:#8d8a81;letter-spacing:.04em;text-transform:uppercase;font-weight:600;}
+  .ml1{left:44px;top:160px;}
+  .ml2{left:256px;top:300px;}
+
+  /* markers */
+  .pin{
+    position:absolute;background:#fff;color:var(--ink);
+    font-size:13px;font-weight:700;padding:7px 11px;border-radius:14px;
+    box-shadow:0 1px 3px rgba(0,0,0,.18);
+  }
+  .pin.sel{
+    background:var(--amber);color:#fff;font-size:15px;padding:9px 14px;
+  }
+  .pin.sel .sub{display:block;font-size:12px;font-weight:600;opacity:.9;}
+  .m1{left:52px;top:172px;}
+  .m2{left:252px;top:206px;}
+  .m3{left:214px;top:344px;}
+  .m4{left:58px;top:352px;}
+  .msel{left:126px;top:250px;}
+  .here{position:absolute;left:180px;top:406px;width:14px;height:14px;border-radius:50%;background:#3b7cc4;border:3px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,.2);}
+
+  .locate{
+    position:absolute;right:16px;top:352px;width:44px;height:44px;border-radius:14px;
+    background:#fff;display:flex;align-items:center;justify-content:center;
+    box-shadow:0 1px 3px rgba(0,0,0,.14);
+  }
+
+  /* ---------- top bar ---------- */
+  .topbar{
+    position:absolute;top:0;left:0;right:0;background:#fff;
+    padding:14px 16px;display:flex;align-items:center;gap:12px;
+    box-shadow:0 1px 4px rgba(0,0,0,.08);
+  }
+  .iconbtn{width:36px;height:36px;flex:0 0 36px;display:flex;align-items:center;justify-content:center;}
+  .search{
+    flex:1;min-width:0;background:var(--amber-softer);border-radius:14px;
+    padding:9px 12px;
+  }
+  .search .lab{font-size:12px;color:var(--muted);line-height:1.1;}
+  .search .val{font-size:15px;font-weight:700;line-height:1.35;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+
+  /* filter chips */
+  .chips{position:absolute;top:88px;left:16px;right:16px;display:flex;gap:8px;}
+  .chip{
+    background:#fff;border-radius:14px;padding:8px 13px;font-size:13px;font-weight:600;
+    box-shadow:0 1px 3px rgba(0,0,0,.12);white-space:nowrap;
+  }
+  .chip.on{background:var(--amber);color:#fff;}
+
+  /* ---------- sheet ---------- */
+  .sheet{
+    position:absolute;left:0;right:0;bottom:76px;background:#fff;
+    border-radius:14px 14px 0 0;padding:8px 16px 14px;
+    box-shadow:0 -2px 8px rgba(0,0,0,.08);
+  }
+  .handle{width:44px;height:4px;border-radius:14px;background:#ddd9d1;margin:0 auto 12px;}
+  .shead{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:10px;}
+  .shead h1{margin:0;font-size:17px;font-weight:700;}
+  .shead span{font-size:13px;font-weight:700;color:var(--amber);}
+  .row{display:flex;gap:12px;align-items:center;padding:8px;border-radius:14px;}
+  .row + .row{margin-top:8px;}
+  .row.active{background:var(--amber-soft);}
+  .row img{width:72px;height:72px;border-radius:14px;object-fit:cover;display:block;background:#dedcd5;flex:0 0 72px;}
+  .info{flex:1;min-width:0;}
+  .name{font-size:15px;font-weight:700;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .meta{font-size:13px;color:var(--muted);line-height:1.4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .rate{display:flex;align-items:center;gap:4px;font-size:13px;font-weight:600;margin-top:2px;}
+  .rate .cnt{color:var(--muted);font-weight:400;}
+  .price{text-align:right;flex:0 0 auto;}
+  .price .amt{font-size:15px;font-weight:700;}
+  .price .per{font-size:12px;color:var(--muted);}
+
+  /* ---------- tab bar ---------- */
+  .tabbar{
+    position:absolute;left:0;right:0;bottom:0;height:76px;background:#fff;
+    display:flex;align-items:flex-start;padding-top:12px;border-top:1px solid #eae7e1;
+  }
+  .tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;color:var(--muted);font-size:12px;font-weight:600;}
+  .tab.on{color:var(--amber);}
+</style>
+</head>
+<body>
+<div class="screen">
+
+  <div class="map" aria-hidden="true">
+    <div class="water"></div>
+    <div class="road r1"></div>
+    <div class="road r2"></div>
+    <div class="road r5"></div>
+    <div class="road r3"></div>
+    <div class="road r4"></div>
+    <div class="park p1"></div>
+    <div class="park p2"></div>
+    <div class="park p3"></div>
+    <div class="block b1"></div>
+    <div class="block b2"></div>
+    <div class="block b3"></div>
+    <div class="block b4"></div>
+    <div class="maplabel ml1">Cliff Walk</div>
+    <div class="maplabel ml2">Harbor Green</div>
+
+    <div class="pin m1">$184</div>
+    <div class="pin m2">$232</div>
+    <div class="pin m3">$310</div>
+    <div class="pin m4">$195</div>
+    <div class="pin sel msel">$268<span class="sub">Cliffside Harbor Loft</span></div>
+    <div class="here"></div>
+
+    <div class="locate">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#20201D" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3"/>
+      </svg>
+    </div>
+  </div>
+
+  <header class="topbar">
+    <div class="iconbtn">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#20201D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M15 5l-7 7 7 7"/>
+      </svg>
+    </div>
+    <div class="search">
+      <div class="lab">Searching near</div>
+      <div class="val">Sea Cliff District, Portmarrow</div>
+    </div>
+    <div class="iconbtn">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#20201D" stroke-width="1.8" stroke-linecap="round">
+        <path d="M4 7h16M7 12h10M10 17h4"/>
+      </svg>
+    </div>
+  </header>
+
+  <div class="chips">
+    <div class="chip on">Sep 12 – 15</div>
+    <div class="chip">2 guests</div>
+    <div class="chip">Under $350</div>
+  </div>
+
+  <section class="sheet">
+    <div class="handle"></div>
+    <div class="shead">
+      <h1>24 stays in this area</h1>
+      <span>Sort</span>
+    </div>
+
+    <div class="row active">
+      <img src="https://loremflickr.com/72/72/hotel?lock=2960" width="72" height="72" alt="Cliffside Harbor Loft living room">
+      <div class="info">
+        <div class="name">Cliffside Harbor Loft</div>
+        <div class="meta">Entire loft · 0.3 mi from Cliff Walk</div>
+        <div class="rate">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="#E08A00"><path d="M12 3l2.7 5.6 6.1.8-4.5 4.2 1.1 6-5.4-3-5.4 3 1.1-6L3.2 9.4l6.1-.8z"/></svg>
+          4.91 <span class="cnt">(128)</span>
+        </div>
+      </div>
+      <div class="price"><div class="amt">$268</div><div class="per">per night</div></div>
+    </div>
+
+    <div class="row">
+      <img src="https://loremflickr.com/72/72/beach?lock=2961" width="72" height="72" alt="Beachfront garden suite at The Marrow House">
+      <div class="info">
+        <div class="name">The Marrow House</div>
+        <div class="meta">Garden suite · 0.6 mi from Cliff Walk</div>
+        <div class="rate">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="#E08A00"><path d="M12 3l2.7 5.6 6.1.8-4.5 4.2 1.1 6-5.4-3-5.4 3 1.1-6L3.2 9.4l6.1-.8z"/></svg>
+          4.74 <span class="cnt">(86)</span>
+        </div>
+      </div>
+      <div class="price"><div class="amt">$184</div><div class="per">per night</div></div>
+    </div>
+
+    <div class="row">
+      <img src="https://loremflickr.com/72/72/cityscape?lock=2962" width="72" height="72" alt="Bayfront Anchor Inn seen from the harbor">
+      <div class="info">
+        <div class="name">Bayfront Anchor Inn</div>
+        <div class="meta">Two beds · 0.9 mi from Cliff Walk</div>
+        <div class="rate">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="#E08A00"><path d="M12 3l2.7 5.6 6.1.8-4.5 4.2 1.1 6-5.4-3-5.4 3 1.1-6L3.2 9.4l6.1-.8z"/></svg>
+          4.63 <span class="cnt">(211)</span>
+        </div>
+      </div>
+      <div class="price"><div class="amt">$232</div><div class="per">per night</div></div>
+    </div>
+  </section>
+
+  <nav class="tabbar">
+    <div class="tab on">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#E08A00" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 6.5l6-2.5 6 2.5 6-2.5v13.5l-6 2.5-6-2.5-6 2.5z"/><path d="M9 4v13.5M15 6.5V20"/>
+      </svg>
+      Explore
+    </div>
+    <div class="tab">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#77746C" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 20s-7-4.4-7-9.4A4 4 0 0112 8a4 4 0 017 2.6c0 5-7 9.4-7 9.4z"/>
+      </svg>
+      Saved
+    </div>
+    <div class="tab">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#77746C" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3.5" y="7" width="17" height="12.5" rx="2.5"/><path d="M9 7V5.5A1.5 1.5 0 0110.5 4h3A1.5 1.5 0 0115 5.5V7"/>
+      </svg>
+      Trips
+    </div>
+    <div class="tab">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#77746C" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="8.5" r="3.5"/><path d="M5 20c1.3-3.3 3.9-5 7-5s5.7 1.7 7 5"/>
+      </svg>
+      Account
+    </div>
+  </nav>
+
+</div>
+</body>
+</html>

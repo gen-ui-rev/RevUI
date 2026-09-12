@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Order Detail — Larkspur</title>
+<style>
+  :root{
+    --ink:#1b1a1d;
+    --muted:#6f6b73;
+    --rule:#e6e3e8;
+    --accent:#8a6a92;
+    --accentSoft:#f4eff6;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    padding:40px 0;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    background:#d9d6dc;
+    font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+  }
+  .screen{
+    width:390px;
+    height:844px;
+    background:#fff;
+    position:relative;
+  }
+
+  /* top bar */
+  .topbar{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:16px;
+    border-bottom:1px solid var(--rule);
+  }
+  .topbar .title{
+    font-size:16px;
+    font-weight:600;
+    flex:1;
+  }
+  .iconbtn{
+    width:24px;height:24px;
+    display:flex;align-items:center;justify-content:center;
+    color:var(--ink);
+  }
+
+  /* hero */
+  .hero{
+    background:var(--accentSoft);
+    border-bottom:1px solid var(--rule);
+    padding:18px 20px 16px;
+  }
+  .eyebrow{
+    font-size:12px;
+    color:var(--muted);
+    letter-spacing:.02em;
+  }
+  .status{
+    font-size:22px;
+    font-weight:600;
+    margin-top:6px;
+    line-height:28px;
+  }
+  .eta{
+    font-size:14px;
+    color:var(--accent);
+    font-weight:600;
+    margin-top:4px;
+  }
+  .steps{
+    display:flex;
+    gap:5px;
+    margin-top:18px;
+  }
+  .step{flex:1;}
+  .step .bar{
+    display:block;
+    height:6px;
+    border-radius:6px;
+    background:#dcd5df;
+  }
+  .step.done .bar{background:var(--accent);}
+  .step .lab{
+    display:block;
+    margin-top:8px;
+    font-size:12px;
+    text-align:center;
+    color:var(--muted);
+  }
+  .step.done .lab{color:var(--ink);}
+  .drow{
+    display:flex;
+    align-items:baseline;
+    gap:12px;
+    padding:9px 0 0;
+  }
+  .drow .k{
+    font-size:12px;
+    color:var(--muted);
+    width:70px;
+    flex:none;
+  }
+  .drow .v{
+    font-size:14px;
+    line-height:19px;
+    flex:1;
+  }
+  .drow .link{
+    font-size:13px;
+    font-weight:600;
+    color:var(--accent);
+    flex:none;
+  }
+
+  /* sections */
+  .sechead{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    padding:16px 20px 8px;
+  }
+  .sechead h2{
+    margin:0;
+    font-size:13px;
+    font-weight:600;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    color:var(--muted);
+  }
+  .sechead .aside{
+    font-size:12px;
+    color:var(--muted);
+  }
+  .item{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    padding:10px 20px;
+  }
+  .glyph{
+    width:44px;height:44px;
+    border:1px solid var(--rule);
+    border-radius:6px;
+    display:flex;align-items:center;justify-content:center;
+    color:var(--accent);
+    flex:none;
+  }
+  .item .body{flex:1;min-width:0;}
+  .item .name{
+    font-size:15px;
+    font-weight:500;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .item .meta{
+    font-size:12px;
+    color:var(--muted);
+    margin-top:3px;
+  }
+  .item .amt{
+    font-size:15px;
+    font-variant-numeric:tabular-nums;
+  }
+
+  .divider{
+    height:1px;
+    background:var(--rule);
+    margin:12px 20px 0;
+  }
+
+  .srow{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    padding:6px 20px;
+    font-size:14px;
+  }
+  .srow .k{color:var(--muted);}
+  .srow .v{font-variant-numeric:tabular-nums;}
+  .srow.credit .v{color:var(--accent);}
+  .total{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    margin:10px 20px 0;
+    padding-top:12px;
+    border-top:1px solid var(--rule);
+  }
+  .total .k{font-size:15px;font-weight:600;}
+  .total .v{font-size:17px;font-weight:600;font-variant-numeric:tabular-nums;}
+  .payline{
+    padding:10px 20px 0;
+    font-size:13px;
+    color:var(--muted);
+  }
+
+  /* tab bar */
+  .tabbar{
+    position:absolute;
+    left:0;right:0;bottom:0;
+    display:flex;
+    border-top:1px solid var(--rule);
+    background:#fff;
+    padding:9px 0 12px;
+  }
+  .tab{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:4px;
+    color:#9a969e;
+    font-size:12px;
+  }
+  .tab.on{color:var(--accent);font-weight:600;}
+</style>
+</head>
+<body>
+  <div class="screen">
+
+    <div class="topbar">
+      <span class="iconbtn" aria-hidden="true">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 5 8 12l6.5 7"/></svg>
+      </span>
+      <span class="title">Order detail</span>
+      <span class="iconbtn" aria-hidden="true">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 13v-1a8 8 0 0 1 16 0v1"/><path d="M4 13h2.6a1 1 0 0 1 1 1v3.5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1z"/><path d="M20 13h-2.6a1 1 0 0 0-1 1v3.5a1 1 0 0 0 1 1H19a1 1 0 0 0 1-1z"/></svg>
+      </span>
+    </div>
+
+    <div class="hero">
+      <div class="eyebrow">Order DR-48210 &middot; Placed Mar 14, 2025</div>
+      <div class="status">Out for delivery</div>
+      <div class="eta">Arrives today by 8:00 PM</div>
+
+      <div class="steps">
+        <div class="step done"><span class="bar"></span><span class="lab">Placed</span></div>
+        <div class="step done"><span class="bar"></span><span class="lab">Packed</span></div>
+        <div class="step done"><span class="bar"></span><span class="lab">In transit</span></div>
+        <div class="step"><span class="bar"></span><span class="lab">Delivered</span></div>
+      </div>
+
+      <div class="drow">
+        <span class="k">Deliver to</span>
+        <span class="v">Nadia Ellsworth<br>1420 Kestrel Ave, Apt 6C, Portland, OR 97214</span>
+      </div>
+      <div class="drow">
+        <span class="k">Tracking</span>
+        <span class="v">4482 9133 0722</span>
+        <span class="link">Track</span>
+      </div>
+    </div>
+
+    <div class="sechead">
+      <h2>Items</h2>
+      <span class="aside">3 items &middot; 4 units</span>
+    </div>
+
+    <div class="item">
+      <span class="glyph" aria-hidden="true">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10.5h18"/><path d="M6.5 14.5h4"/></svg>
+      </span>
+      <span class="body">
+        <span class="name">Titanium card carrier</span>
+        <span class="meta">Qty 1 &middot; Graphite &middot; Engraved</span>
+      </span>
+      <span class="amt">$68.00</span>
+    </div>
+
+    <div class="item">
+      <span class="glyph" aria-hidden="true">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="6" height="4" rx="1"/><path d="M7 8v4a5 5 0 0 0 5 5h2"/><rect x="15" y="15" width="5" height="4" rx="1"/></svg>
+      </span>
+      <span class="body">
+        <span class="name">Travel cable kit</span>
+        <span class="meta">Qty 1 &middot; Two-port</span>
+      </span>
+      <span class="amt">$42.00</span>
+    </div>
+
+    <div class="item">
+      <span class="glyph" aria-hidden="true">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5.5A1.5 1.5 0 0 1 6.5 4H19v16H6.5A1.5 1.5 0 0 1 5 18.5z"/><path d="M9 4v16"/><path d="M12 9h4"/><path d="M12 13h4"/></svg>
+      </span>
+      <span class="body">
+        <span class="name">Ruled pocket notebook</span>
+        <span class="meta">Qty 2 &middot; Mauve cloth</span>
+      </span>
+      <span class="amt">$74.00</span>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="sechead">
+      <h2>Payment</h2>
+      <span class="aside">Charged Mar 14</span>
+    </div>
+
+    <div class="srow"><span class="k">Subtotal</span><span class="v">$184.00</span></div>
+    <div class="srow"><span class="k">Shipping (2-day)</span><span class="v">$0.00</span></div>
+    <div class="srow"><span class="k">Estimated tax</span><span class="v">$15.64</span></div>
+    <div class="srow credit"><span class="k">Rewards credit</span><span class="v">&minus;$25.00</span></div>
+
+    <div class="total"><span class="k">Total charged</span><span class="v">$174.64</span></div>
+    <div class="payline">Larkspur Debit &middot;&middot;&middot;&middot; 4417 &middot; Authorization 2A19-7740</div>
+
+    <div class="tabbar">
+      <span class="tab">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5 12 4l8 6.5V20H4z"/><path d="M10 20v-5h4v5"/></svg>
+        Home
+      </span>
+      <span class="tab">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10h18"/></svg>
+        Cards
+      </span>
+      <span class="tab on">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="8" width="17" height="11" rx="1.5"/><path d="M3.5 12h17"/><path d="M12 8v11"/><path d="M12 8 9.5 5.5M12 8l2.5-2.5"/></svg>
+        Rewards
+      </span>
+      <span class="tab">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8.5" r="3.5"/><path d="M5 20c0-3.6 3.1-5.5 7-5.5s7 1.9 7 5.5"/></svg>
+        Profile
+      </span>
+    </div>
+
+  </div>
+</body>
+</html>

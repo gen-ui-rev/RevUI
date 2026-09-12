@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Saved Collections</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #e6e9e8;
+      color: #172523;
+      font-family: 'Source Sans 3', system-ui, sans-serif;
+    }
+
+    button,
+    a {
+      font: inherit;
+    }
+
+    button {
+      color: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #fbfcfb;
+      border: 1px solid #cfd7d5;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 14px 16px 12px;
+      border-bottom: 1px solid #dde3e1;
+    }
+
+    .title-wrap {
+      min-width: 0;
+    }
+
+    .service-name {
+      margin: 0 0 1px;
+      color: #687774;
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 16px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 25px;
+      font-weight: 700;
+      line-height: 30px;
+      letter-spacing: -0.02em;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-shrink: 0;
+    }
+
+    .icon-button {
+      width: 34px;
+      height: 34px;
+      padding: 6px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 0;
+      background: transparent;
+      cursor: default;
+    }
+
+    .manage-button {
+      padding: 6px 0;
+      border: 0;
+      background: transparent;
+      color: #087f78;
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 20px;
+      cursor: default;
+    }
+
+    .content-tabs {
+      display: flex;
+      padding: 0 16px;
+      border-bottom: 1px solid #dce3e1;
+    }
+
+    .content-tab {
+      position: relative;
+      flex: 1;
+      padding: 11px 4px 10px;
+      border: 0;
+      background: transparent;
+      color: #667572;
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 20px;
+      text-align: center;
+      cursor: default;
+    }
+
+    .content-tab.active {
+      color: #087f78;
+    }
+
+    .content-tab.active::after {
+      position: absolute;
+      right: 12px;
+      bottom: -1px;
+      left: 12px;
+      height: 3px;
+      content: "";
+      background: #087f78;
+    }
+
+    main {
+      width: 100%;
+    }
+
+    .collection-summary {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 16px;
+      border-bottom: 1px solid #e2e7e5;
+    }
+
+    .collection-summary p {
+      margin: 0;
+      color: #5e6d6a;
+      font-size: 13px;
+      line-height: 20px;
+    }
+
+    .collection-summary .count {
+      color: #172523;
+      font-weight: 600;
+    }
+
+    .view-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      white-space: nowrap;
+    }
+
+    .collection-grid {
+      margin: 0;
+      padding: 12px 16px;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      list-style: none;
+    }
+
+    .collection-card {
+      min-width: 0;
+      padding: 10px;
+      border: 1px solid #dce4e1;
+      border-radius: 7px;
+      background: #ffffff;
+    }
+
+    .card-heading {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 7px;
+    }
+
+    .collection-card img {
+      width: 56px;
+      height: 56px;
+      display: block;
+      object-fit: cover;
+      border-radius: 5px;
+      background: #cfd9d6;
+    }
+
+    .bookmark-mark {
+      width: 24px;
+      height: 24px;
+      padding: 3px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #087f78;
+    }
+
+    .collection-title {
+      margin: 0 0 2px;
+      overflow: hidden;
+      color: #172523;
+      font-size: 15px;
+      font-weight: 600;
+      line-height: 19px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .collection-meta {
+      margin: 0;
+      overflow: hidden;
+      color: #6b7976;
+      font-size: 12px;
+      line-height: 17px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .tabbar {
+      display: flex;
+      align-items: stretch;
+      margin-top: auto;
+      border-top: 1px solid #d8dfdd;
+      background: #fbfcfb;
+    }
+
+    .nav-item {
+      flex: 1;
+      padding: 8px 2px 7px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      border: 0;
+      background: transparent;
+      color: #71807d;
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 15px;
+      cursor: default;
+    }
+
+    .nav-item.active {
+      color: #087f78;
+    }
+
+    svg {
+      display: block;
+      flex-shrink: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <div class="title-wrap">
+        <p class="service-name">Northstar Learning</p>
+        <h1>Saved collections</h1>
+      </div>
+      <div class="top-actions">
+        <button class="icon-button" type="button" aria-label="Search saved collections">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="10.7" cy="10.7" r="6.4" stroke="currentColor" stroke-width="1.8"/>
+            <path d="M15.5 15.5L20 20" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+        </button>
+        <button class="manage-button" type="button">Manage</button>
+      </div>
+    </header>
+
+    <nav class="content-tabs" aria-label="Saved content views">
+      <button class="content-tab active" type="button" aria-current="page">Collections</button>
+      <button class="content-tab" type="button">Saved lessons</button>
+    </nav>
+
+    <main>
+      <section aria-label="Collection card grid">
+        <div class="collection-summary">
+          <p><span class="count">8 collections</span> · 67 lessons</p>
+          <p class="view-label">
+            <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <rect x="2" y="2" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.3"/>
+              <rect x="9" y="2" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.3"/>
+              <rect x="2" y="9" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.3"/>
+              <rect x="9" y="9" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.3"/>
+            </svg>
+            Card view
+          </p>
+        </div>
+
+        <ul class="collection-grid">
+          <li class="collection-card">
+            <div class="card-heading">
+              <img src="https://loremflickr.com/56/56/books?lock=1730" width="56" height="56" alt="Language textbooks arranged on a shelf">
+              <span class="bookmark-mark" aria-hidden="true">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M7 4.5C7 3.67 7.67 3 8.5 3H15.5C16.33 3 17 3.67 17 4.5V21L12 17.7L7 21V4.5Z"/>
+                </svg>
+              </span>
+            </div>
+            <p class="collection-title">Everyday Spanish</p>
+            <p class="collection-meta">12 lessons · May 28</p>
+          </li>
+
+          <li class="collection-card">
+            <div class="card-heading">
+              <img src="https://loremflickr.com/56/56/study?lock=1731" width="56" height="56" alt="Notebook and study materials on a desk">
+              <span class="bookmark-mark" aria-hidden="true">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M7 4.5C7 3.67 7.67 3 8.5 3H15.5C16.33 3 17 3.67 17 4.5V21L12 17.7L7 21V4.5Z"/>
+                </svg>
+              </span>
+            </div>
+            <p class="collection-title">Business English</p>
+            <p class="collection-meta">9 lessons · May 24</p>
+          </li>
+
+          <li class="collection-card">
+            <div class="card-heading">
+              <img src="https://loremflickr.com/56/56/classroom?lock=1732" width="56" height="56" alt="Empty classroom prepared for a language lesson">
+              <span class="bookmark-mark" aria-hidden="true">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M7 4.5C7 3.67 7.67 3 8.5 3H15.5C16.33 3 17 3.67 17 4.5V21L12 17.7L7 21V4.5Z"/>
+                </svg>
+              </span>
+            </div>
+            <p class="collection-title">French Pronunciation</p>
+            <p class="collection-meta">8 lessons · May 19</p>
+          </li>
+
+          <li class="collection-card">
+            <div class="card-heading">
+              <img src="https://loremflickr.com/56/56/library?lock=1733" width="56" height="56" alt="Quiet library shelves used for grammar research">
+              <span class="bookmark-mark" aria-hidden="true">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M7 4.5C7 3.67 7.67 3 8.5 3H15.5C16.33 3 17 3.67 17 4.5V21L12 17.7L7 21V4.5Z"/>
+                </svg>
+              </span>
+            </div>
+            <p class="collection-title">Grammar Review</p>
+            <p class="collection-meta">11 lessons · May 14</p>
+          </li>
+
+          <li class="collection-card">
+            <div class="card-heading">
+              <img src="https://loremflickr.com/56/56/books?lock=1734" width="56" height="56" alt="Travel phrasebooks stacked together">
+              <span class="bookmark-mark" aria-hidden="true">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M7 4.5C7 3.67 7.67 3 8.5 3H15.5C16.33 3 17 3.67 17 4.5V21L12 17.7L7 21V4.5Z"/>
+                </svg>
+              </span>
+            </div>
+            <p class="collection-title">Travel Phrases</p>
+            <p class="collection-meta">7 lessons · May 9</p>
+          </li>
+
+          <li class="collection-card">
+            <div class="card-heading">
+              <img src="https://loremflickr.com/56/56/study?lock=1735" width="56" height="56" alt="Headphones beside language study notes">
+              <span class="bookmark-mark" aria-hidden="true">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M7 4.5C7 3.67 7.67 3 8.5 3H15.5C16.33 3 17 3.67 17 4.5V21L12 17.7L7 21V4.5Z"/>
+                </svg>
+              </span>
+            </div>
+            <p class="collection-title">Listening Practice</p>
+            <p class="collection-meta">6 lessons · May 3</p>
+          </li>
+
+          <li class="collection-card">
+            <div class="card-heading">
+              <img src="https://loremflickr.com/56/56/library?lock=1736" width="56" height="56" alt="Books selected for a language reading group">
+              <span class="bookmark-mark" aria-hidden="true">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M7 4.5C7 3.67 7.67 3 8.5 3H15.5C16.33 3 17 3.67 17 4.5V21L12 17.7L7 21V4.5Z"/>
+                </svg>
+              </span>
+            </div>
+            <p class="collection-title">Reading Circle</p>
+            <p class="collection-meta">5 lessons · April 27</p>
+          </li>
+
+          <li class="collection-card">
+            <div class="card-heading">
+              <img src="https://loremflickr.com/56/56/classroom?lock=1737" width="56" height="56" alt="Study desks arranged for an exam session">
+              <span class="bookmark-mark" aria-hidden="true">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M7 4.5C7 3.67 7.67 3 8.5 3H15.5C16.33 3 17 3.67 17 4.5V21L12 17.7L7 21V4.5Z"/>
+                </svg>
+              </span>
+            </div>
+            <p class="collection-title">Advanced Exam Prep</p>
+            <p class="collection-meta">9 lessons · April 21</p>
+          </li>
+        </ul>
+      </section>
+    </main>
+
+    <nav class="tabbar" aria-label="Primary navigation">
+      <button class="nav-item" type="button">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M4 5.5C4 4.67 4.67 4 5.5 4H10.2C11.19 4 12 4.81 12 5.8V20C12 18.9 11.1 18 10 18H4V5.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+          <path d="M20 5.5C20 4.67 19.33 4 18.5 4H13.8C12.81 4 12 4.81 12 5.8V20C12 18.9 12.9 18 14 18H20V5.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+        </svg>
+        <span>Learn</span>
+      </button>
+
+      <button class="nav-item" type="button">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.7"/>
+          <path d="M14.8 9.2L13.3 13.3L9.2 14.8L10.7 10.7L14.8 9.2Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+        </svg>
+        <span>Explore</span>
+      </button>
+
+      <button class="nav-item active" type="button" aria-current="page">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M6 4.5C6 3.67 6.67 3 7.5 3H16.5C17.33 3 18 3.67 18 4.5V21L12 17.2L6 21V4.5Z" fill="currentColor"/>
+        </svg>
+        <span>Saved</span>
+      </button>
+
+      <button class="nav-item" type="button">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="12" cy="8" r="3.5" stroke="currentColor" stroke-width="1.7"/>
+          <path d="M5.5 20C5.5 16.41 8.41 13.5 12 13.5C15.59 13.5 18.5 16.41 18.5 20" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+        </svg>
+        <span>Profile</span>
+      </button>
+    </nav>
+  </div>
+</body>
+</html>

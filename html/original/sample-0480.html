@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VeraWell Body Map</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #dfe3df;
+      color: #1d2520;
+      font-family: 'Source Sans 3', system-ui, sans-serif;
+    }
+
+    button {
+      font: inherit;
+      color: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #ffffff;
+      border: 1px solid #cbd1cc;
+    }
+
+    .topbar {
+      height: 64px;
+      flex: 0 0 64px;
+      display: grid;
+      grid-template-columns: 44px 1fr 58px;
+      align-items: center;
+      padding: 0 12px;
+      border-bottom: 1px solid #e3e7e3;
+    }
+
+    .icon-button,
+    .action-button,
+    .canvas-button,
+    .tool,
+    .tab {
+      border: 0;
+      background: transparent;
+      padding: 0;
+      cursor: default;
+    }
+
+    .icon-button {
+      width: 40px;
+      height: 40px;
+      display: grid;
+      place-items: center;
+    }
+
+    .topbar-title {
+      text-align: center;
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .action-button {
+      justify-self: end;
+      min-height: 40px;
+      padding: 0 6px;
+      color: #1b7f50;
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .topbar svg,
+    .canvas-button svg,
+    .tool svg,
+    .tab svg {
+      display: block;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    main {
+      flex: 1 1 auto;
+      min-height: 0;
+      padding: 14px 16px 10px;
+    }
+
+    .intro {
+      margin-bottom: 12px;
+    }
+
+    h1 {
+      margin: 0;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 25px;
+      line-height: 1.15;
+      font-weight: 700;
+      letter-spacing: -0.2px;
+    }
+
+    .intro p {
+      margin: 4px 0 0;
+      color: #667069;
+      font-size: 14px;
+      line-height: 1.35;
+    }
+
+    .workspace {
+      position: relative;
+      width: 100%;
+      height: 390px;
+      border: 1px solid #d9dfda;
+      border-radius: 14px;
+      background: #fafbf9;
+    }
+
+    .canvas-meta {
+      position: absolute;
+      z-index: 2;
+      top: 13px;
+      left: 14px;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      color: #5d6861;
+      font-size: 13px;
+      line-height: 1;
+    }
+
+    .canvas-meta span + span::before {
+      content: "";
+      display: inline-block;
+      width: 3px;
+      height: 3px;
+      margin: 0 8px 3px 0;
+      border-radius: 50%;
+      background: #9aa39c;
+    }
+
+    .canvas-actions {
+      position: absolute;
+      z-index: 2;
+      top: 5px;
+      right: 7px;
+      display: flex;
+    }
+
+    .canvas-button {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      color: #57625b;
+    }
+
+    .body-drawing {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .figure-line {
+      fill: none;
+      stroke: #6e7871;
+      stroke-width: 2.1;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .figure-soft {
+      fill: #f3f5f2;
+      stroke: #6e7871;
+      stroke-width: 2.1;
+    }
+
+    .annotation {
+      fill: none;
+      stroke: #218a58;
+      stroke-width: 3.4;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .annotation-fill {
+      fill: #218a58;
+      stroke: none;
+    }
+
+    .tools {
+      display: flex;
+      justify-content: space-between;
+      gap: 6px;
+      margin-top: 12px;
+      padding-bottom: 11px;
+      border-bottom: 1px solid #e3e7e3;
+    }
+
+    .tool {
+      width: 78px;
+      min-height: 54px;
+      border-radius: 14px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      color: #606a63;
+      font-size: 12px;
+      line-height: 1.15;
+    }
+
+    .tool.selected {
+      color: #176d45;
+      background: #e7f3eb;
+      font-weight: 600;
+    }
+
+    .tool svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .stroke-settings {
+      min-height: 54px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      padding: 8px 2px 4px;
+    }
+
+    .setting-label {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .setting-value {
+      margin-top: 1px;
+      color: #707972;
+      font-size: 12px;
+    }
+
+    .stroke-options {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .color-swatch {
+      width: 22px;
+      height: 22px;
+      border: 5px solid #ffffff;
+      border-radius: 50%;
+      background: #218a58;
+      outline: 1px solid #218a58;
+    }
+
+    .line-widths {
+      height: 25px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding-left: 14px;
+      border-left: 1px solid #dce1dd;
+    }
+
+    .width-dot {
+      display: block;
+      border-radius: 50%;
+      background: #68726b;
+    }
+
+    .width-dot.small {
+      width: 4px;
+      height: 4px;
+    }
+
+    .width-dot.medium {
+      width: 8px;
+      height: 8px;
+      background: #218a58;
+      outline: 3px solid #e2f1e7;
+    }
+
+    .width-dot.large {
+      width: 12px;
+      height: 12px;
+    }
+
+    .hint {
+      margin: 6px 0 0;
+      color: #68716b;
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
+    .tabbar {
+      height: 72px;
+      flex: 0 0 72px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border-top: 1px solid #dfe4e0;
+      background: #ffffff;
+    }
+
+    .tab {
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      color: #707a73;
+      font-size: 12px;
+      line-height: 1;
+    }
+
+    .tab.active {
+      color: #187649;
+      font-weight: 600;
+    }
+
+    .tab svg {
+      width: 23px;
+      height: 23px;
+    }
+
+    .tab-indicator {
+      position: relative;
+    }
+
+    .tab.active .tab-indicator::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      bottom: -8px;
+      width: 18px;
+      height: 2px;
+      border-radius: 2px;
+      background: #218a58;
+      transform: translateX(-50%);
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <button class="icon-button" type="button" aria-label="Go back">
+        <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M15 5 8 12l7 7"></path>
+        </svg>
+      </button>
+      <div class="topbar-title">Body Map</div>
+      <button class="action-button" type="button">Save</button>
+    </header>
+
+    <main>
+      <section class="intro" aria-labelledby="screen-title">
+        <h1 id="screen-title">Mark discomfort</h1>
+        <p>Show where movement feels sore or limited.</p>
+      </section>
+
+      <section class="workspace" aria-label="Body annotation canvas">
+        <div class="canvas-meta">
+          <span>Front view</span>
+          <span>2 marks</span>
+        </div>
+
+        <div class="canvas-actions" aria-label="Canvas history">
+          <button class="canvas-button" type="button" aria-label="Undo">
+            <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M9 8H5V4"></path>
+              <path d="M5.5 8A8 8 0 1 1 7 18.5"></path>
+            </svg>
+          </button>
+          <button class="canvas-button" type="button" aria-label="Redo">
+            <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M15 8h4V4"></path>
+              <path d="M18.5 8A8 8 0 1 0 17 18.5"></path>
+            </svg>
+          </button>
+        </div>
+
+        <svg class="body-drawing" viewBox="0 0 358 390" role="img" aria-label="Front body outline with annotations at the right shoulder and left knee">
+          <circle class="figure-soft" cx="179" cy="73" r="25"></circle>
+          <path class="figure-line" d="M169 98c0 8-3 12-9 15"></path>
+          <path class="figure-line" d="M189 98c0 8 3 12 9 15"></path>
+
+          <path class="figure-soft" d="M159 112c-13 5-23 16-27 34l-7 62c-1 12 7 20 16 17l10-3 5 53h46l5-53 10 3c9 3 17-5 16-17l-7-62c-4-18-14-29-27-34-9 8-31 8-40 0Z"></path>
+
+          <path class="figure-line" d="M133 143c-11 11-17 31-20 51l-8 57"></path>
+          <path class="figure-line" d="M105 251c-2 13-4 25-4 34"></path>
+          <path class="figure-line" d="M101 285c0 5 2 10 5 13"></path>
+          <path class="figure-line" d="M225 143c11 11 17 31 20 51l8 57"></path>
+          <path class="figure-line" d="M253 251c2 13 4 25 4 34"></path>
+          <path class="figure-line" d="M257 285c0 5-2 10-5 13"></path>
+
+          <path class="figure-line" d="M156 274c-4 19-7 40-8 59"></path>
+          <path class="figure-line" d="M148 333c-2 15-3 29-4 39"></path>
+          <path class="figure-line" d="M175 275c-1 20-1 40-2 58"></path>
+          <path class="figure-line" d="M173 333c-1 15-2 29-3 39"></path>
+          <path class="figure-line" d="M202 274c4 19 7 40 8 59"></path>
+          <path class="figure-line" d="M210 333c2 15 3 29 4 39"></path>
+          <path class="figure-line" d="M183 275c1 20 1 40 2 58"></path>
+          <path class="figure-line" d="M185 333c1 15 2 29 3 39"></path>
+
+          <path class="figure-line" d="M144 372h28"></path>
+          <path class="figure-line" d="M186 372h28"></path>
+          <path class="figure-line" d="M179 130v133"></path>
+          <path class="figure-line" d="M153 177c16 6 36 6 52 0"></path>
+
+          <path class="annotation" d="M205 119c12-7 27-3 33 7 6 11 2 25-9 31-12 6-27 2-32-9-5-11-2-22 8-29Z"></path>
+          <path class="annotation" d="M136 326c8-8 20-8 27-2 8 7 8 19 1 27-8 8-20 8-28 0-7-7-7-18 0-25Z"></path>
+
+          <path class="annotation" d="M84 330c14 0 25 0 37 3"></path>
+          <path class="annotation" d="m113 326 9 7-10 4"></path>
+          <circle class="annotation-fill" cx="84" cy="330" r="3.2"></circle>
+        </svg>
+      </section>
+
+      <section class="tools" aria-label="Annotation tools">
+        <button class="tool selected" type="button" aria-pressed="true">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="m5 19 3.5-.8L19 7.7 16.3 5 5.8 15.5 5 19Z"></path>
+            <path d="m14.8 6.5 2.7 2.7"></path>
+          </svg>
+          <span>Pen</span>
+        </button>
+
+        <button class="tool" type="button" aria-pressed="false">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="12" r="7.5"></circle>
+          </svg>
+          <span>Circle</span>
+        </button>
+
+        <button class="tool" type="button" aria-pressed="false">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M5 19 19 5"></path>
+            <path d="M12 5h7v7"></path>
+          </svg>
+          <span>Arrow</span>
+        </button>
+
+        <button class="tool" type="button" aria-pressed="false">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="m7 17-2-2a2 2 0 0 1 0-3L12 5a2 2 0 0 1 3 0l4 4a2 2 0 0 1 0 3l-6 6H8Z"></path>
+            <path d="M10 8 17 15"></path>
+            <path d="M8 18h11"></path>
+          </svg>
+          <span>Erase</span>
+        </button>
+      </section>
+
+      <section class="stroke-settings" aria-label="Pen settings">
+        <div>
+          <div class="setting-label">Stroke</div>
+          <div class="setting-value">Green · Medium</div>
+        </div>
+        <div class="stroke-options" aria-hidden="true">
+          <span class="color-swatch"></span>
+          <div class="line-widths">
+            <span class="width-dot small"></span>
+            <span class="width-dot medium"></span>
+            <span class="width-dot large"></span>
+          </div>
+        </div>
+      </section>
+
+      <p class="hint">Tap and drag on the body to add another mark.</p>
+    </main>
+
+    <nav class="tabbar" aria-label="Primary navigation">
+      <button class="tab" type="button">
+        <span class="tab-indicator">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 11.5 12 5l8 6.5"></path>
+            <path d="M6.5 10v9h11v-9"></path>
+            <path d="M10 19v-5h4v5"></path>
+          </svg>
+        </span>
+        <span>Today</span>
+      </button>
+
+      <button class="tab" type="button">
+        <span class="tab-indicator">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M6 4v3M18 4v3"></path>
+            <rect x="4" y="6" width="16" height="14" rx="2"></rect>
+            <path d="M4 10h16"></path>
+          </svg>
+        </span>
+        <span>Visits</span>
+      </button>
+
+      <button class="tab active" type="button" aria-current="page">
+        <span class="tab-indicator">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="6" r="2.5"></circle>
+            <path d="M8 11c1.5-1 6.5-1 8 0"></path>
+            <path d="M9 11 7 17"></path>
+            <path d="m15 11 2 6"></path>
+            <path d="M10.5 11 10 20"></path>
+            <path d="m13.5 11 .5 9"></path>
+          </svg>
+        </span>
+        <span>Body map</span>
+      </button>
+
+      <button class="tab" type="button">
+        <span class="tab-indicator">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="8" r="3"></circle>
+            <path d="M5.5 19c.8-3.5 3-5.5 6.5-5.5s5.7 2 6.5 5.5"></path>
+          </svg>
+        </span>
+        <span>Profile</span>
+      </button>
+    </nav>
+  </div>
+</body>
+</html>

@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Profile setup</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 40px 0;
+    margin: 0;
+    background: #dfe3e9;
+    font-family: 'Poppins', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .screen {
+    width: 390px;
+    height: 844px;
+    background: #f2f4f7;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+
+  /* top bar */
+  .topbar { background: #ffffff; }
+  .topbar-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 20px 12px;
+  }
+  .back { display: block; color: #1e2939; }
+  .topbar-title {
+    flex: 1;
+    font-size: 17px;
+    line-height: 26px;
+    font-weight: 600;
+    color: #111827;
+    margin: 0;
+  }
+  .step {
+    font-size: 12px;
+    line-height: 26px;
+    font-weight: 500;
+    color: #6b7480;
+  }
+  .track { height: 6px; background: #e3e8ef; }
+  .fill { height: 6px; width: 75%; background: #0ea5e9; }
+
+  /* main */
+  main { padding: 16px 20px 0; flex: 1; }
+
+  .card {
+    background: #ffffff;
+    border-radius: 14px;
+    box-shadow: 0 2px 6px rgba(16, 24, 40, 0.06);
+  }
+
+  .profile {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+  }
+  .monogram {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    background: #e0f2fe;
+    color: #0369a1;
+    font-size: 17px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .profile-text { flex: 1; min-width: 0; }
+  .profile-name {
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 600;
+    color: #111827;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .profile-mail {
+    font-size: 12px;
+    line-height: 16px;
+    color: #6b7480;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .edit {
+    font-size: 13px;
+    line-height: 20px;
+    font-weight: 500;
+    color: #0284c7;
+    flex-shrink: 0;
+  }
+
+  .head {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin-top: 18px;
+  }
+  .head h2 {
+    margin: 0;
+    flex: 1;
+    font-size: 19px;
+    line-height: 26px;
+    font-weight: 600;
+    color: #111827;
+  }
+  .count {
+    font-size: 12px;
+    line-height: 26px;
+    font-weight: 500;
+    color: #0284c7;
+    flex-shrink: 0;
+  }
+  .sub {
+    margin: 4px 0 0;
+    font-size: 13px;
+    line-height: 18px;
+    color: #6b7480;
+  }
+
+  .grid {
+    margin-top: 14px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    row-gap: 11px;
+  }
+  .tile {
+    width: 109px;
+    background: #ffffff;
+    border-radius: 14px;
+    box-shadow: 0 2px 6px rgba(16, 24, 40, 0.06);
+    overflow: hidden;
+    position: relative;
+  }
+  .tile.on { box-shadow: 0 2px 6px rgba(16, 24, 40, 0.06), 0 0 0 2px #0ea5e9; }
+  .tile img {
+    display: block;
+    width: 109px;
+    height: 84px;
+    object-fit: cover;
+    background: #cdd5df;
+  }
+  .tick {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 22px;
+    height: 22px;
+    border-radius: 11px;
+    background: #0ea5e9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .tile-body { padding: 9px 10px 10px; }
+  .tile-name {
+    font-size: 14px;
+    line-height: 19px;
+    font-weight: 500;
+    color: #1e2939;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .tile-meta {
+    font-size: 12px;
+    line-height: 16px;
+    color: #7b8494;
+  }
+
+  .section-label {
+    margin: 20px 0 0;
+    font-size: 13px;
+    line-height: 18px;
+    font-weight: 600;
+    color: #46505f;
+  }
+  .chips {
+    margin-top: 10px;
+    display: flex;
+    gap: 8px;
+  }
+  .chip {
+    height: 36px;
+    flex: 1;
+    border-radius: 14px;
+    background: #ffffff;
+    box-shadow: 0 2px 6px rgba(16, 24, 40, 0.06);
+    font-size: 14px;
+    line-height: 36px;
+    font-weight: 500;
+    color: #46505f;
+    text-align: center;
+  }
+  .chip.on { background: #0ea5e9; color: #ffffff; box-shadow: none; }
+
+  .reminder {
+    margin-top: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+  }
+  .reminder-text { flex: 1; min-width: 0; }
+  .reminder-title {
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 500;
+    color: #1e2939;
+  }
+  .reminder-meta {
+    font-size: 12px;
+    line-height: 16px;
+    color: #7b8494;
+  }
+  .toggle {
+    width: 44px;
+    height: 26px;
+    border-radius: 13px;
+    background: #0ea5e9;
+    position: relative;
+    flex-shrink: 0;
+  }
+  .knob {
+    position: absolute;
+    top: 3px;
+    left: 21px;
+    width: 20px;
+    height: 20px;
+    border-radius: 10px;
+    background: #ffffff;
+  }
+
+  /* footer */
+  footer { padding: 14px 20px; }
+  .cta {
+    height: 50px;
+    border-radius: 14px;
+    background: #0ea5e9;
+    color: #ffffff;
+    font-size: 15px;
+    line-height: 50px;
+    font-weight: 600;
+    text-align: center;
+  }
+
+  .tabbar {
+    display: flex;
+    background: #ffffff;
+    border-top: 1px solid #e5e9f0;
+    padding: 10px 0 12px;
+  }
+  .tab {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    color: #98a0ad;
+  }
+  .tab span {
+    font-size: 12px;
+    line-height: 14px;
+    font-weight: 500;
+  }
+  .tab.active { color: #0284c7; }
+</style>
+</head>
+<body>
+  <div class="screen">
+
+    <div class="topbar">
+      <div class="topbar-row">
+        <svg class="back" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+        <h1 class="topbar-title">Set up your profile</h1>
+        <div class="step">Step 3 of 4</div>
+      </div>
+      <div class="track"><div class="fill"></div></div>
+    </div>
+
+    <main>
+      <div class="card profile">
+        <div class="monogram">MW</div>
+        <div class="profile-text">
+          <div class="profile-name">Maya Whitfield</div>
+          <div class="profile-mail">m.whitfield@ourmail.com</div>
+        </div>
+        <div class="edit">Edit</div>
+      </div>
+
+      <div class="head">
+        <h2>What do you want to learn?</h2>
+        <div class="count">3 of 6</div>
+      </div>
+      <p class="sub">Pick at least three subjects. Your lesson plan is built from these.</p>
+
+      <div class="grid">
+
+        <div class="tile on">
+          <img src="https://loremflickr.com/109/84/books?lock=7000" width="109" height="84" alt="Spanish workbooks stacked on a desk">
+          <div class="tick">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 6.4l2.4 2.4L9.6 3.6"/></svg>
+          </div>
+          <div class="tile-body">
+            <div class="tile-name">Spanish</div>
+            <div class="tile-meta">1,240 lessons</div>
+          </div>
+        </div>
+
+        <div class="tile">
+          <img src="https://loremflickr.com/109/84/classroom?lock=7001" width="109" height="84" alt="Classroom whiteboard with math notes">
+          <div class="tile-body">
+            <div class="tile-name">Math</div>
+            <div class="tile-meta">860 lessons</div>
+          </div>
+        </div>
+
+        <div class="tile on">
+          <img src="https://loremflickr.com/109/84/study?lock=7002" width="109" height="84" alt="Student taking notes for exam practice">
+          <div class="tick">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 6.4l2.4 2.4L9.6 3.6"/></svg>
+          </div>
+          <div class="tile-body">
+            <div class="tile-name">Test Prep</div>
+            <div class="tile-meta">412 lessons</div>
+          </div>
+        </div>
+
+        <div class="tile">
+          <img src="https://loremflickr.com/109/84/library?lock=7003" width="109" height="84" alt="Library shelves of novels">
+          <div class="tile-body">
+            <div class="tile-name">Reading</div>
+            <div class="tile-meta">530 lessons</div>
+          </div>
+        </div>
+
+        <div class="tile on">
+          <img src="https://loremflickr.com/109/84/study?lock=7004" width="109" height="84" alt="Notebook with charts for a data course">
+          <div class="tick">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 6.4l2.4 2.4L9.6 3.6"/></svg>
+          </div>
+          <div class="tile-body">
+            <div class="tile-name">Data 101</div>
+            <div class="tile-meta">295 lessons</div>
+          </div>
+        </div>
+
+        <div class="tile">
+          <img src="https://loremflickr.com/109/84/books?lock=7005" width="109" height="84" alt="Old history books on a table">
+          <div class="tile-body">
+            <div class="tile-name">History</div>
+            <div class="tile-meta">318 lessons</div>
+          </div>
+        </div>
+
+      </div>
+
+      <p class="section-label">Daily study time</p>
+      <div class="chips">
+        <div class="chip">10 min</div>
+        <div class="chip on">20 min</div>
+        <div class="chip">30 min</div>
+        <div class="chip">45 min</div>
+      </div>
+
+      <div class="card reminder">
+        <div class="reminder-text">
+          <div class="reminder-title">Practice reminder</div>
+          <div class="reminder-meta">Weekdays at 7:30 PM</div>
+        </div>
+        <div class="toggle"><div class="knob"></div></div>
+      </div>
+    </main>
+
+    <footer>
+      <div class="cta">Continue</div>
+    </footer>
+
+    <nav class="tabbar">
+      <div class="tab">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10.5L12 4l8 6.5V20a1 1 0 01-1 1h-4v-6H9v6H5a1 1 0 01-1-1z"/></svg>
+        <span>Home</span>
+      </div>
+      <div class="tab">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5.5h6a2 2 0 012 2V20a2 2 0 00-2-2H4z"/><path d="M20 5.5h-6a2 2 0 00-2 2V20a2 2 0 012-2h6z"/></svg>
+        <span>Courses</span>
+      </div>
+      <div class="tab">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v3"/><circle cx="12" cy="14" r="6.5"/><path d="M12 11.5V14l2 1.5"/></svg>
+        <span>Practice</span>
+      </div>
+      <div class="tab active">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8.5" r="3.8"/><path d="M4.8 20c.9-3.4 3.7-5.3 7.2-5.3s6.3 1.9 7.2 5.3"/></svg>
+        <span>Profile</span>
+      </div>
+    </nav>
+
+  </div>
+</body>
+</html>

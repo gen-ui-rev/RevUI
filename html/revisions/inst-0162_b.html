@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Workout Order Planner</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #e5e7eb;
+      color: #e8eef8;
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 560px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      background: #0b1120;
+    }
+
+    .service-label {
+      margin: 0 0 6px;
+      color: #4ade80;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      color: #f2f6fb;
+      font-size: 22px;
+      line-height: 1.25;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .instruction {
+      margin: 8px 0 0;
+      color: #97a5c0;
+      font-size: 13px;
+      line-height: 1.45;
+      font-weight: 400;
+    }
+
+    .summary {
+      display: flex;
+      gap: 8px;
+      margin: 14px 0 16px;
+    }
+
+    .summary span {
+      padding: 6px 10px;
+      border: 1px solid rgba(74, 222, 128, 0.35);
+      border-radius: 999px;
+      background: rgba(74, 222, 128, 0.08);
+      color: #a7f3c0;
+      font-size: 11px;
+      line-height: 1.2;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .lesson-list {
+      display: grid;
+      gap: 10px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .lesson-row {
+      display: grid;
+      grid-template-columns: 20px 30px minmax(0, 1fr) 24px;
+      align-items: center;
+      gap: 10px;
+      padding: 11px 12px;
+      border: 1px solid #223052;
+      border-radius: 14px;
+      background: #16213c;
+    }
+
+    .order-number {
+      color: #4ade80;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      text-align: center;
+    }
+
+    .lesson-icon {
+      width: 30px;
+      height: 30px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: rgba(74, 222, 128, 0.14);
+      color: #4ade80;
+    }
+
+    .lesson-icon svg {
+      width: 17px;
+      height: 17px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.7;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .lesson-copy {
+      min-width: 0;
+    }
+
+    .lesson-title {
+      margin: 0;
+      overflow: hidden;
+      color: #eaf1fa;
+      font-size: 14px;
+      line-height: 1.35;
+      font-weight: 600;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .lesson-meta {
+      margin: 3px 0 0;
+      overflow: hidden;
+      color: #8b9ab8;
+      font-size: 12px;
+      line-height: 1.35;
+      font-weight: 400;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .drag-handle {
+      width: 24px;
+      height: 30px;
+      padding: 0;
+      display: grid;
+      place-items: center;
+      border: 0;
+      border-radius: 8px;
+      background: transparent;
+      color: #4ade80;
+      cursor: grab;
+    }
+
+    .drag-handle svg {
+      width: 16px;
+      height: 16px;
+      fill: currentColor;
+    }
+
+    .save-button {
+      width: 100%;
+      margin-top: 18px;
+      padding: 13px 18px;
+      border: 0;
+      border-radius: 12px;
+      background: #4ade80;
+      color: #06251a;
+      font-size: 14px;
+      line-height: 1.4;
+      font-weight: 700;
+      text-align: center;
+      cursor: pointer;
+    }
+
+    .footnote {
+      margin: 10px 0 0;
+      color: #7d8caa;
+      font-size: 12px;
+      line-height: 1.35;
+      font-weight: 400;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <p class="service-label">Push &amp; pull · week 4</p>
+    <h1 id="reorder-title">Order your exercises</h1>
+    <p class="instruction">Hold a green handle and drag to rearrange the session.</p>
+
+    <div class="summary">
+      <span>4 exercises</span>
+      <span>37 min</span>
+      <span>Chest &amp; back</span>
+    </div>
+
+    <ol class="lesson-list" aria-labelledby="reorder-title">
+      <li class="lesson-row">
+        <div class="order-number" aria-hidden="true">01</div>
+        <div class="lesson-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24">
+            <path d="M12 4v5"></path>
+            <path d="M8 9h8v6a4 4 0 0 1-8 0z"></path>
+            <path d="M7 20h10"></path>
+          </svg>
+        </div>
+        <div class="lesson-copy">
+          <p class="lesson-title">Rowing machine warm-up</p>
+          <p class="lesson-meta">6 min · easy pace</p>
+        </div>
+        <button class="drag-handle" type="button" aria-label="Drag Rowing machine warm-up">
+          <svg viewBox="0 0 18 18" aria-hidden="true">
+            <rect x="2" y="4" width="14" height="1.8" rx="0.9"></rect>
+            <rect x="2" y="8.1" width="14" height="1.8" rx="0.9"></rect>
+            <rect x="2" y="12.2" width="14" height="1.8" rx="0.9"></rect>
+          </svg>
+        </button>
+      </li>
+
+      <li class="lesson-row">
+        <div class="order-number" aria-hidden="true">02</div>
+        <div class="lesson-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24">
+            <path d="M5 8v8"></path>
+            <path d="M19 8v8"></path>
+            <path d="M8.5 6.5v11"></path>
+            <path d="M15.5 6.5v11"></path>
+            <path d="M8.5 12h7"></path>
+          </svg>
+        </div>
+        <div class="lesson-copy">
+          <p class="lesson-title">Incline dumbbell press</p>
+          <p class="lesson-meta">4 sets × 8 reps · 11 min</p>
+        </div>
+        <button class="drag-handle" type="button" aria-label="Drag Incline dumbbell press">
+          <svg viewBox="0 0 18 18" aria-hidden="true">
+            <rect x="2" y="4" width="14" height="1.8" rx="0.9"></rect>
+            <rect x="2" y="8.1" width="14" height="1.8" rx="0.9"></rect>
+            <rect x="2" y="12.2" width="14" height="1.8" rx="0.9"></rect>
+          </svg>
+        </button>
+      </li>
+
+      <li class="lesson-row">
+        <div class="order-number" aria-hidden="true">03</div>
+        <div class="lesson-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24">
+            <circle cx="12" cy="6" r="2.5"></circle>
+            <path d="M12 8.5v6"></path>
+            <path d="M7 14.5h10"></path>
+            <path d="M9 18.5h6"></path>
+          </svg>
+        </div>
+        <div class="lesson-copy">
+          <p class="lesson-title">Lat pulldown</p>
+          <p class="lesson-meta">4 sets × 10 reps · 12 min</p>
+        </div>
+        <button class="drag-handle" type="button" aria-label="Drag Lat pulldown">
+          <svg viewBox="0 0 18 18" aria-hidden="true">
+            <rect x="2" y="4" width="14" height="1.8" rx="0.9"></rect>
+            <rect x="2" y="8.1" width="14" height="1.8" rx="0.9"></rect>
+            <rect x="2" y="12.2" width="14" height="1.8" rx="0.9"></rect>
+          </svg>
+        </button>
+      </li>
+
+      <li class="lesson-row">
+        <div class="order-number" aria-hidden="true">04</div>
+        <div class="lesson-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24">
+            <circle cx="12" cy="13.5" r="6.5"></circle>
+            <path d="M12 13.5V9.5"></path>
+            <path d="M9.5 4h5"></path>
+          </svg>
+        </div>
+        <div class="lesson-copy">
+          <p class="lesson-title">Side plank finisher</p>
+          <p class="lesson-meta">3 sets × 40 sec · 8 min</p>
+        </div>
+        <button class="drag-handle" type="button" aria-label="Drag Side plank finisher">
+          <svg viewBox="0 0 18 18" aria-hidden="true">
+            <rect x="2" y="4" width="14" height="1.8" rx="0.9"></rect>
+            <rect x="2" y="8.1" width="14" height="1.8" rx="0.9"></rect>
+            <rect x="2" y="12.2" width="14" height="1.8" rx="0.9"></rect>
+          </svg>
+        </button>
+      </li>
+    </ol>
+
+    <button class="save-button" type="button">Start in this order</button>
+    <p class="footnote">Rest 90 seconds between every set.</p>
+  </div>
+</body>
+</html>

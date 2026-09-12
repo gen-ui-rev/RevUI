@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Artist setup on LumaTone</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #e8e8e5;
+      color: #20211f;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      background: #ffffff;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .topbar {
+      height: 56px;
+      flex: 0 0 56px;
+      display: grid;
+      grid-template-columns: 44px 1fr 52px;
+      align-items: center;
+      padding: 0 12px;
+      border-bottom: 1px solid #ddddda;
+      background: #ffffff;
+    }
+
+    .icon-button {
+      width: 40px;
+      height: 40px;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: #252624;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 16px;
+      line-height: 20px;
+      font-weight: 600;
+      letter-spacing: -0.2px;
+    }
+
+    .brand-mark {
+      width: 22px;
+      height: 22px;
+      display: block;
+    }
+
+    .help-link {
+      border: 0;
+      padding: 10px 4px;
+      background: transparent;
+      color: #4b4d49;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 600;
+      text-align: right;
+      cursor: pointer;
+    }
+
+    .intro {
+      padding: 18px 20px 14px;
+      background: #ffffff;
+      border-bottom: 1px solid #ececea;
+    }
+
+    .eyebrow {
+      margin: 0 0 3px;
+      color: #6e706b;
+      font-size: 12px;
+      line-height: 17px;
+      font-weight: 600;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 26px;
+      line-height: 32px;
+      font-weight: 600;
+      letter-spacing: -0.6px;
+      color: #1d1e1c;
+    }
+
+    .intro p {
+      margin: 6px 0 0;
+      max-width: 336px;
+      color: #5b5d58;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 400;
+    }
+
+    main {
+      padding: 14px 20px 16px;
+    }
+
+    .steps {
+      margin: 0 0 14px;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .step {
+      padding: 5px 6px;
+      border-radius: 999px;
+      background: #f1f1ee;
+      color: #70726d;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    .step.active {
+      background: #242522;
+      color: #ffffff;
+    }
+
+    .photo-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px;
+      border: 1px solid #dedfdb;
+      border-radius: 10px;
+      background: #fbfbfa;
+    }
+
+    .photo-row img {
+      display: block;
+      width: 96px;
+      height: 96px;
+      border-radius: 12px;
+      object-fit: cover;
+      background: #b7b7b2;
+    }
+
+    .photo-copy {
+      min-width: 0;
+    }
+
+    .photo-title {
+      margin: 0;
+      color: #24251f;
+      font-size: 14px;
+      line-height: 18px;
+      font-weight: 600;
+    }
+
+    .photo-note {
+      margin: 3px 0 0;
+      color: #6b6d68;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 400;
+    }
+
+    .ghost-button {
+      margin-top: 9px;
+      height: 32px;
+      padding: 0 14px;
+      border: 1px solid #b9bbb6;
+      border-radius: 6px;
+      background: #ffffff;
+      color: #292a28;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .signup-form {
+      margin-top: 16px;
+    }
+
+    .field {
+      margin: 0;
+    }
+
+    .field + .field {
+      margin-top: 10px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+      color: #333431;
+      font-size: 14px;
+      line-height: 18px;
+      font-weight: 600;
+    }
+
+    .input-wrap {
+      position: relative;
+    }
+
+    input {
+      width: 100%;
+      height: 43px;
+      padding: 10px 12px;
+      border: 1px solid #b9bbb6;
+      border-radius: 6px;
+      outline: none;
+      background: #ffffff;
+      color: #20211f;
+      font-size: 15px;
+      line-height: 21px;
+      font-weight: 400;
+    }
+
+    input::placeholder {
+      color: #888a85;
+      opacity: 1;
+    }
+
+    .password-input {
+      padding-right: 52px;
+    }
+
+    .show-button {
+      position: absolute;
+      top: 0;
+      right: 3px;
+      height: 43px;
+      padding: 0 9px;
+      border: 0;
+      background: transparent;
+      color: #4f514d;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .hint {
+      margin: 5px 0 0;
+      color: #696b66;
+      font-size: 12px;
+      line-height: 17px;
+      font-weight: 400;
+    }
+
+    .primary-button {
+      width: 100%;
+      height: 46px;
+      margin-top: 14px;
+      padding: 0 16px;
+      border: 1px solid #242522;
+      border-radius: 6px;
+      background: #242522;
+      color: #ffffff;
+      font-size: 15px;
+      line-height: 20px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .switch-row {
+      margin: 14px 0 0;
+      color: #5c5e59;
+      font-size: 13px;
+      line-height: 20px;
+      font-weight: 400;
+      text-align: center;
+    }
+
+    .switch-row button {
+      border: 0;
+      padding: 0 0 0 4px;
+      background: transparent;
+      color: #242522;
+      font-size: 13px;
+      line-height: 20px;
+      font-weight: 600;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+      cursor: pointer;
+    }
+
+    .legal {
+      margin: 12px 2px 0;
+      color: #737570;
+      font-size: 12px;
+      line-height: 17px;
+      font-weight: 400;
+      text-align: center;
+    }
+
+    .legal a {
+      color: #31322f;
+      font-weight: 600;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <button class="icon-button" type="button" aria-label="Go back">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+          <path d="M14.5 4.5L8 11l6.5 6.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+
+      <div class="brand" aria-label="LumaTone for Artists">
+        <svg class="brand-mark" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+          <rect x="2" y="2" width="18" height="18" rx="6" fill="#242522"/>
+          <path d="M6.5 12.5V9.5M10 15V7M13.5 13.5v-5M17 12v-2" stroke="#ffffff" stroke-width="1.6" stroke-linecap="round"/>
+        </svg>
+        <span>LumaTone</span>
+      </div>
+
+      <button class="help-link" type="button">Help</button>
+    </header>
+
+    <section class="intro" aria-labelledby="setup-heading">
+      <p class="eyebrow">Artist setup</p>
+      <h1 id="setup-heading">Set up your artist profile</h1>
+      <p>Start with the basics. You can add your catalog and payout details next.</p>
+    </section>
+
+    <main>
+      <ol class="steps" aria-label="Setup steps">
+        <li class="step active">1. Profile</li>
+        <li class="step">2. Catalog</li>
+        <li class="step">3. Payouts</li>
+      </ol>
+
+      <div class="photo-row">
+        <img
+          src="https://loremflickr.com/96/96/concert?lock=11010"
+          width="96"
+          height="96"
+          alt="Current artist profile photo"
+        >
+        <div class="photo-copy">
+          <p class="photo-title">Profile photo</p>
+          <p class="photo-note">Square JPG or PNG, at least 1000 &times; 1000 px.</p>
+          <button class="ghost-button" type="button">Replace photo</button>
+        </div>
+      </div>
+
+      <form class="signup-form">
+        <div class="field">
+          <label for="artist-name">Artist name</label>
+          <input id="artist-name" name="artist-name" type="text" autocomplete="organization" placeholder="Band or stage name">
+        </div>
+
+        <div class="field">
+          <label for="email">Email address</label>
+          <input id="email" name="email" type="email" autocomplete="email" placeholder="name@example.com">
+        </div>
+
+        <div class="field">
+          <label for="password">Password</label>
+          <div class="input-wrap">
+            <input class="password-input" id="password" name="password" type="password" autocomplete="new-password" placeholder="Create a password">
+            <button class="show-button" type="button">Show</button>
+          </div>
+          <p class="hint">Use at least 8 characters with a number.</p>
+        </div>
+
+        <button class="primary-button" type="submit">Create artist account</button>
+      </form>
+
+      <p class="switch-row">
+        Already have an artist account?<button type="button">Sign in</button>
+      </p>
+
+      <p class="legal">
+        Continuing means you accept the <a href="#">Artist Terms</a> and the <a href="#">Privacy Policy</a>.
+      </p>
+    </main>
+  </div>
+</body>
+</html>

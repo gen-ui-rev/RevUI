@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Report reason</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:#e4e2e8;
+    font-family:'Manrope', system-ui, sans-serif;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    padding:24px 0;
+  }
+  .screen{
+    width:1024px;
+    height:768px;
+    position:relative;
+    background:#f2f0f4;
+    overflow:hidden;
+  }
+
+  /* ---- dimmed page behind the dialog ---- */
+  .page{position:absolute;inset:0;}
+  .page-bar{
+    height:56px;
+    background:#ffffff;
+    border-bottom:1px solid #dcd9e0;
+    display:flex;
+    align-items:center;
+    gap:26px;
+    padding:0 28px;
+  }
+  .brand{font-size:15px;font-weight:700;color:#16141a;letter-spacing:.01em;}
+  .page-bar .nav{font-size:13px;font-weight:500;color:#6c6776;}
+  .page-body{display:flex;height:712px;}
+  .side{
+    width:212px;
+    background:#ffffff;
+    border-right:1px solid #dcd9e0;
+    padding:20px 18px;
+  }
+  .side .cap{
+    font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;
+    color:#8b8695;margin:0 0 12px;
+  }
+  .side .item{font-size:13px;color:#3f3b48;padding:8px 0;font-weight:500;}
+  .feed{flex:1;padding:22px 28px;}
+  .fcard{
+    background:#ffffff;
+    border:1px solid #dcd9e0;
+    padding:16px 18px;
+    margin-bottom:16px;
+  }
+  .fcard .fwho{font-size:12px;color:#6c6776;margin:0 0 6px;}
+  .fcard .ftext{font-size:14px;line-height:1.5;color:#16141a;margin:0;}
+  .fcard .fmeta{font-size:12px;color:#8b8695;margin:10px 0 0;}
+  .scrim{position:absolute;inset:0;background:rgba(26,22,34,.6);}
+
+  /* ---- dialog ---- */
+  .dialog{
+    position:absolute;
+    left:50%;top:50%;
+    transform:translate(-50%,-50%);
+    width:720px;
+    background:#ffffff;
+    box-shadow:0 24px 60px rgba(16,12,26,.36);
+  }
+  .dhead{padding:24px 28px 0;position:relative;}
+  .eyebrow{
+    font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;
+    color:#6d3ad1;margin:0 0 8px;
+  }
+  h1{font-size:21px;font-weight:700;line-height:1.25;color:#16141a;margin:0;}
+  .close{
+    position:absolute;top:20px;right:22px;
+    width:30px;height:30px;
+    border:1px solid #dcd9e0;background:transparent;
+    color:#5c5866;font-size:13px;font-family:inherit;
+    line-height:1;cursor:pointer;
+  }
+  .dbody{display:flex;gap:24px;padding:20px 28px 4px;}
+  .col-main{flex:1;min-width:0;}
+  .cap{
+    font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;
+    color:#8b8695;margin:0 0 10px;
+  }
+  .opt{
+    display:flex;
+    align-items:flex-start;
+    gap:12px;
+    padding:13px 14px;
+    border:1px solid #dcd9e0;
+    margin-bottom:8px;
+    cursor:pointer;
+  }
+  .opt.on{background:#f5f1fc;border-color:#6d3ad1;box-shadow:inset 3px 0 0 #6d3ad1;}
+  .mark{
+    flex:0 0 auto;
+    width:17px;height:17px;
+    border:1px solid #a49fae;
+    border-radius:50%;
+    position:relative;
+    margin-top:2px;
+  }
+  .opt.on .mark{border-color:#6d3ad1;}
+  .opt.on .mark::after{
+    content:"";position:absolute;top:4px;left:4px;
+    width:7px;height:7px;border-radius:50%;background:#6d3ad1;
+  }
+  .label{display:block;font-size:15px;font-weight:700;color:#16141a;line-height:1.3;}
+  .opt .label{font-weight:500;}
+  .opt.on .label{font-weight:700;}
+  .hint{display:block;font-size:12px;color:#6c6776;margin-top:4px;line-height:1.45;}
+  .lede{font-size:12.5px;line-height:1.55;color:#8b8695;margin:12px 0 0;}
+
+  .col-side{
+    width:268px;
+    flex:0 0 268px;
+    background:#f7f6f9;
+    border-left:3px solid #6d3ad1;
+    padding:16px 18px;
+  }
+  .who-row{display:flex;align-items:center;gap:10px;margin:12px 0 0;}
+  .av{
+    width:34px;height:34px;flex:0 0 auto;
+    border-radius:50%;background:#6d3ad1;color:#fff;
+    font-size:12px;font-weight:700;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .who-name{font-size:13.5px;font-weight:700;color:#16141a;line-height:1.2;}
+  .who-meta{font-size:11.5px;color:#6c6776;margin-top:2px;line-height:1.3;}
+  .quote{
+    font-size:13.5px;line-height:1.5;color:#16141a;
+    margin:12px 0 0;padding:11px 12px;
+    background:#ffffff;border:1px solid #dcd9e0;
+  }
+  .note{
+    display:flex;gap:8px;margin:14px 0 0;
+    font-size:11.5px;line-height:1.5;color:#6c6776;
+  }
+  .note svg{flex:0 0 auto;margin-top:2px;}
+  .dfoot{
+    display:flex;justify-content:flex-end;align-items:center;gap:10px;
+    border-top:1px solid #dcd9e0;
+    margin-top:20px;
+    padding:16px 28px;
+  }
+  .btn{
+    border:0;padding:11px 24px;
+    background:#6d3ad1;color:#ffffff;
+    font-family:inherit;font-size:14px;font-weight:700;
+    cursor:pointer;
+  }
+  .btn.ghost{background:transparent;color:#5c5866;font-weight:500;border:1px solid #dcd9e0;}
+</style>
+</head>
+<body>
+  <div class="screen">
+    <div class="page">
+      <div class="page-bar">
+        <span class="brand">Marrowdale Invest</span>
+        <span class="nav">Home</span>
+        <span class="nav">Groups</span>
+        <span class="nav">Watchlist</span>
+        <span class="nav">Alerts</span>
+      </div>
+      <div class="page-body">
+        <div class="side">
+          <p class="cap">Your groups</p>
+          <div class="item">Dividend Investing</div>
+          <div class="item">Index Funds Club</div>
+          <div class="item">Retirement Planning</div>
+          <div class="item">Bonds &amp; Treasuries</div>
+        </div>
+        <div class="feed">
+          <div class="fcard">
+            <p class="fwho">Dana Whitfield &middot; Dividend Investing group &middot; Mar 14</p>
+            <p class="ftext">Guaranteed 40% monthly return, DM me for the wallet address</p>
+            <p class="fmeta">12 comments &middot; 3 shares</p>
+          </div>
+          <div class="fcard">
+            <p class="fwho">Priya Raman &middot; Dividend Investing group &middot; Mar 14</p>
+            <p class="ftext">Quarterly payout calendar for the REITs I hold is in the files tab now.</p>
+            <p class="fmeta">28 comments &middot; 6 shares</p>
+          </div>
+          <div class="fcard">
+            <p class="fwho">Tomas Ek &middot; Dividend Investing group &middot; Mar 13</p>
+            <p class="ftext">Reminder that the group calls happen every second Thursday at 7pm.</p>
+            <p class="fmeta">9 comments</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="scrim"></div>
+
+    <div class="dialog" role="dialog" aria-label="Report reason">
+      <div class="dhead">
+        <p class="eyebrow">Step 1 of 2</p>
+        <h1>Why are you reporting this post?</h1>
+        <button class="close" type="button" aria-label="Close">&#10005;</button>
+      </div>
+
+      <div class="dbody">
+        <div class="col-main">
+          <p class="cap">Choose one reason</p>
+          <div class="opt on">
+            <span class="mark"></span>
+            <span>
+              <span class="label">Misleading financial claims</span>
+              <span class="hint">Promised returns, fake performance, or unlicensed advice.</span>
+            </span>
+          </div>
+          <div class="opt">
+            <span class="mark"></span>
+            <span>
+              <span class="label">Spam or paid promotion</span>
+              <span class="hint">Repeated links, referral codes, or undisclosed ads.</span>
+            </span>
+          </div>
+          <div class="opt">
+            <span class="mark"></span>
+            <span>
+              <span class="label">Impersonating Marrowdale Invest staff</span>
+              <span class="hint">Claims to work here or asks for account details.</span>
+            </span>
+          </div>
+          <p class="lede">Pick the reason that fits best. Our community team reviews every report within 24 hours.</p>
+        </div>
+
+        <aside class="col-side">
+          <p class="cap">Post you are reporting</p>
+          <div class="who-row">
+            <span class="av">DW</span>
+            <span>
+              <span class="who-name">Dana Whitfield</span>
+              <span class="who-meta">Dividend Investing group<br>Posted Mar 14, 9:42 AM</span>
+            </span>
+          </div>
+          <p class="quote">Guaranteed 40% monthly return, DM me for the wallet address</p>
+          <div class="note">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+              <circle cx="7" cy="7" r="6.25" stroke="#6d3ad1" stroke-width="1"/>
+              <path d="M7 4.1v.1M7 6.2v3.6" stroke="#6d3ad1" stroke-width="1.2" stroke-linecap="round"/>
+            </svg>
+            <span>Reporting does not block Dana. You can block this member separately from their profile.</span>
+          </div>
+        </aside>
+      </div>
+
+      <div class="dfoot">
+        <button class="btn ghost" type="button">Cancel</button>
+        <button class="btn" type="button">Continue</button>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

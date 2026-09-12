@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Seller Check-in — Trellis Market</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 28px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #e8e5df;
+      color: #24211e;
+      font-family: 'Source Sans 3', system-ui, sans-serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #fffdf9;
+      border: 1px solid #d9d4cc;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      border-bottom: 1px solid #ded9d1;
+      background: #fffdf9;
+    }
+
+    .topbar-title {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .topbar-title strong {
+      display: block;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 18px;
+      line-height: 21px;
+      font-weight: 600;
+    }
+
+    .topbar-title span {
+      display: block;
+      color: #79736b;
+      font-size: 12px;
+      line-height: 14px;
+    }
+
+    .icon-button {
+      width: 34px;
+      height: 34px;
+      flex: 0 0 34px;
+      display: grid;
+      place-items: center;
+      padding: 0;
+      color: #37322d;
+      background: transparent;
+      border: 0;
+    }
+
+    .icon-button svg,
+    .tab svg {
+      width: 22px;
+      height: 22px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.7;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    main {
+      min-height: 0;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 92px;
+      gap: 14px;
+      padding: 14px 18px;
+      border-bottom: 1px solid #ded9d1;
+    }
+
+    .eyebrow {
+      margin: 0 0 3px;
+      color: #d95416;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 600;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    h1,
+    h2 {
+      font-family: 'Playfair Display', Georgia, serif;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 27px;
+      line-height: 30px;
+      font-weight: 700;
+      letter-spacing: -.02em;
+    }
+
+    .host {
+      margin: 6px 0 0;
+      color: #6e6861;
+      font-size: 14px;
+      line-height: 18px;
+    }
+
+    .event-art {
+      align-self: stretch;
+      min-height: 88px;
+      display: grid;
+      place-items: center;
+      color: #d95416;
+      background: #fff2e9;
+      border: 1px solid #efc4ad;
+      border-radius: 4px;
+    }
+
+    .event-art svg {
+      width: 68px;
+      height: 68px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .facts {
+      border-bottom: 1px solid #ded9d1;
+    }
+
+    .fact-row {
+      display: grid;
+      grid-template-columns: 22px 72px minmax(0, 1fr);
+      align-items: center;
+      gap: 8px;
+      padding: 8px 18px;
+      border-bottom: 1px solid #ebe7e1;
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .fact-row:last-child {
+      border-bottom: 0;
+    }
+
+    .fact-row svg {
+      width: 20px;
+      height: 20px;
+      color: #d95416;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.6;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .fact-label {
+      color: #787169;
+    }
+
+    .fact-value {
+      min-width: 0;
+      font-weight: 600;
+    }
+
+    .section {
+      border-bottom: 1px solid #ded9d1;
+    }
+
+    .section-heading {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      padding: 8px 18px 5px;
+    }
+
+    .section-heading h2 {
+      margin: 0;
+      font-size: 17px;
+      line-height: 22px;
+      font-weight: 600;
+    }
+
+    .section-heading span {
+      color: #837c74;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .check-row {
+      display: grid;
+      grid-template-columns: 22px minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 10px;
+      padding: 7px 18px;
+      border-top: 1px solid #ebe7e1;
+    }
+
+    .check-icon {
+      width: 20px;
+      height: 20px;
+      display: grid;
+      place-items: center;
+      color: #287351;
+      border: 1px solid #78a991;
+      border-radius: 50%;
+    }
+
+    .check-icon svg {
+      width: 13px;
+      height: 13px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .check-copy {
+      min-width: 0;
+      font-size: 14px;
+      line-height: 18px;
+    }
+
+    .check-state {
+      color: #6f776f;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .schedule-row {
+      display: grid;
+      grid-template-columns: 66px minmax(0, 1fr);
+      gap: 10px;
+      padding: 6px 18px;
+      border-top: 1px solid #ebe7e1;
+      font-size: 14px;
+      line-height: 19px;
+    }
+
+    .schedule-row time {
+      color: #d95416;
+      font-weight: 600;
+    }
+
+    .schedule-row span {
+      min-width: 0;
+    }
+
+    .notice {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 8px 18px;
+      color: #5f5952;
+      border-bottom: 1px solid #ded9d1;
+      font-size: 13px;
+      line-height: 18px;
+    }
+
+    .notice svg {
+      width: 19px;
+      height: 19px;
+      flex: 0 0 19px;
+      color: #d95416;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.6;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .assignment-area {
+      margin-top: auto;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 18px;
+      border-top: 1px solid #ded9d1;
+      background: #fffdf9;
+    }
+
+    .assignment {
+      min-width: 0;
+    }
+
+    .assignment span {
+      display: block;
+      color: #787169;
+      font-size: 12px;
+      line-height: 15px;
+    }
+
+    .assignment strong {
+      display: block;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 21px;
+      line-height: 24px;
+      font-weight: 700;
+    }
+
+    .setup-status {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 7px 10px;
+      color: #65501f;
+      background: #fff6d9;
+      border: 1px solid #e5cc7d;
+      border-radius: 4px;
+      font-size: 13px;
+      line-height: 17px;
+      font-weight: 600;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      flex: 0 0 8px;
+      background: #c58b10;
+      border-radius: 50%;
+    }
+
+    .tabbar {
+      flex: 0 0 64px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border-top: 1px solid #d6d1c9;
+      background: #fffdf9;
+    }
+
+    .tab {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      color: #817a72;
+      font-size: 12px;
+      line-height: 14px;
+      text-decoration: none;
+    }
+
+    .tab.active {
+      color: #d95416;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <button class="icon-button" aria-label="Go back">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M15 5l-7 7 7 7"></path>
+        </svg>
+      </button>
+      <div class="topbar-title">
+        <strong>Seller check-in</strong>
+        <span>Trellis Market</span>
+      </div>
+      <button class="icon-button" aria-label="Open seller help">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="12" r="9"></circle>
+          <path d="M9.7 9a2.5 2.5 0 114 2c-1.1.7-1.7 1.2-1.7 2.5M12 17h.01"></path>
+        </svg>
+      </button>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div>
+          <p class="eyebrow">Saturday seller brief</p>
+          <h1>Seller check-in</h1>
+          <p class="host">Spring Makers Market<br>Amber Thread Studio</p>
+        </div>
+        <div class="event-art" aria-hidden="true">
+          <svg viewBox="0 0 96 96">
+            <path d="M15 42h66v37H15z"></path>
+            <path d="M11 42l8-23h58l8 23"></path>
+            <path d="M21 19l-3 23c0 5 8 7 12 1 3 6 12 5 14-1 3 6 11 6 14 0 3 6 12 7 15 1 4 6 12 4 12-1"></path>
+            <path d="M28 79V58h17v21M56 58h14v11H56z"></path>
+            <path d="M39 13h18"></path>
+          </svg>
+        </div>
+      </section>
+
+      <section class="facts" aria-label="Check-in information">
+        <div class="fact-row">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="4" y="5.5" width="16" height="14" rx="1"></rect>
+            <path d="M8 3.5v4M16 3.5v4M4 10h16"></path>
+          </svg>
+          <span class="fact-label">Date</span>
+          <span class="fact-value">Saturday, April 26, 2025</span>
+        </div>
+        <div class="fact-row">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="12" r="8"></circle>
+            <path d="M12 7v5l3 2"></path>
+          </svg>
+          <span class="fact-label">Arrival</span>
+          <span class="fact-value">8:30–9:15 AM</span>
+        </div>
+        <div class="fact-row">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 21s6-6.2 6-11a6 6 0 10-12 0c0 4.8 6 11 6 11z"></path>
+            <circle cx="12" cy="10" r="2"></circle>
+          </svg>
+          <span class="fact-label">Entrance</span>
+          <span class="fact-value">Harbor Hall loading door B</span>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-heading">
+          <h2>Before opening</h2>
+          <span>Complete by 9:45 AM</span>
+        </div>
+        <div class="check-row">
+          <div class="check-icon" aria-hidden="true">
+            <svg viewBox="0 0 20 20"><path d="M5 10l3 3 7-7"></path></svg>
+          </div>
+          <span class="check-copy">Seller agreement confirmed</span>
+          <span class="check-state">Done</span>
+        </div>
+        <div class="check-row">
+          <div class="check-icon" aria-hidden="true">
+            <svg viewBox="0 0 20 20"><path d="M5 10l3 3 7-7"></path></svg>
+          </div>
+          <span class="check-copy">Booth fee received</span>
+          <span class="check-state">Done</span>
+        </div>
+        <div class="check-row">
+          <div class="check-icon" aria-hidden="true">
+            <svg viewBox="0 0 20 20"><path d="M5 10l3 3 7-7"></path></svg>
+          </div>
+          <span class="check-copy">Collect badge at welcome desk</span>
+          <span class="check-state">On arrival</span>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-heading">
+          <h2>Seller timeline</h2>
+          <span>April 26</span>
+        </div>
+        <div class="schedule-row">
+          <time datetime="2025-04-26T08:30">8:30 AM</time>
+          <span>Loading access and seller check-in</span>
+        </div>
+        <div class="schedule-row">
+          <time datetime="2025-04-26T09:45">9:45 AM</time>
+          <span>Final setup and safety walk</span>
+        </div>
+        <div class="schedule-row">
+          <time datetime="2025-04-26T10:00">10:00 AM</time>
+          <span>Market opens to guests</span>
+        </div>
+      </section>
+
+      <div class="notice">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M4 17h16M6 17V8h12v9M8 8l2-4h4l2 4"></path>
+          <circle cx="8" cy="19" r="1.5"></circle>
+          <circle cx="16" cy="19" r="1.5"></circle>
+        </svg>
+        <span>Unload for up to 15 minutes, then move your vehicle to the Linden Pier seller lot.</span>
+      </div>
+
+      <div class="assignment-area" aria-label="Booth assignment and setup status">
+        <div class="assignment">
+          <span>Assigned booth</span>
+          <strong>Booth 18</strong>
+        </div>
+        <div class="setup-status">
+          <span class="status-dot" aria-hidden="true"></span>
+          <span>Ready for setup</span>
+        </div>
+      </div>
+    </main>
+
+    <nav class="tabbar" aria-label="Seller navigation">
+      <a class="tab" href="#">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M4 9h16v11H4z"></path>
+          <path d="M3 9l2-5h14l2 5M8 9v11M16 9v11"></path>
+        </svg>
+        <span>Market</span>
+      </a>
+      <a class="tab active" href="#" aria-current="page">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M5 5h14v15H5z"></path>
+          <path d="M8 3v4M16 3v4M8 11h8M8 15h5"></path>
+        </svg>
+        <span>Check-in</span>
+      </a>
+      <a class="tab" href="#">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M4 7h16v12H4z"></path>
+          <path d="M8 7V5h8v2M8 11h8M8 15h5"></path>
+        </svg>
+        <span>Sales</span>
+      </a>
+      <a class="tab" href="#">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="8" r="3.5"></circle>
+          <path d="M5.5 20c.5-4 2.7-6 6.5-6s6 2 6.5 6"></path>
+        </svg>
+        <span>Account</span>
+      </a>
+    </nav>
+  </div>
+</body>
+</html>

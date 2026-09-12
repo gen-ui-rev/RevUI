@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Listener Retention — Riffline</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #d4d4d8;
+      color: #18181b;
+      font-family: 'Poppins', system-ui, sans-serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      width: 1024px;
+      height: 768px;
+      display: flex;
+      flex-direction: column;
+      background: #fafafa;
+      border: 1px solid #a1a1aa;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      gap: 26px;
+      padding: 13px 28px;
+      border-bottom: 1px solid #d4d4d8;
+      background: #fafafa;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      flex: 0 0 auto;
+    }
+
+    .brand-mark {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      background: #18181b;
+      color: #fafafa;
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .brand-copy {
+      line-height: 1.15;
+    }
+
+    .brand-name {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .service-name {
+      margin-top: 3px;
+      color: #71717a;
+      font-size: 10px;
+    }
+
+    .desktop-nav {
+      align-self: stretch;
+      display: flex;
+      align-items: stretch;
+      gap: 6px;
+    }
+
+    .nav-item {
+      min-width: 92px;
+      padding: 0 13px;
+      border: 0;
+      background: transparent;
+      color: #71717a;
+      font-size: 12px;
+    }
+
+    .nav-item.active {
+      color: #18181b;
+      font-weight: 500;
+      box-shadow: inset 0 -2px 0 #18181b;
+    }
+
+    .topbar-spacer {
+      flex: 1;
+    }
+
+    .profile-button,
+    .icon-button {
+      min-height: 38px;
+      border: 1px solid #d4d4d8;
+      background: #fafafa;
+      color: #18181b;
+    }
+
+    .profile-button {
+      padding: 0 13px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .icon-button {
+      width: 38px;
+      padding: 7px;
+      display: grid;
+      place-items: center;
+    }
+
+    main {
+      min-width: 0;
+      flex: 1;
+      padding: 17px 28px 20px;
+    }
+
+    .episode-bar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid #e4e4e7;
+    }
+
+    .back-button {
+      width: 36px;
+      height: 36px;
+      flex: 0 0 36px;
+      padding: 7px;
+      display: grid;
+      place-items: center;
+      border: 1px solid #d4d4d8;
+      background: transparent;
+      color: #18181b;
+    }
+
+    .episode-copy {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .page-title {
+      font-size: 17px;
+      font-weight: 600;
+      line-height: 1.25;
+    }
+
+    .episode-meta {
+      overflow: hidden;
+      margin-top: 3px;
+      color: #71717a;
+      font-size: 11px;
+      line-height: 1.3;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .episode-art {
+      width: 42px;
+      height: 42px;
+      flex: 0 0 42px;
+      background:
+        linear-gradient(45deg, #71717a 0 24%, transparent 24% 100%),
+        #a1a1aa;
+    }
+
+    .episode-name {
+      max-width: 270px;
+      overflow: hidden;
+      font-size: 12px;
+      font-weight: 500;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .period {
+      min-height: 36px;
+      padding: 0 13px;
+      border: 1px solid #a1a1aa;
+      background: #fafafa;
+      color: #3f3f46;
+      font-size: 12px;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .chart-section {
+      margin-top: 15px;
+      border: 1px solid #d4d4d8;
+      background: #fff;
+    }
+
+    .analysis-head {
+      display: flex;
+      align-items: center;
+      gap: 22px;
+      padding: 13px 17px 9px;
+    }
+
+    .analysis-heading {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .analysis-title {
+      margin: 0;
+      font-size: 17px;
+      font-weight: 600;
+      line-height: 1.3;
+    }
+
+    .analysis-subtitle {
+      margin: 3px 0 0;
+      color: #71717a;
+      font-size: 11px;
+      line-height: 1.35;
+    }
+
+    .average {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      padding-left: 20px;
+      border-left: 1px solid #e4e4e7;
+    }
+
+    .average-value {
+      font-size: 25px;
+      font-weight: 600;
+      line-height: 1;
+      letter-spacing: -.7px;
+    }
+
+    .average-label {
+      color: #71717a;
+      font-size: 11px;
+    }
+
+    .chart {
+      width: 100%;
+      height: auto;
+      display: block;
+      padding: 0 12px;
+    }
+
+    .chart text {
+      font-family: 'Poppins', system-ui, sans-serif;
+    }
+
+    .legend {
+      display: flex;
+      align-items: center;
+      gap: 22px;
+      padding: 8px 17px 10px;
+      border-top: 1px solid #e4e4e7;
+      color: #52525b;
+      font-size: 11px;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      white-space: nowrap;
+    }
+
+    .legend-line {
+      width: 21px;
+      height: 2px;
+      background: #18181b;
+    }
+
+    .legend-line.comparison {
+      height: 1px;
+      background: repeating-linear-gradient(
+        to right,
+        #a1a1aa 0,
+        #a1a1aa 4px,
+        transparent 4px,
+        transparent 7px
+      );
+    }
+
+    .breakdown {
+      margin-top: 14px;
+    }
+
+    .breakdown-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 20px;
+      padding-bottom: 8px;
+    }
+
+    .breakdown-header h2 {
+      margin: 0;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .breakdown-header span {
+      color: #71717a;
+      font-size: 11px;
+    }
+
+    .chapter-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .chapter-card {
+      min-width: 0;
+      padding: 11px 12px 12px;
+      border: 1px solid #d4d4d8;
+      background: #fff;
+    }
+
+    .chapter-card-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 8px;
+    }
+
+    .chapter-time {
+      color: #71717a;
+      font-size: 10px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .chapter-value {
+      font-size: 16px;
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .chapter-name {
+      overflow: hidden;
+      margin-top: 4px;
+      font-size: 11px;
+      font-weight: 500;
+      line-height: 1.3;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .mini-track {
+      height: 4px;
+      margin-top: 9px;
+      background: #e4e4e7;
+    }
+
+    .mini-fill {
+      height: 4px;
+      background: #3f3f46;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">R</div>
+        <div class="brand-copy">
+          <div class="brand-name">Riffline</div>
+          <div class="service-name">Studio</div>
+        </div>
+      </div>
+
+      <nav class="desktop-nav" aria-label="Primary navigation">
+        <button class="nav-item" type="button">Home</button>
+        <button class="nav-item active" type="button" aria-current="page">Analytics</button>
+        <button class="nav-item" type="button">Episodes</button>
+      </nav>
+
+      <div class="topbar-spacer"></div>
+      <button class="profile-button" type="button">Night Signal</button>
+      <button class="icon-button" type="button" aria-label="More options">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <circle cx="5" cy="12" r="1.6"/>
+          <circle cx="12" cy="12" r="1.6"/>
+          <circle cx="19" cy="12" r="1.6"/>
+        </svg>
+      </button>
+    </header>
+
+    <main>
+      <section class="episode-bar" aria-label="Selected episode">
+        <button class="back-button" type="button" aria-label="Go back">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M15 5L8 12L15 19" stroke="currentColor" stroke-width="1.8"/>
+          </svg>
+        </button>
+
+        <div class="episode-copy">
+          <div class="page-title">Episode analytics</div>
+          <div class="episode-meta">Listener retention · Published Apr 8, 2025 · 36 min</div>
+        </div>
+
+        <div class="episode-art" aria-hidden="true"></div>
+        <div class="episode-name">After Midnight: The Empty Platform</div>
+        <button class="period" type="button">First 7 days</button>
+      </section>
+
+      <section class="chart-section" aria-labelledby="retention-b-title">
+        <div class="analysis-head">
+          <div class="analysis-heading">
+            <h1 class="analysis-title" id="retention-b-title">Listener retention</h1>
+            <p class="analysis-subtitle">Share of starting listeners still playing across the full episode</p>
+          </div>
+          <div class="average">
+            <div class="average-value">68%</div>
+            <div class="average-label">Episode average</div>
+          </div>
+        </div>
+
+        <svg class="chart" viewBox="0 0 944 230" role="img" aria-label="Listener retention falls from 100 percent at the start to 44 percent at 36 minutes, remaining above the show average">
+          <g fill="none" stroke="#e4e4e7" stroke-width="1">
+            <line x1="48" y1="20" x2="928" y2="20"/>
+            <line x1="48" y1="60" x2="928" y2="60"/>
+            <line x1="48" y1="100" x2="928" y2="100"/>
+            <line x1="48" y1="140" x2="928" y2="140"/>
+            <line x1="48" y1="180" x2="928" y2="180"/>
+          </g>
+
+          <g fill="#71717a" font-size="10">
+            <text x="4" y="24">100%</text>
+            <text x="16" y="64">75%</text>
+            <text x="16" y="104">50%</text>
+            <text x="16" y="144">25%</text>
+            <text x="34" y="184">0</text>
+          </g>
+
+          <path d="M48 20 C126 29 185 42 244 56 C314 72 372 87 438 101 C510 117 574 130 640 143 C715 158 775 166 835 174 C875 179 904 183 928 186"
+                fill="none" stroke="#a1a1aa" stroke-width="1.5" stroke-dasharray="6 6"/>
+
+          <path d="M48 20 C102 24 144 32 194 42 C246 53 286 67 332 76 C379 85 421 89 465 99 C511 109 552 118 597 123 C645 129 688 139 732 146 C779 153 817 160 861 166 C888 170 910 172 928 174"
+                fill="none" stroke="#18181b" stroke-width="3" stroke-linejoin="miter"/>
+
+          <g fill="#18181b">
+            <rect x="44.5" y="16.5" width="7" height="7"/>
+            <rect x="284" y="63.5" width="7" height="7"/>
+            <rect x="594" y="119.5" width="7" height="7"/>
+            <rect x="924.5" y="170.5" width="7" height="7"/>
+          </g>
+
+          <g fill="#71717a" font-size="10">
+            <text x="48" y="213" text-anchor="middle">0:00</text>
+            <text x="268" y="213" text-anchor="middle">9:00</text>
+            <text x="488" y="213" text-anchor="middle">18:00</text>
+            <text x="708" y="213" text-anchor="middle">27:00</text>
+            <text x="928" y="213" text-anchor="end">36:00</text>
+          </g>
+        </svg>
+
+        <div class="legend" aria-label="Chart legend">
+          <div class="legend-item">
+            <span class="legend-line" aria-hidden="true"></span>
+            <span>This episode</span>
+          </div>
+          <div class="legend-item">
+            <span class="legend-line comparison" aria-hidden="true"></span>
+            <span>Show average</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="breakdown" aria-labelledby="chapter-b-title">
+        <div class="breakdown-header">
+          <h2 id="chapter-b-title">Retention by chapter</h2>
+          <span>Listeners remaining at each chapter start</span>
+        </div>
+
+        <div class="chapter-grid">
+          <article class="chapter-card">
+            <div class="chapter-card-head">
+              <div class="chapter-time">0:00</div>
+              <div class="chapter-value">100%</div>
+            </div>
+            <div class="chapter-name">Opening scene</div>
+            <div class="mini-track"><div class="mini-fill" style="width:100%"></div></div>
+          </article>
+
+          <article class="chapter-card">
+            <div class="chapter-card-head">
+              <div class="chapter-time">8:42</div>
+              <div class="chapter-value">77%</div>
+            </div>
+            <div class="chapter-name">The last train arrives</div>
+            <div class="mini-track"><div class="mini-fill" style="width:77%"></div></div>
+          </article>
+
+          <article class="chapter-card">
+            <div class="chapter-card-head">
+              <div class="chapter-time">18:06</div>
+              <div class="chapter-value">61%</div>
+            </div>
+            <div class="chapter-name">Interview recording</div>
+            <div class="mini-track"><div class="mini-fill" style="width:61%"></div></div>
+          </article>
+
+          <article class="chapter-card">
+            <div class="chapter-card-head">
+              <div class="chapter-time">27:15</div>
+              <div class="chapter-value">49%</div>
+            </div>
+            <div class="chapter-name">Closing account</div>
+            <div class="mini-track"><div class="mini-fill" style="width:49%"></div></div>
+          </article>
+        </div>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

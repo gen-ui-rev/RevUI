@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Roamstead Landmark Scanner</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #dfe4e5;
+      color: #172528;
+      font-family: 'Source Serif 4', Georgia, serif;
+    }
+
+    button {
+      margin: 0;
+      padding: 0;
+      border: 0;
+      color: inherit;
+      background: none;
+      font: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #ffffff;
+    }
+
+    .topbar {
+      flex: none;
+      padding: 14px 16px;
+      background: #ffffff;
+    }
+
+    .topbar-content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      line-height: 25px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .brand-mark {
+      width: 25px;
+      height: 25px;
+      display: grid;
+      place-items: center;
+      flex: none;
+      color: #007f8f;
+      background: rgba(20, 194, 213, 0.14);
+      border-radius: 6px;
+    }
+
+    .brand-name {
+      font-size: 18px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .close-button {
+      width: 25px;
+      height: 25px;
+      display: grid;
+      place-items: center;
+      color: #526164;
+    }
+
+    .viewfinder {
+      position: relative;
+      flex: 0 0 736px;
+      width: 390px;
+    }
+
+    .camera-image {
+      position: absolute;
+      inset: 0;
+      width: 390px;
+      height: 736px;
+      display: block;
+      object-fit: cover;
+      background: #73878a;
+    }
+
+    .instruction-card {
+      position: absolute;
+      top: 18px;
+      left: 18px;
+      right: 18px;
+      padding: 12px 14px 13px;
+      border-radius: 6px;
+      color: #ffffff;
+      background: rgba(10, 25, 29, 0.82);
+    }
+
+    .scan-label {
+      margin: 0 0 3px;
+      color: #65e3ee;
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 16px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .instruction-card h1 {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 600;
+      line-height: 29px;
+    }
+
+    .instruction-card p {
+      margin: 3px 0 0;
+      color: #e2ecee;
+      font-size: 14px;
+      line-height: 19px;
+    }
+
+    .scan-frame {
+      position: absolute;
+      top: 154px;
+      left: 45px;
+      width: 300px;
+      height: 300px;
+      border-radius: 6px;
+      background: rgba(20, 194, 213, 0.08);
+    }
+
+    .corner {
+      position: absolute;
+      width: 36px;
+      height: 36px;
+    }
+
+    .corner::before,
+    .corner::after {
+      position: absolute;
+      content: "";
+      background: #49d7e3;
+      border-radius: 2px;
+    }
+
+    .corner::before {
+      width: 36px;
+      height: 4px;
+    }
+
+    .corner::after {
+      width: 4px;
+      height: 36px;
+    }
+
+    .corner.tl {
+      top: 0;
+      left: 0;
+    }
+
+    .corner.tr {
+      top: 0;
+      right: 0;
+      transform: scaleX(-1);
+    }
+
+    .corner.bl {
+      bottom: 0;
+      left: 0;
+      transform: scaleY(-1);
+    }
+
+    .corner.br {
+      right: 0;
+      bottom: 0;
+      transform: scale(-1);
+    }
+
+    .scan-line {
+      position: absolute;
+      top: 149px;
+      left: 28px;
+      right: 28px;
+      height: 3px;
+      border-radius: 2px;
+      background: #49d7e3;
+    }
+
+    .capture-panel {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      padding: 12px 20px 14px;
+      color: #ffffff;
+      background: rgba(8, 20, 23, 0.88);
+    }
+
+    .mode-tabs {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+
+    .mode-tab {
+      min-width: 76px;
+      padding: 5px 11px;
+      border-radius: 6px;
+      color: #cad5d7;
+      font-size: 14px;
+      line-height: 20px;
+      text-align: center;
+    }
+
+    .mode-tab.active {
+      color: #72e8f0;
+      font-weight: 600;
+      background: rgba(20, 194, 213, 0.18);
+    }
+
+    .capture-row {
+      display: grid;
+      grid-template-columns: 1fr 72px 1fr;
+      align-items: center;
+    }
+
+    .recent-button {
+      justify-self: start;
+      width: 52px;
+      padding: 4px;
+      border-radius: 6px;
+      background: rgba(20, 194, 213, 0.15);
+    }
+
+    .recent-image {
+      width: 44px;
+      height: 44px;
+      display: block;
+      object-fit: cover;
+      border-radius: 6px;
+      background: #667c80;
+    }
+
+    .capture-button {
+      width: 64px;
+      height: 64px;
+      display: grid;
+      place-items: center;
+      justify-self: center;
+      border-radius: 6px;
+      color: #07363b;
+      background: #55dce7;
+    }
+
+    .flip-button {
+      width: 48px;
+      height: 48px;
+      display: grid;
+      place-items: center;
+      justify-self: end;
+      border-radius: 6px;
+      color: #ffffff;
+      background: rgba(20, 194, 213, 0.15);
+    }
+
+    .capture-note {
+      margin: 9px 0 0;
+      color: #dbe7e8;
+      font-size: 14px;
+      line-height: 20px;
+      text-align: center;
+    }
+
+    .bottom-nav {
+      flex: none;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      padding: 7px 6px 8px;
+      background: #ffffff;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      color: #667477;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .nav-icon {
+      width: 22px;
+      height: 22px;
+      display: grid;
+      place-items: center;
+    }
+
+    .nav-item.active {
+      color: #007f8f;
+      font-weight: 600;
+    }
+
+    .nav-item.active .nav-icon {
+      background: rgba(20, 194, 213, 0.14);
+      border-radius: 6px;
+    }
+
+    svg {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <div class="topbar-content">
+        <div class="brand">
+          <div class="brand-mark" aria-hidden="true">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
+              <path d="M12 3.5L18.5 9L12 20.5L5.5 9L12 3.5Z" fill="currentColor"/>
+              <path d="M12 7.5L14.5 10L12 14.5L9.5 10L12 7.5Z" fill="#FFFFFF"/>
+            </svg>
+          </div>
+          <div class="brand-name">Roamstead Lens</div>
+        </div>
+        <button class="close-button" aria-label="Close scanner">
+          <svg width="21" height="21" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M6 6L18 18M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <main class="viewfinder">
+      <img class="camera-image" src="https://loremflickr.com/390/736/cityscape?lock=4610" width="390" height="736" alt="City landmark visible through the camera viewfinder">
+
+      <section class="instruction-card" aria-labelledby="scanner-title">
+        <p class="scan-label">Landmark scan</p>
+        <h1 id="scanner-title">Center one landmark</h1>
+        <p>Hold steady to identify it and view nearby stays.</p>
+      </section>
+
+      <div class="scan-frame" aria-hidden="true">
+        <span class="corner tl"></span>
+        <span class="corner tr"></span>
+        <span class="corner bl"></span>
+        <span class="corner br"></span>
+        <span class="scan-line"></span>
+      </div>
+
+      <section class="capture-panel" aria-label="Scanner controls">
+        <div class="mode-tabs" role="tablist" aria-label="Camera modes">
+          <button class="mode-tab active" role="tab" aria-selected="true">Landmark</button>
+          <button class="mode-tab" role="tab" aria-selected="false">Sign</button>
+          <button class="mode-tab" role="tab" aria-selected="false">Hotel</button>
+        </div>
+
+        <div class="capture-row">
+          <button class="recent-button" aria-label="Choose a recent photo">
+            <img class="recent-image" src="https://loremflickr.com/44/44/mountain?lock=4611" width="44" height="44" alt="Recent mountain travel photo">
+          </button>
+
+          <button class="capture-button" aria-label="Scan landmark">
+            <svg width="31" height="31" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+              <path d="M8 10V7.5C8 6.67 8.67 6 9.5 6H12M20 6H22.5C23.33 6 24 6.67 24 7.5V10M24 22V24.5C24 25.33 23.33 26 22.5 26H20M12 26H9.5C8.67 26 8 25.33 8 24.5V22" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
+              <path d="M11 18L14.2 14.8L17 17.6L19 15.6L22 18.6V21H11V18Z" fill="currentColor"/>
+              <circle cx="19.5" cy="12.5" r="1.5" fill="currentColor"/>
+            </svg>
+          </button>
+
+          <button class="flip-button" aria-label="Switch camera">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M7 7H16.5L14 4.5M17 17H7.5L10 19.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M18.5 9.5C19.2 11.1 19.2 12.9 18.5 14.5M5.5 14.5C4.8 12.9 4.8 11.1 5.5 9.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </div>
+
+        <p class="capture-note">Tap to identify this landmark</p>
+      </section>
+    </main>
+
+    <nav class="bottom-nav" aria-label="Primary navigation">
+      <button class="nav-item">
+        <span class="nav-icon" aria-hidden="true">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none">
+            <path d="M4 11L12 4L20 11V20H14V14H10V20H4V11Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+          </svg>
+        </span>
+        <span>Explore</span>
+      </button>
+
+      <button class="nav-item">
+        <span class="nav-icon" aria-hidden="true">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none">
+            <path d="M5 6H19V19H5V6Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+            <path d="M8 4V8M16 4V8M5 10H19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+        </span>
+        <span>Trips</span>
+      </button>
+
+      <button class="nav-item active" aria-current="page">
+        <span class="nav-icon" aria-hidden="true">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
+            <path d="M8 4H5V8M16 4H19V8M19 16V20H16M8 20H5V16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="12" cy="12" r="3" fill="currentColor"/>
+          </svg>
+        </span>
+        <span>Scan</span>
+      </button>
+
+      <button class="nav-item">
+        <span class="nav-icon" aria-hidden="true">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none">
+            <path d="M6 4H18V21L12 17L6 21V4Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+          </svg>
+        </span>
+        <span>Saved</span>
+      </button>
+
+      <button class="nav-item">
+        <span class="nav-icon" aria-hidden="true">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="8" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+            <path d="M5.5 20C6.2 16.6 8.4 15 12 15C15.6 15 17.8 16.6 18.5 20" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+        </span>
+        <span>Profile</span>
+      </button>
+    </nav>
+  </div>
+</body>
+</html>

@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Waymark Travel Brief</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #d9d8d4;
+      color: #23221f;
+      font-family: 'Source Sans 3', system-ui, sans-serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #f3f2ef;
+      border: 1px solid #cbc9c4;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 16px 12px;
+      background: #ffffff;
+      border-bottom: 1px solid #dedcd7;
+    }
+
+    .brand {
+      margin: 0;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 24px;
+      line-height: 1.15;
+      font-weight: 700;
+      letter-spacing: -0.4px;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .icon-button {
+      width: 34px;
+      height: 34px;
+      padding: 7px;
+      display: grid;
+      place-items: center;
+      border: 0;
+      border-radius: 6px;
+      background: transparent;
+      color: #3a3935;
+    }
+
+    .icon-button svg {
+      width: 20px;
+      height: 20px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .category-tabs {
+      display: flex;
+      align-items: stretch;
+      gap: 18px;
+      padding: 0 16px;
+      background: #ffffff;
+      border-bottom: 1px solid #dedcd7;
+    }
+
+    .category-tab {
+      position: relative;
+      padding: 11px 0 10px;
+      border: 0;
+      background: transparent;
+      color: #6e6b65;
+      font-size: 14px;
+      line-height: 1;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .category-tab.active {
+      color: #9a6100;
+    }
+
+    .category-tab.active::after {
+      content: "";
+      position: absolute;
+      right: 0;
+      bottom: -1px;
+      left: 0;
+      height: 3px;
+      background: #d89018;
+    }
+
+    main {
+      flex: 1;
+      padding: 12px;
+    }
+
+    .feed-intro {
+      margin: 0 2px 12px;
+    }
+
+    .brief-label {
+      margin: 0 0 5px;
+      color: #8a8681;
+      font-size: 12px;
+      line-height: 1.2;
+      font-weight: 600;
+      letter-spacing: 1.4px;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 30px;
+      line-height: 1.15;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+
+    .feed-note {
+      margin: 4px 0 0;
+      color: #6c6963;
+      font-size: 14px;
+      line-height: 1.35;
+    }
+
+    .feed-note strong {
+      color: #9a6100;
+      font-weight: 600;
+    }
+
+    .article-list {
+      display: grid;
+      gap: 7px;
+    }
+
+    .article-card {
+      display: grid;
+      grid-template-columns: 34px minmax(0, 1fr);
+      gap: 10px;
+      padding: 9px 10px;
+      background: #ffffff;
+      border: 1px solid #e5e2dc;
+      border-radius: 6px;
+      box-shadow: 0 2px 7px rgba(46, 42, 34, 0.08);
+    }
+
+    .source-mark {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      border-radius: 6px;
+      background: #f3e5ca;
+      color: #865407;
+      font-size: 14px;
+      line-height: 1;
+      font-weight: 600;
+    }
+
+    .article-body {
+      min-width: 0;
+    }
+
+    .source-line {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 2px;
+      color: #68655f;
+      font-size: 12px;
+      line-height: 1.25;
+    }
+
+    .source-name {
+      min-width: 0;
+      overflow: hidden;
+      font-weight: 600;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .article-time {
+      flex: 0 0 auto;
+      color: #85817a;
+    }
+
+    .article-card h2 {
+      margin: 0;
+      color: #292824;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 16px;
+      line-height: 1.22;
+      font-weight: 600;
+      letter-spacing: -0.1px;
+    }
+
+    .article-meta {
+      margin: 3px 0 0;
+      color: #817d76;
+      font-size: 12px;
+      line-height: 1.25;
+    }
+
+    /* Lead story: headline first, credits collected in a footer rule */
+    .lead-card {
+      display: block;
+      padding: 12px 12px 11px;
+      border-color: #e2d8c5;
+      box-shadow: 0 3px 10px rgba(46, 42, 34, 0.11);
+    }
+
+    .lead-flag {
+      display: inline-block;
+      margin: 0 0 6px;
+      padding: 3px 8px;
+      border-radius: 4px;
+      background: #f3e5ca;
+      color: #865407;
+      font-size: 11px;
+      line-height: 1.25;
+      font-weight: 600;
+      letter-spacing: 0.9px;
+      text-transform: uppercase;
+    }
+
+    .lead-card h2 {
+      font-size: 19px;
+      line-height: 1.2;
+    }
+
+    .lead-footer {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 10px;
+      padding-top: 9px;
+      border-top: 1px solid #ece8e0;
+      color: #6b6862;
+      font-size: 12px;
+      line-height: 1.25;
+    }
+
+    .lead-footer .source-mark {
+      flex: 0 0 auto;
+      width: 26px;
+      height: 26px;
+      font-size: 12px;
+    }
+
+    .lead-source {
+      flex: 0 0 auto;
+      color: #3b3934;
+      font-weight: 600;
+    }
+
+    .lead-topic {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .lead-time {
+      flex: 0 0 auto;
+      margin-left: auto;
+      color: #85817a;
+    }
+
+    .tabbar {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      padding: 7px 8px 8px;
+      background: #ffffff;
+      border-top: 1px solid #d8d5cf;
+    }
+
+    .nav-item {
+      display: grid;
+      justify-items: center;
+      gap: 2px;
+      padding: 2px 0;
+      border: 0;
+      background: transparent;
+      color: #77736d;
+      font-size: 12px;
+      line-height: 1.2;
+      font-weight: 600;
+    }
+
+    .nav-item.active {
+      color: #a76700;
+    }
+
+    .nav-item svg {
+      width: 21px;
+      height: 21px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .nav-item.active svg .active-fill {
+      fill: #e3a438;
+      stroke: #a76700;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <p class="brand">Waymark</p>
+      <div class="top-actions">
+        <button class="icon-button" type="button" aria-label="Search news">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="10.8" cy="10.8" r="6.4"></circle>
+            <path d="m15.6 15.6 4.2 4.2"></path>
+          </svg>
+        </button>
+        <button class="icon-button" type="button" aria-label="Saved articles">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M6.5 4.2h11v15.6L12 16.5l-5.5 3.3z"></path>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <nav class="category-tabs" aria-label="News categories">
+      <button class="category-tab active" type="button">Top stories</button>
+      <button class="category-tab" type="button">Destinations</button>
+      <button class="category-tab" type="button">Stays</button>
+      <button class="category-tab" type="button">Transit</button>
+    </nav>
+
+    <main>
+      <section class="feed-intro" aria-labelledby="feed-title">
+        <p class="brief-label">Travel Brief</p>
+        <h1 id="feed-title">Tuesday, March 18</h1>
+        <p class="feed-note"><strong>5 updates</strong> affecting your upcoming trips.</p>
+      </section>
+
+      <section class="article-list" aria-label="Travel news articles">
+        <article class="article-card lead-card">
+          <p class="lead-flag">Lead story</p>
+          <h2>New rail pass links three Pacific Northwest routes</h2>
+          <div class="lead-footer">
+            <span class="source-mark" aria-hidden="true">RN</span>
+            <span class="lead-source">Route North</span>
+            <span class="lead-topic">Transit · United States</span>
+            <time class="lead-time" datetime="2025-03-18T09:10">38 min ago</time>
+          </div>
+        </article>
+
+        <article class="article-card">
+          <div class="source-mark" aria-hidden="true">DC</div>
+          <div class="article-body">
+            <div class="source-line">
+              <span class="source-name">Departure Current</span>
+              <time class="article-time" datetime="2025-03-18T08:25">1 hr ago</time>
+            </div>
+            <h2>Lisbon limits overnight stays in the historic center</h2>
+            <p class="article-meta">Lodging · Portugal</p>
+          </div>
+        </article>
+
+        <article class="article-card">
+          <div class="source-mark" aria-hidden="true">FA</div>
+          <div class="article-body">
+            <div class="source-line">
+              <span class="source-name">Fare Atlas</span>
+              <time class="article-time" datetime="2025-03-18T07:40">2 hr ago</time>
+            </div>
+            <h2>Spring fares fall on select Atlantic crossings</h2>
+            <p class="article-meta">Flights · International</p>
+          </div>
+        </article>
+
+        <article class="article-card">
+          <div class="source-mark" aria-hidden="true">TP</div>
+          <div class="article-body">
+            <div class="source-line">
+              <span class="source-name">Trail Post</span>
+              <time class="article-time" datetime="2025-03-18T06:15">3 hr ago</time>
+            </div>
+            <h2>Seasonal trail closures begin near North Rim viewpoints</h2>
+            <p class="article-meta">Outdoors · Arizona</p>
+          </div>
+        </article>
+
+        <article class="article-card">
+          <div class="source-mark" aria-hidden="true">IQ</div>
+          <div class="article-body">
+            <div class="source-line">
+              <span class="source-name">Inn Quarterly</span>
+              <time class="article-time" datetime="2025-03-18T05:05">4 hr ago</time>
+            </div>
+            <h2>Savannah inns add flexible check-in for late arrivals</h2>
+            <p class="article-meta">Lodging · Georgia</p>
+          </div>
+        </article>
+      </section>
+    </main>
+
+    <nav class="tabbar" aria-label="Primary navigation">
+      <button class="nav-item active" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path class="active-fill" d="M12 3.5 15 9l5.5 3-5.5 3-3 5.5L9 15l-5.5-3L9 9z"></path>
+          <circle cx="12" cy="12" r="1.8"></circle>
+        </svg>
+        <span>Discover</span>
+      </button>
+      <button class="nav-item" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M5 7.5h14v11H5z"></path>
+          <path d="M8.5 7.5V5.7c0-.8.6-1.4 1.4-1.4h4.2c.8 0 1.4.6 1.4 1.4v1.8"></path>
+          <path d="M5 11.5h14"></path>
+        </svg>
+        <span>Trips</span>
+      </button>
+      <button class="nav-item" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M6.5 4.2h11v15.6L12 16.5l-5.5 3.3z"></path>
+        </svg>
+        <span>Saved</span>
+      </button>
+      <button class="nav-item" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="8" r="3.2"></circle>
+          <path d="M5.8 19.5c.7-3 3.1-4.8 6.2-4.8s5.5 1.8 6.2 4.8"></path>
+        </svg>
+        <span>Account</span>
+      </button>
+    </nav>
+  </div>
+</body>
+</html>

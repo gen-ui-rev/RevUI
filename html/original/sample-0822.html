@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Longwave — Release Calendar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 40px 0;
+    margin: 0;
+    background: #d8d5dc;
+    font-family: 'Source Serif 4', Georgia, serif;
+    color: #16141a;
+  }
+  .screen {
+    width: 390px;
+    height: 844px;
+    background: #ffffff;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* top bar */
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px 14px;
+    border-bottom: 1px solid #e4e1e9;
+  }
+  .topbar .brand {
+    font-size: 12px;
+    color: #6f6a78;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    margin-bottom: 2px;
+  }
+  .topbar h1 {
+    font-size: 19px;
+    font-weight: 700;
+    margin: 0;
+    line-height: 1.1;
+  }
+  .top-actions { display: flex; gap: 6px; }
+  .icon-btn {
+    width: 32px; height: 32px;
+    border: 1px solid #e4e1e9;
+    border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+    color: #4a4553;
+  }
+
+  /* month nav */
+  .monthnav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px 10px;
+  }
+  .monthnav .mtitle { font-size: 17px; font-weight: 600; }
+  .monthnav .msub { font-size: 12px; color: #6f6a78; margin-top: 1px; }
+  .navgroup { display: flex; align-items: center; gap: 8px; }
+  .chev {
+    width: 28px; height: 28px;
+    border: 1px solid #e4e1e9;
+    border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+    color: #4a4553;
+  }
+  .toggle {
+    display: flex;
+    border: 1px solid #d4cfe0;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .toggle span {
+    font-size: 12px;
+    padding: 5px 9px;
+    color: #5c5668;
+  }
+  .toggle span.on { background: #6d28d9; color: #fff; font-weight: 600; }
+
+  /* grid */
+  .dow {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    padding: 0 10px 4px;
+  }
+  .dow div {
+    text-align: center;
+    font-size: 12px;
+    color: #6f6a78;
+    letter-spacing: .04em;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    padding: 0 10px 8px;
+    border-bottom: 1px solid #e4e1e9;
+  }
+  .cell {
+    height: 42px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+  }
+  .num {
+    width: 26px; height: 24px;
+    border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px;
+  }
+  .cell.out .num { color: #b3aebc; }
+  .num.sel { background: #6d28d9; color: #fff; font-weight: 600; }
+  .num.today { border: 1px solid #6d28d9; color: #6d28d9; font-weight: 600; }
+  .dots { display: flex; gap: 3px; height: 5px; align-items: center; }
+  .dots i { width: 4px; height: 4px; border-radius: 4px; background: #8b5cf6; display: block; }
+  .dots i.dim { background: #cfc7de; }
+
+  /* day header */
+  .dayhead {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding: 13px 16px 9px;
+  }
+  .dayhead .dtitle { font-size: 15px; font-weight: 600; }
+  .dayhead .dcount { font-size: 12px; color: #6f6a78; }
+
+  /* events */
+  .events { border-top: 1px solid #e4e1e9; }
+  .ev {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding: 11px 16px;
+    border-bottom: 1px solid #eeecf1;
+  }
+  .ev .time { width: 60px; flex: 0 0 60px; }
+  .ev .t1 { font-size: 13px; font-weight: 600; }
+  .ev .t2 { font-size: 12px; color: #6f6a78; margin-top: 1px; }
+  .mono {
+    width: 36px; height: 36px;
+    flex: 0 0 36px;
+    border-radius: 4px;
+    background: #f1ecfb;
+    color: #5b21b6;
+    font-size: 13px;
+    font-weight: 600;
+    display: flex; align-items: center; justify-content: center;
+    letter-spacing: .02em;
+  }
+  .ev .body { min-width: 0; flex: 1 1 auto; }
+  .ev .name {
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.25;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .ev .show {
+    font-size: 13px;
+    color: #6f6a78;
+    margin-top: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .badge {
+    flex: 0 0 auto;
+    font-size: 12px;
+    font-weight: 600;
+    color: #fff;
+    background: #6d28d9;
+    border-radius: 4px;
+    padding: 2px 7px;
+  }
+
+  /* tab bar */
+  .tabbar {
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    display: flex;
+    border-top: 1px solid #e4e1e9;
+    background: #fff;
+    padding: 8px 0 10px;
+  }
+  .tab {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    font-size: 12px;
+    color: #6f6a78;
+  }
+  .tab.on { color: #6d28d9; font-weight: 600; }
+</style>
+</head>
+<body>
+  <div class="screen">
+
+    <div class="topbar">
+      <div>
+        <div class="brand">Longwave Studio</div>
+        <h1>Release Calendar</h1>
+      </div>
+      <div class="top-actions">
+        <div class="icon-btn" aria-label="Search">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg>
+        </div>
+        <div class="icon-btn" aria-label="New entry">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 5v14M5 12h14"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="monthnav">
+      <div>
+        <div class="mtitle">June 2025</div>
+        <div class="msub">18 releases scheduled</div>
+      </div>
+      <div class="navgroup">
+        <div class="toggle"><span class="on">Month</span><span>Week</span></div>
+        <div class="chev" aria-label="Previous month">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg>
+        </div>
+        <div class="chev" aria-label="Next month">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9.5 5.5L16 12l-6.5 6.5"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="dow">
+      <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
+    </div>
+
+    <div class="grid">
+      <div class="cell"><div class="num">1</div><div class="dots"><i></i></div></div>
+      <div class="cell"><div class="num">2</div><div class="dots"><i></i><i></i></div></div>
+      <div class="cell"><div class="num">3</div><div class="dots"></div></div>
+      <div class="cell"><div class="num">4</div><div class="dots"><i></i></div></div>
+      <div class="cell"><div class="num">5</div><div class="dots"><i></i><i></i><i></i></div></div>
+      <div class="cell"><div class="num">6</div><div class="dots"><i></i></div></div>
+      <div class="cell"><div class="num">7</div><div class="dots"></div></div>
+
+      <div class="cell"><div class="num">8</div><div class="dots"><i></i></div></div>
+      <div class="cell"><div class="num">9</div><div class="dots"><i></i><i></i></div></div>
+      <div class="cell"><div class="num today">10</div><div class="dots"><i></i></div></div>
+      <div class="cell"><div class="num">11</div><div class="dots"><i></i><i></i></div></div>
+      <div class="cell"><div class="num sel">12</div><div class="dots"><i></i><i></i><i></i></div></div>
+      <div class="cell"><div class="num">13</div><div class="dots"><i></i></div></div>
+      <div class="cell"><div class="num">14</div><div class="dots"></div></div>
+
+      <div class="cell"><div class="num">15</div><div class="dots"><i></i></div></div>
+      <div class="cell"><div class="num">16</div><div class="dots"><i></i><i></i></div></div>
+      <div class="cell"><div class="num">17</div><div class="dots"><i></i></div></div>
+      <div class="cell"><div class="num">18</div><div class="dots"></div></div>
+      <div class="cell"><div class="num">19</div><div class="dots"><i></i><i></i></div></div>
+      <div class="cell"><div class="num">20</div><div class="dots"><i></i></div></div>
+      <div class="cell"><div class="num">21</div><div class="dots"></div></div>
+
+      <div class="cell"><div class="num">22</div><div class="dots"><i></i></div></div>
+      <div class="cell"><div class="num">23</div><div class="dots"><i></i></div></div>
+      <div class="cell"><div class="num">24</div><div class="dots"><i></i><i></i></div></div>
+      <div class="cell"><div class="num">25</div><div class="dots"></div></div>
+      <div class="cell"><div class="num">26</div><div class="dots"><i></i><i></i></div></div>
+      <div class="cell"><div class="num">27</div><div class="dots"><i></i></div></div>
+      <div class="cell"><div class="num">28</div><div class="dots"></div></div>
+
+      <div class="cell"><div class="num">29</div><div class="dots"><i></i></div></div>
+      <div class="cell"><div class="num">30</div><div class="dots"><i></i><i></i></div></div>
+      <div class="cell out"><div class="num">1</div><div class="dots"><i class="dim"></i></div></div>
+      <div class="cell out"><div class="num">2</div><div class="dots"></div></div>
+      <div class="cell out"><div class="num">3</div><div class="dots"><i class="dim"></i></div></div>
+      <div class="cell out"><div class="num">4</div><div class="dots"></div></div>
+      <div class="cell out"><div class="num">5</div><div class="dots"><i class="dim"></i></div></div>
+    </div>
+
+    <div class="dayhead">
+      <div class="dtitle">Thursday, June 12</div>
+      <div class="dcount">6 entries</div>
+    </div>
+
+    <div class="events">
+      <div class="ev">
+        <div class="time"><div class="t1">6:00 AM</div><div class="t2">42 min</div></div>
+        <div class="mono">AS</div>
+        <div class="body">
+          <div class="name">Morning Drift, Ep. 214</div>
+          <div class="show">Ambient Sessions · publish</div>
+        </div>
+      </div>
+
+      <div class="ev">
+        <div class="time"><div class="t1">8:30 AM</div><div class="t2">1 hr 5 min</div></div>
+        <div class="mono">CR</div>
+        <div class="body">
+          <div class="name">Loop Theory: Tape Machines</div>
+          <div class="show">The Cutting Room · publish</div>
+        </div>
+      </div>
+
+      <div class="ev">
+        <div class="time"><div class="t1">10:00 AM</div><div class="t2">30 min</div></div>
+        <div class="mono">ND</div>
+        <div class="body">
+          <div class="name">Chart Pulse Weekly</div>
+          <div class="show">Newsroom Daily · publish</div>
+        </div>
+      </div>
+
+      <div class="ev">
+        <div class="time"><div class="t1">12:15 PM</div><div class="t2">2 hr</div></div>
+        <div class="mono">NA</div>
+        <div class="body">
+          <div class="name">Listening room: Neon Archive</div>
+          <div class="show">Neon Archive · 1,940 going</div>
+        </div>
+        <div class="badge">Live</div>
+      </div>
+
+      <div class="ev">
+        <div class="time"><div class="t1">3:00 PM</div><div class="t2">55 min</div></div>
+        <div class="mono">OR</div>
+        <div class="body">
+          <div class="name">Session with Marisol Vega</div>
+          <div class="show">Off the Record · review with Dean Alcott</div>
+        </div>
+      </div>
+
+      <div class="ev">
+        <div class="time"><div class="t1">6:45 PM</div><div class="t2">38 min</div></div>
+        <div class="mono">NS</div>
+        <div class="body">
+          <div class="name">Night Signal, Ep. 88</div>
+          <div class="show">Night Signal · publish</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tabbar">
+      <div class="tab">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 10.5L12 4l8 6.5V20H4z"/></svg>
+        Home
+      </div>
+      <div class="tab">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="8.5"/><path d="M14.8 9.2l-1.9 5-5 1.9 1.9-5z"/></svg>
+        Browse
+      </div>
+      <div class="tab on">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3.5" y="5" width="17" height="15" rx="1.5"/><path d="M3.5 10h17M8 3.5V6M16 3.5V6"/></svg>
+        Calendar
+      </div>
+      <div class="tab">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 5v14M9 5v14"/><path d="M13.5 6.5l5.5 1.5-3 11-5.5-1.5z"/></svg>
+        Library
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

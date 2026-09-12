@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Cadence — Map</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;}
+  body{
+    margin:0;min-height:100vh;display:flex;justify-content:center;align-items:flex-start;
+    padding:40px 0;background:#d9dbd8;font-family:'Inter',system-ui,sans-serif;color:#1b2129;
+  }
+  .screen{
+    width:1024px;height:768px;background:#f2f3f1;display:flex;position:relative;overflow:hidden;
+  }
+
+  /* left nav rail (desktop) */
+  .rail{
+    width:78px;flex:none;background:#fff;border-right:1px solid #e6e7e4;z-index:5;
+    display:flex;flex-direction:column;align-items:center;padding:16px 0 16px;gap:4px;
+  }
+  .brand{
+    width:34px;height:34px;border-radius:8px;background:#2f3a45;color:#fff;font-size:15px;font-weight:700;
+    display:flex;align-items:center;justify-content:center;margin-bottom:16px;
+  }
+  .navitem{
+    width:60px;padding:9px 0 7px;border-radius:8px;display:flex;flex-direction:column;align-items:center;gap:5px;
+    font-size:10.5px;font-weight:500;color:#8a919a;cursor:pointer;
+  }
+  .navitem.on{background:#eef0ec;color:#2f3a45;font-weight:600;}
+  .railfoot{
+    margin-top:auto;width:32px;height:32px;border-radius:8px;background:#eceee9;color:#4b535e;
+    font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;
+  }
+
+  /* map stage — reads as background */
+  .stage{flex:1;position:relative;background:#e6e9e3;overflow:hidden;}
+  .water{position:absolute;background:#d5e0e6;transform:rotate(18deg);}
+  .park{position:absolute;background:#dde5d6;border-radius:8px;}
+  .park2{position:absolute;background:#dde5d6;border-radius:8px;}
+  .road{position:absolute;background:#f7f8f6;}
+  .road.thin{background:#eef0ec;}
+  .blk{position:absolute;background:#dfe2dc;border-radius:6px;}
+  .scrim{
+    position:absolute;left:0;top:0;right:0;bottom:0;z-index:1;pointer-events:none;
+    background:linear-gradient(100deg,rgba(242,243,241,0) 34%,rgba(238,240,236,.7) 74%,rgba(238,240,236,.92) 100%);
+  }
+
+  .pin{position:absolute;width:14px;height:14px;border-radius:50%;background:#8b939d;border:2.5px solid #fff;}
+  .me{position:absolute;width:16px;height:16px;border-radius:50%;background:#4e6b86;border:3px solid #fff;}
+  .sel{position:absolute;display:flex;flex-direction:column;align-items:center;z-index:2;}
+  .sel .bub{
+    background:#2f3a45;color:#fff;border-radius:6px;padding:6px 10px;font-size:12px;font-weight:600;
+    display:flex;align-items:center;gap:6px;white-space:nowrap;
+  }
+  .sel .tip{width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:7px solid #2f3a45;}
+  .sel .dot{width:8px;height:8px;border-radius:50%;background:#2f3a45;border:2px solid #fff;margin-top:-1px;}
+  .maplabel{position:absolute;font-size:11.5px;color:#7d858e;font-weight:500;}
+
+  /* floating header + filters */
+  .hdr{
+    position:absolute;left:20px;top:20px;z-index:3;display:flex;align-items:flex-start;gap:20px;
+    background:rgba(255,255,255,.95);border:1px solid #e6e7e4;border-radius:9px;padding:13px 15px;
+    box-shadow:0 4px 16px rgba(20,26,33,.09);
+  }
+  .title{font-size:22px;font-weight:600;letter-spacing:-.3px;margin:0;}
+  .sub{font-size:13px;color:#6d7580;margin:3px 0 0;}
+  .iconbtn{
+    width:34px;height:34px;border-radius:7px;border:1px solid #e0e2df;background:#fff;
+    display:flex;align-items:center;justify-content:center;flex:none;color:#3c4551;cursor:pointer;
+  }
+  .chips{position:absolute;left:20px;top:108px;z-index:3;display:flex;gap:8px;}
+  .chip{
+    font-size:12.5px;font-weight:500;color:#4b535e;background:rgba(255,255,255,.94);border:1px solid #e2e4e0;
+    padding:6px 12px;border-radius:20px;white-space:nowrap;cursor:pointer;box-shadow:0 2px 6px rgba(20,26,33,.06);
+  }
+  .chip.on{background:#2f3a45;border-color:#2f3a45;color:#fff;}
+  .ctrls{position:absolute;left:20px;bottom:20px;z-index:3;display:flex;flex-direction:column;gap:8px;}
+  .ctrl{
+    width:36px;height:36px;border-radius:7px;background:#fff;border:1px solid #e0e2df;color:#3c4551;
+    display:flex;align-items:center;justify-content:center;box-shadow:0 2px 7px rgba(20,26,33,.08);
+    font-size:16px;font-weight:600;cursor:pointer;
+  }
+
+  /* panel over the map */
+  .panel{
+    position:absolute;right:20px;top:20px;width:382px;z-index:4;background:#fff;border:1px solid #e8e9e6;
+    border-radius:11px;padding:20px;box-shadow:0 16px 42px rgba(20,26,33,.19);
+  }
+  .ptag{font-size:11px;font-weight:600;letter-spacing:.6px;text-transform:uppercase;color:#8a919a;margin-bottom:11px;}
+  .place{display:flex;gap:12px;}
+  .place img{width:112px;height:112px;border-radius:8px;object-fit:cover;display:block;background:#dcdedb;flex:none;}
+  .pname{font-size:17px;font-weight:600;margin:0;letter-spacing:-.15px;}
+  .pmeta{font-size:13px;color:#6d7580;margin:4px 0 0;}
+  .pwhen{font-size:13px;font-weight:500;color:#2f3a45;margin:8px 0 0;}
+  .who{display:flex;gap:5px;margin-top:11px;align-items:center;}
+  .mono{
+    width:25px;height:25px;border-radius:7px;background:#eceee9;color:#4b535e;
+    font-size:10.5px;font-weight:600;display:flex;align-items:center;justify-content:center;
+  }
+  .who span.more{font-size:12px;color:#7d858e;margin-left:3px;}
+  .cta{
+    margin-top:15px;display:flex;align-items:center;justify-content:center;gap:8px;
+    background:#2f3a45;color:#fff;border-radius:8px;padding:12px;font-size:14px;font-weight:600;cursor:pointer;
+  }
+  .rule{height:1px;background:#ececea;margin:16px -20px 0;}
+  .seclabel{font-size:11.5px;font-weight:600;color:#8a919a;letter-spacing:.6px;text-transform:uppercase;margin:14px 0 2px;}
+
+  /* stepped run — times are markers on the spine */
+  .run{position:relative;margin-top:4px;}
+  .spine{position:absolute;left:28px;top:16px;bottom:20px;width:2px;background:#e2e5df;}
+  .step{position:relative;display:flex;align-items:center;padding:8px 0;}
+  .mk{
+    flex:none;width:58px;text-align:center;font-size:11px;font-weight:600;color:#4b535e;
+    background:#fff;border:1px solid #e0e3dd;border-radius:20px;padding:3px 0;position:relative;z-index:2;
+  }
+  .mk.now{background:#2f3a45;border-color:#2f3a45;color:#fff;}
+  .tick{flex:none;height:2px;background:#e2e5df;}
+  .scard{
+    flex:1;min-width:0;display:flex;align-items:center;gap:10px;background:#f7f8f6;border:1px solid #edefea;
+    border-radius:8px;padding:8px 10px;cursor:pointer;
+  }
+  .scard.now{background:#eef1f4;border-color:#dbe2e8;}
+  .scard img{width:44px;height:44px;border-radius:6px;object-fit:cover;display:block;background:#dcdedb;flex:none;}
+  .iconsq{
+    width:44px;height:44px;border-radius:6px;background:#dde3e9;color:#3c4551;flex:none;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .rtext{min-width:0;flex:1;}
+  .rtitle{font-size:13.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .rsub{font-size:12px;color:#767e88;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .chev{flex:none;color:#a7aeb5;}
+</style>
+</head>
+<body>
+<div class="screen">
+
+  <nav class="rail">
+    <div class="brand">C</div>
+    <div class="navitem">
+      <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 11h18"/></svg>
+      Schedule
+    </div>
+    <div class="navitem on">
+      <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 20l-6 2V6l6-2 6 2 6-2v16l-6 2-6-2z"/><path d="M9 4v16M15 6v16"/></svg>
+      Map
+    </div>
+    <div class="navitem">
+      <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3h11l4 4v14H5z"/><path d="M9 9h7M9 13h7M9 17h4"/></svg>
+      Notes
+    </div>
+    <div class="navitem">
+      <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6"/><path d="M17 5.5a3 3 0 010 5.6M18.5 20c0-2.4-.8-4.2-2.2-5.4"/></svg>
+      Team
+    </div>
+    <div class="railfoot">MK</div>
+  </nav>
+
+  <main class="stage">
+    <div class="water" style="left:-40px;top:-50px;width:250px;height:280px;"></div>
+    <div class="park" style="left:330px;top:430px;width:250px;height:210px;"></div>
+    <div class="park2" style="left:56px;top:236px;width:140px;height:100px;"></div>
+
+    <div class="road" style="left:0;top:150px;width:100%;height:14px;"></div>
+    <div class="road" style="left:0;top:392px;width:100%;height:10px;"></div>
+    <div class="road thin" style="left:0;top:600px;width:100%;height:5px;"></div>
+    <div class="road" style="left:212px;top:0;width:14px;height:768px;"></div>
+    <div class="road" style="left:452px;top:0;width:10px;height:768px;"></div>
+    <div class="road thin" style="left:660px;top:0;width:5px;height:768px;"></div>
+
+    <div class="blk" style="left:24px;top:186px;width:160px;height:46px;"></div>
+    <div class="blk" style="left:240px;top:186px;width:90px;height:46px;"></div>
+    <div class="blk" style="left:240px;top:436px;width:80px;height:40px;"></div>
+    <div class="blk" style="left:486px;top:60px;width:130px;height:70px;"></div>
+
+    <div class="maplabel" style="left:26px;top:128px;">Harbor Way</div>
+    <div class="maplabel" style="left:240px;top:366px;">Ninth Street</div>
+
+    <div class="pin" style="left:96px;top:330px;"></div>
+    <div class="pin" style="left:300px;top:252px;"></div>
+    <div class="pin" style="left:340px;top:520px;"></div>
+    <div class="me" style="left:190px;top:470px;"></div>
+
+    <div class="sel" style="left:130px;top:212px;">
+      <div class="bub">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 2"/></svg>
+        2:30 PM
+      </div>
+      <div class="tip"></div>
+      <div class="dot"></div>
+    </div>
+
+    <div class="scrim"></div>
+
+    <div class="hdr">
+      <div>
+        <h1 class="title">On-site today</h1>
+        <p class="sub">Thursday, March 14 · 4 sessions nearby</p>
+      </div>
+      <div class="iconbtn" aria-label="Switch to list view">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01"/></svg>
+      </div>
+    </div>
+
+    <div class="chips">
+      <div class="chip on">Today</div>
+      <div class="chip">Rooms</div>
+      <div class="chip">Cafés</div>
+      <div class="chip">Free now</div>
+    </div>
+
+    <div class="ctrls">
+      <div class="ctrl" aria-label="Zoom in">+</div>
+      <div class="ctrl" aria-label="Zoom out">−</div>
+      <div class="ctrl" aria-label="Center on my location">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>
+      </div>
+    </div>
+
+    <aside class="panel">
+      <div class="ptag">Selected · Room 2</div>
+      <div class="place">
+        <img src="https://loremflickr.com/112/112/meeting?lock=12500" width="112" height="112" alt="Meeting room with a long table at Harborview Studio">
+        <div>
+          <p class="pname">Harborview Studio</p>
+          <p class="pmeta">Room 2 · Seats 6 · 8 min walk</p>
+          <p class="pwhen">Design sync · 2:30–3:15 PM</p>
+          <div class="who">
+            <div class="mono">MK</div>
+            <div class="mono">TR</div>
+            <div class="mono">DA</div>
+            <span class="more">+2 going</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="cta">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l18-8-8 18-2-8-8-2z"/></svg>
+        Get directions
+      </div>
+
+      <div class="rule"></div>
+      <div class="seclabel">Later today</div>
+
+      <div class="run">
+        <div class="spine"></div>
+
+        <div class="step">
+          <div class="mk now">2:30</div>
+          <div class="tick" style="width:16px;"></div>
+          <div class="scard now">
+            <div class="iconsq">
+              <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 2"/></svg>
+            </div>
+            <div class="rtext">
+              <div class="rtitle">Design sync · in progress</div>
+              <div class="rsub">Harborview Studio, Room 2</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="mk">4:00</div>
+          <div class="tick" style="width:30px;"></div>
+          <div class="scard">
+            <img src="https://loremflickr.com/44/44/desk?lock=12501" width="44" height="44" alt="Corner table at Bloom Coffee">
+            <div class="rtext">
+              <div class="rtitle">Copy review</div>
+              <div class="rsub">Bloom Coffee, back table</div>
+            </div>
+            <svg class="chev" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="mk">5:15</div>
+          <div class="tick" style="width:44px;"></div>
+          <div class="scard">
+            <img src="https://loremflickr.com/44/44/notebook?lock=12502" width="44" height="44" alt="Notebook and markers set out for the roadmap workshop">
+            <div class="rtext">
+              <div class="rtitle">Roadmap workshop</div>
+              <div class="rsub">Harborview Studio, Room 4</div>
+            </div>
+            <svg class="chev" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="mk">6:00</div>
+          <div class="tick" style="width:58px;"></div>
+          <div class="scard">
+            <img src="https://loremflickr.com/44/44/workspace?lock=12503" width="44" height="44" alt="Shared workspace at the Ninth Street Annex">
+            <div class="rtext">
+              <div class="rtitle">Hiring debrief</div>
+              <div class="rsub">Ninth Street Annex, pod 3</div>
+            </div>
+            <svg class="chev" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>
+          </div>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+</div>
+</body>
+</html>

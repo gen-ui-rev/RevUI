@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Patient Messages</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #dfe3e2;
+      color: #1d2a29;
+      font-family: 'Nunito Sans', system-ui, sans-serif;
+    }
+
+    button {
+      font: inherit;
+      color: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #f8faf9;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 15px 16px 11px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .brand-mark {
+      width: 32px;
+      height: 32px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      background: #2b6b66;
+      color: #fff;
+      flex: 0 0 auto;
+    }
+
+    .brand-name {
+      font-size: 18px;
+      line-height: 24px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .compose-button {
+      width: 38px;
+      height: 38px;
+      padding: 0;
+      border: 0;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      background: rgba(43, 107, 102, 0.14);
+      cursor: default;
+    }
+
+    .compose-button svg,
+    .brand-mark svg,
+    .tab svg {
+      display: block;
+    }
+
+    main {
+      flex: 1;
+      min-height: 0;
+      padding: 7px 16px 10px;
+    }
+
+    .title-row {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 28px;
+      line-height: 34px;
+      font-weight: 700;
+      letter-spacing: -0.4px;
+    }
+
+    .mail-count {
+      padding-bottom: 3px;
+      color: #5f6f6d;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .appointment {
+      margin-top: 11px;
+      padding: 14px 16px;
+      border-radius: 18px;
+      background: #1f5450;
+      color: #fff;
+    }
+
+    .appointment-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .appointment-label {
+      margin: 0;
+      font-size: 11px;
+      line-height: 16px;
+      font-weight: 700;
+      letter-spacing: 1.1px;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.72);
+    }
+
+    .appointment-chip {
+      padding: 2px 9px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.18);
+      font-size: 11px;
+      line-height: 16px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .appointment-when {
+      margin: 2px 0 0;
+      font-size: 18px;
+      line-height: 24px;
+      font-weight: 700;
+      letter-spacing: -0.2px;
+    }
+
+    .appointment-who {
+      margin: 1px 0 0;
+      color: rgba(255, 255, 255, 0.82);
+      font-size: 13px;
+      line-height: 18px;
+    }
+
+    .filters {
+      margin-top: 10px;
+      display: flex;
+      gap: 7px;
+    }
+
+    .filter {
+      padding: 7px 13px;
+      border: 0;
+      border-radius: 14px;
+      background: rgba(43, 107, 102, 0.09);
+      color: #5b6a68;
+      font-size: 13px;
+      line-height: 19px;
+      font-weight: 600;
+      cursor: default;
+      white-space: nowrap;
+    }
+
+    .filter.active {
+      background: #2b6b66;
+      color: #fff;
+    }
+
+    .list-heading {
+      margin: 13px 2px 7px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .list-heading h2 {
+      margin: 0;
+      font-size: 15px;
+      line-height: 20px;
+      font-weight: 700;
+    }
+
+    .list-heading span {
+      color: #71807e;
+      font-size: 12px;
+      line-height: 18px;
+    }
+
+    .message-list {
+      display: grid;
+      gap: 6px;
+    }
+
+    .message {
+      padding: 9px 10px;
+      border-radius: 14px;
+      display: grid;
+      grid-template-columns: 40px minmax(0, 1fr);
+      gap: 10px;
+      align-items: center;
+      background: rgba(43, 107, 102, 0.06);
+    }
+
+    .message.unread {
+      background: rgba(43, 107, 102, 0.13);
+    }
+
+    .monogram {
+      width: 40px;
+      height: 40px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      background: #d5e3e1;
+      color: #3a5c59;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 700;
+    }
+
+    .message.unread .monogram {
+      background: #2b6b66;
+      color: #fff;
+    }
+
+    .message-body {
+      min-width: 0;
+    }
+
+    .message-top {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      min-width: 0;
+    }
+
+    .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #2b6b66;
+      flex: 0 0 auto;
+    }
+
+    .topic {
+      min-width: 0;
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      color: #17504c;
+      font-size: 15px;
+      line-height: 20px;
+      font-weight: 700;
+      letter-spacing: -0.1px;
+    }
+
+    .unread .topic {
+      color: #0f3f3c;
+    }
+
+    .time {
+      flex: 0 0 auto;
+      color: #6d7c7a;
+      font-size: 12px;
+      line-height: 18px;
+    }
+
+    .message-line {
+      margin-top: 1px;
+      overflow: hidden;
+      color: #67736f;
+      font-size: 13px;
+      line-height: 18px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .unread .message-line {
+      color: #3d4948;
+      font-weight: 600;
+    }
+
+    .tabbar {
+      padding: 8px 12px 11px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 4px;
+      background: #eef3f2;
+    }
+
+    .tab {
+      padding: 5px 3px 3px;
+      border: 0;
+      border-radius: 14px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      background: transparent;
+      color: #6b7877;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 600;
+      cursor: default;
+    }
+
+    .tab.active {
+      background: rgba(43, 107, 102, 0.16);
+      color: #26605c;
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+            <path d="M12 6v12M6 12h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <span class="brand-name">Northbay Health</span>
+      </div>
+      <button class="compose-button" type="button" aria-label="New message to your care team">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M13.5 5.5 18.5 10.5M4.5 19.5l3.2-.7L19.2 7.3a1.8 1.8 0 0 0 0-2.5 1.8 1.8 0 0 0-2.5 0L5.2 16.3l-.7 3.2Z" stroke="#26605c" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </header>
+
+    <main>
+      <div class="title-row">
+        <h1>Messages</h1>
+        <span class="mail-count">3 unread · 12 total</span>
+      </div>
+
+      <section class="appointment" aria-label="Next appointment">
+        <div class="appointment-head">
+          <p class="appointment-label">Next appointment</p>
+          <span class="appointment-chip">In 2 days</span>
+        </div>
+        <p class="appointment-when">Tue, March 18 · 10:30 AM</p>
+        <p class="appointment-who">Dr. Priya Raman · Cardiology, Suite 4B</p>
+      </section>
+
+      <nav class="filters" aria-label="Message filters">
+        <button class="filter active" type="button">All</button>
+        <button class="filter" type="button">Unread</button>
+        <button class="filter" type="button">Results</button>
+        <button class="filter" type="button">Care team</button>
+      </nav>
+
+      <div class="list-heading">
+        <h2>By care topic</h2>
+        <span>Updated 9:42 AM</span>
+      </div>
+
+      <section class="message-list" aria-label="Patient messages">
+        <article class="message unread">
+          <div class="monogram" aria-hidden="true">NL</div>
+          <div class="message-body">
+            <div class="message-top">
+              <span class="dot" aria-hidden="true"></span>
+              <span class="topic">Lab Results</span>
+              <time class="time">9:18 AM</time>
+            </div>
+            <div class="message-line">Northbay Lab · Lipid panel ready to view</div>
+          </div>
+        </article>
+
+        <article class="message unread">
+          <div class="monogram" aria-hidden="true">RP</div>
+          <div class="message-body">
+            <div class="message-top">
+              <span class="dot" aria-hidden="true"></span>
+              <span class="topic">Prescription Refill</span>
+              <time class="time">8:04 AM</time>
+            </div>
+            <div class="message-line">Riverside Pharmacy · Refill ready for pickup</div>
+          </div>
+        </article>
+
+        <article class="message unread">
+          <div class="monogram" aria-hidden="true">CC</div>
+          <div class="message-body">
+            <div class="message-top">
+              <span class="dot" aria-hidden="true"></span>
+              <span class="topic">Appointment Prep</span>
+              <time class="time">Yesterday</time>
+            </div>
+            <div class="message-line">Cardiology Clinic · Arrive 15 minutes early</div>
+          </div>
+        </article>
+
+        <article class="message">
+          <div class="monogram" aria-hidden="true">PR</div>
+          <div class="message-body">
+            <div class="message-top">
+              <span class="topic">Visit Summary</span>
+              <time class="time">Mon</time>
+            </div>
+            <div class="message-line">Dr. Priya Raman · Summary from March 6 visit</div>
+          </div>
+        </article>
+
+        <article class="message">
+          <div class="monogram" aria-hidden="true">EV</div>
+          <div class="message-body">
+            <div class="message-top">
+              <span class="topic">Care Plan Update</span>
+              <time class="time">Mar 8</time>
+            </div>
+            <div class="message-line">Nurse Ellen Vasquez · New blood pressure log</div>
+          </div>
+        </article>
+
+        <article class="message">
+          <div class="monogram" aria-hidden="true">PB</div>
+          <div class="message-body">
+            <div class="message-top">
+              <span class="topic">Billing Statement</span>
+              <time class="time">Mar 6</time>
+            </div>
+            <div class="message-line">Patient Billing · February statement ready</div>
+          </div>
+        </article>
+
+        <article class="message">
+          <div class="monogram" aria-hidden="true">OM</div>
+          <div class="message-body">
+            <div class="message-top">
+              <span class="topic">Referral</span>
+              <time class="time">Mar 4</time>
+            </div>
+            <div class="message-line">Dr. Owen Marsh · Physical therapy referral</div>
+          </div>
+        </article>
+      </section>
+    </main>
+
+    <nav class="tabbar" aria-label="Primary navigation">
+      <button class="tab" type="button">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M4.5 10.5 12 4l7.5 6.5v8a1.5 1.5 0 0 1-1.5 1.5H6a1.5 1.5 0 0 1-1.5-1.5v-8Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+          <path d="M9.5 20v-5h5v5" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+        </svg>
+        Home
+      </button>
+      <button class="tab" type="button">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M4.5 6.5h15v13h-15v-13Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+          <path d="M4.5 10.5h15M9 4.5v3M15 4.5v3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+        </svg>
+        Visits
+      </button>
+      <button class="tab active" type="button" aria-current="page">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M4 6.5h16v11H4v-11Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+          <path d="m4.5 7 7.5 6 7.5-6" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+        </svg>
+        Messages
+      </button>
+      <button class="tab" type="button">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="12" cy="8" r="3.5" stroke="currentColor" stroke-width="1.7"/>
+          <path d="M5.5 20c.5-4 2.7-6 6.5-6s6 2 6.5 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+        </svg>
+        Profile
+      </button>
+    </nav>
+  </div>
+</body>
+</html>

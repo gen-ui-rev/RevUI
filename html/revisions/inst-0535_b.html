@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Weeknight Cooking — Post</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --accent:#ffc82c;
+    --ink:#1b1c1e;
+    --mid:#6b6f76;
+    --line:#e6e7ea;
+    --ground:#f1f2f4;
+    --card:#ffffff;
+    --shadow:0 1px 3px rgba(20,22,26,.09);
+  }
+  *{box-sizing:border-box;}
+  body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    padding:40px 0;
+    margin:0;
+    background:#cfd2d6;
+    font-family:'Nunito Sans', system-ui, sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .screen{
+    width:390px;
+    height:844px;
+    background:var(--ground);
+    display:flex;
+    flex-direction:column;
+    color:var(--ink);
+    position:relative;
+  }
+
+  /* top bar */
+  .topbar{
+    background:var(--card);
+    border-bottom:1px solid var(--line);
+    padding:14px 14px;
+    display:flex;
+    align-items:center;
+    gap:12px;
+  }
+  .topbar .tt{
+    flex:1;
+    min-width:0;
+    font-size:15px;
+    font-weight:700;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .icobtn{
+    width:24px;height:24px;
+    display:flex;align-items:center;justify-content:center;
+    color:#3a3d42;
+    flex:0 0 auto;
+  }
+
+  /* content */
+  .content{
+    flex:1;
+    min-height:0;
+    padding:12px 14px 0;
+  }
+  .card{
+    background:var(--card);
+    border-radius:6px;
+    box-shadow:var(--shadow);
+  }
+
+  /* post */
+  .post{padding:14px;}
+  .gline{
+    display:flex;align-items:center;gap:6px;
+    font-size:12px;line-height:16px;color:var(--mid);
+    padding-bottom:8px;
+    border-bottom:1px dashed var(--line);
+    margin-bottom:8px;
+    white-space:nowrap;
+    overflow:hidden;
+  }
+  .gline .gname{font-weight:700;color:#3a3d42;}
+  .gline .online{
+    margin-left:auto;
+    display:flex;align-items:center;gap:5px;
+    font-weight:700;color:#2f7a4f;
+  }
+  .live{width:6px;height:6px;border-radius:50%;background:#2f9e5e;flex:0 0 auto;}
+  .byline{
+    display:flex;align-items:baseline;gap:6px;
+    font-size:13px;color:var(--mid);
+  }
+  .byline .who{font-size:14px;font-weight:700;color:var(--ink);}
+  .ptitle{
+    margin:8px 0 0;
+    font-size:17px;
+    line-height:23px;
+    font-weight:700;
+    letter-spacing:-.1px;
+  }
+  .pbody{
+    margin:8px 0 0;
+    font-size:14px;
+    line-height:21px;
+    color:#33363b;
+  }
+  .rule{height:1px;background:var(--line);margin:12px 0;}
+  .chips{display:flex;gap:8px;}
+  .chip{
+    border-radius:6px;
+    padding:0 11px;
+    height:30px;
+    display:flex;align-items:center;gap:6px;
+    font-size:13px;
+    font-weight:700;
+    border:1px solid var(--line);
+    color:#3a3d42;
+    background:var(--card);
+  }
+  .chip.on{
+    background:var(--accent);
+    border-color:var(--accent);
+    color:#241f05;
+  }
+  .chip .n{font-weight:400;color:var(--mid);}
+  .chip.on .n{color:#3d3208;}
+  .counts{
+    margin-top:10px;
+    font-size:12px;
+    line-height:16px;
+    color:var(--mid);
+  }
+
+  /* comments */
+  .chead{
+    display:flex;align-items:baseline;
+    padding:12px 4px 8px;
+  }
+  .chead h2{
+    margin:0;
+    font-size:14px;
+    font-weight:700;
+    flex:1;
+  }
+  .chead .sort{font-size:12px;color:var(--mid);font-weight:700;}
+
+  /* threads: nested reply panel, divider only between threads */
+  .thread{padding:12px 14px;}
+  .thread + .thread{border-top:1px solid var(--line);}
+  .crow1{display:flex;align-items:center;gap:6px;height:18px;}
+  .cname{font-size:14px;font-weight:700;}
+  .ctime{font-size:12px;color:var(--mid);}
+  .tag{
+    font-size:12px;
+    font-weight:700;
+    background:var(--accent);
+    color:#241f05;
+    border-radius:6px;
+    padding:1px 6px;
+    line-height:15px;
+  }
+  .likes{
+    margin-left:auto;
+    display:flex;align-items:center;gap:4px;
+    font-size:12px;color:var(--mid);
+  }
+  .ctext{
+    margin:2px 0 0;
+    font-size:14px;
+    line-height:20px;
+    color:#33363b;
+  }
+  .cact{
+    margin-top:4px;
+    font-size:12px;
+    line-height:16px;
+    color:var(--mid);
+    font-weight:700;
+  }
+  .cact .cnt{color:#3a3d42;}
+  .cact .sep{color:#c3c6cb;font-weight:400;margin:0 5px;}
+
+  .replies{
+    margin:8px 0 0 20px;
+    background:#f7f8f9;
+    border:1px solid var(--line);
+    border-radius:6px;
+    padding:9px 11px;
+  }
+  .reply + .reply{margin-top:8px;}
+  .rrow{display:flex;align-items:center;gap:6px;height:16px;}
+  .rname{font-size:13px;font-weight:700;}
+  .rtime{font-size:11px;color:var(--mid);}
+  .rtext{
+    margin:1px 0 0;
+    font-size:13px;
+    line-height:19px;
+    color:#43464b;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .morelink{
+    margin-top:8px;
+    font-size:12px;
+    line-height:16px;
+    font-weight:700;
+    color:#8a6f0a;
+  }
+
+  /* composer */
+  .composer{
+    background:var(--card);
+    border-top:1px solid var(--line);
+    padding:11px 14px;
+    display:flex;align-items:center;gap:10px;
+  }
+  .field{
+    flex:1;
+    min-width:0;
+    border:1px solid var(--line);
+    background:#f7f8f9;
+    border-radius:6px;
+    height:34px;
+    display:flex;align-items:center;
+    padding:0 11px;
+    font-size:14px;
+    color:#8c9098;
+  }
+  .send{
+    width:34px;height:34px;
+    border-radius:6px;
+    background:var(--accent);
+    color:#241f05;
+    display:flex;align-items:center;justify-content:center;
+    flex:0 0 auto;
+  }
+
+  /* tab bar */
+  .tabs{
+    background:var(--card);
+    border-top:1px solid var(--line);
+    display:flex;
+    padding:7px 0 9px;
+  }
+  .tab{
+    flex:1;
+    display:flex;flex-direction:column;align-items:center;gap:3px;
+    font-size:12px;
+    color:#8c9098;
+  }
+  .tab.active{color:var(--ink);font-weight:700;}
+  .dot{
+    position:absolute;
+    width:7px;height:7px;border-radius:50%;
+    background:var(--accent);
+    margin:-2px 0 0 13px;
+  }
+  .tabico{position:relative;}
+</style>
+</head>
+<body>
+<div class="screen">
+
+  <div class="topbar">
+    <span class="icobtn" aria-label="Back">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12.5 4L6.5 10l6 6"/></svg>
+    </span>
+    <div class="tt">Weeknight Cooking</div>
+    <span class="icobtn" aria-label="Save post">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5.5 3.5h9v13l-4.5-3.3-4.5 3.3z"/></svg>
+    </span>
+    <span class="icobtn" aria-label="More">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor"><circle cx="4" cy="10" r="1.6"/><circle cx="10" cy="10" r="1.6"/><circle cx="16" cy="10" r="1.6"/></svg>
+    </span>
+  </div>
+
+  <div class="content">
+
+    <div class="card post">
+      <div class="gline">
+        <span class="gname">Weeknight Cooking</span>
+        <span>· 9 posts today</span>
+        <span class="online"><span class="live"></span>38 online</span>
+      </div>
+      <div class="byline">
+        <span class="who">Marisol Trent</span>
+        <span>· Posted 5:12 PM · Member since 2021</span>
+      </div>
+      <h1 class="ptitle">Starter went flat after the move — anyone dealt with a water change?</h1>
+      <p class="pbody">Two weeks in the new place and it barely doubles.</p>
+      <div class="rule"></div>
+      <div class="chips">
+        <span class="chip on">Helpful <span class="n">48</span></span>
+        <span class="chip">Same here <span class="n">12</span></span>
+        <span class="chip">Curious <span class="n">7</span></span>
+      </div>
+      <div class="counts">34 comments · 1,208 views · Saved by 12</div>
+    </div>
+
+    <div class="chead">
+      <h2>Comments · 34 in 8 threads</h2>
+      <span class="sort">Top first</span>
+    </div>
+
+    <div class="card">
+
+      <div class="thread">
+        <div class="crow1">
+          <span class="cname">Dana Whitlock</span>
+          <span class="ctime">42m</span>
+          <span class="likes">
+            <svg width="13" height="13" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M10 16.2S3.6 12.4 3.6 8.1A3.4 3.4 0 0110 6.3a3.4 3.4 0 016.4 1.8c0 4.3-6.4 8.1-6.4 8.1z"/></svg>
+            14
+          </span>
+        </div>
+        <p class="ctext">Hard water is the usual suspect. Try filtered or spring water for three feeds and see if the rise returns.</p>
+        <div class="cact">Reply<span class="sep">·</span><span class="cnt">4 replies</span></div>
+
+        <div class="replies">
+          <div class="reply">
+            <div class="rrow">
+              <span class="rname">Marisol Trent</span>
+              <span class="tag">Author</span>
+              <span class="rtime">18m</span>
+            </div>
+            <p class="rtext">Grabbed spring water on the way home.</p>
+          </div>
+          <div class="reply">
+            <div class="rrow">
+              <span class="rname">Owen Park</span>
+              <span class="rtime">31m</span>
+            </div>
+            <p class="rtext">Same thing happened to me in November.</p>
+          </div>
+          <div class="morelink">Show 2 older replies</div>
+        </div>
+      </div>
+
+      <div class="thread">
+        <div class="crow1">
+          <span class="cname">Priya Raghavan</span>
+          <span class="ctime">9m</span>
+          <span class="likes">
+            <svg width="13" height="13" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M10 16.2S3.6 12.4 3.6 8.1A3.4 3.4 0 0110 6.3a3.4 3.4 0 016.4 1.8c0 4.3-6.4 8.1-6.4 8.1z"/></svg>
+            5
+          </span>
+        </div>
+        <p class="ctext">Check the shelf temperature too — new walls run colder.</p>
+        <div class="cact">Reply<span class="sep">·</span><span class="cnt">1 reply</span></div>
+
+        <div class="replies">
+          <div class="reply">
+            <div class="rrow">
+              <span class="rname">Theo Nakamura</span>
+              <span class="rtime">6m</span>
+            </div>
+            <p class="rtext">Mine gained an hour on top of the fridge.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="composer">
+    <div class="field">Add a comment</div>
+    <div class="send" aria-label="Post comment">
+      <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M10 16V4.5"/><path d="M5 9.5L10 4.4l5 5.1"/></svg>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <div class="tab">
+      <span class="tabico">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 9.4L11 3.6l7.5 5.8V18a.8.8 0 01-.8.8H4.3a.8.8 0 01-.8-.8z"/></svg>
+      </span>
+      Home
+    </div>
+    <div class="tab active">
+      <span class="tabico">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="3.1"/><path d="M2.8 18.4c.5-2.8 2.6-4.5 5.2-4.5s4.7 1.7 5.2 4.5"/><path d="M15 5.5a2.8 2.8 0 010 5.4"/><path d="M16.3 18.4c-.2-1.6-.7-2.9-1.6-3.8"/></svg>
+      </span>
+      Groups
+    </div>
+    <div class="tab">
+      <span class="dot"></span>
+      <span class="tabico">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3.4 5.4h15.2v11.2H7.6L3.4 19z"/></svg>
+      </span>
+      Inbox
+    </div>
+    <div class="tab">
+      <span class="tabico">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="7.6" r="3.3"/><path d="M4.6 18.6c.6-3.2 3.2-5.2 6.4-5.2s5.8 2 6.4 5.2"/></svg>
+      </span>
+      You
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

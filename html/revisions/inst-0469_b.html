@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Select Return Items</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #dfe5e3;
+      color: #172321;
+      font-family: 'Roboto', system-ui, sans-serif;
+    }
+
+    button {
+      font-family: inherit;
+    }
+
+    .screen {
+      width: 768px;
+      height: 1024px;
+      padding: 38px 36px;
+      background: #f4f7f6;
+      box-shadow: 0 18px 48px rgba(24, 48, 44, 0.14);
+    }
+
+    .page-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 28px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid #c8d2d0;
+    }
+
+    .eyebrow {
+      margin: 0 0 7px;
+      color: #087c74;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .page-header h1 {
+      margin: 0;
+      color: #172321;
+      font-size: 30px;
+      line-height: 37px;
+      font-weight: 700;
+    }
+
+    .page-header p {
+      margin: 7px 0 0;
+      color: #60706d;
+      font-size: 15px;
+      line-height: 22px;
+    }
+
+    .back-button {
+      flex: 0 0 auto;
+      padding: 11px 14px;
+      border: 1px solid #aebdba;
+      background: transparent;
+      color: #29413d;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 500;
+    }
+
+    .workspace {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 236px;
+      align-items: start;
+      gap: 22px;
+    }
+
+    .items-panel,
+    .summary-panel {
+      background: #ffffff;
+      border: 1px solid #bfcac7;
+    }
+
+    .items-heading {
+      padding: 19px 20px;
+      border-bottom: 1px solid #d8dfdd;
+    }
+
+    .items-heading h2,
+    .summary-panel h2 {
+      margin: 0;
+      color: #172321;
+      font-size: 18px;
+      line-height: 25px;
+      font-weight: 700;
+    }
+
+    .items-heading p {
+      margin: 4px 0 0;
+      color: #60706d;
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .selection-control,
+    .item-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .selection-control {
+      padding: 15px 18px;
+      border-bottom: 1px solid #d8dfdd;
+      background: #f8faf9;
+      color: #263a37;
+      font-size: 14px;
+      line-height: 21px;
+      font-weight: 700;
+    }
+
+    .item-row {
+      padding: 18px;
+      border-bottom: 1px solid #d8dfdd;
+    }
+
+    .item-row:last-child {
+      border-bottom: 0;
+    }
+
+    .item-row.selected {
+      border-left: 4px solid #087c74;
+      padding-left: 14px;
+      background: #f0f8f7;
+    }
+
+    .selector {
+      width: 26px;
+      height: 26px;
+      flex: 0 0 26px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid #71817e;
+      background: #ffffff;
+      color: #ffffff;
+    }
+
+    .selector.checked {
+      border-color: #087c74;
+      background: #087c74;
+    }
+
+    .selector.indeterminate {
+      border-color: #087c74;
+      color: #087c74;
+    }
+
+    .selector svg {
+      width: 17px;
+      height: 17px;
+      display: block;
+    }
+
+    .item-copy {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .item-name {
+      margin: 0;
+      overflow: hidden;
+      color: #172321;
+      font-size: 15px;
+      line-height: 22px;
+      font-weight: 500;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .item-detail {
+      margin: 4px 0 0;
+      color: #60706d;
+      font-size: 13px;
+      line-height: 19px;
+    }
+
+    .summary-panel {
+      padding: 20px;
+      border-top: 5px solid #087c74;
+    }
+
+    .summary-intro {
+      margin: 6px 0 20px;
+      color: #60706d;
+      font-size: 13px;
+      line-height: 19px;
+    }
+
+    .summary-line {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 0;
+      border-top: 1px solid #d8dfdd;
+      color: #53635f;
+      font-size: 13px;
+      line-height: 19px;
+    }
+
+    .summary-line strong {
+      color: #172321;
+      font-size: 14px;
+      font-weight: 700;
+      text-align: right;
+    }
+
+    .selection-total {
+      margin: 19px 0 0;
+      padding: 14px;
+      background: #e7f3f1;
+      color: #31504b;
+      font-size: 13px;
+      line-height: 19px;
+    }
+
+    .selection-total strong {
+      display: block;
+      margin-bottom: 2px;
+      color: #087c74;
+      font-size: 17px;
+      line-height: 23px;
+    }
+
+    .continue-button {
+      width: 100%;
+      margin-top: 16px;
+      padding: 14px 12px;
+      border: 1px solid #087c74;
+      background: #087c74;
+      color: #ffffff;
+      font-size: 15px;
+      line-height: 21px;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .review-note {
+      margin: 13px 0 0;
+      color: #60706d;
+      font-size: 12px;
+      line-height: 18px;
+      text-align: center;
+    }
+
+    .support-card {
+      margin-top: 24px;
+      padding: 20px 22px;
+      border: 1px solid #c8d2d0;
+      background: #edf2f1;
+    }
+
+    .support-card h2 {
+      margin: 0;
+      color: #263a37;
+      font-size: 16px;
+      line-height: 23px;
+      font-weight: 700;
+    }
+
+    .support-card p {
+      margin: 5px 0 0;
+      color: #60706d;
+      font-size: 14px;
+      line-height: 21px;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="page-header">
+      <div>
+        <p class="eyebrow">Return items · Step 1 of 3</p>
+        <h1>Select items to return</h1>
+        <p>Order CL-48271 · Delivered May 14</p>
+      </div>
+      <button class="back-button" type="button">Back to order</button>
+    </header>
+
+    <main class="workspace">
+      <section class="items-panel" aria-labelledby="eligible-title">
+        <header class="items-heading">
+          <h2 id="eligible-title">Eligible items</h2>
+          <p>Select each product you want to include.</p>
+        </header>
+
+        <div class="selection-control">
+          <span class="selector indeterminate" aria-hidden="true">
+            <svg viewBox="0 0 16 16" fill="none">
+              <path d="M3 8H13" stroke="currentColor" stroke-width="2" stroke-linecap="square"/>
+            </svg>
+          </span>
+          <span>Select all eligible items</span>
+        </div>
+
+        <div class="item-row selected">
+          <span class="selector checked" aria-hidden="true">
+            <svg viewBox="0 0 16 16" fill="none">
+              <path d="M3 8.2L6.3 11.3L13 4.7" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter"/>
+            </svg>
+          </span>
+          <div class="item-copy">
+            <p class="item-name">Linen Blend Overshirt</p>
+            <p class="item-detail">Price $68.00 · Quantity 1</p>
+          </div>
+        </div>
+
+        <div class="item-row selected">
+          <span class="selector checked" aria-hidden="true">
+            <svg viewBox="0 0 16 16" fill="none">
+              <path d="M3 8.2L6.3 11.3L13 4.7" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter"/>
+            </svg>
+          </span>
+          <div class="item-copy">
+            <p class="item-name">Stoneware Serving Bowl</p>
+            <p class="item-detail">Price $34.00 · Quantity 1</p>
+          </div>
+        </div>
+
+        <div class="item-row">
+          <span class="selector" aria-hidden="true"></span>
+          <div class="item-copy">
+            <p class="item-name">Canvas Market Tote</p>
+            <p class="item-detail">Price $22.00 · Quantity 1</p>
+          </div>
+        </div>
+      </section>
+
+      <aside class="summary-panel" aria-labelledby="summary-title">
+        <h2 id="summary-title">Return summary</h2>
+        <p class="summary-intro">Review your current selection before continuing.</p>
+
+        <div class="summary-line">
+          <span>Selected</span>
+          <strong>2 of 3</strong>
+        </div>
+        <div class="summary-line">
+          <span>Items value</span>
+          <strong>$102.00</strong>
+        </div>
+        <div class="summary-line">
+          <span>Order</span>
+          <strong>CL-48271</strong>
+        </div>
+
+        <p class="selection-total">
+          <strong>2 items selected</strong>
+          Reasons are chosen on the next step.
+        </p>
+
+        <button class="continue-button" type="button">Choose return reason</button>
+        <p class="review-note">You can review again before submitting.</p>
+      </aside>
+    </main>
+
+    <section class="support-card" aria-labelledby="return-help">
+      <h2 id="return-help">Need help with this return?</h2>
+      <p>All three items are eligible. Select only the products you plan to send back.</p>
+    </section>
+  </div>
+</body>
+</html>

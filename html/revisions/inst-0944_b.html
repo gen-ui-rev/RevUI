@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Cadence — Map</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;}
+  body{
+    margin:0;min-height:100vh;display:flex;justify-content:center;align-items:flex-start;
+    padding:40px 0;background:#d9dbd8;font-family:'Inter',system-ui,sans-serif;color:#1b2129;
+  }
+  .screen{
+    width:1024px;height:768px;background:#e6e9e3;position:relative;overflow:hidden;
+  }
+
+  /* full-bleed map used as background */
+  .water{position:absolute;background:#d5e0e6;transform:rotate(18deg);}
+  .park{position:absolute;background:#dde5d6;border-radius:8px;}
+  .road{position:absolute;background:#f7f8f6;}
+  .road.thin{background:#eef0ec;}
+  .blk{position:absolute;background:#dfe2dc;border-radius:6px;}
+  .maplabel{position:absolute;font-size:11.5px;color:#7d858e;font-weight:500;}
+  .pin{position:absolute;width:14px;height:14px;border-radius:50%;background:#8b939d;border:2.5px solid #fff;}
+  .me{position:absolute;width:16px;height:16px;border-radius:50%;background:#4e6b86;border:3px solid #fff;}
+  .sel{position:absolute;display:flex;flex-direction:column;align-items:center;z-index:2;}
+  .sel .bub{
+    background:#2f3a45;color:#fff;border-radius:6px;padding:6px 10px;font-size:12px;font-weight:600;
+    display:flex;align-items:center;gap:6px;white-space:nowrap;
+  }
+  .sel .tip{width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:7px solid #2f3a45;}
+  .sel .dot{width:8px;height:8px;border-radius:50%;background:#2f3a45;border:2px solid #fff;margin-top:-1px;}
+  .scrim{
+    position:absolute;left:0;top:0;right:0;bottom:0;z-index:1;pointer-events:none;
+    background:linear-gradient(180deg,rgba(246,247,244,.42) 0%,rgba(234,237,232,.78) 38%,rgba(234,237,232,.5) 100%);
+  }
+
+  /* desktop top bar */
+  .topbar{
+    position:absolute;left:0;top:0;right:0;z-index:5;display:flex;align-items:center;gap:26px;
+    padding:11px 22px;background:rgba(255,255,255,.95);border-bottom:1px solid #e2e4e0;
+  }
+  .brandrow{display:flex;align-items:center;gap:11px;flex:none;}
+  .brand{
+    width:30px;height:30px;border-radius:7px;background:#2f3a45;color:#fff;font-size:14px;font-weight:700;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .wordmark{font-size:14px;font-weight:600;letter-spacing:-.1px;}
+  .title{font-size:18px;font-weight:600;letter-spacing:-.2px;margin:0;flex:none;}
+  .nav{display:flex;gap:4px;flex:none;}
+  .navlink{
+    font-size:13px;font-weight:500;color:#7d858e;padding:7px 12px;border-radius:7px;cursor:pointer;
+  }
+  .navlink.on{color:#2f3a45;font-weight:600;background:#eef0ec;}
+  .spacer{flex:1;}
+  .sub{font-size:12.5px;color:#6d7580;flex:none;}
+  .iconbtn{
+    width:32px;height:32px;border-radius:7px;border:1px solid #e0e2df;background:#fff;
+    display:flex;align-items:center;justify-content:center;flex:none;color:#3c4551;cursor:pointer;
+  }
+  .mono.user{width:30px;height:30px;}
+
+  .chips{position:absolute;left:22px;top:74px;z-index:4;display:flex;gap:8px;}
+  .chip{
+    font-size:12.5px;font-weight:500;color:#4b535e;background:rgba(255,255,255,.94);border:1px solid #e2e4e0;
+    padding:6px 12px;border-radius:20px;white-space:nowrap;cursor:pointer;box-shadow:0 2px 6px rgba(20,26,33,.06);
+  }
+  .chip.on{background:#2f3a45;border-color:#2f3a45;color:#fff;}
+  .ctrls{position:absolute;right:22px;bottom:22px;z-index:4;display:flex;gap:8px;}
+  .ctrl{
+    width:36px;height:36px;border-radius:7px;background:#fff;border:1px solid #e0e2df;color:#3c4551;
+    display:flex;align-items:center;justify-content:center;box-shadow:0 2px 7px rgba(20,26,33,.08);
+    font-size:16px;font-weight:600;cursor:pointer;
+  }
+
+  /* floating board over the map */
+  .board{
+    position:absolute;left:132px;top:132px;width:760px;z-index:4;background:rgba(255,255,255,.97);
+    border:1px solid #e6e8e4;border-radius:12px;padding:22px 24px 24px;box-shadow:0 18px 46px rgba(20,26,33,.2);
+  }
+  .place{display:flex;align-items:center;gap:18px;}
+  .place img{width:112px;height:112px;border-radius:8px;object-fit:cover;display:block;background:#dcdedb;flex:none;}
+  .pinfo{flex:1;min-width:0;}
+  .badge{
+    display:inline-block;font-size:10.5px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;
+    color:#2f3a45;background:#e7ecef;border-radius:5px;padding:3px 7px;margin-bottom:7px;
+  }
+  .pname{font-size:19px;font-weight:600;margin:0;letter-spacing:-.2px;}
+  .pmeta{font-size:13px;color:#6d7580;margin:4px 0 0;}
+  .pwhen{font-size:13.5px;font-weight:500;color:#2f3a45;margin:7px 0 0;}
+  .who{display:flex;gap:5px;margin-top:10px;align-items:center;}
+  .mono{
+    width:25px;height:25px;border-radius:7px;background:#eceee9;color:#4b535e;
+    font-size:10.5px;font-weight:600;display:flex;align-items:center;justify-content:center;
+  }
+  .who span.more{font-size:12px;color:#7d858e;margin-left:3px;}
+  .actions{flex:none;width:186px;}
+  .cta{
+    display:flex;align-items:center;justify-content:center;gap:8px;background:#2f3a45;color:#fff;
+    border-radius:8px;padding:12px;font-size:14px;font-weight:600;cursor:pointer;
+  }
+  .ghost{
+    margin-top:8px;display:flex;align-items:center;justify-content:center;gap:7px;background:#fff;
+    border:1px solid #e0e2df;color:#3c4551;border-radius:8px;padding:11px;font-size:13.5px;font-weight:500;cursor:pointer;
+  }
+  .rule{height:1px;background:#ececea;margin:18px -24px 0;}
+  .seclabel{font-size:11.5px;font-weight:600;color:#8a919a;letter-spacing:.6px;text-transform:uppercase;margin:14px 0 0;}
+
+  /* stepped run along a horizontal spine, times as markers on it */
+  .run{position:relative;margin-top:16px;display:flex;align-items:flex-start;gap:12px;}
+  .spine{position:absolute;left:7px;right:7px;top:6px;height:2px;background:#dcdfd9;}
+  .stop{flex:1;min-width:0;display:flex;flex-direction:column;}
+  .mrow{display:flex;align-items:center;gap:8px;position:relative;z-index:2;}
+  .sdot{width:14px;height:14px;border-radius:50%;background:#fff;border:2.5px solid #b9c0b6;flex:none;}
+  .stop.now .sdot{background:#2f3a45;border-color:#2f3a45;}
+  .stime{
+    font-size:11px;font-weight:600;color:#4b535e;background:#fff;border:1px solid #e0e3dd;
+    border-radius:20px;padding:2px 9px;white-space:nowrap;
+  }
+  .stop.now .stime{background:#2f3a45;border-color:#2f3a45;color:#fff;}
+  .drop{width:2px;background:#dcdfd9;margin-left:6px;}
+  .scard{
+    background:#f8f9f7;border:1px solid #ebeee9;border-radius:9px;padding:10px;cursor:pointer;
+  }
+  .scard.now{background:#2f3a45;border-color:#2f3a45;}
+  .scard img{width:48px;height:48px;border-radius:6px;object-fit:cover;display:block;background:#dcdedb;}
+  .iconsq{
+    width:48px;height:48px;border-radius:6px;background:#41505e;color:#dfe6ec;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .rtitle{font-size:13.5px;font-weight:600;margin-top:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .rsub{font-size:11.5px;color:#767e88;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .scard.now .rtitle{color:#fff;}
+  .scard.now .rsub{color:#b8c2cb;}
+</style>
+</head>
+<body>
+<div class="screen">
+
+  <div class="water" style="left:-50px;top:-40px;width:310px;height:310px;"></div>
+  <div class="park" style="right:-40px;top:130px;width:270px;height:210px;"></div>
+  <div class="park" style="left:52px;bottom:110px;width:170px;height:120px;"></div>
+
+  <div class="road" style="left:0;top:212px;width:100%;height:14px;"></div>
+  <div class="road" style="left:0;top:472px;width:100%;height:10px;"></div>
+  <div class="road thin" style="left:0;top:648px;width:100%;height:5px;"></div>
+  <div class="road" style="left:150px;top:0;width:14px;height:768px;"></div>
+  <div class="road" style="left:520px;top:0;width:10px;height:768px;"></div>
+  <div class="road thin" style="left:830px;top:0;width:5px;height:768px;"></div>
+
+  <div class="blk" style="left:28px;top:252px;width:104px;height:44px;"></div>
+  <div class="blk" style="left:914px;top:500px;width:90px;height:60px;"></div>
+  <div class="blk" style="left:560px;top:700px;width:110px;height:44px;"></div>
+
+  <div class="maplabel" style="left:26px;top:190px;">Harbor Way</div>
+  <div class="maplabel" style="left:552px;top:620px;">Ninth Street</div>
+
+  <div class="pin" style="left:92px;top:340px;"></div>
+  <div class="pin" style="left:940px;top:270px;"></div>
+  <div class="pin" style="left:700px;top:690px;"></div>
+  <div class="me" style="left:186px;top:672px;"></div>
+
+  <div class="sel" style="left:330px;top:592px;">
+    <div class="bub">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 2"/></svg>
+      2:30 PM
+    </div>
+    <div class="tip"></div>
+    <div class="dot"></div>
+  </div>
+
+  <div class="scrim"></div>
+
+  <div class="topbar">
+    <div class="brandrow">
+      <div class="brand">C</div>
+      <span class="wordmark">Cadence</span>
+    </div>
+    <h1 class="title">On-site today</h1>
+    <div class="nav">
+      <div class="navlink">Schedule</div>
+      <div class="navlink on">Map</div>
+      <div class="navlink">Notes</div>
+      <div class="navlink">Team</div>
+    </div>
+    <div class="spacer"></div>
+    <div class="sub">Thursday, March 14 · 4 sessions nearby</div>
+    <div class="iconbtn" aria-label="Switch to list view">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01"/></svg>
+    </div>
+    <div class="mono user">MK</div>
+  </div>
+
+  <div class="chips">
+    <div class="chip on">Today</div>
+    <div class="chip">Rooms</div>
+    <div class="chip">Cafés</div>
+    <div class="chip">Free now</div>
+  </div>
+
+  <div class="ctrls">
+    <div class="ctrl" aria-label="Center on my location">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>
+    </div>
+    <div class="ctrl" aria-label="Zoom out">−</div>
+    <div class="ctrl" aria-label="Zoom in">+</div>
+  </div>
+
+  <div class="board">
+    <div class="place">
+      <img src="https://loremflickr.com/112/112/meeting?lock=12500" width="112" height="112" alt="Meeting room with a long table at Harborview Studio">
+      <div class="pinfo">
+        <span class="badge">Happening now</span>
+        <p class="pname">Harborview Studio</p>
+        <p class="pmeta">Room 2 · Seats 6 · 8 min walk · Harbor Way 14</p>
+        <p class="pwhen">Design sync · 2:30–3:15 PM</p>
+        <div class="who">
+          <div class="mono">MK</div>
+          <div class="mono">TR</div>
+          <div class="mono">DA</div>
+          <span class="more">+2 going</span>
+        </div>
+      </div>
+      <div class="actions">
+        <div class="cta">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l18-8-8 18-2-8-8-2z"/></svg>
+          Get directions
+        </div>
+        <div class="ghost">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3h11l4 4v14H5z"/><path d="M9 12h7M9 16h4"/></svg>
+          Open agenda
+        </div>
+      </div>
+    </div>
+
+    <div class="rule"></div>
+    <div class="seclabel">Later today — stepped run from this session</div>
+
+    <div class="run">
+      <div class="spine"></div>
+
+      <div class="stop now">
+        <div class="mrow"><span class="sdot"></span><span class="stime">2:30 PM</span></div>
+        <div class="drop" style="height:14px;"></div>
+        <div class="scard now">
+          <div class="iconsq">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 2"/></svg>
+          </div>
+          <div class="rtitle">Design sync</div>
+          <div class="rsub">Room 2 · ends 3:15 PM</div>
+        </div>
+      </div>
+
+      <div class="stop">
+        <div class="mrow"><span class="sdot"></span><span class="stime">4:00 PM</span></div>
+        <div class="drop" style="height:32px;"></div>
+        <div class="scard">
+          <img src="https://loremflickr.com/48/48/desk?lock=12501" width="48" height="48" alt="Corner table at Bloom Coffee">
+          <div class="rtitle">Copy review</div>
+          <div class="rsub">Bloom Coffee, back table</div>
+        </div>
+      </div>
+
+      <div class="stop">
+        <div class="mrow"><span class="sdot"></span><span class="stime">5:15 PM</span></div>
+        <div class="drop" style="height:50px;"></div>
+        <div class="scard">
+          <img src="https://loremflickr.com/48/48/notebook?lock=12502" width="48" height="48" alt="Notebook and markers set out for the roadmap workshop">
+          <div class="rtitle">Roadmap workshop</div>
+          <div class="rsub">Harborview Studio, Room 4</div>
+        </div>
+      </div>
+
+      <div class="stop">
+        <div class="mrow"><span class="sdot"></span><span class="stime">6:00 PM</span></div>
+        <div class="drop" style="height:68px;"></div>
+        <div class="scard">
+          <img src="https://loremflickr.com/48/48/workspace?lock=12503" width="48" height="48" alt="Shared workspace at the Ninth Street Annex">
+          <div class="rtitle">Hiring debrief</div>
+          <div class="rsub">Ninth Street Annex, pod 3</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

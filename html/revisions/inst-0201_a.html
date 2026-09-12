@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Conversation with Avery Cole</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 24px 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #e8e7e3;
+      color: #282927;
+      font-family: 'Source Serif 4', Georgia, serif;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      color: inherit;
+    }
+
+    .screen {
+      width: 1024px;
+      height: 768px;
+      display: flex;
+      background: #ffffff;
+      border: 1px solid #cfcec8;
+    }
+
+    /* ---------- left icon rail ---------- */
+    .rail {
+      width: 78px;
+      flex: 0 0 78px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 16px 0;
+      border-right: 1px solid #deddd8;
+      background: #fbfbf9;
+    }
+
+    .brand {
+      width: 40px;
+      height: 40px;
+      margin-bottom: 12px;
+      display: grid;
+      place-items: center;
+      border: 1px solid #cecdc7;
+      border-radius: 11px;
+      background: #ffffff;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
+    .nav-item {
+      width: 66px;
+      padding: 9px 2px 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      border: 0;
+      border-radius: 10px;
+      background: transparent;
+      color: #85867f;
+      font-size: 11px;
+      line-height: 13px;
+    }
+
+    .nav-item.active {
+      background: #efeeea;
+      color: #2f302d;
+      font-weight: 600;
+    }
+
+    .icon-button svg,
+    .composer-button svg,
+    .nav-item svg {
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.7;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .nav-item svg {
+      width: 21px;
+      height: 21px;
+    }
+
+    /* ---------- conversation list ---------- */
+    .list {
+      width: 252px;
+      flex: 0 0 252px;
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid #deddd8;
+    }
+
+    .list-head {
+      padding: 16px 16px 8px;
+    }
+
+    .list-title {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 22px;
+    }
+
+    .list-sub {
+      margin: 2px 0 0;
+      color: #777872;
+      font-size: 12px;
+      line-height: 15px;
+    }
+
+    .search {
+      width: calc(100% - 32px);
+      margin: 0 16px 8px;
+      padding: 8px 10px;
+      border: 1px solid #d4d3cd;
+      border-radius: 9px;
+      outline: 0;
+      background: #ffffff;
+      color: #292a27;
+      font-size: 13px;
+    }
+
+    .search::placeholder {
+      color: #8a8b84;
+      opacity: 1;
+    }
+
+    .thread-item {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 34px minmax(0, 1fr) auto;
+      align-items: start;
+      gap: 10px;
+      padding: 10px 16px;
+      border: 0;
+      border-top: 1px solid #ecebe6;
+      background: transparent;
+      text-align: left;
+    }
+
+    .thread-item.active {
+      background: #f4f3ef;
+    }
+
+    .avatar {
+      display: grid;
+      place-items: center;
+      border: 1px solid #cecdc7;
+      border-radius: 50%;
+      background: #f5f4f0;
+      color: #666761;
+    }
+
+    .avatar svg {
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .avatar.sm {
+      width: 34px;
+      height: 34px;
+      flex: 0 0 34px;
+    }
+
+    .avatar.sm svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .avatar.xs {
+      width: 28px;
+      height: 28px;
+      flex: 0 0 28px;
+    }
+
+    .avatar.xs svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .ti-copy {
+      min-width: 0;
+    }
+
+    .ti-name {
+      margin: 0;
+      overflow: hidden;
+      font-size: 13px;
+      font-weight: 600;
+      line-height: 17px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .ti-snippet {
+      margin: 2px 0 0;
+      overflow: hidden;
+      color: #777872;
+      font-size: 12px;
+      line-height: 15px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .ti-time {
+      color: #8a8b84;
+      font-size: 11px;
+      line-height: 17px;
+    }
+
+    /* ---------- thread ---------- */
+    .thread {
+      min-width: 0;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .thread-head {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 18px;
+      border-bottom: 1px solid #deddd8;
+    }
+
+    .thread-head-copy {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .title {
+      margin: 0;
+      overflow: hidden;
+      color: #222320;
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 20px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .presence {
+      margin: 2px 0 0;
+      color: #777872;
+      font-size: 12px;
+      line-height: 15px;
+    }
+
+    .icon-button {
+      width: 36px;
+      height: 36px;
+      padding: 0;
+      display: grid;
+      place-items: center;
+      border: 0;
+      border-radius: 8px;
+      background: transparent;
+    }
+
+    .conversation {
+      min-height: 0;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 14px 18px 10px;
+    }
+
+    .day-divider {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+      color: #85867f;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .day-divider::before,
+    .day-divider::after {
+      height: 1px;
+      flex: 1;
+      content: "";
+      background: #e2e1dc;
+    }
+
+    .message {
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .message.outgoing {
+      justify-content: flex-end;
+    }
+
+    .message-stack {
+      max-width: 300px;
+    }
+
+    .bubble {
+      padding: 8px 11px;
+      border: 1px solid #d7d6d0;
+      border-radius: 10px;
+      background: #f6f5f2;
+      font-size: 14px;
+      line-height: 19px;
+    }
+
+    .bubble p {
+      margin: 0;
+    }
+
+    .outgoing .bubble {
+      border-color: #363733;
+      background: #363733;
+      color: #ffffff;
+    }
+
+    .message-meta {
+      margin-top: 3px;
+      color: #85867f;
+      font-size: 12px;
+      line-height: 15px;
+    }
+
+    .outgoing .message-meta {
+      text-align: right;
+    }
+
+    .system-note {
+      margin: 4px 40px 10px;
+      padding: 7px 10px;
+      border: 1px solid #d9d8d2;
+      border-radius: 10px;
+      color: #565752;
+      font-size: 13px;
+      line-height: 17px;
+      text-align: center;
+    }
+
+    .system-note strong {
+      font-weight: 600;
+    }
+
+    .composer {
+      padding: 10px 18px 14px;
+      border-top: 1px solid #deddd8;
+    }
+
+    .composer-box {
+      display: grid;
+      grid-template-columns: 42px minmax(0, 1fr) 42px;
+      align-items: center;
+      border: 1px solid #c9c8c2;
+      border-radius: 10px;
+      background: #ffffff;
+    }
+
+    .composer-button {
+      width: 42px;
+      height: 46px;
+      padding: 0;
+      display: grid;
+      place-items: center;
+      border: 0;
+      background: transparent;
+    }
+
+    .composer-button.send {
+      color: #30312e;
+    }
+
+    .composer-input {
+      width: 100%;
+      height: 46px;
+      padding: 0 4px;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      color: #292a27;
+      font-size: 14px;
+    }
+
+    .composer-input::placeholder {
+      color: #8a8b84;
+      opacity: 1;
+    }
+
+    /* ---------- item panel ---------- */
+    .item-panel {
+      width: 290px;
+      flex: 0 0 290px;
+      padding: 16px;
+      border-left: 1px solid #deddd8;
+      background: #fbfbf9;
+    }
+
+    .item-photo {
+      display: block;
+      border: 1px solid #dedcd6;
+      border-radius: 10px;
+    }
+
+    .item-name {
+      margin: 10px 0 0;
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 20px;
+    }
+
+    .item-meta {
+      margin: 3px 0 0;
+      color: #6f706a;
+      font-size: 13px;
+      line-height: 17px;
+    }
+
+    .panel-heading {
+      margin: 14px 0 6px;
+      color: #6c6d66;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      line-height: 14px;
+      text-transform: uppercase;
+    }
+
+    .grade {
+      display: inline-block;
+      padding: 3px 9px;
+      border: 1px solid #c8c7c0;
+      border-radius: 999px;
+      background: #ffffff;
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 15px;
+    }
+
+    .facts {
+      margin: 8px 0 0;
+      padding: 0;
+      list-style: none;
+      color: #4f504b;
+      font-size: 13px;
+      line-height: 17px;
+    }
+
+    .facts li {
+      padding-left: 12px;
+      position: relative;
+      margin-bottom: 3px;
+    }
+
+    .facts li::before {
+      position: absolute;
+      left: 0;
+      content: "·";
+      color: #8a8b84;
+    }
+
+    .thumbs {
+      display: flex;
+      gap: 8px;
+    }
+
+    .thumb {
+      display: block;
+      border: 1px solid #dedcd6;
+      border-radius: 8px;
+    }
+
+    .thumb-caption {
+      margin: 5px 0 0;
+      color: #7c7d76;
+      font-size: 11px;
+      line-height: 14px;
+    }
+
+    .pickup {
+      margin-top: 14px;
+      padding: 11px 12px 12px;
+      border: 1px solid #cbcac3;
+      border-radius: 10px;
+      background: #ffffff;
+    }
+
+    .pickup-label {
+      margin: 0;
+      color: #6c6d66;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      line-height: 14px;
+      text-transform: uppercase;
+    }
+
+    .pickup-when {
+      margin: 4px 0 0;
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 18px;
+    }
+
+    .pickup-where {
+      margin: 2px 0 10px;
+      color: #6f706a;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .btn-primary,
+    .btn-ghost {
+      width: 100%;
+      padding: 9px 10px;
+      border-radius: 9px;
+      font-size: 13px;
+      font-weight: 600;
+      line-height: 16px;
+    }
+
+    .btn-primary {
+      border: 1px solid #363733;
+      background: #363733;
+      color: #ffffff;
+    }
+
+    .btn-ghost {
+      margin-top: 6px;
+      border: 1px solid #c9c8c2;
+      background: #ffffff;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <aside class="rail" aria-label="Primary navigation">
+      <div class="brand" aria-hidden="true">MK</div>
+      <button class="nav-item" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M4 10.5 12 4l8 6.5"></path>
+          <path d="M6 9.5V20h12V9.5"></path>
+        </svg>
+        <span>Browse</span>
+      </button>
+      <button class="nav-item" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="11" cy="11" r="6.5"></circle>
+          <path d="m16 16 4 4"></path>
+        </svg>
+        <span>Search</span>
+      </button>
+      <button class="nav-item active" type="button" aria-current="page">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M4 5.5h16v11H9l-5 3v-14Z"></path>
+        </svg>
+        <span>Messages</span>
+      </button>
+      <button class="nav-item" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="8" r="3.5"></circle>
+          <path d="M5.5 20c.8-4 3-6 6.5-6s5.7 2 6.5 6"></path>
+        </svg>
+        <span>Account</span>
+      </button>
+    </aside>
+
+    <section class="list" aria-label="Conversations">
+      <div class="list-head">
+        <h2 class="list-title">Messages</h2>
+        <p class="list-sub">4 buyers waiting on you</p>
+      </div>
+      <input class="search" type="text" aria-label="Search conversations" placeholder="Search conversations">
+
+      <button class="thread-item active" type="button" aria-current="true">
+        <span class="avatar sm" aria-hidden="true">
+          <svg viewBox="0 0 20 20">
+            <circle cx="10" cy="7" r="3"></circle>
+            <path d="M4.5 16c.8-3 2.7-4.5 5.5-4.5s4.7 1.5 5.5 4.5"></path>
+          </svg>
+        </span>
+        <span class="ti-copy">
+          <span class="ti-name">Avery Cole</span>
+          <span class="ti-snippet">Would Saturday at 10:30 work?</span>
+        </span>
+        <span class="ti-time">9:26</span>
+      </button>
+
+      <button class="thread-item" type="button">
+        <span class="avatar sm" aria-hidden="true">
+          <svg viewBox="0 0 20 20">
+            <circle cx="10" cy="7" r="3"></circle>
+            <path d="M4.5 16c.8-3 2.7-4.5 5.5-4.5s4.7 1.5 5.5 4.5"></path>
+          </svg>
+        </span>
+        <span class="ti-copy">
+          <span class="ti-name">Miriam Haas</span>
+          <span class="ti-snippet">Is the reading lamp still up?</span>
+        </span>
+        <span class="ti-time">8:52</span>
+      </button>
+
+      <button class="thread-item" type="button">
+        <span class="avatar sm" aria-hidden="true">
+          <svg viewBox="0 0 20 20">
+            <circle cx="10" cy="7" r="3"></circle>
+            <path d="M4.5 16c.8-3 2.7-4.5 5.5-4.5s4.7 1.5 5.5 4.5"></path>
+          </svg>
+        </span>
+        <span class="ti-copy">
+          <span class="ti-name">Dan Whitfield</span>
+          <span class="ti-snippet">Thanks — picked up the chairs.</span>
+        </span>
+        <span class="ti-time">Fri</span>
+      </button>
+
+      <button class="thread-item" type="button">
+        <span class="avatar sm" aria-hidden="true">
+          <svg viewBox="0 0 20 20">
+            <circle cx="10" cy="7" r="3"></circle>
+            <path d="M4.5 16c.8-3 2.7-4.5 5.5-4.5s4.7 1.5 5.5 4.5"></path>
+          </svg>
+        </span>
+        <span class="ti-copy">
+          <span class="ti-name">Priya Raman</span>
+          <span class="ti-snippet">Could you hold the bookcase?</span>
+        </span>
+        <span class="ti-time">Thu</span>
+      </button>
+    </section>
+
+    <section class="thread" aria-label="Conversation with Avery Cole">
+      <header class="thread-head">
+        <span class="avatar sm" aria-hidden="true">
+          <svg viewBox="0 0 20 20">
+            <circle cx="10" cy="7" r="3"></circle>
+            <path d="M4.5 16c.8-3 2.7-4.5 5.5-4.5s4.7 1.5 5.5 4.5"></path>
+          </svg>
+        </span>
+        <div class="thread-head-copy">
+          <h1 class="title">Avery Cole</h1>
+          <p class="presence">Active 12 minutes ago · Walnut side table</p>
+        </div>
+        <button class="icon-button" type="button" aria-label="Conversation options">
+          <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="5" cy="12" r="1"></circle>
+            <circle cx="12" cy="12" r="1"></circle>
+            <circle cx="19" cy="12" r="1"></circle>
+          </svg>
+        </button>
+      </header>
+
+      <main class="conversation">
+        <div class="day-divider">Today</div>
+
+        <div class="message incoming">
+          <div class="avatar xs" aria-hidden="true">
+            <svg viewBox="0 0 20 20">
+              <circle cx="10" cy="7" r="3"></circle>
+              <path d="M4.5 16c.8-3 2.7-4.5 5.5-4.5s4.7 1.5 5.5 4.5"></path>
+            </svg>
+          </div>
+          <div class="message-stack">
+            <div class="bubble">
+              <p>Hi, is the walnut side table still available for pickup?</p>
+            </div>
+            <div class="message-meta">9:14 AM</div>
+          </div>
+        </div>
+
+        <div class="message outgoing">
+          <div class="message-stack">
+            <div class="bubble">
+              <p>Yes, it is. I’m in North Park.</p>
+            </div>
+            <div class="message-meta">9:18 AM · Read</div>
+          </div>
+        </div>
+
+        <div class="message incoming">
+          <div class="avatar xs" aria-hidden="true">
+            <svg viewBox="0 0 20 20">
+              <circle cx="10" cy="7" r="3"></circle>
+              <path d="M4.5 16c.8-3 2.7-4.5 5.5-4.5s4.7 1.5 5.5 4.5"></path>
+            </svg>
+          </div>
+          <div class="message-stack">
+            <div class="bubble">
+              <p>Great. Are there any scratches on the top?</p>
+            </div>
+            <div class="message-meta">9:20 AM</div>
+          </div>
+        </div>
+
+        <div class="message outgoing">
+          <div class="message-stack">
+            <div class="bubble">
+              <p>One light mark near the back edge — the close-ups are on the listing panel.</p>
+            </div>
+            <div class="message-meta">9:23 AM · Read</div>
+          </div>
+        </div>
+
+        <div class="message incoming">
+          <div class="avatar xs" aria-hidden="true">
+            <svg viewBox="0 0 20 20">
+              <circle cx="10" cy="7" r="3"></circle>
+              <path d="M4.5 16c.8-3 2.7-4.5 5.5-4.5s4.7 1.5 5.5 4.5"></path>
+            </svg>
+          </div>
+          <div class="message-stack">
+            <div class="bubble">
+              <p>That works for me. Would Saturday at 10:30 AM be okay?</p>
+            </div>
+            <div class="message-meta">9:26 AM</div>
+          </div>
+        </div>
+
+        <div class="system-note">
+          <strong>Avery proposed a pickup</strong> · Sat, May 18 at 10:30 AM — confirm it in the listing panel
+        </div>
+
+        <div class="message outgoing">
+          <div class="message-stack">
+            <div class="bubble">
+              <p>Saturday works. I’ll hold it for you through 11:00 AM.</p>
+            </div>
+            <div class="message-meta">9:29 AM · Delivered</div>
+          </div>
+        </div>
+      </main>
+
+      <form class="composer" aria-label="Write a message">
+        <div class="composer-box">
+          <button class="composer-button" type="button" aria-label="Attach a photo">
+            <svg width="21" height="21" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M8.5 12.5 14 7a3.2 3.2 0 0 1 4.5 4.5l-7 7a5 5 0 0 1-7-7l7.2-7.2"></path>
+            </svg>
+          </button>
+          <input class="composer-input" type="text" aria-label="Message Avery Cole" placeholder="Message Avery">
+          <button class="composer-button send" type="submit" aria-label="Send message">
+            <svg width="21" height="21" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="m4 5 16 7-16 7 3-7-3-7Z"></path>
+              <path d="M7 12h13"></path>
+            </svg>
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <aside class="item-panel" aria-label="Listing under discussion">
+      <img class="item-photo" src="https://loremflickr.com/256/192/walnut,table" width="256" height="192" alt="Walnut side table photographed in daylight">
+      <h2 class="item-name">Walnut side table</h2>
+      <p class="item-meta">$86.00 · Local pickup · North Park</p>
+
+      <h3 class="panel-heading">Condition</h3>
+      <span class="grade">Very good</span>
+      <ul class="facts">
+        <li>Solid walnut, original hand-waxed finish</li>
+        <li>One light mark near the back edge</li>
+        <li>Legs tight, no wobble or repairs</li>
+      </ul>
+
+      <h3 class="panel-heading">Close-ups</h3>
+      <div class="thumbs">
+        <img class="thumb" src="https://loremflickr.com/120/90/walnut,grain" width="120" height="90" alt="Close-up of the mark near the back edge">
+        <img class="thumb" src="https://loremflickr.com/120/90/table,leg" width="120" height="90" alt="Close-up of a tapered table leg">
+      </div>
+      <p class="thumb-caption">Back-edge mark · Leg joint detail</p>
+
+      <div class="pickup">
+        <p class="pickup-label">Pickup proposed</p>
+        <p class="pickup-when">Sat, May 18 · 10:30 AM</p>
+        <p class="pickup-where">North Park · held until 11:00 AM</p>
+        <button class="btn-primary" type="button">Confirm pickup</button>
+        <button class="btn-ghost" type="button">Suggest another time</button>
+      </div>
+    </aside>
+  </div>
+</body>
+</html>

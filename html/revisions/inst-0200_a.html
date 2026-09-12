@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Personal Note Detail</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #e7e6e9;
+      color: #26232a;
+      font-family: 'Manrope', system-ui, sans-serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      width: 1024px;
+      height: 768px;
+      display: flex;
+      flex-direction: column;
+      background: #f7f6f8;
+      box-shadow: 0 18px 48px rgba(44, 37, 45, 0.12);
+    }
+
+    .topbar {
+      display: grid;
+      grid-template-columns: 250px 1fr 250px;
+      align-items: center;
+      padding: 13px 22px;
+      border-bottom: 1px solid #e4e0e5;
+      background: #ffffff;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 15px;
+      line-height: 22px;
+      font-weight: 700;
+    }
+
+    .brand-mark {
+      width: 30px;
+      height: 30px;
+      display: grid;
+      place-items: center;
+      border-radius: 8px;
+      background: #c21872;
+      color: #ffffff;
+      font-size: 14px;
+    }
+
+    .topbar-title {
+      margin: 0;
+      text-align: center;
+      font-size: 15px;
+      line-height: 30px;
+      font-weight: 700;
+    }
+
+    .top-actions {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .icon-button,
+    .text-button,
+    .tool-button,
+    .nav-button {
+      border: 0;
+      background: transparent;
+      color: inherit;
+      cursor: default;
+    }
+
+    .icon-button {
+      width: 36px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      padding: 0;
+      border: 1px solid #e3dfe4;
+      border-radius: 7px;
+      color: #625b64;
+    }
+
+    .icon-button svg,
+    .tool-button svg,
+    .nav-button svg,
+    .privacy svg,
+    .meeting-line svg {
+      display: block;
+      fill: none;
+      stroke: currentColor;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .text-button {
+      min-width: 68px;
+      padding: 7px 16px;
+      border-radius: 7px;
+      background: #c21872;
+      color: #ffffff;
+      font-size: 13px;
+      line-height: 20px;
+      font-weight: 700;
+    }
+
+    .app-body {
+      min-height: 0;
+      display: grid;
+      grid-template-columns: 192px 1fr;
+      flex: 1;
+    }
+
+    .sidebar {
+      padding: 24px 14px;
+      border-right: 1px solid #e4e0e5;
+      background: #ffffff;
+    }
+
+    .sidebar-label {
+      margin: 0 10px 10px;
+      color: #918a92;
+      font-size: 10px;
+      line-height: 16px;
+      font-weight: 700;
+      letter-spacing: 0.9px;
+      text-transform: uppercase;
+    }
+
+    .sidebar-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .nav-button {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      color: #6f6871;
+      font-size: 13px;
+      line-height: 20px;
+      font-weight: 500;
+      text-align: left;
+    }
+
+    .nav-button.active {
+      background: #f7e7ef;
+      color: #a41460;
+      font-weight: 700;
+    }
+
+    .nav-button svg {
+      width: 19px;
+      height: 19px;
+      flex: 0 0 19px;
+      stroke-width: 1.8;
+    }
+
+    .sidebar-rule {
+      margin: 22px 10px;
+      border: 0;
+      border-top: 1px solid #ece8ed;
+    }
+
+    .sidebar-note {
+      margin: 0 10px;
+      color: #837c85;
+      font-size: 11px;
+      line-height: 18px;
+    }
+
+    .workspace {
+      min-width: 0;
+      padding: 22px 30px;
+    }
+
+    .editor {
+      max-width: 740px;
+      margin: 0 auto;
+      border: 1px solid #e3dfe4;
+      border-radius: 10px;
+      background: #ffffff;
+      box-shadow: 0 6px 22px rgba(44, 37, 45, 0.05);
+    }
+
+    .note {
+      padding: 25px 34px 22px;
+    }
+
+    .author {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+    }
+
+    .monogram {
+      width: 36px;
+      height: 36px;
+      flex: 0 0 36px;
+      display: grid;
+      place-items: center;
+      border-radius: 7px;
+      background: #f5d9e8;
+      color: #9c145b;
+      font-size: 12px;
+      line-height: 18px;
+      font-weight: 700;
+    }
+
+    .author-copy {
+      min-width: 0;
+    }
+
+    .author-name,
+    .author-context {
+      margin: 0;
+    }
+
+    .author-name {
+      font-size: 13px;
+      line-height: 19px;
+      font-weight: 700;
+    }
+
+    .author-context {
+      color: #777079;
+      font-size: 11px;
+      line-height: 17px;
+    }
+
+    h1 {
+      margin: 15px 0 5px;
+      font-size: 27px;
+      line-height: 35px;
+      letter-spacing: -0.6px;
+      font-weight: 700;
+    }
+
+    .edited {
+      margin: 0;
+      color: #777079;
+      font-size: 11px;
+      line-height: 18px;
+    }
+
+    .privacy {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      margin-top: 7px;
+      color: #5f5862;
+      font-size: 11px;
+      line-height: 18px;
+      font-weight: 500;
+    }
+
+    .privacy svg,
+    .meeting-line svg {
+      width: 14px;
+      height: 14px;
+      flex: 0 0 14px;
+      stroke-width: 1.7;
+    }
+
+    .meeting-line {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      margin-top: 2px;
+      color: #837c85;
+      font-size: 11px;
+      line-height: 18px;
+    }
+
+    .meeting-line strong {
+      color: #5f5862;
+      font-weight: 700;
+    }
+
+    .note-body {
+      margin-top: 17px;
+    }
+
+    .note-body p {
+      margin: 0 0 8px;
+      color: #373139;
+      font-size: 13px;
+      line-height: 20px;
+    }
+
+    .note-body p:last-child {
+      margin-bottom: 0;
+    }
+
+    .checklist {
+      margin-top: 18px;
+      padding-top: 15px;
+      border-top: 1px solid #ddd8de;
+    }
+
+    .checklist-heading {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .checklist h2 {
+      margin: 0;
+      font-size: 17px;
+      line-height: 24px;
+      font-weight: 700;
+    }
+
+    .item-count {
+      color: #8a838c;
+      font-size: 11px;
+      line-height: 18px;
+    }
+
+    .status-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.35fr;
+      gap: 12px;
+    }
+
+    .status-group {
+      padding: 12px 13px;
+      border: 1px solid #e5e1e6;
+      border-radius: 8px;
+      background: #fbfafb;
+    }
+
+    .status-group.open {
+      border-color: #efd1e1;
+      background: #fff9fc;
+    }
+
+    .status-title {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      margin: 0 0 5px;
+      color: #706971;
+      font-size: 10px;
+      line-height: 16px;
+      font-weight: 700;
+      letter-spacing: 0.7px;
+      text-transform: uppercase;
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #aaa2ab;
+    }
+
+    .open .status-dot {
+      background: #c21872;
+    }
+
+    .check-row {
+      display: grid;
+      grid-template-columns: 19px 1fr;
+      gap: 8px;
+      align-items: center;
+      padding: 5px 0;
+      color: #373139;
+      font-size: 12px;
+      line-height: 18px;
+    }
+
+    .checkbox {
+      width: 17px;
+      height: 17px;
+      display: grid;
+      place-items: center;
+      border: 1.5px solid #aaa2ab;
+      border-radius: 5px;
+      color: #ffffff;
+    }
+
+    .checkbox.checked {
+      border-color: #c21872;
+      background: #c21872;
+    }
+
+    .checkbox svg {
+      width: 11px;
+      height: 11px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2.2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .check-row.done .check-label {
+      color: #777079;
+      text-decoration: line-through;
+      text-decoration-thickness: 1px;
+    }
+
+    .editor-tools {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 18px;
+      border-top: 1px solid #ddd8de;
+      border-radius: 0 0 10px 10px;
+      background: #fcfbfc;
+    }
+
+    .tool-group {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .tool-button {
+      width: 32px;
+      height: 32px;
+      display: grid;
+      place-items: center;
+      padding: 0;
+      border-radius: 6px;
+      color: #5f5862;
+    }
+
+    .tool-button.active {
+      background: #c21872;
+      color: #ffffff;
+    }
+
+    .tool-button svg {
+      width: 18px;
+      height: 18px;
+      stroke-width: 1.8;
+    }
+
+    .letter-icon {
+      font-size: 15px;
+      line-height: 18px;
+      font-weight: 700;
+    }
+
+    .save-state {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: #777079;
+      font-size: 11px;
+      line-height: 18px;
+      font-weight: 500;
+    }
+
+    .saved-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #4d9d78;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true">C</span>
+        <span>Common Ground</span>
+      </div>
+      <p class="topbar-title">Personal note</p>
+      <div class="top-actions">
+        <button class="icon-button" type="button" aria-label="More note options">
+          <svg width="19" height="19" viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="5" cy="12" r="1"></circle>
+            <circle cx="12" cy="12" r="1"></circle>
+            <circle cx="19" cy="12" r="1"></circle>
+          </svg>
+        </button>
+        <button class="text-button" type="button">Done</button>
+      </div>
+    </header>
+
+    <div class="app-body">
+      <aside class="sidebar" aria-label="Primary navigation">
+        <p class="sidebar-label">Workspace</p>
+        <nav class="sidebar-nav">
+          <button class="nav-button" type="button">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M3 11.5 12 4l9 7.5"></path>
+              <path d="M5.5 10v10h13V10M9.5 20v-6h5v6"></path>
+            </svg>
+            <span>Home</span>
+          </button>
+          <button class="nav-button" type="button">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="9" cy="8" r="3"></circle>
+              <circle cx="17" cy="9" r="2.5"></circle>
+              <path d="M3.5 19c.4-3.5 2.3-5.3 5.5-5.3s5.1 1.8 5.5 5.3M14 14.4c.8-.5 1.8-.7 3-.7 2.5 0 4 1.5 4.3 4.3"></path>
+            </svg>
+            <span>Circles</span>
+          </button>
+          <button class="nav-button active" type="button" aria-current="page">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M6 3.5h9l3 3V21H6z"></path>
+              <path d="M14.5 3.5V7H18M9 11h6M9 15h6"></path>
+            </svg>
+            <span>Notes</span>
+          </button>
+          <button class="nav-button" type="button">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 5h16v12H8l-4 3z"></path>
+              <path d="M8 9h8M8 13h5"></path>
+            </svg>
+            <span>Inbox</span>
+          </button>
+        </nav>
+        <hr class="sidebar-rule">
+        <p class="sidebar-label">Current circle</p>
+        <p class="sidebar-note">Friday Circle<br>8 active members</p>
+      </aside>
+
+      <main class="workspace">
+        <div class="editor">
+          <article class="note">
+            <div class="author">
+              <div class="monogram" aria-hidden="true">AR</div>
+              <div class="author-copy">
+                <p class="author-name">Avery Rowan</p>
+                <p class="author-context">Saved to My notes</p>
+              </div>
+            </div>
+
+            <h1>Questions for Friday’s circle</h1>
+            <p class="edited">Edited May 18, 2025 at 4:42 PM</p>
+
+            <div class="privacy">
+              <svg viewBox="0 0 16 16" aria-hidden="true">
+                <rect x="3" y="7" width="10" height="7" rx="2"></rect>
+                <path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2"></path>
+              </svg>
+              <span>Only you can view this note</span>
+            </div>
+
+            <div class="meeting-line">
+              <svg viewBox="0 0 16 16" aria-hidden="true">
+                <rect x="2.5" y="3.5" width="11" height="10" rx="2"></rect>
+                <path d="M5 2v3M11 2v3M2.5 7h11"></path>
+              </svg>
+              <span><strong>Friday Circle</strong> · May 23, 2025 at 6:30 PM</span>
+            </div>
+
+            <section class="note-body" aria-label="Note text">
+              <p>I want to ask how we can make new members feel included without putting them on the spot. The first ten minutes usually set the tone.</p>
+              <p>Bring up the idea of pairing each newcomer with one regular member for the first meeting. Keep it optional and simple.</p>
+            </section>
+
+            <section class="checklist" aria-labelledby="checklist-title-a">
+              <div class="checklist-heading">
+                <h2 id="checklist-title-a">Things to bring up</h2>
+                <span class="item-count">3 items</span>
+              </div>
+
+              <div class="status-grid">
+                <div class="status-group open">
+                  <p class="status-title"><span class="status-dot"></span>To discuss</p>
+                  <div class="check-row">
+                    <span class="checkbox" aria-hidden="true"></span>
+                    <span class="check-label">Suggest a welcome partner trial</span>
+                  </div>
+                </div>
+
+                <div class="status-group">
+                  <p class="status-title"><span class="status-dot"></span>Covered</p>
+                  <div class="check-row done">
+                    <span class="checkbox checked" aria-hidden="true">
+                      <svg viewBox="0 0 14 14">
+                        <path d="M2.5 7.2 5.6 10 11.5 3.8"></path>
+                      </svg>
+                    </span>
+                    <span class="check-label">Ask Rowan Hall about introductions</span>
+                  </div>
+                  <div class="check-row done">
+                    <span class="checkbox checked" aria-hidden="true">
+                      <svg viewBox="0 0 14 14">
+                        <path d="M2.5 7.2 5.6 10 11.5 3.8"></path>
+                      </svg>
+                    </span>
+                    <span class="check-label">Review last month’s feedback</span>
+                  </div>
+                </div>
+              </div>
+            </section>
+          </article>
+
+          <div class="editor-tools" aria-label="Note editing tools">
+            <div class="tool-group">
+              <button class="tool-button active" type="button" aria-label="Bold">
+                <span class="letter-icon" aria-hidden="true">B</span>
+              </button>
+              <button class="tool-button" type="button" aria-label="Italic">
+                <span class="letter-icon" aria-hidden="true"><em>I</em></span>
+              </button>
+              <button class="tool-button" type="button" aria-label="Checklist">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <rect x="3" y="4" width="5" height="5" rx="1"></rect>
+                  <path d="m4.5 6.5 1.2 1.2L8 5.2M11 6.5h10M3 15h5v5H3zM11 17.5h10"></path>
+                </svg>
+              </button>
+              <button class="tool-button" type="button" aria-label="Add link">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M10 13a5 5 0 0 0 7.5.5l2-2a5 5 0 0 0-7-7l-1.2 1.2"></path>
+                  <path d="M14 11a5 5 0 0 0-7.5-.5l-2 2a5 5 0 0 0 7 7l1.2-1.2"></path>
+                </svg>
+              </button>
+            </div>
+            <span class="save-state"><span class="saved-dot"></span>Saved</span>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+</body>
+</html>

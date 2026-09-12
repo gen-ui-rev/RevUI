@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Circlenest Volunteer Shift Detail</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #e9e9e6;
+      color: #171713;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    button {
+      font: inherit;
+      cursor: pointer;
+    }
+
+    .screen {
+      width: 1024px;
+      height: 768px;
+      display: flex;
+      background: #ffffff;
+      border: 1px solid #d8d8d2;
+      overflow: hidden;
+    }
+
+    /* ---------- left rail ---------- */
+    .rail {
+      flex: 0 0 216px;
+      display: flex;
+      flex-direction: column;
+      padding: 20px 16px;
+      border-right: 1px solid #e6e6df;
+      background: #fbfbf7;
+    }
+
+    .rail-brand {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      margin-bottom: 22px;
+    }
+
+    .rail-mark {
+      width: 30px;
+      height: 30px;
+      display: grid;
+      place-items: center;
+      border-radius: 10px;
+      background: #ffd83d;
+      color: #171713;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .rail-name {
+      font-size: 15px;
+      line-height: 19px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+
+    .rail-sub {
+      display: block;
+      color: #8a6800;
+      font-size: 11px;
+      line-height: 14px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+    }
+
+    .rail-group-label {
+      margin: 0 0 8px 8px;
+      color: #93938a;
+      font-size: 11px;
+      line-height: 14px;
+      font-weight: 700;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+    }
+
+    .rail-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 10px;
+      border-radius: 11px;
+      color: #57574f;
+      font-size: 13px;
+      line-height: 17px;
+      font-weight: 600;
+    }
+
+    .rail-item svg {
+      width: 18px;
+      height: 18px;
+      display: block;
+      color: #7d7d74;
+    }
+
+    .rail-item.active {
+      background: #ffffff;
+      border: 1px solid #e6e0c4;
+      color: #171713;
+      box-shadow: inset 3px 0 0 #ffd83d;
+    }
+
+    .rail-item.active svg {
+      color: #a08300;
+    }
+
+    .rail-foot {
+      margin-top: auto;
+      display: grid;
+      grid-template-columns: 34px 1fr;
+      gap: 9px;
+      align-items: center;
+      padding-top: 14px;
+      border-top: 1px solid #e9e9e2;
+    }
+
+    .monogram {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      border-radius: 11px;
+      background: #ecece5;
+      color: #3c3c37;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 700;
+      border: 1px solid #deded7;
+    }
+
+    .foot-name {
+      margin: 0;
+      font-size: 13px;
+      line-height: 17px;
+      font-weight: 700;
+    }
+
+    .foot-role {
+      margin: 0;
+      color: #77776f;
+      font-size: 11px;
+      line-height: 15px;
+    }
+
+    /* ---------- main ---------- */
+    .main {
+      flex: 1 1 auto;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .topbar {
+      flex: 0 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      height: 54px;
+      padding: 0 26px;
+      border-bottom: 1px solid #ecece7;
+    }
+
+    .crumb {
+      color: #78786f;
+      font-size: 13px;
+      line-height: 17px;
+      font-weight: 600;
+    }
+
+    .crumb strong {
+      color: #171713;
+    }
+
+    .topbar-actions {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .ghost-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 12px;
+      border: 1px solid #dcdcd5;
+      border-radius: 10px;
+      background: #ffffff;
+      color: #3d3d37;
+      font-size: 13px;
+      line-height: 17px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .ghost-button svg {
+      width: 15px;
+      height: 15px;
+      display: block;
+    }
+
+    .primary-button {
+      padding: 8px 16px;
+      border: 1px solid #dfb900;
+      border-radius: 10px;
+      background: #ffd83d;
+      color: #171713;
+      font-size: 13px;
+      line-height: 17px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .content {
+      flex: 1 1 auto;
+      min-height: 0;
+      padding: 20px 26px;
+      background: #f7f7f4;
+    }
+
+    /* ---------- hero with overlay title ---------- */
+    .hero {
+      position: relative;
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid #e0e0d8;
+    }
+
+    .hero img {
+      width: 756px;
+      height: 150px;
+      object-fit: cover;
+      display: block;
+      background: #c8c7bd;
+    }
+
+    .hero-shade {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, rgba(14,14,10,0.82) 0%, rgba(14,14,10,0.55) 46%, rgba(14,14,10,0.05) 100%);
+    }
+
+    .hero-text {
+      position: absolute;
+      left: 22px;
+      top: 30px;
+      right: 190px;
+    }
+
+    .date-kicker {
+      margin: 0 0 4px;
+      color: #ffd83d;
+      font-size: 12px
+      ;line-height: 16px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+    }
+
+    .event-title {
+      margin: 0;
+      color: #ffffff;
+      font-size: 27px;
+      line-height: 32px;
+      font-weight: 700;
+      letter-spacing: -0.025em;
+    }
+
+    .event-context {
+      margin: 5px 0 0;
+      color: #ded9c9;
+      font-size: 13px;
+      line-height: 17px;
+    }
+
+    .hero-label {
+      position: absolute;
+      right: 18px;
+      top: 18px;
+      padding: 6px 11px;
+      border-radius: 12px;
+      background: #ffd83d;
+      color: #171713;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 700;
+    }
+
+    /* ---------- shift facts strip ---------- */
+    .facts {
+      margin-top: 16px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+
+    .fact {
+      padding: 11px 13px;
+      border: 1px solid #e5e5df;
+      border-radius: 14px;
+      background: #ffffff;
+    }
+
+    .fact-label {
+      margin: 0;
+      color: #8a8a80;
+      font-size: 11px;
+      line-height: 14px;
+      font-weight: 700;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+    }
+
+    .fact-value {
+      margin: 3px 0 0;
+      font-size: 14px;
+      line-height: 19px;
+      font-weight: 700;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .fact-meta {
+      margin: 1px 0 0;
+      color: #6f6f68;
+      font-size: 12px;
+      line-height: 16px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* ---------- run of shift table ---------- */
+    .panel {
+      margin-top: 16px;
+      padding: 14px 16px;
+      border: 1px solid #e5e5df;
+      border-radius: 16px;
+      background: #ffffff;
+    }
+
+    .panel-head {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .panel-title {
+      margin: 0;
+      font-size: 14px;
+      line-height: 19px;
+      font-weight: 700;
+    }
+
+    .panel-note {
+      margin: 0;
+      color: #7d7d74;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .run-row {
+      display: grid;
+      grid-template-columns: 128px 1fr 190px;
+      gap: 14px;
+      align-items: center;
+      padding: 9px 0;
+      border-top: 1px solid #edede7;
+    }
+
+    .run-time {
+      margin: 0;
+      font-size: 13px;
+      line-height: 17px;
+      font-weight: 700;
+      color: #8a6800;
+    }
+
+    .run-dur {
+      margin: 1px 0 0;
+      color: #83837a;
+      font-size: 11px;
+      line-height: 15px;
+    }
+
+    .run-task {
+      margin: 0;
+      font-size: 14px;
+      line-height: 18px;
+      font-weight: 700;
+    }
+
+    .run-detail {
+      margin: 1px 0 0;
+      color: #6b6b63;
+      font-size: 12px;
+      line-height: 16px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .run-place {
+      display: grid;
+      grid-template-columns: 16px 1fr;
+      gap: 7px;
+      align-items: center;
+      color: #4f4f49;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .run-place svg {
+      width: 16px;
+      height: 16px;
+      display: block;
+      color: #8f8f85;
+    }
+
+    /* ---------- bottom two columns ---------- */
+    .bottom {
+      margin-top: 16px;
+      display: grid;
+      grid-template-columns: 1fr 300px;
+      gap: 16px;
+      align-items: start;
+    }
+
+    .section-copy {
+      margin: 0;
+      color: #5f5f58;
+      font-size: 13px;
+      line-height: 19px;
+    }
+
+    .chips {
+      margin-top: 10px;
+      display: flex;
+      gap: 7px;
+    }
+
+    .chip {
+      padding: 5px 10px;
+      border: 1px solid #e2e2da;
+      border-radius: 12px;
+      background: #fbfbf8;
+      color: #4d4d46;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .lead-row {
+      display: grid;
+      grid-template-columns: 34px 1fr auto;
+      gap: 10px;
+      align-items: center;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #edede7;
+    }
+
+    .lead-label {
+      margin: 0;
+      color: #77776f;
+      font-size: 11px;
+      line-height: 15px;
+    }
+
+    .lead-name {
+      margin: 0;
+      font-size: 13px;
+      line-height: 17px;
+      font-weight: 700;
+    }
+
+    .crew {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      padding-top: 10px;
+    }
+
+    .avatar-stack {
+      display: flex;
+      flex: 0 0 auto;
+    }
+
+    .avatar-stack .monogram {
+      width: 30px;
+      height: 30px;
+      margin-left: -7px;
+      border: 2px solid #ffffff;
+      border-radius: 10px;
+      font-size: 11px;
+    }
+
+    .avatar-stack .monogram:first-child {
+      margin-left: 0;
+      background: #ded8c5;
+    }
+
+    .avatar-stack .monogram:nth-child(2) {
+      background: #d9e1dc;
+    }
+
+    .avatar-stack .monogram:nth-child(3) {
+      background: #e4d9dd;
+    }
+
+    .crew-count {
+      margin: 0;
+      font-size: 13px;
+      line-height: 17px;
+      font-weight: 700;
+    }
+
+    .crew-note {
+      margin: 1px 0 0;
+      color: #73736b;
+      font-size: 12px;
+      line-height: 16px;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <aside class="rail">
+      <div class="rail-brand">
+        <div class="rail-mark" aria-hidden="true">CN</div>
+        <div>
+          <span class="rail-name">Circlenest</span>
+          <span class="rail-sub">VOLUNTEER HUB</span>
+        </div>
+      </div>
+
+      <p class="rail-group-label">Workspace</p>
+      <div class="rail-item">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M4 11.5L12 5L20 11.5V20H14.5V15H9.5V20H4V11.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+        </svg>
+        Dashboard
+      </div>
+      <div class="rail-item active">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <rect x="4" y="5.5" width="16" height="14.5" rx="2" stroke="currentColor" stroke-width="1.8"/>
+          <path d="M8 3.5V7.5M16 3.5V7.5M4 9.5H20M8 13H11M8 16.5H14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+        My shifts
+      </div>
+      <div class="rail-item">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="9" cy="9" r="3" stroke="currentColor" stroke-width="1.7"/>
+          <circle cx="17" cy="10" r="2.3" stroke="currentColor" stroke-width="1.7"/>
+          <path d="M4 19C4.4 15.8 6.1 14 9 14C11.9 14 13.6 15.8 14 19M14 15C16.9 14.6 19 16 20 18.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+        </svg>
+        Crew roster
+      </div>
+      <div class="rail-item">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M5 5H19V16H11L6.5 19V16H5V5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+        </svg>
+        Messages
+      </div>
+      <div class="rail-item">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M5 19V6.5C5 5.7 5.7 5 6.5 5H17.5C18.3 5 19 5.7 19 6.5V19H5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+          <path d="M8.5 15V11M12 15V8.5M15.5 15V12.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+        </svg>
+        Hour reports
+      </div>
+
+      <div class="rail-foot">
+        <div class="monogram" aria-hidden="true">MV</div>
+        <div>
+          <p class="foot-name">Marisol Vega</p>
+          <p class="foot-role">Volunteer · 42 hours logged</p>
+        </div>
+      </div>
+    </aside>
+
+    <div class="main">
+      <header class="topbar">
+        <button class="ghost-button" type="button">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M15 5L8 12L15 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Back
+        </button>
+        <p class="crumb">October schedule / <strong>Downtown Outreach Photo Walk</strong></p>
+        <div class="topbar-actions">
+          <button class="ghost-button" type="button">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M12 15V4M12 4L8 8M12 4L16 8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M6 11V19H18V11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Share shift
+          </button>
+          <button class="primary-button" type="button">Claim this shift</button>
+        </div>
+      </header>
+
+      <div class="content">
+        <div class="hero">
+          <img src="https://loremflickr.com/756/150/street?lock=7070" width="756" height="150" alt="Volunteers walking a downtown street during a documentation shift">
+          <div class="hero-shade"></div>
+          <div class="hero-text">
+            <p class="date-kicker">SATURDAY, OCTOBER 18 · MORNING SHIFT</p>
+            <h1 class="event-title">Downtown Outreach Photo Walk</h1>
+            <p class="event-context">Downtown Lens Club · Community outreach team</p>
+          </div>
+          <div class="hero-label">6 spots left</div>
+        </div>
+
+        <div class="facts">
+          <div class="fact">
+            <p class="fact-label">Shift window</p>
+            <p class="fact-value">10:30 – 12:30</p>
+            <p class="fact-meta">Sat, Oct 18 · 2 hours</p>
+          </div>
+          <div class="fact">
+            <p class="fact-label">Check-in</p>
+            <p class="fact-value">Mercer Street</p>
+            <p class="fact-meta">42 Mercer St, Portland</p>
+          </div>
+          <div class="fact">
+            <p class="fact-label">Role</p>
+            <p class="fact-value">Route photographer</p>
+            <p class="fact-meta">Gear provided on site</p>
+          </div>
+          <div class="fact">
+            <p class="fact-label">Coverage</p>
+            <p class="fact-value">18 of 24 filled</p>
+            <p class="fact-meta">Confirm by Oct 16</p>
+          </div>
+        </div>
+
+        <section class="panel">
+          <div class="panel-head">
+            <h2 class="panel-title">Run of shift</h2>
+            <p class="panel-note">Three blocks, one crew — stay with your team between stops.</p>
+          </div>
+
+          <div class="run-row">
+            <div>
+              <p class="run-time">10:30 – 11:00 AM</p>
+              <p class="run-dur">30 min</p>
+            </div>
+            <div>
+              <p class="run-task">Check-in and gear briefing</p>
+              <p class="run-detail">Sign the crew sheet, collect a lanyard and route card</p>
+            </div>
+            <div class="run-place">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M12 21C15.8 16.4 18 13.4 18 10C18 6.7 15.3 4 12 4C8.7 4 6 6.7 6 10C6 13.4 8.2 16.4 12 21Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+                <circle cx="12" cy="10" r="2.2" stroke="currentColor" stroke-width="1.7"/>
+              </svg>
+              Mercer Street entrance
+            </div>
+          </div>
+
+          <div class="run-row">
+            <div>
+              <p class="run-time">11:00 – 12:00 PM</p>
+              <p class="run-dur">60 min</p>
+            </div>
+            <div>
+              <p class="run-task">Mural route documentation</p>
+              <p class="run-detail">Two teams of six, phone or camera both welcome</p>
+            </div>
+            <div class="run-place">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M12 21C15.8 16.4 18 13.4 18 10C18 6.7 15.3 4 12 4C8.7 4 6 6.7 6 10C6 13.4 8.2 16.4 12 21Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+                <circle cx="12" cy="10" r="2.2" stroke="currentColor" stroke-width="1.7"/>
+              </svg>
+              Old Town mural loop
+            </div>
+          </div>
+
+          <div class="run-row">
+            <div>
+              <p class="run-time">12:00 – 12:30 PM</p>
+              <p class="run-dur">30 min</p>
+            </div>
+            <div>
+              <p class="run-task">Debrief and photo handoff</p>
+              <p class="run-detail">Upload files to the shared album, log your hours</p>
+            </div>
+            <div class="run-place">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M12 21C15.8 16.4 18 13.4 18 10C18 6.7 15.3 4 12 4C8.7 4 6 6.7 6 10C6 13.4 8.2 16.4 12 21Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+                <circle cx="12" cy="10" r="2.2" stroke="currentColor" stroke-width="1.7"/>
+              </svg>
+              Bridgeway Coffee
+            </div>
+          </div>
+        </section>
+
+        <div class="bottom">
+          <section class="panel" style="margin-top:0;">
+            <div class="panel-head">
+              <h2 class="panel-title">What volunteers do</h2>
+            </div>
+            <p class="section-copy">Walk the side streets and storefronts to document new murals for the fall community report. No experience needed — the lead pairs first-time volunteers with a returning photographer.</p>
+            <div class="chips">
+              <span class="chip">Camera or phone</span>
+              <span class="chip">Water bottle</span>
+              <span class="chip">Walking shoes</span>
+            </div>
+          </section>
+
+          <section class="panel" style="margin-top:0;">
+            <div class="lead-row">
+              <div class="monogram" aria-hidden="true">TR</div>
+              <div>
+                <p class="lead-label">Shift lead</p>
+                <p class="lead-name">Tess Rowan</p>
+              </div>
+              <button class="ghost-button" type="button">Message</button>
+            </div>
+            <div class="crew">
+              <div class="avatar-stack" aria-hidden="true">
+                <div class="monogram">OP</div>
+                <div class="monogram">JB</div>
+                <div class="monogram">SK</div>
+              </div>
+              <div>
+                <p class="crew-count">Owen, June, and 16 others</p>
+                <p class="crew-note">Two people from your circles are on this shift</p>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

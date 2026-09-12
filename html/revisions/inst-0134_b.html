@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Halyard Market — Order Confirmed</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;}
+  body{
+    min-height:100vh;display:flex;justify-content:center;align-items:flex-start;
+    padding:40px 0;margin:0;background:#d8d5d0;
+    font-family:'Source Serif 4', Georgia, serif;color:#1b1720;
+  }
+  .screen{
+    width:390px;height:844px;background:#f2eff4;position:relative;
+    display:flex;flex-direction:column;
+  }
+  /* top bar: order number is the title */
+  .topbar{
+    display:flex;align-items:center;gap:12px;
+    padding:16px 18px 14px 18px;background:#fbfaf9;border-bottom:1px solid #e6e2df;
+  }
+  .topbar .back{width:22px;height:22px;display:block;color:#4a4450;flex:none;}
+  .titlewrap{min-width:0;flex:1;}
+  .titlewrap .brand{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#7c7486;margin:0 0 2px 0;}
+  .titlewrap .num{font-size:15px;font-weight:700;margin:0;letter-spacing:.01em;}
+  .helplink{font-size:13px;font-weight:600;color:#5b2e9d;text-decoration:none;flex:none;}
+  /* confirmation banner */
+  .banner{
+    display:flex;align-items:flex-start;gap:14px;
+    background:#5b2e9d;color:#fff;padding:18px 20px;
+  }
+  .banner .tick{
+    width:34px;height:34px;flex:none;border:1.5px solid rgba(255,255,255,.6);
+    display:flex;align-items:center;justify-content:center;
+  }
+  .banner .tick svg{width:20px;height:20px;color:#fff;}
+  .banner h1{font-size:19px;font-weight:700;margin:0 0 4px 0;letter-spacing:-.01em;}
+  .banner p{font-size:13px;line-height:1.45;margin:0;color:#e2d6f4;}
+  /* delivery strip */
+  .deliver{
+    display:flex;align-items:center;justify-content:space-between;gap:14px;
+    background:#fbfaf9;padding:16px 20px;border-bottom:1px solid #e6e2df;
+  }
+  .deliver .k{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#6d5a86;margin:0 0 3px 0;}
+  .deliver .v{font-size:17px;font-weight:700;margin:0;}
+  .deliver .note{font-size:12px;color:#6f687a;margin:4px 0 0 0;}
+  .chip{
+    font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:600;
+    color:#5b2e9d;background:rgba(91,46,157,.12);padding:7px 10px;flex:none;
+  }
+  /* receipt card */
+  .card{
+    margin:16px 16px 0 16px;background:#fbfaf9;border:1px solid #e2ddE6;
+    padding:14px 16px 16px 16px;
+  }
+  .cardhead{
+    display:flex;align-items:baseline;justify-content:space-between;
+    padding-bottom:10px;border-bottom:1px solid #e6e2df;
+  }
+  .cardhead h2{font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;margin:0;color:#6d5a86;}
+  .cardhead span{font-size:12px;color:#7c7486;}
+  .row{display:flex;gap:14px;align-items:center;padding:12px 0;border-bottom:1px solid #efebf1;}
+  .row img{width:80px;height:80px;object-fit:cover;display:block;background:#cfc9d6;flex:none;}
+  .rowtext{min-width:0;flex:1;}
+  .rowtext .t{font-size:15px;font-weight:600;margin:0 0 3px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .rowtext .s{font-size:13px;color:#6f687a;margin:0;}
+  .rowtext .seller{font-size:12px;color:#8a8394;margin:4px 0 0 0;}
+  .price{font-size:15px;font-weight:600;white-space:nowrap;}
+  .totals{padding-top:12px;}
+  .tline{display:flex;justify-content:space-between;font-size:13px;color:#5c556a;padding:3px 0;}
+  .tline.grand{
+    font-size:16px;font-weight:700;color:#1b1720;
+    margin-top:8px;padding-top:10px;border-top:1px solid #e6e2df;
+  }
+  /* action bar */
+  .actionbar{
+    margin-top:auto;display:flex;gap:10px;padding:16px 16px 14px 16px;
+    background:#fbfaf9;border-top:1px solid #e6e2df;
+  }
+  .btn{
+    flex:1;text-align:center;text-decoration:none;
+    background:#5b2e9d;color:#fff;font-size:15px;font-weight:600;padding:15px 0;
+  }
+  .btn2{
+    flex:1;text-align:center;text-decoration:none;
+    border:1px solid #c9bdda;color:#5b2e9d;font-size:15px;font-weight:600;padding:14px 0;
+  }
+  /* tab bar */
+  .tabbar{
+    display:flex;border-top:1px solid #e6e2df;background:#fbfaf9;
+    padding:10px 0 14px 0;
+  }
+  .tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;color:#8a8394;}
+  .tab svg{width:22px;height:22px;display:block;}
+  .tab span{font-size:12px;}
+  .tab.on{color:#5b2e9d;}
+  .tab.on span{font-weight:600;}
+</style>
+</head>
+<body>
+<div class="screen">
+
+  <div class="topbar">
+    <svg class="back" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
+      <path d="M15 5l-7 7 7 7"/>
+    </svg>
+    <div class="titlewrap">
+      <p class="brand">Halyard Market</p>
+      <p class="num">Order HM-48213</p>
+    </div>
+    <a class="helplink" href="#">Help</a>
+  </div>
+
+  <div class="banner">
+    <div class="tick">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="square" aria-hidden="true">
+        <path d="M4 12.6l5 5L20 6.6"/>
+      </svg>
+    </div>
+    <div>
+      <h1>Order placed</h1>
+      <p>Receipt sent to dana.whitlock@mailbox.com</p>
+    </div>
+  </div>
+
+  <div class="deliver">
+    <div>
+      <p class="k">Arrives by</p>
+      <p class="v">Tuesday, June 11</p>
+      <p class="note">Fernwood Goods ships within one business day.</p>
+    </div>
+    <div class="chip">Standard</div>
+  </div>
+
+  <div class="card">
+    <div class="cardhead">
+      <h2>Receipt</h2>
+      <span>2 items</span>
+    </div>
+    <div class="row">
+      <img src="https://loremflickr.com/80/80/sneakers?lock=2580" width="80" height="80" alt="Low-top canvas sneakers in the order">
+      <div class="rowtext">
+        <p class="t">Ridgeline Canvas Low-Top</p>
+        <p class="s">Size 9 &middot; Bone</p>
+        <p class="seller">Sold by Fernwood Goods</p>
+      </div>
+      <div class="price">$118.00</div>
+    </div>
+    <div class="row">
+      <img src="https://loremflickr.com/80/80/furniture?lock=2583" width="80" height="80" alt="Oak side table in the order">
+      <div class="rowtext">
+        <p class="t">Halden Oak Side Table</p>
+        <p class="s">Qty 1 &middot; Natural</p>
+        <p class="seller">Sold by Fernwood Goods</p>
+      </div>
+      <div class="price">$66.20</div>
+    </div>
+    <div class="totals">
+      <div class="tline"><span>Subtotal</span><span>$184.20</span></div>
+      <div class="tline"><span>Shipping</span><span>Free</span></div>
+      <div class="tline grand"><span>Paid with Visa 4417</span><span>$184.20</span></div>
+    </div>
+  </div>
+
+  <div class="actionbar">
+    <a class="btn2" href="#">Keep shopping</a>
+    <a class="btn" href="#">Track order</a>
+  </div>
+
+  <div class="tabbar">
+    <div class="tab">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M3 10.5L12 4l9 6.5V20H3z"/></svg>
+      <span>Home</span>
+    </div>
+    <div class="tab">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="11" cy="11" r="6"/><path d="M15.5 15.5L21 21"/></svg>
+      <span>Search</span>
+    </div>
+    <div class="tab">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 7h16l-1.4 12H5.4z"/><path d="M9 7V5a3 3 0 0 1 6 0v2"/></svg>
+      <span>Cart</span>
+    </div>
+    <div class="tab on">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 5h16v15H4z"/><path d="M8 10h8M8 14h5"/></svg>
+      <span>Orders</span>
+    </div>
+    <div class="tab">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="12" cy="8.5" r="3.5"/><path d="M5 20c1.2-3.6 3.8-5.2 7-5.2s5.8 1.6 7 5.2"/></svg>
+      <span>Account</span>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Rowan Street Club — Chat</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body {
+    min-height: 100vh; display: flex; justify-content: center; align-items: center;
+    padding: 24px; margin: 0; background: #55524e;
+    font-family: 'Source Sans 3', system-ui, sans-serif;
+  }
+  .screen {
+    width: 1024px; height: 768px; background: #f1f0ee; display: flex;
+    color: #26231f; box-shadow: 0 18px 44px rgba(0,0,0,.28);
+  }
+
+  /* ---------- left column: chat list ---------- */
+  .sidebar {
+    width: 312px; flex-shrink: 0; background: #fff; border-right: 1px solid #e3e0dc;
+    display: flex; flex-direction: column;
+  }
+  .brand {
+    padding: 12px 16px; display: flex; align-items: center; gap: 10px;
+    border-bottom: 1px solid #eeebe7;
+  }
+  .mono {
+    width: 34px; height: 34px; border-radius: 4px; background: #2f2c29; color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 600; letter-spacing: .04em; flex-shrink: 0;
+  }
+  .brand .bt { min-width: 0; flex: 1; }
+  .brand .bt strong {
+    display: block; font-family: 'Playfair Display', Georgia, serif; font-weight: 600;
+    font-size: 16px; line-height: 20px;
+  }
+  .brand .bt span { display: block; font-size: 12px; line-height: 15px; color: #827c75; }
+  .iconbtn { display: flex; align-items: center; justify-content: center; color: #4a4642; }
+
+  .search {
+    margin: 12px 16px 10px; background: #f1f0ee; border-radius: 4px;
+    padding: 7px 11px; display: flex; align-items: center; gap: 8px;
+    font-size: 13px; line-height: 18px; color: #9a948e;
+  }
+  .navlist { padding: 0 8px 10px; border-bottom: 1px solid #eeebe7; }
+  .nav {
+    display: flex; align-items: center; gap: 10px; padding: 7px 10px; border-radius: 4px;
+    font-size: 14px; line-height: 18px; color: #55514c;
+  }
+  .nav.on { background: #fbf1e8; color: #e2660f; font-weight: 600; }
+  .seclabel {
+    font-size: 11px; line-height: 14px; letter-spacing: .12em; text-transform: uppercase;
+    color: #8f8981; padding: 13px 16px 5px;
+  }
+  .chat {
+    display: flex; gap: 10px; padding: 9px 16px; border-left: 3px solid transparent;
+  }
+  .chat.on { background: #f6f4f2; border-left-color: #e2660f; }
+  .chat .av {
+    width: 34px; height: 34px; border-radius: 4px; background: #6d6862; color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 600; flex-shrink: 0;
+  }
+  .chat.on .av { background: #2f2c29; }
+  .chat .cw { flex: 1; min-width: 0; }
+  .chat .ct { display: flex; align-items: baseline; gap: 8px; }
+  .chat .nm {
+    flex: 1; min-width: 0; font-size: 14px; line-height: 19px; font-weight: 600;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .chat .tm { font-size: 11px; line-height: 15px; color: #8f8981; flex-shrink: 0; }
+  .chat .sn {
+    font-size: 12px; line-height: 17px; color: #827c75; margin-top: 1px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .dot {
+    width: 8px; height: 8px; border-radius: 50%; background: #e2660f;
+    flex-shrink: 0; margin-top: 12px;
+  }
+  .sidefoot {
+    margin-top: auto; border-top: 1px solid #eeebe7; padding: 10px 16px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .sidefoot .av {
+    width: 30px; height: 30px; border-radius: 4px; background: #b4ada4; color: #fff;
+    display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600;
+  }
+  .sidefoot .st { flex: 1; min-width: 0; }
+  .sidefoot .st strong { display: block; font-size: 13px; line-height: 17px; font-weight: 600; }
+  .sidefoot .st span { display: block; font-size: 11px; line-height: 14px; color: #827c75; }
+
+  /* ---------- right column: thread ---------- */
+  .main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+  .topbar {
+    background: #fff; border-bottom: 1px solid #e3e0dc;
+    padding: 12px 22px; display: flex; align-items: center; gap: 12px;
+  }
+  .titlewrap { flex: 1; min-width: 0; }
+  .titlewrap h1 {
+    font-family: 'Playfair Display', Georgia, serif; font-weight: 600; font-size: 19px;
+    margin: 0; line-height: 24px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .titlewrap p {
+    margin: 0; font-size: 12px; line-height: 16px; color: #827c75;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .ghostbtn {
+    font-size: 13px; line-height: 18px; font-weight: 600; color: #55514c;
+    border: 1px solid #ded9d3; border-radius: 4px; padding: 6px 12px; flex-shrink: 0;
+  }
+
+  .pinned {
+    background: #fff; border-bottom: 1px solid #e3e0dc;
+    padding: 10px 22px 10px 19px; display: flex; align-items: center; gap: 10px;
+    border-left: 3px solid #e2660f;
+  }
+  .pinned span.k { font-size: 12px; line-height: 18px; font-weight: 600; color: #e2660f; flex-shrink: 0; }
+  .pinned span.t {
+    flex: 1; font-size: 13px; line-height: 18px; color: #4a4642; min-width: 0;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .pinned span.a { font-size: 13px; line-height: 18px; font-weight: 600; color: #e2660f; flex-shrink: 0; }
+
+  .thread {
+    flex: 1; display: flex; flex-direction: column; justify-content: flex-end;
+    padding: 14px 28px 12px;
+  }
+  .divider {
+    text-align: center; font-size: 12px; line-height: 16px; letter-spacing: .1em;
+    text-transform: uppercase; color: #8f8981; margin-bottom: 12px;
+  }
+  .msg { display: flex; gap: 10px; margin-bottom: 10px; }
+  .msg .av {
+    width: 30px; height: 30px; border-radius: 4px; background: #6d6862; color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 600; flex-shrink: 0; margin-top: 18px;
+  }
+  .meta { font-size: 12px; line-height: 16px; color: #8f8981; margin-bottom: 4px; }
+  .meta b { font-weight: 600; color: #4a4642; }
+  .bubble {
+    background: #fff; border-radius: 4px; padding: 10px 12px; max-width: 420px;
+    font-size: 15px; line-height: 20px; box-shadow: 0 1px 2px rgba(0,0,0,.07);
+  }
+  .out { justify-content: flex-end; }
+  .out .bubble { background: #e2660f; color: #fff; }
+
+  .card-link { padding: 6px; display: flex; gap: 12px; align-items: center; width: 320px; }
+  .card-link img { width: 64px; height: 64px; border-radius: 4px; object-fit: cover; display: block; background: #ded9d3; }
+  .card-link .lt { min-width: 0; }
+  .card-link .lt strong { display: block; font-size: 14px; line-height: 18px; font-weight: 600; }
+  .card-link .lt span {
+    display: block; font-size: 12px; line-height: 16px; color: #8f8981; margin-top: 3px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+
+  .card-photo { padding: 6px; width: 252px; }
+  .card-photo img { width: 240px; height: 100px; border-radius: 4px; object-fit: cover; display: block; background: #ded9d3; }
+  .card-photo p { margin: 6px 2px 0; font-size: 14px; line-height: 20px; }
+
+  .card-pay { padding: 12px; width: 300px; }
+  .card-pay .lbl { font-size: 12px; line-height: 16px; font-weight: 600; color: #e2660f; }
+  .card-pay .row { display: flex; align-items: center; justify-content: space-between; margin-top: 6px; }
+  .card-pay .amt { font-family: 'Playfair Display', Georgia, serif; font-weight: 700; font-size: 24px; line-height: 30px; }
+  .card-pay .btn {
+    background: #e2660f; color: #fff; font-size: 14px; font-weight: 600;
+    padding: 6px 18px; border-radius: 4px; line-height: 18px;
+  }
+  .card-pay .sub { margin-top: 4px; font-size: 12px; line-height: 16px; color: #8f8981; }
+
+  .receipt { text-align: right; font-size: 12px; line-height: 16px; color: #8f8981; }
+
+  .composer {
+    background: #fff; border-top: 1px solid #e3e0dc; padding: 10px 22px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .attach {
+    width: 36px; height: 36px; border-radius: 4px; background: #f1f0ee; color: #55514c;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .field {
+    flex: 1; background: #f1f0ee; border-radius: 4px; padding: 9px 14px;
+    font-size: 15px; line-height: 20px; color: #9a948e;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .send {
+    background: #e2660f; color: #fff; border-radius: 4px; flex-shrink: 0;
+    display: flex; align-items: center; gap: 7px; padding: 9px 16px;
+    font-size: 14px; line-height: 20px; font-weight: 600;
+  }
+</style>
+</head>
+<body>
+  <div class="screen">
+
+    <!-- chat list -->
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="mono">RS</div>
+        <div class="bt">
+          <strong>Rowan Street</strong>
+          <span>Investment club</span>
+        </div>
+        <div class="iconbtn" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
+        </div>
+      </div>
+
+      <div class="search">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M16.5 16.5L21 21"/></svg>
+        Search messages and members
+      </div>
+
+      <div class="navlist">
+        <div class="nav">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11l8-6 8 6v8a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1z"/></svg>
+          Home
+        </div>
+        <div class="nav">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 19V10"/><path d="M12 19V5"/><path d="M19 19v-6"/></svg>
+          Holdings
+        </div>
+        <div class="nav on">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 15a2 2 0 0 1-2 2H8l-4 3V6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2z"/></svg>
+          Chats
+        </div>
+      </div>
+
+      <div class="seclabel">Conversations</div>
+
+      <div class="chat on">
+        <div class="av">RS</div>
+        <div class="cw">
+          <div class="ct"><div class="nm">Rowan Street Club</div><div class="tm">2:43 PM</div></div>
+          <div class="sn">Dana: October contribution · due Oct 1</div>
+        </div>
+      </div>
+      <div class="chat">
+        <div class="av">MC</div>
+        <div class="cw">
+          <div class="ct"><div class="nm">Maren Cho</div><div class="tm">1:07 PM</div></div>
+          <div class="sn">Sending the sector comparison after lunch.</div>
+        </div>
+        <div class="dot"></div>
+      </div>
+      <div class="chat">
+        <div class="av">DV</div>
+        <div class="cw">
+          <div class="ct"><div class="nm">Dividend Watch</div><div class="tm">11:52 AM</div></div>
+          <div class="sn">Priya: Halden pays out on the 15th.</div>
+        </div>
+      </div>
+      <div class="chat">
+        <div class="av">DW</div>
+        <div class="cw">
+          <div class="ct"><div class="nm">Dana Whitfield</div><div class="tm">Yesterday</div></div>
+          <div class="sn">I'll draft the minutes tonight.</div>
+        </div>
+      </div>
+      <div class="chat">
+        <div class="av">PR</div>
+        <div class="cw">
+          <div class="ct"><div class="nm">Priya Raval</div><div class="tm">Mon</div></div>
+          <div class="sn">Thanks for the broker statement.</div>
+        </div>
+      </div>
+
+      <div class="sidefoot">
+        <div class="av">TL</div>
+        <div class="st">
+          <strong>Tessa Lind</strong>
+          <span>Member since 2021</span>
+        </div>
+        <div class="iconbtn" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 4v2"/><path d="M12 18v2"/><path d="M4 12h2"/><path d="M18 12h2"/></svg>
+        </div>
+      </div>
+    </aside>
+
+    <!-- thread -->
+    <section class="main">
+      <header class="topbar">
+        <div class="mono">RS</div>
+        <div class="titlewrap">
+          <h1>Rowan Street Club</h1>
+          <p>Dana, Maren, Priya and you · 4 members</p>
+        </div>
+        <div class="ghostbtn">View holdings</div>
+        <div class="iconbtn" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5"/><path d="M12 8h.01"/></svg>
+        </div>
+      </header>
+
+      <div class="pinned">
+        <span class="k">Pinned</span>
+        <span class="t">Vote on adding 40 NGT shares closes Friday</span>
+        <span class="a">Vote now</span>
+      </div>
+
+      <main class="thread">
+        <div class="divider">Today</div>
+
+        <div class="msg">
+          <div class="av">DW</div>
+          <div>
+            <div class="meta"><b>Dana Whitfield</b> · 2:14 PM</div>
+            <div class="bubble">Northgate filed early — occupancy 94%, dividend held.</div>
+          </div>
+        </div>
+
+        <div class="msg">
+          <div class="av">PR</div>
+          <div>
+            <div class="meta"><b>Priya Raval</b> · 2:18 PM</div>
+            <div class="bubble card-link">
+              <img src="https://loremflickr.com/64/64/architecture?lock=2124" width="64" height="64" alt="Exterior of the Northgate office tower held by the trust">
+              <div class="lt">
+                <strong>Northgate REIT: Q3 filing</strong>
+                <span>northgateinvestor.com</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="msg">
+          <div class="av">MC</div>
+          <div>
+            <div class="meta"><b>Maren Cho</b> · 2:26 PM</div>
+            <div class="bubble card-photo">
+              <img src="https://loremflickr.com/240/100/chart?lock=2121" width="240" height="100" alt="Chart comparing the club's cost basis with the sector since June">
+              <p>Our basis against the sector since June.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="msg out">
+          <div class="bubble">Fine adding 40 shares if cash stays above $2,000.</div>
+        </div>
+
+        <div class="msg">
+          <div class="av">DW</div>
+          <div>
+            <div class="meta"><b>Dana Whitfield</b> · 2:41 PM</div>
+            <div class="bubble card-pay">
+              <div class="lbl">Payment request</div>
+              <div class="row">
+                <div class="amt">$250.00</div>
+                <div class="btn">Pay</div>
+              </div>
+              <div class="sub">October contribution · due Oct 1</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="receipt">Read by 3 · 2:43 PM</div>
+      </main>
+
+      <div class="composer">
+        <div class="attach" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
+        </div>
+        <div class="field">Message Rowan Street Club</div>
+        <div class="send">
+          Send
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"/><path d="M13 6l6 6-6 6"/></svg>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</body>
+</html>

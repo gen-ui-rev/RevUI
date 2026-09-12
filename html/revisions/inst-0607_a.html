@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Restwell — Community answer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body {
+    min-height: 100vh;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #dde1e7;
+    font-family: 'Manrope', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  button, textarea { font: inherit; }
+  .screen {
+    width: 1024px;
+    height: 768px;
+    display: flex;
+    flex-direction: column;
+    background: #f4f5f7;
+    color: #171b26;
+    box-shadow: 0 16px 50px rgba(23, 27, 38, 0.12);
+  }
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 48px;
+    min-height: 72px;
+    background: #ffffff;
+    border-bottom: 1px solid #e2e5ea;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+  .brand-mark {
+    width: 30px;
+    height: 30px;
+    display: grid;
+    place-items: center;
+    border-radius: 8px;
+    background: #4f46e5;
+    color: #ffffff;
+  }
+  .nav {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #666d7e;
+  }
+  .nav .active { color: #4f46e5; font-weight: 700; }
+  .profile {
+    width: 34px;
+    height: 34px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: #ebeafe;
+    color: #4f46e5;
+    font-size: 12px;
+    font-weight: 700;
+  }
+  main {
+    flex: 1;
+    padding: 32px 48px 38px;
+  }
+  .page-heading {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 22px;
+  }
+  .page-heading h2 {
+    margin: 0 0 5px;
+    font-size: 23px;
+    line-height: 1.25;
+    letter-spacing: -0.025em;
+  }
+  .page-heading p {
+    margin: 0;
+    color: #747b8c;
+    font-size: 13px;
+  }
+  .back-link {
+    color: #5d6474;
+    font-size: 13px;
+    font-weight: 700;
+  }
+  .card {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(320px, 0.8fr);
+    background: #ffffff;
+    border: 1px solid #e1e4e9;
+    border-radius: 12px;
+    box-shadow: 0 5px 20px rgba(23, 27, 38, 0.06);
+  }
+  .answer {
+    min-width: 0;
+    padding: 34px 36px 32px;
+    border-right: 1px solid #e6e8ec;
+  }
+  .eyebrow {
+    margin: 0 0 11px;
+    color: #4f46e5;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+  }
+  h1 {
+    margin: 0 0 17px;
+    color: #171b26;
+    font-size: 25px;
+    line-height: 1.35;
+    letter-spacing: -0.025em;
+  }
+  .body {
+    margin: 0;
+    color: #4b5162;
+    font-size: 15px;
+    line-height: 1.7;
+  }
+  .reaction {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-top: 28px;
+    padding-top: 24px;
+    border-top: 1px solid #e6e8ec;
+  }
+  .upvote {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 11px 16px;
+    border: 0;
+    border-radius: 7px;
+    background: #4f46e5;
+    color: #ffffff;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 700;
+  }
+  .upvote .count {
+    margin-left: 3px;
+    padding-left: 11px;
+    border-left: 1px solid rgba(255,255,255,0.38);
+  }
+  .vote-note {
+    color: #7b8194;
+    font-size: 12px;
+    line-height: 1.45;
+  }
+  .vote-note strong {
+    display: block;
+    color: #4b5162;
+    font-weight: 700;
+  }
+  .detail-panel {
+    min-width: 0;
+    padding: 30px 32px 32px;
+    background: #fbfbfc;
+    border-radius: 0 12px 12px 0;
+  }
+  .author {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 28px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid #e3e6eb;
+  }
+  .initials {
+    width: 42px;
+    height: 42px;
+    flex: 0 0 auto;
+    display: grid;
+    place-items: center;
+    border-radius: 9px;
+    background: #eef0ff;
+    color: #4f46e5;
+    font-size: 13px;
+    font-weight: 700;
+  }
+  .who { min-width: 0; }
+  .name {
+    color: #171b26;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.4;
+  }
+  .meta {
+    color: #7b8194;
+    font-size: 12px;
+    line-height: 1.45;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .ask-title {
+    margin: 0 0 6px;
+    font-size: 18px;
+    line-height: 1.35;
+    letter-spacing: -0.015em;
+  }
+  .ask-copy {
+    margin: 0 0 15px;
+    color: #686f80;
+    font-size: 12px;
+    line-height: 1.55;
+  }
+  label {
+    display: block;
+    margin-bottom: 7px;
+    color: #343948;
+    font-size: 12px;
+    font-weight: 700;
+  }
+  textarea {
+    width: 100%;
+    min-height: 88px;
+    resize: none;
+    display: block;
+    padding: 12px 13px;
+    border: 1px solid #cfd3dc;
+    border-radius: 7px;
+    outline: none;
+    background: #ffffff;
+    color: #343948;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+  textarea::placeholder { color: #9298a7; }
+  .form-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    margin-top: 12px;
+  }
+  .privacy {
+    color: #858b99;
+    font-size: 11px;
+    line-height: 1.4;
+  }
+  .submit {
+    flex: 0 0 auto;
+    padding: 10px 16px;
+    border: 1px solid #4f46e5;
+    border-radius: 7px;
+    background: #ffffff;
+    color: #4f46e5;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 700;
+  }
+</style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true">
+          <svg width="17" height="17" viewBox="0 0 17 17" fill="none">
+            <path d="M3 9.2h3.1l1.4-4.1 2.1 7 1.4-2.9h3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </span>
+        Restwell
+      </div>
+      <nav class="nav" aria-label="Primary navigation">
+        <span>Overview</span>
+        <span>Sleep</span>
+        <span>Trends</span>
+        <span class="active">Community</span>
+        <span class="profile">AR</span>
+      </nav>
+    </header>
+
+    <main>
+      <div class="page-heading">
+        <div>
+          <h2>Expert answers</h2>
+          <p>Practical guidance from the Restwell community.</p>
+        </div>
+        <span class="back-link">← Back to discussions</span>
+      </div>
+
+      <article class="card">
+        <section class="answer">
+          <p class="eyebrow">Community answer</p>
+          <h1>Why does my resting heart rate stay high the night after a hard workout?</h1>
+          <p class="body">A long session raises core temperature and stress hormones for several hours. Overnight heart rate usually settles back within one to two nights. If it stays more than 7 bpm above your baseline for three nights, pull back the training load and check hydration.</p>
+
+          <div class="reaction">
+            <button class="upvote" type="button">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                <path d="M7 2.2 12 8H9.3v3.8H4.7V8H2z" fill="currentColor"/>
+              </svg>
+              Upvoted
+              <span class="count">248</span>
+            </button>
+            <div class="vote-note">
+              <strong>You and 247 others</strong>
+              Your upvote is public to the community.
+            </div>
+          </div>
+        </section>
+
+        <aside class="detail-panel">
+          <div class="author">
+            <div class="initials">MC</div>
+            <div class="who">
+              <div class="name">Dr. Marla Chen</div>
+              <div class="meta">Sleep physiologist · Answered March 4</div>
+            </div>
+          </div>
+
+          <h2 class="ask-title">Ask Dr. Chen for more detail</h2>
+          <p class="ask-copy">Send a focused follow-up about this answer. Your question may be shared with the community.</p>
+          <form>
+            <label for="question-a">Your follow-up question</label>
+            <textarea id="question-a" placeholder="For example: Should I adjust training if my heart rate returns to normal after two nights?"></textarea>
+            <div class="form-footer">
+              <span class="privacy">No personal medical details.</span>
+              <button class="submit" type="button">Send question</button>
+            </div>
+          </form>
+        </aside>
+      </article>
+    </main>
+  </div>
+</body>
+</html>

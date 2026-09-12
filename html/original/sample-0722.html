@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vesper Video Player</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #d8d8d2;
+      font-family: 'Roboto', system-ui, sans-serif;
+      color: #f1f1eb;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      background: #11120f;
+    }
+
+    .player {
+      width: 390px;
+      height: 468px;
+      position: relative;
+      flex: 0 0 auto;
+      background: #27291f;
+    }
+
+    .player-image {
+      width: 390px;
+      height: 468px;
+      display: block;
+      object-fit: cover;
+      background: #27291f;
+    }
+
+    .video-tint {
+      position: absolute;
+      inset: 0;
+      background: rgba(9, 10, 7, 0.57);
+    }
+
+    .top-bar {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+      background: rgba(14, 15, 11, 0.72);
+    }
+
+    .icon-button {
+      width: 36px;
+      height: 36px;
+      padding: 0;
+      border: 1px solid rgba(255, 255, 255, 0.24);
+      border-radius: 4px;
+      display: grid;
+      place-items: center;
+      color: #f5f5ef;
+      background: rgba(17, 18, 15, 0.74);
+    }
+
+    .icon-button svg,
+    .nav-item svg {
+      width: 21px;
+      height: 21px;
+      display: block;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .service-name {
+      flex: 1;
+      font-size: 16px;
+      line-height: 20px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
+    .episode-marker {
+      position: absolute;
+      top: 102px;
+      left: 16px;
+      right: 16px;
+      text-align: center;
+      color: #d5d6cb;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 500;
+      letter-spacing: 0.11em;
+      text-transform: uppercase;
+    }
+
+    .center-controls {
+      position: absolute;
+      top: 166px;
+      left: 0;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .skip-button {
+      width: 44px;
+      height: 44px;
+      padding: 0;
+      border: 0;
+      color: #f1f1eb;
+      background: transparent;
+      display: grid;
+      place-items: center;
+    }
+
+    .skip-button svg {
+      width: 29px;
+      height: 29px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.7;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .skip-label {
+      position: absolute;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .play-button {
+      width: 62px;
+      height: 62px;
+      padding: 0;
+      border: 1px solid #a7ae68;
+      border-radius: 4px;
+      display: grid;
+      place-items: center;
+      color: #17180f;
+      background: #a7ae68;
+    }
+
+    .play-button svg {
+      width: 29px;
+      height: 29px;
+      fill: currentColor;
+      stroke: none;
+      margin-left: 3px;
+    }
+
+    .player-info {
+      position: absolute;
+      left: 16px;
+      right: 16px;
+      bottom: 18px;
+    }
+
+    .player-title {
+      margin: 0 0 3px;
+      font-size: 20px;
+      line-height: 25px;
+      font-weight: 500;
+    }
+
+    .player-subtitle {
+      margin: 0 0 14px;
+      color: #d0d1c7;
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 4px;
+      position: relative;
+      background: rgba(255, 255, 255, 0.28);
+    }
+
+    .progress-fill {
+      width: 40.6%;
+      height: 4px;
+      background: #a7ae68;
+    }
+
+    .progress-thumb {
+      width: 10px;
+      height: 10px;
+      position: absolute;
+      top: -3px;
+      left: calc(40.6% - 5px);
+      border-radius: 50%;
+      background: #a7ae68;
+    }
+
+    .time-row {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 7px;
+      color: #d7d8ce;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .now-playing {
+      padding: 15px 16px 14px;
+      border-bottom: 1px solid #34362e;
+    }
+
+    .section-label {
+      margin: 0 0 5px;
+      color: #a7ae68;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .show-title {
+      margin: 0 0 5px;
+      font-size: 20px;
+      line-height: 25px;
+      font-weight: 500;
+    }
+
+    .show-meta {
+      margin: 0;
+      color: #aeb0a7;
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .queue {
+      padding: 13px 16px 0;
+    }
+
+    .queue-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 5px;
+    }
+
+    .queue-title {
+      margin: 0;
+      font-size: 16px;
+      line-height: 22px;
+      font-weight: 500;
+    }
+
+    .queue-count {
+      color: #92948c;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .queue-row {
+      display: flex;
+      gap: 12px;
+      padding: 9px 0;
+      border-bottom: 1px solid #2e3029;
+    }
+
+    .queue-row:last-child {
+      border-bottom: 0;
+    }
+
+    .queue-image {
+      width: 96px;
+      height: 54px;
+      flex: 0 0 auto;
+      display: block;
+      object-fit: cover;
+      border-radius: 4px;
+      background: #292b24;
+    }
+
+    .queue-copy {
+      min-width: 0;
+      align-self: center;
+    }
+
+    .queue-name {
+      margin: 0 0 3px;
+      overflow: hidden;
+      color: #ecece6;
+      font-size: 14px;
+      line-height: 19px;
+      font-weight: 500;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .queue-meta {
+      margin: 0;
+      color: #95978f;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .tab-bar {
+      margin-top: auto;
+      min-height: 68px;
+      display: flex;
+      align-items: stretch;
+      border-top: 1px solid #3a3c33;
+      background: #151612;
+    }
+
+    .nav-item {
+      width: 25%;
+      padding: 8px 4px 7px;
+      border: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 4px;
+      color: #8f9188;
+      background: transparent;
+      font-size: 12px;
+      line-height: 15px;
+      font-weight: 500;
+    }
+
+    .nav-item.active {
+      color: #a7ae68;
+      border-top: 2px solid #a7ae68;
+      padding-top: 6px;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <section class="player" aria-label="Video player">
+      <img class="player-image" src="https://loremflickr.com/390/468/studio?lock=9630" width="390" height="468" alt="A dim recording studio shown in the current episode">
+      <div class="video-tint"></div>
+
+      <header class="top-bar">
+        <button class="icon-button" type="button" aria-label="Close player">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M15 5l-7 7 7 7"></path>
+          </svg>
+        </button>
+        <div class="service-name">Vesper</div>
+        <button class="icon-button" type="button" aria-label="Connect to a screen">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="4" y="5" width="16" height="11" rx="1"></rect>
+            <path d="M8 20h8M12 16v4"></path>
+          </svg>
+        </button>
+        <button class="icon-button" type="button" aria-label="More playback options">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="5" cy="12" r="1" fill="currentColor" stroke="none"></circle>
+            <circle cx="12" cy="12" r="1" fill="currentColor" stroke="none"></circle>
+            <circle cx="19" cy="12" r="1" fill="currentColor" stroke="none"></circle>
+          </svg>
+        </button>
+      </header>
+
+      <div class="episode-marker">Season 1 · Episode 4</div>
+
+      <div class="center-controls">
+        <button class="skip-button" type="button" aria-label="Go back 10 seconds">
+          <svg viewBox="0 0 32 32" aria-hidden="true">
+            <path d="M7 11V5m0 0h6M7 5l4 4"></path>
+            <path d="M8.5 10A10 10 0 1 1 6 18"></path>
+          </svg>
+          <span class="skip-label">10</span>
+        </button>
+
+        <button class="play-button" type="button" aria-label="Resume episode">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M7 4l13 8-13 8z"></path>
+          </svg>
+        </button>
+
+        <button class="skip-button" type="button" aria-label="Go forward 10 seconds">
+          <svg viewBox="0 0 32 32" aria-hidden="true">
+            <path d="M25 11V5m0 0h-6m6 0l-4 4"></path>
+            <path d="M23.5 10A10 10 0 1 0 26 18"></path>
+          </svg>
+          <span class="skip-label">10</span>
+        </button>
+      </div>
+
+      <div class="player-info">
+        <h1 class="player-title">The Room Below</h1>
+        <p class="player-subtitle">Mara follows the transmitter into the old studio.</p>
+        <div class="progress-track" aria-label="18 minutes 42 seconds of 46 minutes 8 seconds">
+          <div class="progress-fill"></div>
+          <div class="progress-thumb"></div>
+        </div>
+        <div class="time-row">
+          <span>18:42</span>
+          <span>46:08</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="now-playing" aria-labelledby="show-heading">
+      <p class="section-label">Now playing</p>
+      <h2 class="show-title" id="show-heading">The Quiet Frequency</h2>
+      <p class="show-meta">Drama · 2025 · TV-14 · English captions</p>
+    </section>
+
+    <section class="queue" aria-labelledby="queue-heading">
+      <div class="queue-header">
+        <h2 class="queue-title" id="queue-heading">Up next</h2>
+        <span class="queue-count">2 episodes</span>
+      </div>
+
+      <div class="queue-row">
+        <img class="queue-image" src="https://loremflickr.com/96/54/concert?lock=9631" width="96" height="54" alt="A dark concert stage from the next episode">
+        <div class="queue-copy">
+          <p class="queue-name">Episode 5 · Dead Air</p>
+          <p class="queue-meta">44 min · The signal reaches the city.</p>
+        </div>
+      </div>
+
+      <div class="queue-row">
+        <img class="queue-image" src="https://loremflickr.com/96/54/vinyl?lock=9632" width="96" height="54" alt="A vinyl record featured in a later episode">
+        <div class="queue-copy">
+          <p class="queue-name">Episode 6 · Second Pressing</p>
+          <p class="queue-meta">48 min · A recording changes the case.</p>
+        </div>
+      </div>
+    </section>
+
+    <nav class="tab-bar" aria-label="Primary navigation">
+      <button class="nav-item" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M3 11l9-7 9 7"></path>
+          <path d="M5 10v10h14V10"></path>
+        </svg>
+        <span>Home</span>
+      </button>
+
+      <button class="nav-item" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="10.5" cy="10.5" r="6.5"></circle>
+          <path d="M15.5 15.5L21 21"></path>
+        </svg>
+        <span>Search</span>
+      </button>
+
+      <button class="nav-item active" type="button" aria-current="page">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <rect x="3" y="4" width="18" height="16" rx="1"></rect>
+          <path d="M10 9l5 3-5 3z"></path>
+        </svg>
+        <span>Playing</span>
+      </button>
+
+      <button class="nav-item" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M5 4h14v16H5z"></path>
+          <path d="M9 4v16"></path>
+        </svg>
+        <span>Library</span>
+      </button>
+    </nav>
+  </div>
+</body>
+</html>

@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order Details — LingoShelf</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #e4e4e7;
+      color: #18181b;
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    }
+
+    button {
+      font: inherit;
+      cursor: pointer;
+    }
+
+    .screen {
+      width: 1024px;
+      height: 768px;
+      display: flex;
+      background: #ffffff;
+      box-shadow: 0 14px 44px rgba(24, 24, 27, 0.16);
+    }
+
+    /* ---------- left rail ---------- */
+    .rail {
+      width: 216px;
+      flex: none;
+      display: flex;
+      flex-direction: column;
+      padding: 18px 14px 16px;
+      border-right: 1px solid #e4e4e7;
+      background: #fafafa;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 0 8px 18px;
+      font-size: 15px;
+      line-height: 24px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+
+    .brand-mark {
+      width: 26px;
+      height: 26px;
+      border-radius: 7px;
+      background: #18181b;
+      color: #ffffff;
+      display: grid;
+      place-items: center;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .rail-label {
+      margin: 0 0 7px;
+      padding: 0 8px;
+      color: #a1a1aa;
+      font-size: 10px;
+      line-height: 14px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+    }
+
+    .rail nav {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .raillink {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      width: 100%;
+      padding: 9px 10px;
+      border: 0;
+      border-radius: 8px;
+      background: transparent;
+      color: #52525b;
+      text-align: left;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 500;
+    }
+
+    .raillink svg {
+      width: 19px;
+      height: 19px;
+      display: block;
+      flex: none;
+    }
+
+    .raillink.active {
+      background: #18181b;
+      color: #ffffff;
+      font-weight: 700;
+    }
+
+    .rail-user {
+      margin-top: auto;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px;
+      border: 1px solid #e4e4e7;
+      border-radius: 8px;
+      background: #ffffff;
+    }
+
+    .avatar {
+      width: 30px;
+      height: 30px;
+      flex: none;
+      border-radius: 50%;
+      background: #18181b;
+      color: #ffffff;
+      display: grid;
+      place-items: center;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .rail-user strong {
+      display: block;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 600;
+    }
+
+    .rail-user span {
+      display: block;
+      color: #a1a1aa;
+      font-size: 11px;
+      line-height: 15px;
+    }
+
+    /* ---------- workspace ---------- */
+    .workspace {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .workhead {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 26px;
+      border-bottom: 1px solid #e4e4e7;
+    }
+
+    .icon-button {
+      width: 34px;
+      height: 34px;
+      padding: 0;
+      border: 1px solid #e4e4e7;
+      border-radius: 6px;
+      background: #ffffff;
+      color: #18181b;
+      display: grid;
+      place-items: center;
+    }
+
+    .icon-button svg {
+      width: 19px;
+      height: 19px;
+      display: block;
+    }
+
+    .workhead h1 {
+      margin: 0;
+      font-size: 19px;
+      line-height: 26px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .order-meta {
+      margin: 1px 0 0;
+      font-size: 12px;
+      line-height: 16px;
+      color: #71717a;
+    }
+
+    .order-meta strong {
+      color: #3f3f46;
+      font-weight: 600;
+    }
+
+    .head-actions {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .receipt-button {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 15px;
+      border: 1px solid #18181b;
+      border-radius: 6px;
+      background: #18181b;
+      color: #ffffff;
+      font-size: 13px;
+      line-height: 16px;
+      font-weight: 600;
+    }
+
+    .receipt-button svg {
+      width: 16px;
+      height: 16px;
+      display: block;
+    }
+
+    .workbody {
+      flex: 1;
+      padding: 16px 26px;
+    }
+
+    /* ---------- shipment banner ---------- */
+    .banner {
+      padding: 14px 20px;
+      border: 1px solid #e4e4e7;
+      border-radius: 8px;
+      background: #fafafa;
+    }
+
+    .banner-top {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .eyebrow {
+      margin: 0 0 1px;
+      color: #71717a;
+      font-size: 11px;
+      line-height: 16px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .banner h2 {
+      margin: 0;
+      font-size: 22px;
+      line-height: 30px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .banner-side {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .banner-side p {
+      margin: 0;
+      text-align: right;
+      color: #71717a;
+      font-size: 12px;
+      line-height: 18px;
+    }
+
+    .banner-side p strong {
+      display: block;
+      color: #18181b;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .track-button {
+      flex: none;
+      padding: 9px 14px;
+      border: 1px solid #18181b;
+      border-radius: 6px;
+      background: #ffffff;
+      color: #18181b;
+      font-size: 13px;
+      line-height: 16px;
+      font-weight: 600;
+    }
+
+    .steps {
+      display: flex;
+      list-style: none;
+      margin: 12px 0 0;
+      padding: 0;
+    }
+
+    .step {
+      flex: 1;
+      position: relative;
+      min-width: 0;
+    }
+
+    .step .dot {
+      display: block;
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      background: #ffffff;
+      border: 2px solid #d4d4d8;
+    }
+
+    .step.done .dot {
+      background: #18181b;
+      border-color: #18181b;
+    }
+
+    .step::after {
+      content: "";
+      position: absolute;
+      left: 13px;
+      right: 8px;
+      top: 5px;
+      height: 1px;
+      background: #d4d4d8;
+    }
+
+    .step.done::after {
+      background: #18181b;
+    }
+
+    .step.current::after,
+    .step:last-child::after {
+      background: #d4d4d8;
+    }
+
+    .step:last-child::after {
+      display: none;
+    }
+
+    .step .label {
+      display: block;
+      margin-top: 7px;
+      color: #71717a;
+      font-size: 11px;
+      line-height: 16px;
+      font-weight: 500;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .step.current .label {
+      color: #18181b;
+      font-weight: 700;
+    }
+
+    /* ---------- items table ---------- */
+    .section-heading {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 14px;
+      margin: 16px 0 8px;
+    }
+
+    .section-heading h2 {
+      margin: 0;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 700;
+    }
+
+    .section-heading span {
+      color: #a1a1aa;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .table {
+      border: 1px solid #e4e4e7;
+      border-radius: 8px;
+    }
+
+    .trow {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 150px 60px 100px;
+      gap: 14px;
+      align-items: center;
+      padding: 8px 18px;
+    }
+
+    .thead {
+      padding-top: 9px;
+      padding-bottom: 9px;
+      border-bottom: 1px solid #e4e4e7;
+      background: #f4f4f5;
+      border-radius: 8px 8px 0 0;
+      color: #71717a;
+      font-size: 10px;
+      line-height: 14px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .trow + .trow {
+      border-top: 1px solid #f4f4f5;
+    }
+
+    .thead + .trow {
+      border-top: 0;
+    }
+
+    .cell-item {
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .cell-item img {
+      width: 64px;
+      height: 64px;
+      display: block;
+      flex: none;
+      object-fit: cover;
+      border-radius: 6px;
+      background: #d4d4d8;
+    }
+
+    .item-name {
+      margin: 0;
+      font-size: 14px;
+      line-height: 19px;
+      font-weight: 600;
+    }
+
+    .item-sku {
+      margin: 2px 0 0;
+      color: #a1a1aa;
+      font-size: 11px;
+      line-height: 16px;
+    }
+
+    .cell-text {
+      color: #52525b;
+      font-size: 12px;
+      line-height: 18px;
+    }
+
+    .cell-num {
+      color: #52525b;
+      font-size: 13px;
+      line-height: 18px;
+    }
+
+    .cell-price {
+      text-align: right;
+      white-space: nowrap;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 600;
+    }
+
+    .align-right {
+      text-align: right;
+    }
+
+    /* ---------- bottom strip: payment + address ---------- */
+    .summary-strip {
+      display: grid;
+      grid-template-columns: 1.15fr 1fr 1fr;
+      gap: 16px;
+      margin-top: 16px;
+    }
+
+    .panel {
+      padding: 14px 16px;
+      border: 1px solid #e4e4e7;
+      border-radius: 8px;
+    }
+
+    .panel h3 {
+      margin: 0 0 8px;
+      font-size: 12px
+;      line-height: 18px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #71717a;
+    }
+
+    .amount-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 2px 0;
+      color: #52525b;
+      font-size: 13px;
+      line-height: 20px;
+    }
+
+    .amount-row span:last-child {
+      white-space: nowrap;
+      color: #18181b;
+    }
+
+    .amount-row.total {
+      margin-top: 5px;
+      padding-top: 9px;
+      border-top: 1px solid #d4d4d8;
+      color: #18181b;
+      font-size: 16px;
+      line-height: 22px;
+      font-weight: 700;
+    }
+
+    .method-top {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+    }
+
+    .card-chip {
+      width: 36px;
+      height: 25px;
+      flex: none;
+      border-radius: 4px;
+      background: #18181b;
+      color: #ffffff;
+      display: grid;
+      place-items: center;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+    }
+
+    .method-top strong {
+      display: block;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 600;
+    }
+
+    .method-top span {
+      display: block;
+      color: #71717a;
+      font-size: 11px;
+      line-height: 16px;
+    }
+
+    .panel-list {
+      margin: 10px 0 0;
+      padding: 10px 0 0;
+      border-top: 1px solid #f4f4f5;
+      list-style: none;
+      color: #52525b;
+      font-size: 12px;
+      line-height: 20px;
+    }
+
+    .panel-list span {
+      float: right;
+      color: #18181b;
+      font-weight: 600;
+    }
+
+    .address-copy {
+      margin: 0;
+      color: #52525b;
+      font-size: 13px;
+      line-height: 20px;
+    }
+
+    .address-copy strong {
+      color: #18181b;
+      font-weight: 600;
+    }
+
+    .panel-note {
+      margin: 10px 0 0;
+      padding-top: 10px;
+      border-top: 1px solid #f4f4f5;
+      color: #a1a1aa;
+      font-size: 11px;
+      line-height: 16px;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <aside class="rail">
+      <div class="brand"><span class="brand-mark">LS</span>LingoShelf</div>
+      <p class="rail-label">Workspace</p>
+      <nav aria-label="Primary navigation">
+        <button class="raillink" type="button">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M4 10.5L12 4L20 10.5V20H14.5V14H9.5V20H4V10.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+          </svg>
+          <span>Home</span>
+        </button>
+        <button class="raillink" type="button">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M4 5.5C7.1 4.7 9.8 5.1 12 7V19C9.8 17.1 7.1 16.7 4 17.5V5.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+            <path d="M20 5.5C16.9 4.7 14.2 5.1 12 7V19C14.2 17.1 16.9 16.7 20 17.5V5.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+          </svg>
+          <span>Courses</span>
+        </button>
+        <button class="raillink active" type="button" aria-current="page">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M5 7.5L12 4L19 7.5V16.5L12 20L5 16.5V7.5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+            <path d="M5 7.5L12 11L19 7.5M12 11V20" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+          </svg>
+          <span>Orders</span>
+        </button>
+        <button class="raillink" type="button">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="12" cy="8" r="3.5" stroke="currentColor" stroke-width="1.7"/>
+            <path d="M5.5 20C6.1 16.7 8.4 15 12 15C15.6 15 17.9 16.7 18.5 20" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+          </svg>
+          <span>Profile</span>
+        </button>
+      </nav>
+      <div class="rail-user">
+        <span class="avatar" aria-hidden="true">JM</span>
+        <div>
+          <strong>Jordan Mercer</strong>
+          <span>Spanish · Level B1</span>
+        </div>
+      </div>
+    </aside>
+
+    <div class="workspace">
+      <header class="workhead">
+        <button class="icon-button" type="button" aria-label="Back to orders">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <div>
+          <h1>Order details</h1>
+          <p class="order-meta"><strong>Order LS-48271</strong> · Placed May 16, 2025</p>
+        </div>
+        <div class="head-actions">
+          <button class="receipt-button" type="button">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M12 4V15M12 15L8 11M12 15L16 11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M5 18H19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+            </svg>
+            <span>Download receipt (PDF)</span>
+          </button>
+          <button class="icon-button" type="button" aria-label="More order options">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <circle cx="5" cy="12" r="1.6"/>
+              <circle cx="12" cy="12" r="1.6"/>
+              <circle cx="19" cy="12" r="1.6"/>
+            </svg>
+          </button>
+        </div>
+      </header>
+
+      <main class="workbody">
+        <section class="banner" aria-labelledby="delivery-status">
+          <div class="banner-top">
+            <div>
+              <p class="eyebrow">Delivery status</p>
+              <h2 id="delivery-status">Arrives Friday, May 23</h2>
+            </div>
+            <div class="banner-side">
+              <p><strong>In transit</strong>Departed the regional learning hub</p>
+              <button class="track-button" type="button">Track shipment</button>
+            </div>
+          </div>
+          <ol class="steps">
+            <li class="step done">
+              <span class="dot" aria-hidden="true"></span>
+              <span class="label">Order placed · May 16</span>
+            </li>
+            <li class="step done">
+              <span class="dot" aria-hidden="true"></span>
+              <span class="label">Packed · May 18</span>
+            </li>
+            <li class="step done current">
+              <span class="dot" aria-hidden="true"></span>
+              <span class="label">In transit · May 20</span>
+            </li>
+            <li class="step">
+              <span class="dot" aria-hidden="true"></span>
+              <span class="label">Out for delivery · May 23</span>
+            </li>
+          </ol>
+        </section>
+
+        <div class="section-heading">
+          <h2 id="items-heading">Items · 3</h2>
+          <span>All items ship together</span>
+        </div>
+
+        <section class="table" aria-labelledby="items-heading">
+          <div class="trow thead">
+            <div>Item</div>
+            <div>Format</div>
+            <div>Qty</div>
+            <div class="align-right">Price</div>
+          </div>
+
+          <div class="trow">
+            <div class="cell-item">
+              <img src="https://loremflickr.com/64/64/books?lock=4850" width="64" height="64" alt="Spanish workbook and study books">
+              <div>
+                <p class="item-name">Spanish B1 Practice Workbook</p>
+                <p class="item-sku">SKU WB-2210</p>
+              </div>
+            </div>
+            <div class="cell-text">Second edition</div>
+            <div class="cell-num">1</div>
+            <div class="cell-price">$48.00</div>
+          </div>
+
+          <div class="trow">
+            <div class="cell-item">
+              <img src="https://loremflickr.com/64/64/study?lock=4851" width="64" height="64" alt="Vocabulary study materials">
+              <div>
+                <p class="item-name">Everyday Vocabulary Cards</p>
+                <p class="item-sku">SKU VC-0120</p>
+              </div>
+            </div>
+            <div class="cell-text">Set of 120 cards</div>
+            <div class="cell-num">1</div>
+            <div class="cell-price">$36.00</div>
+          </div>
+
+          <div class="trow">
+            <div class="cell-item">
+              <img src="https://loremflickr.com/64/64/library?lock=4852" width="64" height="64" alt="Pronunciation course book set">
+              <div>
+                <p class="item-name">Clear Pronunciation Study Set</p>
+                <p class="item-sku">SKU PR-4408</p>
+              </div>
+            </div>
+            <div class="cell-text">Book + audio access</div>
+            <div class="cell-num">1</div>
+            <div class="cell-price">$58.00</div>
+          </div>
+        </section>
+
+        <div class="summary-strip">
+          <section class="panel" aria-labelledby="payment-heading">
+            <h3 id="payment-heading">Payment summary</h3>
+            <div class="amount-row">
+              <span>Items subtotal</span>
+              <span>$142.00</span>
+            </div>
+            <div class="amount-row">
+              <span>Standard shipping</span>
+              <span>$0.00</span>
+            </div>
+            <div class="amount-row">
+              <span>Learning credit</span>
+              <span>−$15.00</span>
+            </div>
+            <div class="amount-row">
+              <span>Sales tax</span>
+              <span>$11.72</span>
+            </div>
+            <div class="amount-row total">
+              <span>Total paid</span>
+              <span>$138.72</span>
+            </div>
+          </section>
+
+          <section class="panel" aria-labelledby="method-heading">
+            <h3 id="method-heading">Payment method</h3>
+            <div class="method-top">
+              <span class="card-chip" aria-hidden="true">VISA</span>
+              <div>
+                <strong>Visa ending in 2048</strong>
+                <span>Charged May 16, 2025</span>
+              </div>
+            </div>
+            <ul class="panel-list">
+              <li>Billing ZIP <span>97205</span></li>
+              <li>Reference <span>TXN-77device</span></li>
+            </ul>
+          </section>
+
+          <section class="panel" aria-labelledby="address-heading">
+            <h3 id="address-heading">Delivery address</h3>
+            <p class="address-copy"><strong>Jordan Mercer</strong><br>824 Willow Terrace, Apt 3B<br>Portland, OR 97205</p>
+            <p class="panel-note">Standard shipping · Signature not required</p>
+          </section>
+        </div>
+      </main>
+    </div>
+  </div>
+</body>
+</html>

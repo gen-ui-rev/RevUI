@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Cadence — Search</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 40px 0;
+    margin: 0;
+    background: #E7E4E1;
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+  .screen {
+    width: 390px;
+    height: 844px;
+    background: #FFFFFF;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    color: #1B1918;
+  }
+
+  /* top bar */
+  .topbar {
+    padding: 14px 16px 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .back {
+    width: 32px; height: 32px;
+    display: flex; align-items: center; justify-content: center;
+    color: #35312F;
+    flex: none;
+  }
+  .field {
+    flex: 1;
+    min-width: 0;
+    height: 44px;
+    border: 1px solid #E2DFDC;
+    border-radius: 14px;
+    background: #FAF9F8;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 0 12px;
+  }
+  .field .mag { color: #8C8783; flex: none; }
+  .query {
+    flex: 1;
+    min-width: 0;
+    font-size: 15px;
+    font-weight: 500;
+    color: #1B1918;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .caret {
+    width: 1.5px;
+    height: 18px;
+    background: #E0407C;
+    flex: none;
+  }
+  .clear {
+    width: 20px; height: 20px;
+    border-radius: 10px;
+    background: #DFDBD7;
+    color: #FFFFFF;
+    display: flex; align-items: center; justify-content: center;
+    flex: none;
+  }
+
+  /* chips */
+  .chips {
+    display: flex;
+    gap: 8px;
+    padding: 0 16px 12px;
+  }
+  .chip {
+    border: 1px solid #E2DFDC;
+    border-radius: 14px;
+    padding: 7px 13px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #4A4643;
+    white-space: nowrap;
+  }
+  .chip.on {
+    background: #E0407C;
+    border-color: #E0407C;
+    color: #FFFFFF;
+  }
+  .chip .n { color: #A9A4A0; font-weight: 400; margin-left: 5px; }
+  .chip.on .n { color: #F7C5DA; }
+
+  .countbar {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding: 10px 16px 10px;
+    border-top: 1px solid #EEEBE8;
+    border-bottom: 1px solid #EEEBE8;
+  }
+  .countbar .c { font-size: 13px; color: #6E6A66; }
+  .countbar .c b { font-weight: 600; color: #1B1918; }
+  .countbar .sort { font-size: 13px; font-weight: 500; color: #E0407C; }
+
+  /* results */
+  .results { flex: 1; }
+
+  /* group headings: large typographic titles with accent rule */
+  .sechead {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 18px 16px 8px;
+  }
+  .sechead .bar {
+    width: 3px;
+    height: 18px;
+    border-radius: 2px;
+    background: #E0407C;
+    flex: none;
+  }
+  .sechead .lbl {
+    flex: none;
+    font-size: 17px;
+    font-weight: 700;
+    line-height: 20px;
+    letter-spacing: -0.015em;
+    color: #171514;
+  }
+  .sechead .cnt {
+    flex: none;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 20px;
+    color: #B0ABA6;
+  }
+  .sechead .rule {
+    flex: 1;
+    min-width: 12px;
+    height: 1px;
+    background: #E9E5E1;
+  }
+
+  .row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 16px;
+  }
+  .row + .row { border-top: 1px solid #F1EEEB; }
+  .mono {
+    width: 40px; height: 40px;
+    border-radius: 14px;
+    flex: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .mono.person { background: #FBE4EE; color: #C93470; }
+  .mono.doc { background: #F3F1EF; color: #605B57; }
+  .txt { min-width: 0; flex: 1; }
+  .t1 {
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 20px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .t2 {
+    font-size: 13px;
+    line-height: 18px;
+    color: #77726E;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-top: 2px;
+  }
+  .hl { color: #C93470; font-weight: 500; }
+  .stamp { font-size: 12px; color: #A19C97; flex: none; }
+
+  /* tab bar */
+  .tabbar {
+    border-top: 1px solid #EAE7E4;
+    display: flex;
+    padding: 9px 8px 12px;
+  }
+  .tab {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    color: #8E8985;
+    font-size: 12px;
+    font-weight: 500;
+  }
+  .tab.on { color: #E0407C; }
+</style>
+</head>
+<body>
+  <div class="screen">
+
+    <div class="topbar">
+      <div class="back" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      </div>
+      <div class="field">
+        <span class="mag">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.2-3.2"/></svg>
+        </span>
+        <span class="query">q3 launch</span>
+        <span class="caret"></span>
+        <span class="clear">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+        </span>
+      </div>
+    </div>
+
+    <div class="chips">
+      <div class="chip on">All <span class="n">8</span></div>
+      <div class="chip">Docs <span class="n">4</span></div>
+      <div class="chip">Messages <span class="n">2</span></div>
+      <div class="chip">People <span class="n">2</span></div>
+    </div>
+
+    <div class="countbar">
+      <div class="c"><b>8 results</b> in Northline workspace</div>
+      <div class="sort">Relevance</div>
+    </div>
+
+    <div class="results">
+
+      <div class="sechead">
+        <span class="bar"></span>
+        <span class="lbl">Documents</span>
+        <span class="cnt">4</span>
+        <span class="rule"></span>
+      </div>
+
+      <div class="row">
+        <div class="mono doc">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg>
+        </div>
+        <div class="txt">
+          <div class="t1">Q3 Launch Brief</div>
+          <div class="t2">Marketing · Edited by Nora Vance</div>
+        </div>
+        <div class="stamp">Mar 14</div>
+      </div>
+
+      <div class="row">
+        <div class="mono doc">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg>
+        </div>
+        <div class="txt">
+          <div class="t1">Launch checklist — week of Mar 18</div>
+          <div class="t2">Q3 Launch · Edited by Theo Marsh</div>
+        </div>
+        <div class="stamp">Mar 12</div>
+      </div>
+
+      <div class="row">
+        <div class="mono doc">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg>
+        </div>
+        <div class="txt">
+          <div class="t1">Pricing update for Q3</div>
+          <div class="t2">Finance · Edited by Amara Boyd</div>
+        </div>
+        <div class="stamp">Mar 9</div>
+      </div>
+
+      <div class="row">
+        <div class="mono doc">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg>
+        </div>
+        <div class="txt">
+          <div class="t1">Launch retro template</div>
+          <div class="t2">Operations · Edited by Dana Whitfield</div>
+        </div>
+        <div class="stamp">Feb 28</div>
+      </div>
+
+      <div class="sechead">
+        <span class="bar"></span>
+        <span class="lbl">Messages</span>
+        <span class="cnt">2</span>
+        <span class="rule"></span>
+      </div>
+
+      <div class="row">
+        <div class="mono person">NV</div>
+        <div class="txt">
+          <div class="t1">Nora Vance in #launch-room</div>
+          <div class="t2">Moving the <span class="hl">Q3 launch</span> review to Thursday at 10.</div>
+        </div>
+        <div class="stamp">Mar 14</div>
+      </div>
+
+      <div class="row">
+        <div class="mono person">TM</div>
+        <div class="txt">
+          <div class="t1">Theo Marsh in #design-review</div>
+          <div class="t2"><span class="hl">Launch</span> assets are in the shared drive now.</div>
+        </div>
+        <div class="stamp">Mar 13</div>
+      </div>
+
+      <div class="sechead">
+        <span class="bar"></span>
+        <span class="lbl">People</span>
+        <span class="cnt">2</span>
+        <span class="rule"></span>
+      </div>
+
+      <div class="row">
+        <div class="mono person">NV</div>
+        <div class="txt">
+          <div class="t1">Nora Vance</div>
+          <div class="t2">Product lead · Owner of Q3 Launch</div>
+        </div>
+        <div class="stamp">Online</div>
+      </div>
+
+      <div class="row">
+        <div class="mono person">PR</div>
+        <div class="txt">
+          <div class="t1">Priya Raman</div>
+          <div class="t2">Program manager · Launch operations</div>
+        </div>
+        <div class="stamp">2:40 PM</div>
+      </div>
+
+    </div>
+
+    <div class="tabbar">
+      <div class="tab">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5 12 4l8 6.5V20a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1z"/></svg>
+        Home
+      </div>
+      <div class="tab on">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.2-3.2"/></svg>
+        Search
+      </div>
+      <div class="tab">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="4"/><path d="M8.5 12.2l2.4 2.4 4.6-5"/></svg>
+        Tasks
+      </div>
+      <div class="tab">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 13h4l1.5 3h5L16 13h4"/><path d="M4 13l2.4-7.3A1 1 0 0 1 7.3 5h9.4a1 1 0 0 1 .95.7L20 13v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1z"/></svg>
+        Inbox
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

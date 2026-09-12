@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Transfer in progress — Ledgerway</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  body{
+    margin:0;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:24px 0;
+    background:#dcded9;
+    font-family:'Roboto', system-ui, sans-serif;
+    color:#1c1e1a;
+  }
+  .screen{
+    width:1024px;
+    height:768px;
+    box-sizing:border-box;
+    display:flex;
+    flex-direction:column;
+    background:#f1f2ef;
+    box-shadow:0 8px 32px rgba(28,30,26,0.18);
+  }
+
+  /* top bar */
+  .topbar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:14px 32px;
+    background:#ffffff;
+    border-bottom:1px solid #e2e4df;
+  }
+  .brand{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-size:15px;
+    font-weight:700;
+    letter-spacing:0.01em;
+  }
+  .mark{
+    width:22px;
+    height:22px;
+    border-radius:5px;
+    background:#1c1e1a;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#c4e538;
+    font-size:12px;
+    font-weight:700;
+  }
+  .crumbs{
+    font-size:13px;
+    color:#6d7268;
+  }
+  .crumbs b{
+    color:#1c1e1a;
+    font-weight:500;
+  }
+  .topright{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    font-size:13px;
+    color:#6d7268;
+  }
+  .avatar{
+    width:28px;
+    height:28px;
+    border-radius:50%;
+    background:#c4e538;
+    color:#1c1e1a;
+    font-size:11px;
+    font-weight:700;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+
+  .body{
+    flex:1;
+    display:flex;
+    min-height:0;
+  }
+
+  /* sidebar */
+  .side{
+    width:214px;
+    box-sizing:border-box;
+    background:#ffffff;
+    border-right:1px solid #e2e4df;
+    padding:22px 0;
+  }
+  .side-label{
+    font-size:11px;
+    font-weight:500;
+    letter-spacing:0.09em;
+    text-transform:uppercase;
+    color:#8b8f86;
+    margin:0 0 8px;
+    padding:0 22px;
+  }
+  .nav a{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:8px 22px;
+    font-size:14px;
+    color:#3a3d36;
+    text-decoration:none;
+    border-left:3px solid transparent;
+  }
+  .nav a.on{
+    border-left-color:#c4e538;
+    background:#f6f8ee;
+    font-weight:500;
+    color:#1c1e1a;
+  }
+  .nav .count{
+    font-size:11px;
+    color:#8b8f86;
+  }
+  .side-split{
+    height:1px;
+    background:#e8e9e6;
+    margin:18px 22px;
+  }
+
+  /* main */
+  .main{
+    flex:1;
+    box-sizing:border-box;
+    padding:28px 36px;
+    min-width:0;
+  }
+  .eyebrow{
+    font-size:11px;
+    font-weight:500;
+    letter-spacing:0.09em;
+    text-transform:uppercase;
+    color:#6d7268;
+    margin:0 0 6px;
+  }
+  .h1{
+    font-size:22px;
+    font-weight:700;
+    margin:0 0 20px;
+  }
+  .card{
+    background:#ffffff;
+    border:1px solid #e2e4df;
+    border-radius:8px;
+    box-shadow:0 2px 10px rgba(28,30,26,0.06);
+    padding:24px 28px;
+  }
+  .file{
+    display:flex;
+    align-items:center;
+    gap:16px;
+    padding-bottom:20px;
+    border-bottom:1px solid #eceee9;
+  }
+  .file img{
+    display:block;
+    width:72px;
+    height:72px;
+    border-radius:6px;
+    object-fit:cover;
+    background:#dfe1dc;
+    flex:none;
+  }
+  .file-meta{min-width:0;flex:1;}
+  .name{
+    font-size:17px;
+    font-weight:500;
+    margin:0 0 4px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .sub{
+    font-size:13px;
+    color:#6d7268;
+    margin:0;
+  }
+  .chip{
+    flex:none;
+    font-size:12px;
+    font-weight:500;
+    color:#3f4a12;
+    background:#eef6cf;
+    border:1px solid #dbe9a4;
+    border-radius:20px;
+    padding:5px 12px;
+  }
+
+  .stats{
+    display:flex;
+    margin:20px 0 22px;
+  }
+  .stat{
+    flex:1;
+    padding:0 20px;
+    border-left:1px solid #eceee9;
+  }
+  .stat:first-child{padding-left:0;border-left:none;}
+  .stat-label{
+    font-size:11px;
+    font-weight:500;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:#8b8f86;
+    margin:0 0 6px;
+  }
+  .stat-value{
+    font-size:19px;
+    font-weight:500;
+    margin:0;
+  }
+  .stat-value small{
+    font-size:12px;
+    font-weight:400;
+    color:#6d7268;
+    margin-left:3px;
+  }
+
+  .barrow{
+    display:flex;
+    align-items:center;
+    gap:20px;
+  }
+  .pct{
+    font-size:34px;
+    font-weight:700;
+    line-height:1;
+    flex:none;
+  }
+  .pct span{
+    font-size:16px;
+    font-weight:400;
+    color:#6d7268;
+    margin-left:2px;
+  }
+  .track{
+    flex:1;
+    height:12px;
+    border-radius:6px;
+    background:#e8e9e6;
+    overflow:hidden;
+  }
+  .fill{
+    width:68%;
+    height:100%;
+    background:#c4e538;
+    border-radius:6px;
+  }
+  .footrow{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:24px;
+    margin-top:22px;
+    padding-top:18px;
+    border-top:1px solid #eceee9;
+  }
+  .status{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin:0;
+    font-size:13px;
+    color:#3a3d36;
+  }
+  .status svg{flex:none;}
+  .note{
+    margin:6px 0 0;
+    font-size:12px;
+    line-height:1.5;
+    color:#8b8f86;
+    max-width:420px;
+  }
+  .actions{
+    display:flex;
+    gap:10px;
+    flex:none;
+  }
+  .btn{
+    text-align:center;
+    font-size:13px;
+    font-weight:500;
+    border-radius:6px;
+    padding:9px 18px;
+    box-sizing:border-box;
+    cursor:pointer;
+  }
+  .btn-ghost{
+    border:1px solid #cfd2cb;
+    color:#3a3d36;
+    background:#fff;
+  }
+  .btn-solid{
+    background:#1c1e1a;
+    color:#ffffff;
+    border:1px solid #1c1e1a;
+  }
+
+  .recent{
+    margin-top:24px;
+  }
+  .recent h2{
+    font-size:12px;
+    font-weight:500;
+    letter-spacing:0.09em;
+    text-transform:uppercase;
+    color:#6d7268;
+    margin:0 0 10px;
+  }
+  .row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    background:#ffffff;
+    border:1px solid #e2e4df;
+    border-radius:6px;
+    padding:12px 18px;
+    margin-bottom:8px;
+    font-size:13px;
+  }
+  .row .rname{font-weight:500;}
+  .row .rmeta{color:#8b8f86;}
+  .done{color:#4d7a12;font-weight:500;}
+</style>
+</head>
+<body>
+  <div class="screen">
+    <div class="topbar">
+      <div class="brand"><span class="mark">L</span> Ledgerway</div>
+      <div class="crumbs">Vault &nbsp;/&nbsp; Statements &nbsp;/&nbsp; <b>Transfers</b></div>
+      <div class="topright">
+        <span>Sync healthy</span>
+        <span class="avatar">MR</span>
+      </div>
+    </div>
+
+    <div class="body">
+      <div class="side">
+        <p class="side-label">Workspace</p>
+        <nav class="nav">
+          <a href="#">Overview</a>
+          <a href="#">Documents<span class="count">184</span></a>
+          <a class="on" href="#">Transfers<span class="count">1</span></a>
+          <a href="#">Statements<span class="count">36</span></a>
+          <a href="#">Shared links</a>
+        </nav>
+        <div class="side-split"></div>
+        <p class="side-label">Accounts</p>
+        <nav class="nav">
+          <a href="#">Checking 4471</a>
+          <a href="#">Savings 7730</a>
+          <a href="#">Payroll 2210</a>
+        </nav>
+      </div>
+
+      <div class="main">
+        <p class="eyebrow">Uploading to Ledgerway vault</p>
+        <h1 class="h1">Transfer in progress</h1>
+
+        <div class="card">
+          <div class="file">
+            <img src="https://loremflickr.com/72/72/chart?lock=6061" width="72" height="72" alt="Preview of the quarterly statement page showing a balance chart">
+            <div class="file-meta">
+              <p class="name">Q3-2025-Statement.pdf</p>
+              <p class="sub">Checking 4471 &middot; PDF document &middot; Started 10:52</p>
+            </div>
+            <span class="chip">Uploading</span>
+          </div>
+
+          <div class="stats">
+            <div class="stat">
+              <p class="stat-label">Transferred</p>
+              <p class="stat-value">4.2 MB<small>of 6.1 MB</small></p>
+            </div>
+            <div class="stat">
+              <p class="stat-label">Current speed</p>
+              <p class="stat-value">1.8 MB<small>/s</small></p>
+            </div>
+            <div class="stat">
+              <p class="stat-label">Time left</p>
+              <p class="stat-value">12<small>seconds</small></p>
+            </div>
+            <div class="stat">
+              <p class="stat-label">Destination</p>
+              <p class="stat-value">Vault<small>US-East</small></p>
+            </div>
+          </div>
+
+          <div class="barrow">
+            <div class="pct">68<span>%</span></div>
+            <div class="track"><div class="fill"></div></div>
+          </div>
+
+          <div class="footrow">
+            <div>
+              <p class="status">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <rect x="3" y="7" width="10" height="7" rx="1.5" stroke="#3a3d36" stroke-width="1.4"/>
+                  <path d="M5.5 7V5.2a2.5 2.5 0 0 1 5 0V7" stroke="#3a3d36" stroke-width="1.4"/>
+                </svg>
+                Encrypted before it leaves this device
+              </p>
+              <p class="note">This transfer lives here until it finishes. Files you keep for offline reading stay in Documents.</p>
+            </div>
+            <div class="actions">
+              <span class="btn btn-ghost">Cancel</span>
+              <span class="btn btn-solid">Run in background</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="recent">
+          <h2>Finished today</h2>
+          <div class="row">
+            <span class="rname">Q2-2025-Statement.pdf</span>
+            <span class="rmeta">5.8 MB &middot; 2.1 MB/s avg</span>
+            <span class="done">Uploaded 10:41</span>
+          </div>
+          <div class="row">
+            <span class="rname">Payroll-Summary-Aug.csv</span>
+            <span class="rmeta">640 KB &middot; 1.6 MB/s avg</span>
+            <span class="done">Uploaded 09:58</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

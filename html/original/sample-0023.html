@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nookline — Saturday Strollers</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 24px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #d3d5d0;
+      color: #252720;
+      font-family: 'Nunito Sans', system-ui, sans-serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #eceee9;
+      box-shadow: 0 5px 18px rgba(35, 39, 29, 0.14);
+    }
+
+    .topbar {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      background: #ffffff;
+      border-bottom: 1px solid #dcdfd8;
+    }
+
+    .icon-button {
+      width: 38px;
+      height: 38px;
+      flex: 0 0 38px;
+      display: grid;
+      place-items: center;
+      padding: 0;
+      color: #46493f;
+      background: transparent;
+      border: 0;
+      border-radius: 6px;
+    }
+
+    .icon-button svg,
+    .send-button svg,
+    .nav-item svg {
+      display: block;
+      width: 21px;
+      height: 21px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .group-avatar,
+    .message-avatar {
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      border-radius: 6px;
+      font-weight: 700;
+    }
+
+    .group-avatar {
+      width: 40px;
+      height: 40px;
+      color: #ffffff;
+      background: #737a34;
+      font-size: 14px;
+    }
+
+    .message-avatar {
+      width: 30px;
+      height: 30px;
+      color: #4a4d43;
+      background: #d9dcd4;
+      font-size: 12px;
+    }
+
+    .group-copy {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .group-copy h1 {
+      margin: 0;
+      overflow: hidden;
+      color: #20221d;
+      font-size: 17px;
+      font-weight: 700;
+      line-height: 21px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .group-copy p {
+      margin: 1px 0 0;
+      color: #71756b;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 0;
+    }
+
+    .thread {
+      min-height: 0;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      gap: 7px;
+      padding: 11px 12px 9px;
+    }
+
+    .date-marker {
+      align-self: center;
+      color: #74786e;
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 16px;
+    }
+
+    .system-note {
+      align-self: center;
+      margin: 0;
+      padding: 5px 9px;
+      color: #686c63;
+      background: #ffffff;
+      border: 1px solid #e0e2dc;
+      border-radius: 6px;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .message-row {
+      display: flex;
+      align-items: flex-end;
+      gap: 7px;
+    }
+
+    .message-row.sent {
+      justify-content: flex-end;
+    }
+
+    .bubble {
+      max-width: 286px;
+      padding: 6px 9px 7px;
+      background: #ffffff;
+      border: 1px solid #e0e2dc;
+      border-radius: 6px;
+    }
+
+    .sent .bubble {
+      color: #ffffff;
+      background: #737a34;
+      border-color: #737a34;
+    }
+
+    .bubble.photo-bubble {
+      padding: 6px;
+    }
+
+    .message-meta {
+      display: flex;
+      align-items: baseline;
+      gap: 7px;
+      margin-bottom: 2px;
+      color: #71756b;
+      font-size: 12px;
+      line-height: 15px;
+    }
+
+    .message-meta strong {
+      color: #35382f;
+      font-weight: 700;
+    }
+
+    .sent .message-meta {
+      justify-content: flex-end;
+      color: #e4e7cd;
+    }
+
+    .sent .message-meta strong {
+      color: #ffffff;
+    }
+
+    .message-text {
+      margin: 0;
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 19px;
+    }
+
+    .shared-photo {
+      width: 228px;
+      height: 112px;
+      margin-top: 4px;
+      object-fit: cover;
+      display: block;
+      background: #c9cbc3;
+      border-radius: 6px;
+    }
+
+    .photo-caption {
+      margin: 5px 2px 0;
+      color: #34372f;
+      font-size: 14px;
+      line-height: 19px;
+    }
+
+    .read-state {
+      margin: 2px 4px 0 0;
+      color: #74786e;
+      font-size: 12px;
+      line-height: 15px;
+      text-align: right;
+    }
+
+    .composer {
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+      padding: 9px 12px;
+      background: #ffffff;
+      border-top: 1px solid #daddd6;
+    }
+
+    .attach-button {
+      width: 38px;
+      height: 38px;
+      flex: 0 0 38px;
+      display: grid;
+      place-items: center;
+      padding: 0;
+      color: #5d6157;
+      background: #f1f2ef;
+      border: 1px solid #dcdfd8;
+      border-radius: 6px;
+    }
+
+    .attach-button svg {
+      width: 20px;
+      height: 20px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .input-shell {
+      min-width: 0;
+      flex: 1;
+      padding: 9px 10px;
+      color: #7b7e75;
+      background: #f1f2ef;
+      border: 1px solid #daddd6;
+      border-radius: 6px;
+      font-size: 14px;
+      line-height: 18px;
+    }
+
+    .send-button {
+      width: 38px;
+      height: 38px;
+      flex: 0 0 38px;
+      display: grid;
+      place-items: center;
+      padding: 0;
+      color: #ffffff;
+      background: #737a34;
+      border: 0;
+      border-radius: 6px;
+    }
+
+    .tabbar {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      padding: 6px 8px 7px;
+      background: #ffffff;
+      border-top: 1px solid #daddd6;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      padding: 2px 0;
+      color: #777b71;
+      background: transparent;
+      border: 0;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 15px;
+    }
+
+    .nav-item.active {
+      color: #69702e;
+      font-weight: 700;
+    }
+
+    .nav-item svg {
+      width: 20px;
+      height: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <button class="icon-button" type="button" aria-label="Back to messages">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M15 18l-6-6 6-6"></path>
+        </svg>
+      </button>
+
+      <div class="group-avatar" aria-hidden="true">SS</div>
+
+      <div class="group-copy">
+        <h1>Saturday Strollers</h1>
+        <p>5 members · Active 4 minutes ago</p>
+      </div>
+
+      <div class="top-actions">
+        <button class="icon-button" type="button" aria-label="Start audio call">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M7.2 3.8l2.1 4.1-2 1.8c1.2 2.7 3.3 4.8 6 6l1.8-2 4.1 2.1-.8 3.6c-.2.8-.9 1.3-1.7 1.3C9.3 20.2 3.8 14.7 3.3 7.3c-.1-.8.5-1.5 1.3-1.7l2.6-.8z"></path>
+          </svg>
+        </button>
+        <button class="icon-button" type="button" aria-label="Conversation options">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="5" cy="12" r="1"></circle>
+            <circle cx="12" cy="12" r="1"></circle>
+            <circle cx="19" cy="12" r="1"></circle>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <main class="thread" aria-label="Conversation">
+      <div class="date-marker">Saturday, June 14</div>
+
+      <p class="system-note">Mara Bell added Tessa Vale</p>
+
+      <div class="message-row">
+        <div class="message-avatar" aria-hidden="true">MB</div>
+        <article class="bubble">
+          <div class="message-meta">
+            <strong>Mara Bell</strong>
+            <span>9:04 AM</span>
+          </div>
+          <p class="message-text">I reserved the back table at Cedar Cup for 10:30 AM.</p>
+        </article>
+      </div>
+
+      <div class="message-row">
+        <div class="message-avatar" aria-hidden="true">MB</div>
+        <article class="bubble photo-bubble">
+          <div class="message-meta">
+            <strong>Mara Bell</strong>
+            <span>9:05 AM</span>
+          </div>
+          <img class="shared-photo" src="https://loremflickr.com/228/112/cafe?lock=1350" width="228" height="112" alt="Back table and chairs inside Cedar Cup">
+          <p class="photo-caption">Back table at Cedar Cup</p>
+        </article>
+      </div>
+
+      <div class="message-row sent">
+        <article class="bubble">
+          <div class="message-meta">
+            <strong>You</strong>
+            <span>9:08 AM</span>
+          </div>
+          <p class="message-text">That corner is perfect. I’ll bring the route cards.</p>
+        </article>
+      </div>
+
+      <div class="message-row">
+        <div class="message-avatar" aria-hidden="true">JR</div>
+        <article class="bubble">
+          <div class="message-meta">
+            <strong>Jonas Reed</strong>
+            <span>9:12 AM</span>
+          </div>
+          <p class="message-text">Can we start with the river loop? The market gets crowded after noon.</p>
+        </article>
+      </div>
+
+      <div class="message-row sent">
+        <article class="bubble">
+          <div class="message-meta">
+            <strong>You</strong>
+            <span>9:14 AM</span>
+          </div>
+          <p class="message-text">Yes, river loop first.</p>
+        </article>
+      </div>
+
+      <div class="message-row">
+        <div class="message-avatar" aria-hidden="true">TV</div>
+        <article class="bubble">
+          <div class="message-meta">
+            <strong>Tessa Vale</strong>
+            <span>9:17 AM</span>
+          </div>
+          <p class="message-text">I can meet everyone by the front window.</p>
+        </article>
+      </div>
+
+      <div class="message-row sent">
+        <div>
+          <article class="bubble">
+            <div class="message-meta">
+              <strong>You</strong>
+              <span>9:19 AM</span>
+            </div>
+            <p class="message-text">See you at 10:20 AM.</p>
+          </article>
+          <p class="read-state">Read by 3</p>
+        </div>
+      </div>
+    </main>
+
+    <form class="composer" aria-label="Write a message">
+      <button class="attach-button" type="button" aria-label="Add an attachment">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 5v14M5 12h14"></path>
+        </svg>
+      </button>
+      <div class="input-shell" role="textbox" aria-label="Message Saturday Strollers">Message Saturday Strollers</div>
+      <button class="send-button" type="button" aria-label="Send message">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M21 3L10 14"></path>
+          <path d="M21 3l-7 18-4-7-7-4 18-7z"></path>
+        </svg>
+      </button>
+    </form>
+
+    <nav class="tabbar" aria-label="Main navigation">
+      <button class="nav-item" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M3 11l9-8 9 8"></path>
+          <path d="M5 10v10h14V10"></path>
+          <path d="M9 20v-6h6v6"></path>
+        </svg>
+        <span>Home</span>
+      </button>
+
+      <button class="nav-item" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="8" cy="8" r="3"></circle>
+          <circle cx="17" cy="9" r="2.5"></circle>
+          <path d="M2.5 20c.4-4 2.3-6 5.5-6s5.1 2 5.5 6"></path>
+          <path d="M14 15c3.7-.6 6.2 1.1 6.8 4.5"></path>
+        </svg>
+        <span>Circles</span>
+      </button>
+
+      <button class="nav-item active" type="button" aria-current="page">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M4 5h16v11H9l-5 4V5z"></path>
+          <path d="M8 9h8M8 12h5"></path>
+        </svg>
+        <span>Messages</span>
+      </button>
+
+      <button class="nav-item" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="8" r="4"></circle>
+          <path d="M4.5 21c.5-4.5 3-7 7.5-7s7 2.5 7.5 7"></path>
+        </svg>
+        <span>You</span>
+      </button>
+    </nav>
+  </div>
+</body>
+</html>

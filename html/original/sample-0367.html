@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cover Frame — Loopcast Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;}
+  body{
+    min-height:100vh;display:flex;justify-content:center;align-items:flex-start;
+    padding:40px 0;margin:0;background:#5d5d66;
+    font-family:'Inter',system-ui,sans-serif;
+  }
+  .screen{
+    width:390px;height:844px;background:#101014;color:#f2f2f5;
+    display:flex;flex-direction:column;position:relative;
+  }
+
+  /* top bar */
+  .topbar{display:flex;align-items:center;gap:12px;padding:14px 16px;}
+  .iconbtn{width:28px;height:28px;display:flex;align-items:center;justify-content:center;
+    color:#f2f2f5;flex:none;}
+  .tb-txt{flex:1;min-width:0;}
+  .tb-title{font-size:16px;font-weight:600;line-height:19px;}
+  .tb-sub{font-size:12px;color:#9a9aa6;line-height:16px;margin-top:1px;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .save{background:#e0339f;color:#fff;font-size:13px;font-weight:600;
+    padding:7px 15px;border-radius:6px;flex:none;}
+
+  /* preview */
+  .preview{position:relative;width:390px;height:260px;background:#1a1a20;}
+  .preview img{width:390px;height:260px;object-fit:cover;display:block;background:#1a1a20;}
+  .scrim{position:absolute;background:rgba(8,8,10,0.55);}
+  .s-top{left:0;top:0;width:390px;height:22px;}
+  .s-bot{left:0;bottom:0;width:390px;height:22px;}
+  .s-left{left:0;top:22px;width:66px;height:216px;}
+  .s-right{right:0;top:22px;width:66px;height:216px;}
+  .cropbox{position:absolute;left:66px;top:22px;width:258px;height:216px;}
+  .gl{position:absolute;background:rgba(255,255,255,0.35);}
+  .gl-v1{left:86px;top:0;width:1px;height:216px;}
+  .gl-v2{left:172px;top:0;width:1px;height:216px;}
+  .gl-h1{left:0;top:72px;width:258px;height:1px;}
+  .gl-h2{left:0;top:144px;width:258px;height:1px;}
+  .hd{position:absolute;background:#e0339f;}
+  .hd-a{left:0;top:0;width:20px;height:3px;}
+  .hd-b{left:0;top:0;width:3px;height:20px;}
+  .hd-c{right:0;top:0;width:20px;height:3px;}
+  .hd-d{right:0;top:0;width:3px;height:20px;}
+  .hd-e{left:0;bottom:0;width:20px;height:3px;}
+  .hd-f{left:0;bottom:0;width:3px;height:20px;}
+  .hd-g{right:0;bottom:0;width:20px;height:3px;}
+  .hd-h{right:0;bottom:0;width:3px;height:20px;}
+  .stamp{position:absolute;left:12px;bottom:8px;background:rgba(8,8,10,0.7);
+    border-radius:6px;padding:4px 8px;font-size:12px;font-weight:500;color:#e8e8ee;}
+
+  /* meta */
+  .meta{display:flex;align-items:baseline;justify-content:space-between;
+    padding:11px 16px 0;}
+  .meta-l{font-size:14px;font-weight:500;}
+  .meta-l span{color:#9a9aa6;font-weight:400;}
+  .reset{font-size:13px;font-weight:500;color:#e0339f;}
+
+  /* chips */
+  .chips{display:flex;gap:8px;padding:12px 16px 0;}
+  .chip{flex:1;text-align:center;font-size:13px;font-weight:500;color:#c6c6d0;
+    background:rgba(224,51,159,0.10);border-radius:6px;padding:8px 0;}
+  .chip.on{background:rgba(224,51,159,0.32);color:#ffffff;font-weight:600;}
+
+  /* section */
+  .sec{padding:20px 16px 0;}
+  .sec-head{display:flex;align-items:baseline;justify-content:space-between;
+    margin-bottom:9px;}
+  .sec-title{font-size:13px;font-weight:600;letter-spacing:0.03em;color:#f2f2f5;}
+  .sec-note{font-size:12px;color:#8b8b96;}
+
+  /* frame strip */
+  .strip{display:flex;gap:8px;}
+  .frame{width:82px;}
+  .frame img{width:82px;height:60px;object-fit:cover;display:block;
+    background:#1a1a20;border-radius:6px;}
+  .bar{height:3px;border-radius:6px;background:transparent;margin-top:5px;}
+  .frame.on .bar{background:#e0339f;}
+  .tc{font-size:12px;color:#8b8b96;margin-top:4px;text-align:center;}
+  .frame.on .tc{color:#f2f2f5;font-weight:500;}
+
+  /* sliders */
+  .row{display:flex;align-items:center;gap:12px;height:44px;}
+  .row-label{width:86px;font-size:14px;color:#e2e2e8;flex:none;}
+  .track{flex:1;height:26px;position:relative;}
+  .track .base{position:absolute;left:0;top:11px;width:100%;height:4px;
+    border-radius:6px;background:rgba(224,51,159,0.16);}
+  .track .fill{position:absolute;top:11px;height:4px;border-radius:6px;background:#e0339f;}
+  .track .knob{position:absolute;top:5px;width:16px;height:16px;border-radius:6px;
+    background:#f7d3ec;}
+  .tick{position:absolute;left:50%;top:6px;width:1px;height:14px;
+    background:rgba(255,255,255,0.22);}
+  .row-val{width:56px;text-align:right;font-size:14px;font-weight:500;
+    font-variant-numeric:tabular-nums;flex:none;}
+
+  /* tab bar */
+  .tabs{margin-top:auto;display:flex;padding:9px 8px 12px;}
+  .tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;
+    color:#84848f;font-size:12px;font-weight:500;}
+  .tab.on{color:#e0339f;}
+</style>
+</head>
+<body>
+<div class="screen">
+
+  <div class="topbar">
+    <div class="iconbtn" aria-hidden="true">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
+    </div>
+    <div class="tb-txt">
+      <div class="tb-title">Cover Frame</div>
+      <div class="tb-sub">Episode 48 · Night Shift Radio</div>
+    </div>
+    <div class="save">Save</div>
+  </div>
+
+  <div class="preview">
+    <img src="https://loremflickr.com/390/260/concert?lock=5240" width="390" height="260" alt="Stage lights over a crowd at a live concert, the frame being cropped for the episode cover">
+    <div class="scrim s-top"></div>
+    <div class="scrim s-bot"></div>
+    <div class="scrim s-left"></div>
+    <div class="scrim s-right"></div>
+    <div class="cropbox">
+      <div class="gl gl-v1"></div><div class="gl gl-v2"></div>
+      <div class="gl gl-h1"></div><div class="gl gl-h2"></div>
+      <div class="hd hd-a"></div><div class="hd hd-b"></div>
+      <div class="hd hd-c"></div><div class="hd hd-d"></div>
+      <div class="hd hd-e"></div><div class="hd hd-f"></div>
+      <div class="hd hd-g"></div><div class="hd hd-h"></div>
+    </div>
+    <div class="stamp">12:04.6</div>
+  </div>
+
+  <div class="meta">
+    <div class="meta-l">1080 × 1080 px <span>· 74% of source</span></div>
+    <div class="reset">Reset</div>
+  </div>
+
+  <div class="chips">
+    <div class="chip on">1:1</div>
+    <div class="chip">4:5</div>
+    <div class="chip">16:9</div>
+    <div class="chip">9:16</div>
+    <div class="chip">Free</div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-head">
+      <div class="sec-title">Source frame</div>
+      <div class="sec-note">Clip 28:41 long</div>
+    </div>
+    <div class="strip">
+      <div class="frame">
+        <img src="https://loremflickr.com/82/60/studio?lock=5241" width="82" height="60" alt="Recording studio desk with microphone, candidate cover frame">
+        <div class="bar"></div>
+        <div class="tc">04:18</div>
+      </div>
+      <div class="frame on">
+        <img src="https://loremflickr.com/82/60/concert?lock=5242" width="82" height="60" alt="Concert stage wide shot, currently selected cover frame">
+        <div class="bar"></div>
+        <div class="tc">12:04</div>
+      </div>
+      <div class="frame">
+        <img src="https://loremflickr.com/82/60/guitar?lock=5243" width="82" height="60" alt="Guitarist mid performance, candidate cover frame">
+        <div class="bar"></div>
+        <div class="tc">17:52</div>
+      </div>
+      <div class="frame">
+        <img src="https://loremflickr.com/82/60/vinyl?lock=5244" width="82" height="60" alt="Vinyl record on a turntable, candidate cover frame">
+        <div class="bar"></div>
+        <div class="tc">25:33</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-head">
+      <div class="sec-title">Geometry</div>
+      <div class="sec-note">4 of 4 in range</div>
+    </div>
+
+    <div class="row">
+      <div class="row-label">Straighten</div>
+      <div class="track">
+        <div class="base"></div>
+        <div class="tick"></div>
+        <div class="fill" style="left:50%;width:8.5%;"></div>
+        <div class="knob" style="left:calc(58.5% - 8px);"></div>
+      </div>
+      <div class="row-val">+2.5°</div>
+    </div>
+
+    <div class="row">
+      <div class="row-label">Vertical</div>
+      <div class="track">
+        <div class="base"></div>
+        <div class="tick"></div>
+        <div class="fill" style="left:46%;width:4%;"></div>
+        <div class="knob" style="left:calc(46% - 8px);"></div>
+      </div>
+      <div class="row-val">−1.2°</div>
+    </div>
+
+    <div class="row">
+      <div class="row-label">Horizontal</div>
+      <div class="track">
+        <div class="base"></div>
+        <div class="tick"></div>
+        <div class="knob" style="left:calc(50% - 8px);"></div>
+      </div>
+      <div class="row-val">0.0°</div>
+    </div>
+
+    <div class="row">
+      <div class="row-label">Scale</div>
+      <div class="track">
+        <div class="base"></div>
+        <div class="fill" style="left:0;width:16%;"></div>
+        <div class="knob" style="left:calc(16% - 8px);"></div>
+      </div>
+      <div class="row-val">108%</div>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <div class="tab on">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3v14h14"/><path d="M3 7h14v14"/></svg>
+      Crop
+    </div>
+    <div class="tab">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7h14"/><path d="M5 17h14"/><circle cx="10" cy="7" r="2.4"/><circle cx="15" cy="17" r="2.4"/></svg>
+      Adjust
+    </div>
+    <div class="tab">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v14H4z"/><path d="M9 5v14"/><path d="M15 5v14"/></svg>
+      Trim
+    </div>
+    <div class="tab">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4"/><path d="M8 8l4-4 4 4"/><path d="M5 19h14"/></svg>
+      Export
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

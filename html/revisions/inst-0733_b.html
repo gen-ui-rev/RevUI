@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Overlap Plus</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#16130F;
+    --muted:#7C746B;
+    --rule:#E7E2DC;
+    --paper:#FFFFFF;
+    --cream:#F4EFE9;
+    --accent:#EE5F14;
+  }
+  *{box-sizing:border-box}
+  body{
+    min-height:100vh;
+    margin:0;
+    padding:40px 0;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    background:#D9D5CF;
+    color:var(--ink);
+    font-family:'Nunito Sans',system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .screen{
+    width:390px;
+    height:844px;
+    position:relative;
+    display:flex;
+    flex-direction:column;
+    background:var(--paper);
+  }
+  .hero{
+    padding:14px 18px 16px;
+    color:#fff;
+    background:#211B16;
+  }
+  .topbar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+  }
+  .close{
+    width:28px;
+    height:28px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .restore{
+    color:#CFC6BD;
+    font-size:13px;
+    font-weight:600;
+  }
+  .hero-copy{
+    display:flex;
+    align-items:flex-end;
+    justify-content:space-between;
+    gap:12px;
+    margin-top:10px;
+  }
+  .eyebrow{
+    margin:0 0 4px;
+    color:#FF8C50;
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:.13em;
+    text-transform:uppercase;
+  }
+  h1{
+    max-width:236px;
+    margin:0;
+    font-size:23px;
+    line-height:1.18;
+    letter-spacing:-.2px;
+  }
+  .limit-mark{
+    flex:none;
+    padding:8px 9px;
+    border:1px solid #51483F;
+    border-radius:11px;
+    color:#E7DED5;
+    font-size:11px;
+    line-height:1.25;
+    text-align:center;
+  }
+  .limit-mark strong{
+    display:block;
+    color:#fff;
+    font-size:18px;
+  }
+
+  .content{padding:0 18px 72px}
+  .media{
+    position:relative;
+    margin-top:12px;
+  }
+  .strip{
+    display:flex;
+    gap:8px;
+  }
+  .thumb{
+    position:relative;
+    width:112px;
+    height:84px;
+    border-radius:12px;
+    overflow:hidden;
+    background:#CFC9C2;
+  }
+  .thumb img{
+    display:block;
+    width:112px;
+    height:84px;
+    object-fit:cover;
+    background:#CFC9C2;
+  }
+  .veil{
+    position:absolute;
+    inset:0;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:3px;
+    color:#fff;
+    background:rgba(22,19,15,.62);
+  }
+  .veil span{font-size:13px;font-weight:700}
+  .media-note{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    margin-top:7px;
+    color:var(--muted);
+    font-size:12px;
+  }
+
+  .section-title{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-top:13px;
+  }
+  .section-title h2{
+    margin:0;
+    font-size:13px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+  }
+  .section-title span{
+    color:var(--muted);
+    font-size:11px;
+  }
+
+  .plan-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr 1fr;
+    gap:7px;
+    margin-top:8px;
+  }
+  .plan{
+    position:relative;
+    padding:10px 8px;
+    border:1px solid var(--rule);
+    border-radius:12px;
+    background:#fff;
+  }
+  .plan.selected{
+    border:2px solid var(--accent);
+    padding:9px 7px;
+    background:#FFF8F4;
+  }
+  .plan-label{
+    min-height:15px;
+    color:var(--muted);
+    font-size:9px;
+    font-weight:700;
+    letter-spacing:.05em;
+    text-transform:uppercase;
+  }
+  .selected .plan-label{color:var(--accent)}
+  .plan h3{
+    margin:4px 0 0;
+    font-size:14px;
+  }
+  .price{
+    margin-top:8px;
+    font-size:18px;
+    font-weight:700;
+    line-height:1;
+  }
+  .selected .price{color:var(--accent)}
+  .price small{
+    display:block;
+    margin-top:4px;
+    color:var(--muted);
+    font-size:9px;
+    font-weight:600;
+    line-height:1.2;
+  }
+  .billing{
+    margin-top:8px;
+    color:var(--muted);
+    font-size:9px;
+    line-height:1.25;
+  }
+  .radio{
+    position:absolute;
+    top:9px;
+    right:8px;
+    width:14px;
+    height:14px;
+    border:1.5px solid #CDC5BC;
+    border-radius:50%;
+  }
+  .selected .radio{
+    border:4px solid var(--accent);
+    background:#fff;
+  }
+
+  .unlock{
+    margin-top:14px;
+    padding:11px 12px;
+    border-radius:13px;
+    background:var(--cream);
+  }
+  .unlock-head{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    padding-bottom:7px;
+    border-bottom:1px solid #DED6CD;
+  }
+  .unlock-head h2{
+    margin:0;
+    font-size:13px;
+  }
+  .unlock-head span{
+    color:var(--muted);
+    font-size:10px;
+    font-weight:700;
+    text-transform:uppercase;
+  }
+  .unlock-row{
+    display:grid;
+    grid-template-columns:18px 1fr auto;
+    align-items:center;
+    gap:6px;
+    padding:7px 0;
+    border-bottom:1px solid #DED6CD;
+  }
+  .unlock-row:last-child{
+    padding-bottom:0;
+    border-bottom:0;
+  }
+  .check{color:var(--accent)}
+  .unlock-name{
+    font-size:12px;
+    font-weight:700;
+  }
+  .free-limit{
+    color:var(--muted);
+    font-size:10px;
+    white-space:nowrap;
+  }
+
+  .cta-row{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-top:13px;
+  }
+  .cta{
+    flex:1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:12px 10px;
+    border-radius:11px;
+    background:var(--accent);
+    color:#fff;
+    font-size:15px;
+    font-weight:700;
+  }
+  .trial-copy{
+    width:86px;
+    color:var(--muted);
+    font-size:10px;
+    line-height:1.3;
+  }
+  .fine{
+    margin:7px 0 0;
+    color:var(--muted);
+    font-size:10px;
+    text-align:center;
+  }
+
+  .tabs{
+    position:absolute;
+    right:0;
+    bottom:0;
+    left:0;
+    display:flex;
+    padding:8px 0 11px;
+    border-top:1px solid var(--rule);
+    background:#fff;
+  }
+  .tab{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:2px;
+    color:#98918A;
+    font-size:11px;
+    font-weight:600;
+  }
+  .tab.active{color:var(--accent)}
+</style>
+</head>
+<body>
+<div class="screen">
+  <header class="hero">
+    <div class="topbar">
+      <div class="close" aria-label="Close">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 5l14 14M19 5L5 19"/></svg>
+      </div>
+      <div class="restore">Restore purchase</div>
+    </div>
+    <div class="hero-copy">
+      <div>
+        <p class="eyebrow">Overlap Plus</p>
+        <h1>Unlock the rest of your circle feed today.</h1>
+      </div>
+      <div class="limit-mark"><strong>24</strong>posts waiting</div>
+    </div>
+  </header>
+
+  <main class="content">
+    <section class="media" aria-label="Circle posts waiting to unlock">
+      <div class="strip">
+        <div class="thumb">
+          <img src="https://loremflickr.com/112/84/friends?lock=9760" width="112" height="84" alt="Group of runners meeting after a morning run">
+        </div>
+        <div class="thumb">
+          <img src="https://loremflickr.com/112/84/cafe?lock=9761" width="112" height="84" alt="Circle members gathered at a corner cafe table">
+        </div>
+        <div class="thumb">
+          <img src="https://loremflickr.com/112/84/party?lock=9762" width="112" height="84" alt="Locked photos from a circle's weekend party">
+          <div class="veil">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 018 0v3"/></svg>
+            <span>+21</span>
+          </div>
+        </div>
+      </div>
+      <div class="media-note">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 018 0v3"/></svg>
+        New posts from all 6 of your circles.
+      </div>
+    </section>
+
+    <div class="section-title">
+      <h2>Choose your plan</h2>
+      <span>7-day trial included</span>
+    </div>
+
+    <section class="plan-grid" aria-label="Subscription plans">
+      <div class="plan selected">
+        <div class="radio"></div>
+        <div class="plan-label">Recommended</div>
+        <h3>Yearly</h3>
+        <div class="price">$4.58<small>per month</small></div>
+        <div class="billing">$54.99 billed yearly<br>Save 43%</div>
+      </div>
+      <div class="plan">
+        <div class="radio"></div>
+        <div class="plan-label">Flexible</div>
+        <h3>Monthly</h3>
+        <div class="price">$7.99<small>per month</small></div>
+        <div class="billing">Billed each month<br>Cancel anytime</div>
+      </div>
+      <div class="plan">
+        <div class="radio"></div>
+        <div class="plan-label">For groups</div>
+        <h3>Circle</h3>
+        <div class="price">$12.99<small>per month</small></div>
+        <div class="billing">Share with up to<br>5 members</div>
+      </div>
+    </section>
+
+    <section class="unlock">
+      <div class="unlock-head">
+        <h2>Everything Plus unlocks</h2>
+        <span>Free limit</span>
+      </div>
+      <div class="unlock-row">
+        <svg class="check" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg>
+        <div class="unlock-name">Unlimited circle feed</div>
+        <div class="free-limit">3 posts daily</div>
+      </div>
+      <div class="unlock-row">
+        <svg class="check" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg>
+        <div class="unlock-name">Start conversations</div>
+        <div class="free-limit">1 weekly</div>
+      </div>
+      <div class="unlock-row">
+        <svg class="check" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg>
+        <div class="unlock-name">RSVP to meetups</div>
+        <div class="free-limit">View only</div>
+      </div>
+      <div class="unlock-row">
+        <svg class="check" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg>
+        <div class="unlock-name">Full circle archive</div>
+        <div class="free-limit">Last 7 days</div>
+      </div>
+    </section>
+
+    <div class="cta-row">
+      <div class="cta">Start free trial</div>
+      <div class="trial-copy">Free for 7 days, then $54.99 yearly.</div>
+    </div>
+    <p class="fine">Cancel anytime from Settings.</p>
+  </main>
+
+  <nav class="tabs">
+    <div class="tab">
+      <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
+      Feed
+    </div>
+    <div class="tab active">
+      <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="12" r="5"/><circle cx="15" cy="12" r="5"/></svg>
+      Circles
+    </div>
+    <div class="tab">
+      <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>
+      Post
+    </div>
+    <div class="tab">
+      <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4V5z"/></svg>
+      Chats
+    </div>
+    <div class="tab">
+      <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8" r="3.6"/><path d="M5 20c1.3-3.6 4-5.2 7-5.2s5.7 1.6 7 5.2"/></svg>
+      You
+    </div>
+  </nav>
+</div>
+</body>
+</html>

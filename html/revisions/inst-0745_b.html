@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Linden Supply Store</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 24px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #d8d4cc;
+      color: #292722;
+      font-family: 'Source Serif 4', Georgia, serif;
+    }
+
+    button,
+    a {
+      color: inherit;
+      font: inherit;
+    }
+
+    .screen {
+      width: 1024px;
+      height: 768px;
+      display: flex;
+      background: #fbfaf7;
+      border: 1px solid #cdc7bc;
+    }
+
+    /* ---------- sidebar ---------- */
+    .sidebar {
+      width: 224px;
+      flex: none;
+      display: flex;
+      flex-direction: column;
+      padding: 20px 20px 22px;
+      border-right: 1px solid #d9d4ca;
+      background: #f3f0e9;
+    }
+
+    .brand {
+      margin: 0;
+      font-size: 21px;
+      line-height: 27px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+    }
+
+    .brand-note {
+      margin: 2px 0 22px;
+      color: #7c7568;
+      font-size: 12px;
+      line-height: 17px;
+      letter-spacing: 0.7px;
+      text-transform: uppercase;
+    }
+
+    .nav-label {
+      margin: 0 0 6px;
+      color: #857e70;
+      font-size: 11px;
+      line-height: 16px;
+      font-weight: 600;
+      letter-spacing: 0.9px;
+      text-transform: uppercase;
+    }
+
+    .side-nav {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 22px;
+    }
+
+    .side-nav a {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 7px 10px;
+      border-radius: 4px;
+      color: #443f38;
+      text-decoration: none;
+      font-size: 15px;
+      line-height: 21px;
+    }
+
+    .side-nav a.active {
+      background: #e2ddd2;
+      color: #423d34;
+      font-weight: 600;
+    }
+
+    .side-nav .count {
+      color: #7d766a;
+      font-size: 13px;
+      line-height: 18px;
+    }
+
+    .side-nav a svg {
+      width: 17px;
+      height: 17px;
+      flex: none;
+      display: block;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.7;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .side-nav a .label {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+
+    .side-note {
+      margin-top: auto;
+      padding-top: 16px;
+      border-top: 1px solid #ddd8ce;
+      color: #6d6760;
+      font-size: 12px;
+      line-height: 17px;
+    }
+
+    .side-note strong {
+      display: block;
+      color: #423e37;
+      font-size: 13px;
+      line-height: 18px;
+    }
+
+    /* ---------- content ---------- */
+    .content {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .content-bar {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding: 14px 32px;
+      border-bottom: 1px solid #d9d4ca;
+    }
+
+    .breadcrumb {
+      color: #6f6a61;
+      font-size: 13px;
+      line-height: 18px;
+    }
+
+    .breadcrumb strong {
+      color: #34312c;
+      font-weight: 600;
+    }
+
+    .bar-right {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .search-box {
+      width: 260px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 11px;
+      border: 1px solid #d3cdc2;
+      border-radius: 18px;
+      background: #f5f2ec;
+      color: #7d766a;
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .search-box svg,
+    .bag-button svg {
+      width: 17px;
+      height: 17px;
+      flex: none;
+      display: block;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.7;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .bag-button {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 14px;
+      border-radius: 18px;
+      background: #827a6d;
+      color: #fffdf8;
+      text-decoration: none;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 600;
+    }
+
+    main {
+      flex: 1;
+      padding: 24px 32px;
+    }
+
+    /* hero */
+    .hero {
+      display: flex;
+      align-items: stretch;
+      overflow: hidden;
+      border: 1px solid #e0dbd2;
+      border-radius: 8px;
+      background: #f5f2ec;
+    }
+
+    .hero img {
+      width: 340px;
+      height: 230px;
+      flex: none;
+      display: block;
+      object-fit: cover;
+      background: #c9c3b8;
+    }
+
+    .hero-copy {
+      flex: 1;
+      min-width: 0;
+      padding: 22px 26px;
+    }
+
+    .eyebrow {
+      margin: 0 0 3px;
+      color: #756e62;
+      font-size: 12px;
+      line-height: 17px;
+      font-weight: 600;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+    }
+
+    .hero h2 {
+      margin: 0 0 8px;
+      font-size: 30px;
+      line-height: 35px;
+      font-weight: 600;
+      letter-spacing: -0.5px;
+    }
+
+    .hero-description {
+      margin: 0 0 16px;
+      color: #625e56;
+      font-size: 15px;
+      line-height: 21px;
+    }
+
+    .shop-link {
+      display: inline-block;
+      padding: 8px 18px;
+      border: 1px solid #b8b1a3;
+      border-radius: 4px;
+      background: #fbfaf7;
+      color: #3d382f;
+      text-decoration: none;
+      font-size: 15px;
+      line-height: 20px;
+      font-weight: 600;
+    }
+
+    /* sections */
+    .section {
+      margin-top: 22px;
+    }
+
+    .section-heading {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      padding: 0 0 10px;
+      border-bottom: 1px solid #d9d4ca;
+    }
+
+    .section-heading h3 {
+      margin: 0;
+      font-size: 19px;
+      line-height: 25px;
+      font-weight: 600;
+    }
+
+    .section-heading a {
+      color: #6e685d;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 228px);
+      gap: 26px;
+      padding-top: 14px;
+    }
+
+    .product {
+      min-width: 0;
+      text-decoration: none;
+    }
+
+    .product img {
+      width: 228px;
+      height: 150px;
+      display: block;
+      object-fit: cover;
+      background: #cec8bd;
+      border-radius: 6px;
+    }
+
+    .product-name {
+      margin: 8px 0 0;
+      overflow: hidden;
+      color: #34312c;
+      font-size: 15px;
+      line-height: 20px;
+      font-weight: 600;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .product-price {
+      margin: 0;
+      color: #69645b;
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .collection-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 228px);
+      gap: 26px;
+      padding-top: 14px;
+    }
+
+    .collection-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 11px;
+      border: 1px solid #e2ded6;
+      border-radius: 6px;
+      background: #fff;
+      text-decoration: none;
+    }
+
+    .collection-card img {
+      width: 44px;
+      height: 44px;
+      flex: none;
+      display: block;
+      object-fit: cover;
+      background: #cbc5ba;
+      border-radius: 4px;
+    }
+
+    .collection-copy {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .collection-name {
+      margin: 0;
+      font-size: 15px;
+      line-height: 20px;
+      font-weight: 600;
+    }
+
+    .collection-detail {
+      margin: 1px 0 0;
+      overflow: hidden;
+      color: #6b665e;
+      font-size: 12px;
+      line-height: 17px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <aside class="sidebar">
+      <h1 class="brand">Linden Supply</h1>
+      <p class="brand-note">Est. 2011 · Portland</p>
+
+      <p class="nav-label">Shop</p>
+      <nav class="side-nav" aria-label="Store categories">
+        <a class="active" href="#"><span class="label">New</span></a>
+        <a href="#"><span class="label">Home</span></a>
+        <a href="#"><span class="label">Wardrobe</span></a>
+        <a href="#"><span class="label">Gifts</span></a>
+        <a href="#"><span class="label">Sale</span></a>
+      </nav>
+
+      <p class="nav-label">Your account</p>
+      <nav class="side-nav" aria-label="Account">
+        <a href="#">
+          <span class="label">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 20s-7-4.3-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.7-7 10-7 10Z"></path>
+            </svg>
+            Saved items
+          </span>
+          <span class="count">6</span>
+        </a>
+        <a href="#">
+          <span class="label">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M5.5 8.5h13l-1 11h-11z"></path>
+              <path d="M9 9V6.8a3 3 0 0 1 6 0V9"></path>
+            </svg>
+            Orders
+          </span>
+        </a>
+      </nav>
+
+      <div class="side-note">
+        <strong>Customer care</strong>
+        Monday to Friday, 9am–6pm
+      </div>
+    </aside>
+
+    <div class="content">
+      <div class="content-bar">
+        <p class="breadcrumb">Shop / <strong>New this season</strong></p>
+        <div class="bar-right">
+          <div class="search-box">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="10.5" cy="10.5" r="6.5"></circle>
+              <path d="m15.5 15.5 4.5 4.5"></path>
+            </svg>
+            <span>Search furniture, ceramics, linen</span>
+          </div>
+          <a class="bag-button" href="#">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M5.5 8.5h13l-1 11h-11z"></path>
+              <path d="M9 9V6.8a3 3 0 0 1 6 0V9"></path>
+            </svg>
+            <span>Bag · 2</span>
+          </a>
+        </div>
+      </div>
+
+      <main>
+        <section class="hero" aria-labelledby="hero-title">
+          <img src="https://loremflickr.com/340/230/furniture?lock=9930" width="340" height="230" alt="Oak lounge furniture arranged in a warm neutral room">
+          <div class="hero-copy">
+            <p class="eyebrow">Spring collection</p>
+            <h2 id="hero-title">A quieter room, piece by piece</h2>
+            <p class="hero-description">Oak, linen, and stone for everyday rooms — made in small runs by workshops we visit each season.</p>
+            <a class="shop-link" href="#">Shop the collection</a>
+          </div>
+        </section>
+
+        <section class="section" aria-labelledby="new-title">
+          <div class="section-heading">
+            <h3 id="new-title">New arrivals</h3>
+            <a href="#">View all 42 pieces</a>
+          </div>
+          <div class="product-grid">
+            <a class="product" href="#">
+              <img src="https://loremflickr.com/228/150/product?lock=9931" width="228" height="150" alt="Cream ceramic table lamp">
+              <p class="product-name">Rill Table Lamp</p>
+              <p class="product-price">$128.00</p>
+            </a>
+            <a class="product" href="#">
+              <img src="https://loremflickr.com/228/150/furniture?lock=9932" width="228" height="150" alt="Low oak side table">
+              <p class="product-name">Vale Side Table</p>
+              <p class="product-price">$240.00</p>
+            </a>
+            <a class="product" href="#">
+              <img src="https://loremflickr.com/228/150/product?lock=9933" width="228" height="150" alt="Textured natural linen cushion">
+              <p class="product-name">Woven Linen Cushion</p>
+              <p class="product-price">$54.00</p>
+            </a>
+          </div>
+        </section>
+
+        <section class="section" aria-labelledby="collections-title">
+          <div class="section-heading">
+            <h3 id="collections-title">Shop by collection</h3>
+            <a href="#">All collections</a>
+          </div>
+          <div class="collection-grid">
+            <a class="collection-card" href="#">
+              <img src="https://loremflickr.com/44/44/furniture?lock=9934" width="44" height="44" alt="Neutral living room furniture">
+              <div class="collection-copy">
+                <p class="collection-name">Living room</p>
+                <p class="collection-detail">Seating, lighting, tables</p>
+              </div>
+            </a>
+            <a class="collection-card" href="#">
+              <img src="https://loremflickr.com/44/44/product?lock=9935" width="44" height="44" alt="Ceramic tabletop objects">
+              <div class="collection-copy">
+                <p class="collection-name">Tabletop</p>
+                <p class="collection-detail">Ceramics, glass, linens</p>
+              </div>
+            </a>
+            <a class="collection-card" href="#">
+              <img src="https://loremflickr.com/44/44/fashion?lock=9936" width="44" height="44" alt="Natural fabric clothing on a rail">
+              <div class="collection-copy">
+                <p class="collection-name">Daily wear</p>
+                <p class="collection-detail">Soft layers, accessories</p>
+              </div>
+            </a>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+</body>
+</html>

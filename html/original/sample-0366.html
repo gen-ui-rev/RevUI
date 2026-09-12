@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gatherly Archive and Trash</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #dfe3e8;
+      color: #172033;
+      font-family: 'Poppins', system-ui, sans-serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #f3f5f8;
+    }
+
+    .app-header {
+      background: #ffffff;
+      border-bottom: 1px solid #e6e9ee;
+    }
+
+    .top-bar {
+      min-height: 64px;
+      display: grid;
+      grid-template-columns: 44px 1fr 44px;
+      align-items: center;
+      padding: 0 12px;
+    }
+
+    .icon-button {
+      width: 44px;
+      height: 44px;
+      padding: 10px;
+      display: grid;
+      place-items: center;
+      border: 0;
+      background: transparent;
+      color: #273246;
+    }
+
+    .top-title {
+      margin: 0;
+      text-align: center;
+      font-size: 18px;
+      line-height: 1.3;
+      font-weight: 600;
+    }
+
+    .service-mark {
+      width: 34px;
+      height: 34px;
+      justify-self: end;
+      display: grid;
+      place-items: center;
+      border-radius: 10px;
+      background: #e8f1ff;
+      color: #1769d2;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .section-tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      padding: 0 20px;
+    }
+
+    .section-tab {
+      position: relative;
+      padding: 12px 8px 13px;
+      border: 0;
+      background: transparent;
+      color: #6b7483;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .section-tab.active {
+      color: #1769d2;
+      font-weight: 600;
+    }
+
+    .section-tab.active::after {
+      content: "";
+      position: absolute;
+      right: 18px;
+      bottom: 0;
+      left: 18px;
+      height: 3px;
+      border-radius: 3px 3px 0 0;
+      background: #1769d2;
+    }
+
+    main {
+      flex: 1;
+      padding: 22px 20px 18px;
+    }
+
+    .intro {
+      margin-bottom: 22px;
+    }
+
+    .eyebrow {
+      margin: 0 0 6px;
+      color: #1769d2;
+      font-size: 13px;
+      line-height: 1.4;
+      font-weight: 600;
+    }
+
+    .intro h2 {
+      margin: 0 0 8px;
+      font-size: 24px;
+      line-height: 1.3;
+      font-weight: 600;
+      letter-spacing: -0.3px;
+    }
+
+    .intro p {
+      max-width: 330px;
+      margin: 0;
+      color: #687283;
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    .list-heading {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .list-heading h3 {
+      margin: 0;
+      font-size: 15px;
+      line-height: 1.4;
+      font-weight: 600;
+    }
+
+    .item-count {
+      color: #768090;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .restore-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      border-radius: 10px;
+      background: #ffffff;
+      box-shadow: 0 5px 16px rgba(34, 46, 66, 0.08);
+    }
+
+    .restore-row {
+      display: grid;
+      grid-template-columns: 64px minmax(0, 1fr) auto;
+      gap: 12px;
+      align-items: center;
+      padding: 14px;
+    }
+
+    .restore-row + .restore-row {
+      border-top: 1px solid #edf0f3;
+    }
+
+    .restore-row img {
+      width: 64px;
+      height: 64px;
+      display: block;
+      object-fit: cover;
+      border-radius: 10px;
+      background: #d9dee5;
+    }
+
+    .item-copy {
+      min-width: 0;
+    }
+
+    .item-title {
+      margin: 0 0 4px;
+      overflow: hidden;
+      color: #1f293b;
+      font-size: 14px;
+      line-height: 1.4;
+      font-weight: 500;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .item-meta {
+      margin: 0;
+      color: #778190;
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .restore-button {
+      min-width: 66px;
+      padding: 8px 10px;
+      border: 1px solid #1769d2;
+      border-radius: 10px;
+      background: #ffffff;
+      color: #1769d2;
+      font-size: 12px;
+      line-height: 1.2;
+      font-weight: 600;
+    }
+
+    .bottom-nav {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      padding: 9px 8px 11px;
+      border-top: 1px solid #e4e8ed;
+      background: #ffffff;
+    }
+
+    .nav-item {
+      min-width: 0;
+      padding: 2px 0 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      border: 0;
+      background: transparent;
+      color: #7a8493;
+      font-size: 12px;
+      line-height: 1.2;
+      font-weight: 500;
+    }
+
+    .nav-item.active {
+      color: #1769d2;
+    }
+
+    .nav-item svg {
+      width: 22px;
+      height: 22px;
+      stroke: currentColor;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="app-header">
+      <div class="top-bar">
+        <button class="icon-button" type="button" aria-label="Go back">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M15 18l-6-6 6-6"></path>
+          </svg>
+        </button>
+        <h1 class="top-title">Archive &amp; trash</h1>
+        <div class="service-mark" aria-label="Gatherly">G</div>
+      </div>
+
+      <nav class="section-tabs" aria-label="Archive and trash sections">
+        <button class="section-tab" type="button">Archived</button>
+        <button class="section-tab active" type="button" aria-current="page">Recently deleted</button>
+      </nav>
+    </header>
+
+    <main>
+      <section class="intro" aria-labelledby="restore-title">
+        <p class="eyebrow">RESTORE ITEMS</p>
+        <h2 id="restore-title">Bring a post back</h2>
+        <p>Deleted posts remain here for 30 days. Restore one to return it to your profile with its original comments.</p>
+      </section>
+
+      <section aria-labelledby="deleted-items-title">
+        <div class="list-heading">
+          <h3 id="deleted-items-title">Recently deleted</h3>
+          <span class="item-count">3 items</span>
+        </div>
+
+        <ul class="restore-list">
+          <li class="restore-row">
+            <img src="https://loremflickr.com/64/64/friends?lock=5230" width="64" height="64" alt="Friends sitting together outdoors">
+            <div class="item-copy">
+              <p class="item-title">Sunday at Harbor Park</p>
+              <p class="item-meta">Deleted May 18 · 24 days left</p>
+            </div>
+            <button class="restore-button" type="button">Restore</button>
+          </li>
+
+          <li class="restore-row">
+            <img src="https://loremflickr.com/64/64/cafe?lock=5231" width="64" height="64" alt="A table inside a neighborhood cafe">
+            <div class="item-copy">
+              <p class="item-title">Coffee walk with Mara</p>
+              <p class="item-meta">Deleted May 12 · 18 days left</p>
+            </div>
+            <button class="restore-button" type="button">Restore</button>
+          </li>
+
+          <li class="restore-row">
+            <img src="https://loremflickr.com/64/64/street?lock=5232" width="64" height="64" alt="A city street in the afternoon">
+            <div class="item-copy">
+              <p class="item-title">Scenes from Bell Street</p>
+              <p class="item-meta">Deleted May 4 · 10 days left</p>
+            </div>
+            <button class="restore-button" type="button">Restore</button>
+          </li>
+        </ul>
+      </section>
+    </main>
+
+    <nav class="bottom-nav" aria-label="Primary navigation">
+      <button class="nav-item" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M3.5 10.5L12 3.8l8.5 6.7"></path>
+          <path d="M5.5 9.5V20h13V9.5"></path>
+          <path d="M9.5 20v-6h5v6"></path>
+        </svg>
+        <span>Home</span>
+      </button>
+
+      <button class="nav-item" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="11" cy="11" r="6.5"></circle>
+          <path d="M16 16l4.2 4.2"></path>
+        </svg>
+        <span>Explore</span>
+      </button>
+
+      <button class="nav-item" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="3.5" y="3.5" width="17" height="17" rx="5"></rect>
+          <path d="M12 8v8M8 12h8"></path>
+        </svg>
+        <span>Create</span>
+      </button>
+
+      <button class="nav-item" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M4 5.5h16v11H9l-5 4v-15z"></path>
+          <path d="M8 10h8M8 13.5h5"></path>
+        </svg>
+        <span>Inbox</span>
+      </button>
+
+      <button class="nav-item active" type="button" aria-current="page">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="8" r="3.5"></circle>
+          <path d="M5.5 20c.6-4 3-6 6.5-6s5.9 2 6.5 6"></path>
+        </svg>
+        <span>You</span>
+      </button>
+    </nav>
+  </div>
+</body>
+</html>

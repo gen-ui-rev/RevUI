@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Learning Calendar</title>
+  <style>
+    * { box-sizing: border-box; }
+    html, body { margin: 0; }
+    body {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 40px 0;
+      background: #d9dddf;
+      color: #20282b;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+    button { font: inherit; }
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #f1f3f4;
+      border: 1px solid #cbd1d3;
+    }
+    .topbar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 11px 14px;
+      background: #ffffff;
+      border-bottom: 1px solid #dfe3e4;
+    }
+    .topbar-copy {
+      min-width: 0;
+      flex: 1;
+    }
+    .service-name {
+      margin: 0 0 1px;
+      color: #637176;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: .02em;
+    }
+    .topbar h1 {
+      margin: 0;
+      font-size: 19px;
+      line-height: 24px;
+      font-weight: 650;
+    }
+    .icon-button {
+      width: 36px;
+      height: 36px;
+      display: grid;
+      place-items: center;
+      padding: 0;
+      border: 0;
+      border-radius: 6px;
+      background: #eef4f5;
+      color: #526f78;
+    }
+    .icon-button svg {
+      width: 20px;
+      height: 20px;
+    }
+    .monogram {
+      width: 36px;
+      height: 36px;
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      border-radius: 6px;
+      background: #d9e6e9;
+      color: #3e6069;
+      font-size: 14px;
+      font-weight: 700;
+    }
+    main {
+      padding: 10px 12px 12px;
+    }
+    .card {
+      background: #ffffff;
+      border: 1px solid #e0e4e5;
+      border-radius: 6px;
+      box-shadow: 0 2px 8px rgba(31, 44, 48, .07);
+    }
+    .calendar-card {
+      padding: 10px;
+    }
+    .month-toolbar {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 7px;
+    }
+    .month-toolbar h2 {
+      flex: 1;
+      margin: 0;
+      font-size: 17px;
+      line-height: 24px;
+      font-weight: 650;
+    }
+    .today-button {
+      padding: 5px 9px;
+      border: 1px solid #cbd7da;
+      border-radius: 6px;
+      background: #ffffff;
+      color: #45636c;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .month-nav {
+      width: 28px;
+      height: 28px;
+      display: grid;
+      place-items: center;
+      padding: 0;
+      border: 0;
+      border-radius: 6px;
+      background: #edf3f4;
+      color: #53676d;
+    }
+    .month-nav svg {
+      width: 16px;
+      height: 16px;
+    }
+    .weekdays,
+    .month-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+    }
+    .weekday {
+      padding: 3px 0 6px;
+      text-align: center;
+      color: #718085;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .day {
+      min-width: 0;
+      height: 40px;
+      padding: 3px;
+      border-top: 1px solid #e4e8e9;
+      border-left: 1px solid #e4e8e9;
+      background: #ffffff;
+    }
+    .day:nth-child(7n) {
+      border-right: 1px solid #e4e8e9;
+    }
+    .day:nth-last-child(-n+7) {
+      border-bottom: 1px solid #e4e8e9;
+    }
+    .day-number {
+      width: 21px;
+      height: 17px;
+      display: grid;
+      place-items: center;
+      margin-bottom: 1px;
+      border-radius: 6px;
+      color: #354247;
+      font-size: 12px;
+      line-height: 17px;
+      font-weight: 600;
+    }
+    .outside .day-number {
+      color: #a3adb0;
+      font-weight: 500;
+    }
+    .selected {
+      background: #f2f7f8;
+    }
+    .selected .day-number {
+      background: #587883;
+      color: #ffffff;
+    }
+    .event-mark {
+      min-width: 0;
+      padding: 1px 3px;
+      border-radius: 6px;
+      background: #dce9ec;
+      color: #3f626b;
+      font-size: 12px;
+      line-height: 14px;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .event-mark.gray {
+      background: #eceff0;
+      color: #657176;
+    }
+    .agenda-heading {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 2px 8px;
+    }
+    .agenda-heading h2 {
+      margin: 0;
+      font-size: 17px;
+      line-height: 22px;
+      font-weight: 650;
+    }
+    .agenda-heading p {
+      margin: 0;
+      color: #68777c;
+      font-size: 12px;
+      line-height: 18px;
+      white-space: nowrap;
+    }
+    .agenda-card {
+      padding: 0 10px;
+    }
+    .agenda-row {
+      display: grid;
+      grid-template-columns: 45px 44px minmax(0, 1fr);
+      align-items: center;
+      gap: 9px;
+      padding: 8px 0;
+      border-bottom: 1px solid #e4e8e9;
+    }
+    .agenda-row:last-child {
+      border-bottom: 0;
+    }
+    .time {
+      align-self: start;
+      padding-top: 2px;
+      color: #3f5056;
+      font-size: 12px;
+      line-height: 17px;
+      font-weight: 650;
+    }
+    .time span {
+      display: block;
+      color: #879297;
+      font-weight: 500;
+    }
+    .course-photo {
+      width: 44px;
+      height: 44px;
+      display: block;
+      object-fit: cover;
+      border-radius: 6px;
+      background: #d8dddf;
+    }
+    .event-copy {
+      min-width: 0;
+    }
+    .event-title {
+      margin: 0 0 2px;
+      overflow: hidden;
+      color: #20282b;
+      font-size: 14px;
+      line-height: 18px;
+      font-weight: 650;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+    .event-meta {
+      margin: 0;
+      overflow: hidden;
+      color: #6c7a7f;
+      font-size: 12px;
+      line-height: 16px;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+    .tabbar {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      margin-top: auto;
+      padding: 7px 8px 8px;
+      background: #ffffff;
+      border-top: 1px solid #dce1e2;
+    }
+    .tab {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      padding: 3px 0;
+      color: #77858a;
+      font-size: 12px;
+      line-height: 15px;
+      font-weight: 600;
+      text-decoration: none;
+    }
+    .tab svg {
+      width: 21px;
+      height: 21px;
+    }
+    .tab.active {
+      color: #4f727c;
+    }
+    .tab.active svg {
+      padding: 2px;
+      border-radius: 6px;
+      background: #dce9ec;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <div class="topbar-copy">
+        <p class="service-name">MISTLINE ACADEMY</p>
+        <h1>My learning calendar</h1>
+      </div>
+      <button class="icon-button" aria-label="Search calendar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+          <circle cx="10.5" cy="10.5" r="5.8"></circle>
+          <path d="M15 15l4.5 4.5"></path>
+        </svg>
+      </button>
+      <div class="monogram" aria-label="Jordan Lee profile">JL</div>
+    </header>
+
+    <main>
+      <section class="card calendar-card" aria-labelledby="month-title">
+        <div class="month-toolbar">
+          <h2 id="month-title">August 2025</h2>
+          <button class="today-button">Today</button>
+          <button class="month-nav" aria-label="Previous month">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M15 18l-6-6 6-6"></path>
+            </svg>
+          </button>
+          <button class="month-nav" aria-label="Next month">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 18l6-6-6-6"></path>
+            </svg>
+          </button>
+        </div>
+
+        <div class="weekdays" aria-hidden="true">
+          <div class="weekday">Sun</div>
+          <div class="weekday">Mon</div>
+          <div class="weekday">Tue</div>
+          <div class="weekday">Wed</div>
+          <div class="weekday">Thu</div>
+          <div class="weekday">Fri</div>
+          <div class="weekday">Sat</div>
+        </div>
+
+        <div class="month-grid" aria-label="August 2025 month calendar">
+          <div class="day outside"><div class="day-number">27</div></div>
+          <div class="day outside"><div class="day-number">28</div></div>
+          <div class="day outside"><div class="day-number">29</div></div>
+          <div class="day outside"><div class="day-number">30</div></div>
+          <div class="day outside"><div class="day-number">31</div></div>
+          <div class="day"><div class="day-number">1</div><div class="event-mark">Quiz</div></div>
+          <div class="day"><div class="day-number">2</div></div>
+
+          <div class="day"><div class="day-number">3</div></div>
+          <div class="day"><div class="day-number">4</div><div class="event-mark gray">Read</div></div>
+          <div class="day"><div class="day-number">5</div><div class="event-mark">Speak</div></div>
+          <div class="day"><div class="day-number">6</div></div>
+          <div class="day"><div class="day-number">7</div><div class="event-mark">Lab</div></div>
+          <div class="day"><div class="day-number">8</div></div>
+          <div class="day"><div class="day-number">9</div><div class="event-mark gray">Due</div></div>
+
+          <div class="day"><div class="day-number">10</div></div>
+          <div class="day"><div class="day-number">11</div><div class="event-mark">Review</div></div>
+          <div class="day"><div class="day-number">12</div></div>
+          <div class="day"><div class="day-number">13</div><div class="event-mark gray">Read</div></div>
+          <div class="day selected"><div class="day-number">14</div><div class="event-mark">5 items</div></div>
+          <div class="day"><div class="day-number">15</div><div class="event-mark">Quiz</div></div>
+          <div class="day"><div class="day-number">16</div></div>
+
+          <div class="day"><div class="day-number">17</div><div class="event-mark gray">Due</div></div>
+          <div class="day"><div class="day-number">18</div></div>
+          <div class="day"><div class="day-number">19</div><div class="event-mark">Speak</div></div>
+          <div class="day"><div class="day-number">20</div></div>
+          <div class="day"><div class="day-number">21</div><div class="event-mark">Lab</div></div>
+          <div class="day"><div class="day-number">22</div></div>
+          <div class="day"><div class="day-number">23</div></div>
+
+          <div class="day"><div class="day-number">24</div><div class="event-mark gray">Read</div></div>
+          <div class="day"><div class="day-number">25</div></div>
+          <div class="day"><div class="day-number">26</div><div class="event-mark">Tutor</div></div>
+          <div class="day"><div class="day-number">27</div></div>
+          <div class="day"><div class="day-number">28</div><div class="event-mark">Review</div></div>
+          <div class="day"><div class="day-number">29</div></div>
+          <div class="day"><div class="day-number">30</div><div class="event-mark gray">Due</div></div>
+
+          <div class="day"><div class="day-number">31</div></div>
+          <div class="day outside"><div class="day-number">1</div><div class="event-mark gray">Read</div></div>
+          <div class="day outside"><div class="day-number">2</div></div>
+          <div class="day outside"><div class="day-number">3</div></div>
+          <div class="day outside"><div class="day-number">4</div><div class="event-mark">Lab</div></div>
+          <div class="day outside"><div class="day-number">5</div></div>
+          <div class="day outside"><div class="day-number">6</div></div>
+        </div>
+      </section>
+
+      <div class="agenda-heading">
+        <h2>Thursday, August 14</h2>
+        <p>5 learning items</p>
+      </div>
+
+      <section class="card agenda-card" aria-label="Schedule for Thursday, August 14">
+        <article class="agenda-row">
+          <div class="time">9:00<span>AM</span></div>
+          <img class="course-photo" src="https://loremflickr.com/44/44/books?lock=8190" width="44" height="44" alt="Open books for vocabulary lesson">
+          <div class="event-copy">
+            <p class="event-title">Academic Vocabulary</p>
+            <p class="event-meta">Live class · Morgan Reed · 45 min</p>
+          </div>
+        </article>
+
+        <article class="agenda-row">
+          <div class="time">10:30<span>AM</span></div>
+          <img class="course-photo" src="https://loremflickr.com/44/44/classroom?lock=8191" width="44" height="44" alt="Classroom prepared for a speaking workshop">
+          <div class="event-copy">
+            <p class="event-title">Conversation Workshop</p>
+            <p class="event-meta">Small group · Avery Stone · 60 min</p>
+          </div>
+        </article>
+
+        <article class="agenda-row">
+          <div class="time">1:00<span>PM</span></div>
+          <img class="course-photo" src="https://loremflickr.com/44/44/study?lock=8192" width="44" height="44" alt="Study materials for a listening exercise">
+          <div class="event-copy">
+            <p class="event-title">Listening Practice 8</p>
+            <p class="event-meta">Independent lesson · 25 min</p>
+          </div>
+        </article>
+
+        <article class="agenda-row">
+          <div class="time">3:30<span>PM</span></div>
+          <img class="course-photo" src="https://loremflickr.com/44/44/library?lock=8193" width="44" height="44" alt="Library shelves for a reading assignment">
+          <div class="event-copy">
+            <p class="event-title">Reading Lab: City Stories</p>
+            <p class="event-meta">Guided practice · Taylor Brooks · 40 min</p>
+          </div>
+        </article>
+
+        <article class="agenda-row">
+          <div class="time">6:00<span>PM</span></div>
+          <img class="course-photo" src="https://loremflickr.com/44/44/books?lock=8194" width="44" height="44" alt="Books and notes for a grammar review">
+          <div class="event-copy">
+            <p class="event-title">Grammar Checkpoint</p>
+            <p class="event-meta">Unit 6 assessment · Due at 8:00 PM</p>
+          </div>
+        </article>
+      </section>
+    </main>
+
+    <nav class="tabbar" aria-label="Primary navigation">
+      <a class="tab" href="#">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 10.5L12 4l8 6.5V20H4z"></path>
+          <path d="M9 20v-6h6v6"></path>
+        </svg>
+        <span>Home</span>
+      </a>
+      <a class="tab" href="#">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 5.5A2.5 2.5 0 016.5 3H11v16H6.5A2.5 2.5 0 004 21.5z"></path>
+          <path d="M20 5.5A2.5 2.5 0 0017.5 3H13v16h4.5a2.5 2.5 0 012.5 2.5z"></path>
+        </svg>
+        <span>Courses</span>
+      </a>
+      <a class="tab active" href="#" aria-current="page">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3.5" y="5" width="17" height="15" rx="2"></rect>
+          <path d="M8 3v4M16 3v4M3.5 9.5h17"></path>
+        </svg>
+        <span>Calendar</span>
+      </a>
+      <a class="tab" href="#">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 5h14v14H5z"></path>
+          <path d="M8 9h8M8 13h8M8 17h5"></path>
+        </svg>
+        <span>Progress</span>
+      </a>
+    </nav>
+  </div>
+</body>
+</html>

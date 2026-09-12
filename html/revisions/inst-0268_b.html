@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Northloop — Billing</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 40px 0;
+    margin: 0;
+    background: #d6d3d1;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .screen {
+    width: 390px;
+    height: 844px;
+    background: #ffffff;
+    position: relative;
+    color: #1c1917;
+  }
+
+  /* top bar */
+  .topbar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 18px 20px 14px;
+    border-bottom: 1px solid #e7e5e4;
+  }
+  .topbar .back {
+    display: flex;
+    width: 24px;
+    height: 24px;
+    align-items: center;
+    justify-content: center;
+    margin-left: -4px;
+  }
+  .topbar h1 {
+    margin: 0;
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  .topbar .workspace {
+    margin-left: auto;
+    font-size: 13px;
+    color: #78716c;
+  }
+
+  .body { padding: 0 20px; }
+
+  /* hero — white card, outlined */
+  .hero {
+    margin-top: 18px;
+    background: #ffffff;
+    border: 1px solid #e0dedc;
+    border-radius: 14px;
+    padding: 20px;
+    color: #1c1917;
+  }
+  .hero .cap {
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #78716c;
+  }
+  .hero .amount {
+    margin-top: 8px;
+    font-size: 36px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+    color: #1c1917;
+  }
+  .hero .due {
+    margin-top: 6px;
+    font-size: 14px;
+    color: #57534e;
+  }
+  .track {
+    margin-top: 18px;
+    height: 8px;
+    border-radius: 10px;
+    background: #e7e5e4;
+    overflow: hidden;
+  }
+  .track span {
+    display: block;
+    height: 100%;
+    width: 68%;
+    background: #1c1917;
+    border-radius: 10px;
+  }
+  .hero .cycle {
+    margin-top: 9px;
+    font-size: 12px;
+    color: #78716c;
+  }
+
+  /* sections */
+  .sec-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin: 24px 0 2px;
+  }
+  .sec-head h2 {
+    margin: 0;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #78716c;
+  }
+  .sec-head a {
+    font-size: 13px;
+    color: #44403c;
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  /* filter chips — segmented track */
+  .segwrap {
+    display: flex;
+    gap: 4px;
+    margin: 12px 0 2px;
+    padding: 3px;
+    background: #f5f5f4;
+    border: 1px solid #ebe9e7;
+    border-radius: 9px;
+  }
+  .seg {
+    flex: 1;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1;
+    padding: 8px 0;
+    border-radius: 6px;
+    color: #78716c;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .seg.on {
+    background: #ffffff;
+    color: #1c1917;
+    font-weight: 600;
+    box-shadow: 0 0 0 1px #ddd9d6;
+  }
+
+  .row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid #ebe9e7;
+  }
+  .row:last-child { border-bottom: none; }
+  .row .label {
+    font-size: 15px;
+    line-height: 1.25;
+  }
+  .row .sub {
+    margin-top: 3px;
+    font-size: 13px;
+    color: #78716c;
+    line-height: 1.3;
+  }
+  .row .right {
+    text-align: right;
+    flex-shrink: 0;
+  }
+  .row .val {
+    font-size: 15px;
+    color: #44403c;
+  }
+  .row .val.strong { font-weight: 600; color: #1c1917; }
+  .row .valsub {
+    margin-top: 3px;
+    font-size: 13px;
+    color: #78716c;
+  }
+  .link {
+    font-size: 14px;
+    font-weight: 500;
+    color: #44403c;
+    text-decoration: none;
+  }
+  .inv {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .icon-btn {
+    width: 22px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #a8a29e;
+  }
+  .flag {
+    display: inline-block;
+    margin-top: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #ffffff;
+    background: #292524;
+    border-radius: 10px;
+    padding: 2px 8px;
+  }
+
+  /* tab bar */
+  .tabbar {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    display: flex;
+    border-top: 1px solid #e7e5e4;
+    padding: 10px 8px 16px;
+    background: #ffffff;
+  }
+  .tab {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    font-size: 12px;
+    color: #a8a29e;
+    text-decoration: none;
+  }
+  .tab.active { color: #1c1917; font-weight: 600; }
+</style>
+</head>
+<body>
+  <div class="screen">
+
+    <div class="topbar">
+      <span class="back">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1c1917" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
+      </span>
+      <h1>Billing</h1>
+      <span class="workspace">Fieldnote Studio</span>
+    </div>
+
+    <div class="body">
+
+      <div class="hero">
+        <div class="cap">Next payment</div>
+        <div class="amount">$96.00</div>
+        <div class="due">Charges automatically on April 14, 2025</div>
+        <div class="track"><span></span></div>
+        <div class="cycle">Day 21 of 31 in the current cycle</div>
+      </div>
+
+      <div class="sec-head">
+        <h2>Subscription</h2>
+      </div>
+      <div class="row">
+        <div>
+          <div class="label">Team Standard</div>
+          <div class="sub">$12.00 per member, monthly</div>
+        </div>
+        <a class="link" href="#">Change</a>
+      </div>
+      <div class="row">
+        <div>
+          <div class="label">Members billed</div>
+          <div class="sub">2 seats added on March 6</div>
+        </div>
+        <div class="right"><div class="val strong">8</div></div>
+      </div>
+      <div class="row">
+        <div>
+          <div class="label">Payment method</div>
+          <div class="sub">Card ending 4417, expires 09/27</div>
+        </div>
+        <a class="link" href="#">Update</a>
+      </div>
+
+      <div class="sec-head">
+        <h2>Invoices</h2>
+        <a href="#">View all</a>
+      </div>
+
+      <div class="segwrap">
+        <a class="seg on" href="#">All</a>
+        <a class="seg" href="#">Paid</a>
+        <a class="seg" href="#">Refunded</a>
+        <a class="seg" href="#">Failed</a>
+      </div>
+
+      <div class="row">
+        <div>
+          <div class="label">March 14, 2025</div>
+          <div class="sub">Invoice 2049</div>
+        </div>
+        <div class="inv">
+          <div class="right">
+            <div class="val strong">$96.00</div>
+            <div class="valsub">Paid</div>
+          </div>
+          <span class="icon-btn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="M7.5 11l4.5 4.5 4.5-4.5"/><path d="M5 19h14"/></svg>
+          </span>
+        </div>
+      </div>
+
+      <div class="row">
+        <div>
+          <div class="label">February 14, 2025</div>
+          <div class="sub">Invoice 1978</div>
+        </div>
+        <div class="inv">
+          <div class="right">
+            <div class="val strong">$84.00</div>
+            <div class="valsub">Paid</div>
+          </div>
+          <span class="icon-btn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="M7.5 11l4.5 4.5 4.5-4.5"/><path d="M5 19h14"/></svg>
+          </span>
+        </div>
+      </div>
+
+      <div class="row">
+        <div>
+          <div class="label">January 14, 2025</div>
+          <div class="sub">Invoice 1902</div>
+        </div>
+        <div class="inv">
+          <div class="right">
+            <div class="val strong">$84.00</div>
+            <span class="flag">Refunded</span>
+          </div>
+          <span class="icon-btn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="M7.5 11l4.5 4.5 4.5-4.5"/><path d="M5 19h14"/></svg>
+          </span>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="tabbar">
+      <a class="tab" href="#">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5L12 4l8 6.5"/><path d="M6 10v9h12v-9"/></svg>
+        Home
+      </a>
+      <a class="tab" href="#">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5.5" width="16" height="14" rx="2.5"/><path d="M4 10h16"/><path d="M8.5 3.5v3M15.5 3.5v3"/></svg>
+        Schedule
+      </a>
+      <a class="tab" href="#">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="9.5" cy="9" r="3"/><path d="M4 19c0-2.8 2.5-4.5 5.5-4.5S15 16.2 15 19"/><path d="M16 6.5a2.8 2.8 0 010 5.4"/><path d="M17.5 14.6c1.7.6 2.9 1.9 2.9 4.4"/></svg>
+        Team
+      </a>
+      <a class="tab active" href="#">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.2 14.4l-.9-.5a6.6 6.6 0 000-3.8l.9-.5-2-3.4-.9.5a6.7 6.7 0 00-3.3-1.9V3.8h-4v1a6.7 6.7 0 00-3.3 1.9l-.9-.5-2 3.4.9.5a6.6 6.6 0 000 3.8l-.9.5 2 3.4.9-.5a6.7 6.7 0 003.3 1.9v1h4v-1a6.7 6.7 0 003.3-1.9l.9.5z"/></svg>
+        Settings
+      </a>
+    </div>
+
+  </div>
+</body>
+</html>

@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PulsePath Conversation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    :root {
+      --violet: #6847e8;
+      --violet-deep: #5235c8;
+      --violet-soft: rgba(104, 71, 232, 0.10);
+      --violet-softer: rgba(104, 71, 232, 0.06);
+      --ink: #24212d;
+      --muted: #746f7e;
+      --surface: #ffffff;
+      --soft: #f5f3f8;
+      --success: #3d9a70;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #e9e8ed;
+      font-family: 'Manrope', system-ui, sans-serif;
+      color: var(--ink);
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      border: 0;
+      padding: 0;
+      color: inherit;
+      background: transparent;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: var(--surface);
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      padding: 12px 14px;
+      background: var(--surface);
+    }
+
+    .icon-button {
+      width: 34px;
+      height: 40px;
+      flex: 0 0 34px;
+      display: grid;
+      place-items: center;
+    }
+
+    .profile-glyph {
+      position: relative;
+      width: 42px;
+      height: 42px;
+      flex: 0 0 42px;
+      display: grid;
+      place-items: center;
+      border-radius: 10px;
+      color: var(--violet);
+      background: var(--violet-soft);
+    }
+
+    .presence {
+      position: absolute;
+      right: 3px;
+      bottom: 3px;
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--success);
+      box-shadow: 0 0 0 2px #fff;
+    }
+
+    .conversation-title {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .conversation-title h1 {
+      margin: 0;
+      overflow: hidden;
+      color: var(--ink);
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 21px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .conversation-title p {
+      margin: 2px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 16px;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 1px;
+    }
+
+    svg {
+      display: block;
+    }
+
+    .focus-card {
+      margin: 0 14px 8px;
+      padding: 9px 11px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-radius: 10px;
+      background: var(--violet-soft);
+    }
+
+    .focus-icon {
+      width: 31px;
+      height: 31px;
+      flex: 0 0 31px;
+      display: grid;
+      place-items: center;
+      border-radius: 10px;
+      color: var(--violet);
+      background: rgba(104, 71, 232, 0.12);
+    }
+
+    .focus-copy {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .focus-copy strong {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 17px;
+    }
+
+    .focus-copy span {
+      display: block;
+      margin-top: 1px;
+      overflow: hidden;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 16px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .thread {
+      min-height: 0;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 4px 14px 8px;
+      background: #fcfbfd;
+    }
+
+    .date-divider {
+      align-self: center;
+      margin-bottom: 10px;
+      padding: 4px 9px;
+      border-radius: 10px;
+      color: var(--muted);
+      background: var(--soft);
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 16px;
+    }
+
+    .message-row {
+      display: flex;
+      align-items: flex-end;
+      gap: 7px;
+      margin-top: 7px;
+    }
+
+    .message-row:first-of-type {
+      margin-top: 0;
+    }
+
+    .message-row.outgoing {
+      justify-content: flex-end;
+    }
+
+    .mini-glyph {
+      width: 27px;
+      height: 27px;
+      flex: 0 0 27px;
+      display: grid;
+      place-items: center;
+      border-radius: 10px;
+      color: var(--violet);
+      background: var(--violet-soft);
+    }
+
+    .message {
+      max-width: 282px;
+      padding: 7px 10px 6px;
+      border-radius: 10px;
+      background: var(--violet-soft);
+    }
+
+    .outgoing .message {
+      color: #fff;
+      background: var(--violet);
+    }
+
+    .message p {
+      margin: 0;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 19px;
+    }
+
+    .message-meta {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 4px;
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 14px;
+    }
+
+    .outgoing .message-meta {
+      color: rgba(255, 255, 255, 0.78);
+    }
+
+    .read-mark {
+      color: inherit;
+    }
+
+    .typing {
+      width: max-content;
+      min-width: 48px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 13px 14px;
+      border-radius: 10px;
+      background: var(--violet-soft);
+    }
+
+    .typing span {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: rgba(104, 71, 232, 0.55);
+    }
+
+    .composer {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      background: var(--surface);
+    }
+
+    .composer-field {
+      min-width: 0;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 8px 7px 11px;
+      border-radius: 10px;
+      background: var(--violet-softer);
+    }
+
+    .composer-field input {
+      min-width: 0;
+      flex: 1;
+      border: 0;
+      outline: 0;
+      padding: 0;
+      color: var(--ink);
+      background: transparent;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 28px;
+    }
+
+    .composer-field input::placeholder {
+      color: #918b9a;
+      opacity: 1;
+    }
+
+    .attachment {
+      width: 30px;
+      height: 30px;
+      flex: 0 0 30px;
+      display: grid;
+      place-items: center;
+      color: var(--muted);
+    }
+
+    .send-button {
+      width: 42px;
+      height: 42px;
+      flex: 0 0 42px;
+      display: grid;
+      place-items: center;
+      border-radius: 10px;
+      color: #fff;
+      background: var(--violet);
+    }
+
+    .tabbar {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      padding: 7px 8px 9px;
+      background: #f7f5fa;
+    }
+
+    .tab {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      color: #817b89;
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 16px;
+    }
+
+    .tab-icon {
+      width: 28px;
+      height: 25px;
+      display: grid;
+      place-items: center;
+      border-radius: 10px;
+    }
+
+    .tab.active {
+      color: var(--violet-deep);
+      font-weight: 700;
+    }
+
+    .tab.active .tab-icon {
+      background: var(--violet-soft);
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <button class="icon-button" type="button" aria-label="Back to conversations">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+
+      <div class="profile-glyph" aria-hidden="true">
+        <svg width="25" height="25" viewBox="0 0 28 28" fill="none">
+          <circle cx="14" cy="10" r="4.1" stroke="currentColor" stroke-width="1.7"/>
+          <path d="M6.5 23c.6-4.4 3.4-6.7 7.5-6.7s6.9 2.3 7.5 6.7" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+          <path d="M20.7 7.2c-.7-2.1-2.5-3.5-4.7-3.8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+        </svg>
+        <span class="presence"></span>
+      </div>
+
+      <div class="conversation-title">
+        <h1>Mara Ellis</h1>
+        <p>PulsePath mobility coach · Active now</p>
+      </div>
+
+      <div class="top-actions">
+        <button class="icon-button" type="button" aria-label="Start audio call">
+          <svg width="21" height="21" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M8.1 4.7L10 8.3 8.2 10c1.1 2.5 3.2 4.5 5.7 5.7l1.7-1.8 3.7 1.9-.7 3.2c-.2.8-.9 1.3-1.7 1.3C9.6 19.8 4.2 14.4 3.7 7.1c-.1-.8.5-1.5 1.3-1.7l3.1-.7z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <button class="icon-button" type="button" aria-label="Conversation options">
+          <svg width="21" height="21" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <circle cx="5" cy="12" r="1.5"/>
+            <circle cx="12" cy="12" r="1.5"/>
+            <circle cx="19" cy="12" r="1.5"/>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <section class="focus-card" aria-label="Current recovery focus">
+      <div class="focus-icon" aria-hidden="true">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none">
+          <path d="M7 4v5.5c0 1.7.8 3.3 2.2 4.3l2 1.5c1.1.8 1.8 2.1 1.8 3.5V21" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+          <path d="M14 3v5c0 1.6-.7 3-1.9 4l-1.5 1.2M4.5 7H9M12 6h4.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="focus-copy">
+        <strong>Knee recovery check-in</strong>
+        <span>Week 3 plan · Next review Friday, June 21</span>
+      </div>
+    </section>
+
+    <main class="thread" aria-label="Conversation with Mara Ellis">
+      <div class="date-divider">Today</div>
+
+      <div class="message-row incoming">
+        <div class="mini-glyph" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="8" r="3.2" stroke="currentColor" stroke-width="1.6"/>
+            <path d="M6.5 19c.5-3.5 2.5-5.3 5.5-5.3s5 1.8 5.5 5.3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="message">
+          <p>How did your knee feel after yesterday’s walk?</p>
+          <div class="message-meta">9:08 AM</div>
+        </div>
+      </div>
+
+      <div class="message-row outgoing">
+        <div class="message">
+          <p>Better overall. I finished 25 minutes without sharp pain.</p>
+          <div class="message-meta">
+            9:11 AM
+            <svg class="read-mark" width="14" height="12" viewBox="0 0 16 12" fill="none" aria-label="Read">
+              <path d="M1.5 6.5l2.5 2.5 4-5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M6.5 8.5L8 10l6-7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="message-row incoming">
+        <div class="mini-glyph" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="8" r="3.2" stroke="currentColor" stroke-width="1.6"/>
+            <path d="M6.5 19c.5-3.5 2.5-5.3 5.5-5.3s5 1.8 5.5 5.3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="message">
+          <p>Good. Any swelling or stiffness this morning?</p>
+          <div class="message-meta">9:13 AM</div>
+        </div>
+      </div>
+
+      <div class="message-row outgoing">
+        <div class="message">
+          <p>A little stiffness when I got up. It eased after five minutes.</p>
+          <div class="message-meta">
+            9:15 AM
+            <svg class="read-mark" width="14" height="12" viewBox="0 0 16 12" fill="none" aria-label="Read">
+              <path d="M1.5 6.5l2.5 2.5 4-5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M6.5 8.5L8 10l6-7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="message-row incoming">
+        <div class="mini-glyph" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="8" r="3.2" stroke="currentColor" stroke-width="1.6"/>
+            <path d="M6.5 19c.5-3.5 2.5-5.3 5.5-5.3s5 1.8 5.5 5.3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="message">
+          <p>Keep today easy. Do the mobility set, then use a cold pack for 10 minutes.</p>
+          <div class="message-meta">9:18 AM</div>
+        </div>
+      </div>
+
+      <div class="message-row outgoing">
+        <div class="message">
+          <p>Should I skip the step-ups today?</p>
+          <div class="message-meta">
+            9:19 AM
+            <svg class="read-mark" width="14" height="12" viewBox="0 0 16 12" fill="none" aria-label="Read">
+              <path d="M1.5 6.5l2.5 2.5 4-5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M6.5 8.5L8 10l6-7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="message-row incoming">
+        <div class="mini-glyph" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="8" r="3.2" stroke="currentColor" stroke-width="1.6"/>
+            <path d="M6.5 19c.5-3.5 2.5-5.3 5.5-5.3s5 1.8 5.5 5.3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="message">
+          <p>Yes. Swap them for two sets of seated leg extensions.</p>
+          <div class="message-meta">9:21 AM</div>
+        </div>
+      </div>
+
+      <div class="message-row outgoing">
+        <div class="message">
+          <p>Got it. I’ll log how it feels afterward.</p>
+          <div class="message-meta">
+            9:22 AM
+            <svg class="read-mark" width="14" height="12" viewBox="0 0 16 12" fill="none" aria-label="Read">
+              <path d="M1.5 6.5l2.5 2.5 4-5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M6.5 8.5L8 10l6-7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <form class="composer" aria-label="Message composer">
+      <div class="composer-field">
+        <input type="text" aria-label="Message Mara" placeholder="Message Mara">
+        <button class="attachment" type="button" aria-label="Attach file">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M9 12.8l5.8-5.8a3 3 0 014.2 4.2l-7.7 7.7a5 5 0 01-7.1-7.1l7.3-7.3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+      <button class="send-button" type="button" aria-label="Send message">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M4 5l16 7-16 7 2.2-6.2L15 12 6.2 11.2 4 5z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </form>
+
+    <nav class="tabbar" aria-label="Primary navigation">
+      <button class="tab" type="button">
+        <span class="tab-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M4 10.5L12 4l8 6.5V20h-5v-6H9v6H4v-9.5z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+          </svg>
+        </span>
+        <span>Home</span>
+      </button>
+
+      <button class="tab" type="button">
+        <span class="tab-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M7 4h10v16H7zM10 4V2h4v2M10 9h4M10 13h4M10 17h3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </span>
+        <span>Plan</span>
+      </button>
+
+      <button class="tab active" type="button" aria-current="page">
+        <span class="tab-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M5 5h14v11H9l-4 3V5z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+            <path d="M8.5 9h7M8.5 12h4.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+          </svg>
+        </span>
+        <span>Messages</span>
+      </button>
+
+      <button class="tab" type="button">
+        <span class="tab-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="12" cy="8" r="3.5" stroke="currentColor" stroke-width="1.7"/>
+            <path d="M5.5 20c.6-4.1 2.8-6.2 6.5-6.2s5.9 2.1 6.5 6.2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+          </svg>
+        </span>
+        <span>Profile</span>
+      </button>
+    </nav>
+  </div>
+</body>
+</html>

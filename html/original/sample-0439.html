@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Delivery Location</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #d9d5d9;
+      color: #241f23;
+      font-family: 'Source Serif 4', Georgia, serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #f5f3f5;
+    }
+
+    .topbar {
+      display: grid;
+      grid-template-columns: 44px 1fr 44px;
+      align-items: center;
+      padding: 12px 14px;
+      background: #ffffff;
+      border-bottom: 1px solid #e5e0e4;
+    }
+
+    .topbar h1 {
+      margin: 0;
+      text-align: center;
+      font-size: 20px;
+      line-height: 1.35;
+      font-weight: 700;
+    }
+
+    .icon-button {
+      width: 40px;
+      height: 40px;
+      padding: 8px;
+      border: 0;
+      background: transparent;
+      color: #332d32;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .top-action {
+      border: 0;
+      padding: 8px 0;
+      background: transparent;
+      color: #c21872;
+      font-size: 14px;
+      font-weight: 600;
+      text-align: right;
+    }
+
+    main {
+      padding: 20px 18px 18px;
+    }
+
+    .intro {
+      margin-bottom: 16px;
+    }
+
+    .intro h2 {
+      margin: 0 0 5px;
+      font-size: 26px;
+      line-height: 1.2;
+      font-weight: 700;
+    }
+
+    .intro p {
+      margin: 0;
+      color: #6d646b;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .search-box {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      padding: 14px 15px;
+      border: 2px solid #c21872;
+      border-radius: 10px;
+      background: #ffffff;
+      color: #786f75;
+      box-shadow: 0 5px 16px rgba(55, 40, 50, 0.08);
+      font-size: 15px;
+      line-height: 1.4;
+      text-align: left;
+    }
+
+    .search-box svg {
+      flex: 0 0 auto;
+      color: #c21872;
+    }
+
+    .current-location {
+      width: 100%;
+      margin-top: 12px;
+      padding: 13px 15px;
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      border: 1px solid #ded8dc;
+      border-radius: 10px;
+      background: #ffffff;
+      color: #332d32;
+      text-align: left;
+    }
+
+    .current-location svg {
+      color: #c21872;
+      flex: 0 0 auto;
+    }
+
+    .current-copy {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .current-copy strong {
+      display: block;
+      font-size: 15px;
+      line-height: 1.3;
+      font-weight: 600;
+    }
+
+    .current-copy span {
+      display: block;
+      margin-top: 2px;
+      color: #756c72;
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
+    .chevron {
+      color: #8d858a !important;
+    }
+
+    .saved-section {
+      margin-top: 24px;
+    }
+
+    .section-heading {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 9px;
+    }
+
+    .section-heading h3 {
+      margin: 0;
+      font-size: 18px;
+      line-height: 1.35;
+      font-weight: 700;
+    }
+
+    .section-heading span {
+      color: #777076;
+      font-size: 13px;
+    }
+
+    .address-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      background: #ffffff;
+      border: 1px solid #e3dde1;
+      border-radius: 10px;
+      box-shadow: 0 5px 16px rgba(55, 40, 50, 0.08);
+    }
+
+    .address-row {
+      display: grid;
+      grid-template-columns: 28px minmax(0, 1fr) 24px;
+      gap: 11px;
+      align-items: start;
+      padding: 15px;
+      border-bottom: 1px solid #ebe6e9;
+    }
+
+    .address-row:last-child {
+      border-bottom: 0;
+    }
+
+    .address-icon {
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #6d646b;
+    }
+
+    .address-row.selected .address-icon,
+    .address-row.selected .row-arrow {
+      color: #c21872;
+    }
+
+    .address-content {
+      min-width: 0;
+    }
+
+    .address-title-line {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 3px;
+    }
+
+    .address-title {
+      font-size: 16px;
+      line-height: 1.3;
+      font-weight: 600;
+    }
+
+    .default-badge {
+      padding: 2px 7px;
+      border-radius: 10px;
+      background: #f8e4ef;
+      color: #a81160;
+      font-size: 12px;
+      line-height: 1.35;
+      font-weight: 600;
+    }
+
+    .recipient {
+      margin: 0 0 2px;
+      color: #4c454a;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    .address {
+      margin: 0;
+      color: #746b71;
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    .row-arrow {
+      padding-top: 3px;
+      color: #948b91;
+    }
+
+    .tabbar {
+      margin-top: auto;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      padding: 9px 8px 10px;
+      background: #ffffff;
+      border-top: 1px solid #ddd7db;
+    }
+
+    .tab {
+      border: 0;
+      padding: 3px 2px;
+      background: transparent;
+      color: #746c72;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      font-size: 12px;
+      line-height: 1.25;
+    }
+
+    .tab.active {
+      color: #c21872;
+      font-weight: 600;
+    }
+
+    svg {
+      display: block;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <button class="icon-button" type="button" aria-label="Go back">
+        <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M15 18l-6-6 6-6"></path>
+        </svg>
+      </button>
+      <h1>Delivery location</h1>
+      <button class="top-action" type="button">Add</button>
+    </header>
+
+    <main>
+      <section class="intro" aria-labelledby="location-heading">
+        <h2 id="location-heading">Where should Looma Market deliver?</h2>
+        <p>Choose a saved address or search for another location.</p>
+      </section>
+
+      <section aria-label="Address search">
+        <button class="search-box" type="button">
+          <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="11" cy="11" r="6.5"></circle>
+            <path d="M16 16l4 4"></path>
+          </svg>
+          <span>Search street, city, or ZIP code</span>
+        </button>
+
+        <button class="current-location" type="button">
+          <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="12" r="3.5"></circle>
+            <circle cx="12" cy="12" r="8"></circle>
+            <path d="M12 2v2M12 20v2M2 12h2M20 12h2"></path>
+          </svg>
+          <span class="current-copy">
+            <strong>Use current location</strong>
+            <span>Location permission is required</span>
+          </span>
+          <svg class="chevron" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M9 6l6 6-6 6"></path>
+          </svg>
+        </button>
+      </section>
+
+      <section class="saved-section" aria-labelledby="saved-heading">
+        <div class="section-heading">
+          <h3 id="saved-heading">Saved locations</h3>
+          <span>3 addresses</span>
+        </div>
+
+        <ul class="address-list">
+          <li class="address-row selected">
+            <span class="address-icon">
+              <svg width="23" height="23" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M4 11l8-7 8 7"></path>
+                <path d="M6.5 10v9h11v-9"></path>
+                <path d="M10 19v-5h4v5"></path>
+              </svg>
+            </span>
+            <div class="address-content">
+              <div class="address-title-line">
+                <span class="address-title">Home</span>
+                <span class="default-badge">Default</span>
+              </div>
+              <p class="recipient">Mara Ellison</p>
+              <p class="address">418 Willow Street, Apt 3B<br>Portland, OR 97205</p>
+            </div>
+            <span class="row-arrow">
+              <svg width="19" height="19" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M9 6l6 6-6 6"></path>
+              </svg>
+            </span>
+          </li>
+
+          <li class="address-row">
+            <span class="address-icon">
+              <svg width="23" height="23" viewBox="0 0 24 24" aria-hidden="true">
+                <rect x="5" y="4" width="14" height="16" rx="1"></rect>
+                <path d="M9 8h2M13 8h2M9 12h2M13 12h2M10 20v-4h4v4"></path>
+              </svg>
+            </span>
+            <div class="address-content">
+              <div class="address-title-line">
+                <span class="address-title">Work</span>
+              </div>
+              <p class="recipient">Mara Ellison</p>
+              <p class="address">1250 Harbor Avenue, Suite 410<br>Portland, OR 97209</p>
+            </div>
+            <span class="row-arrow">
+              <svg width="19" height="19" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M9 6l6 6-6 6"></path>
+              </svg>
+            </span>
+          </li>
+
+          <li class="address-row">
+            <span class="address-icon">
+              <svg width="23" height="23" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 21s6-5.2 6-11a6 6 0 10-12 0c0 5.8 6 11 6 11z"></path>
+                <circle cx="12" cy="10" r="2"></circle>
+              </svg>
+            </span>
+            <div class="address-content">
+              <div class="address-title-line">
+                <span class="address-title">Family</span>
+              </div>
+              <p class="recipient">Nolan Avery</p>
+              <p class="address">782 Meadow Lane<br>Beaverton, OR 97005</p>
+            </div>
+            <span class="row-arrow">
+              <svg width="19" height="19" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M9 6l6 6-6 6"></path>
+              </svg>
+            </span>
+          </li>
+        </ul>
+      </section>
+    </main>
+
+    <nav class="tabbar" aria-label="Main navigation">
+      <button class="tab" type="button">
+        <svg width="23" height="23" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M4 11l8-7 8 7"></path>
+          <path d="M6.5 10v9h11v-9"></path>
+        </svg>
+        <span>Shop</span>
+      </button>
+
+      <button class="tab" type="button">
+        <svg width="23" height="23" viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="11" cy="11" r="6.5"></circle>
+          <path d="M16 16l4 4"></path>
+        </svg>
+        <span>Browse</span>
+      </button>
+
+      <button class="tab" type="button">
+        <svg width="23" height="23" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M4 6h2l2 10h9l2-7H7"></path>
+          <circle cx="10" cy="19" r="1"></circle>
+          <circle cx="17" cy="19" r="1"></circle>
+        </svg>
+        <span>Cart</span>
+      </button>
+
+      <button class="tab active" type="button" aria-current="page">
+        <svg width="23" height="23" viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="8" r="3.5"></circle>
+          <path d="M5.5 20c.7-4 3-6 6.5-6s5.8 2 6.5 6"></path>
+        </svg>
+        <span>Account</span>
+      </button>
+    </nav>
+  </div>
+</body>
+</html>

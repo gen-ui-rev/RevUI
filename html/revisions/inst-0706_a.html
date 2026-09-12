@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bedtime Window — Stillwell</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #d9dddd;
+      color: #182223;
+      font-family: 'Manrope', system-ui, sans-serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #f2f4f3;
+    }
+
+    /* Header: left-aligned, two tiers, accent underline */
+    .topbar {
+      flex: 0 0 auto;
+      padding: 6px 12px 12px;
+      background: #ffffff;
+      border-bottom: 2px solid #426667;
+    }
+
+    .topbar-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .topbar-kicker {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #6d7d7e;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .topbar-kicker svg {
+      width: 18px;
+      height: 18px;
+      color: #426667;
+    }
+
+    .topbar-title {
+      margin: 4px 0 0 6px;
+      text-align: left;
+      font-size: 22px;
+      font-weight: 700;
+      line-height: 1.25;
+      letter-spacing: -0.03em;
+    }
+
+    .icon-button {
+      width: 44px;
+      height: 44px;
+      padding: 0;
+      display: grid;
+      place-items: center;
+      color: #273435;
+      background: transparent;
+      border: 0;
+      border-radius: 0;
+    }
+
+    .icon-button svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    main {
+      flex: 1 1 auto;
+      padding: 18px 16px;
+    }
+
+    .feature-card {
+      padding: 26px 22px 24px;
+      background: #ffffff;
+      box-shadow: 0 8px 24px rgba(36, 52, 53, 0.09);
+    }
+
+    .feature-card h1 {
+      margin: 0;
+      max-width: 300px;
+      font-size: 24px;
+      font-weight: 700;
+      line-height: 1.22;
+      letter-spacing: -0.025em;
+    }
+
+    .intro {
+      margin: 12px 0 20px;
+      color: #5a6667;
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    /* The window, inset in the middle of the story */
+    .window-block {
+      margin: 0 0 22px;
+      padding: 20px 18px 18px;
+      background: #e6eded;
+      border-left: 3px solid #426667;
+    }
+
+    .window-label {
+      margin: 0 0 8px;
+      color: #536869;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .window-time {
+      margin: 0;
+      color: #172526;
+      font-size: 32px;
+      font-weight: 700;
+      line-height: 1.12;
+      letter-spacing: -0.04em;
+    }
+
+    .window-date {
+      margin: 8px 0 0;
+      color: #536869;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .range-line {
+      position: relative;
+      height: 18px;
+      margin-top: 18px;
+      border-top: 2px solid #8ca4a5;
+    }
+
+    .range-line::before,
+    .range-line::after {
+      content: "";
+      position: absolute;
+      top: -6px;
+      width: 10px;
+      height: 10px;
+      background: #426667;
+    }
+
+    .range-line::before {
+      left: 0;
+    }
+
+    .range-line::after {
+      right: 0;
+    }
+
+    .usage-list {
+      margin: 0 0 22px;
+      padding: 0;
+      list-style: none;
+      border-top: 1px solid #e4e8e7;
+    }
+
+    .usage-list li {
+      min-height: 56px;
+      display: grid;
+      grid-template-columns: 27px 1fr;
+      gap: 10px;
+      align-items: center;
+      border-bottom: 1px solid #e4e8e7;
+      color: #354243;
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .step-number {
+      color: #537273;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .primary-action {
+      width: 100%;
+      min-height: 52px;
+      padding: 14px 18px;
+      color: #ffffff;
+      background: #426667;
+      border: 0;
+      border-radius: 0;
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .tabbar {
+      flex: 0 0 76px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      background: #ffffff;
+      border-top: 1px solid #dfe4e3;
+    }
+
+    .tab {
+      padding: 11px 4px 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+      color: #778182;
+      background: transparent;
+      border: 0;
+      border-radius: 0;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .tab svg {
+      width: 21px;
+      height: 21px;
+    }
+
+    .tab.active {
+      color: #426667;
+      font-weight: 700;
+      border-top: 3px solid #426667;
+      padding-top: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <div class="topbar-row">
+        <button class="icon-button" type="button" aria-label="Go back">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M15 5L8 12L15 19" stroke="currentColor" stroke-width="1.8" stroke-linecap="square" stroke-linejoin="miter"/>
+          </svg>
+        </button>
+        <span class="topbar-kicker">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M12 3V21M3 12H21" stroke="currentColor" stroke-width="2"/>
+            <path d="M6 6L18 18M18 6L6 18" stroke="currentColor" stroke-width="1.2"/>
+          </svg>
+          Stillwell Sleep
+        </span>
+        <button class="icon-button" type="button" aria-label="Close">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M6 6L18 18M18 6L6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="square"/>
+          </svg>
+        </button>
+      </div>
+      <h2 class="topbar-title">Bedtime window</h2>
+    </header>
+
+    <main>
+      <section class="feature-card" aria-labelledby="feature-title">
+        <h1 id="feature-title">Know when your body is ready for sleep</h1>
+        <p class="intro">Your bedtime window uses recent sleep patterns to suggest a consistent time to settle in. It updates each morning.</p>
+
+        <div class="window-block">
+          <p class="window-label">Tonight's window</p>
+          <p class="window-time">9:45–10:15 PM</p>
+          <p class="window-date">Based on your 6:30 AM wake time</p>
+          <div class="range-line" aria-hidden="true"></div>
+        </div>
+
+        <ol class="usage-list">
+          <li>
+            <span class="step-number">01</span>
+            <span>Keep your usual wake time in your sleep schedule.</span>
+          </li>
+          <li>
+            <span class="step-number">02</span>
+            <span>Start winding down when your window opens.</span>
+          </li>
+        </ol>
+
+        <button class="primary-action" type="button">Turn on bedtime reminders</button>
+      </section>
+    </main>
+
+    <nav class="tabbar" aria-label="Primary navigation">
+      <button class="tab" type="button">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M4 10L12 4L20 10V20H4V10Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="miter"/>
+          <path d="M9 20V14H15V20" stroke="currentColor" stroke-width="1.7"/>
+        </svg>
+        <span>Today</span>
+      </button>
+
+      <button class="tab active" type="button" aria-current="page">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M18.8 15.7C17.6 18.3 15 20 12 20C7.6 20 4 16.4 4 12C4 8 6.9 4.7 10.8 4.1C9.7 5.3 9 6.9 9 8.7C9 12.7 12.3 16 16.3 16C17.2 16 18 15.9 18.8 15.7Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="miter"/>
+        </svg>
+        <span>Sleep</span>
+      </button>
+
+      <button class="tab" type="button">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M4 19V12M10 19V7M16 19V10M22 19V4" stroke="currentColor" stroke-width="1.7"/>
+        </svg>
+        <span>Trends</span>
+      </button>
+
+      <button class="tab" type="button">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="12" cy="8" r="3.5" stroke="currentColor" stroke-width="1.7"/>
+          <path d="M5 20C5.5 16.5 8.1 14 12 14C15.9 14 18.5 16.5 19 20" stroke="currentColor" stroke-width="1.7"/>
+        </svg>
+        <span>Profile</span>
+      </button>
+    </nav>
+  </div>
+</body>
+</html>

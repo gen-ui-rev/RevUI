@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Wavecrest — Inbox</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 40px 0;
+    margin: 0;
+    background: #d8d7dd;
+    font-family: 'Inter', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .screen {
+    width: 390px;
+    height: 844px;
+    background: #ffffff;
+    position: relative;
+    color: #17161d;
+  }
+
+  /* top bar */
+  .topbar {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: 20px 16px 12px;
+  }
+  .topbar h1 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: -0.4px;
+  }
+  .topbar .sub {
+    margin-top: 3px;
+    font-size: 12px;
+    color: #6d6b78;
+  }
+  .actions { display: flex; gap: 6px; padding-top: 2px; }
+  .iconbtn {
+    width: 34px; height: 34px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 4px;
+    background: #f4f3f6;
+    color: #3d3b47;
+  }
+
+  /* screen-wide filter strip (part of the header, applies to the whole inbox) */
+  .filterbar {
+    display: flex;
+    padding: 0 8px;
+    border-bottom: 1px solid #ecebf0;
+  }
+  .filter {
+    flex: 1;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 500;
+    color: #6d6b78;
+    padding: 10px 0 11px;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    white-space: nowrap;
+  }
+  .filter.on {
+    color: #17161d;
+    font-weight: 600;
+    border-bottom-color: #c05f86;
+  }
+  .filter .num {
+    font-size: 11px;
+    color: #8b8996;
+    margin-left: 3px;
+  }
+
+  /* pinned — first item of content */
+  .pinned {
+    margin: 14px 16px;
+    padding: 12px;
+    border-radius: 4px;
+    background: rgba(230, 56, 122, 0.06);
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+  .pinned img {
+    width: 64px; height: 64px;
+    border-radius: 4px;
+    object-fit: cover;
+    display: block;
+    background: #cbc9d1;
+    flex: none;
+  }
+  .pinned .body { min-width: 0; }
+  .kicker {
+    font-size: 12px;
+    font-weight: 600;
+    color: #96536f;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+  }
+  .pinned .title {
+    font-size: 15px;
+    font-weight: 600;
+    margin-top: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .pinned .meta {
+    font-size: 12px;
+    color: #6d6b78;
+    margin-top: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* list */
+  .sechead {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: #8b8996;
+    padding: 6px 20px 8px;
+  }
+  .sechead .n { color: #a09eaa; font-weight: 500; }
+  .row {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    padding: 11px 16px;
+    margin: 0 8px;
+    border-radius: 4px;
+  }
+  .row.unread { background: #f7f6f9; }
+  .thumb {
+    width: 52px; height: 52px;
+    border-radius: 4px;
+    object-fit: cover;
+    display: block;
+    background: #cbc9d1;
+    flex: none;
+  }
+  .mono {
+    width: 52px; height: 52px;
+    border-radius: 4px;
+    flex: none;
+    background: #efedf2;
+    color: #4b4956;
+    font-size: 15px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .mono.tint { background: #ece6ea; color: #7c5266; }
+  .rowbody { flex: 1; min-width: 0; }
+  .sender {
+    font-size: 14px;
+    font-weight: 500;
+    color: #35333e;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .row.unread .sender { font-weight: 600; color: #17161d; }
+  .subject {
+    font-size: 14px;
+    color: #6d6b78;
+    margin-top: 3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .row.unread .subject { color: #43414d; }
+  .side {
+    flex: none;
+    width: 58px;
+    text-align: right;
+  }
+  .time { font-size: 12px; color: #8b8996; }
+  .dot {
+    width: 6px; height: 6px;
+    border-radius: 4px;
+    background: #c05f86;
+    display: inline-block;
+    margin-top: 8px;
+  }
+
+  /* tab bar */
+  .tabbar {
+    position: absolute;
+    left: 0; bottom: 0;
+    width: 100%;
+    height: 64px;
+    background: #ffffff;
+    border-top: 1px solid #f0eff3;
+    display: flex;
+    align-items: center;
+  }
+  .tab {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    color: #8b8996;
+    font-size: 12px;
+    font-weight: 500;
+  }
+  .tab.on { color: #c05f86; font-weight: 600; }
+</style>
+</head>
+<body>
+  <div class="screen">
+
+    <div class="topbar">
+      <div>
+        <h1>Inbox</h1>
+        <div class="sub">3 unread &middot; Wavecrest Audio</div>
+      </div>
+      <div class="actions">
+        <div class="iconbtn" aria-label="Search messages">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M16.5 16.5 21 21"/></svg>
+        </div>
+        <div class="iconbtn" aria-label="Sort and filter">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M7 12h10M10 17h4"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="filterbar">
+      <div class="filter on">All <span class="num">7</span></div>
+      <div class="filter">Unread <span class="num">3</span></div>
+      <div class="filter">Artists</div>
+      <div class="filter">Receipts</div>
+    </div>
+
+    <div class="pinned">
+      <img src="https://loremflickr.com/64/64/vinyl?lock=11160" width="64" height="64" alt="Record crate art for this week's mix">
+      <div class="body">
+        <div class="kicker">Pinned</div>
+        <div class="title">Your Weekly Mix is ready</div>
+        <div class="meta">Wavecrest Editorial &middot; 32 tracks &middot; 9:58 AM</div>
+      </div>
+    </div>
+
+    <div class="sechead">Today <span class="n">&middot; 3</span></div>
+
+    <div class="row unread">
+      <img class="thumb" src="https://loremflickr.com/52/52/studio?lock=11161" width="52" height="52" alt="Album cover shot in a recording studio">
+      <div class="rowbody">
+        <div class="sender">Nocturne Records</div>
+        <div class="subject">New album: Slow Coast, out now</div>
+      </div>
+      <div class="side">
+        <div class="time">9:42 AM</div>
+        <span class="dot"></span>
+      </div>
+    </div>
+
+    <div class="row unread">
+      <div class="mono tint">MR</div>
+      <div class="rowbody">
+        <div class="sender">Mara Reyes</div>
+        <div class="subject">Re: Guest slot for episode 41</div>
+      </div>
+      <div class="side">
+        <div class="time">8:15 AM</div>
+        <span class="dot"></span>
+      </div>
+    </div>
+
+    <div class="row">
+      <img class="thumb" src="https://loremflickr.com/52/52/concert?lock=11162" width="52" height="52" alt="Stage lights at a live show announcement">
+      <div class="rowbody">
+        <div class="sender">Live Nearby</div>
+        <div class="subject">Ardent Fields at Grove Hall, Apr 18</div>
+      </div>
+      <div class="side">
+        <div class="time">7:02 AM</div>
+      </div>
+    </div>
+
+    <div class="sechead">Earlier this week <span class="n">&middot; 3</span></div>
+
+    <div class="row unread">
+      <div class="mono tint">TB</div>
+      <div class="rowbody">
+        <div class="sender">Theo Brandt</div>
+        <div class="subject">Shared a playlist: Late Shift Jazz</div>
+      </div>
+      <div class="side">
+        <div class="time">Wed</div>
+        <span class="dot"></span>
+      </div>
+    </div>
+
+    <div class="row">
+      <img class="thumb" src="https://loremflickr.com/52/52/guitar?lock=11163" width="52" height="52" alt="Guitar in a rehearsal room from a session invite">
+      <div class="rowbody">
+        <div class="sender">Wavecrest Sessions</div>
+        <div class="subject">Your upload finished processing</div>
+      </div>
+      <div class="side">
+        <div class="time">Tue</div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="mono">WB</div>
+      <div class="rowbody">
+        <div class="sender">Wavecrest Billing</div>
+        <div class="subject">Receipt for Premium plan, $11.99</div>
+      </div>
+      <div class="side">
+        <div class="time">Mon</div>
+      </div>
+    </div>
+
+    <div class="tabbar">
+      <div class="tab">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5 12 4l8 6.5V20H4z"/></svg>
+        Listen
+      </div>
+      <div class="tab">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M16.5 16.5 21 21"/></svg>
+        Search
+      </div>
+      <div class="tab">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 5v14M10 5v14M15 6l4 13"/></svg>
+        Library
+      </div>
+      <div class="tab on">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 6.5h17v11h-17z"/><path d="m3.5 7.5 8.5 6 8.5-6"/></svg>
+        Inbox
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

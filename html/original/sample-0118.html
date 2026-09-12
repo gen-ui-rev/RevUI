@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Reelnote Studio — Crop Cover</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --accent:#3B7DFF;
+    --line:rgba(255,255,255,0.13);
+    --bg:#111317;
+    --panel:#16181D;
+    --dim:#8C919B;
+  }
+  *{box-sizing:border-box;}
+  body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    padding:40px 0;
+    margin:0;
+    background:#5C5F66;
+    font-family:'Source Sans 3', system-ui, sans-serif;
+  }
+  .screen{
+    width:390px;
+    height:844px;
+    background:var(--bg);
+    color:#F2F4F7;
+    display:flex;
+    flex-direction:column;
+    position:relative;
+  }
+
+  /* top bar */
+  .topbar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:14px 16px;
+    border-bottom:1px solid var(--line);
+  }
+  .topbar h1{
+    margin:0;
+    font-family:'Playfair Display', Georgia, serif;
+    font-weight:600;
+    font-size:17px;
+    line-height:20px;
+    letter-spacing:0.2px;
+  }
+  .tb-btn{font-size:15px;line-height:20px;color:var(--dim);}
+  .tb-btn.save{color:var(--accent);font-weight:600;}
+
+  /* context strip */
+  .context{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    padding:10px 16px;
+    border-bottom:1px solid var(--line);
+  }
+  .context .ep{
+    font-size:14px;
+    line-height:18px;
+    color:#D6D9DF;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .context .draft{
+    flex:none;
+    font-size:12px;
+    line-height:16px;
+    color:var(--accent);
+    border:1px solid var(--accent);
+    border-radius:6px;
+    padding:1px 7px;
+  }
+
+  /* preview */
+  .preview{
+    position:relative;
+    width:390px;
+    height:280px;
+    background:#0A0B0D;
+  }
+  .preview img{
+    display:block;
+    width:390px;
+    height:280px;
+    object-fit:cover;
+    background:#22252B;
+  }
+  .mask{position:absolute;background:rgba(8,9,11,0.62);}
+  .m-top{left:0;top:0;width:390px;height:8px;}
+  .m-bottom{left:0;bottom:0;width:390px;height:8px;}
+  .m-left{left:0;top:8px;width:63px;height:264px;}
+  .m-right{right:0;top:8px;width:63px;height:264px;}
+  .cropbox{
+    position:absolute;
+    left:63px;top:8px;
+    width:264px;height:264px;
+    border:1px solid rgba(255,255,255,0.9);
+  }
+  .gl{position:absolute;background:rgba(255,255,255,0.32);}
+  .gl.v1{left:88px;top:0;width:1px;height:264px;}
+  .gl.v2{left:176px;top:0;width:1px;height:264px;}
+  .gl.h1{top:88px;left:0;height:1px;width:264px;}
+  .gl.h2{top:176px;left:0;height:1px;width:264px;}
+  .corner{position:absolute;width:20px;height:20px;border:0 solid var(--accent);}
+  .c-tl{left:-2px;top:-2px;border-left-width:3px;border-top-width:3px;}
+  .c-tr{right:-2px;top:-2px;border-right-width:3px;border-top-width:3px;}
+  .c-bl{left:-2px;bottom:-2px;border-left-width:3px;border-bottom-width:3px;}
+  .c-br{right:-2px;bottom:-2px;border-right-width:3px;border-bottom-width:3px;}
+
+  /* readout */
+  .readout{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:9px 16px;
+    border-top:1px solid var(--line);
+    border-bottom:1px solid var(--line);
+    font-size:12px;
+    line-height:16px;
+    color:var(--dim);
+  }
+  .readout .reset{color:var(--accent);font-weight:600;}
+
+  /* chips */
+  .chips{
+    display:flex;
+    gap:8px;
+    padding:12px 16px;
+    border-bottom:1px solid var(--line);
+  }
+  .chip{
+    flex:1;
+    text-align:center;
+    font-size:13px;
+    line-height:18px;
+    padding:5px 0;
+    border:1px solid var(--line);
+    border-radius:6px;
+    color:#C8CCD3;
+  }
+  .chip.on{
+    background:var(--accent);
+    border-color:var(--accent);
+    color:#fff;
+    font-weight:600;
+  }
+
+  /* section header */
+  .sec-head{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    font-size:12px;
+    line-height:16px;
+    letter-spacing:0.6px;
+    text-transform:uppercase;
+    color:var(--dim);
+  }
+
+  /* frames */
+  .frames{
+    padding:12px 16px;
+    border-bottom:1px solid var(--line);
+  }
+  .strip{
+    display:flex;
+    gap:8px;
+    margin-top:8px;
+  }
+  .frame{width:80px;}
+  .frame img{
+    display:block;
+    width:80px;
+    height:64px;
+    object-fit:cover;
+    border-radius:6px;
+    background:#22252B;
+    border:1px solid var(--line);
+  }
+  .frame.on img{border:2px solid var(--accent);}
+  .frame span{
+    display:block;
+    margin-top:4px;
+    font-size:12px;
+    line-height:15px;
+    color:var(--dim);
+    text-align:center;
+  }
+  .frame.on span{color:#F2F4F7;font-weight:600;}
+
+  /* adjust */
+  .adjust{padding:12px 16px 8px;}
+  .row{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    height:38px;
+  }
+  .row .lbl{
+    width:82px;
+    flex:none;
+    font-size:14px;
+    line-height:18px;
+    color:#DDE1E7;
+  }
+  .track{
+    position:relative;
+    flex:1;
+    height:3px;
+    background:rgba(255,255,255,0.16);
+  }
+  .fill{position:absolute;left:0;top:0;height:3px;background:var(--accent);}
+  .knob{
+    position:absolute;
+    top:-5px;
+    width:13px;height:13px;
+    border-radius:6px;
+    background:#fff;
+    margin-left:-6px;
+  }
+  .val{
+    width:46px;
+    flex:none;
+    text-align:right;
+    font-size:14px;
+    line-height:18px;
+    font-variant-numeric:tabular-nums;
+    color:#9AA0AA;
+  }
+  .val.set{color:#F2F4F7;font-weight:600;}
+
+  .spacer{flex:1;}
+
+  /* tab bar */
+  .tabbar{
+    display:flex;
+    border-top:1px solid var(--line);
+    background:var(--panel);
+  }
+  .tab{
+    flex:1;
+    padding:10px 0;
+    text-align:center;
+    color:var(--dim);
+  }
+  .tab.on{color:var(--accent);}
+  .tab svg{display:block;margin:0 auto 4px;}
+  .tab span{font-size:12px;line-height:15px;}
+</style>
+</head>
+<body>
+<div class="screen">
+
+  <div class="topbar">
+    <span class="tb-btn">Cancel</span>
+    <h1>Crop Cover</h1>
+    <span class="tb-btn save">Save</span>
+  </div>
+
+  <div class="context">
+    <span class="ep">Episode 142 — The Long Take, Side B</span>
+    <span class="draft">Draft</span>
+  </div>
+
+  <div class="preview">
+    <img src="https://loremflickr.com/390/280/concert?lock=2420" width="390" height="280" alt="Selected video frame showing a band performing under stage lights">
+    <div class="mask m-top"></div>
+    <div class="mask m-bottom"></div>
+    <div class="mask m-left"></div>
+    <div class="mask m-right"></div>
+    <div class="cropbox">
+      <div class="gl v1"></div>
+      <div class="gl v2"></div>
+      <div class="gl h1"></div>
+      <div class="gl h2"></div>
+      <div class="corner c-tl"></div>
+      <div class="corner c-tr"></div>
+      <div class="corner c-bl"></div>
+      <div class="corner c-br"></div>
+    </div>
+  </div>
+
+  <div class="readout">
+    <span>1:1 · 1080 × 1080 px · offset X 62 Y 18 · rotate 0.0°</span>
+    <span class="reset">Reset</span>
+  </div>
+
+  <div class="chips">
+    <div class="chip on">1:1</div>
+    <div class="chip">4:5</div>
+    <div class="chip">16:9</div>
+    <div class="chip">9:16</div>
+    <div class="chip">Free</div>
+  </div>
+
+  <div class="frames">
+    <div class="sec-head">
+      <span>Frame source</span>
+      <span>0:12 of 48:36</span>
+    </div>
+    <div class="strip">
+      <div class="frame on">
+        <img src="https://loremflickr.com/80/64/concert?lock=2421" width="80" height="64" alt="Video frame at twelve seconds, wide shot of the stage">
+        <span>0:12</span>
+      </div>
+      <div class="frame">
+        <img src="https://loremflickr.com/80/64/studio?lock=2422" width="80" height="64" alt="Video frame at four minutes, mixing desk in the control room">
+        <span>4:05</span>
+      </div>
+      <div class="frame">
+        <img src="https://loremflickr.com/80/64/guitar?lock=2423" width="80" height="64" alt="Video frame at eleven minutes, guitarist tuning between takes">
+        <span>11:48</span>
+      </div>
+      <div class="frame">
+        <img src="https://loremflickr.com/80/64/vinyl?lock=2424" width="80" height="64" alt="Video frame at twenty-six minutes, record spinning on a turntable">
+        <span>26:30</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="adjust">
+    <div class="sec-head" style="margin-bottom:4px;">
+      <span>Adjustments</span>
+      <span>4 changed</span>
+    </div>
+
+    <div class="row">
+      <span class="lbl">Exposure</span>
+      <span class="track"><span class="fill" style="width:58%"></span><span class="knob" style="left:58%"></span></span>
+      <span class="val set">+0.35</span>
+    </div>
+    <div class="row">
+      <span class="lbl">Contrast</span>
+      <span class="track"><span class="fill" style="width:66%"></span><span class="knob" style="left:66%"></span></span>
+      <span class="val set">+18</span>
+    </div>
+    <div class="row">
+      <span class="lbl">Highlights</span>
+      <span class="track"><span class="fill" style="width:38%"></span><span class="knob" style="left:38%"></span></span>
+      <span class="val set">−24</span>
+    </div>
+    <div class="row">
+      <span class="lbl">Sharpness</span>
+      <span class="track"><span class="fill" style="width:42%"></span><span class="knob" style="left:42%"></span></span>
+      <span class="val set">42</span>
+    </div>
+    <div class="row">
+      <span class="lbl">Warmth</span>
+      <span class="track"><span class="fill" style="width:50%"></span><span class="knob" style="left:50%"></span></span>
+      <span class="val">0</span>
+    </div>
+  </div>
+
+  <div class="spacer"></div>
+
+  <div class="tabbar">
+    <div class="tab on">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M7 3v14h14"/><path d="M3 7h14v14"/></svg>
+      <span>Crop</span>
+    </div>
+    <div class="tab">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M5 4v16M12 4v16M19 4v16"/><circle cx="5" cy="9" r="2.2"/><circle cx="12" cy="15" r="2.2"/><circle cx="19" cy="8" r="2.2"/></svg>
+      <span>Adjust</span>
+    </div>
+    <div class="tab">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><rect x="3" y="7" width="18" height="10" rx="1.5"/><path d="M8 7v10M16 7v10"/></svg>
+      <span>Trim</span>
+    </div>
+    <div class="tab">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M12 16V4"/><path d="M8 8l4-4 4 4"/><path d="M4 16v4h16v-4"/></svg>
+      <span>Export</span>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vela Health Playlists</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 32px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #e9edec;
+      color: #172321;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #ffffff;
+      border: 1px solid #d8dfdd;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 17px 20px 13px;
+      border-bottom: 1px solid #e2e7e6;
+    }
+
+    .topbar h1 {
+      margin: 0;
+      font-size: 27px;
+      line-height: 34px;
+      letter-spacing: -0.5px;
+      font-weight: 700;
+    }
+
+    .new-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 12px;
+      border: 1px solid #b9d8d4;
+      border-radius: 14px;
+      background: #ffffff;
+      color: #087d73;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 600;
+    }
+
+    .new-button svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    main {
+      flex: 1;
+      min-height: 0;
+      padding: 16px 20px 0;
+    }
+
+    .playlist-card {
+      padding: 16px;
+      border: 1px solid #a9d4cf;
+      border-radius: 14px;
+      background: #eff9f7;
+    }
+
+    .eyebrow {
+      margin: 0 0 5px;
+      color: #087d73;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 700;
+      letter-spacing: 0.7px;
+      text-transform: uppercase;
+    }
+
+    .playlist-card h2 {
+      margin: 0;
+      color: #132824;
+      font-size: 22px;
+      line-height: 28px;
+      font-weight: 700;
+      letter-spacing: -0.25px;
+    }
+
+    .playlist-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-top: 12px;
+    }
+
+    .playlist-meta {
+      min-width: 0;
+    }
+
+    .playlist-meta p {
+      margin: 0;
+      color: #526461;
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .playlist-meta p:first-child {
+      color: #253b37;
+      font-weight: 600;
+    }
+
+    .play-all {
+      flex: 0 0 auto;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 9px 13px;
+      border: 1px solid #087d73;
+      border-radius: 14px;
+      background: #087d73;
+      color: #ffffff;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 700;
+    }
+
+    .play-all svg {
+      width: 16px;
+      height: 16px;
+      fill: currentColor;
+    }
+
+    .section-heading {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin: 18px 0 4px;
+    }
+
+    .section-heading h3 {
+      margin: 0;
+      font-size: 18px;
+      line-height: 25px;
+      font-weight: 700;
+    }
+
+    .section-heading span {
+      color: #687774;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 400;
+    }
+
+    .track-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      border-top: 1px solid #e2e7e6;
+    }
+
+    .track {
+      display: grid;
+      grid-template-columns: 28px minmax(0, 1fr) auto;
+      align-items: center;
+      column-gap: 10px;
+      padding: 9px 0;
+      border-bottom: 1px solid #e2e7e6;
+    }
+
+    .track-number {
+      color: #7a8885;
+      font-size: 14px;
+      line-height: 20px;
+      text-align: center;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .track-copy {
+      min-width: 0;
+    }
+
+    .track-title {
+      margin: 0;
+      overflow: hidden;
+      color: #1a2926;
+      font-size: 15px;
+      line-height: 20px;
+      font-weight: 600;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .track-detail {
+      margin: 1px 0 0;
+      overflow: hidden;
+      color: #6b7976;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 400;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .track-time {
+      padding-left: 6px;
+      color: #596966;
+      font-size: 13px;
+      line-height: 18px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .tabbar {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      padding: 9px 10px 11px;
+      border-top: 1px solid #dce3e1;
+      background: #ffffff;
+    }
+
+    .tab {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      border: 0;
+      background: transparent;
+      color: #74817f;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 600;
+    }
+
+    .tab svg {
+      width: 22px;
+      height: 22px;
+      fill: none;
+      stroke: currentColor;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-width: 1.8;
+    }
+
+    .tab.active {
+      color: #087d73;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <h1>Playlists</h1>
+      <button class="new-button" type="button" aria-label="Create a new playlist">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        New
+      </button>
+    </header>
+
+    <main>
+      <section class="playlist-card" aria-labelledby="selected-playlist">
+        <p class="eyebrow">Selected playlist</p>
+        <h2 id="selected-playlist">Joint-Friendly Strength</h2>
+        <div class="playlist-footer">
+          <div class="playlist-meta">
+            <p>8 tracks · 42 minutes</p>
+            <p>Low-impact full-body training</p>
+          </div>
+          <button class="play-all" type="button">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M8 5.8v12.4c0 .8.9 1.3 1.6.8l9-6.2c.6-.4.6-1.2 0-1.6l-9-6.2C8.9 4.5 8 5 8 5.8Z"/>
+            </svg>
+            Play all
+          </button>
+        </div>
+      </section>
+
+      <section aria-labelledby="tracks-heading">
+        <div class="section-heading">
+          <h3 id="tracks-heading">Tracks</h3>
+          <span>42 min total</span>
+        </div>
+
+        <ol class="track-list">
+          <li class="track">
+            <span class="track-number">1</span>
+            <div class="track-copy">
+              <p class="track-title">Warm-Up Mobility</p>
+              <p class="track-detail">Mira Cole · Mobility</p>
+            </div>
+            <span class="track-time">4:12</span>
+          </li>
+          <li class="track">
+            <span class="track-number">2</span>
+            <div class="track-copy">
+              <p class="track-title">Supported Squat Flow</p>
+              <p class="track-detail">Evan Hale · Lower body</p>
+            </div>
+            <span class="track-time">5:26</span>
+          </li>
+          <li class="track">
+            <span class="track-number">3</span>
+            <div class="track-copy">
+              <p class="track-title">Standing Core Control</p>
+              <p class="track-detail">Mira Cole · Core</p>
+            </div>
+            <span class="track-time">4:48</span>
+          </li>
+          <li class="track">
+            <span class="track-number">4</span>
+            <div class="track-copy">
+              <p class="track-title">Upper-Body Endurance</p>
+              <p class="track-detail">Noah Brenner · Strength</p>
+            </div>
+            <span class="track-time">6:05</span>
+          </li>
+          <li class="track">
+            <span class="track-number">5</span>
+            <div class="track-copy">
+              <p class="track-title">Glute Stability Set</p>
+              <p class="track-detail">Evan Hale · Lower body</p>
+            </div>
+            <span class="track-time">5:34</span>
+          </li>
+          <li class="track">
+            <span class="track-number">6</span>
+            <div class="track-copy">
+              <p class="track-title">Balance and Reach</p>
+              <p class="track-detail">Tessa Ward · Balance</p>
+            </div>
+            <span class="track-time">4:37</span>
+          </li>
+          <li class="track">
+            <span class="track-number">7</span>
+            <div class="track-copy">
+              <p class="track-title">Slow Strength Finisher</p>
+              <p class="track-detail">Noah Brenner · Full body</p>
+            </div>
+            <span class="track-time">6:14</span>
+          </li>
+          <li class="track">
+            <span class="track-number">8</span>
+            <div class="track-copy">
+              <p class="track-title">Recovery Stretch</p>
+              <p class="track-detail">Tessa Ward · Cooldown</p>
+            </div>
+            <span class="track-time">5:19</span>
+          </li>
+        </ol>
+      </section>
+    </main>
+
+    <nav class="tabbar" aria-label="Primary navigation">
+      <button class="tab" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M4 10.5 12 4l8 6.5V20H4Z"/>
+          <path d="M9.5 20v-6h5v6"/>
+        </svg>
+        <span>Today</span>
+      </button>
+      <button class="tab" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <rect x="4" y="4" width="16" height="16" rx="3"/>
+          <path d="M8 9h8M8 13h8M8 17h5"/>
+        </svg>
+        <span>Programs</span>
+      </button>
+      <button class="tab active" type="button" aria-current="page">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M5 6h10M5 12h10M5 18h7"/>
+          <path d="M18 10v8M18 18l3-2"/>
+        </svg>
+        <span>Playlists</span>
+      </button>
+      <button class="tab" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="8" r="3.5"/>
+          <path d="M5.5 20c.6-4 2.8-6 6.5-6s5.9 2 6.5 6"/>
+        </svg>
+        <span>Profile</span>
+      </button>
+    </nav>
+  </div>
+</body>
+</html>

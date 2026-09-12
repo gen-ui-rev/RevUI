@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Choose your draw time — Northline Diagnostics</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 40px 0;
+    margin: 0;
+    background: #ebebe9;
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .screen {
+    width: 390px;
+    height: 560px;
+    padding: 20px 0;
+    background: #ebebe9;
+  }
+  .card {
+    width: 342px;
+    margin: 0 auto;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(28, 25, 23, 0.08);
+    padding: 18px;
+  }
+
+  .head {
+    margin: -18px -18px 0;
+    padding: 12px 18px;
+    background: #fdf4e3;
+    border-radius: 12px 12px 0 0;
+    border-bottom: 1px solid #f6e7c6;
+  }
+  .head-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  .lab-name {
+    font-size: 15px;
+    line-height: 19px;
+    font-weight: 700;
+    color: #1c1917;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .order {
+    font-size: 10.5px;
+    line-height: 19px;
+    font-weight: 600;
+    color: #8a5b0b;
+    white-space: nowrap;
+  }
+  .lab-meta {
+    font-size: 11.5px;
+    line-height: 14px;
+    color: #7a6a4d;
+    margin-top: 3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  h1 {
+    font-size: 16px;
+    line-height: 20px;
+    font-weight: 700;
+    color: #1c1917;
+    margin: 14px 0 0;
+    letter-spacing: -0.2px;
+  }
+
+  .monthbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 12px;
+  }
+  .month {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: #57534e;
+  }
+  .navs { display: flex; gap: 6px; }
+  .nav {
+    width: 26px;
+    height: 26px;
+    border-radius: 9px;
+    border: 1px solid #e7e5e4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #57534e;
+  }
+
+  .days {
+    display: flex;
+    gap: 4px;
+    margin-top: 10px;
+  }
+  .day {
+    flex: 1 1 0;
+    min-width: 0;
+    border-radius: 9px;
+    border: 1px solid #eae8e6;
+    overflow: hidden;
+    text-align: center;
+    background: #ffffff;
+  }
+  .dtop { padding: 6px 0 5px; }
+  .dow {
+    font-size: 10px;
+    line-height: 12px;
+    color: #8a8480;
+    font-weight: 500;
+  }
+  .dnum {
+    font-size: 14px;
+    line-height: 17px;
+    font-weight: 700;
+    color: #292524;
+  }
+  .cnt {
+    border-top: 1px solid #eae8e6;
+    background: #f6f5f3;
+    padding: 3px 0;
+    font-size: 9px;
+    line-height: 11px;
+    font-weight: 700;
+    color: #0f766e;
+    white-space: nowrap;
+  }
+  .day.on { border-color: #f59e0b; }
+  .day.on .dtop { background: #f59e0b; }
+  .day.on .dow { color: #6b3f04; }
+  .day.on .dnum { color: #1c1917; }
+  .day.on .cnt { background: #fde9bf; border-top-color: #f6d795; color: #6b3f04; }
+  .day.off { background: #faf9f8; border-color: #f1efed; }
+  .day.off .dow, .day.off .dnum { color: #c3bfbb; }
+  .day.off .cnt { color: #b8b3ae; background: #f4f3f1; border-top-color: #f1efed; }
+
+  .periods {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 14px;
+  }
+  .phead {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 6px;
+    margin-bottom: 6px;
+  }
+  .pt {
+    font-size: 10px;
+    line-height: 13px;
+    font-weight: 700;
+    letter-spacing: 0.7px;
+    text-transform: uppercase;
+    color: #57534e;
+  }
+  .pc {
+    font-size: 9.5px;
+    line-height: 13px;
+    color: #8a8480;
+    white-space: nowrap;
+  }
+  .tslot {
+    border: 1px solid #e7e5e4;
+    border-left: 3px solid #e7e5e4;
+    border-radius: 8px;
+    padding: 6px 9px;
+    margin-bottom: 6px;
+  }
+  .tslot:last-child { margin-bottom: 0; }
+  .tt {
+    display: block;
+    font-size: 13px;
+    line-height: 17px;
+    font-weight: 600;
+    color: #292524;
+  }
+  .why {
+    display: block;
+    font-size: 9px;
+    line-height: 11px;
+    margin-top: 1px;
+    color: #b0aba6;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .tslot.on {
+    background: #f59e0b;
+    border-color: #f59e0b;
+    border-left-color: #c47d05;
+  }
+  .tslot.on .tt { color: #1c1917; font-weight: 700; }
+  .tslot.dim {
+    background: #faf9f8;
+    border-color: #f1efed;
+    border-left-color: #e4e1de;
+  }
+  .tslot.dim .tt { color: #c3bfbb; font-weight: 500; }
+
+  .note {
+    margin-top: 12px;
+    background: #f7f6f4;
+    border: 1px solid #eeecea;
+    border-radius: 9px;
+    padding: 8px 10px;
+  }
+  .note-t {
+    font-size: 10.5px;
+    line-height: 13px;
+    font-weight: 700;
+    color: #57534e;
+  }
+  .note-b {
+    font-size: 11px;
+    line-height: 14px;
+    color: #8a8480;
+    margin-top: 2px;
+  }
+
+  .cta {
+    margin-top: 12px;
+    background: #f59e0b;
+    border-radius: 10px;
+    text-align: center;
+    padding: 11px 0;
+  }
+  .cta-main {
+    font-size: 15px;
+    line-height: 19px;
+    font-weight: 700;
+    color: #1c1917;
+  }
+  .cta-sub {
+    font-size: 11px;
+    line-height: 14px;
+    color: #6b3f04;
+    margin-top: 3px;
+    font-weight: 600;
+  }
+</style>
+</head>
+<body>
+  <div class="screen">
+    <div class="card">
+      <div class="head">
+        <div class="head-row">
+          <div class="lab-name">Northline Diagnostics</div>
+          <div class="order">Order 4471</div>
+        </div>
+        <div class="lab-meta">Draw station 2 · Fasting lipid panel</div>
+      </div>
+
+      <h1>Choose your draw time</h1>
+
+      <div class="monthbar">
+        <div class="month">Week of March 9, 2026</div>
+        <div class="navs">
+          <div class="nav" aria-label="Previous week">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+          </div>
+          <div class="nav" aria-label="Next week">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="days">
+        <div class="day off"><div class="dtop"><div class="dow">Mon</div><div class="dnum">9</div></div><div class="cnt">Closed</div></div>
+        <div class="day"><div class="dtop"><div class="dow">Tue</div><div class="dnum">10</div></div><div class="cnt">8 open</div></div>
+        <div class="day"><div class="dtop"><div class="dow">Wed</div><div class="dnum">11</div></div><div class="cnt">5 open</div></div>
+        <div class="day on"><div class="dtop"><div class="dow">Thu</div><div class="dnum">12</div></div><div class="cnt">4 open</div></div>
+        <div class="day"><div class="dtop"><div class="dow">Fri</div><div class="dnum">13</div></div><div class="cnt">6 open</div></div>
+        <div class="day off"><div class="dtop"><div class="dow">Sat</div><div class="dnum">14</div></div><div class="cnt">Full</div></div>
+        <div class="day off"><div class="dtop"><div class="dow">Sun</div><div class="dnum">15</div></div><div class="cnt">Closed</div></div>
+      </div>
+
+      <div class="periods">
+        <div class="period">
+          <div class="phead"><div class="pt">Morning</div><div class="pc">2 open</div></div>
+          <div class="tslot"><span class="tt">7:15 AM</span></div>
+          <div class="tslot dim"><span class="tt">8:00 AM</span><span class="why">Booked</span></div>
+          <div class="tslot on"><span class="tt">9:30 AM</span></div>
+        </div>
+        <div class="period">
+          <div class="phead"><div class="pt">Afternoon</div><div class="pc">2 open</div></div>
+          <div class="tslot"><span class="tt">1:00 PM</span></div>
+          <div class="tslot dim"><span class="tt">2:45 PM</span><span class="why">No phlebotomist</span></div>
+          <div class="tslot"><span class="tt">4:15 PM</span></div>
+        </div>
+      </div>
+
+      <div class="note">
+        <div class="note-t">Why some days are dimmed</div>
+        <div class="note-b">Sun &amp; Mon closed · Sat 14 fully booked</div>
+      </div>
+
+      <div class="cta">
+        <div class="cta-main">Confirm Thu, Mar 12 · 9:30 AM</div>
+        <div class="cta-sub">15 min · fast 12 hours before</div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

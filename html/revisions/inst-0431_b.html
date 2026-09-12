@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LumaWell Care Plan Order Approval</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #e8e8ec;
+      color: #252536;
+      font-family: 'Source Sans 3', system-ui, sans-serif;
+    }
+
+    button { font: inherit; }
+
+    .screen {
+      position: relative;
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #fffdf9;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      padding: 12px 14px;
+      color: #ffffff;
+      background: #34345f;
+    }
+
+    .icon-button {
+      width: 36px;
+      height: 36px;
+      padding: 8px;
+      display: grid;
+      place-items: center;
+      border: 0;
+      border-radius: 6px;
+      color: #ffffff;
+      background: rgba(255,255,255,0.12);
+    }
+
+    .topbar-copy {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .brand {
+      margin: 0 0 1px;
+      color: #d9d9ea;
+      font-size: 12px;
+      line-height: 15px;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+    }
+
+    h1, h2 { font-family: 'Playfair Display', Georgia, serif; }
+
+    h1 {
+      margin: 0;
+      color: #ffffff;
+      font-size: 21px;
+      line-height: 25px;
+      font-weight: 700;
+    }
+
+    .account-role {
+      padding: 4px 7px;
+      border-radius: 12px;
+      color: #ffffff;
+      background: rgba(255,255,255,0.13);
+      font-size: 11px;
+      line-height: 15px;
+      font-weight: 600;
+    }
+
+    .context-strip {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 9px 14px;
+      background: #f1eef8;
+      box-shadow: inset 0 -1px 0 #e3deef;
+    }
+
+    .context-icon {
+      width: 31px;
+      height: 31px;
+      flex: 0 0 31px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      color: #ffffff;
+      background: #7771a9;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .context-copy {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .context-title {
+      margin: 0;
+      color: #34345f;
+      font-size: 13px;
+      line-height: 17px;
+      font-weight: 600;
+    }
+
+    .context-detail {
+      margin: 0;
+      color: #706d80;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .verified {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      color: #4f6f5d;
+      font-size: 11px;
+      line-height: 15px;
+      font-weight: 600;
+    }
+
+    main { padding: 12px 14px 9px; }
+
+    .intro { margin-bottom: 9px; }
+
+    .eyebrow {
+      margin: 0 0 2px;
+      color: #7771a9;
+      font-size: 11px;
+      line-height: 15px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .intro h2 {
+      margin: 0 0 2px;
+      color: #303052;
+      font-size: 22px;
+      line-height: 27px;
+      font-weight: 700;
+    }
+
+    .intro p {
+      margin: 0;
+      color: #6d6b78;
+      font-size: 14px;
+      line-height: 19px;
+    }
+
+    .section { margin-top: 9px; }
+
+    .section-heading {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+
+    .section-heading h2 {
+      margin: 0;
+      color: #35354c;
+      font-size: 16px;
+      line-height: 22px;
+      font-weight: 600;
+    }
+
+    .text-action {
+      padding: 0;
+      border: 0;
+      color: #5d5792;
+      background: transparent;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 600;
+    }
+
+    .review-card {
+      border: 1px solid #e2dfeb;
+      border-radius: 7px;
+      background: #ffffff;
+    }
+
+    .fulfillment-row {
+      display: grid;
+      grid-template-columns: 88px 1fr;
+      gap: 9px;
+      padding: 7px 10px;
+    }
+
+    .fulfillment-row + .fulfillment-row {
+      box-shadow: inset 0 1px 0 #ebe8f0;
+    }
+
+    .row-label {
+      color: #767381;
+      font-size: 12px;
+      line-height: 17px;
+    }
+
+    .row-value {
+      min-width: 0;
+      color: #3a3948;
+      font-size: 13px;
+      line-height: 17px;
+      font-weight: 600;
+    }
+
+    .row-value small {
+      display: block;
+      color: #777481;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 400;
+    }
+
+    .funding-card {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 10px;
+      border: 1px solid #e2dfeb;
+      border-radius: 7px;
+      background: #ffffff;
+    }
+
+    .funding-icon {
+      width: 35px;
+      height: 32px;
+      flex: 0 0 35px;
+      display: grid;
+      place-items: center;
+      border-radius: 6px;
+      color: #5d5792;
+      background: #efedf6;
+    }
+
+    .funding-copy {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .funding-title {
+      margin: 0;
+      font-size: 14px;
+      line-height: 18px;
+      font-weight: 600;
+    }
+
+    .funding-detail {
+      margin: 1px 0 0;
+      color: #74717e;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .charge {
+      color: #34334a;
+      font-size: 14px;
+      line-height: 19px;
+      font-weight: 600;
+    }
+
+    .items-card {
+      padding: 7px;
+      border: 1px solid #e2dfeb;
+      border-radius: 7px;
+      background: #ffffff;
+    }
+
+    .product-row {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      min-width: 0;
+    }
+
+    .product-row + .product-row { margin-top: 6px; }
+
+    .product-photo {
+      width: 46px;
+      height: 46px;
+      flex: 0 0 46px;
+      display: block;
+      object-fit: cover;
+      border-radius: 6px;
+      background: #d8d9e3;
+    }
+
+    .product-copy {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .product-name {
+      margin: 0;
+      overflow: hidden;
+      color: #343341;
+      font-size: 14px;
+      line-height: 18px;
+      font-weight: 600;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .product-meta {
+      margin: 1px 0 0;
+      color: #777481;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .product-price {
+      flex: 0 0 auto;
+      color: #343341;
+      font-size: 14px;
+      line-height: 19px;
+      font-weight: 600;
+    }
+
+    .approval-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      margin-top: 7px;
+      padding: 8px 10px;
+      border-radius: 7px;
+      color: #535061;
+      background: #f1eef8;
+      font-size: 12px;
+      line-height: 17px;
+    }
+
+    .approval-mark {
+      width: 17px;
+      height: 17px;
+      flex: 0 0 17px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      color: #ffffff;
+      background: #5f7e6c;
+    }
+
+    .approval-row strong {
+      display: block;
+      color: #393750;
+      font-weight: 600;
+    }
+
+    .totals {
+      margin-top: 7px;
+      padding: 7px 10px;
+      border: 1px solid #e6e2ec;
+      border-radius: 7px;
+      background: #faf9fc;
+    }
+
+    .total-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      color: #615e6c;
+      font-size: 13px;
+      line-height: 18px;
+    }
+
+    .total-row.final {
+      margin-top: 3px;
+      padding-top: 4px;
+      color: #30304c;
+      box-shadow: inset 0 1px 0 #e2deea;
+      font-size: 15px;
+      line-height: 20px;
+      font-weight: 600;
+    }
+
+    .checkout-bar {
+      margin-top: auto;
+      padding: 10px 14px 12px;
+      background: #efedf6;
+    }
+
+    .checkout-content {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .due { min-width: 91px; }
+
+    .due-label {
+      margin: 0;
+      color: #6f6b7c;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .due-value {
+      margin: 0;
+      color: #303052;
+      font-size: 19px;
+      line-height: 24px;
+      font-weight: 600;
+    }
+
+    .approve-order {
+      min-height: 46px;
+      flex: 1;
+      border: 0;
+      border-radius: 6px;
+      color: #ffffff;
+      background: #4d4a7f;
+      font-size: 15px;
+      line-height: 20px;
+      font-weight: 600;
+    }
+
+    .terms {
+      margin: 6px 0 0;
+      color: #6d697a;
+      text-align: center;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    svg { display: block; }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <button class="icon-button" type="button" aria-label="Go back">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+          <path d="M12.75 4.5L7.25 10L12.75 15.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <div class="topbar-copy">
+        <p class="brand">LumaWell Family Care</p>
+        <h1>Order approval</h1>
+      </div>
+      <span class="account-role">Caregiver</span>
+    </header>
+
+    <div class="context-strip">
+      <div class="context-icon" aria-hidden="true">EH</div>
+      <div class="context-copy">
+        <p class="context-title">Ordering for Evelyn Hale</p>
+        <p class="context-detail">Care profile LW-2048 · Morgan manages orders</p>
+      </div>
+      <div class="verified">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <circle cx="8" cy="8" r="6.25" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M5 8.1L7 10L11.2 5.9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Verified
+      </div>
+    </div>
+
+    <main>
+      <section class="intro">
+        <p class="eyebrow">Final caregiver review</p>
+        <h2>Approve this care order</h2>
+        <p>Check fulfillment and charges before authorizing.</p>
+      </section>
+
+      <section class="section" aria-labelledby="fulfillment-heading">
+        <div class="section-heading">
+          <h2 id="fulfillment-heading">Fulfillment</h2>
+          <button class="text-action" type="button">Update</button>
+        </div>
+        <div class="review-card">
+          <div class="fulfillment-row">
+            <span class="row-label">Deliver to</span>
+            <span class="row-value">Evelyn Hale<small>1842 Willow Park Drive, Apt 5B</small></span>
+          </div>
+          <div class="fulfillment-row">
+            <span class="row-label">Arrival</span>
+            <span class="row-value">May 16–18<small>Standard delivery · Portland, OR 97205</small></span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" aria-labelledby="funding-heading">
+        <div class="section-heading">
+          <h2 id="funding-heading">Charge authorization</h2>
+          <button class="text-action" type="button">Change</button>
+        </div>
+        <div class="funding-card">
+          <div class="funding-icon" aria-hidden="true">
+            <svg width="21" height="17" viewBox="0 0 22 18" fill="none">
+              <rect x="1.25" y="1.25" width="19.5" height="15.5" rx="2" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M1.5 6H20.5" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M5 12.25H9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="funding-copy">
+            <p class="funding-title">Morgan’s Visa · 4826</p>
+            <p class="funding-detail">Personal caregiver payment</p>
+          </div>
+          <span class="charge">$84.32</span>
+        </div>
+      </section>
+
+      <section class="section" aria-labelledby="items-heading">
+        <div class="section-heading">
+          <h2 id="items-heading">Items for Evelyn</h2>
+          <span class="funding-detail">3 items</span>
+        </div>
+        <div class="items-card">
+          <div class="product-row">
+            <img class="product-photo" src="https://loremflickr.com/46/46/fruit?lock=5990" width="46" height="46" alt="Daily greens nutrition blend">
+            <div class="product-copy">
+              <p class="product-name">Daily Greens Blend</p>
+              <p class="product-meta">30 servings · Quantity 1</p>
+            </div>
+            <span class="product-price">$32.00</span>
+          </div>
+          <div class="product-row">
+            <img class="product-photo" src="https://loremflickr.com/46/46/salad?lock=5991" width="46" height="46" alt="Balanced meal planning guide">
+            <div class="product-copy">
+              <p class="product-name">Balanced Meals Guide</p>
+              <p class="product-meta">Printed edition · Quantity 1</p>
+            </div>
+            <span class="product-price">$18.00</span>
+          </div>
+          <div class="product-row">
+            <img class="product-photo" src="https://loremflickr.com/46/46/gym?lock=5992" width="46" height="46" alt="Indigo resistance exercise band">
+            <div class="product-copy">
+              <p class="product-name">Flex Resistance Band</p>
+              <p class="product-meta">Medium strength · Quantity 1</p>
+            </div>
+            <span class="product-price">$24.00</span>
+          </div>
+        </div>
+
+        <div class="approval-row">
+          <span class="approval-mark" aria-hidden="true">
+            <svg width="11" height="11" viewBox="0 0 12 12" fill="none">
+              <path d="M2.5 6L4.8 8.2L9.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          <span><strong>Caregiver authority confirmed</strong>Morgan may purchase and receive updates for Evelyn.</span>
+        </div>
+
+        <div class="totals">
+          <div class="total-row"><span>Items</span><span>$74.00</span></div>
+          <div class="total-row"><span>Delivery</span><span>$4.95</span></div>
+          <div class="total-row"><span>Estimated tax</span><span>$5.37</span></div>
+          <div class="total-row final"><span>Authorized total</span><span>$84.32</span></div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="checkout-bar">
+      <div class="checkout-content">
+        <div class="due">
+          <p class="due-label">Charge today</p>
+          <p class="due-value">$84.32</p>
+        </div>
+        <button class="approve-order" type="button">Approve and order</button>
+      </div>
+      <p class="terms">A receipt and delivery updates will be sent to Morgan.</p>
+    </footer>
+  </div>
+</body>
+</html>

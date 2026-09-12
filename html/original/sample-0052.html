@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit Sleep Schedule</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 36px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #e7ebeb;
+      color: #183033;
+      font-family: 'Source Sans 3', system-ui, sans-serif;
+    }
+
+    button,
+    input,
+    textarea {
+      font: inherit;
+      color: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      padding: 24px 20px;
+      background: #f4f6f6;
+    }
+
+    .editor {
+      width: 100%;
+      background: #ffffff;
+      border: 1px solid #bcc9ca;
+      border-top: 4px solid #10b9cb;
+      border-radius: 0;
+    }
+
+    .editor-header {
+      display: grid;
+      grid-template-columns: 48px 1fr;
+      gap: 14px;
+      align-items: center;
+      padding: 16px;
+      border-bottom: 1px solid #d4dddd;
+    }
+
+    .header-glyph {
+      width: 48px;
+      height: 48px;
+      display: grid;
+      place-items: center;
+      color: #087f8c;
+      background: #e9f9fb;
+      border: 1px solid #9edee5;
+    }
+
+    .header-glyph svg {
+      width: 27px;
+      height: 27px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.7;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    h1 {
+      margin: 0;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 25px;
+      line-height: 1.08;
+      font-weight: 700;
+      color: #102c30;
+    }
+
+    .header-meta {
+      margin: 4px 0 0;
+      color: #617578;
+      font-size: 13px;
+      line-height: 1.3;
+    }
+
+    form {
+      padding: 14px 16px 16px;
+    }
+
+    .field {
+      margin: 0 0 13px;
+    }
+
+    .field-label,
+    legend {
+      display: block;
+      margin: 0 0 6px;
+      padding: 0;
+      color: #304c50;
+      font-size: 13px;
+      line-height: 1.2;
+      font-weight: 600;
+    }
+
+    fieldset {
+      min-width: 0;
+      margin: 0 0 13px;
+      padding: 0;
+      border: 0;
+    }
+
+    .time-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .input-box {
+      width: 100%;
+      padding: 9px 10px;
+      background: #ffffff;
+      border: 1px solid #9fb0b2;
+      border-radius: 0;
+      font-size: 15px;
+      line-height: 1.2;
+      outline: none;
+    }
+
+    .days {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 5px;
+    }
+
+    .day {
+      position: relative;
+    }
+
+    .day input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .day label {
+      display: block;
+      padding: 7px 0;
+      border: 1px solid #9fb0b2;
+      background: #ffffff;
+      color: #52676a;
+      text-align: center;
+      font-size: 13px;
+      line-height: 1;
+      font-weight: 600;
+    }
+
+    .day input:checked + label {
+      border-color: #10aebf;
+      background: #e7f9fb;
+      color: #086f7b;
+    }
+
+    .summary-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 13px;
+      padding: 9px 10px;
+      border: 1px solid #c5d0d1;
+      background: #f7f9f9;
+    }
+
+    .summary-label {
+      color: #536a6d;
+      font-size: 14px;
+    }
+
+    .summary-value {
+      color: #087f8c;
+      font-size: 15px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .reminder-row {
+      display: grid;
+      grid-template-columns: 1fr 92px;
+      gap: 10px;
+      align-items: end;
+      margin-bottom: 13px;
+    }
+
+    .reminder-copy {
+      margin: 0 0 2px;
+      color: #607477;
+      font-size: 12px;
+      line-height: 1.25;
+    }
+
+    textarea.input-box {
+      display: block;
+      min-height: 54px;
+      resize: none;
+      line-height: 1.35;
+    }
+
+    .actions {
+      display: grid;
+      grid-template-columns: 1fr 1.55fr;
+      gap: 9px;
+      margin-top: 15px;
+      padding-top: 14px;
+      border-top: 1px solid #d4dddd;
+    }
+
+    .button {
+      padding: 10px 12px;
+      border-radius: 0;
+      font-size: 15px;
+      line-height: 1.2;
+      font-weight: 600;
+      cursor: default;
+    }
+
+    .button-secondary {
+      border: 1px solid #9fb0b2;
+      background: #ffffff;
+      color: #344f53;
+    }
+
+    .button-primary {
+      border: 1px solid #079aaa;
+      background: #10b9cb;
+      color: #062f34;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <section class="editor" aria-labelledby="edit-title">
+      <header class="editor-header">
+        <div class="header-glyph" aria-hidden="true">
+          <svg viewBox="0 0 32 32">
+            <path d="M20.5 5.5a11 11 0 1 0 6 18.8A12 12 0 0 1 20.5 5.5Z"></path>
+            <path d="M8.5 23.5h7"></path>
+            <path d="M12 20v7"></path>
+          </svg>
+        </div>
+        <div>
+          <h1 id="edit-title">Edit sleep schedule</h1>
+          <p class="header-meta">Current schedule · Updated May 12, 2025</p>
+        </div>
+      </header>
+
+      <form>
+        <div class="time-grid field">
+          <label>
+            <span class="field-label">Bedtime</span>
+            <input class="input-box" type="text" value="10:45 PM" aria-label="Bedtime">
+          </label>
+          <label>
+            <span class="field-label">Wake time</span>
+            <input class="input-box" type="text" value="6:30 AM" aria-label="Wake time">
+          </label>
+        </div>
+
+        <fieldset>
+          <legend>Repeat on</legend>
+          <div class="days">
+            <div class="day"><input id="mon" type="checkbox" checked><label for="mon">Mon</label></div>
+            <div class="day"><input id="tue" type="checkbox" checked><label for="tue">Tue</label></div>
+            <div class="day"><input id="wed" type="checkbox" checked><label for="wed">Wed</label></div>
+            <div class="day"><input id="thu" type="checkbox" checked><label for="thu">Thu</label></div>
+            <div class="day"><input id="fri" type="checkbox" checked><label for="fri">Fri</label></div>
+            <div class="day"><input id="sat" type="checkbox"><label for="sat">Sat</label></div>
+            <div class="day"><input id="sun" type="checkbox"><label for="sun">Sun</label></div>
+          </div>
+        </fieldset>
+
+        <div class="summary-row">
+          <span class="summary-label">Scheduled sleep</span>
+          <span class="summary-value">7 hr 45 min</span>
+        </div>
+
+        <div class="reminder-row">
+          <div>
+            <label class="field-label" for="reminder">Wind-down reminder</label>
+            <p class="reminder-copy">Sent before scheduled bedtime</p>
+          </div>
+          <select class="input-box" id="reminder" aria-label="Wind-down reminder">
+            <option selected>30 min</option>
+            <option>45 min</option>
+            <option>60 min</option>
+          </select>
+        </div>
+
+        <label class="field">
+          <span class="field-label">Schedule note</span>
+          <textarea class="input-box" aria-label="Schedule note">Keep the room cool and stop caffeine after 2:00 PM.</textarea>
+        </label>
+
+        <div class="actions">
+          <button class="button button-secondary" type="button">Cancel</button>
+          <button class="button button-primary" type="submit">Save changes</button>
+        </div>
+      </form>
+    </section>
+  </div>
+</body>
+</html>

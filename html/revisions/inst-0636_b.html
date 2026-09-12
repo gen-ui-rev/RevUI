@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>CareRelay — Visit recording upload</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 40px 0;
+    margin: 0;
+    background: #e8e6ed;
+    font-family: 'Nunito Sans', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .screen {
+    width: 1024px;
+    height: 768px;
+    background: #f7f6fa;
+    position: relative;
+    color: #1b1922;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border-radius: 6px;
+    box-shadow: 0 18px 40px rgba(27,25,34,0.14);
+  }
+
+  /* ---------- top bar ---------- */
+  .topbar {
+    display: flex;
+    align-items: center;
+    gap: 26px;
+    padding: 0 30px;
+    height: 62px;
+    background: #ffffff;
+    border-bottom: 1px solid #e7e5ee;
+    flex: none;
+  }
+  .brand { display: flex; align-items: center; gap: 10px; }
+  .logo {
+    width: 32px; height: 32px; border-radius: 9px;
+    background: #6d3ce0; color: #fff;
+    font-size: 13px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .brand .bn { font-size: 15px; font-weight: 700; letter-spacing: -0.2px; }
+  .topnav { display: flex; gap: 22px; }
+  .topnav span { font-size: 14px; color: #6b6775; padding: 6px 0; }
+  .topnav span.on { color: #4c22ab; font-weight: 700; box-shadow: inset 0 -2px 0 #6d3ce0; }
+  .topright { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+  .badge {
+    font-size: 12px; font-weight: 700;
+    color: #2c6a52; background: rgba(44,106,82,0.12);
+    border-radius: 20px; padding: 6px 12px;
+  }
+  .mono {
+    width: 32px; height: 32px; border-radius: 9px;
+    background: rgba(109,60,224,0.22); color: #4c22ab;
+    font-size: 12px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .whoami { font-size: 13px; }
+  .whoami b { display: block; font-size: 13px; }
+  .whoami span { color: #8a8695; font-size: 12px; }
+
+  /* ---------- body ---------- */
+  .page { flex: 1; padding: 20px 30px; overflow: hidden; }
+
+  .pagehead { display: flex; align-items: flex-start; gap: 16px; }
+  .back {
+    width: 34px; height: 34px; flex: none;
+    border: 1px solid #ddd9e6; border-radius: 9px; background: #fff;
+    display: flex; align-items: center; justify-content: center;
+    color: #4c4857; margin-top: 4px;
+  }
+  .pagehead h1 { font-size: 21px; font-weight: 700; margin: 0; letter-spacing: -0.3px; }
+  .kicker {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.9px;
+    text-transform: uppercase; color: #6d3ce0; margin: 0 0 5px;
+  }
+  .patline { font-size: 13px; color: #5f5b6b; margin-top: 5px; }
+  .acts { margin-left: auto; display: flex; gap: 10px; margin-top: 4px; }
+  .btn {
+    font-size: 13px; font-weight: 700;
+    border: 1px solid #ddd9e6; border-radius: 9px; background: #fff;
+    padding: 9px 16px; color: #4c4857;
+  }
+  .btn.warn { color: #4c22ab; border-color: rgba(76,34,171,0.3); background: rgba(109,60,224,0.08); }
+
+  /* summary strip */
+  .strip {
+    margin-top: 16px;
+    background: #fff;
+    border: 1px solid #e7e5ee;
+    border-radius: 12px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+  }
+  .cell { padding: 14px 20px; border-right: 1px solid #eeecf3; }
+  .cell:last-child { border-right: none; }
+  .ck { font-size: 11px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; color: #8a8695; }
+  .cv { font-size: 17px; font-weight: 700; margin-top: 5px; letter-spacing: -0.2px; }
+  .cs { font-size: 12px; color: #8a8695; margin-top: 3px; }
+  .track { height: 8px; border-radius: 8px; background: rgba(109,60,224,0.18); overflow: hidden; margin-top: 9px; }
+  .fill { width: 68%; height: 100%; background: #6d3ce0; border-radius: 8px; }
+
+  /* pipeline */
+  .sechead { display: flex; align-items: baseline; justify-content: space-between; margin: 20px 0 10px; }
+  .sechead h3 {
+    font-size: 12px; font-weight: 700; letter-spacing: 0.9px;
+    text-transform: uppercase; color: #6b6775; margin: 0;
+  }
+  .sechead .hint { font-size: 12px; color: #8a8695; }
+
+  .pipeline { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  .stage {
+    background: #fff;
+    border: 1px solid #e7e5ee;
+    border-radius: 12px;
+    padding: 14px 16px 16px;
+  }
+  .stage.live { border-color: #6d3ce0; box-shadow: 0 0 0 3px rgba(109,60,224,0.12); }
+  .stage.done { background: #fbfdfc; border-color: #d3e5dd; }
+  .srow { display: flex; align-items: center; gap: 9px; }
+  .num {
+    width: 24px; height: 24px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700;
+    border: 1px solid #ddd9e6; color: #8a8695; background: #fff; flex: none;
+  }
+  .num.done { background: #2c6a52; border-color: #2c6a52; color: #fff; }
+  .num.live { background: #6d3ce0; border-color: #6d3ce0; color: #fff; }
+  .stg { font-size: 11px; font-weight: 700; letter-spacing: 0.7px; text-transform: uppercase; color: #8a8695; }
+  .stg.live { color: #6d3ce0; }
+  .stg.ok { color: #2c6a52; }
+  .fname {
+    font-size: 14px; font-weight: 700; margin-top: 11px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .fsub { font-size: 12px; color: #8a8695; margin-top: 3px; }
+  .track2 { height: 6px; border-radius: 6px; background: #ece9f4; overflow: hidden; margin-top: 11px; }
+  .f2 { height: 100%; border-radius: 6px; background: #6d3ce0; }
+  .f2.ok { background: #2c6a52; }
+  .prow { display: flex; justify-content: space-between; align-items: baseline; margin-top: 7px; }
+  .prow .p { font-size: 12px; font-weight: 700; }
+  .prow .q { font-size: 12px; color: #8a8695; }
+
+  /* log */
+  .logwrap { background: #fff; border: 1px solid #e7e5ee; border-radius: 12px; padding: 6px 20px; }
+  .logrow { display: flex; align-items: center; gap: 14px; padding: 11px 0; border-bottom: 1px solid #f2f1f5; }
+  .logrow:last-child { border-bottom: none; }
+  .time { font-size: 12px; color: #8a8695; width: 62px; flex: none; }
+  .what { font-size: 13px; flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .tag { font-size: 11px; font-weight: 700; border-radius: 20px; padding: 3px 10px; flex: none; }
+  .tag.ok { color: #2c6a52; background: rgba(44,106,82,0.12); }
+  .tag.live { color: #4c22ab; background: rgba(109,60,224,0.13); }
+  .tag.idle { color: #6b6775; background: #f1f0f5; }
+  .note { margin: 12px 0 0; font-size: 12px; line-height: 1.5; color: #8a8695; }
+</style>
+</head>
+<body>
+  <div class="screen">
+
+    <div class="topbar">
+      <div class="brand">
+        <div class="logo">CR</div>
+        <div class="bn">CareRelay</div>
+      </div>
+      <div class="topnav">
+        <span>Patients</span>
+        <span>Visit schedule</span>
+        <span>Recordings</span>
+        <span class="on">Transfers</span>
+        <span>Chart history</span>
+      </div>
+      <div class="topright">
+        <span class="badge">End-to-end encrypted</span>
+        <div class="mono">DW</div>
+        <div class="whoami"><b>Dana Whitfield</b><span>RN · Field team 2</span></div>
+      </div>
+    </div>
+
+    <div class="page">
+
+      <div class="pagehead">
+        <div class="back">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
+        </div>
+        <div>
+          <p class="kicker">Sending now · step 2 of 4</p>
+          <h1>Home visit recording upload</h1>
+          <div class="patline">Rafael Ortiz · MRN 88-4127 · Visit 4812, Mar 14 12:15 PM · to Mercy EHR chart intake, Dr. Marisol Vega</div>
+        </div>
+        <div class="acts">
+          <span class="btn">Pause queue</span>
+          <span class="btn warn">Cancel transfer</span>
+        </div>
+      </div>
+
+      <div class="strip">
+        <div class="cell">
+          <div class="ck">Overall progress</div>
+          <div class="cv">68%</div>
+          <div class="track"><div class="fill"></div></div>
+        </div>
+        <div class="cell">
+          <div class="ck">Current file</div>
+          <div class="cv">32.8 / 48.2 MB</div>
+          <div class="cs">visit4812-audio.m4a</div>
+        </div>
+        <div class="cell">
+          <div class="ck">Time remaining</div>
+          <div class="cv">40 seconds</div>
+          <div class="cs">2 files still queued</div>
+        </div>
+        <div class="cell">
+          <div class="ck">Delivered</div>
+          <div class="cv">1 of 4</div>
+          <div class="cs">Last confirmed 1:12 PM</div>
+        </div>
+      </div>
+
+      <div class="sechead">
+        <h3>Sending order</h3>
+        <span class="hint">Files are sent one at a time, left to right</span>
+      </div>
+
+      <div class="pipeline">
+        <div class="stage done">
+          <div class="srow"><div class="num done">1</div><div class="stg ok">Delivered</div></div>
+          <div class="fname">visit-summary.pdf</div>
+          <div class="fsub">380 KB · narrative note</div>
+          <div class="track2"><div class="f2 ok" style="width:100%"></div></div>
+          <div class="prow"><span class="p">100%</span><span class="q">1:12 PM</span></div>
+        </div>
+        <div class="stage live">
+          <div class="srow"><div class="num live">2</div><div class="stg live">Uploading</div></div>
+          <div class="fname">visit4812-audio.m4a</div>
+          <div class="fsub">48.2 MB · 32.8 MB sent</div>
+          <div class="track2"><div class="f2" style="width:68%"></div></div>
+          <div class="prow"><span class="p">68%</span><span class="q">40 s left</span></div>
+        </div>
+        <div class="stage">
+          <div class="srow"><div class="num">3</div><div class="stg">Queued next</div></div>
+          <div class="fname">vitals-log.csv</div>
+          <div class="fsub">24 KB · BP, pulse, SpO₂</div>
+          <div class="track2"><div class="f2" style="width:0%"></div></div>
+          <div class="prow"><span class="p">0%</span><span class="q">starts after step 2</span></div>
+        </div>
+        <div class="stage">
+          <div class="srow"><div class="num">4</div><div class="stg">Queued last</div></div>
+          <div class="fname">consent-form.pdf</div>
+          <div class="fsub">1.8 MB · signed at visit</div>
+          <div class="track2"><div class="f2" style="width:0%"></div></div>
+          <div class="prow"><span class="p">0%</span><span class="q">final item</span></div>
+        </div>
+      </div>
+
+      <div class="sechead">
+        <h3>Transfer log</h3>
+        <span class="hint">Visit 4812 · today</span>
+      </div>
+
+      <div class="logwrap">
+        <div class="logrow">
+          <span class="time">1:09 PM</span>
+          <span class="what">Queue opened — 4 items prepared and encrypted on device</span>
+          <span class="tag ok">Done</span>
+        </div>
+        <div class="logrow">
+          <span class="time">1:12 PM</span>
+          <span class="what">Step 1 — visit-summary.pdf attached to chart, receipt confirmed</span>
+          <span class="tag ok">Delivered</span>
+        </div>
+        <div class="logrow">
+          <span class="time">1:13 PM</span>
+          <span class="what">Step 2 — visit4812-audio.m4a transferring at 1.4 MB/s</span>
+          <span class="tag live">In progress</span>
+        </div>
+        <div class="logrow">
+          <span class="time">—</span>
+          <span class="what">Steps 3 and 4 hold until the recording is fully confirmed</span>
+          <span class="tag idle">Waiting</span>
+        </div>
+      </div>
+
+      <p class="note">Keep this window open until all four items reach the chart. Nothing is stored on this workstation after delivery.</p>
+
+    </div>
+  </div>
+</body>
+</html>

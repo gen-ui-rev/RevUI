@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Account Activity</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #e8eae9;
+      color: #1f292b;
+      font-family: 'Roboto', system-ui, sans-serif;
+    }
+
+    .screen {
+      width: 1024px;
+      height: 768px;
+      padding: 30px 36px;
+      background: #f4f6f5;
+      box-shadow: 0 18px 50px rgba(35, 50, 53, 0.12);
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 28px;
+      padding: 19px 22px;
+      background: #24484e;
+      border-radius: 12px 12px 0 0;
+      color: #ffffff;
+    }
+
+    .brand-block {
+      min-width: 0;
+    }
+
+    .eyebrow {
+      margin: 0 0 4px;
+      color: #bdd1d4;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      color: #ffffff;
+      font-size: 27px;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    .header-copy {
+      margin: 5px 0 0;
+      color: #d6e1e3;
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    .date-range {
+      flex: 0 0 auto;
+      padding: 9px 12px;
+      border: 1px solid #5f7b80;
+      border-radius: 7px;
+      background: #31565c;
+      color: #e8f0f1;
+      font-size: 13px;
+      font-weight: 500;
+      line-height: 1.2;
+    }
+
+    .workspace {
+      background: #ffffff;
+      border: 1px solid #d7dedd;
+      border-top: 0;
+      border-radius: 0 0 12px 12px;
+    }
+
+    .controls {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      padding: 12px 18px;
+      border-bottom: 1px solid #dde3e2;
+      background: #fbfcfb;
+    }
+
+    .filters {
+      display: flex;
+      gap: 7px;
+    }
+
+    .filter {
+      padding: 8px 14px;
+      border: 1px solid #d1d9d8;
+      border-radius: 6px;
+      background: #ffffff;
+      color: #596668;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 500;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    .filter.selected {
+      border-color: #54767c;
+      background: #dce9eb;
+      color: #274a50;
+    }
+
+    .view-note {
+      margin: 0;
+      color: #6b7779;
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .view-note strong {
+      color: #3e5053;
+      font-weight: 700;
+    }
+
+    .comparison-board {
+      padding: 20px 18px 18px;
+    }
+
+    .board-heading {
+      display: grid;
+      grid-template-columns: 158px minmax(0, 1fr);
+      gap: 14px;
+      align-items: end;
+      margin-bottom: 10px;
+    }
+
+    .board-heading h2 {
+      margin: 0;
+      color: #344548;
+      font-size: 15px;
+      font-weight: 700;
+      line-height: 1.3;
+    }
+
+    .column-guide {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2px;
+      color: #7a8586;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      line-height: 1.2;
+      text-transform: uppercase;
+    }
+
+    .date-group {
+      display: grid;
+      grid-template-columns: 158px minmax(0, 1fr);
+      gap: 14px;
+      padding: 15px 0;
+      border-top: 1px solid #e0e5e4;
+    }
+
+    .date-summary {
+      padding: 4px 10px 4px 2px;
+      border-right: 2px solid #d6e2e4;
+    }
+
+    .date-label {
+      margin: 0;
+      color: #29474c;
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 1.3;
+    }
+
+    .date-subtitle {
+      margin: 6px 0 0;
+      color: #738082;
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .date-count {
+      display: inline-block;
+      margin-top: 12px;
+      padding: 5px 8px;
+      border-radius: 5px;
+      background: #eef3f3;
+      color: #53696d;
+      font-size: 11px;
+      font-weight: 700;
+      line-height: 1;
+      text-transform: uppercase;
+    }
+
+    .events-row {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      align-items: start;
+    }
+
+    .event {
+      min-width: 0;
+      padding: 13px;
+      border: 1px solid #dce2e1;
+      border-radius: 8px;
+      background: #ffffff;
+      box-shadow: 0 2px 7px rgba(35, 52, 55, 0.04);
+    }
+
+    .event-topline {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .event-time {
+      margin: 0;
+      color: #718082;
+      font-size: 11px;
+      font-weight: 500;
+      line-height: 1.2;
+      white-space: nowrap;
+    }
+
+    .event-type {
+      overflow: hidden;
+      padding: 4px 6px;
+      border-radius: 4px;
+      background: #f0f3f2;
+      color: #657173;
+      font-size: 10px;
+      font-weight: 700;
+      line-height: 1;
+      text-overflow: ellipsis;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .event-title {
+      margin: 0;
+      overflow: hidden;
+      color: #263336;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.35;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .event-detail {
+      margin: 4px 0 0;
+      overflow: hidden;
+      color: #727d7f;
+      font-size: 12px;
+      line-height: 1.35;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .event-value {
+      margin: 15px 0 0;
+      color: #334144;
+      font-size: 15px;
+      font-weight: 700;
+      line-height: 1.3;
+      white-space: nowrap;
+    }
+
+    .event-value.credit {
+      color: #32645c;
+    }
+
+    .group-total {
+      margin: 0;
+      padding: 12px 16px;
+      border-top: 1px solid #dde3e2;
+      background: #f7f9f8;
+      color: #657173;
+      font-size: 12px;
+      line-height: 1.4;
+      text-align: right;
+      border-radius: 0 0 12px 12px;
+    }
+
+    .group-total strong {
+      color: #35494d;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <div class="brand-block">
+        <p class="eyebrow">Northfield Money</p>
+        <h1 id="activity-title">Recent activity</h1>
+        <p class="header-copy">Review changes across your money and account.</p>
+      </div>
+      <div class="date-range" aria-label="Displayed date range">March 11–12</div>
+    </header>
+
+    <main class="workspace" aria-labelledby="activity-title">
+      <div class="controls">
+        <div class="filters" aria-label="Activity filters">
+          <button class="filter selected" type="button">All activity</button>
+          <button class="filter" type="button">Money</button>
+          <button class="filter" type="button">Account</button>
+        </div>
+        <p class="view-note"><strong>Daily lanes</strong> show each date on one row for quick comparison.</p>
+      </div>
+
+      <section class="comparison-board" aria-labelledby="comparison-title">
+        <div class="board-heading">
+          <h2 id="comparison-title">Activity by date</h2>
+          <div class="column-guide" aria-hidden="true">
+            <span>Later</span>
+            <span>Activity timeline</span>
+            <span>Earlier</span>
+          </div>
+        </div>
+
+        <section class="date-group" aria-labelledby="today-label">
+          <div class="date-summary">
+            <h3 class="date-label" id="today-label">Today</h3>
+            <p class="date-subtitle">March 12<br>Most recent first</p>
+            <span class="date-count">3 updates</span>
+          </div>
+
+          <div class="events-row">
+            <article class="event">
+              <div class="event-topline">
+                <p class="event-time">10:42 AM</p>
+                <span class="event-type">Money</span>
+              </div>
+              <p class="event-title">Transfer from checking</p>
+              <p class="event-detail">Added to Reserve savings</p>
+              <p class="event-value credit">+$250.00</p>
+            </article>
+
+            <article class="event">
+              <div class="event-topline">
+                <p class="event-time">9:18 AM</p>
+                <span class="event-type">Investing</span>
+              </div>
+              <p class="event-title">Price alert updated</p>
+              <p class="event-detail">Harbor Index Fund at $84.00</p>
+              <p class="event-value">Investing</p>
+            </article>
+
+            <article class="event">
+              <div class="event-topline">
+                <p class="event-time">8:03 AM</p>
+                <span class="event-type">Account</span>
+              </div>
+              <p class="event-title">Debit card unlocked</p>
+              <p class="event-detail">Everyday card ending in 4821</p>
+              <p class="event-value">Card</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="date-group" aria-labelledby="yesterday-label">
+          <div class="date-summary">
+            <h3 class="date-label" id="yesterday-label">Yesterday</h3>
+            <p class="date-subtitle">March 11<br>Most recent first</p>
+            <span class="date-count">2 updates</span>
+          </div>
+
+          <div class="events-row">
+            <article class="event">
+              <div class="event-topline">
+                <p class="event-time">4:16 PM</p>
+                <span class="event-type">Money</span>
+              </div>
+              <p class="event-title">Direct deposit received</p>
+              <p class="event-detail">Linden Works payroll</p>
+              <p class="event-value credit">+$2,184.62</p>
+            </article>
+
+            <article class="event">
+              <div class="event-topline">
+                <p class="event-time">11:27 AM</p>
+                <span class="event-type">Account</span>
+              </div>
+              <p class="event-title">Contact details changed</p>
+              <p class="event-detail">Mailing address updated</p>
+              <p class="event-value">Profile</p>
+            </article>
+          </div>
+        </section>
+      </section>
+
+      <p class="group-total"><strong>5 total updates</strong> across money, investing, card, and profile activity.</p>
+    </main>
+  </div>
+</body>
+</html>

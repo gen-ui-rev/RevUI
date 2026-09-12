@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Arclight Audio Quiz</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #dcd9e0;
+      color: #25232a;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #f5f4f7;
+      border: 1px solid #cfccd4;
+    }
+
+    .top-bar {
+      min-height: 60px;
+      display: grid;
+      grid-template-columns: 52px 1fr 52px;
+      align-items: center;
+      background: #ffffff;
+      border-bottom: 1px solid #e3e0e7;
+      padding: 0 8px;
+    }
+
+    .top-title {
+      margin: 0;
+      text-align: center;
+      font-size: 16px;
+      line-height: 22px;
+      font-weight: 600;
+      color: #2b2930;
+    }
+
+    .icon-button,
+    .exit-button {
+      min-width: 44px;
+      min-height: 44px;
+      border: 0;
+      background: transparent;
+      color: #3b3841;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .icon-button svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .exit-button {
+      justify-self: end;
+      font-size: 14px;
+      font-weight: 600;
+      color: #5d5863;
+    }
+
+    main {
+      flex: 1;
+      padding: 20px 18px 18px;
+    }
+
+    .quiz-overview {
+      padding: 0 2px;
+    }
+
+    .category {
+      margin: 0;
+      color: #7351b4;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+
+    .quiz-overview h1 {
+      margin: 4px 0 0;
+      font-size: 24px;
+      line-height: 30px;
+      font-weight: 600;
+      color: #242129;
+    }
+
+    .progress-track {
+      height: 6px;
+      margin-top: 16px;
+      background: #ddd9e2;
+      border-radius: 4px;
+    }
+
+    .progress-fill {
+      width: 50%;
+      height: 100%;
+      background: #7652b5;
+      border-radius: 4px;
+    }
+
+    .progress-meta {
+      margin-top: 8px;
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      color: #66616b;
+      font-size: 13px;
+      line-height: 18px;
+    }
+
+    .question-card {
+      margin-top: 18px;
+      padding: 20px;
+      background: #ffffff;
+      border: 1px solid #e6e2e9;
+      border-radius: 4px;
+      box-shadow: 0 4px 14px rgba(40, 34, 48, 0.08);
+    }
+
+    .question-number {
+      margin: 0;
+      color: #7652b5;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 600;
+    }
+
+    .question-card h2 {
+      margin: 8px 0 0;
+      font-size: 24px;
+      line-height: 32px;
+      font-weight: 600;
+      color: #242129;
+    }
+
+    .instruction {
+      margin: 8px 0 0;
+      color: #6b6670;
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .answers {
+      margin-top: 18px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .answer {
+      width: 100%;
+      min-height: 56px;
+      padding: 10px 14px;
+      display: grid;
+      grid-template-columns: 22px 1fr;
+      gap: 12px;
+      align-items: center;
+      border: 1px solid #dcd8e1;
+      border-radius: 4px;
+      background: #ffffff;
+      color: #343039;
+      text-align: left;
+      font-size: 15px;
+      line-height: 20px;
+      cursor: pointer;
+    }
+
+    .answer.selected {
+      border-color: #7652b5;
+      background: #f3effa;
+      color: #332743;
+    }
+
+    .choice-mark {
+      width: 20px;
+      height: 20px;
+      border: 2px solid #aaa4af;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .selected .choice-mark {
+      border-color: #7652b5;
+    }
+
+    .selected .choice-mark::after {
+      content: "";
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #7652b5;
+    }
+
+    .check-button {
+      width: 100%;
+      min-height: 48px;
+      margin-top: 22px;
+      border: 1px solid #7652b5;
+      border-radius: 4px;
+      background: #7652b5;
+      color: #ffffff;
+      font-size: 15px;
+      line-height: 20px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .tab-bar {
+      min-height: 72px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      background: #ffffff;
+      border-top: 1px solid #e2dfe6;
+    }
+
+    .tab {
+      border: 0;
+      background: transparent;
+      color: #77717d;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 500;
+      cursor: pointer;
+    }
+
+    .tab svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .tab.active {
+      color: #7652b5;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="top-bar">
+      <button class="icon-button" type="button" aria-label="Go back">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <p class="top-title">Arclight Audio</p>
+      <button class="exit-button" type="button">Exit</button>
+    </header>
+
+    <main>
+      <section class="quiz-overview" aria-labelledby="quiz-title">
+        <p class="category">Audio Production</p>
+        <h1 id="quiz-title">Mixing Basics</h1>
+        <div class="progress-track" role="progressbar" aria-label="Quiz progress" aria-valuemin="0" aria-valuemax="8" aria-valuenow="4">
+          <div class="progress-fill"></div>
+        </div>
+        <div class="progress-meta">
+          <span>Question 4 of 8</span>
+          <span>3 correct so far</span>
+        </div>
+      </section>
+
+      <section class="question-card" aria-labelledby="question-heading">
+        <p class="question-number">Question 4</p>
+        <h2 id="question-heading">Which production role balances dialogue, music, and sound effects in a podcast’s final mix?</h2>
+        <p class="instruction">Choose one answer.</p>
+
+        <div class="answers" role="radiogroup" aria-label="Answer choices">
+          <button class="answer" type="button" role="radio" aria-checked="false">
+            <span class="choice-mark" aria-hidden="true"></span>
+            <span>Story editor</span>
+          </button>
+          <button class="answer selected" type="button" role="radio" aria-checked="true">
+            <span class="choice-mark" aria-hidden="true"></span>
+            <span>Mix engineer</span>
+          </button>
+          <button class="answer" type="button" role="radio" aria-checked="false">
+            <span class="choice-mark" aria-hidden="true"></span>
+            <span>Booking producer</span>
+          </button>
+          <button class="answer" type="button" role="radio" aria-checked="false">
+            <span class="choice-mark" aria-hidden="true"></span>
+            <span>Transcript reviewer</span>
+          </button>
+        </div>
+
+        <button class="check-button" type="button">Check answer</button>
+      </section>
+    </main>
+
+    <nav class="tab-bar" aria-label="Primary navigation">
+      <button class="tab" type="button">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M4 10.5L12 4L20 10.5V20H14.5V14H9.5V20H4V10.5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+        </svg>
+        <span>Home</span>
+      </button>
+      <button class="tab" type="button">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="1.8"/>
+          <path d="M16 16L20 20" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+        <span>Browse</span>
+      </button>
+      <button class="tab active" type="button" aria-current="page">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <rect x="5" y="4" width="14" height="16" rx="1" stroke="currentColor" stroke-width="1.8"/>
+          <path d="M9 9H15M9 13H13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          <path d="M15.5 16.5L17 18L20 14.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span>Quiz</span>
+      </button>
+      <button class="tab" type="button">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M5 5.5C5 4.67 5.67 4 6.5 4H18V18H7C5.9 18 5 18.9 5 20V5.5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+          <path d="M5 20C5 18.9 5.9 18 7 18H19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+        <span>Library</span>
+      </button>
+    </nav>
+  </div>
+</body>
+</html>

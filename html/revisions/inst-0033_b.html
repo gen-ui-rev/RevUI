@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Bag — Tonewell</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 40px 0;
+    margin: 0;
+    background: #d9d9de;
+    font-family: 'Poppins', system-ui, sans-serif;
+  }
+  .screen {
+    width: 390px;
+    height: 844px;
+    background: #f2f2f5;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    color: #1b1b1f;
+  }
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px 10px;
+    background: #f2f2f5;
+  }
+  .topbar h1 { font-size: 17px; font-weight: 600; margin: 0; letter-spacing: -0.2px; }
+  .iconbtn { width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; color: #1b1b1f; }
+  .edit { font-size: 14px; font-weight: 500; color: #E86217; }
+  .content { padding: 0 16px; }
+  .listlabel {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-size: 13px;
+    color: #6d6d76;
+    padding-bottom: 7px;
+  }
+  .listlabel .sub { font-size: 12px; }
+  .card {
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 1px 3px rgba(20,20,30,0.08);
+  }
+  .item {
+    display: flex;
+    align-items: center;
+    padding: 9px 10px;
+    margin-bottom: 7px;
+  }
+  .art { width: 50px; height: 50px; border-radius: 9px; flex: 0 0 50px; }
+  .a1 { background: #cfd8e6; }
+  .a2 { background: #e3d5c6; }
+  .a3 { background: #d3e0d8; }
+  .a4 { background: #ded0e0; }
+  .itemtext { flex: 1 1 auto; min-width: 0; padding: 0 9px; }
+  .itemtext .t {
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 18px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .itemtext .m {
+    font-size: 11px;
+    color: #7b7b84;
+    line-height: 16px;
+    margin-top: 1px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .itemright {
+    flex: 0 0 77px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 5px;
+  }
+  .price { font-size: 13px; font-weight: 500; }
+  .stepper {
+    display: flex;
+    align-items: center;
+    border: 1px solid #e2e2e8;
+    border-radius: 9px;
+    height: 24px;
+    overflow: hidden;
+  }
+  .stepper span.q { font-size: 12px; font-weight: 500; width: 21px; text-align: center; }
+  .stepper .s {
+    width: 23px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #55555e;
+  }
+  .promo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    margin-top: 1px;
+  }
+  .promo .ptext { flex: 1; font-size: 13px; }
+  .promo .pcode { font-size: 12px; color: #E86217; font-weight: 500; }
+  .summary { padding: 11px 13px 12px; margin-top: 9px; }
+  .summary-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 6px;
+  }
+  .summary h2 { font-size: 14px; font-weight: 600; margin: 0; }
+  .summary-head .saved { font-size: 11px; font-weight: 500; color: #E86217; }
+  .srow {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    font-size: 12px;
+    line-height: 19px;
+    color: #55555e;
+  }
+  .srow .v { color: #1b1b1f; }
+  .srow .disc { color: #E86217; font-weight: 500; }
+  .savings-box {
+    background: #fff4ed;
+    border: 1px solid #f6d8c7;
+    border-radius: 8px;
+    padding: 7px 9px;
+    margin: 5px 0;
+  }
+  .offer {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    font-size: 11px;
+    line-height: 17px;
+  }
+  .offer + .offer {
+    border-top: 1px solid #f3ded1;
+    margin-top: 5px;
+    padding-top: 5px;
+  }
+  .offer-copy { min-width: 0; }
+  .offer-name { color: #34343a; font-weight: 500; }
+  .offer-rule {
+    color: #7b6f68;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .offer-value { color: #E86217; font-weight: 500; white-space: nowrap; }
+  .divider { height: 1px; background: #ececf0; margin: 6px 0 5px; }
+  .total { display: flex; justify-content: space-between; align-items: baseline; }
+  .total .l { font-size: 14px; font-weight: 500; }
+  .total .r { font-size: 18px; font-weight: 600; }
+  .cta {
+    margin-top: 9px;
+    background: #E86217;
+    color: #ffffff;
+    border-radius: 10px;
+    height: 46px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .tabbar {
+    margin-top: auto;
+    display: flex;
+    border-top: 1px solid #e4e4e9;
+    background: #ffffff;
+    padding: 8px 8px 11px;
+  }
+  .tab {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    color: #8a8a93;
+    font-size: 10px;
+  }
+  .tab.on { color: #E86217; font-weight: 500; }
+  .tabicon { position: relative; width: 23px; height: 23px; }
+  .badge {
+    position: absolute;
+    top: -3px;
+    right: -6px;
+    background: #E86217;
+    color: #fff;
+    font-size: 10px;
+    font-weight: 500;
+    min-width: 15px;
+    height: 15px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 4px;
+  }
+</style>
+</head>
+<body>
+<div class="screen">
+  <div class="topbar">
+    <div class="iconbtn">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
+    </div>
+    <h1>Your Bag</h1>
+    <div class="edit">Edit</div>
+  </div>
+
+  <div class="content">
+    <div class="listlabel">
+      <span>4 items</span>
+      <span class="sub">Delivered to your library</span>
+    </div>
+
+    <div class="card item">
+      <div class="art a1"></div>
+      <div class="itemtext">
+        <div class="t">Neon Harbor (Deluxe)</div>
+        <div class="m">Album · Lossless download</div>
+      </div>
+      <div class="itemright">
+        <div class="price">$12.99</div>
+        <div class="stepper">
+          <div class="s"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14"/></svg></div>
+          <span class="q">1</span>
+          <div class="s"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card item">
+      <div class="art a2"></div>
+      <div class="itemtext">
+        <div class="t">The Long Static</div>
+        <div class="m">Documentary · 4K rental, 48 hr</div>
+      </div>
+      <div class="itemright">
+        <div class="price">$6.49</div>
+        <div class="stepper">
+          <div class="s"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14"/></svg></div>
+          <span class="q">1</span>
+          <div class="s"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card item">
+      <div class="art a3"></div>
+      <div class="itemtext">
+        <div class="t">Field Notes: Season 3</div>
+        <div class="m">Podcast · Ad-free bundle</div>
+      </div>
+      <div class="itemright">
+        <div class="price">$19.98</div>
+        <div class="stepper">
+          <div class="s"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14"/></svg></div>
+          <span class="q">2</span>
+          <div class="s"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card item">
+      <div class="art a4"></div>
+      <div class="itemtext">
+        <div class="t">Midnight Orchestra Live</div>
+        <div class="m">Concert film · Purchase</div>
+      </div>
+      <div class="itemright">
+        <div class="price">$18.99</div>
+        <div class="stepper">
+          <div class="s"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14"/></svg></div>
+          <span class="q">1</span>
+          <div class="s"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card promo">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#E86217" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9V6a1 1 0 011-1h16a1 1 0 011 1v3a3 3 0 000 6v3a1 1 0 01-1 1H4a1 1 0 01-1-1v-3a3 3 0 000-6z"/><path d="M14 9v6"/></svg>
+      <div class="ptext">Promo code</div>
+      <div class="pcode">LISTEN10 applied</div>
+    </div>
+
+    <div class="card summary">
+      <div class="summary-head">
+        <h2>Order summary</h2>
+        <span class="saved">You save $5.85</span>
+      </div>
+      <div class="srow"><span>Subtotal</span><span class="v">$58.45</span></div>
+      <div class="srow"><span>Discounts</span><span class="disc">−$5.85</span></div>
+
+      <div class="savings-box">
+        <div class="offer">
+          <div class="offer-copy">
+            <div class="offer-name">Tonewell Plus</div>
+            <div class="offer-rule">10% on albums and podcasts</div>
+          </div>
+          <div class="offer-value">−$3.30</div>
+        </div>
+        <div class="offer">
+          <div class="offer-copy">
+            <div class="offer-name">LISTEN10</div>
+            <div class="offer-rule">Bonus savings on video titles</div>
+          </div>
+          <div class="offer-value">−$2.55</div>
+        </div>
+      </div>
+
+      <div class="srow"><span>Estimated tax</span><span class="v">$4.47</span></div>
+      <div class="divider"></div>
+      <div class="total"><span class="l">Total due</span><span class="r">$57.07</span></div>
+    </div>
+
+    <div class="cta">Continue to checkout</div>
+  </div>
+
+  <div class="tabbar">
+    <div class="tab">
+      <div class="tabicon">
+        <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5L12 4l8 6.5V20a1 1 0 01-1 1H5a1 1 0 01-1-1z"/></svg>
+      </div>
+      Home
+    </div>
+    <div class="tab">
+      <div class="tabicon">
+        <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4 4"/></svg>
+      </div>
+      Search
+    </div>
+    <div class="tab">
+      <div class="tabicon">
+        <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4v16M10 4v16M15.5 5l4 15"/></svg>
+      </div>
+      Library
+    </div>
+    <div class="tab on">
+      <div class="tabicon">
+        <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8h14l-1 12H6z"/><path d="M9 8V6a3 3 0 016 0v2"/></svg>
+        <span class="badge">4</span>
+      </div>
+      Bag
+    </div>
+  </div>
+</div>
+</body>
+</html>

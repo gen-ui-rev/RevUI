@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Filter Local Events — Gatherline</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #e5e8e6;
+      color: #1e2420;
+      font-family: 'Roboto', system-ui, sans-serif;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      color: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #ffffff;
+      border: 1px solid #d9dedb;
+    }
+
+    .topbar {
+      display: grid;
+      grid-template-columns: 40px 1fr auto;
+      align-items: center;
+      gap: 8px;
+      padding: 13px 16px 12px 12px;
+      border-bottom: 1px solid #e2e6e3;
+    }
+
+    .icon-button {
+      width: 40px;
+      height: 32px;
+      padding: 4px;
+      display: grid;
+      place-items: center;
+      border: 0;
+      background: transparent;
+    }
+
+    .icon-button svg {
+      width: 22px;
+      height: 22px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .topbar h1 {
+      margin: 0;
+      font-size: 19px;
+      line-height: 24px;
+      font-weight: 700;
+    }
+
+    .reset-button {
+      padding: 6px 0 6px 10px;
+      border: 0;
+      background: transparent;
+      color: #18864b;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 500;
+    }
+
+    .scope-summary {
+      padding: 11px 16px 12px;
+      border-bottom: 1px solid #e2e6e3;
+      background: #f7faf8;
+    }
+
+    .scope-summary strong {
+      display: block;
+      margin-bottom: 2px;
+      color: #185f39;
+      font-size: 15px;
+      line-height: 20px;
+      font-weight: 500;
+    }
+
+    .scope-summary span {
+      display: block;
+      color: #667069;
+      font-size: 13px;
+      line-height: 18px;
+    }
+
+    .filter-content {
+      width: 100%;
+    }
+
+    .filter-section {
+      border-bottom: 1px solid #e2e6e3;
+    }
+
+    .section-title {
+      margin: 0;
+      padding: 11px 16px 6px;
+      color: #667069;
+      font-size: 12px;
+      line-height: 17px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .choice-row {
+      min-height: 41px;
+      padding: 9px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-top: 1px solid #edf0ee;
+      cursor: default;
+    }
+
+    .choice-row:first-of-type {
+      border-top: 0;
+    }
+
+    .choice-row input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .choice-label {
+      flex: 1;
+      min-width: 0;
+      font-size: 14px;
+      line-height: 21px;
+      font-weight: 400;
+    }
+
+    .control {
+      width: 20px;
+      height: 20px;
+      flex: 0 0 20px;
+      display: grid;
+      place-items: center;
+      border: 1.5px solid #9aa39d;
+      background: #ffffff;
+    }
+
+    .control.checkbox {
+      border-radius: 5px;
+    }
+
+    .control.radio {
+      border-radius: 50%;
+    }
+
+    input:checked + .control {
+      border-color: #1c8b50;
+      background: #1c8b50;
+    }
+
+    .checkbox svg {
+      width: 13px;
+      height: 13px;
+      fill: none;
+      stroke: #ffffff;
+      stroke-width: 2.2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .radio::after {
+      width: 8px;
+      height: 8px;
+      content: "";
+      border-radius: 50%;
+      background: #ffffff;
+    }
+
+    .event-types {
+      padding: 2px 16px 12px;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 6px;
+    }
+
+    .type-chip {
+      min-width: 0;
+      padding: 7px 3px;
+      border: 1px solid #cbd2cd;
+      border-radius: 9px;
+      background: #ffffff;
+      color: #3d4640;
+      font-size: 12px;
+      line-height: 18px;
+      font-weight: 400;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .type-chip.selected {
+      border-color: #1c8b50;
+      background: #edf8f1;
+      color: #176f41;
+      font-weight: 500;
+    }
+
+    .date-choice {
+      margin: 0 16px 5px;
+      padding: 8px 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border: 1px solid #72ad8c;
+      border-radius: 9px;
+      background: #f1faf5;
+      color: #185f39;
+    }
+
+    .date-choice svg {
+      width: 19px;
+      height: 19px;
+      flex: 0 0 19px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.7;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .date-choice span {
+      flex: 1;
+      min-width: 0;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 500;
+    }
+
+    .date-choice small {
+      color: #4e6858;
+      font-size: 12px;
+      line-height: 18px;
+      font-weight: 400;
+    }
+
+    .actionbar {
+      margin-top: auto;
+      padding: 10px 16px 9px;
+      border-top: 1px solid #dfe4e1;
+      background: #ffffff;
+    }
+
+    .apply-button {
+      width: 100%;
+      padding: 13px 16px;
+      border: 1px solid #177743;
+      border-radius: 10px;
+      background: #1c8b50;
+      color: #ffffff;
+      font-size: 16px;
+      line-height: 20px;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .tabbar {
+      padding: 7px 9px 6px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border-top: 1px solid #dfe4e1;
+      background: #ffffff;
+    }
+
+    .tab {
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      border: 0;
+      background: transparent;
+      color: #747d77;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 400;
+    }
+
+    .tab.active {
+      color: #18864b;
+      font-weight: 500;
+    }
+
+    .tab svg {
+      width: 21px;
+      height: 21px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.7;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <button class="icon-button" type="button" aria-label="Go back">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M15.5 5 8.5 12l7 7"></path>
+        </svg>
+      </button>
+      <h1>Filter local events</h1>
+      <button class="reset-button" type="button">Reset</button>
+    </header>
+
+    <div class="scope-summary">
+      <strong>Events near you</strong>
+      <span>Narrow local gatherings by date, type, and host.</span>
+    </div>
+
+    <main class="filter-content">
+      <section class="filter-section" aria-labelledby="host-heading">
+        <h2 class="section-title" id="host-heading">Hosted by</h2>
+
+        <label class="choice-row">
+          <input type="checkbox" checked>
+          <span class="control checkbox">
+            <svg viewBox="0 0 16 16" aria-hidden="true">
+              <path d="m3 8 3 3 7-7"></path>
+            </svg>
+          </span>
+          <span class="choice-label">People you follow</span>
+        </label>
+
+        <label class="choice-row">
+          <input type="checkbox" checked>
+          <span class="control checkbox">
+            <svg viewBox="0 0 16 16" aria-hidden="true">
+              <path d="m3 8 3 3 7-7"></path>
+            </svg>
+          </span>
+          <span class="choice-label">Your circles</span>
+        </label>
+
+        <label class="choice-row">
+          <input type="checkbox">
+          <span class="control checkbox">
+            <svg viewBox="0 0 16 16" aria-hidden="true">
+              <path d="m3 8 3 3 7-7"></path>
+            </svg>
+          </span>
+          <span class="choice-label">Other local organizers</span>
+        </label>
+      </section>
+
+      <section class="filter-section" aria-labelledby="type-heading">
+        <h2 class="section-title" id="type-heading">Event type</h2>
+        <div class="event-types">
+          <button class="type-chip selected" type="button">All</button>
+          <button class="type-chip" type="button">Social</button>
+          <button class="type-chip" type="button">Classes</button>
+          <button class="type-chip" type="button">Outdoor</button>
+        </div>
+      </section>
+
+      <section class="filter-section" aria-labelledby="date-heading">
+        <h2 class="section-title" id="date-heading">Event date</h2>
+
+        <button class="date-choice" type="button" aria-label="Chosen date: Saturday, May 24">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="3.5" y="5.5" width="17" height="15" rx="2"></rect>
+            <path d="M8 3.5v4M16 3.5v4M3.5 10h17"></path>
+          </svg>
+          <span>Sat, May 24</span>
+          <small>Chosen date</small>
+        </button>
+
+        <label class="choice-row">
+          <input type="radio" name="date">
+          <span class="control radio"></span>
+          <span class="choice-label">This weekend</span>
+        </label>
+
+        <label class="choice-row">
+          <input type="radio" name="date">
+          <span class="control radio"></span>
+          <span class="choice-label">Next 30 days</span>
+        </label>
+      </section>
+
+      <section class="filter-section" aria-labelledby="sort-heading">
+        <h2 class="section-title" id="sort-heading">Sort by</h2>
+
+        <label class="choice-row">
+          <input type="radio" name="sort" checked>
+          <span class="control radio"></span>
+          <span class="choice-label">Soonest first</span>
+        </label>
+
+        <label class="choice-row">
+          <input type="radio" name="sort">
+          <span class="control radio"></span>
+          <span class="choice-label">Closest to you</span>
+        </label>
+
+        <label class="choice-row">
+          <input type="radio" name="sort">
+          <span class="control radio"></span>
+          <span class="choice-label">Most popular</span>
+        </label>
+      </section>
+    </main>
+
+    <div class="actionbar">
+      <button class="apply-button" type="button">Show 42 events</button>
+    </div>
+
+    <nav class="tabbar" aria-label="Primary navigation">
+      <button class="tab active" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M4 10.5 12 4l8 6.5"></path>
+          <path d="M6.5 9.5V20h11V9.5"></path>
+        </svg>
+        <span>Home</span>
+      </button>
+
+      <button class="tab" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="9" cy="9" r="3"></circle>
+          <circle cx="16.5" cy="10" r="2.5"></circle>
+          <path d="M3.5 19c.5-3 2.4-4.7 5.5-4.7s5 1.7 5.5 4.7"></path>
+          <path d="M14.5 15.2c2.9-.4 5 .9 5.8 3.8"></path>
+        </svg>
+        <span>Circles</span>
+      </button>
+
+      <button class="tab" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M4 5.5h16v11H9l-5 3v-14Z"></path>
+        </svg>
+        <span>Inbox</span>
+      </button>
+
+      <button class="tab" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="8" r="3.5"></circle>
+          <path d="M5.5 20c.6-4 2.8-6 6.5-6s5.9 2 6.5 6"></path>
+        </svg>
+        <span>Profile</span>
+      </button>
+    </nav>
+  </div>
+</body>
+</html>

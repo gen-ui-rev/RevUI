@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Schedule Tutoring</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 32px 0;
+      background: #e5e7ea;
+      color: #18242d;
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 560px;
+      padding: 16px;
+      background: #eef1f2;
+    }
+
+    .picker {
+      width: 100%;
+      padding: 18px;
+      border: 1px solid #dfe5e6;
+      border-radius: 14px;
+      background: #ffffff;
+      box-shadow: 0 10px 26px rgba(23, 42, 48, 0.08);
+    }
+
+    .eyebrow {
+      margin: 0 0 4px;
+      color: #187366;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 21px;
+      font-weight: 700;
+      line-height: 1.3;
+    }
+
+    .summary {
+      margin: 5px 0 0;
+      color: #67727a;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .student-line {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 9px;
+      padding: 7px 9px;
+      border-radius: 7px;
+      background: #f0f7f5;
+      color: #29443f;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .student-line span:last-child {
+      flex: 0 0 auto;
+      color: #187366;
+      font-weight: 600;
+    }
+
+    .section {
+      margin-top: 14px;
+    }
+
+    .section-heading {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      margin-bottom: 7px;
+    }
+
+    .step {
+      display: grid;
+      width: 18px;
+      height: 18px;
+      flex: 0 0 auto;
+      place-items: center;
+      border-radius: 50%;
+      background: #e7efee;
+      color: #42635e;
+      font-size: 10px;
+      font-weight: 700;
+    }
+
+    .section-heading h2 {
+      margin: 0;
+      color: #2f3d43;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .duration-options {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      padding: 3px;
+      border-radius: 8px;
+      background: #f0f2f3;
+      gap: 3px;
+    }
+
+    .duration {
+      padding: 7px 4px;
+      border: 0;
+      border-radius: 6px;
+      background: transparent;
+      color: #616b72;
+      font-size: 12px;
+      font-weight: 600;
+      text-align: center;
+      cursor: default;
+    }
+
+    .duration.selected {
+      background: #ffffff;
+      color: #12695d;
+      box-shadow: 0 1px 5px rgba(25, 54, 59, 0.12);
+    }
+
+    .dates {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 7px;
+    }
+
+    .date {
+      padding: 7px 3px;
+      border: 1px solid #dce2e3;
+      border-radius: 8px;
+      background: #ffffff;
+      color: #4d5a60;
+      text-align: center;
+      cursor: default;
+    }
+
+    .date .day {
+      display: block;
+      color: #737d82;
+      font-size: 10px;
+      font-weight: 600;
+    }
+
+    .date .full-date {
+      display: block;
+      margin-top: 2px;
+      color: inherit;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .date.selected {
+      border-color: #187366;
+      background: #187366;
+      color: #ffffff;
+    }
+
+    .date.selected .day {
+      color: #d9f0eb;
+    }
+
+    .times {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 7px;
+    }
+
+    .time {
+      padding: 8px 3px;
+      border: 1px solid #dce2e3;
+      border-radius: 8px;
+      background: #ffffff;
+      color: #3f4d53;
+      font-size: 12px;
+      font-weight: 600;
+      text-align: center;
+      white-space: nowrap;
+      cursor: default;
+    }
+
+    .time.selected {
+      border-color: #187366;
+      background: #edf8f5;
+      color: #12695d;
+      box-shadow: inset 0 0 0 1px #187366;
+    }
+
+    .timezone {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin: 13px 0 0;
+      color: #727c82;
+      font-size: 11px;
+      line-height: 1.4;
+    }
+
+    .timezone svg {
+      width: 14px;
+      height: 14px;
+      flex: 0 0 auto;
+      stroke: currentColor;
+    }
+
+    .confirm {
+      width: 100%;
+      margin-top: 12px;
+      padding: 10px 14px;
+      border: 1px solid #187366;
+      border-radius: 8px;
+      background: #187366;
+      color: #ffffff;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: default;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <main class="picker" aria-labelledby="picker-title">
+      <header>
+        <p class="eyebrow">Oak &amp; Ivy Learning</p>
+        <h1 id="picker-title">Schedule tutoring</h1>
+        <p class="summary">Reserve an after-school reading session with Ms. Patel.</p>
+        <div class="student-line" aria-label="Student Noah Williams, grade 5">
+          <span>Noah Williams</span>
+          <span>Grade 5</span>
+        </div>
+      </header>
+
+      <section class="section" aria-labelledby="duration-heading-b">
+        <div class="section-heading">
+          <span class="step" aria-hidden="true">1</span>
+          <h2 id="duration-heading-b">Choose a lesson length</h2>
+        </div>
+        <div class="duration-options" role="group" aria-label="Tutoring session duration">
+          <button class="duration" type="button">30 min</button>
+          <button class="duration selected" type="button" aria-pressed="true">45 min</button>
+          <button class="duration" type="button">60 min</button>
+        </div>
+      </section>
+
+      <section class="section" aria-labelledby="date-heading-b">
+        <div class="section-heading">
+          <span class="step" aria-hidden="true">2</span>
+          <h2 id="date-heading-b">Select a date</h2>
+        </div>
+        <div class="dates" role="group" aria-label="Available tutoring dates in September 2026">
+          <button class="date" type="button" aria-label="Monday, September 14">
+            <span class="day">Monday</span>
+            <span class="full-date">Sep 14</span>
+          </button>
+          <button class="date selected" type="button" aria-pressed="true" aria-label="Wednesday, September 16, selected">
+            <span class="day">Wednesday</span>
+            <span class="full-date">Sep 16</span>
+          </button>
+          <button class="date" type="button" aria-label="Thursday, September 17">
+            <span class="day">Thursday</span>
+            <span class="full-date">Sep 17</span>
+          </button>
+        </div>
+      </section>
+
+      <section class="section" aria-labelledby="time-heading-b">
+        <div class="section-heading">
+          <span class="step" aria-hidden="true">3</span>
+          <h2 id="time-heading-b">Pick a start time</h2>
+        </div>
+        <div class="times" role="group" aria-label="Available tutoring start times">
+          <button class="time" type="button">4:00 PM</button>
+          <button class="time selected" type="button" aria-pressed="true">5:00 PM</button>
+          <button class="time" type="button">6:00 PM</button>
+        </div>
+      </section>
+
+      <p class="timezone">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="12" cy="12" r="8.5" stroke-width="1.7"></circle>
+          <path d="M3.8 12h16.4M12 3.5c2.2 2.3 3.3 5.1 3.3 8.5S14.2 18.2 12 20.5M12 3.5C9.8 5.8 8.7 8.6 8.7 12s1.1 6.2 3.3 8.5" stroke-width="1.7" stroke-linecap="round"></path>
+        </svg>
+        Central Time (UTC−5)
+      </p>
+
+      <button class="confirm" type="button">Review session</button>
+    </main>
+  </div>
+</body>
+</html>

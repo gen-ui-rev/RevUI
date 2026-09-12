@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Async by Default — Cadence Academy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#14170F;
+    --muted:#6B6F62;
+    --line:#E6E7E1;
+    --lime:#C5E82E;
+    --tint:#F3F4EE;
+    --dark:#1D2118;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    padding:32px 0;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    background:#D9DAD3;
+    font-family:'Poppins',system-ui,sans-serif;
+    color:var(--ink);
+  }
+  button{font-family:inherit;}
+  .screen{
+    width:768px;
+    height:1024px;
+    background:#FFFFFF;
+    position:relative;
+    display:flex;
+  }
+
+  .rail{
+    width:88px;
+    flex:0 0 88px;
+    padding:20px 10px 16px;
+    background:var(--dark);
+    color:#D9DCD2;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+  }
+  .brand-mark{
+    width:44px;
+    padding:10px 0;
+    border:1px solid #494E41;
+    border-radius:15px;
+    text-align:center;
+    color:var(--lime);
+    font-size:16px;
+    line-height:22px;
+    font-weight:600;
+  }
+  .rail-nav{
+    width:100%;
+    margin-top:34px;
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+  }
+  .rail-item{
+    width:100%;
+    padding:11px 2px;
+    border-radius:15px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:5px;
+    color:#AEB2A7;
+  }
+  .rail-item svg{width:22px;height:22px;display:block;}
+  .rail-item span{font-size:10px;line-height:14px;}
+  .rail-item.on{
+    background:var(--lime);
+    color:var(--ink);
+  }
+  .rail-item.on span{font-weight:600;}
+  .account{
+    margin-top:auto;
+    width:100%;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:7px;
+    color:#AEB2A7;
+  }
+  .account-circle{
+    width:38px;
+    padding:8px 0;
+    border-radius:50%;
+    background:#34392E;
+    text-align:center;
+    color:#FFFFFF;
+    font-size:11px;
+    line-height:22px;
+    font-weight:600;
+  }
+  .account span{font-size:10px;line-height:14px;}
+
+  .main{
+    min-width:0;
+    flex:1;
+    display:flex;
+    flex-direction:column;
+  }
+  .topbar{
+    padding:18px 20px;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    border-bottom:1px solid var(--line);
+  }
+  .back{
+    width:40px;
+    padding:9px;
+    border:none;
+    border-radius:13px;
+    background:var(--tint);
+    color:var(--ink);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .back svg{width:20px;height:20px;display:block;}
+  .top-title{
+    min-width:0;
+    font-size:13px;
+    line-height:19px;
+    font-weight:600;
+  }
+  .top-title span{
+    display:block;
+    font-size:11.5px;
+    line-height:17px;
+    font-weight:400;
+    color:var(--muted);
+  }
+  .spacer{flex:1;}
+  .save{
+    padding:9px 12px;
+    border:1px solid var(--line);
+    border-radius:13px;
+    background:#FFFFFF;
+    color:var(--ink);
+    display:flex;
+    align-items:center;
+    gap:7px;
+    font-size:12px;
+    line-height:20px;
+    font-weight:500;
+  }
+  .save svg{width:18px;height:18px;display:block;}
+
+  .content{
+    padding:20px;
+    display:grid;
+    grid-template-columns:226px 390px;
+    gap:24px;
+    align-items:start;
+  }
+
+  .course-info{min-width:0;}
+  .season{
+    font-size:11px;
+    line-height:16px;
+    font-weight:600;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:#737867;
+  }
+  h1{
+    margin:7px 0 0;
+    font-size:29px;
+    line-height:36px;
+    font-weight:600;
+    letter-spacing:-.025em;
+  }
+  .meta{
+    margin-top:8px;
+    font-size:12.5px;
+    line-height:19px;
+    color:var(--muted);
+  }
+  .desc{
+    margin:20px 0 0;
+    font-size:13.5px;
+    line-height:22px;
+    color:#3D4136;
+  }
+  .resume-card{
+    margin-top:22px;
+    padding:16px;
+    border-radius:18px;
+    background:var(--dark);
+    color:#FFFFFF;
+  }
+  .resume-label{
+    font-size:10.5px;
+    line-height:16px;
+    letter-spacing:.07em;
+    text-transform:uppercase;
+    color:#BCC0B5;
+  }
+  .resume-title{
+    margin-top:5px;
+    font-size:13px;
+    line-height:19px;
+    font-weight:500;
+  }
+  .resume-meta{
+    margin-top:4px;
+    font-size:11.5px;
+    line-height:17px;
+    color:#BCC0B5;
+  }
+  .resume-button{
+    margin-top:14px;
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:13px;
+    background:var(--lime);
+    color:var(--ink);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:7px;
+    font-size:12.5px;
+    line-height:19px;
+    font-weight:600;
+  }
+  .resume-button svg{width:15px;height:15px;display:block;}
+  .course-progress{
+    margin-top:12px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .track{
+    min-width:0;
+    flex:1;
+    border-radius:99px;
+    background:#444A3C;
+  }
+  .fill{
+    width:42%;
+    padding-top:5px;
+    border-radius:99px;
+    background:var(--lime);
+  }
+  .percent{
+    font-size:10.5px;
+    line-height:16px;
+    color:#BCC0B5;
+  }
+  .instructors{
+    margin-top:24px;
+  }
+  .small-label{
+    font-size:11px;
+    line-height:16px;
+    font-weight:600;
+    color:var(--muted);
+    text-transform:uppercase;
+    letter-spacing:.07em;
+  }
+  .person{
+    padding:8px 0;
+    border-bottom:1px solid var(--line);
+  }
+  .person-name{
+    font-size:12.5px;
+    line-height:18px;
+    font-weight:500;
+  }
+  .person-role{
+    font-size:11.5px;
+    line-height:17px;
+    color:var(--muted);
+  }
+
+  .lesson-side{min-width:0;}
+  .hero{
+    border-radius:20px;
+    overflow:hidden;
+    background:var(--tint);
+  }
+  .hero img{
+    width:390px;
+    height:120px;
+    object-fit:cover;
+    display:block;
+    background:var(--tint);
+  }
+  .lesson-heading{
+    margin-top:18px;
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    gap:16px;
+  }
+  .lesson-heading h2{
+    margin:0;
+    font-size:20px;
+    line-height:28px;
+    font-weight:600;
+  }
+  .lesson-heading span{
+    font-size:12px;
+    line-height:18px;
+    color:var(--muted);
+  }
+  .lesson-list{
+    margin-top:8px;
+    border-top:1px solid var(--line);
+  }
+  .lesson{
+    padding:12px 6px;
+    border-bottom:1px solid var(--line);
+    display:flex;
+    align-items:center;
+    gap:12px;
+  }
+  .lesson.current{
+    margin:8px 0;
+    padding:12px;
+    border:none;
+    border-radius:17px;
+    background:#F1F7D8;
+  }
+  .thumb{
+    width:80px;
+    height:45px;
+    flex:0 0 80px;
+    position:relative;
+    overflow:hidden;
+    border-radius:12px;
+    background:var(--tint);
+  }
+  .thumb img{
+    width:80px;
+    height:45px;
+    object-fit:cover;
+    display:block;
+    background:var(--tint);
+  }
+  .bar{
+    position:absolute;
+    left:0;
+    right:0;
+    bottom:0;
+    padding-top:3px;
+    background:rgba(20,23,15,.35);
+  }
+  .bar i{
+    position:absolute;
+    left:0;
+    bottom:0;
+    width:42%;
+    padding-top:3px;
+    background:var(--lime);
+  }
+  .lesson-copy{
+    min-width:0;
+    flex:1;
+  }
+  .lesson-title{
+    font-size:13px;
+    line-height:19px;
+    font-weight:500;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .lesson-meta{
+    margin-top:2px;
+    font-size:11.5px;
+    line-height:17px;
+    color:var(--muted);
+  }
+  .play{
+    width:32px;
+    flex:0 0 32px;
+    padding:7px;
+    border-radius:50%;
+    background:var(--lime);
+    color:var(--ink);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .play svg{width:16px;height:16px;display:block;}
+  .check{
+    width:24px;
+    flex:0 0 24px;
+    color:#798065;
+  }
+  .check svg{width:20px;height:20px;display:block;}
+  .number{
+    width:38px;
+    flex:0 0 38px;
+    padding:8px 0;
+    border-radius:12px;
+    background:var(--tint);
+    color:var(--muted);
+    text-align:center;
+    font-size:12px;
+    line-height:18px;
+    font-weight:600;
+  }
+</style>
+</head>
+<body>
+  <div class="screen">
+    <aside class="rail" aria-label="Primary navigation">
+      <div class="brand-mark">CA</div>
+
+      <div class="rail-nav">
+        <div class="rail-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="3"/><path d="M8 3v4M16 3v4M4 10h16"/></svg>
+          <span>Today</span>
+        </div>
+        <div class="rail-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h8l4 4v14H6z"/><path d="M9 12h6M9 16h4"/></svg>
+          <span>Docs</span>
+        </div>
+        <div class="rail-item on">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M11 10l4 2-4 2z" fill="currentColor" stroke="none"/></svg>
+          <span>Library</span>
+        </div>
+        <div class="rail-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4h10v16l-5-4-5 4z"/></svg>
+          <span>Saved</span>
+        </div>
+      </div>
+
+      <div class="account">
+        <div class="account-circle">MV</div>
+        <span>Team</span>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <button class="back" aria-label="Go back">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+        </button>
+        <div class="top-title">
+          Cadence Academy
+          <span>Course player</span>
+        </div>
+        <span class="spacer"></span>
+        <button class="save">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4h10v16l-5-4-5 4z"/></svg>
+          Saved
+        </button>
+      </header>
+
+      <div class="content">
+        <section class="course-info" aria-labelledby="course-title-b">
+          <div class="season">Season 2 course</div>
+          <h1 id="course-title-b">Async by Default</h1>
+          <div class="meta">6 episodes &middot; 1 h 48 m</div>
+
+          <p class="desc">How a distributed product team replaced standing meetings with written updates and one weekly review.</p>
+
+          <div class="resume-card">
+            <div class="resume-label">Continue learning</div>
+            <div class="resume-title">Writing the weekly review</div>
+            <div class="resume-meta">Episode 3 &middot; 8 min left</div>
+            <button class="resume-button">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5l12 7-12 7z"/></svg>
+              Resume lesson
+            </button>
+            <div class="course-progress">
+              <div class="track" aria-hidden="true"><div class="fill"></div></div>
+              <div class="percent">42%</div>
+            </div>
+          </div>
+
+          <div class="instructors">
+            <div class="small-label">With</div>
+            <div class="person">
+              <div class="person-name">Marisol Vega</div>
+              <div class="person-role">Operations</div>
+            </div>
+            <div class="person">
+              <div class="person-name">Theo Lund</div>
+              <div class="person-role">Design</div>
+            </div>
+            <div class="person">
+              <div class="person-name">Priya Raman</div>
+              <div class="person-role">Engineering</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="lesson-side" aria-labelledby="lesson-title-b">
+          <div class="hero">
+            <img src="https://loremflickr.com/390/120/meeting?lock=5420" width="390" height="120" alt="Team gathered around a table during a planning session">
+          </div>
+
+          <div class="lesson-heading">
+            <h2 id="lesson-title-b">Course lessons</h2>
+            <span>2 of 6 watched</span>
+          </div>
+
+          <div class="lesson-list">
+            <div class="lesson">
+              <div class="thumb">
+                <img src="https://loremflickr.com/80/45/desk?lock=5421" width="80" height="45" alt="Desk with a laptop and printed notes">
+              </div>
+              <div class="lesson-copy">
+                <div class="lesson-title">1. Ground rules for async work</div>
+                <div class="lesson-meta">16 min &middot; Watched</div>
+              </div>
+              <div class="check" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12l2.5 2.5L16 9"/></svg>
+              </div>
+            </div>
+
+            <div class="lesson">
+              <div class="thumb">
+                <img src="https://loremflickr.com/80/45/notebook?lock=5422" width="80" height="45" alt="Open notebook with a written update template">
+              </div>
+              <div class="lesson-copy">
+                <div class="lesson-title">2. The update template</div>
+                <div class="lesson-meta">15 min &middot; Watched</div>
+              </div>
+              <div class="check" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12l2.5 2.5L16 9"/></svg>
+              </div>
+            </div>
+
+            <div class="lesson current">
+              <div class="thumb">
+                <img src="https://loremflickr.com/80/45/workspace?lock=5423" width="80" height="45" alt="Shared workspace with two screens open">
+                <span class="bar"><i></i></span>
+              </div>
+              <div class="lesson-copy">
+                <div class="lesson-title">3. Writing the weekly review</div>
+                <div class="lesson-meta">22 min &middot; 8 min left</div>
+              </div>
+              <div class="play" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5l12 7-12 7z"/></svg>
+              </div>
+            </div>
+
+            <div class="lesson">
+              <div class="thumb">
+                <img src="https://loremflickr.com/80/45/meeting?lock=5424" width="80" height="45" alt="Two colleagues talking beside a whiteboard">
+              </div>
+              <div class="lesson-copy">
+                <div class="lesson-title">4. Handling urgent requests</div>
+                <div class="lesson-meta">18 min &middot; Not started</div>
+              </div>
+            </div>
+
+            <div class="lesson">
+              <div class="number">05</div>
+              <div class="lesson-copy">
+                <div class="lesson-title">Reducing decision latency</div>
+                <div class="lesson-meta">17 min &middot; Not started</div>
+              </div>
+            </div>
+
+            <div class="lesson">
+              <div class="number">06</div>
+              <div class="lesson-copy">
+                <div class="lesson-title">Making the change stick</div>
+                <div class="lesson-meta">20 min &middot; Not started</div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

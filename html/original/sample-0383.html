@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Async by Default — Cadence Academy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#14170F;
+    --muted:#6B6F62;
+    --line:#E6E7E1;
+    --lime:#C5E82E;
+    --tint:#F3F4EE;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;padding:40px 0;min-height:100vh;display:flex;justify-content:center;
+    align-items:flex-start;background:#D9DAD3;
+    font-family:'Poppins',system-ui,sans-serif;color:var(--ink);
+  }
+  .screen{
+    width:390px;height:844px;background:#FFFFFF;position:relative;display:flex;
+    flex-direction:column;
+  }
+
+  /* top bar */
+  .topbar{
+    display:flex;align-items:center;gap:10px;padding:12px 14px;
+  }
+  .topbar .icobtn{
+    width:20px;height:20px;display:block;color:var(--ink);
+  }
+  .topbar .name{
+    font-size:13px;font-weight:500;letter-spacing:.02em;
+  }
+  .topbar .spacer{flex:1;}
+
+  /* hero */
+  .hero img{
+    width:390px;height:120px;object-fit:cover;display:block;background:var(--tint);
+  }
+
+  .body{padding:14px 16px 10px;}
+
+  h1{
+    margin:0;font-size:22px;line-height:28px;font-weight:600;letter-spacing:-.01em;
+  }
+  .meta{
+    margin-top:4px;font-size:12.5px;line-height:18px;color:var(--muted);
+  }
+
+  .cta{
+    margin-top:14px;height:46px;width:100%;border:none;border-radius:14px;
+    background:var(--lime);color:#14170F;font-family:inherit;font-size:14px;
+    font-weight:600;display:flex;align-items:center;justify-content:center;gap:8px;
+  }
+  .cta svg{width:16px;height:16px;display:block;}
+  .cta-note{
+    margin-top:8px;font-size:12px;line-height:17px;color:var(--muted);text-align:center;
+  }
+
+  .desc{
+    margin-top:14px;font-size:13px;line-height:18px;color:#3D4136;
+  }
+
+  .sec-label{
+    font-size:13px;font-weight:600;line-height:17px;
+  }
+  .hosts{margin-top:16px;}
+  .host-row{
+    margin-top:8px;display:flex;gap:10px;
+  }
+  .host{width:112.6px;}
+  .mono{
+    width:36px;height:36px;border-radius:14px;background:var(--tint);
+    border:1px solid var(--line);display:flex;align-items:center;justify-content:center;
+    font-size:12.5px;font-weight:600;color:#3D4136;
+  }
+  .host-name{
+    margin-top:5px;font-size:12.5px;line-height:17px;font-weight:500;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .host-role{
+    font-size:12px;line-height:16px;color:var(--muted);
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+
+  .eps{margin-top:16px;}
+  .eps-head{
+    display:flex;align-items:baseline;justify-content:space-between;
+  }
+  .eps-head .count{font-size:12px;line-height:17px;color:var(--muted);}
+  .ep{
+    display:flex;align-items:center;gap:12px;padding:7px 0;
+    border-top:1px solid var(--line);
+  }
+  .eps-list{margin-top:6px;}
+  .eps-list .ep:first-child{border-top:none;}
+  .thumb{
+    position:relative;width:80px;height:45px;border-radius:14px;overflow:hidden;
+    flex:0 0 auto;background:var(--tint);
+  }
+  .thumb img{
+    width:80px;height:45px;object-fit:cover;display:block;background:var(--tint);
+  }
+  .bar{
+    position:absolute;left:0;right:0;bottom:0;height:3px;background:rgba(20,23,15,.35);
+  }
+  .bar i{display:block;height:3px;width:42%;background:var(--lime);}
+  .ep-text{min-width:0;}
+  .ep-title{
+    font-size:13.5px;line-height:19px;font-weight:500;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .ep-meta{font-size:12px;line-height:16px;color:var(--muted);}
+
+  /* tab bar */
+  .tabbar{
+    margin-top:auto;height:60px;border-top:1px solid var(--line);
+    display:flex;align-items:center;
+  }
+  .tab{
+    flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;
+    color:var(--muted);
+  }
+  .tab svg{width:21px;height:21px;display:block;}
+  .tab span{font-size:12px;line-height:16px;}
+  .tab.on{color:var(--ink);}
+  .tab.on span{font-weight:500;}
+</style>
+</head>
+<body>
+  <div class="screen">
+
+    <div class="topbar">
+      <svg class="icobtn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+      <span class="name">Cadence Academy</span>
+      <span class="spacer"></span>
+      <svg class="icobtn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4h10v16l-5-4-5 4z"/></svg>
+    </div>
+
+    <div class="hero">
+      <img src="https://loremflickr.com/390/120/meeting?lock=5420" width="390" height="120" alt="Team gathered around a table during a planning session">
+    </div>
+
+    <div class="body">
+      <h1>Async by Default</h1>
+      <div class="meta">Season 2 &middot; 6 episodes &middot; 1 h 48 m</div>
+
+      <button class="cta">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5l12 7-12 7z"/></svg>
+        Resume episode 3
+      </button>
+      <div class="cta-note">8 min left in episode 3 &middot; 42% complete</div>
+
+      <p class="desc">How a distributed product team replaced standing meetings with written updates and one weekly review.</p>
+
+      <div class="hosts">
+        <div class="sec-label">Hosts</div>
+        <div class="host-row">
+          <div class="host">
+            <div class="mono">MV</div>
+            <div class="host-name">Marisol Vega</div>
+            <div class="host-role">Ops lead</div>
+          </div>
+          <div class="host">
+            <div class="mono">TL</div>
+            <div class="host-name">Theo Lund</div>
+            <div class="host-role">Design</div>
+          </div>
+          <div class="host">
+            <div class="mono">PR</div>
+            <div class="host-name">Priya Raman</div>
+            <div class="host-role">Engineering</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="eps">
+        <div class="eps-head">
+          <div class="sec-label">Episodes</div>
+          <div class="count">Season 2 &middot; 6</div>
+        </div>
+        <div class="eps-list">
+
+          <div class="ep">
+            <div class="thumb">
+              <img src="https://loremflickr.com/80/45/desk?lock=5421" width="80" height="45" alt="Desk with a laptop and printed notes">
+            </div>
+            <div class="ep-text">
+              <div class="ep-title">1. Ground rules for async work</div>
+              <div class="ep-meta">16 min &middot; Watched</div>
+            </div>
+          </div>
+
+          <div class="ep">
+            <div class="thumb">
+              <img src="https://loremflickr.com/80/45/notebook?lock=5422" width="80" height="45" alt="Open notebook with a written update template">
+            </div>
+            <div class="ep-text">
+              <div class="ep-title">2. The update template</div>
+              <div class="ep-meta">15 min &middot; Watched</div>
+            </div>
+          </div>
+
+          <div class="ep">
+            <div class="thumb">
+              <img src="https://loremflickr.com/80/45/workspace?lock=5423" width="80" height="45" alt="Shared workspace with two screens open">
+              <span class="bar"><i></i></span>
+            </div>
+            <div class="ep-text">
+              <div class="ep-title">3. Writing the weekly review</div>
+              <div class="ep-meta">22 min &middot; 8 min left</div>
+            </div>
+          </div>
+
+          <div class="ep">
+            <div class="thumb">
+              <img src="https://loremflickr.com/80/45/meeting?lock=5424" width="80" height="45" alt="Two colleagues talking beside a whiteboard">
+            </div>
+            <div class="ep-text">
+              <div class="ep-title">4. Handling urgent requests</div>
+              <div class="ep-meta">18 min &middot; Not started</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="tabbar">
+      <div class="tab">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="3"/><path d="M8 3v4M16 3v4M4 10h16"/></svg>
+        <span>Today</span>
+      </div>
+      <div class="tab">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h8l4 4v14H6z"/><path d="M9 12h6M9 16h4"/></svg>
+        <span>Docs</span>
+      </div>
+      <div class="tab on">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M11 10l4 2-4 2z" fill="currentColor" stroke="none"/></svg>
+        <span>Library</span>
+      </div>
+      <div class="tab">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8.5" r="3.5"/><path d="M5 20c1.4-3.4 4-5 7-5s5.6 1.6 7 5"/></svg>
+        <span>Team</span>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Northline — Invite teammates</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 40px 0;
+    margin: 0;
+    background: #d4d4d8;
+    font-family: 'Source Serif 4', Georgia, serif;
+    color: #18181b;
+  }
+  .screen {
+    width: 390px;
+    height: 844px;
+    background: #f4f4f5;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* top bar */
+  .topbar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    background: #ffffff;
+    border-bottom: 1px solid #e4e4e7;
+  }
+  .topbar .back {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    margin-left: -4px;
+    color: #3f3f46;
+  }
+  .topbar h1 {
+    margin: 0;
+    font-size: 20px;
+    line-height: 26px;
+    font-weight: 700;
+    flex: 1;
+  }
+  .linkbtn {
+    font-size: 14px;
+    color: #52525b;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    white-space: nowrap;
+  }
+
+  main {
+    padding: 14px 16px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .card {
+    background: #ffffff;
+    border: 1px solid #e4e4e7;
+    border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(24, 24, 27, 0.06);
+  }
+
+  /* workspace card */
+  .ws { padding: 14px; }
+  .ws h2 {
+    margin: 0;
+    font-size: 17px;
+    line-height: 22px;
+    font-weight: 600;
+  }
+  .ws p {
+    margin: 3px 0 0;
+    font-size: 13px;
+    line-height: 17px;
+    color: #71717a;
+  }
+  .thumbs {
+    display: flex;
+    gap: 9px;
+    margin-top: 12px;
+  }
+  .thumbs img {
+    display: block;
+    width: 104px;
+    height: 64px;
+    object-fit: cover;
+    background: #e4e4e7;
+    border-radius: 6px;
+  }
+
+  /* invite form */
+  .form { padding: 16px; }
+  .flabel {
+    display: block;
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 600;
+    letter-spacing: .03em;
+    text-transform: uppercase;
+    color: #71717a;
+  }
+  .field {
+    margin-top: 6px;
+    height: 42px;
+    border: 1px solid #d4d4d8;
+    border-radius: 6px;
+    padding: 0 12px;
+    display: flex;
+    align-items: center;
+    font-size: 15px;
+    color: #18181b;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  .caret {
+    display: inline-block;
+    width: 1px;
+    height: 18px;
+    background: #18181b;
+    margin-left: 2px;
+  }
+  .seg {
+    margin-top: 6px;
+    display: flex;
+    border: 1px solid #d4d4d8;
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .seg span {
+    flex: 1;
+    text-align: center;
+    font-size: 14px;
+    line-height: 36px;
+    height: 36px;
+    color: #52525b;
+    border-right: 1px solid #e4e4e7;
+  }
+  .seg span:last-child { border-right: 0; }
+  .seg span.on {
+    background: #18181b;
+    color: #ffffff;
+    font-weight: 600;
+  }
+  .help {
+    margin: 8px 0 0;
+    font-size: 13px;
+    line-height: 17px;
+    color: #71717a;
+  }
+  .send {
+    margin-top: 14px;
+    height: 46px;
+    border-radius: 6px;
+    background: #18181b;
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .mt16 { margin-top: 16px; }
+
+  /* people */
+  .sechead {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding: 0 2px;
+    margin-bottom: 8px;
+  }
+  .sechead h3 {
+    margin: 0;
+    font-size: 15px;
+    line-height: 22px;
+    font-weight: 600;
+  }
+  .seats {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    line-height: 22px;
+    white-space: nowrap;
+  }
+  .pips {
+    display: inline-flex;
+    gap: 3px;
+    align-items: center;
+  }
+  .pips i {
+    display: block;
+    width: 7px;
+    height: 7px;
+    border-radius: 2px;
+    background: #d4d4d8;
+  }
+  .pips i.used { background: #18181b; }
+  .seats .num {
+    font-size: 13px;
+    font-weight: 600;
+    color: #18181b;
+  }
+  .seats .lbl {
+    font-size: 13px;
+    color: #71717a;
+  }
+  .row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 9px 16px;
+    height: 58px;
+    border-bottom: 1px solid #f4f4f5;
+  }
+  .row:last-child { border-bottom: 0; }
+  .row.open .mono {
+    background: #ffffff;
+    border: 1px dashed #d4d4d8;
+    color: #a1a1aa;
+  }
+  .mono {
+    width: 40px;
+    height: 40px;
+    flex: none;
+    border-radius: 6px;
+    background: #e4e4e7;
+    color: #3f3f46;
+    font-size: 14px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .mono.you { background: #18181b; color: #ffffff; }
+  .who { flex: 1; min-width: 0; }
+  .who .n {
+    font-size: 15px;
+    line-height: 20px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .row.open .who .n { color: #a1a1aa; }
+  .who .e {
+    font-size: 13px;
+    line-height: 17px;
+    color: #71717a;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: none;
+  }
+  .role {
+    font-size: 13px;
+    color: #52525b;
+  }
+  .badge {
+    font-size: 12px;
+    line-height: 16px;
+    color: #52525b;
+    background: #f4f4f5;
+    border: 1px solid #e4e4e7;
+    border-radius: 6px;
+    padding: 1px 6px;
+  }
+
+  /* tab bar */
+  .tabs {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 64px;
+    background: #ffffff;
+    border-top: 1px solid #e4e4e7;
+    display: flex;
+  }
+  .tab {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    font-size: 12px;
+    line-height: 15px;
+    color: #a1a1aa;
+  }
+  .tab.on { color: #18181b; font-weight: 600; }
+</style>
+</head>
+<body>
+  <div class="screen">
+
+    <div class="topbar">
+      <span class="back" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
+      </span>
+      <h1>Invite teammates</h1>
+      <span class="linkbtn">Copy link</span>
+    </div>
+
+    <main>
+
+      <section class="card ws">
+        <h2>Iceland Ring Road</h2>
+        <p>Shared workspace &middot; 12 stops &middot; 8 nights</p>
+        <div class="thumbs">
+          <img src="https://loremflickr.com/104/64/mountain?lock=7141" width="104" height="64" alt="Mountain pass saved on day three of the route">
+          <img src="https://loremflickr.com/104/64/beach?lock=7142" width="104" height="64" alt="Black sand beach stop near Vik">
+          <img src="https://loremflickr.com/104/64/hotel?lock=7143" width="104" height="64" alt="Guesthouse booked for nights four and five">
+        </div>
+      </section>
+
+      <section class="card form">
+        <span class="flabel">Email address</span>
+        <div class="field">sasha.moreau@northline.co<span class="caret"></span></div>
+
+        <span class="flabel mt16">Workspace role</span>
+        <div class="seg">
+          <span class="on">Editor</span>
+          <span>Viewer</span>
+          <span>Admin</span>
+        </div>
+        <p class="help">Editors can add stops, change dates, and comment. They cannot remove members or delete the trip.</p>
+
+        <div class="send">Send invitation</div>
+      </section>
+
+      <section>
+        <div class="sechead">
+          <h3>People with access</h3>
+          <span class="seats">
+            <span class="pips"><i class="used"></i><i class="used"></i><i class="used"></i><i class="used"></i><i></i></span>
+            <span class="num">4 of 5</span><span class="lbl">seats filled</span>
+          </span>
+        </div>
+        <div class="card">
+          <div class="row">
+            <div class="mono you">MB</div>
+            <div class="who">
+              <div class="n">Marcus Bell (you)</div>
+              <div class="e">marcus.bell@northline.co</div>
+            </div>
+            <div class="meta"><span class="role">Owner</span></div>
+          </div>
+          <div class="row">
+            <div class="mono">PR</div>
+            <div class="who">
+              <div class="n">Priya Raman</div>
+              <div class="e">priya.raman@northline.co</div>
+            </div>
+            <div class="meta"><span class="role">Editor</span></div>
+          </div>
+          <div class="row">
+            <div class="mono">AK</div>
+            <div class="who">
+              <div class="n">Amara Kane</div>
+              <div class="e">Invited Mar 4</div>
+            </div>
+            <div class="meta"><span class="badge">Pending</span><span class="role">Editor</span></div>
+          </div>
+          <div class="row open">
+            <div class="mono">+</div>
+            <div class="who">
+              <div class="n">One seat open</div>
+              <div class="e">Sasha Moreau will take the last seat</div>
+            </div>
+            <div class="meta"><span class="badge">Free</span></div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <nav class="tabs">
+      <div class="tab">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
+        Trips
+      </div>
+      <div class="tab">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4L3 6.5v13L9 17l6 3 6-2.5v-13L15 7 9 4z"/><path d="M9 4v13M15 7v13"/></svg>
+        Map
+      </div>
+      <div class="tab">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4h12v16l-6-4-6 4V4z"/></svg>
+        Saved
+      </div>
+      <div class="tab on">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11a3.5 3.5 0 100-7 3.5 3.5 0 000 7z"/><path d="M2.5 20c0-3.3 2.9-5.5 6.5-5.5s6.5 2.2 6.5 5.5"/><path d="M17 8.5h4M19 6.5v4"/></svg>
+        Team
+      </div>
+    </nav>
+
+  </div>
+</body>
+</html>

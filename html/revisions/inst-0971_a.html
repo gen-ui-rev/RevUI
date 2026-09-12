@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Finora Audio Player</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #e9e6e8;
+      color: #211b20;
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    }
+
+    button {
+      margin: 0;
+      padding: 0;
+      border: 0;
+      background: none;
+      color: inherit;
+      font: inherit;
+      cursor: default;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #fffdfd;
+    }
+
+    .topbar {
+      display: grid;
+      grid-template-columns: 40px 1fr 40px;
+      align-items: center;
+      padding: 16px 20px;
+    }
+
+    .topbar-title {
+      text-align: center;
+      font-size: 16px;
+      line-height: 24px;
+      font-weight: 600;
+    }
+
+    .icon-button {
+      width: 32px;
+      height: 32px;
+      display: grid;
+      place-items: center;
+      border-radius: 4px;
+    }
+
+    .icon-button:last-child {
+      justify-self: end;
+    }
+
+    .icon-button svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    main {
+      flex: 1;
+      min-height: 0;
+      padding: 12px 20px 10px;
+    }
+
+    .cover {
+      aspect-ratio: 1.35 / 1;
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      border-radius: 4px;
+      background: #16234d;
+      color: #ffffff;
+    }
+
+    .cover-kicker {
+      font-size: 12px;
+      line-height: 18px;
+      font-weight: 700;
+      letter-spacing: 0.11em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.72);
+    }
+
+    .cover-title {
+      margin: 0;
+      max-width: 275px;
+      font-size: 34px;
+      line-height: 1.08;
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      color: #ffffff;
+    }
+
+    .cover-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 16px;
+      font-size: 12px;
+      line-height: 18px;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    .cover-series {
+      max-width: 180px;
+    }
+
+    .episode-info {
+      margin-top: 16px;
+    }
+
+    .episode-label {
+      margin: 0 0 5px;
+      color: #a30f60;
+      font-size: 12px;
+      line-height: 18px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .episode-title {
+      margin: 0;
+      font-size: 20px;
+      line-height: 27px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .episode-meta {
+      margin: 4px 0 0;
+      color: #756b71;
+      font-size: 14px;
+      line-height: 21px;
+      font-weight: 400;
+    }
+
+    .progress-area {
+      margin-top: 16px;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 4px;
+      border-radius: 4px;
+      background: rgba(211, 20, 125, 0.14);
+    }
+
+    .progress-fill {
+      position: relative;
+      width: 38%;
+      height: 4px;
+      border-radius: 4px;
+      background: #d3147d;
+    }
+
+    .progress-fill::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      right: -5px;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #d3147d;
+      transform: translateY(-50%);
+    }
+
+    .time-row {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 8px;
+      color: #756b71;
+      font-size: 12px;
+      line-height: 17px;
+      font-weight: 500;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .playback-controls {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 25px;
+      margin-top: 14px;
+    }
+
+    .control-button {
+      width: 44px;
+      height: 44px;
+      display: grid;
+      place-items: center;
+      border-radius: 4px;
+    }
+
+    .control-button svg {
+      width: 27px;
+      height: 27px;
+    }
+
+    .play-button {
+      width: 58px;
+      height: 58px;
+      display: grid;
+      place-items: center;
+      border-radius: 4px;
+      background: #d3147d;
+      color: #ffffff;
+    }
+
+    .play-button svg {
+      width: 25px;
+      height: 25px;
+    }
+
+    .player-tools {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .tool-button {
+      padding: 10px 6px;
+      border-radius: 4px;
+      background: rgba(211, 20, 125, 0.07);
+      color: #6d2450;
+      font-size: 12px;
+      line-height: 18px;
+      font-weight: 600;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .queue {
+      margin-top: 18px;
+    }
+
+    .section-heading {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .section-heading h2 {
+      margin: 0;
+      font-size: 15px;
+      line-height: 22px;
+      font-weight: 700;
+    }
+
+    .section-heading span {
+      color: #8a7e85;
+      font-size: 12px;
+      line-height: 18px;
+      font-weight: 500;
+    }
+
+    .queue-list {
+      margin-top: 5px;
+    }
+
+    .queue-row {
+      display: grid;
+      grid-template-columns: 24px minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 0;
+    }
+
+    .queue-number {
+      color: #a30f60;
+      font-size: 12px;
+      line-height: 18px;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .queue-copy {
+      min-width: 0;
+    }
+
+    .queue-title {
+      margin: 0;
+      overflow: hidden;
+      color: #2b2428;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 600;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .queue-subtitle {
+      margin: 2px 0 0;
+      overflow: hidden;
+      color: #82777d;
+      font-size: 12px;
+      line-height: 17px;
+      font-weight: 400;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .queue-duration {
+      color: #82777d;
+      font-size: 12px;
+      line-height: 18px;
+      font-weight: 500;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .tabbar {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+      padding: 9px 12px 10px;
+      background: #fcf8fa;
+    }
+
+    .tab {
+      padding: 10px 4px;
+      border-radius: 4px;
+      color: #756b71;
+      font-size: 12px;
+      line-height: 17px;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    .tab.active {
+      background: rgba(211, 20, 125, 0.11);
+      color: #a30f60;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <button class="icon-button" aria-label="Go back">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M15.5 5L8.5 12L15.5 19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <div class="topbar-title">Now Playing</div>
+      <button class="icon-button" aria-label="Open playback queue">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M4 7H15M4 12H15M4 17H11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          <path d="M18 14V20M18 14L21 16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </header>
+
+    <main>
+      <section aria-label="Current financial briefing">
+        <div class="cover">
+          <div class="cover-kicker">Finora Audio</div>
+          <h1 class="cover-title">The Daily Ledger</h1>
+          <div class="cover-footer">
+            <span class="cover-series">Money news for your morning</span>
+            <span>06.18.2025</span>
+          </div>
+        </div>
+
+        <div class="episode-info">
+          <p class="episode-label">Morning briefing</p>
+          <h2 class="episode-title">Rates hold steady as markets reset</h2>
+          <p class="episode-meta">Hosted by Mara Venn · Today</p>
+        </div>
+
+        <div class="progress-area" aria-label="Playback progress: 10 minutes 42 seconds of 28 minutes 16 seconds">
+          <div class="progress-track">
+            <div class="progress-fill"></div>
+          </div>
+          <div class="time-row">
+            <span>10:42</span>
+            <span>28:16</span>
+          </div>
+        </div>
+
+        <div class="playback-controls">
+          <button class="control-button" aria-label="Rewind 15 seconds">
+            <svg viewBox="0 0 28 28" fill="none" aria-hidden="true">
+              <path d="M8.1 8.2V3.9L4.2 7.5L8.1 11V8.2Z" fill="currentColor"/>
+              <path d="M7.2 8.4C8.9 6.3 11.4 5 14.2 5C19.2 5 23.2 9 23.2 14C23.2 19 19.2 23 14.2 23C10.6 23 7.5 20.9 6 17.9" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+              <text x="9.1" y="17.8" fill="currentColor" font-size="9" font-family="Plus Jakarta Sans" font-weight="700">15</text>
+            </svg>
+          </button>
+
+          <button class="play-button" aria-label="Pause">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <rect x="6.5" y="4.5" width="3.5" height="15" rx="1" fill="currentColor"/>
+              <rect x="14" y="4.5" width="3.5" height="15" rx="1" fill="currentColor"/>
+            </svg>
+          </button>
+
+          <button class="control-button" aria-label="Skip forward 30 seconds">
+            <svg viewBox="0 0 28 28" fill="none" aria-hidden="true">
+              <path d="M19.9 8.2V3.9L23.8 7.5L19.9 11V8.2Z" fill="currentColor"/>
+              <path d="M20.8 8.4C19.1 6.3 16.6 5 13.8 5C8.8 5 4.8 9 4.8 14C4.8 19 8.8 23 13.8 23C17.4 23 20.5 20.9 22 17.9" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+              <text x="8.5" y="17.8" fill="currentColor" font-size="9" font-family="Plus Jakarta Sans" font-weight="700">30</text>
+            </svg>
+          </button>
+        </div>
+
+        <div class="player-tools">
+          <button class="tool-button">1× Speed</button>
+          <button class="tool-button">Transcript</button>
+          <button class="tool-button">Sleep timer</button>
+        </div>
+      </section>
+
+      <section class="queue" aria-labelledby="queue-title">
+        <div class="section-heading">
+          <h2 id="queue-title">Up next</h2>
+          <span>2 briefings</span>
+        </div>
+        <div class="queue-list">
+          <div class="queue-row">
+            <span class="queue-number">1</span>
+            <div class="queue-copy">
+              <p class="queue-title">What lower bond yields mean</p>
+              <p class="queue-subtitle">Market Close · Ellis Rowe</p>
+            </div>
+            <span class="queue-duration">18 min</span>
+          </div>
+          <div class="queue-row">
+            <span class="queue-number">2</span>
+            <div class="queue-copy">
+              <p class="queue-title">A practical guide to cash reserves</p>
+              <p class="queue-subtitle">Money Basics · Nora Hale</p>
+            </div>
+            <span class="queue-duration">24 min</span>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <nav class="tabbar" aria-label="Primary navigation">
+      <button class="tab">Home</button>
+      <button class="tab">Accounts</button>
+      <button class="tab active" aria-current="page">Listen</button>
+      <button class="tab">Profile</button>
+    </nav>
+  </div>
+</body>
+</html>

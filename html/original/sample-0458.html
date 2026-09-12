@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VitaTrail Nearby Workouts</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 32px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #dfe2dc;
+      color: #182014;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    button {
+      font: inherit;
+      color: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #f8faf5;
+    }
+
+    .app-header {
+      flex: 0 0 auto;
+      background: #ffffff;
+    }
+
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 15px 16px 10px;
+    }
+
+    .brand {
+      margin: 0 0 2px;
+      color: #64705e;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 24px;
+      line-height: 30px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .monogram {
+      width: 36px;
+      height: 36px;
+      display: grid;
+      place-items: center;
+      border-radius: 4px;
+      background: rgba(183, 228, 58, 0.24);
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .location-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 16px 12px;
+      color: #53604c;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .location-mark {
+      width: 26px;
+      height: 26px;
+      display: grid;
+      place-items: center;
+      border-radius: 4px;
+      background: rgba(183, 228, 58, 0.26);
+      color: #4c6508;
+    }
+
+    .location-row span:last-child {
+      color: #7b8576;
+      font-weight: 400;
+    }
+
+    .map {
+      position: relative;
+      flex: 1 1 auto;
+      min-height: 0;
+      background: #edf0e7;
+    }
+
+    .map-art {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .map-label {
+      position: absolute;
+      z-index: 2;
+      color: #6d7668;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+    }
+
+    .label-park {
+      top: 184px;
+      left: 251px;
+      color: #68784c;
+    }
+
+    .label-center {
+      top: 322px;
+      left: 26px;
+    }
+
+    .label-trail {
+      top: 368px;
+      left: 260px;
+      transform: rotate(-32deg);
+      transform-origin: left center;
+    }
+
+    .search-box {
+      position: absolute;
+      z-index: 5;
+      top: 14px;
+      left: 16px;
+      width: 358px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 13px 14px;
+      border: 0;
+      border-radius: 4px;
+      background: #ffffff;
+      color: #677062;
+      box-shadow: 0 2px 8px rgba(30, 39, 25, 0.10);
+      font-size: 14px;
+      text-align: left;
+    }
+
+    .search-box svg {
+      flex: 0 0 auto;
+      color: #35402f;
+    }
+
+    .filters {
+      position: absolute;
+      z-index: 5;
+      top: 76px;
+      left: 16px;
+      display: flex;
+      gap: 8px;
+    }
+
+    .filter {
+      padding: 8px 11px;
+      border: 0;
+      border-radius: 4px;
+      background: #ffffff;
+      box-shadow: 0 1px 5px rgba(30, 39, 25, 0.08);
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .filter.active {
+      background: #b7e43a;
+      color: #253000;
+    }
+
+    .map-control {
+      position: absolute;
+      z-index: 5;
+      right: 16px;
+      top: 132px;
+      width: 40px;
+      height: 40px;
+      display: grid;
+      place-items: center;
+      padding: 0;
+      border: 0;
+      border-radius: 4px;
+      background: #ffffff;
+      box-shadow: 0 1px 5px rgba(30, 39, 25, 0.10);
+    }
+
+    .marker {
+      position: absolute;
+      z-index: 4;
+      width: 34px;
+      height: 42px;
+    }
+
+    .marker svg {
+      width: 34px;
+      height: 42px;
+      display: block;
+    }
+
+    .marker-one {
+      top: 232px;
+      left: 171px;
+    }
+
+    .marker-two {
+      top: 287px;
+      left: 294px;
+    }
+
+    .marker-three {
+      top: 392px;
+      left: 86px;
+    }
+
+    .current-location {
+      position: absolute;
+      z-index: 3;
+      top: 352px;
+      left: 184px;
+      width: 22px;
+      height: 22px;
+      border: 5px solid rgba(183, 228, 58, 0.34);
+      border-radius: 50%;
+      background: #405306;
+      background-clip: padding-box;
+    }
+
+    .place-card {
+      position: absolute;
+      z-index: 6;
+      right: 16px;
+      bottom: 16px;
+      left: 16px;
+      padding: 12px;
+      border-radius: 4px;
+      background: #ffffff;
+      box-shadow: 0 3px 12px rgba(30, 39, 25, 0.13);
+    }
+
+    .card-kicker {
+      margin: 0 0 9px;
+      color: #65705e;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .place-row {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .place-row img {
+      width: 88px;
+      height: 72px;
+      flex: 0 0 88px;
+      display: block;
+      object-fit: cover;
+      border-radius: 4px;
+      background: #dfe5d8;
+    }
+
+    .place-copy {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .place-copy h2 {
+      margin: 0 0 5px;
+      font-size: 17px;
+      line-height: 21px;
+      font-weight: 700;
+    }
+
+    .place-meta {
+      margin: 0 0 7px;
+      color: #5e6858;
+      font-size: 14px;
+      line-height: 18px;
+    }
+
+    .place-type {
+      margin: 0;
+      color: #26351d;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .next-session {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 10px;
+      padding: 10px 11px;
+      border-radius: 4px;
+      background: rgba(183, 228, 58, 0.22);
+    }
+
+    .next-session p {
+      margin: 0;
+      font-size: 14px;
+      line-height: 18px;
+    }
+
+    .next-session strong {
+      display: block;
+      font-weight: 700;
+    }
+
+    .next-session span {
+      color: #59654f;
+      font-size: 12px;
+    }
+
+    .next-session svg {
+      flex: 0 0 auto;
+      color: #405306;
+    }
+
+    .tab-bar {
+      flex: 0 0 72px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      background: #ffffff;
+    }
+
+    .tab {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      flex-direction: column;
+      color: #727b6d;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .tab svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .tab.active {
+      color: #354800;
+    }
+
+    .tab.active::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 31px;
+      right: 31px;
+      height: 4px;
+      border-radius: 0 0 4px 4px;
+      background: #b7e43a;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="app-header">
+      <div class="top-bar">
+        <div>
+          <p class="brand">VitaTrail</p>
+          <h1>Nearby workouts</h1>
+        </div>
+        <div class="monogram" aria-label="Profile for Casey Morgan">CM</div>
+      </div>
+      <div class="location-row">
+        <div class="location-mark" aria-hidden="true">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+            <path d="M12 21s6-5.1 6-11a6 6 0 1 0-12 0c0 5.9 6 11 6 11Z" stroke="currentColor" stroke-width="2"/>
+            <circle cx="12" cy="10" r="2.2" fill="currentColor"/>
+          </svg>
+        </div>
+        <div>Current location <span>· Within 1 mile</span></div>
+      </div>
+    </header>
+
+    <main class="map" aria-label="Map showing nearby workout locations">
+      <svg class="map-art" viewBox="0 0 390 656" preserveAspectRatio="none" aria-hidden="true">
+        <rect width="390" height="656" fill="#edf0e7"/>
+        <rect x="238" y="127" width="124" height="104" rx="4" fill="#dce8c8"/>
+        <rect x="20" y="144" width="90" height="54" rx="4" fill="#e1e5dc"/>
+        <rect x="122" y="133" width="72" height="68" rx="4" fill="#e1e5dc"/>
+        <rect x="18" y="248" width="105" height="64" rx="4" fill="#e1e5dc"/>
+        <rect x="258" y="253" width="101" height="67" rx="4" fill="#e1e5dc"/>
+        <rect x="34" y="350" width="94" height="76" rx="4" fill="#e1e5dc"/>
+        <rect x="246" y="398" width="112" height="64" rx="4" fill="#e1e5dc"/>
+        <path d="M-20 225 C72 202 119 216 197 263 C262 302 314 304 410 263" fill="none" stroke="#ffffff" stroke-width="20"/>
+        <path d="M160 -20 C147 79 168 151 193 222 C216 289 209 367 184 494 C174 546 176 602 185 676" fill="none" stroke="#ffffff" stroke-width="18"/>
+        <path d="M-20 365 C66 342 134 348 198 375 C270 406 329 415 410 396" fill="none" stroke="#ffffff" stroke-width="14"/>
+        <path d="M86 108 C119 175 128 249 112 329 C100 391 103 463 130 527" fill="none" stroke="#ffffff" stroke-width="10"/>
+        <path d="M224 112 C281 160 310 226 320 298 C330 365 314 423 277 482" fill="none" stroke="#ffffff" stroke-width="10"/>
+        <path d="M221 113 C267 155 299 210 311 273" fill="none" stroke="#c1d397" stroke-width="4" stroke-dasharray="8 7"/>
+        <rect x="17" y="475" width="73" height="47" rx="4" fill="#e1e5dc"/>
+        <rect x="101" y="478" width="56" height="48" rx="4" fill="#e1e5dc"/>
+        <rect x="213" y="500" width="61" height="50" rx="4" fill="#e1e5dc"/>
+        <rect x="286" y="489" width="73" height="59" rx="4" fill="#e1e5dc"/>
+      </svg>
+
+      <button class="search-box" type="button" aria-label="Search gyms and classes">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="2"/>
+          <path d="m16 16 4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <span>Search gyms and classes</span>
+      </button>
+
+      <div class="filters" aria-label="Workout filters">
+        <button class="filter active" type="button">All</button>
+        <button class="filter" type="button">Open now</button>
+        <button class="filter" type="button">Today</button>
+      </div>
+
+      <button class="map-control" type="button" aria-label="Center on current location">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="2"/>
+          <path d="M12 2v3M12 19v3M2 12h3M19 12h3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>
+
+      <span class="map-label label-park">Willow Park</span>
+      <span class="map-label label-center">Cedar Center</span>
+      <span class="map-label label-trail">Greenway Trail</span>
+
+      <div class="marker marker-one" aria-label="Northline Training Yard">
+        <svg viewBox="0 0 34 42" aria-hidden="true">
+          <path d="M17 40S3 28.5 3 16a14 14 0 1 1 28 0c0 12.5-14 24-14 24Z" fill="#b7e43a"/>
+          <circle cx="17" cy="16" r="6" fill="#324200"/>
+        </svg>
+      </div>
+
+      <div class="marker marker-two" aria-label="Willow Yoga Room">
+        <svg viewBox="0 0 34 42" aria-hidden="true">
+          <path d="M17 40S3 28.5 3 16a14 14 0 1 1 28 0c0 12.5-14 24-14 24Z" fill="#ffffff"/>
+          <circle cx="17" cy="16" r="6" fill="#65705f"/>
+        </svg>
+      </div>
+
+      <div class="marker marker-three" aria-label="Cedar Strength Club">
+        <svg viewBox="0 0 34 42" aria-hidden="true">
+          <path d="M17 40S3 28.5 3 16a14 14 0 1 1 28 0c0 12.5-14 24-14 24Z" fill="#ffffff"/>
+          <circle cx="17" cy="16" r="6" fill="#65705f"/>
+        </svg>
+      </div>
+
+      <div class="current-location" aria-label="Your current location"></div>
+
+      <article class="place-card">
+        <p class="card-kicker">Closest match · 0.4 mi</p>
+        <div class="place-row">
+          <img src="https://loremflickr.com/88/72/gym?lock=6310" width="88" height="72" alt="Training equipment inside Northline Training Yard">
+          <div class="place-copy">
+            <h2>Northline Training Yard</h2>
+            <p class="place-meta">Open until 9:00 PM · 12 min walk</p>
+            <p class="place-type">Strength training · Small groups</p>
+          </div>
+        </div>
+        <div class="next-session">
+          <p>
+            <strong>Strength Circuit</strong>
+            <span>Today at 6:30 PM · 4 spots</span>
+          </p>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M5 12h13M14 7l5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </article>
+    </main>
+
+    <nav class="tab-bar" aria-label="Primary navigation">
+      <div class="tab active">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="m4 6 5-2 6 2 5-2v14l-5 2-6-2-5 2V6Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+          <path d="M9 4v14M15 6v14" stroke="currentColor" stroke-width="2"/>
+        </svg>
+        <span>Explore</span>
+      </div>
+      <div class="tab">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <rect x="4" y="5" width="16" height="15" rx="2" stroke="currentColor" stroke-width="2"/>
+          <path d="M8 3v4M16 3v4M4 10h16" stroke="currentColor" stroke-width="2"/>
+        </svg>
+        <span>Schedule</span>
+      </div>
+      <div class="tab">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M4 17v3h16v-3M7 14l3-4 3 2 4-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="7" cy="14" r="1.5" fill="currentColor"/>
+          <circle cx="17" cy="6" r="1.5" fill="currentColor"/>
+        </svg>
+        <span>Progress</span>
+      </div>
+      <div class="tab">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M12 20s-7-3.9-7-9.5A4.5 4.5 0 0 1 12 6a4.5 4.5 0 0 1 7 4.5C19 16.1 12 20 12 20Z" stroke="currentColor" stroke-width="2"/>
+        </svg>
+        <span>Saved</span>
+      </div>
+    </nav>
+  </div>
+</body>
+</html>

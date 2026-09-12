@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shared Room Timer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #e9e7ec;
+      color: #25212a;
+      font-family: 'Source Sans 3', system-ui, sans-serif;
+    }
+
+    .screen {
+      width: 1024px;
+      height: 768px;
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 26px;
+      background: #f7f6f8;
+      border: 1px solid #dcd7e1;
+    }
+
+    /* ---------- top bar ---------- */
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 28px;
+      padding-bottom: 22px;
+      border-bottom: 1px solid #e2dde8;
+    }
+
+    .context {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-width: 0;
+    }
+
+    .monogram {
+      width: 50px;
+      height: 50px;
+      flex: 0 0 50px;
+      display: grid;
+      place-items: center;
+      border-radius: 16px;
+      background: #ede7f6;
+      color: #6d3ba5;
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .context-copy {
+      min-width: 0;
+    }
+
+    .service {
+      margin: 0 0 3px;
+      color: #6d3ba5;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      overflow: hidden;
+      color: #25212a;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 26px;
+      font-weight: 700;
+      line-height: 1.2;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .topbar-meta {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex: 0 0 auto;
+    }
+
+    .pill {
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: #ede7f6;
+      color: #5b2f8d;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+    }
+
+    .host {
+      color: #6b6570;
+      font-size: 13px;
+    }
+
+    /* ---------- two column layout ---------- */
+    .layout {
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      gap: 26px;
+    }
+
+    .timer-card {
+      padding: 34px 36px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      border: 1px solid #dcd7e1;
+      border-radius: 18px;
+      background: #ffffff;
+      text-align: center;
+    }
+
+    .timer-label {
+      margin: 0 0 8px;
+      color: #6b6570;
+      font-size: 14px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .time {
+      margin: 0;
+      color: #6d3ba5;
+      font-size: 104px;
+      font-weight: 600;
+      line-height: 1;
+      letter-spacing: -0.04em;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .duration {
+      margin: 14px 0 0;
+      color: #6b6570;
+      font-size: 15px;
+    }
+
+    .progress {
+      width: 100%;
+      height: 10px;
+      margin-top: 26px;
+      border-radius: 14px;
+      background: #ece9ef;
+    }
+
+    .progress-value {
+      width: 59%;
+      height: 100%;
+      border-radius: 14px;
+      background: #7540ac;
+    }
+
+    .phases {
+      display: flex;
+      gap: 8px;
+      margin: 22px 0 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .phases li {
+      flex: 1;
+      padding: 9px 4px;
+      border: 1px solid #e5e1e8;
+      border-radius: 10px;
+      background: #faf9fb;
+      color: #6b6570;
+      font-size: 13px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .phases .is-active {
+      border-color: #c8b2e2;
+      background: #f2ecf9;
+      color: #5b2f8d;
+      font-weight: 600;
+    }
+
+    .next {
+      margin: 20px 0 0;
+      padding-top: 18px;
+      border-top: 1px solid #e5e1e8;
+      color: #39333e;
+      font-size: 14px;
+    }
+
+    /* ---------- right rail ---------- */
+    .rail {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .rail-card {
+      padding: 22px 24px;
+      border: 1px solid #dcd7e1;
+      border-radius: 18px;
+      background: #ffffff;
+    }
+
+    .rail-title {
+      margin: 0 0 6px;
+      color: #25212a;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .stats {
+      margin: 0;
+    }
+
+    .stat {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 11px 0;
+      border-bottom: 1px solid #efecf2;
+    }
+
+    .stat:last-child {
+      border-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .stat dt {
+      color: #6b6570;
+      font-size: 14px;
+    }
+
+    .stat dd {
+      margin: 0;
+      color: #25212a;
+      font-size: 15px;
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .controls {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding: 22px 24px;
+      border: 1px solid #dcd7e1;
+      border-radius: 18px;
+      background: #ffffff;
+    }
+
+    button {
+      width: 100%;
+      min-height: 46px;
+      border-radius: 12px;
+      font-family: 'Source Sans 3', system-ui, sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: default;
+    }
+
+    .primary {
+      border: 1px solid #6d3ba5;
+      background: #6d3ba5;
+      color: #ffffff;
+    }
+
+    .secondary {
+      border: 1px solid #cfc8d5;
+      background: #ffffff;
+      color: #39333e;
+    }
+
+    .ghost {
+      border: 1px solid transparent;
+      background: #f4f1f7;
+      color: #6b6570;
+    }
+
+    .hint {
+      margin: 4px 0 0;
+      color: #8a8391;
+      font-size: 12.5px;
+      line-height: 1.45;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <div class="context">
+        <div class="monogram" aria-hidden="true">MC</div>
+        <div class="context-copy">
+          <p class="service">Threadwell group timer</p>
+          <h1 id="timer-title">Morning Creators Circle</h1>
+        </div>
+      </div>
+      <div class="topbar-meta">
+        <span class="pill">Running</span>
+        <span class="host">Room 4 · 6 people · Host Dana Reyes</span>
+      </div>
+    </header>
+
+    <div class="layout">
+      <section class="timer-card" aria-labelledby="timer-title">
+        <p class="timer-label">Time remaining</p>
+        <p class="time" aria-label="18 minutes and 24 seconds remaining">18:24</p>
+        <p class="duration">26 minutes elapsed of 45</p>
+        <div class="progress" role="progressbar" aria-label="Session progress" aria-valuemin="0" aria-valuemax="45" aria-valuenow="26">
+          <div class="progress-value"></div>
+        </div>
+        <ul class="phases">
+          <li>Intro</li>
+          <li>Sprint 1</li>
+          <li class="is-active">Sprint 2</li>
+          <li>Wrap-up</li>
+        </ul>
+        <p class="next">Up next — Wrap-up, 8 minutes</p>
+      </section>
+
+      <aside class="rail">
+        <div class="rail-card">
+          <h2 class="rail-title">Session status</h2>
+          <dl class="stats">
+            <div class="stat"><dt>Elapsed</dt><dd>26:36</dd></div>
+            <div class="stat"><dt>Remaining</dt><dd>18:24</dd></div>
+            <div class="stat"><dt>Ends at</dt><dd>10:45 AM</dd></div>
+            <div class="stat"><dt>Extensions used</dt><dd>1 of 3</dd></div>
+          </dl>
+        </div>
+
+        <div class="controls">
+          <button class="primary" type="button">Pause timer</button>
+          <button class="secondary" type="button">Add 5 minutes</button>
+          <button class="ghost" type="button">End timer</button>
+          <p class="hint">Adding time notifies everyone in the room.</p>
+        </div>
+      </aside>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Offline Access</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 24px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #e5e2de;
+      color: #282521;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      width: 768px;
+      height: 1024px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      background: #fbfaf8;
+      border: 1px solid #d3cdc6;
+      box-shadow: 0 14px 40px rgba(54, 47, 41, 0.12);
+    }
+
+    .topbar {
+      display: grid;
+      grid-template-columns: 80px 1fr auto;
+      align-items: center;
+      gap: 18px;
+      padding: 18px 24px 18px 0;
+      border-bottom: 1px solid #ddd7d1;
+      background: #ffffff;
+    }
+
+    .back-area {
+      display: flex;
+      justify-content: center;
+    }
+
+    .icon-button,
+    .text-button {
+      min-height: 44px;
+      border: 0;
+      background: transparent;
+      color: #403a34;
+      cursor: default;
+    }
+
+    .icon-button {
+      width: 48px;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .icon-button svg {
+      width: 25px;
+      height: 25px;
+    }
+
+    .title-block {
+      min-width: 0;
+    }
+
+    .title-block h1 {
+      margin: 0;
+      font-size: 24px;
+      line-height: 30px;
+      font-weight: 680;
+      letter-spacing: -0.35px;
+    }
+
+    .title-block p {
+      margin: 3px 0 0;
+      font-size: 13px;
+      line-height: 18px;
+      color: #77716b;
+    }
+
+    .text-button {
+      padding: 0 14px;
+      border: 1px solid #cfc5bc;
+      border-radius: 7px;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 650;
+      color: #6f5d4e;
+    }
+
+    .app-body {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+    }
+
+    .side-nav {
+      width: 80px;
+      flex: 0 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding: 22px 8px;
+      border-right: 1px solid #ddd7d1;
+      background: #f2efeb;
+    }
+
+    .nav-item {
+      min-height: 68px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      border: 0;
+      border-radius: 8px;
+      padding: 8px 4px;
+      background: transparent;
+      color: #746f69;
+      font-size: 11px;
+      line-height: 15px;
+    }
+
+    .nav-item svg {
+      width: 23px;
+      height: 23px;
+    }
+
+    .nav-item.active {
+      background: #ded6cf;
+      color: #665448;
+      font-weight: 650;
+    }
+
+    main {
+      flex: 1;
+      min-width: 0;
+      display: grid;
+      grid-template-columns: 222px minmax(0, 1fr);
+      align-content: start;
+      gap: 24px;
+      padding: 26px 24px 28px;
+      background: #fbfaf8;
+    }
+
+    .storage-column,
+    .saved-column {
+      min-width: 0;
+    }
+
+    .storage-column {
+      padding: 22px 20px;
+      border-radius: 12px;
+      background: #776657;
+      color: #ffffff;
+      box-shadow: 0 5px 16px rgba(67, 54, 44, 0.13);
+    }
+
+    .storage-eyebrow {
+      margin: 0 0 14px;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 650;
+      color: #f3efeb;
+      text-transform: uppercase;
+      letter-spacing: 0.7px;
+    }
+
+    .storage-value {
+      margin: 0;
+      font-size: 38px;
+      line-height: 43px;
+      font-weight: 680;
+      letter-spacing: -0.9px;
+    }
+
+    .storage-total {
+      margin: 3px 0 0;
+      font-size: 16px;
+      line-height: 22px;
+      color: #eee9e4;
+    }
+
+    .storage-track {
+      width: 100%;
+      height: 9px;
+      margin-top: 24px;
+      border-radius: 6px;
+      background: #9d8f83;
+    }
+
+    .storage-fill {
+      width: 28.6%;
+      height: 9px;
+      border-radius: 6px;
+      background: #ffffff;
+    }
+
+    .storage-percent {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      margin-top: 10px;
+      font-size: 12px;
+      line-height: 17px;
+      color: #eee9e4;
+    }
+
+    .file-count {
+      margin: 25px 0 0;
+      padding-top: 20px;
+      border-top: 1px solid rgba(255, 255, 255, 0.24);
+    }
+
+    .file-count strong {
+      display: block;
+      font-size: 24px;
+      line-height: 30px;
+      font-weight: 680;
+    }
+
+    .file-count span {
+      display: block;
+      margin-top: 3px;
+      font-size: 13px;
+      line-height: 19px;
+      color: #eee9e4;
+    }
+
+    .storage-breakdown {
+      margin-top: 22px;
+      padding-top: 5px;
+      border-top: 1px solid rgba(255, 255, 255, 0.24);
+    }
+
+    .breakdown-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      padding-top: 13px;
+      font-size: 12px;
+      line-height: 17px;
+      color: #eee9e4;
+    }
+
+    .breakdown-row strong {
+      color: #ffffff;
+      font-weight: 650;
+      white-space: nowrap;
+    }
+
+    .security-note {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-top: 26px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(255, 255, 255, 0.24);
+      color: #f2ede9;
+    }
+
+    .security-note svg {
+      width: 19px;
+      height: 19px;
+      flex: 0 0 auto;
+      margin-top: 1px;
+    }
+
+    .security-note p {
+      margin: 0;
+      font-size: 12px;
+      line-height: 18px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .section-header h2 {
+      margin: 0;
+      font-size: 20px;
+      line-height: 26px;
+      font-weight: 680;
+      letter-spacing: -0.2px;
+    }
+
+    .section-header p {
+      margin: 4px 0 0;
+      font-size: 12px;
+      line-height: 17px;
+      color: #77716b;
+    }
+
+    .updated-badge {
+      flex: 0 0 auto;
+      padding: 5px 8px;
+      border-radius: 12px;
+      background: #ece8e3;
+      color: #706961;
+      font-size: 11px;
+      line-height: 15px;
+      white-space: nowrap;
+    }
+
+    .file-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .file-row {
+      display: grid;
+      grid-template-columns: 42px minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 12px;
+      padding: 14px;
+      border: 1px solid #ddd7d1;
+      border-radius: 9px;
+      background: #ffffff;
+      box-shadow: 0 2px 7px rgba(56, 48, 41, 0.04);
+    }
+
+    .file-mark {
+      width: 42px;
+      height: 42px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 7px;
+      background: #eee9e4;
+      color: #746253;
+    }
+
+    .file-mark svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .file-copy {
+      min-width: 0;
+    }
+
+    .file-title {
+      margin: 0;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 650;
+      color: #2a2723;
+    }
+
+    .file-meta {
+      margin: 3px 0 0;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      font-size: 12px;
+      line-height: 17px;
+      color: #77716b;
+    }
+
+    .file-side {
+      text-align: right;
+    }
+
+    .file-size {
+      display: block;
+      font-size: 13px;
+      line-height: 18px;
+      color: #514b45;
+      white-space: nowrap;
+    }
+
+    .available {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      margin-top: 4px;
+      font-size: 10px;
+      line-height: 14px;
+      color: #766456;
+      white-space: nowrap;
+    }
+
+    .available svg {
+      width: 12px;
+      height: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <div class="back-area">
+        <button class="icon-button" type="button" aria-label="Go back">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M15 18 9 12l6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+      <div class="title-block">
+        <h1>Offline access</h1>
+        <p>Manage files available without a connection</p>
+      </div>
+      <button class="text-button" type="button">Edit files</button>
+    </header>
+
+    <div class="app-body">
+      <nav class="side-nav" aria-label="Primary navigation">
+        <button class="nav-item" type="button">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M4 10.5 12 4l8 6.5V20h-6v-5h-4v5H4z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+          </svg>
+          <span>Home</span>
+        </button>
+        <button class="nav-item" type="button">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M5 19V9M12 19V5M19 19v-7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+          <span>Accounts</span>
+        </button>
+        <button class="nav-item" type="button">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M5 18.5 9.5 14l3 2.5L19 9" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M15.5 9H19v3.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span>Plan</span>
+        </button>
+        <button class="nav-item active" type="button" aria-current="page">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M5 7.5h14v12H5z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+            <path d="M8 4.5h8M9 11h6M9 14.5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+          </svg>
+          <span>Offline</span>
+        </button>
+      </nav>
+
+      <main>
+        <section class="storage-column" aria-labelledby="storage-title-b">
+          <p class="storage-eyebrow" id="storage-title-b">Offline storage</p>
+          <p class="storage-value">286 MB</p>
+          <p class="storage-total">of 1 GB used</p>
+
+          <div class="storage-track" aria-label="28.6 percent of offline storage used">
+            <div class="storage-fill"></div>
+          </div>
+          <div class="storage-percent">
+            <span>28.6% used</span>
+            <span>714 MB free</span>
+          </div>
+
+          <div class="file-count">
+            <strong>4 files</strong>
+            <span>Available without a connection</span>
+          </div>
+
+          <div class="storage-breakdown" aria-label="Storage breakdown">
+            <div class="breakdown-row">
+              <span>Guides and workbooks</span>
+              <strong>170 MB</strong>
+            </div>
+            <div class="breakdown-row">
+              <span>Briefs</span>
+              <strong>113 MB</strong>
+            </div>
+            <div class="breakdown-row">
+              <span>Statements</span>
+              <strong>3 MB</strong>
+            </div>
+          </div>
+
+          <div class="security-note">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <rect x="5" y="10" width="14" height="10" rx="2" stroke="currentColor" stroke-width="1.6"/>
+              <path d="M8.5 10V7.5a3.5 3.5 0 0 1 7 0V10M12 14v2.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+            </svg>
+            <p>Offline files are encrypted and can only be opened in Northline Finance.</p>
+          </div>
+        </section>
+
+        <section class="saved-column" aria-labelledby="saved-title-b">
+          <div class="section-header">
+            <div>
+              <h2 id="saved-title-b">Saved on this device</h2>
+              <p>Ready to open offline</p>
+            </div>
+            <span class="updated-badge">Updated Sep 8</span>
+          </div>
+
+          <div class="file-list">
+            <article class="file-row">
+              <div class="file-mark" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none">
+                  <path d="M7 3.5h6.5L18 8v12.5H7z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+                  <path d="M13.5 3.5V8H18M9.5 12h6M9.5 15h6M9.5 18h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <div class="file-copy">
+                <p class="file-title">Annual financial plan</p>
+                <p class="file-meta">Planning guide · Saved Sep 8</p>
+              </div>
+              <div class="file-side">
+                <span class="file-size">96 MB</span>
+                <span class="available">
+                  <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                    <path d="m4 8 2.4 2.4L12 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  Offline
+                </span>
+              </div>
+            </article>
+
+            <article class="file-row">
+              <div class="file-mark" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none">
+                  <path d="M7 3.5h6.5L18 8v12.5H7z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+                  <path d="M13.5 3.5V8H18M9.5 12h6M9.5 15h6M9.5 18h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <div class="file-copy">
+                <p class="file-title">Home purchase workbook</p>
+                <p class="file-meta">Workbook · Saved Sep 6</p>
+              </div>
+              <div class="file-side">
+                <span class="file-size">74 MB</span>
+                <span class="available">
+                  <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                    <path d="m4 8 2.4 2.4L12 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  Offline
+                </span>
+              </div>
+            </article>
+
+            <article class="file-row">
+              <div class="file-mark" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none">
+                  <path d="M7 3.5h6.5L18 8v12.5H7z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+                  <path d="M13.5 3.5V8H18M9.5 12h6M9.5 15h6M9.5 18h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <div class="file-copy">
+                <p class="file-title">Fall market outlook</p>
+                <p class="file-meta">Investment brief · Saved Sep 3</p>
+              </div>
+              <div class="file-side">
+                <span class="file-size">113 MB</span>
+                <span class="available">
+                  <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                    <path d="m4 8 2.4 2.4L12 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  Offline
+                </span>
+              </div>
+            </article>
+
+            <article class="file-row">
+              <div class="file-mark" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none">
+                  <path d="M7 3.5h6.5L18 8v12.5H7z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+                  <path d="M13.5 3.5V8H18M9.5 12h6M9.5 15h6M9.5 18h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <div class="file-copy">
+                <p class="file-title">August account statement</p>
+                <p class="file-meta">Statement · Saved Sep 1</p>
+              </div>
+              <div class="file-side">
+                <span class="file-size">3 MB</span>
+                <span class="available">
+                  <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                    <path d="m4 8 2.4 2.4L12 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  Offline
+                </span>
+              </div>
+            </article>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Playlists</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #dedbd3;
+      color: #27241f;
+      font-family: 'Source Sans 3', system-ui, sans-serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    h1,
+    h2 {
+      margin: 0;
+      font-family: 'Playfair Display', Georgia, serif;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #fcfbf7;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      background: #fcfbf7;
+    }
+
+    .icon-button {
+      width: 36px;
+      height: 36px;
+      padding: 0;
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      border: 0;
+      border-radius: 4px;
+      background: #f0ede5;
+      color: #3a362f;
+    }
+
+    .icon-button svg,
+    .track-action svg,
+    .nav-item svg,
+    .primary-button svg {
+      display: block;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .topbar-title {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .topbar-title h2 {
+      font-size: 21px;
+      line-height: 1.25;
+      font-weight: 700;
+    }
+
+    .topbar-title p {
+      margin: 1px 0 0;
+      color: #7a746a;
+      font-size: 13px;
+      line-height: 1.25;
+    }
+
+    main {
+      flex: 1;
+      min-height: 0;
+      padding: 12px 16px 8px;
+    }
+
+    .playlist-summary {
+      padding: 14px;
+      border-radius: 4px;
+      background: rgba(193, 119, 15, 0.13);
+    }
+
+    .eyebrow {
+      margin: 0;
+      color: #95600e;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .playlist-summary h1 {
+      margin-top: 1px;
+      font-size: 26px;
+      line-height: 32px;
+      font-weight: 700;
+      color: #30281d;
+    }
+
+    .playlist-meta {
+      margin: 1px 0 0;
+      color: #6f6250;
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .summary-actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-top: 11px;
+    }
+
+    .progress-info {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      color: #665a48;
+      font-size: 13px;
+      line-height: 17px;
+      font-weight: 600;
+    }
+
+    .progress-label span:last-child {
+      white-space: nowrap;
+    }
+
+    .progress-track {
+      margin-top: 6px;
+      height: 5px;
+      border-radius: 4px;
+      background: rgba(143, 92, 18, 0.17);
+    }
+
+    .progress-fill {
+      width: 38%;
+      height: 5px;
+      border-radius: 4px;
+      background: #b36d0c;
+    }
+
+    .primary-button {
+      min-width: 106px;
+      padding: 8px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      border: 0;
+      border-radius: 4px;
+      background: #a96409;
+      color: #fffaf1;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 600;
+    }
+
+    .primary-button svg {
+      width: 17px;
+      height: 17px;
+      fill: currentColor;
+      stroke: none;
+    }
+
+    .section-heading {
+      margin-top: 14px;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .section-heading h2 {
+      font-size: 19px;
+      line-height: 25px;
+      font-weight: 700;
+    }
+
+    .sort-group {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      flex: 0 0 auto;
+    }
+
+    .sort-caption {
+      color: #8b8579;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .sort-toggle {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      padding: 2px;
+      border-radius: 4px;
+      background: #eeebe3;
+    }
+
+    .sort-option {
+      padding: 3px 9px;
+      border: 0;
+      border-radius: 3px;
+      background: transparent;
+      color: #7d776d;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .sort-option.is-active {
+      background: #fcfbf7;
+      color: #8f5809;
+      box-shadow: inset 0 0 0 1px rgba(169, 100, 9, 0.3);
+    }
+
+    .track-list {
+      display: grid;
+      gap: 4px;
+    }
+
+    .track-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 10px;
+      border-radius: 4px;
+      background: #f3f1eb;
+    }
+
+    .track-row.next {
+      background: rgba(193, 119, 15, 0.12);
+    }
+
+    .track-index {
+      width: 30px;
+      flex: 0 0 auto;
+      color: #9b958a;
+      font-size: 14px;
+      line-height: 19px;
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+      text-align: center;
+    }
+
+    .track-row.next .track-index {
+      color: #a3630a;
+    }
+
+    .track-copy {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .track-title {
+      margin: 0;
+      overflow: hidden;
+      color: #302d28;
+      font-size: 15px;
+      line-height: 19px;
+      font-weight: 600;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .track-detail {
+      margin: 1px 0 0;
+      overflow: hidden;
+      color: #7a746b;
+      font-size: 13px;
+      line-height: 17px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .status-pill {
+      min-width: 58px;
+      padding: 3px 7px;
+      flex: 0 0 auto;
+      border-radius: 3px;
+      font-size: 11px;
+      line-height: 15px;
+      font-weight: 600;
+      text-align: center;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      white-space: nowrap;
+    }
+
+    .status-pill.played {
+      background: #e5e1d5;
+      color: #6f6a60;
+    }
+
+    .status-pill.now {
+      background: #a96409;
+      color: #fffaf1;
+    }
+
+    .status-pill.queued {
+      background: transparent;
+      color: #8a8478;
+      box-shadow: inset 0 0 0 1px #d9d4c7;
+    }
+
+    .track-action {
+      width: 28px;
+      height: 28px;
+      padding: 0;
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      border: 0;
+      border-radius: 4px;
+      background: transparent;
+      color: #797268;
+    }
+
+    .track-action svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .track-row.next .track-action {
+      background: #a96409;
+      color: #fffaf1;
+    }
+
+    .track-row.next .track-action svg {
+      fill: currentColor;
+      stroke: none;
+    }
+
+    .tabbar {
+      display: flex;
+      align-items: stretch;
+      justify-content: space-around;
+      padding: 8px 10px 9px;
+      background: #f0eee7;
+    }
+
+    .nav-item {
+      min-width: 74px;
+      padding: 2px 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      border: 0;
+      border-radius: 4px;
+      background: transparent;
+      color: #777168;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 600;
+    }
+
+    .nav-item svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .nav-item.active {
+      background: rgba(193, 119, 15, 0.13);
+      color: #9d6009;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <button class="icon-button" type="button" aria-label="Go back">
+        <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M15 18l-6-6 6-6"></path>
+        </svg>
+      </button>
+
+      <div class="topbar-title">
+        <h2>Playlists</h2>
+        <p>Morrowline workspace</p>
+      </div>
+
+      <button class="icon-button" type="button" aria-label="More options">
+        <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="5" cy="12" r="1.2" fill="currentColor" stroke="none"></circle>
+          <circle cx="12" cy="12" r="1.2" fill="currentColor" stroke="none"></circle>
+          <circle cx="19" cy="12" r="1.2" fill="currentColor" stroke="none"></circle>
+        </svg>
+      </button>
+    </header>
+
+    <main>
+      <section class="playlist-summary" aria-labelledby="playlist-title">
+        <p class="eyebrow">Team recordings</p>
+        <h1 id="playlist-title">Quarterly planning</h1>
+        <p class="playlist-meta">Planning team · Updated May 14, 2025</p>
+
+        <div class="summary-actions">
+          <div class="progress-info">
+            <div class="progress-label">
+              <span>3 of 8 played</span>
+              <span>46 min left</span>
+            </div>
+            <div class="progress-track" aria-label="Playlist progress: 38 percent">
+              <div class="progress-fill"></div>
+            </div>
+          </div>
+
+          <button class="primary-button" type="button">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M8 5.5v13l10-6.5z"></path>
+            </svg>
+            Play next
+          </button>
+        </div>
+      </section>
+
+      <div class="section-heading">
+        <h2>Recordings</h2>
+        <div class="sort-group">
+          <span class="sort-caption">Sort</span>
+          <div class="sort-toggle" role="group" aria-label="Sort recordings">
+            <button class="sort-option" type="button">Title</button>
+            <button class="sort-option is-active" type="button" aria-pressed="true">Duration</button>
+          </div>
+        </div>
+      </div>
+
+      <section class="track-list" aria-label="Playlist tracks">
+        <article class="track-row">
+          <span class="track-index">01</span>
+          <div class="track-copy">
+            <p class="track-title">Opening goals and constraints</p>
+            <p class="track-detail">6:18 · May 12</p>
+          </div>
+          <span class="status-pill played">Played</span>
+          <button class="track-action" type="button" aria-label="Replay opening goals and constraints">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M19 12a7 7 0 1 1-2.6-5.4M19 5v4h-4"></path>
+            </svg>
+          </button>
+        </article>
+
+        <article class="track-row">
+          <span class="track-index">02</span>
+          <div class="track-copy">
+            <p class="track-title">Customer research themes</p>
+            <p class="track-detail">8:42 · May 12</p>
+          </div>
+          <span class="status-pill played">Played</span>
+          <button class="track-action" type="button" aria-label="Replay customer research themes">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M19 12a7 7 0 1 1-2.6-5.4M19 5v4h-4"></path>
+            </svg>
+          </button>
+        </article>
+
+        <article class="track-row">
+          <span class="track-index">03</span>
+          <div class="track-copy">
+            <p class="track-title">Pipeline assumptions</p>
+            <p class="track-detail">7:15 · May 13</p>
+          </div>
+          <span class="status-pill played">Played</span>
+          <button class="track-action" type="button" aria-label="Replay pipeline assumptions">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M19 12a7 7 0 1 1-2.6-5.4M19 5v4h-4"></path>
+            </svg>
+          </button>
+        </article>
+
+        <article class="track-row next">
+          <span class="track-index">04</span>
+          <div class="track-copy">
+            <p class="track-title">Capacity and staffing plan</p>
+            <p class="track-detail">9:36 · May 13</p>
+          </div>
+          <span class="status-pill now">Up next</span>
+          <button class="track-action" type="button" aria-label="Play capacity and staffing plan">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M8 5.5v13l10-6.5z"></path>
+            </svg>
+          </button>
+        </article>
+
+        <article class="track-row">
+          <span class="track-index">05</span>
+          <div class="track-copy">
+            <p class="track-title">Launch calendar review</p>
+            <p class="track-detail">10:08 · May 13</p>
+          </div>
+          <span class="status-pill queued">Queued</span>
+          <button class="track-action" type="button" aria-label="Play launch calendar review">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M8.5 5.5v13l10-6.5z"></path>
+            </svg>
+          </button>
+        </article>
+
+        <article class="track-row">
+          <span class="track-index">06</span>
+          <div class="track-copy">
+            <p class="track-title">Budget tradeoffs</p>
+            <p class="track-detail">8:24 · May 14</p>
+          </div>
+          <span class="status-pill queued">Queued</span>
+          <button class="track-action" type="button" aria-label="Play budget tradeoffs">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M8.5 5.5v13l10-6.5z"></path>
+            </svg>
+          </button>
+        </article>
+
+        <article class="track-row">
+          <span class="track-index">07</span>
+          <div class="track-copy">
+            <p class="track-title">Risk review</p>
+            <p class="track-detail">6:52 · May 14</p>
+          </div>
+          <span class="status-pill queued">Queued</span>
+          <button class="track-action" type="button" aria-label="Play risk review">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M8.5 5.5v13l10-6.5z"></path>
+            </svg>
+          </button>
+        </article>
+
+        <article class="track-row">
+          <span class="track-index">08</span>
+          <div class="track-copy">
+            <p class="track-title">Owners and next steps</p>
+            <p class="track-detail">11:10 · May 14</p>
+          </div>
+          <span class="status-pill queued">Queued</span>
+          <button class="track-action" type="button" aria-label="Play owners and next steps">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M8.5 5.5v13l10-6.5z"></path>
+            </svg>
+          </button>
+        </article>
+      </section>
+    </main>
+
+    <nav class="tabbar" aria-label="Primary navigation">
+      <button class="nav-item" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M4 10.5L12 4l8 6.5V20h-5v-6H9v6H4z"></path>
+        </svg>
+        <span>Home</span>
+      </button>
+
+      <button class="nav-item" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M6 4h12v16H6zM9 8h6M9 12h6M9 16h4"></path>
+        </svg>
+        <span>Notes</span>
+      </button>
+
+      <button class="nav-item active" type="button" aria-current="page">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M6 17V7M10 20V4M14 17V7M18 15V9"></path>
+        </svg>
+        <span>Listen</span>
+      </button>
+
+      <button class="nav-item" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M5 6h14v14H5zM8 3v5M16 3v5M5 10h14"></path>
+        </svg>
+        <span>Schedule</span>
+      </button>
+    </nav>
+  </div>
+</body>
+</html>

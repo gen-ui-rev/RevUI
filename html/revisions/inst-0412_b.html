@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stridewell Location Permission</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 24px 0;
+      background: #dde0da;
+      color: #171a16;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    .screen {
+      position: relative;
+      width: 1024px;
+      height: 768px;
+      background: #eff1ed;
+      box-shadow: 0 18px 48px rgba(25, 31, 22, 0.16);
+    }
+
+    /* ---------- app window behind the dialog ---------- */
+    .app-bar {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      height: 56px;
+      padding: 0 28px;
+      background: #1c2512;
+      color: #eff1ed;
+    }
+
+    .app-brand {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: #c7f43d;
+    }
+
+    .app-nav {
+      display: flex;
+      gap: 22px;
+      font-size: 13px;
+      color: #9aa392;
+    }
+
+    .app-nav span.active {
+      color: #eff1ed;
+    }
+
+    .app-account {
+      margin-left: auto;
+      font-size: 13px;
+      color: #9aa392;
+    }
+
+    .app-body {
+      display: flex;
+      height: 712px;
+    }
+
+    .app-side {
+      width: 216px;
+      padding: 26px 22px;
+      border-right: 1px solid #e0e3da;
+      background: #e8ebe4;
+      color: #7d8377;
+      font-size: 13px;
+      line-height: 2.1;
+    }
+
+    .app-side b {
+      display: block;
+      margin-bottom: 8px;
+      color: #4f554c;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .app-main {
+      flex: 1;
+      padding: 30px 32px;
+    }
+
+    .app-main h2 {
+      margin: 0 0 4px;
+      font-size: 20px;
+      font-weight: 600;
+      color: #3f453c;
+    }
+
+    .app-main p.sub {
+      margin: 0 0 22px;
+      font-size: 13px;
+      color: #85897f;
+    }
+
+    .stat-row {
+      display: flex;
+      gap: 16px;
+    }
+
+    .stat-card {
+      flex: 1;
+      padding: 18px;
+      border: 1px solid #e2e5dc;
+      border-radius: 4px;
+      background: #ffffff;
+    }
+
+    .stat-card p {
+      margin: 0;
+    }
+
+    .stat-card .k {
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #8d9286;
+    }
+
+    .stat-card .v {
+      margin-top: 8px;
+      font-size: 22px;
+      font-weight: 600;
+      color: #454b41;
+    }
+
+    .scrim {
+      position: absolute;
+      inset: 0;
+      background: rgba(20, 26, 16, 0.58);
+    }
+
+    /* ---------- dialog ---------- */
+    .permission-card {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 612px;
+      padding: 36px 40px 32px;
+      background: #ffffff;
+      border-radius: 6px;
+      box-shadow: 0 24px 60px rgba(14, 19, 10, 0.38);
+    }
+
+    .card-head {
+      display: flex;
+      gap: 20px;
+      align-items: flex-start;
+    }
+
+    .permission-icon {
+      display: flex;
+      flex: 0 0 auto;
+      align-items: center;
+      justify-content: center;
+      width: 54px;
+      height: 54px;
+      border-radius: 4px;
+      background: #c7f43d;
+      color: #1c2512;
+    }
+
+    .permission-icon svg {
+      width: 28px;
+      height: 28px;
+    }
+
+    .service-name {
+      margin: 0 0 8px;
+      color: #62685f;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      font-size: 27px;
+      line-height: 1.2;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+
+    .description {
+      margin: 0 0 10px;
+      color: #4f554c;
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    .privacy-note {
+      margin: 0;
+      color: #72776f;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    /* ---------- flow guidance ---------- */
+    .flow-guide {
+      margin: 24px 0 26px;
+      padding-top: 22px;
+      border-top: 1px solid #e6e8e1;
+    }
+
+    .flow-title {
+      margin: 0 0 14px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #2c3324;
+    }
+
+    .flow-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .flow-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 9px 0;
+    }
+
+    .badge {
+      flex: 0 0 auto;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      border: 1px solid #dcdfd6;
+      background: #f4f6f1;
+      color: #8b9083;
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 22px;
+      text-align: center;
+    }
+
+    .flow-list li.current .badge {
+      border-color: #add82d;
+      background: #c7f43d;
+      color: #1c2512;
+    }
+
+    .flow-text {
+      min-width: 0;
+    }
+
+    .flow-text p {
+      margin: 0;
+    }
+
+    .flow-text .name {
+      font-size: 14px;
+      font-weight: 600;
+      color: #6f756a;
+    }
+
+    .flow-list li.current .flow-text .name {
+      color: #1f2a13;
+    }
+
+    .flow-text .hint {
+      margin-top: 3px;
+      font-size: 12.5px;
+      line-height: 1.45;
+      color: #8b9083;
+    }
+
+    /* ---------- footer ---------- */
+    .card-foot {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding-top: 22px;
+      border-top: 1px solid #e6e8e1;
+    }
+
+    .foot-note {
+      margin: 0;
+      color: #8b9083;
+      font-size: 12.5px;
+    }
+
+    .primary-action,
+    .secondary-action {
+      border-radius: 4px;
+      font: inherit;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .primary-action {
+      margin-left: auto;
+      padding: 12px 34px;
+      border: 1px solid #add82d;
+      background: #c7f43d;
+      color: #17200e;
+    }
+
+    .secondary-action {
+      padding: 11px 22px;
+      border: 1px solid #d3d7cc;
+      background: #ffffff;
+      color: #4f554c;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="app-bar">
+      <span class="app-brand">Stridewell</span>
+      <nav class="app-nav">
+        <span class="active">Dashboard</span>
+        <span>Workouts</span>
+        <span>Routes</span>
+        <span>Devices</span>
+      </nav>
+      <span class="app-account">Rowan Ellis</span>
+    </header>
+
+    <div class="app-body">
+      <aside class="app-side">
+        <b>This week</b>
+        Morning run<br>
+        Trail loop<br>
+        Recovery walk<br>
+        Interval session
+      </aside>
+      <div class="app-main">
+        <h2>Weekly overview</h2>
+        <p class="sub">Distance and pace appear here once outdoor tracking is enabled.</p>
+        <div class="stat-row">
+          <div class="stat-card">
+            <p class="k">Distance</p>
+            <p class="v">— km</p>
+          </div>
+          <div class="stat-card">
+            <p class="k">Avg pace</p>
+            <p class="v">—</p>
+          </div>
+          <div class="stat-card">
+            <p class="k">Sessions</p>
+            <p class="v">4</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scrim"></div>
+
+    <section class="permission-card" aria-labelledby="permission-title">
+      <div class="card-head">
+        <div class="permission-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M12 21C12 21 18.5 15.2 18.5 9.5C18.5 5.91 15.59 3 12 3C8.41 3 5.5 5.91 5.5 9.5C5.5 15.2 12 21 12 21Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+            <circle cx="12" cy="9.5" r="2.25" stroke="currentColor" stroke-width="1.8"/>
+          </svg>
+        </div>
+        <div>
+          <p class="service-name">Stridewell</p>
+          <h1 id="permission-title">Allow location access</h1>
+          <p class="description">
+            Stridewell uses your location to map distance and pace during outdoor workouts.
+          </p>
+          <p class="privacy-note">
+            Your location is collected only while a workout is active. You can change this permission in system settings.
+          </p>
+        </div>
+      </div>
+
+      <div class="flow-guide">
+        <p class="flow-title">What happens after you continue</p>
+        <ol class="flow-list">
+          <li class="current">
+            <span class="badge" aria-hidden="true">1</span>
+            <div class="flow-text">
+              <p class="name">Your browser asks to share location</p>
+              <p class="hint">Choose Allow in the prompt at the top of the window.</p>
+            </div>
+          </li>
+          <li>
+            <span class="badge" aria-hidden="true">2</span>
+            <div class="flow-text">
+              <p class="name">We check GPS accuracy</p>
+              <p class="hint">A short signal test confirms route mapping will work.</p>
+            </div>
+          </li>
+          <li>
+            <span class="badge" aria-hidden="true">3</span>
+            <div class="flow-text">
+              <p class="name">Your dashboard fills in</p>
+              <p class="hint">Distance, pace and elevation appear for every outdoor session.</p>
+            </div>
+          </li>
+        </ol>
+      </div>
+
+      <div class="card-foot">
+        <p class="foot-note">Step 2 of 3 · Account setup</p>
+        <button class="primary-action" type="button">Continue</button>
+        <button class="secondary-action" type="button">Not now</button>
+      </div>
+    </section>
+  </div>
+</body>
+</html>

@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Customer Reviews</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+
+  body {
+    min-height: 100vh;
+    margin: 0;
+    padding: 40px 0;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    background: #e7eaec;
+    color: #18313b;
+    font-family: 'Source Sans 3', system-ui, sans-serif;
+  }
+
+  button { font: inherit; color: inherit; }
+
+  .screen {
+    width: 768px;
+    height: 1024px;
+    display: flex;
+    flex-direction: column;
+    background: #ffffff;
+    overflow: hidden;
+  }
+
+  .top-bar {
+    flex: 0 0 76px;
+    display: grid;
+    grid-template-columns: 52px 1fr 52px;
+    align-items: center;
+    padding: 0 22px;
+    border-bottom: 1px solid #e6eef1;
+    background: #ffffff;
+  }
+
+  .top-bar h1 {
+    margin: 0;
+    text-align: center;
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 25px;
+    line-height: 1.2;
+    font-weight: 700;
+  }
+
+  .icon-button {
+    width: 48px;
+    height: 48px;
+    display: grid;
+    place-items: center;
+    border: 0;
+    border-radius: 10px;
+    background: #f2f8fa;
+  }
+
+  .icon-button svg {
+    width: 24px;
+    height: 24px;
+    stroke: #18313b;
+  }
+
+  main {
+    flex: 1 1 auto;
+    min-height: 0;
+    padding: 28px 32px;
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 28px;
+    align-items: start;
+  }
+
+  .service-line {
+    margin: 0 0 3px;
+    color: #64808b;
+    font-size: 14px;
+    line-height: 1.25;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+
+  .product-name {
+    margin: 0 0 18px;
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 29px;
+    line-height: 1.22;
+    font-weight: 600;
+  }
+
+  /* --- Rating summary: dark spotlight card --- */
+  .rating-card {
+    padding: 22px;
+    border-radius: 16px;
+    background: linear-gradient(165deg, #17414f 0%, #0c2632 100%);
+    color: #ffffff;
+  }
+
+  .rating-number {
+    font-size: 54px;
+    line-height: 1;
+    font-weight: 600;
+    letter-spacing: -1.5px;
+  }
+
+  .stars {
+    display: flex;
+    gap: 3px;
+    margin-top: 10px;
+  }
+
+  .stars svg {
+    width: 20px;
+    height: 20px;
+    fill: #6ed3f0;
+  }
+
+  .stars .partial { fill: rgba(110, 211, 240, 0.38); }
+
+  .rating-count {
+    margin-top: 8px;
+    color: rgba(255, 255, 255, 0.68);
+    font-size: 14px;
+    line-height: 1.3;
+  }
+
+  .recommend-pill {
+    display: inline-block;
+    margin-top: 14px;
+    padding: 8px 13px;
+    border-radius: 999px;
+    background: rgba(110, 211, 240, 0.18);
+    color: #a5e6f8;
+    font-size: 13px;
+    line-height: 1.1;
+    font-weight: 600;
+  }
+
+  .card-rule {
+    height: 1px;
+    margin: 20px 0 16px;
+    border: 0;
+    background: rgba(255, 255, 255, 0.15);
+  }
+
+  .card-label {
+    margin: 0 0 12px;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 12px;
+    line-height: 1;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .distribution { display: grid; gap: 9px; }
+
+  .distribution-row {
+    display: grid;
+    grid-template-columns: 14px 1fr 34px;
+    gap: 10px;
+    align-items: center;
+    color: rgba(255, 255, 255, 0.78);
+    font-size: 13px;
+    line-height: 1;
+  }
+
+  .distribution-row .count { text-align: right; }
+
+  .bar-track {
+    height: 8px;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.14);
+  }
+
+  .bar-fill {
+    height: 8px;
+    border-radius: 6px;
+    background: #6ed3f0;
+  }
+
+  .write-button {
+    width: 100%;
+    margin-top: 22px;
+    padding: 15px 14px;
+    border: 0;
+    border-radius: 11px;
+    background: #6ed3f0;
+    color: #0c2632;
+    font-size: 15px;
+    line-height: 1;
+    font-weight: 600;
+  }
+
+  /* --- Review column --- */
+  .reviews-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 0 0 16px;
+  }
+
+  .reviews-heading h2 {
+    margin: 0;
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 23px;
+    line-height: 1.25;
+    font-weight: 600;
+  }
+
+  .sort-button {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 11px 14px;
+    border: 1px solid #cfe6ee;
+    border-radius: 10px;
+    background: #f4fafc;
+    color: #245c71;
+    font-size: 14px;
+    line-height: 1;
+    font-weight: 600;
+  }
+
+  .sort-button svg { width: 16px; height: 16px; stroke: currentColor; }
+
+  .review-list { display: grid; gap: 12px; }
+
+  .review {
+    padding: 16px 18px;
+    border: 1px solid #e3eff4;
+    border-radius: 12px;
+    background: #f8fcfd;
+  }
+
+  .review-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .review-stars { display: flex; gap: 2px; }
+
+  .review-stars svg { width: 16px; height: 16px; fill: #36a8d3; }
+  .review-stars .empty { fill: #cbe7f0; }
+
+  .review-date {
+    color: #6f838b;
+    font-size: 13px;
+    line-height: 1.2;
+    white-space: nowrap;
+  }
+
+  .review h3 {
+    margin: 8px 0 4px;
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 18px;
+    line-height: 1.25;
+    font-weight: 600;
+  }
+
+  .review p {
+    margin: 0;
+    color: #3f5a64;
+    font-size: 15px;
+    line-height: 1.45;
+  }
+
+  .review-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 12px;
+    padding-top: 11px;
+    border-top: 1px solid #e3eff4;
+  }
+
+  .review-author {
+    color: #6a7f87;
+    font-size: 13px;
+    line-height: 1.2;
+  }
+
+  .helpful-button {
+    padding: 9px 13px;
+    border: 1px solid #cfe6ee;
+    border-radius: 9px;
+    background: #ffffff;
+    color: #22637a;
+    font-size: 13px;
+    line-height: 1;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .tab-bar {
+    flex: 0 0 84px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    padding: 10px 40px;
+    border-top: 1px solid #e6eef1;
+    background: #f3f9fb;
+  }
+
+  .tab {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    color: #71858d;
+    font-size: 13px;
+    line-height: 1;
+    font-weight: 600;
+  }
+
+  .tab svg { width: 24px; height: 24px; stroke: currentColor; }
+  .tab.active { color: #1687b3; }
+  .tab.active svg { fill: rgba(54, 168, 211, 0.14); }
+</style>
+</head>
+<body>
+  <div class="screen">
+    <header class="top-bar">
+      <button class="icon-button" type="button" aria-label="Go back">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M15 18l-6-6 6-6"></path>
+        </svg>
+      </button>
+      <h1>Customer Reviews</h1>
+      <button class="icon-button" type="button" aria-label="Share product">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="18" cy="5" r="2.2"></circle>
+          <circle cx="6" cy="12" r="2.2"></circle>
+          <circle cx="18" cy="19" r="2.2"></circle>
+          <path d="M8 11l8-5M8 13l8 5"></path>
+        </svg>
+      </button>
+    </header>
+
+    <main>
+      <div class="summary-column">
+        <p class="service-line">Nooklane Marketplace</p>
+        <h2 class="product-name">Harbor Canvas Carryall</h2>
+
+        <section class="rating-card" aria-label="Rating summary">
+          <div class="rating-number">4.7</div>
+          <div class="stars" aria-label="4.7 out of 5 stars">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.8l2.8 5.7 6.3.9-4.6 4.4 1.1 6.3-5.6-3-5.6 3 1.1-6.3-4.6-4.4 6.3-.9L12 2.8z"></path></svg>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.8l2.8 5.7 6.3.9-4.6 4.4 1.1 6.3-5.6-3-5.6 3 1.1-6.3-4.6-4.4 6.3-.9L12 2.8z"></path></svg>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.8l2.8 5.7 6.3.9-4.6 4.4 1.1 6.3-5.6-3-5.6 3 1.1-6.3-4.6-4.4 6.3-.9L12 2.8z"></path></svg>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.8l2.8 5.7 6.3.9-4.6 4.4 1.1 6.3-5.6-3-5.6 3 1.1-6.3-4.6-4.4 6.3-.9L12 2.8z"></path></svg>
+            <svg class="partial" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.8l2.8 5.7 6.3.9-4.6 4.4 1.1 6.3-5.6-3-5.6 3 1.1-6.3-4.6-4.4 6.3-.9L12 2.8z"></path></svg>
+          </div>
+          <div class="rating-count">Based on 286 ratings</div>
+          <div class="recommend-pill">94% recommend it</div>
+
+          <hr class="card-rule">
+          <p class="card-label">Rating breakdown</p>
+
+          <div class="distribution" aria-label="Rating distribution">
+            <div class="distribution-row">
+              <span>5</span>
+              <div class="bar-track"><div class="bar-fill" style="width: 78%;"></div></div>
+              <span class="count">224</span>
+            </div>
+            <div class="distribution-row">
+              <span>4</span>
+              <div class="bar-track"><div class="bar-fill" style="width: 14%;"></div></div>
+              <span class="count">39</span>
+            </div>
+            <div class="distribution-row">
+              <span>3</span>
+              <div class="bar-track"><div class="bar-fill" style="width: 5%;"></div></div>
+              <span class="count">14</span>
+            </div>
+            <div class="distribution-row">
+              <span>2</span>
+              <div class="bar-track"><div class="bar-fill" style="width: 3%;"></div></div>
+              <span class="count">6</span>
+            </div>
+            <div class="distribution-row">
+              <span>1</span>
+              <div class="bar-track"><div class="bar-fill" style="width: 2%;"></div></div>
+              <span class="count">3</span>
+            </div>
+          </div>
+
+          <button class="write-button" type="button">Write a review</button>
+        </section>
+      </div>
+
+      <div class="review-column">
+        <div class="reviews-heading">
+          <h2>Recent Reviews</h2>
+          <button class="sort-button" type="button">
+            Most helpful
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M7 10l5 5 5-5"></path>
+            </svg>
+          </button>
+        </div>
+
+        <section class="review-list" aria-label="Customer review list">
+          <article class="review">
+            <div class="review-top">
+              <div class="review-stars" aria-label="5 out of 5 stars">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.8l2.8 5.7 6.3.9-4.6 4.4 1.1 6.3-5.6-3-5.6 3 1.1-6.3-4.6-4.4 6.3-.9L12 2.8z"></path></svg>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.8l2.8 5.7 6.3.9-4.6 4.4 1.1 6.3-5.6-3-5.6 3 1.1-6.3-4.6-4.4 6.3-.9L12 2.8z"></path></svg>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.8l2.8 5.7 6.3.9-4.6 4.4 1.1 6.3-5.6-3-5.6 3 1.1-6.3-4.6-4.4 6.3-.9L12 2.8z"></path></svg>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.8l2.8 5.7 6.3.9-4.6 4.4 1.1 6.3-5.6-3-5.6 3 1.1-6.3-4.6-4.4 6.3-.9L12 2.8z"></path></svg>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.8l2.8 5.7 6.3.9-4.6 4.4 1.1 6.3-5.6-3-5.6 3 1.1-6.3-4.6-4.4 6.3-.9L12 2.8z"></path></svg>
+              </div>
+              <span class="review-date">May 18, 2025</span>
+            </div>
+            <h3>Roomy without feeling bulky</h3>
+            <p>The canvas holds its shape, and the inside pocket keeps my keys easy to find. Two weeks of daily use and no sagging at the seams.</p>
+            <div class="review-foot">
+              <span class="review-author">Avery Bell · Verified purchase</span>
+              <button class="helpful-button" type="button">Helpful · 24</button>
+            </div>
+          </article>
+
+          <article class="review">
+            <div class="review-top">
+              <div class="review-stars" aria-label="4 out of 5 stars">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.8l2.8 5.7 6.3.9-4.6 4.4 1.1 6.3-5.6-3-5.6 3 1.1-6.3-4.6-4.4 6.3-.9L12 2.8z"></path></svg>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.8l2.8 5.7 6.3.9-4.6 4.4 1.1 6.3-5.6-3-5.6 3 1.1-6.3-4.6-4.4 6.3-.9L12 2.8z"></path></svg>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.8l2.8 5.7 6.3.9-4.6 4.4 1.1 6.3-5.6-3-5.6 3 1.1-6.3-4.6-4.4 6.3-.9L12 2.8z"></path></svg>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.8l2.8 5.7 6.3.9-4.6 4.4 1.1 6.3-5.6-3-5.6 3 1.1-6.3-4.6-4.4 6.3-.9L12 2.8z"></path></svg>
+                <svg class="empty" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.8l2.8 5.7 6.3.9-4.6 4.4 1.1 6.3-5.6-3-5.6 3 1.1-6.3-4.6-4.4 6.3-.9L12 2.8z"></path></svg>
+              </div>
+              <span class="review-date">May 11, 2025</span>
+            </div>
+            <h3>Strong handles and good size</h3>
+            <p>It carries a laptop and groceries comfortably. I would prefer a longer zipper pull, but the stitching looks built to last.</p>
+            <div class="review-foot">
+              <span class="review-author">Maren Cole · Verified purchase</span>
+              <button class="helpful-button" type="button">Helpful · 18</button>
+            </div>
+          </article>
+
+          <article class="review">
+            <div class="review-top">
+              <div class="review-stars" aria-label="5 out of 5 stars">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.8l2.8 5.7 6.3.9-4.6 4.4 1.1 6.3-5.6-3-5.6 3 1.1-6.3-4.6-4.4 6.3-.9L12 2.8z"></path></svg>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.8l2.8 5.7 6.3.9-4.6 4.4 1.1 6.3-5.6-3-5.6 3 1.1-6.3-4.6-4.4 6.3-.9L12 2.8z"></path></svg>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.8l2.8 5.7 6.3.9-4.6 4.4 1.1 6.3-5.6-3-5.6 3 1.1-6.3-4.6-4.4 6.3-.9L12 2.8z"></path></svg>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.8l2.8 5.7 6.3.9-4.6 4.4 1.1 6.3-5.6-3-5.6 3 1.1-6.3-4.6-4.4 6.3-.9L12 2.8z"></path></svg>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.8l2.8 5.7 6.3.9-4.6 4.4 1.1 6.3-5.6-3-5.6 3 1.1-6.3-4.6-4.4 6.3-.9L12 2.8z"></path></svg>
+              </div>
+              <span class="review-date">May 3, 2025</span>
+            </div>
+            <h3>Perfect for the commute</h3>
+            <p>Fits my laptop, lunch, and a folded jacket with room to spare, and the strap never digs into my shoulder on the walk home.</p>
+            <div class="review-foot">
+              <span class="review-author">Priya Raman · Verified purchase</span>
+              <button class="helpful-button" type="button">Helpful · 15</button>
+            </div>
+          </article>
+
+          <article class="review">
+            <div class="review-top">
+              <div class="review-stars" aria-label="3 out of 5 stars">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.8l2.8 5.7 6.3.9-4.6 4.4 1.1 6.3-5.6-3-5.6 3 1.1-6.3-4.6-4.4 6.3-.9L12 2.8z"></path></svg>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.8l2.8 5.7 6.3.9-4.6 4.4 1.1 6.3-5.6-3-5.6 3 1.1-6.3-4.6-4.4 6.3-.9L12 2.8z"></path></svg>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.8l2.8 5.7 6.3.9-4.6 4.4 1.1 6.3-5.6-3-5.6 3 1.1-6.3-4.6-4.4 6.3-.9L12 2.8z"></path></svg>
+                <svg class="empty" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.8l2.8 5.7 6.3.9-4.6 4.4 1.1 6.3-5.6-3-5.6 3 1.1-6.3-4.6-4.4 6.3-.9L12 2.8z"></path></svg>
+                <svg class="empty" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.8l2.8 5.7 6.3.9-4.6 4.4 1.1 6.3-5.6-3-5.6 3 1.1-6.3-4.6-4.4 6.3-.9L12 2.8z"></path></svg>
+              </div>
+              <span class="review-date">April 29, 2025</span>
+            </div>
+            <h3>Useful, but the color runs dark</h3>
+            <p>The quality is solid, though the blue looks deeper indoors than it did online. Still using it daily for studio runs.</p>
+            <div class="review-foot">
+              <span class="review-author">Graham West · Verified purchase</span>
+              <button class="helpful-button" type="button">Helpful · 9</button>
+            </div>
+          </article>
+        </section>
+      </div>
+    </main>
+
+    <nav class="tab-bar" aria-label="Primary navigation">
+      <div class="tab">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M3.5 10.5L12 3l8.5 7.5"></path>
+          <path d="M5.5 9.5V21h13V9.5M9.5 21v-6h5v6"></path>
+        </svg>
+        <span>Home</span>
+      </div>
+      <div class="tab">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="11" cy="11" r="6.5"></circle>
+          <path d="M16 16l4.5 4.5"></path>
+        </svg>
+        <span>Search</span>
+      </div>
+      <div class="tab active">
+        <svg viewBox="0 0 24 24" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M4 5.5h16v12H9l-5 3v-15z"></path>
+          <path d="M8 10h8M8 14h5"></path>
+        </svg>
+        <span>Reviews</span>
+      </div>
+      <div class="tab">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M5 8h14l-1 12H6L5 8z"></path>
+          <path d="M9 9V6a3 3 0 016 0v3"></path>
+        </svg>
+        <span>Cart</span>
+      </div>
+    </nav>
+  </div>
+</body>
+</html>

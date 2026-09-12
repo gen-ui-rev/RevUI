@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kinloop Scan</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #cfd1d6;
+      color: #202127;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #eceef1;
+      box-shadow: 0 10px 28px rgba(28, 29, 33, 0.16);
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      min-height: 58px;
+      padding: 0 12px;
+      background: #ffffff;
+      border-bottom: 1px solid #dcdde1;
+    }
+
+    .topbar-side {
+      width: 42px;
+      display: flex;
+      align-items: center;
+    }
+
+    .topbar-side:last-child {
+      justify-content: flex-end;
+    }
+
+    .icon-button {
+      width: 38px;
+      height: 38px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      border: 0;
+      border-radius: 6px;
+      background: transparent;
+      color: #35363c;
+    }
+
+    .icon-button svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .topbar-title {
+      flex: 1;
+      margin: 0;
+      text-align: center;
+      font-size: 17px;
+      font-weight: 600;
+      line-height: 1.3;
+    }
+
+    main {
+      flex: 1;
+      padding: 12px;
+    }
+
+    .instruction {
+      padding: 13px 14px;
+      border: 1px solid #dedfe4;
+      border-radius: 6px;
+      background: #ffffff;
+    }
+
+    .instruction h1 {
+      margin: 0 0 4px;
+      font-size: 19px;
+      font-weight: 600;
+      line-height: 1.25;
+    }
+
+    .instruction p {
+      margin: 0;
+      color: #666871;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    .viewfinder {
+      position: relative;
+      height: 462px;
+      margin-top: 10px;
+      border-radius: 6px;
+      background: #5e6068;
+    }
+
+    .viewfinder-toolbar {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      right: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .camera-label {
+      padding: 7px 9px;
+      border-radius: 6px;
+      background: #ffffff;
+      color: #3f4148;
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1;
+    }
+
+    .camera-tool {
+      width: 38px;
+      height: 38px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      border: 0;
+      border-radius: 6px;
+      background: #ffffff;
+      color: #3f4148;
+    }
+
+    .camera-tool svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .scan-frame {
+      position: absolute;
+      top: 88px;
+      left: 50%;
+      width: 286px;
+      height: 286px;
+      transform: translateX(-50%);
+    }
+
+    .corner {
+      position: absolute;
+      width: 54px;
+      height: 54px;
+      border-color: #f00082;
+      border-style: solid;
+    }
+
+    .corner.tl {
+      top: 0;
+      left: 0;
+      border-width: 4px 0 0 4px;
+      border-radius: 6px 0 0 0;
+    }
+
+    .corner.tr {
+      top: 0;
+      right: 0;
+      border-width: 4px 4px 0 0;
+      border-radius: 0 6px 0 0;
+    }
+
+    .corner.bl {
+      bottom: 0;
+      left: 0;
+      border-width: 0 0 4px 4px;
+      border-radius: 0 0 0 6px;
+    }
+
+    .corner.br {
+      right: 0;
+      bottom: 0;
+      border-width: 0 4px 4px 0;
+      border-radius: 0 0 6px 0;
+    }
+
+    .target {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 86px;
+      height: 86px;
+      transform: translate(-50%, -50%);
+      border: 1px solid rgba(255, 255, 255, 0.7);
+      border-radius: 6px;
+    }
+
+    .target::before,
+    .target::after {
+      position: absolute;
+      content: "";
+      background: rgba(255, 255, 255, 0.8);
+    }
+
+    .target::before {
+      top: 42px;
+      left: 14px;
+      width: 58px;
+      height: 1px;
+    }
+
+    .target::after {
+      top: 14px;
+      left: 42px;
+      width: 1px;
+      height: 58px;
+    }
+
+    .viewfinder-note {
+      position: absolute;
+      right: 16px;
+      bottom: 17px;
+      left: 16px;
+      margin: 0;
+      color: #ffffff;
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 1.4;
+      text-align: center;
+    }
+
+    .scan-controls {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 8px;
+      margin-top: 10px;
+      padding: 10px;
+      border: 1px solid #dedfe4;
+      border-radius: 6px;
+      background: #ffffff;
+    }
+
+    .control {
+      min-width: 0;
+      padding: 8px 4px;
+      border: 0;
+      border-radius: 6px;
+      background: transparent;
+      color: #555760;
+      text-align: center;
+    }
+
+    .control svg {
+      display: block;
+      width: 22px;
+      height: 22px;
+      margin: 0 auto 5px;
+    }
+
+    .control span {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1.2;
+    }
+
+    .control.primary {
+      background: #f00082;
+      color: #ffffff;
+    }
+
+    .tabbar {
+      min-height: 74px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      align-items: stretch;
+      background: #ffffff;
+      border-top: 1px solid #dcdde1;
+    }
+
+    .tab {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 4px;
+      border: 0;
+      background: transparent;
+      color: #73757e;
+    }
+
+    .tab svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .tab span {
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1;
+    }
+
+    .tab.active {
+      color: #f00082;
+    }
+
+    .tab.active::before {
+      position: absolute;
+      top: 0;
+      left: 24px;
+      right: 24px;
+      height: 3px;
+      content: "";
+      background: #f00082;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <div class="topbar-side">
+        <button class="icon-button" type="button" aria-label="Close scanner">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+      <p class="topbar-title">Kinloop Scan</p>
+      <div class="topbar-side">
+        <button class="icon-button" type="button" aria-label="Scanner help">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/>
+            <path d="M9.8 9a2.4 2.4 0 1 1 3.3 2.2c-.8.4-1.1.9-1.1 1.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="12" cy="16.7" r="1" fill="currentColor"/>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <main>
+      <section class="instruction" aria-labelledby="scan-title">
+        <h1 id="scan-title">Scan a circle code</h1>
+        <p>Join a Kinloop circle by placing its code inside the frame.</p>
+      </section>
+
+      <section class="viewfinder" aria-label="Camera viewfinder">
+        <div class="viewfinder-toolbar">
+          <span class="camera-label">Code scan</span>
+          <button class="camera-tool" type="button" aria-label="Turn flash on">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M13.5 2L6 13h5l-.5 9L18 10h-5l.5-8z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+
+        <div class="scan-frame" aria-hidden="true">
+          <span class="corner tl"></span>
+          <span class="corner tr"></span>
+          <span class="corner bl"></span>
+          <span class="corner br"></span>
+          <span class="target"></span>
+        </div>
+
+        <p class="viewfinder-note">Hold steady. The code scans automatically.</p>
+      </section>
+
+      <section class="scan-controls" aria-label="Scanner controls">
+        <button class="control" type="button">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <rect x="3" y="5" width="18" height="15" rx="1" stroke="currentColor" stroke-width="1.8"/>
+            <path d="M7 16l3-3 2.5 2.5L15 12l4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="8" cy="9" r="1.4" fill="currentColor"/>
+          </svg>
+          <span>Import code</span>
+        </button>
+
+        <button class="control primary" type="button">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M4 9V5h4M16 5h4v4M20 15v4h-4M8 19H4v-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <rect x="9" y="9" width="6" height="6" rx="1" stroke="currentColor" stroke-width="2"/>
+          </svg>
+          <span>Scan now</span>
+        </button>
+
+        <button class="control" type="button">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M20 7v5h-5M4 17v-5h5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M18.2 12a6.5 6.5 0 0 0-11-4.7L4 10M5.8 12a6.5 6.5 0 0 0 11 4.7L20 14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+          <span>Switch camera</span>
+        </button>
+      </section>
+    </main>
+
+    <nav class="tabbar" aria-label="Primary navigation">
+      <button class="tab" type="button">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M3 11.5L12 4l9 7.5V20h-6v-5H9v5H3v-8.5z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+        </svg>
+        <span>Home</span>
+      </button>
+
+      <button class="tab" type="button">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M4 5h16v11H9l-5 4V5z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+        </svg>
+        <span>Messages</span>
+      </button>
+
+      <button class="tab active" type="button" aria-current="page">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M4 9V5h4M16 5h4v4M20 15v4h-4M8 19H4v-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <rect x="9" y="9" width="6" height="6" rx="1" stroke="currentColor" stroke-width="2"/>
+        </svg>
+        <span>Scan</span>
+      </button>
+
+      <button class="tab" type="button">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="12" cy="8" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+          <path d="M5 20c.5-4 2.8-6 7-6s6.5 2 7 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+        <span>Profile</span>
+      </button>
+    </nav>
+  </div>
+</body>
+</html>

@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Portmarrow Stays — Experiences</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --amber:#E08A00;
+    --amber-soft:rgba(224,138,0,.14);
+    --amber-softer:rgba(224,138,0,.08);
+    --ink:#20201D;
+    --muted:#77746C;
+    --line:#e8e5de;
+  }
+  *{box-sizing:border-box;}
+  body{
+    min-height:100vh;margin:0;padding:32px 0;
+    display:flex;justify-content:center;align-items:flex-start;
+    background:#d9d7d2;font-family:'Nunito Sans',system-ui,sans-serif;color:var(--ink);
+  }
+  .screen{
+    position:relative;width:768px;height:1024px;background:#ecebe6;
+    box-shadow:0 12px 34px rgba(40,38,32,.16);
+  }
+
+  .map{position:absolute;left:0;right:0;top:80px;height:570px;background:#e7e5df;overflow:hidden;}
+  .water{
+    position:absolute;left:-80px;top:420px;width:960px;height:300px;
+    background:#d5e0e3;transform:rotate(-5deg);
+  }
+  .park{position:absolute;background:var(--amber-soft);border-radius:20px;}
+  .p1{left:48px;top:104px;width:230px;height:128px;}
+  .p2{left:512px;top:206px;width:230px;height:142px;}
+  .p3{left:300px;top:368px;width:176px;height:104px;}
+  .road{position:absolute;background:#f7f6f2;}
+  .r1{left:-40px;top:196px;width:850px;height:25px;transform:rotate(4deg);}
+  .r2{left:-50px;top:332px;width:870px;height:19px;transform:rotate(-3deg);}
+  .r3{left:194px;top:-40px;width:23px;height:640px;transform:rotate(7deg);}
+  .r4{left:548px;top:-40px;width:18px;height:650px;transform:rotate(-6deg);}
+  .r5{left:-30px;top:452px;width:850px;height:17px;transform:rotate(2deg);}
+  .block{position:absolute;background:#dedcd5;border-radius:16px;}
+  .b1{left:322px;top:235px;width:112px;height:70px;}
+  .b2{left:82px;top:280px;width:88px;height:56px;}
+  .b3{left:620px;top:88px;width:100px;height:66px;}
+  .b4{left:126px;top:410px;width:86px;height:58px;}
+  .maplabel{
+    position:absolute;color:#8d8a81;font-size:12px;font-weight:700;
+    letter-spacing:.06em;text-transform:uppercase;
+  }
+  .ml1{left:86px;top:144px;}
+  .ml2{left:566px;top:252px;}
+  .ml3{left:352px;top:406px;}
+
+  .pin{
+    position:absolute;background:#fff;color:var(--ink);padding:8px 12px;
+    border-radius:16px;font-size:13px;font-weight:700;
+    box-shadow:0 2px 5px rgba(0,0,0,.16);white-space:nowrap;
+  }
+  .pin.sel{background:var(--amber);color:#fff;padding:10px 15px;}
+  .pin.sel span{display:block;font-size:12px;font-weight:600;opacity:.92;}
+  .m1{left:104px;top:184px;}
+  .m2{left:582px;top:178px;}
+  .m3{left:538px;top:354px;}
+  .m4{left:166px;top:350px;}
+  .msel{left:325px;top:272px;}
+  .here{
+    position:absolute;left:378px;top:408px;width:16px;height:16px;border-radius:50%;
+    background:#3b7cc4;border:3px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.24);
+  }
+
+  .topbar{
+    position:absolute;top:0;left:0;right:0;height:80px;background:#fff;
+    padding:14px 20px;display:flex;align-items:center;gap:14px;
+    border-bottom:1px solid var(--line);z-index:4;
+  }
+  .back{
+    width:48px;height:48px;flex:0 0 48px;border-radius:16px;
+    display:flex;align-items:center;justify-content:center;background:#f7f5f1;
+  }
+  .search{
+    flex:1;min-width:0;background:var(--amber-softer);border-radius:16px;
+    padding:8px 15px;
+  }
+  .search .lab{font-size:12px;color:var(--muted);line-height:1.1;}
+  .search .val{
+    font-size:16px;font-weight:700;line-height:1.4;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .filter{
+    min-width:116px;height:48px;border:1px solid var(--line);border-radius:16px;
+    display:flex;align-items:center;justify-content:center;gap:8px;
+    font-size:14px;font-weight:700;
+  }
+
+  .chips{
+    position:absolute;left:24px;top:20px;display:flex;gap:9px;z-index:2;
+  }
+  .chip{
+    padding:9px 14px;border-radius:16px;background:#fff;
+    font-size:13px;font-weight:700;box-shadow:0 2px 5px rgba(0,0,0,.14);
+    white-space:nowrap;
+  }
+  .chip.on{background:var(--amber);color:#fff;}
+  .locate{
+    position:absolute;right:24px;bottom:22px;width:50px;height:50px;border-radius:17px;
+    background:#fff;display:flex;align-items:center;justify-content:center;
+    box-shadow:0 2px 6px rgba(0,0,0,.16);
+  }
+
+  .sheet{
+    position:absolute;left:0;right:0;top:630px;bottom:80px;background:#fff;
+    border-radius:22px 22px 0 0;padding:10px 22px 18px;
+    box-shadow:0 -3px 10px rgba(0,0,0,.09);
+  }
+  .handle{width:54px;height:5px;border-radius:5px;background:#dcd8d0;margin:0 auto 10px;}
+  .sheet-head{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:13px;}
+  .sheet-head h1{font-size:22px;line-height:1.2;margin:0;}
+  .sheet-head p{font-size:13px;color:var(--muted);margin:3px 0 0;}
+  .sheet-head span{font-size:14px;color:var(--amber);font-weight:700;padding-bottom:2px;}
+
+  .experience-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+  .experience{
+    min-width:0;border:1px solid var(--line);border-radius:18px;padding:12px;background:#fff;
+  }
+  .experience.active{background:var(--amber-softer);border-color:rgba(224,138,0,.34);}
+  .exp-top{display:flex;align-items:center;gap:10px;}
+  .experience img{
+    display:block;width:72px;height:72px;flex:0 0 72px;
+    border-radius:15px;object-fit:cover;background:#dedcd5;
+  }
+  .time{
+    min-width:0;color:var(--amber);font-size:12px;font-weight:700;line-height:1.3;
+  }
+  .spots{font-size:11px;color:var(--muted);font-weight:600;margin-top:3px;}
+  .exp-name{
+    margin-top:9px;font-size:15px;font-weight:700;line-height:1.25;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .exp-meta{
+    margin-top:2px;color:var(--muted);font-size:12px;line-height:1.35;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .exp-bottom{
+    display:flex;align-items:center;justify-content:space-between;margin-top:8px;
+  }
+  .rating{display:flex;align-items:center;gap:3px;font-size:12px;font-weight:700;}
+  .cost{text-align:right;font-size:15px;font-weight:700;}
+  .cost small{display:block;color:var(--muted);font-size:10px;font-weight:400;}
+
+  .tabbar{
+    position:absolute;left:0;right:0;bottom:0;height:80px;background:#fff;
+    display:flex;align-items:flex-start;padding:12px 142px 0;border-top:1px solid var(--line);
+  }
+  .tab{
+    flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;
+    color:var(--muted);font-size:12px;font-weight:700;
+  }
+  .tab.on{color:var(--amber);}
+</style>
+</head>
+<body>
+<div class="screen">
+  <header class="topbar">
+    <div class="back">
+      <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="#20201D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M15 5l-7 7 7 7"/>
+      </svg>
+    </div>
+    <div class="search">
+      <div class="lab">Experiences near your stay</div>
+      <div class="val">Sea Cliff District, Portmarrow · Sep 12–15</div>
+    </div>
+    <div class="filter">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#20201D" stroke-width="1.8" stroke-linecap="round">
+        <path d="M4 7h16M7 12h10M10 17h4"/>
+      </svg>
+      Filters
+    </div>
+  </header>
+
+  <div class="map" aria-hidden="true">
+    <div class="water"></div>
+    <div class="road r1"></div>
+    <div class="road r2"></div>
+    <div class="road r5"></div>
+    <div class="road r3"></div>
+    <div class="road r4"></div>
+    <div class="park p1"></div>
+    <div class="park p2"></div>
+    <div class="park p3"></div>
+    <div class="block b1"></div>
+    <div class="block b2"></div>
+    <div class="block b3"></div>
+    <div class="block b4"></div>
+    <div class="maplabel ml1">Cliff Walk</div>
+    <div class="maplabel ml2">Harbor Green</div>
+    <div class="maplabel ml3">Old Quay</div>
+
+    <div class="chips">
+      <div class="chip on">Today</div>
+      <div class="chip">Under $75</div>
+      <div class="chip">Outdoor</div>
+      <div class="chip">Small groups</div>
+    </div>
+
+    <div class="pin m1">$36</div>
+    <div class="pin m2">$58</div>
+    <div class="pin m3">$44</div>
+    <div class="pin m4">$29</div>
+    <div class="pin sel msel">$58<span>Sunset Harbor Sail</span></div>
+    <div class="here"></div>
+
+    <div class="locate">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#20201D" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="3.2"/>
+        <path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3"/>
+      </svg>
+    </div>
+  </div>
+
+  <section class="sheet">
+    <div class="handle"></div>
+    <div class="sheet-head">
+      <div>
+        <h1>Portmarrow experiences</h1>
+        <p>Local activities available during your trip</p>
+      </div>
+      <span>View all 18</span>
+    </div>
+
+    <div class="experience-grid">
+      <article class="experience active">
+        <div class="exp-top">
+          <img src="https://loremflickr.com/72/72/hotel?lock=2960" width="72" height="72" alt="Guests preparing for a sunset harbor sailing experience">
+          <div class="time">Today<br>5:30 PM<div class="spots">4 spots left</div></div>
+        </div>
+        <div class="exp-name">Sunset Harbor Sail</div>
+        <div class="exp-meta">2 hours · Leaves from Old Quay</div>
+        <div class="exp-bottom">
+          <div class="rating">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="#E08A00"><path d="M12 3l2.7 5.6 6.1.8-4.5 4.2 1.1 6-5.4-3-5.4 3 1.1-6L3.2 9.4l6.1-.8z"/></svg>
+            4.95
+          </div>
+          <div class="cost">$58<small>per guest</small></div>
+        </div>
+      </article>
+
+      <article class="experience">
+        <div class="exp-top">
+          <img src="https://loremflickr.com/72/72/beach?lock=2961" width="72" height="72" alt="Guide leading a coastal walk beside the beach">
+          <div class="time">Tomorrow<br>9:00 AM<div class="spots">8 spots left</div></div>
+        </div>
+        <div class="exp-name">Cliff Walk with a Local</div>
+        <div class="exp-meta">90 minutes · Easy coastal route</div>
+        <div class="exp-bottom">
+          <div class="rating">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="#E08A00"><path d="M12 3l2.7 5.6 6.1.8-4.5 4.2 1.1 6-5.4-3-5.4 3 1.1-6L3.2 9.4l6.1-.8z"/></svg>
+            4.82
+          </div>
+          <div class="cost">$29<small>per guest</small></div>
+        </div>
+      </article>
+
+      <article class="experience">
+        <div class="exp-top">
+          <img src="https://loremflickr.com/72/72/cityscape?lock=2962" width="72" height="72" alt="Historic Portmarrow waterfront explored on a food tour">
+          <div class="time">Tomorrow<br>1:30 PM<div class="spots">6 spots left</div></div>
+        </div>
+        <div class="exp-name">Old Quay Tasting Tour</div>
+        <div class="exp-meta">2.5 hours · Five local tastings</div>
+        <div class="exp-bottom">
+          <div class="rating">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="#E08A00"><path d="M12 3l2.7 5.6 6.1.8-4.5 4.2 1.1 6-5.4-3-5.4 3 1.1-6L3.2 9.4l6.1-.8z"/></svg>
+            4.88
+          </div>
+          <div class="cost">$44<small>per guest</small></div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <nav class="tabbar">
+    <div class="tab on">
+      <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="#E08A00" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 6.5l6-2.5 6 2.5 6-2.5v13.5l-6 2.5-6-2.5-6 2.5z"/>
+        <path d="M9 4v13.5M15 6.5V20"/>
+      </svg>
+      Explore
+    </div>
+    <div class="tab">
+      <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="#77746C" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 20s-7-4.4-7-9.4A4 4 0 0112 8a4 4 0 017 2.6c0 5-7 9.4-7 9.4z"/>
+      </svg>
+      Saved
+    </div>
+    <div class="tab">
+      <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="#77746C" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3.5" y="7" width="17" height="12.5" rx="2.5"/>
+        <path d="M9 7V5.5A1.5 1.5 0 0110.5 4h3A1.5 1.5 0 0115 5.5V7"/>
+      </svg>
+      Trips
+    </div>
+    <div class="tab">
+      <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="#77746C" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="8.5" r="3.5"/>
+        <path d="M5 20c1.3-3.3 3.9-5 7-5s5.7 1.7 7 5"/>
+      </svg>
+      Account
+    </div>
+  </nav>
+</div>
+</body>
+</html>

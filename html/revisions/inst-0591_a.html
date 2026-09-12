@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Invite Teammates — Roamstead</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #e7e9eb;
+      color: #20262d;
+      font-family: 'Source Serif 4', Georgia, serif;
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    .screen {
+      position: relative;
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #fbfcfd;
+    }
+
+    .topbar {
+      min-height: 60px;
+      padding: 0 16px;
+      display: grid;
+      grid-template-columns: 40px 1fr 40px;
+      align-items: center;
+      border-bottom: 1px solid #e2e6e9;
+      background: #ffffff;
+    }
+
+    .topbar-title {
+      margin: 0;
+      text-align: center;
+      font-size: 16px;
+      line-height: 1.25;
+      font-weight: 600;
+    }
+
+    .icon-button {
+      width: 40px;
+      height: 40px;
+      padding: 8px;
+      border: 0;
+      background: transparent;
+      color: #26313a;
+      display: grid;
+      place-items: center;
+    }
+
+    .icon-button svg {
+      width: 21px;
+      height: 21px;
+    }
+
+    main {
+      flex: 1;
+      min-height: 0;
+      padding: 14px 18px 12px;
+    }
+
+    .intro {
+      margin-bottom: 15px;
+    }
+
+    .eyebrow {
+      margin: 0 0 4px;
+      color: #526170;
+      font-size: 11px;
+      line-height: 1.3;
+      font-weight: 700;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0 0 5px;
+      font-size: 29px;
+      line-height: 1.08;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+
+    .intro-copy {
+      margin: 0;
+      color: #65717b;
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    .invite-panel {
+      margin-bottom: 16px;
+      padding: 15px;
+      border: 1px solid #d8dfe4;
+      background: #ffffff;
+      box-shadow: 0 2px 8px rgba(31, 45, 55, 0.04);
+    }
+
+    .field-label {
+      display: block;
+      margin: 0 0 5px;
+      color: #36434d;
+      font-size: 12px;
+      line-height: 1.3;
+      font-weight: 600;
+    }
+
+    .email-row {
+      display: grid;
+      grid-template-columns: 1fr 104px;
+      gap: 8px;
+      margin-bottom: 11px;
+    }
+
+    .text-field,
+    .role-select {
+      width: 100%;
+      min-width: 0;
+      padding: 10px 11px;
+      border: 1px solid #cbd3d9;
+      border-radius: 0;
+      outline: none;
+      background: #fbfcfd;
+      color: #28323a;
+      font-size: 13px;
+      line-height: 1.3;
+    }
+
+    .text-field::placeholder {
+      color: #87919a;
+    }
+
+    .role-select {
+      appearance: none;
+      background-image:
+        linear-gradient(45deg, transparent 50%, #5e6b75 50%),
+        linear-gradient(135deg, #5e6b75 50%, transparent 50%);
+      background-position:
+        calc(100% - 14px) 16px,
+        calc(100% - 10px) 16px;
+      background-size: 4px 4px, 4px 4px;
+      background-repeat: no-repeat;
+      padding-right: 25px;
+    }
+
+    .invite-button {
+      width: 100%;
+      padding: 11px 14px;
+      border: 0;
+      background: #243f55;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 14px;
+      line-height: 1.3;
+      font-weight: 600;
+    }
+
+    .invite-button svg {
+      width: 17px;
+      height: 17px;
+    }
+
+    .summary {
+      margin-bottom: 16px;
+    }
+
+    .section-heading {
+      margin: 0 0 8px;
+      font-size: 15px;
+      line-height: 1.3;
+      font-weight: 600;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      border: 1px solid #dde3e7;
+      background: #ffffff;
+    }
+
+    .summary-item {
+      padding: 9px 10px;
+      border-right: 1px solid #e2e7ea;
+    }
+
+    .summary-item:last-child {
+      border-right: 0;
+    }
+
+    .summary-value {
+      display: block;
+      color: #243f55;
+      font-size: 19px;
+      line-height: 1.1;
+      font-weight: 600;
+    }
+
+    .summary-label {
+      display: block;
+      margin-top: 2px;
+      color: #74808a;
+      font-size: 11px;
+      line-height: 1.25;
+    }
+
+    .activity-head {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 74px 64px;
+      gap: 8px;
+      padding: 7px 10px;
+      background: #edf1f4;
+      color: #69757e;
+      font-size: 10px;
+      line-height: 1.3;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .activity-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 74px 64px;
+      gap: 8px;
+      align-items: center;
+      padding: 10px;
+      border: 1px solid #e1e6e9;
+      border-top: 0;
+      background: #ffffff;
+    }
+
+    .person {
+      min-width: 0;
+    }
+
+    .person-name {
+      font-size: 13px;
+      line-height: 1.25;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .person-role {
+      margin-top: 2px;
+      color: #7a858e;
+      font-size: 11px;
+      line-height: 1.25;
+    }
+
+    .status {
+      justify-self: start;
+      padding: 3px 6px;
+      background: #edf4f8;
+      color: #355c74;
+      font-size: 10px;
+      line-height: 1.25;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .status.joined {
+      background: #e8f2ec;
+      color: #356149;
+    }
+
+    .status.expired {
+      background: #f2eeee;
+      color: #786464;
+    }
+
+    .sent-date {
+      color: #6e7982;
+      text-align: right;
+      font-size: 11px;
+      line-height: 1.25;
+      white-space: nowrap;
+    }
+
+    .tabbar {
+      min-height: 70px;
+      padding: 7px 8px 9px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border-top: 1px solid #dfe4e7;
+      background: #ffffff;
+    }
+
+    .tab {
+      padding: 4px 2px;
+      border: 0;
+      background: transparent;
+      color: #7b8790;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      font-size: 11px;
+      line-height: 1.2;
+    }
+
+    .tab.active {
+      color: #243f55;
+      font-weight: 600;
+    }
+
+    .tab svg {
+      width: 20px;
+      height: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <button class="icon-button" aria-label="Go back">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square" stroke-linejoin="miter" aria-hidden="true">
+          <path d="M15 5l-7 7 7 7"></path>
+        </svg>
+      </button>
+      <p class="topbar-title">Team administration</p>
+      <button class="icon-button" aria-label="Invitation settings">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
+          <circle cx="12" cy="12" r="3"></circle>
+          <path d="M12 3v2.2M12 18.8V21M3 12h2.2M18.8 12H21M5.6 5.6l1.6 1.6M16.8 16.8l1.6 1.6M18.4 5.6l-1.6 1.6M7.2 16.8l-1.6 1.6"></path>
+        </svg>
+      </button>
+    </header>
+
+    <main>
+      <section class="intro">
+        <p class="eyebrow">Workspace access</p>
+        <h1>Invite a teammate</h1>
+        <p class="intro-copy">Add colleagues to the Roamstead workspace and assign the right level of access.</p>
+      </section>
+
+      <section class="invite-panel" aria-label="Invite teammate">
+        <label class="field-label" for="work-email">Work email and role</label>
+        <div class="email-row">
+          <input class="text-field" id="work-email" type="email" placeholder="name@company.com">
+          <select class="role-select" aria-label="Workspace role">
+            <option>Member</option>
+            <option>Admin</option>
+            <option>Viewer</option>
+          </select>
+        </div>
+        <button class="invite-button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square" aria-hidden="true">
+            <path d="M4 6h16v12H4z"></path>
+            <path d="M4 7l8 6 8-6"></path>
+          </svg>
+          Send workspace invitation
+        </button>
+      </section>
+
+      <section class="summary" aria-labelledby="access-summary">
+        <h2 class="section-heading" id="access-summary">Access summary</h2>
+        <div class="summary-grid">
+          <div class="summary-item">
+            <span class="summary-value">12</span>
+            <span class="summary-label">Active</span>
+          </div>
+          <div class="summary-item">
+            <span class="summary-value">2</span>
+            <span class="summary-label">Pending</span>
+          </div>
+          <div class="summary-item">
+            <span class="summary-value">3</span>
+            <span class="summary-label">Admins</span>
+          </div>
+        </div>
+      </section>
+
+      <section aria-labelledby="activity-heading">
+        <h2 class="section-heading" id="activity-heading">Invitation activity</h2>
+        <div class="activity-head" aria-hidden="true">
+          <span>Teammate</span>
+          <span>Status</span>
+          <span style="text-align:right">Updated</span>
+        </div>
+        <div class="activity-row">
+          <div class="person">
+            <div class="person-name">Nadia Flores</div>
+            <div class="person-role">Member</div>
+          </div>
+          <span class="status">Pending</span>
+          <span class="sent-date">May 22</span>
+        </div>
+        <div class="activity-row">
+          <div class="person">
+            <div class="person-name">Elliot Brooks</div>
+            <div class="person-role">Admin</div>
+          </div>
+          <span class="status joined">Joined</span>
+          <span class="sent-date">May 20</span>
+        </div>
+        <div class="activity-row">
+          <div class="person">
+            <div class="person-name">Priya Shah</div>
+            <div class="person-role">Viewer</div>
+          </div>
+          <span class="status expired">Expired</span>
+          <span class="sent-date">May 8</span>
+        </div>
+      </section>
+    </main>
+
+    <nav class="tabbar" aria-label="Primary navigation">
+      <button class="tab">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="miter" aria-hidden="true">
+          <path d="M4 11l8-7 8 7v9H4z"></path>
+          <path d="M9 20v-6h6v6"></path>
+        </svg>
+        Overview
+      </button>
+      <button class="tab">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
+          <path d="M4 6h16v14H4z"></path>
+          <path d="M8 4v4M16 4v4M4 10h16"></path>
+        </svg>
+        Bookings
+      </button>
+      <button class="tab active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="square" aria-hidden="true">
+          <circle cx="8" cy="8" r="3"></circle>
+          <circle cx="17" cy="9" r="2.5"></circle>
+          <path d="M2.8 19c.5-3.7 2.2-5.5 5.2-5.5s4.7 1.8 5.2 5.5M14 14c3.7-.8 6.1.8 6.7 4.5"></path>
+        </svg>
+        Team
+      </button>
+      <button class="tab">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
+          <circle cx="12" cy="8" r="3.5"></circle>
+          <path d="M5 20c.6-4.3 2.8-6.5 7-6.5s6.4 2.2 7 6.5"></path>
+        </svg>
+        Account
+      </button>
+    </nav>
+  </div>
+</body>
+</html>

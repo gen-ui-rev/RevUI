@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Delivery Sequence</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #e9e9ed;
+      color: #202027;
+      font-family: 'Inter', system-ui, sans-serif;
+    }
+
+    .screen {
+      width: 390px;
+      height: 560px;
+      padding: 36px 24px;
+      background: #f8f8fa;
+    }
+
+    .reorder-panel {
+      width: 100%;
+      border: 1px solid #d8d7de;
+      background: #ffffff;
+    }
+
+    .panel-header {
+      padding: 18px 22px 14px;
+      border-bottom: 1px solid #d8d7de;
+    }
+
+    .eyebrow {
+      margin: 0 0 6px;
+      color: #6d43c5;
+      font-size: 11.5px;
+      font-weight: 600;
+      line-height: 1.3;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      color: #5e35b1;
+      font-size: 21px;
+      font-weight: 700;
+      line-height: 1.25;
+    }
+
+    .description {
+      margin: 8px 0 0;
+      color: #62616a;
+      font-size: 12.5px;
+      font-weight: 400;
+      line-height: 1.45;
+      white-space: nowrap;
+    }
+
+    .stop-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .stop {
+      border-bottom: 1px solid #e2e1e6;
+    }
+
+    .stop-main {
+      display: grid;
+      grid-template-columns: 46px minmax(0, 1fr) 26px;
+      gap: 12px;
+      align-items: center;
+      padding: 12px 22px;
+    }
+
+    .seq-tile {
+      padding: 4px 2px;
+      border: 1px solid #ded8ee;
+      background: #f4f0fb;
+      text-align: center;
+    }
+
+    .seq-label {
+      display: block;
+      color: #7a5cc0;
+      font-size: 8.5px;
+      font-weight: 700;
+      line-height: 1.3;
+      letter-spacing: 0.14em;
+    }
+
+    .seq-number {
+      display: block;
+      color: #4d2b96;
+      font-size: 20px;
+      font-weight: 700;
+      line-height: 1.1;
+    }
+
+    .stop-details {
+      min-width: 0;
+    }
+
+    .stop-name {
+      margin: 0;
+      color: #202027;
+      font-size: 14.5px;
+      font-weight: 600;
+      line-height: 1.35;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .stop-meta {
+      margin: 5px 0 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: nowrap;
+    }
+
+    .window {
+      padding: 3px 7px;
+      border: 1px solid #cfe3d5;
+      background: #eef7f0;
+      color: #266341;
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1.2;
+      white-space: nowrap;
+    }
+
+    .window.tight {
+      border-color: #f0dcc4;
+      background: #fdf4e8;
+      color: #8a5511;
+    }
+
+    .load {
+      color: #73717a;
+      font-size: 11.5px;
+      font-weight: 400;
+      line-height: 1.2;
+      white-space: nowrap;
+    }
+
+    .move-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .move {
+      width: 26px;
+      height: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      border: 1px solid #d8d7de;
+      border-radius: 0;
+      background: #ffffff;
+      color: #55535d;
+    }
+
+    .move svg {
+      width: 10px;
+      height: 7px;
+      display: block;
+    }
+
+    .leg {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 7px 22px;
+      border-top: 1px solid #eceaf1;
+      background: #faf9fc;
+      color: #6a6874;
+      font-size: 11.5px;
+      font-weight: 400;
+      line-height: 1.35;
+      white-space: nowrap;
+    }
+
+    .leg-arrow {
+      color: #6d43c5;
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .leg strong {
+      color: #3d3b45;
+      font-weight: 600;
+    }
+
+    .panel-footer {
+      padding: 14px 22px 18px;
+    }
+
+    .footer-note {
+      margin: 0 0 10px;
+      color: #62616a;
+      font-size: 11.5px;
+      font-weight: 500;
+      line-height: 1.35;
+      white-space: nowrap;
+    }
+
+    .save-button {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1px solid #6338b6;
+      border-radius: 0;
+      background: #6338b6;
+      color: #ffffff;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 1.2;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <main class="reorder-panel" aria-labelledby="reorder-title">
+      <header class="panel-header">
+        <p class="eyebrow">Van 214 · Tue May 14</p>
+        <h1 id="reorder-title">Delivery sequence</h1>
+        <p class="description">Arrows move a stop; drive times recalculate.</p>
+      </header>
+
+      <ol class="stop-list" aria-label="Delivery stops in dispatch order">
+        <li class="stop">
+          <div class="stop-main">
+            <span class="seq-tile">
+              <span class="seq-label">STOP</span>
+              <span class="seq-number">1</span>
+            </span>
+            <div class="stop-details">
+              <p class="stop-name">Harbor Freight Depot</p>
+              <p class="stop-meta">
+                <span class="window">08:00 – 09:30</span>
+                <span class="load">14 parcels</span>
+              </p>
+            </div>
+            <span class="move-group">
+              <button class="move" type="button" aria-label="Move Harbor Freight Depot earlier">
+                <svg viewBox="0 0 10 7" fill="none" aria-hidden="true">
+                  <path d="M1 5.5 5 1.5l4 4" stroke="currentColor" stroke-width="1.5"/>
+                </svg>
+              </button>
+              <button class="move" type="button" aria-label="Move Harbor Freight Depot later">
+                <svg viewBox="0 0 10 7" fill="none" aria-hidden="true">
+                  <path d="M1 1.5 5 5.5l4-4" stroke="currentColor" stroke-width="1.5"/>
+                </svg>
+              </button>
+            </span>
+          </div>
+          <p class="leg"><span class="leg-arrow">↓</span><strong>14 min drive</strong> · 5.2 mi · arrives 09:44</p>
+        </li>
+
+        <li class="stop">
+          <div class="stop-main">
+            <span class="seq-tile">
+              <span class="seq-label">STOP</span>
+              <span class="seq-number">2</span>
+            </span>
+            <div class="stop-details">
+              <p class="stop-name">Cedar Vale Pharmacy</p>
+              <p class="stop-meta">
+                <span class="window tight">09:45 – 11:00</span>
+                <span class="load">6 parcels</span>
+              </p>
+            </div>
+            <span class="move-group">
+              <button class="move" type="button" aria-label="Move Cedar Vale Pharmacy earlier">
+                <svg viewBox="0 0 10 7" fill="none" aria-hidden="true">
+                  <path d="M1 5.5 5 1.5l4 4" stroke="currentColor" stroke-width="1.5"/>
+                </svg>
+              </button>
+              <button class="move" type="button" aria-label="Move Cedar Vale Pharmacy later">
+                <svg viewBox="0 0 10 7" fill="none" aria-hidden="true">
+                  <path d="M1 1.5 5 5.5l4-4" stroke="currentColor" stroke-width="1.5"/>
+                </svg>
+              </button>
+            </span>
+          </div>
+          <p class="leg"><span class="leg-arrow">↓</span><strong>22 min drive</strong> · 9.4 mi · arrives 11:32</p>
+        </li>
+
+        <li class="stop">
+          <div class="stop-main">
+            <span class="seq-tile">
+              <span class="seq-label">STOP</span>
+              <span class="seq-number">3</span>
+            </span>
+            <div class="stop-details">
+              <p class="stop-name">Millbrook Grocers</p>
+              <p class="stop-meta">
+                <span class="window">11:30 – 13:00</span>
+                <span class="load">21 parcels</span>
+              </p>
+            </div>
+            <span class="move-group">
+              <button class="move" type="button" aria-label="Move Millbrook Grocers earlier">
+                <svg viewBox="0 0 10 7" fill="none" aria-hidden="true">
+                  <path d="M1 5.5 5 1.5l4 4" stroke="currentColor" stroke-width="1.5"/>
+                </svg>
+              </button>
+              <button class="move" type="button" aria-label="Move Millbrook Grocers later">
+                <svg viewBox="0 0 10 7" fill="none" aria-hidden="true">
+                  <path d="M1 1.5 5 5.5l4-4" stroke="currentColor" stroke-width="1.5"/>
+                </svg>
+              </button>
+            </span>
+          </div>
+        </li>
+      </ol>
+
+      <footer class="panel-footer">
+        <p class="footer-note">Route ends 13:05 · all 3 windows met</p>
+        <button class="save-button" type="button">Confirm delivery order</button>
+      </footer>
+    </main>
+  </div>
+</body>
+</html>

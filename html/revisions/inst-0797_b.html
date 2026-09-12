@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Clearfinch Account Setup</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    :root {
+      --accent: #00aeca;
+      --accent-dark: #007f96;
+      --accent-soft: #e9fafd;
+      --ink: #172126;
+      --muted: #647177;
+      --line: #d9e0e3;
+      --surface: #ffffff;
+      --canvas: #e8ecee;
+      --field: #fbfcfc;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: var(--canvas);
+      color: var(--ink);
+      font-family: 'Poppins', system-ui, sans-serif;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      color: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: var(--surface);
+      border: 1px solid #cfd6d9;
+    }
+
+    .topbar {
+      min-height: 56px;
+      display: grid;
+      grid-template-columns: 42px 1fr auto;
+      align-items: center;
+      padding: 0 18px 0 10px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .icon-button {
+      width: 40px;
+      height: 40px;
+      padding: 0;
+      display: grid;
+      place-items: center;
+      border: 0;
+      background: transparent;
+    }
+
+    .icon-button svg {
+      width: 20px;
+      height: 20px;
+      stroke: var(--ink);
+    }
+
+    .topbar-title {
+      font-size: 16px;
+      line-height: 22px;
+      font-weight: 600;
+    }
+
+    .step-count {
+      font-size: 12px;
+      line-height: 18px;
+      color: var(--muted);
+    }
+
+    .setup-tabs {
+      min-height: 45px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .setup-tab {
+      position: relative;
+      display: grid;
+      place-items: center;
+      border: 0;
+      background: var(--surface);
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .setup-tab.active {
+      color: var(--accent-dark);
+    }
+
+    .setup-tab.active::after {
+      content: "";
+      position: absolute;
+      right: 20px;
+      bottom: -1px;
+      left: 20px;
+      height: 3px;
+      background: var(--accent);
+    }
+
+    main {
+      flex: 1;
+      min-height: 0;
+      padding: 16px 20px;
+    }
+
+    .intro {
+      margin-bottom: 14px;
+    }
+
+    .intro h1 {
+      margin: 0;
+      font-size: 26px;
+      line-height: 34px;
+      font-weight: 600;
+      letter-spacing: -0.4px;
+    }
+
+    .intro p {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .section {
+      margin: 0 0 14px;
+    }
+
+    .section:last-child {
+      margin-bottom: 0;
+    }
+
+    .section-heading {
+      margin: 0 0 8px;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 600;
+      letter-spacing: 0.25px;
+      text-transform: uppercase;
+    }
+
+    .profile-row {
+      display: grid;
+      grid-template-columns: 56px 1fr auto;
+      gap: 12px;
+      align-items: center;
+      padding: 0 0 10px;
+      margin-bottom: 9px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .monogram {
+      width: 56px;
+      height: 56px;
+      display: grid;
+      place-items: center;
+      background: var(--accent-soft);
+      border: 1px solid var(--accent);
+      color: var(--accent-dark);
+      font-size: 19px;
+      font-weight: 600;
+    }
+
+    .profile-copy {
+      min-width: 0;
+    }
+
+    .profile-name {
+      margin: 0;
+      overflow: hidden;
+      color: var(--ink);
+      font-size: 15px;
+      line-height: 21px;
+      font-weight: 600;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .profile-note {
+      margin: 2px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 18px;
+    }
+
+    .text-action {
+      padding: 7px 0 7px 10px;
+      border: 0;
+      background: transparent;
+      color: var(--accent-dark);
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 600;
+    }
+
+    .field + .field {
+      margin-top: 8px;
+    }
+
+    .field label {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 17px;
+      font-weight: 500;
+    }
+
+    .field input {
+      width: 100%;
+      height: 40px;
+      padding: 0 12px;
+      border: 1px solid var(--line);
+      border-radius: 0;
+      outline: none;
+      background: var(--field);
+      color: var(--ink);
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .field input:focus {
+      border-color: var(--accent);
+    }
+
+    .section-note {
+      margin: -4px 0 8px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 17px;
+    }
+
+    .interest-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.55fr;
+      gap: 8px;
+    }
+
+    .interest-grid button {
+      min-height: 36px;
+      padding: 7px 10px;
+      border: 1px solid var(--line);
+      border-radius: 0;
+      background: var(--surface);
+      text-align: left;
+      font-size: 13px;
+      line-height: 20px;
+      font-weight: 500;
+    }
+
+    .interest-grid button.selected {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+      color: var(--accent-dark);
+    }
+
+    .preference-list {
+      border-top: 1px solid var(--line);
+    }
+
+    .preference-row {
+      min-height: 45px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 16px;
+      align-items: center;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .preference-label {
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .preference-value {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 20px;
+      font-weight: 500;
+    }
+
+    .switch {
+      width: 38px;
+      height: 22px;
+      position: relative;
+      border: 1px solid #aeb8bc;
+      background: #eef1f2;
+    }
+
+    .switch::after {
+      content: "";
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 14px;
+      height: 14px;
+      background: #7c898f;
+    }
+
+    .switch.on {
+      border-color: var(--accent);
+      background: var(--accent);
+    }
+
+    .switch.on::after {
+      left: 19px;
+      background: #ffffff;
+    }
+
+    .bottom-actions {
+      min-height: 76px;
+      display: grid;
+      grid-template-columns: 42% 58%;
+      padding: 0;
+      border-top: 0;
+      background: #172126;
+    }
+
+    .secondary-button,
+    .primary-button {
+      min-height: 76px;
+      border-radius: 0;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 600;
+    }
+
+    .secondary-button {
+      border: 0;
+      background: #172126;
+      color: #ffffff;
+    }
+
+    .primary-button {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      border: 0;
+      border-left: 1px solid rgba(255, 255, 255, 0.24);
+      background: var(--accent);
+      color: #052f37;
+      text-align: left;
+    }
+
+    .primary-copy {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .primary-kicker {
+      font-size: 10px;
+      line-height: 15px;
+      font-weight: 500;
+      letter-spacing: 0.35px;
+      text-transform: uppercase;
+    }
+
+    .primary-label {
+      font-size: 15px;
+      line-height: 20px;
+      font-weight: 600;
+    }
+
+    .button-arrow {
+      font-size: 22px;
+      line-height: 22px;
+      font-weight: 400;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <button class="icon-button" type="button" aria-label="Go back">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M15 5L8 12L15 19" stroke-width="1.8" stroke-linecap="square" stroke-linejoin="miter"></path>
+        </svg>
+      </button>
+      <div class="topbar-title">Clearfinch setup</div>
+      <div class="step-count">Step 1 of 3</div>
+    </header>
+
+    <nav class="setup-tabs" aria-label="Account setup steps">
+      <button class="setup-tab active" type="button" aria-current="step">Personalize</button>
+      <button class="setup-tab" type="button">Security</button>
+      <button class="setup-tab" type="button">Review</button>
+    </nav>
+
+    <main>
+      <section class="intro">
+        <h1>Shape your money plan</h1>
+        <p>Add the details and priorities Clearfinch will use to organize your account.</p>
+      </section>
+
+      <section class="section" aria-labelledby="profile-heading-b">
+        <h2 class="section-heading" id="profile-heading-b">Profile details</h2>
+
+        <div class="profile-row">
+          <div class="monogram" aria-label="Jordan Avery monogram">JA</div>
+          <div class="profile-copy">
+            <p class="profile-name">Jordan Avery</p>
+            <p class="profile-note">Your account profile image</p>
+          </div>
+          <button class="text-action" type="button">Change</button>
+        </div>
+
+        <div class="field">
+          <label for="preferred-name-b">Preferred name</label>
+          <input id="preferred-name-b" type="text" value="Jordan" aria-label="Preferred name">
+        </div>
+
+        <div class="field">
+          <label for="home-city-b">Home city</label>
+          <input id="home-city-b" type="text" value="Portland, Oregon" aria-label="Home city">
+        </div>
+      </section>
+
+      <section class="section" aria-labelledby="priorities-heading-b">
+        <h2 class="section-heading" id="priorities-heading-b">Financial priorities</h2>
+        <p class="section-note">Select the topics you want to see first.</p>
+        <div class="interest-grid">
+          <button class="selected" type="button" aria-pressed="true">Cash flow</button>
+          <button class="selected" type="button" aria-pressed="true">Emergency savings</button>
+          <button type="button" aria-pressed="false">Investing</button>
+          <button class="selected" type="button" aria-pressed="true">Retirement planning</button>
+        </div>
+      </section>
+
+      <section class="section" aria-labelledby="preferences-heading-b">
+        <h2 class="section-heading" id="preferences-heading-b">Account preferences</h2>
+        <div class="preference-list">
+          <div class="preference-row">
+            <span class="preference-label">Monthly spending summary</span>
+            <span class="switch on" role="switch" aria-checked="true" aria-label="Monthly spending summary enabled"></span>
+          </div>
+          <div class="preference-row">
+            <span class="preference-label">Market update emails</span>
+            <span class="switch" role="switch" aria-checked="false" aria-label="Market update emails disabled"></span>
+          </div>
+          <div class="preference-row">
+            <span class="preference-label">Base currency</span>
+            <span class="preference-value">USD</span>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="bottom-actions">
+      <button class="secondary-button" type="button">← Previous</button>
+      <button class="primary-button" type="button">
+        <span class="primary-copy">
+          <span class="primary-kicker">Save this step</span>
+          <span class="primary-label">Continue</span>
+        </span>
+        <span class="button-arrow" aria-hidden="true">→</span>
+      </button>
+    </footer>
+  </div>
+</body>
+</html>

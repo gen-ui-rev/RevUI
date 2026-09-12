@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lunaro Assistant</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #e8e7eb;
+      color: #1d1b22;
+      font-family: 'Inter', system-ui, sans-serif;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      color: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #ffffff;
+      border: 1px solid #d8d5dd;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 14px;
+      border-bottom: 1px solid #e7e4ea;
+      background: #ffffff;
+    }
+
+    .icon-button {
+      width: 32px;
+      height: 32px;
+      padding: 5px;
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      border: 0;
+      background: transparent;
+    }
+
+    .assistant-mark {
+      width: 36px;
+      height: 36px;
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      border-radius: 6px;
+      background: #6f3bd2;
+      color: #ffffff;
+    }
+
+    .title-block {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .title-block h1 {
+      margin: 0;
+      font-size: 16px;
+      line-height: 20px;
+      font-weight: 600;
+    }
+
+    .title-block p {
+      margin: 2px 0 0;
+      color: #6f6a76;
+      font-size: 12px;
+      line-height: 15px;
+    }
+
+    .context-line {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 8px 16px;
+      color: #625d69;
+      background: #faf9fb;
+      border-bottom: 1px solid #ece9ef;
+      font-size: 12px;
+      line-height: 17px;
+    }
+
+    .context-line svg {
+      flex: 0 0 auto;
+      color: #6f3bd2;
+    }
+
+    .conversation {
+      min-height: 0;
+      flex: 1;
+      padding: 14px 16px;
+      background: #ffffff;
+    }
+
+    .time-divider {
+      margin: 0;
+      color: #89838f;
+      text-align: center;
+      font-size: 12px;
+      line-height: 15px;
+    }
+
+    .message {
+      margin-top: 13px;
+    }
+
+    .assistant-message {
+      padding-right: 2px;
+    }
+
+    .assistant-label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 4px;
+      color: #56309c;
+      font-size: 12px;
+      line-height: 18px;
+      font-weight: 600;
+    }
+
+    .mini-mark {
+      width: 18px;
+      height: 18px;
+      display: grid;
+      place-items: center;
+      border-radius: 6px;
+      background: #eee8fa;
+      color: #6f3bd2;
+    }
+
+    .assistant-message p {
+      margin: 0;
+      color: #2c2931;
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .user-message {
+      width: fit-content;
+      max-width: 306px;
+      margin-left: auto;
+      padding: 9px 12px;
+      border-radius: 6px;
+      background: #f0eafb;
+      color: #2f1c50;
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .breakdown {
+      margin-top: 8px;
+      border-top: 1px solid #ded9e4;
+    }
+
+    .breakdown-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 7px 0;
+      border-bottom: 1px solid #ded9e4;
+      font-size: 14px;
+      line-height: 17px;
+    }
+
+    .breakdown-row span:first-child {
+      color: #625d69;
+    }
+
+    .breakdown-row span:last-child {
+      color: #26222b;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .result-copy {
+      margin-top: 8px !important;
+    }
+
+    .result-copy strong {
+      color: #5f2db9;
+      font-weight: 600;
+    }
+
+    .suggestions {
+      padding: 10px 16px;
+      border-top: 1px solid #e7e4ea;
+      background: #ffffff;
+    }
+
+    .suggestions-label {
+      margin: 0 0 8px;
+      color: #77717e;
+      font-size: 12px;
+      line-height: 14px;
+      font-weight: 500;
+    }
+
+    .suggestion-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    .suggestion {
+      padding: 8px 10px;
+      border: 1px solid #cfc5e3;
+      border-radius: 6px;
+      background: #ffffff;
+      color: #56309c;
+      font-size: 13px;
+      line-height: 16px;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .composer {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 12px;
+      border-top: 1px solid #e7e4ea;
+      background: #ffffff;
+    }
+
+    .input-shell {
+      min-width: 0;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 11px;
+      border: 1px solid #cbc6d0;
+      border-radius: 6px;
+      background: #ffffff;
+    }
+
+    .input-shell svg {
+      flex: 0 0 auto;
+      color: #77717e;
+    }
+
+    .input-shell input {
+      width: 100%;
+      min-width: 0;
+      padding: 0;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      color: #26222b;
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .input-shell input::placeholder {
+      color: #8c8692;
+      opacity: 1;
+    }
+
+    .send-button {
+      width: 42px;
+      height: 42px;
+      padding: 10px;
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      border: 0;
+      border-radius: 6px;
+      background: #6f3bd2;
+      color: #ffffff;
+    }
+
+    .tabbar {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      padding: 8px 10px 10px;
+      border-top: 1px solid #dedbe2;
+      background: #ffffff;
+    }
+
+    .tab {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: #77717e;
+      font-size: 12px;
+      line-height: 14px;
+      font-weight: 500;
+    }
+
+    .tab svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .tab.active {
+      color: #6f3bd2;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <button class="icon-button" type="button" aria-label="Go back">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M15 5L8 12L15 19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+
+      <div class="assistant-mark" aria-hidden="true">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none">
+          <path d="M12 3L13.45 8.55L19 10L13.45 11.45L12 17L10.55 11.45L5 10L10.55 8.55L12 3Z" fill="currentColor"/>
+          <path d="M18.5 15L19.15 17.35L21.5 18L19.15 18.65L18.5 21L17.85 18.65L15.5 18L17.85 17.35L18.5 15Z" fill="currentColor"/>
+        </svg>
+      </div>
+
+      <div class="title-block">
+        <h1>Lunaro Assistant</h1>
+        <p>AI guide for your finances</p>
+      </div>
+
+      <button class="icon-button" type="button" aria-label="Conversation options">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="5" cy="12" r="1.5" fill="currentColor"/>
+          <circle cx="12" cy="12" r="1.5" fill="currentColor"/>
+          <circle cx="19" cy="12" r="1.5" fill="currentColor"/>
+        </svg>
+      </button>
+    </header>
+
+    <div class="context-line">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <rect x="5" y="10" width="14" height="10" rx="2" stroke="currentColor" stroke-width="1.8"/>
+        <path d="M8 10V7.5C8 5.57 9.57 4 11.5 4H12.5C14.43 4 16 5.57 16 7.5V10" stroke="currentColor" stroke-width="1.8"/>
+      </svg>
+      Uses your balances and scheduled payments
+    </div>
+
+    <main class="conversation">
+      <p class="time-divider">Today, 10:24 AM</p>
+
+      <div class="message assistant-message">
+        <div class="assistant-label">
+          <span class="mini-mark" aria-hidden="true">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
+              <path d="M12 3L13.45 8.55L19 10L13.45 11.45L12 17L10.55 11.45L5 10L10.55 8.55L12 3Z" fill="currentColor"/>
+            </svg>
+          </span>
+          Lunaro Assistant
+        </div>
+        <p>I can review your upcoming bills, spending buffer, and available balance.</p>
+      </div>
+
+      <div class="message user-message">
+        Can I invest $300 and still cover bills through May 17?
+      </div>
+
+      <div class="message assistant-message">
+        <div class="assistant-label">
+          <span class="mini-mark" aria-hidden="true">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
+              <path d="M12 3L13.45 8.55L19 10L13.45 11.45L12 17L10.55 11.45L5 10L10.55 8.55L12 3Z" fill="currentColor"/>
+            </svg>
+          </span>
+          Lunaro Assistant
+        </div>
+        <p>Yes, but the margin would be tight. Here is the estimate from your checking plan:</p>
+
+        <div class="breakdown" aria-label="Balance estimate">
+          <div class="breakdown-row">
+            <span>Available checking</span>
+            <span>$1,842.60</span>
+          </div>
+          <div class="breakdown-row">
+            <span>Scheduled bills</span>
+            <span>−$1,126.40</span>
+          </div>
+          <div class="breakdown-row">
+            <span>Usual spending buffer</span>
+            <span>−$360.00</span>
+          </div>
+        </div>
+
+        <p class="result-copy">After investing $300, you would have <strong>$56.20</strong> beyond your buffer.</p>
+      </div>
+
+      <div class="message user-message">
+        What if I invest $200 instead?
+      </div>
+
+      <div class="message assistant-message">
+        <div class="assistant-label">
+          <span class="mini-mark" aria-hidden="true">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
+              <path d="M12 3L13.45 8.55L19 10L13.45 11.45L12 17L10.55 11.45L5 10L10.55 8.55L12 3Z" fill="currentColor"/>
+            </svg>
+          </span>
+          Lunaro Assistant
+        </div>
+        <p>That would leave $156.20 after scheduled bills and your usual buffer, giving you $100 more flexibility.</p>
+      </div>
+    </main>
+
+    <section class="suggestions" aria-label="Suggested prompts">
+      <p class="suggestions-label">Continue with a question</p>
+      <div class="suggestion-row">
+        <button class="suggestion" type="button">Show scheduled bills</button>
+        <button class="suggestion" type="button">Compare $150</button>
+      </div>
+    </section>
+
+    <form class="composer">
+      <label class="input-shell">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M12 3L13.2 7.8L18 9L13.2 10.2L12 15L10.8 10.2L6 9L10.8 7.8L12 3Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+          <path d="M18.5 14.5L19.1 16.9L21.5 17.5L19.1 18.1L18.5 20.5L17.9 18.1L15.5 17.5L17.9 16.9L18.5 14.5Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+        </svg>
+        <input type="text" aria-label="Message Lunaro Assistant" placeholder="Ask about your money">
+      </label>
+      <button class="send-button" type="button" aria-label="Send message">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M5 12H19M13 6L19 12L13 18" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </form>
+
+    <nav class="tabbar" aria-label="Primary navigation">
+      <button class="tab" type="button">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M4 10.5L12 4L20 10.5V20H14.5V14H9.5V20H4V10.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+        </svg>
+        <span>Home</span>
+      </button>
+
+      <button class="tab" type="button">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M5 18V12M12 18V6M19 18V9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          <path d="M3 20H21" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+        </svg>
+        <span>Activity</span>
+      </button>
+
+      <button class="tab active" type="button" aria-current="page">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M5 5.5C5 4.67 5.67 4 6.5 4H17.5C18.33 4 19 4.67 19 5.5V14.5C19 15.33 18.33 16 17.5 16H10L6 20V16H6.5C5.67 16 5 15.33 5 14.5V5.5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+          <path d="M9 9H15M9 12H13" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+        </svg>
+        <span>Assistant</span>
+      </button>
+
+      <button class="tab" type="button">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="12" cy="8" r="3.5" stroke="currentColor" stroke-width="1.7"/>
+          <path d="M5.5 20C5.9 16.8 8.4 15 12 15C15.6 15 18.1 16.8 18.5 20" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+        </svg>
+        <span>Profile</span>
+      </button>
+    </nav>
+  </div>
+</body>
+</html>

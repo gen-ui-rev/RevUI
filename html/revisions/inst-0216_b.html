@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Roamlet Travel Quiz</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 24px 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #e9e8e4;
+      color: #20211f;
+      font-family: 'Poppins', system-ui, sans-serif;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      color: inherit;
+    }
+
+    .screen {
+      width: 1024px;
+      height: 768px;
+      display: flex;
+      flex-direction: column;
+      background: #f5f4f0;
+      border: 1px solid #d8d7d2;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    /* ---------- header ---------- */
+    .top-bar {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      padding: 13px 36px;
+      border-bottom: 1px solid #e4e2dc;
+      background: #ffffff;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-mark {
+      width: 24px;
+      height: 24px;
+      border-radius: 8px;
+      background: #f2c600;
+      border: 1px solid #d8ad00;
+    }
+
+    .brand-name {
+      margin: 0;
+      font-size: 15px;
+      line-height: 22px;
+      font-weight: 600;
+    }
+
+    .top-nav {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin: 0 auto;
+    }
+
+    .tab {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      border-radius: 8px;
+      color: #6a6b64;
+      text-decoration: none;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 400;
+    }
+
+    .tab svg {
+      width: 18px;
+      height: 18px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .tab.active {
+      background: #fff5c9;
+      color: #24251f;
+      font-weight: 600;
+    }
+
+    .top-right {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .streak {
+      color: #6a6b64;
+      font-size: 13px;
+      line-height: 20px;
+    }
+
+    .icon-button {
+      width: 34px;
+      height: 34px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      border: 1px solid #dedcd5;
+      border-radius: 8px;
+      background: #ffffff;
+      cursor: pointer;
+    }
+
+    .icon-button svg {
+      width: 18px;
+      height: 18px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+    }
+
+    /* ---------- progress band ---------- */
+    .band {
+      padding: 20px 36px 22px;
+      border-bottom: 1px solid #e4e2dc;
+      background: #ffffff;
+    }
+
+    .band-inner {
+      max-width: 780px;
+      margin: 0 auto;
+    }
+
+    .band-top {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .eyebrow {
+      margin: 0;
+      color: #686963;
+      font-size: 12px;
+      line-height: 18px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .band-time {
+      margin: 0;
+      color: #6d6e67;
+      font-size: 13px;
+      line-height: 20px;
+    }
+
+    .question-count {
+      margin: 5px 0 0;
+      font-size: 21px;
+      line-height: 30px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+
+    .question-detail {
+      margin: 2px 0 0;
+      color: #6a6b65;
+      font-size: 13px;
+      line-height: 20px;
+    }
+
+    .segments {
+      display: flex;
+      gap: 6px;
+      margin-top: 14px;
+    }
+
+    .seg {
+      flex: 1;
+      height: 8px;
+      border-radius: 10px;
+      background: #ecebe6;
+    }
+
+    .seg.done {
+      background: #f2c600;
+    }
+
+    .seg.current {
+      background: #fff0a3;
+      border: 1px solid #d8ad00;
+    }
+
+    /* ---------- card ---------- */
+    .stage {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 26px 36px;
+      min-height: 0;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 780px;
+      padding: 30px 34px 28px;
+      border: 1px solid #e4e2dc;
+      border-radius: 16px;
+      background: #ffffff;
+    }
+
+    .question-title {
+      margin: 0;
+      font-size: 28px;
+      line-height: 38px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+
+    .instruction {
+      margin: 8px 0 0;
+      color: #666760;
+      font-size: 13px;
+      line-height: 20px;
+    }
+
+    .answers {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin: 18px 0 0;
+      padding: 0;
+      border: 0;
+    }
+
+    .answer {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-height: 84px;
+      padding: 16px 18px;
+      border: 1px solid #e3e1db;
+      border-radius: 12px;
+      background: #fbfaf7;
+      cursor: pointer;
+    }
+
+    .answer.selected {
+      border-color: #d5ad00;
+      background: #fffdf1;
+    }
+
+    .answer input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .radio {
+      width: 22px;
+      height: 22px;
+      flex: 0 0 22px;
+      display: grid;
+      place-items: center;
+      border: 2px solid #aaa9a2;
+      border-radius: 50%;
+      background: #ffffff;
+    }
+
+    .radio::after {
+      content: "";
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: transparent;
+    }
+
+    .answer input:checked + .radio {
+      border-color: #d5ad00;
+      background: #fff7cf;
+    }
+
+    .answer input:checked + .radio::after {
+      background: #e0b700;
+    }
+
+    .answer-body {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .answer-text {
+      display: block;
+      font-size: 18px;
+      line-height: 26px
+;      font-weight: 500;
+      letter-spacing: 0.02em;
+    }
+
+    .answer input:checked ~ .answer-body .answer-text {
+      font-weight: 600;
+    }
+
+    .answer-hint {
+      display: block;
+      color: #7a7b73;
+      font-size: 12px;
+      line-height: 18px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .key {
+      width: 26px;
+      height: 24px;
+      display: grid;
+      place-items: center;
+      border: 1px solid #e0dfd8;
+      border-radius: 6px;
+      background: #f2f1ec;
+      color: #6a6b65;
+      font-size: 11px;
+      line-height: 16px;
+      font-weight: 600;
+    }
+
+    .actions {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 12px;
+      margin-top: 24px;
+    }
+
+    .submit-note {
+      margin: 0;
+      margin-right: auto;
+      color: #777871;
+      font-size: 12px;
+      line-height: 18px;
+      max-width: 320px;
+    }
+
+    .nav-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 18px;
+      border: 1px solid #dedcd5;
+      border-radius: 10px;
+      background: #ffffff;
+      color: #4b4c45;
+      font-size: 14px;
+      line-height: 22px;
+      font-weight: 500;
+      cursor: pointer;
+    }
+
+    .nav-button svg {
+      width: 16px;
+      height: 16px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .submit-button {
+      padding: 12px 28px;
+      border: 1px solid #d8ad00;
+      border-radius: 10px;
+      background: #f2c600;
+      font-size: 15px;
+      line-height: 22px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="top-bar">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <p class="brand-name">Roamlet</p>
+      </div>
+
+      <nav class="top-nav" aria-label="App navigation">
+        <a class="tab" href="#">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="11" cy="11" r="7"></circle>
+            <path d="M16.2 16.2L21 21"></path>
+          </svg>
+          <span>Explore</span>
+        </a>
+        <a class="tab" href="#">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 7.5h16v12H4z"></path>
+            <path d="M8 7.5V5.8C8 4.8 8.8 4 9.8 4h4.4c1 0 1.8.8 1.8 1.8v1.7M4 12h16"></path>
+          </svg>
+          <span>Trips</span>
+        </a>
+        <a class="tab active" href="#" aria-current="page">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M7 3.5h10a2 2 0 0 1 2 2v15l-7-3-7 3v-15a2 2 0 0 1 2-2z"></path>
+            <path d="M9.5 8.5a2.5 2.5 0 1 1 3.6 2.3c-.7.4-1.1.8-1.1 1.7"></path>
+            <path d="M12 15h.01"></path>
+          </svg>
+          <span>Quiz</span>
+        </a>
+        <a class="tab" href="#">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="8" r="3.5"></circle>
+            <path d="M5.5 20c.5-3.3 3-5.2 6.5-5.2s6 1.9 6.5 5.2"></path>
+          </svg>
+          <span>Profile</span>
+        </a>
+      </nav>
+
+      <div class="top-right">
+        <span class="streak">12-day streak</span>
+        <button class="icon-button" type="button" aria-label="Close quiz">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M6 6l12 12M18 6L6 18"></path>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <section class="band" aria-label="Quiz progress">
+      <div class="band-inner">
+        <div class="band-top">
+          <p class="eyebrow">Airport codes · Level 2</p>
+          <p class="band-time">Elapsed 3:42 · 11s per answer</p>
+        </div>
+        <p class="question-count">Question 6 of 10</p>
+        <p class="question-detail">5 answered · 4 correct · 1 skipped · 4 questions left in this round</p>
+        <div class="segments" role="progressbar" aria-label="Quiz progress" aria-valuemin="0" aria-valuemax="10" aria-valuenow="6">
+          <span class="seg done"></span>
+          <span class="seg done"></span>
+          <span class="seg done"></span>
+          <span class="seg done"></span>
+          <span class="seg done"></span>
+          <span class="seg current"></span>
+          <span class="seg"></span>
+          <span class="seg"></span>
+          <span class="seg"></span>
+          <span class="seg"></span>
+        </div>
+      </div>
+    </section>
+
+    <div class="stage">
+      <section class="card" aria-labelledby="question-title">
+        <h2 class="question-title" id="question-title">Which airport code belongs to Lisbon’s main airport?</h2>
+        <p class="instruction">Choose one answer. Click a card or press its letter key.</p>
+
+        <form>
+          <fieldset class="answers" aria-label="Answer choices">
+            <label class="answer">
+              <input type="radio" name="airport-code" value="LSN">
+              <span class="radio" aria-hidden="true"></span>
+              <span class="answer-body">
+                <span class="answer-text">LSN</span>
+                <span class="answer-hint">Picked by 14% of players</span>
+              </span>
+              <span class="key" aria-hidden="true">A</span>
+            </label>
+
+            <label class="answer selected">
+              <input type="radio" name="airport-code" value="LIS" checked>
+              <span class="radio" aria-hidden="true"></span>
+              <span class="answer-body">
+                <span class="answer-text">LIS</span>
+                <span class="answer-hint">Picked by 58% of players</span>
+              </span>
+              <span class="key" aria-hidden="true">B</span>
+            </label>
+
+            <label class="answer">
+              <input type="radio" name="airport-code" value="LSP">
+              <span class="radio" aria-hidden="true"></span>
+              <span class="answer-body">
+                <span class="answer-text">LSP</span>
+                <span class="answer-hint">Picked by 19% of players</span>
+              </span>
+              <span class="key" aria-hidden="true">C</span>
+            </label>
+
+            <label class="answer">
+              <input type="radio" name="airport-code" value="LIB">
+              <span class="radio" aria-hidden="true"></span>
+              <span class="answer-body">
+                <span class="answer-text">LIB</span>
+                <span class="answer-hint">Picked by 9% of players</span>
+              </span>
+              <span class="key" aria-hidden="true">D</span>
+            </label>
+          </fieldset>
+
+          <div class="actions">
+            <p class="submit-note">Your answer is saved after you check it.</p>
+            <button class="nav-button" type="button">
+              Skip question
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M9 6l6 6-6 6"></path>
+              </svg>
+            </button>
+            <button class="submit-button" type="submit">Check answer</button>
+          </div>
+        </form>
+      </section>
+    </div>
+  </div>
+</body>
+</html>

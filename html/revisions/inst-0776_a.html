@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Wayfare — Explore</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --accent:#0276b8;
+    --tint:rgba(2,132,199,0.10);
+    --tint-strong:rgba(2,132,199,0.16);
+    --ink:#12181f;
+    --mid:#5d6874;
+    --line:#edeff2;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    padding:40px 0;
+    background:#e7e9ec;
+    font-family:'Inter',system-ui,sans-serif;
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+  }
+  .screen{
+    width:1024px;
+    height:768px;
+    background:#fff;
+    display:flex;
+    overflow:hidden;
+  }
+
+  /* left vertical nav */
+  .nav{
+    width:208px;
+    flex:none;
+    background:#fafbfc;
+    border-right:1px solid var(--line);
+    padding:22px 14px 18px;
+    display:flex;
+    flex-direction:column;
+    gap:4px;
+  }
+  .brand{
+    display:flex;
+    align-items:center;
+    gap:9px;
+    padding:0 8px;
+    margin-bottom:22px;
+    font-size:16px;
+    line-height:20px;
+    font-weight:700;
+    letter-spacing:-0.01em;
+  }
+  .brand .mark{
+    width:26px;height:26px;flex:none;
+    border-radius:8px;
+    background:var(--accent);
+    color:#fff;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .nitem{
+    display:flex;
+    align-items:center;
+    gap:11px;
+    padding:9px 10px;
+    border-radius:8px;
+    font-size:14px;
+    line-height:18px;
+    font-weight:500;
+    color:var(--mid);
+  }
+  .nitem.on{background:var(--tint-strong);color:var(--accent);font-weight:600;}
+  .nitem svg{display:block;flex:none;}
+  .navlbl{
+    padding:0 10px;
+    margin:22px 0 8px;
+    font-size:11px;
+    line-height:14px;
+    font-weight:600;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:#98a1aa;
+  }
+  .user{
+    margin-top:auto;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:9px 10px;
+    border-top:1px solid var(--line);
+    padding-top:14px;
+  }
+  .user .av{
+    width:30px;height:30px;flex:none;
+    border-radius:50%;
+    background:var(--tint-strong);
+    color:var(--accent);
+    display:flex;align-items:center;justify-content:center;
+    font-size:12px;font-weight:700;
+  }
+  .user b{display:block;font-size:13px;line-height:16px;font-weight:600;}
+  .user span{display:block;font-size:12px;line-height:15px;color:var(--mid);}
+
+  /* main */
+  .main{
+    flex:1;
+    min-width:0;
+    padding:24px 28px;
+    display:flex;
+    flex-direction:column;
+  }
+  .head{
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:20px;
+  }
+  .head h1{
+    margin:0;
+    font-size:26px;
+    line-height:31px;
+    font-weight:700;
+    letter-spacing:-0.015em;
+  }
+  .place{
+    display:inline-flex;
+    align-items:center;
+    gap:5px;
+    margin-top:8px;
+    background:var(--tint);
+    color:var(--accent);
+    border-radius:6px;
+    padding:5px 9px;
+    font-size:12px;
+    line-height:12px;
+    font-weight:600;
+    max-width:220px;
+  }
+  .place span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .search{
+    margin-top:4px;
+    width:284px;
+    flex:none;
+    display:flex;
+    align-items:center;
+    gap:9px;
+    padding:9px 12px;
+    border:1px solid var(--line);
+    background:#fafbfc;
+    border-radius:8px;
+    color:#8b949e;
+    font-size:13px;
+    line-height:16px;
+    white-space:nowrap;
+    overflow:hidden;
+  }
+
+  /* chips */
+  .chips{
+    display:flex;
+    gap:8px;
+    margin:18px 0 20px;
+  }
+  .chip{
+    background:#f2f4f6;
+    color:var(--mid);
+    border-radius:6px;
+    padding:9px 12px;
+    font-size:13px;
+    line-height:14px;
+    font-weight:500;
+    white-space:nowrap;
+  }
+  .chip.on{background:var(--tint-strong);color:var(--accent);font-weight:600;}
+
+  /* two columns */
+  .cols{display:flex;gap:24px;align-items:flex-start;}
+  .colL{width:360px;flex:none;}
+  .colR{flex:1;min-width:0;}
+
+  .shead{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    margin-bottom:12px;
+  }
+  .shead h2{
+    margin:0;
+    font-size:13px;
+    line-height:14px;
+    font-weight:600;
+    letter-spacing:0.05em;
+    text-transform:uppercase;
+    color:var(--mid);
+  }
+  .shead a{
+    font-size:13px;
+    line-height:14px;
+    font-weight:600;
+    color:var(--accent);
+    text-decoration:none;
+  }
+  .sheadR{display:flex;align-items:center;gap:12px;}
+  .sortlbl{
+    font-size:12px;
+    line-height:14px;
+    color:#98a1aa;
+    font-weight:600;
+  }
+  .sort{
+    display:flex;
+    gap:2px;
+    background:#f2f4f6;
+    border-radius:7px;
+    padding:2px;
+  }
+  .sort div{
+    padding:5px 10px;
+    border-radius:5px;
+    font-size:12px;
+    line-height:14px;
+    font-weight:600;
+    color:var(--mid);
+    white-space:nowrap;
+  }
+  .sort div.on{
+    background:#fff;
+    color:var(--accent);
+    box-shadow:0 1px 2px rgba(18,24,31,0.14);
+  }
+
+  /* hero */
+  .hero{
+    background:var(--tint);
+    border-radius:8px;
+    margin-bottom:22px;
+  }
+  .hero img{
+    width:360px;
+    height:150px;
+    display:block;
+    object-fit:cover;
+    background:#c9d3da;
+    border-radius:8px 8px 0 0;
+  }
+  .hero .txt{padding:14px 16px 16px;}
+  .kicker{
+    font-size:12px;
+    line-height:14px;
+    font-weight:600;
+    color:var(--accent);
+    letter-spacing:0.04em;
+    text-transform:uppercase;
+  }
+  .hero h3{
+    margin:6px 0 4px;
+    font-size:18px;
+    line-height:22px;
+    font-weight:600;
+    letter-spacing:-0.01em;
+  }
+  .hero p{
+    margin:0;
+    font-size:13px;
+    line-height:16px;
+    color:var(--mid);
+  }
+  .btn{
+    display:inline-block;
+    margin-top:12px;
+    background:var(--accent);
+    color:#fff;
+    border-radius:7px;
+    padding:9px 14px;
+    font-size:13px;
+    line-height:14px;
+    font-weight:600;
+  }
+
+  /* collections */
+  .tiles{display:flex;gap:12px;}
+  .tile{width:112px;}
+  .tile img{
+    width:112px;
+    height:78px;
+    display:block;
+    object-fit:cover;
+    background:#c9d3da;
+    border-radius:6px;
+  }
+  .tile b{
+    display:block;
+    margin-top:7px;
+    font-size:13px;
+    line-height:16px;
+    font-weight:600;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+  .tile span{
+    display:block;
+    font-size:12px;
+    line-height:15px;
+    color:var(--mid);
+  }
+
+  /* stay rows */
+  .row{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:11px 0;
+    border-bottom:1px solid var(--line);
+  }
+  .row:last-child{border-bottom:0;}
+  .row img{
+    width:64px;
+    height:64px;
+    display:block;
+    object-fit:cover;
+    background:#c9d3da;
+    border-radius:8px;
+    flex:none;
+  }
+  .row .info{min-width:0;flex:1;}
+  .row .name{
+    font-size:15px;
+    line-height:19px;
+    font-weight:600;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+  .row .sub{
+    font-size:13px;
+    line-height:17px;
+    color:var(--mid);
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+  .row .meta{
+    font-size:12px;
+    line-height:16px;
+    color:var(--mid);
+    display:flex;
+    align-items:center;
+    gap:6px;
+    overflow:hidden;
+    white-space:nowrap;
+  }
+  .tag{
+    background:var(--tint-strong);
+    color:var(--accent);
+    border-radius:6px;
+    padding:2px 6px;
+    font-size:12px;
+    line-height:16px;
+    font-weight:600;
+  }
+  .price{text-align:right;flex:none;}
+  .price b{
+    display:block;
+    font-size:15px;
+    line-height:19px;
+    font-weight:700;
+  }
+  .price span{
+    display:block;
+    font-size:12px;
+    line-height:16px;
+    color:var(--mid);
+  }
+</style>
+</head>
+<body>
+  <div class="screen">
+
+    <div class="nav">
+      <div class="brand">
+        <span class="mark">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="11" cy="11" r="7"/><path d="M14 8l-2.2 5.8L6 16l2.2-5.8z"/>
+          </svg>
+        </span>
+        Wayfare
+      </div>
+
+      <div class="nitem on">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="11" cy="11" r="7"/><path d="M14 8l-2.2 5.8L6 16l2.2-5.8z"/>
+        </svg>
+        Explore
+      </div>
+      <div class="nitem">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M3 6l6-2 6 2 6-2v14l-6 2-6-2-6 2z"/><path d="M9 4v14M15 6v14"/>
+        </svg>
+        Map
+      </div>
+      <div class="nitem">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M6 4h12v16l-6-4-6 4z"/>
+        </svg>
+        Saved
+      </div>
+      <div class="nitem">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5h6v2"/>
+        </svg>
+        Trips
+      </div>
+
+      <div class="navlbl">Your regions</div>
+      <div class="nitem">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0116 0z"/><circle cx="12" cy="10" r="3"/>
+        </svg>
+        Central Coast
+      </div>
+      <div class="nitem">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0116 0z"/><circle cx="12" cy="10" r="3"/>
+        </svg>
+        Sierra Foothills
+      </div>
+
+      <div class="user">
+        <span class="av">DR</span>
+        <div>
+          <b>Dana Reyes</b>
+          <span>12 saved stays</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="main">
+
+      <div class="head">
+        <div>
+          <h1>Explore</h1>
+          <div class="place">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0116 0z"/><circle cx="12" cy="10" r="3"/>
+            </svg>
+            <span>Monterey, CA</span>
+          </div>
+        </div>
+        <div class="search">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="11" cy="11" r="7"/><path d="M16.5 16.5L21 21"/>
+          </svg>
+          Search stays, towns or regions
+        </div>
+      </div>
+
+      <div class="chips">
+        <div class="chip on">All</div>
+        <div class="chip">Beachfront</div>
+        <div class="chip">Mountain</div>
+        <div class="chip">City</div>
+        <div class="chip">Wine country</div>
+      </div>
+
+      <div class="cols">
+
+        <div class="colL">
+          <div class="shead">
+            <h2>Featured collection</h2>
+          </div>
+          <div class="hero">
+            <img src="https://loremflickr.com/360/150/beach?lock=10340" width="360" height="150" alt="Cliffs above a cove on the Highway 1 coastline">
+            <div class="txt">
+              <div class="kicker">Curated by Wayfare</div>
+              <h3>Cliffside stays along Highway 1</h3>
+              <p>18 stays · Nights from $164 · Best March to June</p>
+              <div class="btn">View collection</div>
+            </div>
+          </div>
+
+          <div class="shead">
+            <h2>Browse by mood</h2>
+            <a href="#">All 12</a>
+          </div>
+          <div class="tiles">
+            <div class="tile">
+              <img src="https://loremflickr.com/112/78/beach?lock=10341" width="112" height="78" alt="Wide sandy beach at low tide">
+              <b>Coastal drives</b>
+              <span>24 stays</span>
+            </div>
+            <div class="tile">
+              <img src="https://loremflickr.com/112/78/mountain?lock=10342" width="112" height="78" alt="Forested mountain ridge under clouds">
+              <b>Mountain lodges</b>
+              <span>31 stays</span>
+            </div>
+            <div class="tile">
+              <img src="https://loremflickr.com/112/78/cityscape?lock=10343" width="112" height="78" alt="Downtown skyline at dusk">
+              <b>City nights</b>
+              <span>47 stays</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="colR">
+          <div class="shead">
+            <h2>Popular this week</h2>
+            <div class="sheadR">
+              <span class="sortlbl">Sort</span>
+              <div class="sort">
+                <div class="on">Price</div>
+                <div>Rating</div>
+              </div>
+              <a href="#">See all</a>
+            </div>
+          </div>
+
+          <div class="row">
+            <img src="https://loremflickr.com/64/64/hotel?lock=10344" width="64" height="64" alt="Harborview Loft living room with wide windows">
+            <div class="info">
+              <div class="name">Harborview Loft</div>
+              <div class="sub">Monterey · Sleeps 4</div>
+              <div class="meta">4.87 (128 reviews)</div>
+            </div>
+            <div class="price"><b>$186</b><span>per night</span></div>
+          </div>
+
+          <div class="row">
+            <img src="https://loremflickr.com/64/64/mountain?lock=10345" width="64" height="64" alt="Pine Ridge Cabin among tall trees">
+            <div class="info">
+              <div class="name">Pine Ridge Cabin</div>
+              <div class="sub">Big Sur · Sleeps 6</div>
+              <div class="meta">4.92 (86 reviews) <span class="tag">2 nights left</span></div>
+            </div>
+            <div class="price"><b>$214</b><span>per night</span></div>
+          </div>
+
+          <div class="row">
+            <img src="https://loremflickr.com/64/64/beach?lock=10346" width="64" height="64" alt="Sandbar Cottage porch facing the shore">
+            <div class="info">
+              <div class="name">Sandbar Cottage</div>
+              <div class="sub">Carmel-by-the-Sea · Sleeps 3</div>
+              <div class="meta">4.75 (211 reviews)</div>
+            </div>
+            <div class="price"><b>$158</b><span>per night</span></div>
+          </div>
+
+          <div class="row">
+            <img src="https://loremflickr.com/64/64/hotel?lock=10347" width="64" height="64" alt="Bay Kestrel Inn courtyard with seating">
+            <div class="info">
+              <div class="name">Bay Kestrel Inn</div>
+              <div class="sub">Pacific Grove · Sleeps 2</div>
+              <div class="meta">4.61 (74 reviews)</div>
+            </div>
+            <div class="price"><b>$132</b><span>per night</span></div>
+          </div>
+
+          <div class="row">
+            <img src="https://loremflickr.com/64/64/lighthouse?lock=10348" width="64" height="64" alt="Lighthouse Flat with a view of the point">
+            <div class="info">
+              <div class="name">Lighthouse Flat</div>
+              <div class="sub">Point Pinos · Sleeps 2</div>
+              <div class="meta">4.83 (57 reviews)</div>
+            </div>
+            <div class="price"><b>$149</b><span>per night</span></div>
+          </div>
+
+          <div class="row">
+            <img src="https://loremflickr.com/64/64/cabin?lock=10349" width="64" height="64" alt="Cypress Point Studio with a garden entrance">
+            <div class="info">
+              <div class="name">Cypress Point Studio</div>
+              <div class="sub">Pebble Beach · Sleeps 2</div>
+              <div class="meta">4.69 (93 reviews)</div>
+            </div>
+            <div class="price"><b>$205</b><span>per night</span></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

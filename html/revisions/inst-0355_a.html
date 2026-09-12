@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wavefolio Annotation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #dfe3df;
+      color: #17201d;
+      font-family: 'Source Sans 3', system-ui, sans-serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      position: relative;
+      width: 1024px;
+      height: 768px;
+      background: #f7f9f7;
+      border: 1px solid #c5cbc7;
+      box-shadow: 0 18px 45px rgba(31, 43, 38, 0.12);
+    }
+
+    .sidebar {
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: 176px;
+      padding: 22px 14px 18px;
+      display: flex;
+      flex-direction: column;
+      background: #17251f;
+      color: #f4f7f5;
+      border-right: 1px solid #33443d;
+    }
+
+    .brand {
+      padding: 0 10px 20px;
+      border-bottom: 1px solid #3a4a43;
+    }
+
+    .brand-name {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 23px;
+      line-height: 1;
+      font-weight: 700;
+    }
+
+    .brand-label {
+      margin-top: 6px;
+      color: #aab9b2;
+      font-size: 12px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .session-block {
+      padding: 18px 10px 16px;
+    }
+
+    .session-kicker {
+      color: #91a49b;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .session-title {
+      margin-top: 5px;
+      font-size: 15px;
+      line-height: 1.25;
+      font-weight: 600;
+    }
+
+    .session-episode {
+      margin-top: 4px;
+      color: #adbbb5;
+      font-size: 12px;
+    }
+
+    .side-nav {
+      display: grid;
+      gap: 5px;
+      margin-top: 4px;
+    }
+
+    .nav-item {
+      position: relative;
+      min-height: 46px;
+      padding: 0 11px;
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      color: #b7c3be;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+      border: 1px solid transparent;
+    }
+
+    .nav-item svg {
+      width: 20px;
+      height: 20px;
+      flex: 0 0 auto;
+    }
+
+    .nav-item.active {
+      color: #ffffff;
+      background: #24483c;
+      border-color: #3f6a5b;
+    }
+
+    .nav-item.active::before {
+      content: "";
+      position: absolute;
+      top: 9px;
+      bottom: 9px;
+      left: -15px;
+      width: 3px;
+      background: #65bea0;
+    }
+
+    .sidebar-foot {
+      margin-top: auto;
+      padding: 15px 10px 0;
+      border-top: 1px solid #3a4a43;
+      color: #aab9b2;
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .main-shell {
+      margin-left: 176px;
+      width: 846px;
+    }
+
+    .topbar {
+      padding: 13px 18px;
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      background: #ffffff;
+      border-bottom: 1px solid #d6dcd8;
+    }
+
+    .back-button,
+    .icon-button {
+      width: 36px;
+      height: 36px;
+      padding: 0;
+      display: grid;
+      place-items: center;
+      color: #26312d;
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: 0;
+    }
+
+    .back-button {
+      border-color: #d2d8d4;
+      background: #fafbfa;
+    }
+
+    .back-button svg,
+    .icon-button svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .title-block {
+      min-width: 0;
+      flex: 1;
+    }
+
+    h1 {
+      margin: 0;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 23px;
+      line-height: 1.05;
+      font-weight: 700;
+    }
+
+    .subtitle {
+      margin-top: 4px;
+      color: #67716d;
+      font-size: 13px;
+      line-height: 1.2;
+    }
+
+    .frame-position {
+      padding-right: 4px;
+      color: #64706b;
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    .done-button {
+      min-width: 70px;
+      height: 36px;
+      padding: 0 16px;
+      border: 1px solid #086b50;
+      border-radius: 0;
+      background: #08785a;
+      color: #ffffff;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .toolstrip {
+      padding: 10px 18px;
+      display: flex;
+      align-items: center;
+      border-bottom: 1px solid #d8ddd9;
+      background: #f4f7f5;
+    }
+
+    .tool-group,
+    .history {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .tool {
+      height: 34px;
+      padding: 0 13px;
+      border: 1px solid transparent;
+      border-radius: 0;
+      background: transparent;
+      color: #4a5551;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .tool.active {
+      color: #065c45;
+      background: #e2f0ea;
+      border-color: #98b9ab;
+    }
+
+    .tool-divider {
+      width: 1px;
+      height: 24px;
+      margin: 0 10px;
+      background: #cdd4cf;
+    }
+
+    .history {
+      margin-left: auto;
+    }
+
+    .history .icon-button {
+      width: 34px;
+      height: 34px;
+      border-color: #d3d9d5;
+      background: #ffffff;
+      color: #53605b;
+    }
+
+    .workspace {
+      padding: 16px 18px 0;
+      display: grid;
+      grid-template-columns: 540px 250px;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .canvas-column {
+      min-width: 0;
+    }
+
+    .canvas {
+      position: relative;
+      width: 540px;
+      height: 584px;
+      background: #25332e;
+      outline: 1px solid #aeb7b1;
+    }
+
+    .canvas img {
+      width: 540px;
+      height: 584px;
+      display: block;
+      object-fit: cover;
+      background: #25332e;
+    }
+
+    .frame-tag {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      padding: 6px 9px;
+      border: 1px solid #d6ded9;
+      background: #fbfcfa;
+      color: #28332f;
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1;
+    }
+
+    .drawing-layer {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    .annotation-label {
+      position: absolute;
+      top: 88px;
+      right: 16px;
+      width: 184px;
+      padding: 10px 12px;
+      border: 1px solid #08785a;
+      background: #fbfcfa;
+      color: #15332a;
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 1.3;
+      box-shadow: 0 3px 12px rgba(22, 39, 32, 0.12);
+    }
+
+    .review-panel {
+      background: #ffffff;
+      border: 1px solid #ccd3ce;
+    }
+
+    .panel-title {
+      margin: 0;
+      padding: 15px 16px 13px;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 19px;
+      line-height: 1.15;
+      font-weight: 700;
+      border-bottom: 1px solid #d8ddd9;
+    }
+
+    .panel-section {
+      padding: 15px 16px;
+      border-bottom: 1px solid #e0e4e1;
+    }
+
+    .panel-section:last-child {
+      border-bottom: 0;
+    }
+
+    .section-label {
+      margin: 0 0 10px;
+      color: #69736f;
+      font-size: 11px;
+      line-height: 1;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .metadata-list {
+      margin: 0;
+      display: grid;
+      gap: 9px;
+    }
+
+    .metadata-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .metadata-row dt {
+      color: #6b7571;
+      font-size: 13px;
+    }
+
+    .metadata-row dd {
+      margin: 0;
+      color: #25302c;
+      font-size: 13px;
+      font-weight: 600;
+      text-align: right;
+    }
+
+    .metadata-row .timecode {
+      color: #075e47;
+      font-size: 15px;
+      letter-spacing: 0.02em;
+    }
+
+    .summary-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .summary-head h3 {
+      margin: 0;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 17px;
+      line-height: 1.2;
+      font-weight: 600;
+    }
+
+    .mark-count {
+      color: #08785a;
+      font-size: 12px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .summary-text {
+      margin: 8px 0 0;
+      color: #525e59;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    .status-line {
+      display: flex;
+      align-items: flex-start;
+      gap: 9px;
+      color: #53605b;
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    .status-icon {
+      width: 20px;
+      height: 20px;
+      flex: 0 0 auto;
+      display: grid;
+      place-items: center;
+      border: 1px solid #77a694;
+      color: #08785a;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .status-line strong {
+      display: block;
+      margin-bottom: 2px;
+      color: #26312d;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <aside class="sidebar" aria-label="Session navigation">
+      <div class="brand">
+        <div class="brand-name">Wavefolio</div>
+        <div class="brand-label">Editorial review</div>
+      </div>
+
+      <div class="session-block">
+        <div class="session-kicker">Current session</div>
+        <div class="session-title">Harbor Room Session</div>
+        <div class="session-episode">Episode 14</div>
+      </div>
+
+      <nav class="side-nav">
+        <a class="nav-item" href="#" aria-label="Frames">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <rect x="4" y="5" width="16" height="14" stroke="currentColor" stroke-width="1.6"/>
+            <path d="M8 9H16M8 13H16M8 17H13" stroke="currentColor" stroke-width="1.6"/>
+          </svg>
+          <span>Frames</span>
+        </a>
+
+        <a class="nav-item active" href="#" aria-current="page" aria-label="Annotate">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M6 18L7.4 13.8L16.8 4.4L19.6 7.2L10.2 16.6L6 18Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="miter"/>
+            <path d="M14.8 6.4L17.6 9.2" stroke="currentColor" stroke-width="1.6"/>
+          </svg>
+          <span>Annotate</span>
+        </a>
+
+        <a class="nav-item" href="#" aria-label="Review">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M5 6H19V16H11L7 19V16H5V6Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="miter"/>
+            <path d="M8 10H16M8 13H13" stroke="currentColor" stroke-width="1.6"/>
+          </svg>
+          <span>Review</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-foot">
+        Frame review workspace<br>
+        6 selected frames
+      </div>
+    </aside>
+
+    <div class="main-shell">
+      <header class="topbar">
+        <button class="back-button" aria-label="Back to session frames">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M15 5L8 12L15 19" stroke="currentColor" stroke-width="1.8" stroke-linecap="square" stroke-linejoin="miter"/>
+          </svg>
+        </button>
+
+        <div class="title-block">
+          <h1>Annotate frame</h1>
+          <div class="subtitle">Harbor Room Session · Episode 14</div>
+        </div>
+
+        <div class="frame-position">Frame 2 of 6</div>
+        <button class="done-button">Done</button>
+      </header>
+
+      <section class="toolstrip" aria-label="Annotation tools">
+        <div class="tool-group">
+          <button class="tool active">Pen</button>
+          <button class="tool">Arrow</button>
+          <button class="tool">Box</button>
+          <button class="tool">Text</button>
+        </div>
+
+        <div class="tool-divider"></div>
+
+        <div class="history">
+          <button class="icon-button" aria-label="Undo">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M9 7L5 11L9 15" stroke="currentColor" stroke-width="1.7" stroke-linecap="square"/>
+              <path d="M6 11H14.5C17.5 11 19 12.7 19 15.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="square"/>
+            </svg>
+          </button>
+          <button class="icon-button" aria-label="Redo">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M15 7L19 11L15 15" stroke="currentColor" stroke-width="1.7" stroke-linecap="square"/>
+              <path d="M18 11H9.5C6.5 11 5 12.7 5 15.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="square"/>
+            </svg>
+          </button>
+        </div>
+      </section>
+
+      <main class="workspace">
+        <section class="canvas-column" aria-label="Frame annotation canvas">
+          <div class="canvas">
+            <img src="https://loremflickr.com/540/584/concert?lock=5110" width="540" height="584" alt="Musicians performing under stage lights during the Harbor Room Session">
+            <div class="frame-tag">Review frame</div>
+
+            <svg class="drawing-layer" viewBox="0 0 358 404" fill="none" aria-hidden="true">
+              <path d="M72 148C96 126 143 124 169 145C186 160 186 215 169 240C145 261 96 259 72 236C57 216 56 170 72 148Z"
+                    stroke="#0B8060" stroke-width="4" stroke-linecap="square"/>
+              <path d="M237 111C218 125 198 139 176 154" stroke="#0B8060" stroke-width="4" stroke-linecap="square"/>
+              <path d="M183 143L175 154L188 155" stroke="#0B8060" stroke-width="4" stroke-linecap="square" stroke-linejoin="miter"/>
+              <path d="M79 292C111 279 152 281 184 298C209 311 239 311 274 296" stroke="#0B8060" stroke-width="4" stroke-linecap="square"/>
+            </svg>
+
+            <div class="annotation-label">Hold this close shot for two more beats.</div>
+          </div>
+        </section>
+
+        <aside class="review-panel" aria-label="Frame review details">
+          <h2 class="panel-title">Frame review</h2>
+
+          <section class="panel-section">
+            <p class="section-label">Frame metadata</p>
+            <dl class="metadata-list">
+              <div class="metadata-row">
+                <dt>Timecode</dt>
+                <dd class="timecode">00:12:48.16</dd>
+              </div>
+              <div class="metadata-row">
+                <dt>Sequence</dt>
+                <dd>Frame 2 of 6</dd>
+              </div>
+              <div class="metadata-row">
+                <dt>Episode</dt>
+                <dd>14</dd>
+              </div>
+              <div class="metadata-row">
+                <dt>Type</dt>
+                <dd>Review frame</dd>
+              </div>
+            </dl>
+          </section>
+
+          <section class="panel-section">
+            <p class="section-label">Note summary</p>
+            <div class="summary-head">
+              <h3>Director note</h3>
+              <span class="mark-count">2 marks</span>
+            </div>
+            <p class="summary-text">Keep the vocalist centered before returning to the full-stage angle.</p>
+          </section>
+
+          <section class="panel-section">
+            <p class="section-label">Media status</p>
+            <div class="status-line">
+              <span class="status-icon">✓</span>
+              <div>
+                <strong>Original protected</strong>
+                Annotations are saved separately. Original media remains unchanged.
+              </div>
+            </div>
+          </section>
+        </aside>
+      </main>
+    </div>
+  </div>
+</body>
+</html>

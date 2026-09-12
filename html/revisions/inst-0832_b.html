@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order Details — Driftlane</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 32px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #dde4e3;
+      color: #173331;
+      font-family: 'Nunito Sans', system-ui, sans-serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #fcfdfd;
+    }
+
+    .topbar {
+      flex: none;
+      display: grid;
+      grid-template-columns: 40px 1fr 40px;
+      align-items: center;
+      padding: 12px 16px;
+    }
+
+    .icon-button {
+      width: 36px;
+      height: 36px;
+      padding: 0;
+      display: grid;
+      place-items: center;
+      border: 0;
+      border-radius: 14px;
+      color: #31504d;
+      background: #e8f5f3;
+    }
+
+    .topbar-title {
+      margin: 0;
+      text-align: center;
+      color: #183b38;
+      font-size: 18px;
+      line-height: 24px;
+      font-weight: 700;
+    }
+
+    .main {
+      flex: 1 1 auto;
+      min-height: 0;
+      padding: 0 16px 8px;
+    }
+
+    .summary {
+      padding: 12px 14px;
+      border-radius: 14px;
+      background: #e3f4f1;
+    }
+
+    .order-number {
+      margin: 0 0 3px;
+      color: #52716e;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .summary-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0;
+      color: #0b7168;
+      font-size: 22px;
+      line-height: 28px;
+      font-weight: 700;
+    }
+
+    .status-mark {
+      width: 24px;
+      height: 24px;
+      flex: 0 0 24px;
+      display: grid;
+      place-items: center;
+      border-radius: 12px;
+      color: #ffffff;
+      background: #11877d;
+    }
+
+    .eligibility-chip {
+      width: max-content;
+      max-width: 100%;
+      margin-top: 6px;
+      padding: 4px 9px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      border-radius: 999px;
+      color: #0d655e;
+      background: #cce9e4;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 700;
+    }
+
+    .eligibility-chip svg {
+      flex: 0 0 auto;
+    }
+
+    .date-track {
+      position: relative;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      margin: 8px 0 9px;
+      padding: 7px 9px;
+      border-radius: 11px;
+      background: rgba(255, 255, 255, 0.58);
+    }
+
+    .date-track::after {
+      content: "";
+      position: absolute;
+      top: 8px;
+      bottom: 8px;
+      left: 50%;
+      width: 1px;
+      background: #c5dfdb;
+    }
+
+    .date-point {
+      min-width: 0;
+    }
+
+    .date-point + .date-point {
+      padding-left: 10px;
+    }
+
+    .date-label {
+      display: block;
+      color: #64807d;
+      font-size: 11px;
+      line-height: 14px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .date-value {
+      display: block;
+      margin-top: 1px;
+      color: #183b38;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 700;
+    }
+
+    .date-point.deadline .date-value {
+      color: #0d655e;
+    }
+
+    .voucher-button {
+      width: 100%;
+      min-height: 32px;
+      padding: 6px 12px;
+      border: 0;
+      border-radius: 12px;
+      color: #ffffff;
+      background: #0f7f76;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 700;
+    }
+
+    .section {
+      margin-top: 10px;
+    }
+
+    .section-title {
+      margin: 0 0 5px;
+      color: #21423f;
+      font-size: 16px;
+      line-height: 22px;
+      font-weight: 700;
+    }
+
+    .item-list {
+      display: grid;
+      gap: 6px;
+    }
+
+    .item-row {
+      min-width: 0;
+      display: grid;
+      grid-template-columns: 64px minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 10px;
+      padding: 7px 8px;
+      border-radius: 14px;
+      background: #edf7f5;
+    }
+
+    .item-row img {
+      width: 64px;
+      height: 56px;
+      display: block;
+      object-fit: cover;
+      border-radius: 10px;
+      background: #bad6d2;
+    }
+
+    .item-copy {
+      min-width: 0;
+    }
+
+    .item-name {
+      margin: 0;
+      overflow: hidden;
+      color: #183b38;
+      font-size: 14px;
+      line-height: 19px;
+      font-weight: 700;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .item-detail {
+      margin: 2px 0 0;
+      color: #637d7a;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .item-price {
+      align-self: start;
+      padding-top: 2px;
+      color: #21423f;
+      font-size: 14px;
+      line-height: 19px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .delivery-card,
+    .payment-card {
+      border-radius: 14px;
+      background: #edf7f5;
+    }
+
+    .delivery-card {
+      display: grid;
+      grid-template-columns: 34px minmax(0, 1fr);
+      gap: 10px;
+      padding: 9px 12px;
+    }
+
+    .delivery-icon {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      border-radius: 12px;
+      color: #0f7f76;
+      background: #d8efeb;
+    }
+
+    .delivery-title {
+      margin: 0;
+      color: #183b38;
+      font-size: 14px;
+      line-height: 19px;
+      font-weight: 700;
+    }
+
+    .delivery-copy {
+      margin: 1px 0 0;
+      color: #587572;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .delivery-time {
+      margin: 1px 0 0;
+      color: #0f766e;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 700;
+    }
+
+    .payment-card {
+      padding: 9px 12px;
+    }
+
+    .payment-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      color: #526f6c;
+      font-size: 14px;
+      line-height: 19px;
+    }
+
+    .payment-row + .payment-row {
+      margin-top: 3px;
+    }
+
+    .payment-row span:last-child {
+      flex: 0 0 auto;
+      color: #294a47;
+      white-space: nowrap;
+    }
+
+    .payment-total {
+      margin-top: 7px;
+      padding: 6px 9px;
+      border-radius: 10px;
+      color: #115f59;
+      background: #d7efeb;
+      font-weight: 700;
+    }
+
+    .payment-total span:last-child {
+      color: #115f59;
+    }
+
+    .tabbar {
+      flex: none;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      padding: 12px 10px 11px;
+      background: #f1f7f6;
+    }
+
+    .tab {
+      min-width: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      border: 0;
+      color: #718986;
+      background: transparent;
+      font-size: 12px;
+      line-height: 15px;
+      font-weight: 600;
+    }
+
+    .tab svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .tab.active {
+      color: #0f766e;
+      font-weight: 700;
+    }
+
+    .tab.active .tab-icon {
+      width: 36px;
+      height: 28px;
+      display: grid;
+      place-items: center;
+      border-radius: 14px;
+      background: #d7efeb;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <button class="icon-button" type="button" aria-label="Back to orders">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <h1 class="topbar-title">Order details</h1>
+      <button class="icon-button" type="button" aria-label="More order options">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <circle cx="5" cy="12" r="1.6"/>
+          <circle cx="12" cy="12" r="1.6"/>
+          <circle cx="19" cy="12" r="1.6"/>
+        </svg>
+      </button>
+    </header>
+
+    <main class="main">
+      <section class="summary" aria-labelledby="order-status-b">
+        <p class="order-number">Order DL-482916 · Placed June 2, 2026</p>
+        <h2 class="summary-status" id="order-status-b">
+          <span class="status-mark">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M6.5 12.5L10 16L17.5 8.5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          Trip confirmed
+        </h2>
+
+        <div class="eligibility-chip">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M6.5 12.5L10 16L17.5 8.5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Eligible for a full refund
+        </div>
+
+        <div class="date-track" aria-label="Cancellation and trip dates">
+          <div class="date-point deadline">
+            <span class="date-label">Cancellation deadline</span>
+            <strong class="date-value">June 10 · 11:59 PM</strong>
+          </div>
+          <div class="date-point">
+            <span class="date-label">Trip begins</span>
+            <strong class="date-value">Thursday, June 18</strong>
+          </div>
+        </div>
+
+        <button class="voucher-button" type="button">View trip vouchers</button>
+      </section>
+
+      <section class="section" aria-labelledby="booked-items-b">
+        <h2 class="section-title" id="booked-items-b">Booked items</h2>
+        <div class="item-list">
+          <article class="item-row">
+            <img src="https://loremflickr.com/64/56/hotel?lock=11070" width="64" height="56" alt="Harbor hotel exterior">
+            <div class="item-copy">
+              <h3 class="item-name">Harborline Hotel</h3>
+              <p class="item-detail">3 nights · 1 queen room</p>
+            </div>
+            <div class="item-price">$684.00</div>
+          </article>
+
+          <article class="item-row">
+            <img src="https://loremflickr.com/64/56/cityscape?lock=11071" width="64" height="56" alt="City skyline near the airport transfer route">
+            <div class="item-copy">
+              <h3 class="item-name">Private airport transfer</h3>
+              <p class="item-detail">June 18 · 2 travelers</p>
+            </div>
+            <div class="item-price">$46.00</div>
+          </article>
+
+          <article class="item-row">
+            <img src="https://loremflickr.com/64/56/beach?lock=11072" width="64" height="56" alt="Waterfront included with the city pass">
+            <div class="item-copy">
+              <h3 class="item-name">Coastal city pass</h3>
+              <p class="item-detail">48 hours · 2 adults</p>
+            </div>
+            <div class="item-price">$78.00</div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" aria-labelledby="document-delivery-b">
+        <h2 class="section-title" id="document-delivery-b">Document delivery</h2>
+        <div class="delivery-card">
+          <div class="delivery-icon">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M4 7.5L12 13L20 7.5M5.5 5H18.5C19.33 5 20 5.67 20 6.5V17.5C20 18.33 19.33 19 18.5 19H5.5C4.67 19 4 18.33 4 17.5V6.5C4 5.67 4.67 5 5.5 5Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div>
+            <p class="delivery-title">Vouchers delivered to Jamie Rowan</p>
+            <p class="delivery-copy">jamie.rowan@example.com</p>
+            <p class="delivery-time">June 2, 2026 at 10:42 AM</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" aria-labelledby="payment-details-b">
+        <h2 class="section-title" id="payment-details-b">Payment details</h2>
+        <div class="payment-card">
+          <div class="payment-row"><span>Travel services</span><span>$808.00</span></div>
+          <div class="payment-row"><span>Taxes and fees</span><span>$91.20</span></div>
+          <div class="payment-row payment-total"><span>Total paid</span><span>$899.20</span></div>
+        </div>
+      </section>
+    </main>
+
+    <nav class="tabbar" aria-label="Primary navigation">
+      <button class="tab" type="button">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M4 10.5L12 4L20 10.5V19H14.5V14H9.5V19H4V10.5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+        </svg>
+        <span>Home</span>
+      </button>
+
+      <button class="tab" type="button">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M7 5V3.5M17 5V3.5M4 9H20M5.5 5H18.5C19.33 5 20 5.67 20 6.5V19H4V6.5C4 5.67 4.67 5 5.5 5Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M8 13H11V16H8V13Z" fill="currentColor"/>
+        </svg>
+        <span>Trips</span>
+      </button>
+
+      <button class="tab active" type="button" aria-current="page">
+        <span class="tab-icon">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M7 4H17V20L14.5 18.5L12 20L9.5 18.5L7 20V4Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+            <path d="M10 8H14M10 12H14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+        </span>
+        <span>Orders</span>
+      </button>
+
+      <button class="tab" type="button">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="12" cy="8" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+          <path d="M5 20C5.7 16.7 8.2 15 12 15C15.8 15 18.3 16.7 19 20" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+        <span>Account</span>
+      </button>
+    </nav>
+  </div>
+</body>
+</html>

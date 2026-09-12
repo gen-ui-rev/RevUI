@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LumaWell Caregiver Order Review</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #e8e8ec;
+      color: #202231;
+      font-family: 'Source Sans 3', system-ui, sans-serif;
+    }
+
+    button { font: inherit; }
+
+    .screen {
+      position: relative;
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #fcfbf9;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      padding: 12px 14px;
+      background: #edf5f2;
+    }
+
+    .icon-button {
+      width: 36px;
+      height: 36px;
+      padding: 8px;
+      display: grid;
+      place-items: center;
+      border: 0;
+      border-radius: 8px;
+      color: #216554;
+      background: rgba(33, 101, 84, 0.09);
+    }
+
+    .topbar-copy {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .brand {
+      margin: 0 0 1px;
+      color: #557068;
+      font-size: 12px;
+      line-height: 15px;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+    }
+
+    h1, h2 { font-family: 'Playfair Display', Georgia, serif; }
+
+    h1 {
+      margin: 0;
+      color: #173f36;
+      font-size: 21px;
+      line-height: 25px;
+      font-weight: 700;
+    }
+
+    .secure {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      color: #4d6962;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 600;
+    }
+
+    .step-tabs {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      padding: 0 14px;
+      background: #f4f8f6;
+    }
+
+    .step {
+      position: relative;
+      padding: 10px 4px 9px;
+      color: #737f7b;
+      text-align: center;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 600;
+    }
+
+    .step.complete { color: #527269; }
+    .step.active { color: #216554; }
+
+    .step.active::after {
+      content: "";
+      position: absolute;
+      right: 10px;
+      bottom: 0;
+      left: 10px;
+      height: 3px;
+      border-radius: 6px 6px 0 0;
+      background: #2b7562;
+    }
+
+    main { padding: 12px 14px 9px; }
+
+    .intro { margin-bottom: 9px; }
+
+    .intro h2 {
+      margin: 0 0 2px;
+      color: #173f36;
+      font-size: 22px;
+      line-height: 27px;
+      font-weight: 700;
+    }
+
+    .intro p {
+      margin: 0;
+      color: #64716d;
+      font-size: 14px;
+      line-height: 19px;
+    }
+
+    .section { margin-top: 9px; }
+
+    .section-heading {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+
+    .section-heading h2 {
+      margin: 0;
+      color: #263f39;
+      font-size: 16px;
+      line-height: 22px;
+      font-weight: 600;
+    }
+
+    .text-action {
+      padding: 0;
+      border: 0;
+      color: #216554;
+      background: transparent;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 600;
+    }
+
+    .panel {
+      border-radius: 8px;
+      background: #eef5f2;
+    }
+
+    .recipient-panel { padding: 9px 11px; }
+
+    .recipient-head {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      margin-bottom: 7px;
+    }
+
+    .avatar {
+      width: 34px;
+      height: 34px;
+      flex: 0 0 34px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      color: #ffffff;
+      background: #3f7e6e;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .recipient-copy {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .recipient-name {
+      margin: 0;
+      font-size: 14px;
+      line-height: 18px;
+      font-weight: 600;
+    }
+
+    .recipient-role {
+      margin: 0;
+      color: #65736f;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .care-label {
+      padding: 3px 6px;
+      border-radius: 6px;
+      color: #216554;
+      background: rgba(33, 101, 84, 0.10);
+      font-size: 11px;
+      line-height: 15px;
+      font-weight: 600;
+    }
+
+    .address-line {
+      margin: 0;
+      color: #53635e;
+      font-size: 13px;
+      line-height: 17px;
+    }
+
+    .delivery-line {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 6px;
+      padding-top: 6px;
+      color: #596963;
+      font-size: 12px;
+      line-height: 17px;
+      box-shadow: inset 0 1px 0 rgba(33, 101, 84, 0.11);
+    }
+
+    .delivery-line strong {
+      color: #245347;
+      font-weight: 600;
+    }
+
+    .payment-panel {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 11px;
+    }
+
+    .payment-icon {
+      width: 34px;
+      height: 30px;
+      flex: 0 0 auto;
+      display: grid;
+      place-items: center;
+      border-radius: 6px;
+      color: #216554;
+      background: rgba(33, 101, 84, 0.10);
+    }
+
+    .payment-copy {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .payment-title {
+      margin: 0;
+      font-size: 14px;
+      line-height: 19px;
+      font-weight: 600;
+    }
+
+    .payment-detail {
+      margin: 1px 0 0;
+      color: #68736f;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .default-label {
+      padding: 3px 6px;
+      border-radius: 6px;
+      color: #216554;
+      background: rgba(33, 101, 84, 0.10);
+      font-size: 11px;
+      line-height: 15px;
+      font-weight: 600;
+    }
+
+    .items-panel { padding: 7px; }
+
+    .product-row {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      min-width: 0;
+    }
+
+    .product-row + .product-row { margin-top: 6px; }
+
+    .product-photo {
+      width: 46px;
+      height: 46px;
+      flex: 0 0 46px;
+      display: block;
+      object-fit: cover;
+      border-radius: 7px;
+      background: #d8d9e3;
+    }
+
+    .product-copy {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .product-name {
+      margin: 0;
+      overflow: hidden;
+      color: #293b36;
+      font-size: 14px;
+      line-height: 18px;
+      font-weight: 600;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .product-meta {
+      margin: 1px 0 0;
+      color: #707b77;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .product-price {
+      flex: 0 0 auto;
+      color: #293b36;
+      font-size: 14px;
+      line-height: 19px;
+      font-weight: 600;
+    }
+
+    .care-note {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 7px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      color: #52645e;
+      background: #eef5f2;
+      font-size: 12px;
+      line-height: 17px;
+    }
+
+    .care-note span { flex: 1; }
+
+    .totals {
+      margin-top: 7px;
+      padding: 7px 10px;
+      border-radius: 8px;
+      background: #f4f7f5;
+    }
+
+    .total-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      color: #56645f;
+      font-size: 13px;
+      line-height: 18px;
+    }
+
+    .total-row.final {
+      margin-top: 3px;
+      padding-top: 4px;
+      color: #203f37;
+      box-shadow: inset 0 1px 0 rgba(33, 101, 84, 0.11);
+      font-size: 15px;
+      line-height: 20px;
+      font-weight: 600;
+    }
+
+    .checkout-bar {
+      margin-top: auto;
+      padding: 10px 14px 12px;
+      background: #eaf3ef;
+    }
+
+    .checkout-content {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .due { min-width: 91px; }
+
+    .due-label {
+      margin: 0;
+      color: #61736d;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .due-value {
+      margin: 0;
+      color: #173f36;
+      font-size: 19px;
+      line-height: 24px;
+      font-weight: 600;
+    }
+
+    .place-order {
+      min-height: 46px;
+      flex: 1;
+      border: 0;
+      border-radius: 8px;
+      color: #ffffff;
+      background: #2b7562;
+      font-size: 15px;
+      line-height: 20px;
+      font-weight: 600;
+    }
+
+    .terms {
+      margin: 6px 0 0;
+      color: #66756f;
+      text-align: center;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    svg { display: block; }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <button class="icon-button" type="button" aria-label="Go back">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+          <path d="M12.75 4.5L7.25 10L12.75 15.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <div class="topbar-copy">
+        <p class="brand">LumaWell Care</p>
+        <h1>Caregiver checkout</h1>
+      </div>
+      <div class="secure">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <rect x="3.25" y="7" width="9.5" height="7" rx="1.5" stroke="currentColor" stroke-width="1.4"/>
+          <path d="M5.25 7V5.25C5.25 3.73 6.48 2.5 8 2.5C9.52 2.5 10.75 3.73 10.75 5.25V7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+        </svg>
+        Secure
+      </div>
+    </header>
+
+    <nav class="step-tabs" aria-label="Caregiver checkout steps">
+      <div class="step complete">Recipient</div>
+      <div class="step complete">Payment</div>
+      <div class="step active">Review</div>
+    </nav>
+
+    <main>
+      <section class="intro">
+        <h2>Review Evelyn’s order</h2>
+        <p>Confirm the care recipient, delivery, and payment.</p>
+      </section>
+
+      <section class="section" aria-labelledby="recipient-heading">
+        <div class="section-heading">
+          <h2 id="recipient-heading">Care recipient</h2>
+          <button class="text-action" type="button">Edit</button>
+        </div>
+        <div class="panel recipient-panel">
+          <div class="recipient-head">
+            <div class="avatar" aria-hidden="true">EH</div>
+            <div class="recipient-copy">
+              <p class="recipient-name">Evelyn Hale</p>
+              <p class="recipient-role">Managed by Morgan Hale · Daughter</p>
+            </div>
+            <span class="care-label">Authorized</span>
+          </div>
+          <p class="address-line">1842 Willow Park Drive, Apt 5B</p>
+          <p class="address-line">Portland, OR 97205 · (503) 555-0147</p>
+          <div class="delivery-line">
+            <span>Standard delivery</span>
+            <strong>Arrives May 16–18</strong>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" aria-labelledby="payment-heading">
+        <div class="section-heading">
+          <h2 id="payment-heading">Caregiver payment</h2>
+          <button class="text-action" type="button">Change</button>
+        </div>
+        <div class="panel payment-panel">
+          <div class="payment-icon" aria-hidden="true">
+            <svg width="21" height="17" viewBox="0 0 22 18" fill="none">
+              <rect x="1.25" y="1.25" width="19.5" height="15.5" rx="2" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M1.5 6H20.5" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M5 12.25H9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="payment-copy">
+            <p class="payment-title">Visa ending in 4826</p>
+            <p class="payment-detail">Billing name · Morgan Hale</p>
+          </div>
+          <span class="default-label">Personal</span>
+        </div>
+      </section>
+
+      <section class="section" aria-labelledby="summary-heading">
+        <div class="section-heading">
+          <h2 id="summary-heading">Care order</h2>
+          <span class="payment-detail">3 items</span>
+        </div>
+
+        <div class="panel items-panel">
+          <div class="product-row">
+            <img class="product-photo" src="https://loremflickr.com/46/46/fruit?lock=5990" width="46" height="46" alt="Daily greens nutrition blend">
+            <div class="product-copy">
+              <p class="product-name">Daily Greens Blend</p>
+              <p class="product-meta">30 servings · Quantity 1</p>
+            </div>
+            <span class="product-price">$32.00</span>
+          </div>
+          <div class="product-row">
+            <img class="product-photo" src="https://loremflickr.com/46/46/salad?lock=5991" width="46" height="46" alt="Balanced meal planning guide">
+            <div class="product-copy">
+              <p class="product-name">Balanced Meals Guide</p>
+              <p class="product-meta">Printed edition · Quantity 1</p>
+            </div>
+            <span class="product-price">$18.00</span>
+          </div>
+          <div class="product-row">
+            <img class="product-photo" src="https://loremflickr.com/46/46/gym?lock=5992" width="46" height="46" alt="Indigo resistance exercise band">
+            <div class="product-copy">
+              <p class="product-name">Flex Resistance Band</p>
+              <p class="product-meta">Medium strength · Quantity 1</p>
+            </div>
+            <span class="product-price">$24.00</span>
+          </div>
+        </div>
+
+        <div class="care-note">
+          <svg width="17" height="17" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+            <path d="M9 2.5C5.41 2.5 2.5 5.18 2.5 8.5C2.5 10.12 3.19 11.59 4.32 12.67L3.75 15.5L6.72 14.32C7.43 14.55 8.2 14.5 9 14.5C12.59 14.5 15.5 11.82 15.5 8.5C15.5 5.18 12.59 2.5 9 2.5Z" stroke="#216554" stroke-width="1.4" stroke-linejoin="round"/>
+          </svg>
+          <span>Delivery updates will go to Morgan.</span>
+          <button class="text-action" type="button">Change</button>
+        </div>
+
+        <div class="totals">
+          <div class="total-row"><span>Subtotal</span><span>$74.00</span></div>
+          <div class="total-row"><span>Standard delivery</span><span>$4.95</span></div>
+          <div class="total-row"><span>Estimated tax</span><span>$5.37</span></div>
+          <div class="total-row final"><span>Order total</span><span>$84.32</span></div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="checkout-bar">
+      <div class="checkout-content">
+        <div class="due">
+          <p class="due-label">Total due</p>
+          <p class="due-value">$84.32</p>
+        </div>
+        <button class="place-order" type="button">Place care order</button>
+      </div>
+      <p class="terms">You confirm you are authorized to order for Evelyn.</p>
+    </footer>
+  </div>
+</body>
+</html>

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Receipt crop — Ledgerbank</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --accent:#3f3f46;
+    --accent-8:rgba(63,63,70,.08);
+    --accent-14:rgba(63,63,70,.14);
+    --ink:#18181b;
+    --mid:#71717a;
+  }
+  *{box-sizing:border-box;}
+  body{
+    min-height:100vh;display:flex;justify-content:center;align-items:flex-start;
+    padding:40px 0;margin:0;background:#d4d4d8;
+    font-family:'Inter',system-ui,sans-serif;color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+  }
+  .screen{width:390px;height:844px;background:#fafafa;display:flex;flex-direction:column;position:relative;}
+
+  /* top bar */
+  .topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 16px 12px;}
+  .tb-side{font-size:14px;font-weight:500;color:var(--mid);}
+  .tb-title{font-size:16px;font-weight:600;}
+  .tb-done{font-size:14px;font-weight:600;color:#fafafa;background:var(--accent);padding:7px 14px;border-radius:6px;}
+
+  /* stage */
+  .stage{position:relative;height:300px;background:#09090b;flex:none;}
+  .paper{position:absolute;left:87px;top:0;width:216px;height:300px;background:#f4f4f5;padding:22px 18px;}
+  .r-name{font-size:14px;font-weight:700;letter-spacing:.04em;text-align:center;}
+  .r-meta{font-size:12px;color:#71717a;text-align:center;margin-top:5px;}
+  .r-line{display:flex;justify-content:space-between;font-size:12px;color:#3f3f46;margin-top:14px;}
+  .r-total{display:flex;justify-content:space-between;font-size:12px;font-weight:700;margin-top:14px;border-top:1px solid var(--accent-14);padding-top:12px;}
+
+  .dim{position:absolute;background:rgba(9,9,11,.62);}
+  .frame{position:absolute;left:44px;top:34px;width:302px;height:232px;}
+  .corner{position:absolute;width:20px;height:20px;border:2px solid #fafafa;}
+  .c-tl{left:0;top:0;border-right:0;border-bottom:0;}
+  .c-tr{right:0;top:0;border-left:0;border-bottom:0;}
+  .c-bl{left:0;bottom:0;border-right:0;border-top:0;}
+  .c-br{right:0;bottom:0;border-left:0;border-top:0;}
+  .stage-tag{position:absolute;left:16px;bottom:14px;font-size:12px;font-weight:500;color:#e4e4e7;background:rgba(250,250,250,.14);padding:5px 9px;border-radius:6px;}
+
+  /* body */
+  .body{flex:1;padding:16px;display:flex;flex-direction:column;gap:16px;}
+  .sec-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px;}
+  .sec-title{font-size:12px;font-weight:600;letter-spacing:.06em;color:var(--mid);text-transform:uppercase;}
+  .sec-val{font-size:12px;color:var(--mid);}
+
+  .chips{display:flex;gap:8px;}
+  .chip{flex:1;background:var(--accent-8);border-radius:6px;padding:9px 0;text-align:center;font-size:14px;font-weight:500;color:#3f3f46;}
+  .chip.on{background:var(--accent);color:#fafafa;font-weight:600;}
+
+  .adjust{display:flex;flex-direction:column;gap:14px;}
+  .adj-row{display:flex;align-items:center;gap:12px;}
+  .adj-label{width:88px;font-size:14px;font-weight:500;}
+  .track{flex:1;height:6px;background:var(--accent-8);border-radius:6px;position:relative;}
+  .fill{position:absolute;left:0;top:0;bottom:0;background:var(--accent);border-radius:6px;}
+  .adj-val{width:40px;text-align:right;font-size:14px;color:var(--mid);font-variant-numeric:tabular-nums;}
+
+  .detected{background:var(--accent-8);border-radius:6px;padding:12px 14px;display:flex;align-items:center;gap:12px;}
+  .mono{width:38px;height:38px;border-radius:6px;background:var(--accent);color:#fafafa;font-size:14px;font-weight:600;display:flex;align-items:center;justify-content:center;flex:none;}
+  .d-main{flex:1;min-width:0;}
+  .d-title{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .d-sub{font-size:12px;color:var(--mid);margin-top:3px;}
+  .d-amt{font-size:14px;font-weight:600;font-variant-numeric:tabular-nums;}
+
+  /* tab bar */
+  .tabs{display:flex;border-top:1px solid #e4e4e7;padding:10px 0 14px;}
+  .tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;font-size:12px;font-weight:500;color:#a1a1aa;}
+  .tab.on{color:var(--accent);font-weight:600;}
+</style>
+</head>
+<body>
+  <div class="screen">
+
+    <div class="topbar">
+      <span class="tb-side">Cancel</span>
+      <span class="tb-title">Crop receipt</span>
+      <span class="tb-done">Attach</span>
+    </div>
+
+    <div class="stage">
+      <div class="paper">
+        <div class="r-name">NORTHGATE MARKET</div>
+        <div class="r-meta">March 14, 2025 · 6:42 PM</div>
+        <div class="r-line"><span>Produce</span><span>18.40</span></div>
+        <div class="r-line"><span>Household</span><span>42.15</span></div>
+        <div class="r-line"><span>Coffee, 12 oz</span><span>11.99</span></div>
+        <div class="r-total"><span>TOTAL</span><span>72.54</span></div>
+      </div>
+      <div class="dim" style="left:0;top:0;width:100%;height:34px;"></div>
+      <div class="dim" style="left:0;bottom:0;width:100%;height:34px;"></div>
+      <div class="dim" style="left:0;top:34px;width:44px;height:232px;"></div>
+      <div class="dim" style="right:0;top:34px;width:44px;height:232px;"></div>
+      <div class="frame">
+        <span class="corner c-tl"></span>
+        <span class="corner c-tr"></span>
+        <span class="corner c-bl"></span>
+        <span class="corner c-br"></span>
+      </div>
+      <div class="stage-tag">302 × 232 px</div>
+    </div>
+
+    <div class="body">
+
+      <div>
+        <div class="sec-head">
+          <span class="sec-title">Aspect</span>
+          <span class="sec-val">Rotated 2°</span>
+        </div>
+        <div class="chips">
+          <span class="chip on">Free</span>
+          <span class="chip">1:1</span>
+          <span class="chip">4:3</span>
+          <span class="chip">Letter</span>
+        </div>
+      </div>
+
+      <div>
+        <div class="sec-head">
+          <span class="sec-title">Adjust</span>
+        </div>
+        <div class="adjust">
+          <div class="adj-row">
+            <span class="adj-label">Exposure</span>
+            <span class="track"><span class="fill" style="width:62%"></span></span>
+            <span class="adj-val">+24</span>
+          </div>
+          <div class="adj-row">
+            <span class="adj-label">Contrast</span>
+            <span class="track"><span class="fill" style="width:48%"></span></span>
+            <span class="adj-val">+6</span>
+          </div>
+          <div class="adj-row">
+            <span class="adj-label">Sharpen</span>
+            <span class="track"><span class="fill" style="width:80%"></span></span>
+            <span class="adj-val">+41</span>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="sec-head">
+          <span class="sec-title">Matched expense</span>
+        </div>
+        <div class="detected">
+          <span class="mono">NM</span>
+          <span class="d-main">
+            <span class="d-title">Northgate Market</span>
+            <span class="d-sub">Groceries · Mar 14 · Everyday Checking</span>
+          </span>
+          <span class="d-amt">$72.54</span>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="tabs">
+      <span class="tab on">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M6 2v12h12"/><path d="M14 18V6H2"/></svg>
+        Crop
+      </span>
+      <span class="tab">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M4 6h12M4 14h12"/><circle cx="8" cy="6" r="2"/><circle cx="13" cy="14" r="2"/></svg>
+        Adjust
+      </span>
+      <span class="tab">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M4 3h9l3 3v11H4z"/><path d="M7 10h6M7 13h4"/></svg>
+        Details
+      </span>
+    </div>
+
+  </div>
+</body>
+</html>

@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Morrowtide In-App Browser</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #dedbdd;
+      color: #251f22;
+      font-family: 'Source Sans 3', system-ui, sans-serif;
+    }
+
+    button {
+      margin: 0;
+      padding: 0;
+      border: 0;
+      background: none;
+      color: inherit;
+      font: inherit;
+    }
+
+    svg {
+      display: block;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #ffffff;
+    }
+
+    .browser-chrome {
+      background: #fbf8f9;
+      border-bottom: 1px solid #ded7da;
+    }
+
+    .browser-top {
+      display: grid;
+      grid-template-columns: 36px 1fr 36px;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px 8px;
+    }
+
+    .browser-title {
+      overflow: hidden;
+      color: #51494d;
+      font-size: 15px;
+      font-weight: 600;
+      line-height: 24px;
+      text-align: center;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .icon-button {
+      width: 36px;
+      min-width: 36px;
+      display: grid;
+      place-items: center;
+      align-self: center;
+      color: #393235;
+    }
+
+    .address-row {
+      padding: 0 14px 12px;
+    }
+
+    .address-bar {
+      display: grid;
+      grid-template-columns: 20px minmax(0, 1fr) 24px;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 11px;
+      border: 1px solid #d8d0d4;
+      border-radius: 14px;
+      background: #ffffff;
+    }
+
+    .address {
+      overflow: hidden;
+      color: #51494d;
+      font-size: 14px;
+      line-height: 20px;
+      text-align: center;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .site-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 13px 18px;
+      border-bottom: 1px solid #e5dfe1;
+      background: #ffffff;
+    }
+
+    .site-name {
+      color: #292225;
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: -0.2px;
+      line-height: 24px;
+    }
+
+    .site-action {
+      color: #c92367;
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 22px;
+    }
+
+    main {
+      padding: 18px 18px 16px;
+    }
+
+    .eyebrow {
+      margin: 0 0 7px;
+      color: #c92367;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 1.1px;
+      line-height: 18px;
+      text-transform: uppercase;
+    }
+
+    h1,
+    h2 {
+      font-family: 'Playfair Display', Georgia, serif;
+    }
+
+    h1 {
+      max-width: 340px;
+      margin: 0;
+      color: #241e21;
+      font-size: 35px;
+      font-weight: 700;
+      letter-spacing: -0.8px;
+      line-height: 39px;
+    }
+
+    .summary {
+      margin: 10px 0 0;
+      color: #5d5458;
+      font-size: 16px;
+      line-height: 22px;
+    }
+
+    .byline {
+      margin: 10px 0 0;
+      color: #766c71;
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .player-card {
+      display: grid;
+      grid-template-columns: 112px minmax(0, 1fr);
+      gap: 14px;
+      margin-top: 20px;
+      padding: 14px;
+      border: 1px solid #e6c8d4;
+      border-radius: 14px;
+      background: #fff8fb;
+    }
+
+    .cover {
+      width: 112px;
+      height: 112px;
+      border-radius: 14px;
+      background: #e8a9c1;
+    }
+
+    .player-details {
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .player-label {
+      margin: 1px 0 3px;
+      color: #a51d54;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.7px;
+      line-height: 18px;
+      text-transform: uppercase;
+    }
+
+    .episode-title {
+      overflow: hidden;
+      width: 100%;
+      margin: 0;
+      color: #2c2428;
+      font-size: 18px;
+      font-weight: 600;
+      line-height: 23px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .episode-meta {
+      margin: 2px 0 12px;
+      color: #756a6f;
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .play-button {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: #d92d72;
+      color: #ffffff;
+    }
+
+    .notes {
+      margin-top: 22px;
+      padding-top: 18px;
+      border-top: 1px solid #e6dfe2;
+    }
+
+    .notes h2 {
+      margin: 0;
+      color: #2a2326;
+      font-size: 24px;
+      font-weight: 600;
+      line-height: 30px;
+    }
+
+    .notes p {
+      margin: 8px 0 0;
+      color: #5e5559;
+      font-size: 15px;
+      line-height: 22px;
+    }
+
+    .episode-details {
+      display: flex;
+      gap: 20px;
+      margin-top: 12px;
+      color: #71676c;
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .episode-details strong {
+      color: #332c2f;
+      font-weight: 600;
+    }
+
+    .browser-nav {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      align-items: center;
+      margin-top: auto;
+      padding: 12px 18px 13px;
+      border-top: 1px solid #dcd5d8;
+      background: #fbf8f9;
+    }
+
+    .nav-button {
+      display: grid;
+      place-items: center;
+      color: #51494d;
+    }
+
+    .nav-button.primary {
+      color: #c92367;
+    }
+
+    .nav-button.disabled {
+      color: #c8c0c4;
+    }
+
+    .tab-icon {
+      position: relative;
+      width: 24px;
+      height: 24px;
+    }
+
+    .tab-count {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      color: currentColor;
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 24px;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="browser-chrome">
+      <div class="browser-top">
+        <button class="icon-button" aria-label="Close browser">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M6 6L18 18M18 6L6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+        </button>
+        <div class="browser-title">In-app browser</div>
+        <button class="icon-button" aria-label="More options">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <circle cx="5" cy="12" r="1.5"/>
+            <circle cx="12" cy="12" r="1.5"/>
+            <circle cx="19" cy="12" r="1.5"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="address-row">
+        <div class="address-bar">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <rect x="5.5" y="10" width="13" height="10" rx="2.5" stroke="#6A6065" stroke-width="1.6"/>
+            <path d="M8.5 10V7.7C8.5 5.65 10.07 4 12 4C13.93 4 15.5 5.65 15.5 7.7V10" stroke="#6A6065" stroke-width="1.6" stroke-linecap="round"/>
+          </svg>
+          <div class="address">listen.morrowtide.test</div>
+          <button class="icon-button" style="width:24px; min-width:24px;" aria-label="Reload page">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M19 7V3M19 3H15" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M18.1 5.2A8 8 0 1 0 20 13" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <div class="site-bar">
+      <div class="site-name">Morrowtide</div>
+      <button class="site-action">Sign in</button>
+    </div>
+
+    <main>
+      <section aria-labelledby="episode-heading">
+        <p class="eyebrow">Original podcast</p>
+        <h1 id="episode-heading">The city after the last train</h1>
+        <p class="summary">A midnight walk through the people and places that keep moving after transit shuts down.</p>
+        <p class="byline">By Arden Pike · May 18, 2025</p>
+
+        <div class="player-card">
+          <div class="cover" role="img" aria-label="Pink episode artwork"></div>
+          <div class="player-details">
+            <p class="player-label">Featured episode</p>
+            <p class="episode-title">Night Routes</p>
+            <p class="episode-meta">Season 2 · 38 min</p>
+            <button class="play-button" aria-label="Play Night Routes">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M8.5 6.4V17.6L18 12L8.5 6.4Z" fill="currentColor"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section class="notes" aria-labelledby="notes-heading">
+        <h2 id="notes-heading">Episode notes</h2>
+        <p>Arden joins bakery crews, overnight dispatchers, and a bridge operator during the quietest hours downtown.</p>
+        <div class="episode-details">
+          <span><strong>Audio:</strong> Rowan Hart</span>
+          <span><strong>Published:</strong> May 18</span>
+        </div>
+      </section>
+    </main>
+
+    <nav class="browser-nav" aria-label="Browser navigation">
+      <button class="nav-button primary" aria-label="Go back">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M14.5 5.5L8 12L14.5 18.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <button class="nav-button disabled" aria-label="Go forward" disabled>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M9.5 5.5L16 12L9.5 18.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <button class="nav-button" aria-label="Share page">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M12 15V4M12 4L8.5 7.5M12 4L15.5 7.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M7 11H5.8C4.81 11 4 11.81 4 12.8V18.2C4 19.19 4.81 20 5.8 20H18.2C19.19 20 20 19.19 20 18.2V12.8C20 11.81 19.19 11 18.2 11H17" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+        </svg>
+      </button>
+      <button class="nav-button" aria-label="Bookmark page">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M7 4.5C7 3.67 7.67 3 8.5 3H15.5C16.33 3 17 3.67 17 4.5V20L12 16.8L7 20V4.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <button class="nav-button" aria-label="View open tabs">
+        <span class="tab-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <rect x="4.5" y="4.5" width="15" height="15" rx="2.5" stroke="currentColor" stroke-width="1.6"/>
+          </svg>
+          <span class="tab-count">1</span>
+        </span>
+      </button>
+    </nav>
+  </div>
+</body>
+</html>

@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Halfmoon — Link preview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --violet:#6338D6;
+    --violet-soft:rgba(99,56,214,0.10);
+    --violet-softer:rgba(99,56,214,0.06);
+    --ink:#17141F;
+    --muted:#6C6880;
+    --line:#EDEBF3;
+  }
+  *{box-sizing:border-box;}
+  body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    padding:40px 0;
+    margin:0;
+    background:#E7E5EC;
+    font-family:'Poppins', system-ui, sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .screen{
+    width:390px;
+    height:844px;
+    background:#FFFFFF;
+    position:relative;
+    display:flex;
+    flex-direction:column;
+    color:var(--ink);
+  }
+
+  /* ---------- browser chrome ---------- */
+  .chrome{padding:12px 14px 0 14px;}
+  .chrome-row{display:flex;align-items:center;gap:10px;}
+  .icon-btn{
+    width:32px;height:32px;flex:none;
+    display:flex;align-items:center;justify-content:center;
+    border-radius:10px;background:var(--violet-softer);
+    color:var(--violet);
+  }
+  .addr{
+    flex:1;min-width:0;height:36px;
+    display:flex;align-items:center;gap:7px;
+    padding:0 12px;border-radius:10px;
+    background:var(--violet-soft);
+  }
+  .addr .host{
+    font-size:14px;font-weight:500;color:var(--ink);
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .addr .path{font-size:14px;font-weight:400;color:var(--muted);}
+  .progress{
+    margin-top:11px;height:3px;border-radius:10px;background:var(--violet-softer);
+    overflow:hidden;
+  }
+  .progress span{display:block;height:3px;width:68%;background:var(--violet);border-radius:10px;}
+
+  /* ---------- shared-by banner ---------- */
+  .shared{
+    margin:12px 14px 0 14px;
+    padding:11px 12px;
+    border-radius:10px;
+    background:var(--violet-soft);
+    display:flex;align-items:center;gap:10px;
+  }
+  .mono{
+    flex:none;border-radius:10px;background:rgba(99,56,214,0.18);
+    color:var(--violet);font-weight:600;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .mono.sm{width:32px;height:32px;font-size:12px;}
+  .mono.md{width:34px;height:34px;font-size:13px;}
+  .shared-txt{min-width:0;}
+  .shared-txt b{display:block;font-size:13px;font-weight:500;line-height:1.35;}
+  .shared-txt span{display:block;font-size:12px;color:var(--muted);line-height:1.4;}
+  .shared-time{margin-left:auto;font-size:12px;color:var(--muted);flex:none;}
+
+  /* ---------- page content ---------- */
+  .page{padding:14px 20px 0 20px;}
+  .hero{
+    width:350px;height:170px;border-radius:10px;
+    object-fit:cover;display:block;background:#D8D4E2;
+  }
+  .kicker{
+    display:inline-block;margin-top:14px;
+    padding:4px 10px;border-radius:10px;
+    background:var(--violet-soft);color:var(--violet);
+    font-size:12px;font-weight:500;
+  }
+  h1{
+    margin:10px 0 0 0;font-size:20px;font-weight:600;line-height:1.3;letter-spacing:-0.2px;
+  }
+  .byline{display:flex;align-items:center;gap:10px;margin-top:12px;}
+  .byline b{display:block;font-size:13px;font-weight:500;line-height:1.35;}
+  .byline span{display:block;font-size:12px;color:var(--muted);line-height:1.4;}
+  p.lede{
+    margin:12px 0 0 0;font-size:14px;line-height:1.6;color:#3D3950;
+  }
+
+  .sec-label{
+    margin:18px 0 10px 0;font-size:12px;font-weight:500;
+    letter-spacing:0.6px;text-transform:uppercase;color:var(--muted);
+  }
+  .row{display:flex;align-items:center;gap:12px;height:56px;}
+  .row + .row{margin-top:12px;}
+  .row img{
+    width:56px;height:56px;border-radius:10px;
+    object-fit:cover;display:block;background:#D8D4E2;flex:none;
+  }
+  .row .txt{min-width:0;flex:1;}
+  .row .txt b{
+    display:block;font-size:14px;font-weight:500;line-height:1.4;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .row .txt span{
+    display:block;font-size:12px;color:var(--muted);line-height:1.45;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+
+  /* ---------- bottom controls ---------- */
+  .toolbar{
+    position:absolute;left:0;right:0;bottom:0;height:68px;
+    border-top:1px solid var(--line);
+    display:flex;align-items:center;justify-content:space-between;
+    padding:0 26px;background:#FFFFFF;
+  }
+  .tool{width:34px;height:34px;display:flex;align-items:center;justify-content:center;color:var(--ink);}
+  .tool.off{color:#C5C1D2;}
+  .tool.mark{color:var(--violet);}
+</style>
+</head>
+<body>
+  <div class="screen">
+
+    <div class="chrome">
+      <div class="chrome-row">
+        <div class="icon-btn" aria-label="Close">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M5 5l14 14M19 5L5 19"/></svg>
+        </div>
+        <div class="addr">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#6338D6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10.5" width="16" height="10" rx="2.5"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/></svg>
+          <span class="host">citymeetups.co<span class="path">/rooftops</span></span>
+        </div>
+        <div class="icon-btn" aria-label="Reload">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 1 1-2.6-5.9"/><path d="M20 4v5h-5"/></svg>
+        </div>
+        <div class="icon-btn" aria-label="More options">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg>
+        </div>
+      </div>
+      <div class="progress"><span></span></div>
+    </div>
+
+    <div class="shared">
+      <div class="mono sm">DW</div>
+      <div class="shared-txt">
+        <b>Dana Whitlock shared this link</b>
+        <span>Night Owls · 41 members</span>
+      </div>
+      <div class="shared-time">2h</div>
+    </div>
+
+    <div class="page">
+      <img class="hero" src="https://loremflickr.com/350/170/party?lock=4520" width="350" height="170" alt="People gathered on a lit rooftop terrace at dusk">
+
+      <span class="kicker">City guide</span>
+      <h1>Twelve rooftops worth the walk this spring</h1>
+
+      <div class="byline">
+        <div class="mono md">RM</div>
+        <div>
+          <b>Rosa Mendel</b>
+          <span>March 14, 2025 · 6 min read</span>
+        </div>
+      </div>
+
+      <p class="lede">Terrace season starts earlier than most people plan for. These are the twelve places our members keep going back to, and the nights they are actually worth showing up for.</p>
+
+      <div class="sec-label">Three to try this week</div>
+
+      <div class="row">
+        <img src="https://loremflickr.com/56/56/cafe?lock=4521" width="56" height="56" alt="Corner cafe terrace with small tables">
+        <div class="txt">
+          <b>Sunset Terrace at Colby &amp; Vine</b>
+          <span>Thursdays, 6:30 PM · Riverside</span>
+        </div>
+      </div>
+
+      <div class="row">
+        <img src="https://loremflickr.com/56/56/street?lock=4522" width="56" height="56" alt="Narrow street with outdoor seating">
+        <div class="txt">
+          <b>The Back Patio Book Swap</b>
+          <span>Saturdays, 11:00 AM · Fulton Park</span>
+        </div>
+      </div>
+
+      <div class="row">
+        <img src="https://loremflickr.com/56/56/friends?lock=4523" width="56" height="56" alt="Group of people talking over coffee">
+        <div class="txt">
+          <b>Late Shift Coffee Club</b>
+          <span>Sundays, 8:00 AM · Warehouse District</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="toolbar">
+      <div class="tool" aria-label="Back">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
+      </div>
+      <div class="tool off" aria-label="Forward">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg>
+      </div>
+      <div class="tool" aria-label="Share">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V4"/><path d="M8 8l4-4 4 4"/><path d="M5 14v4.5A1.5 1.5 0 0 0 6.5 20h11a1.5 1.5 0 0 0 1.5-1.5V14"/></svg>
+      </div>
+      <div class="tool mark" aria-label="Saved">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M7 3h10a1.5 1.5 0 0 1 1.5 1.5V21l-6.5-4-6.5 4V4.5A1.5 1.5 0 0 1 7 3z"/></svg>
+      </div>
+      <div class="tool" aria-label="Open in browser">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"/><path d="M20 4l-8.5 8.5"/><path d="M18 14v5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 4 19V8a1.5 1.5 0 0 1 1.5-1.5H10"/></svg>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order Details — LingoShelf</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 32px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #e4e4e7;
+      color: #18181b;
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #ffffff;
+    }
+
+    .topbar {
+      display: grid;
+      grid-template-columns: 36px 1fr 36px;
+      align-items: center;
+      padding: 15px 14px;
+      border-bottom: 1px solid #e4e4e7;
+    }
+
+    .topbar h1 {
+      margin: 0;
+      text-align: center;
+      font-size: 16px;
+      line-height: 24px;
+      font-weight: 700;
+    }
+
+    .icon-button {
+      width: 36px;
+      padding: 4px;
+      border: 0;
+      background: transparent;
+      color: #18181b;
+      display: grid;
+      place-items: center;
+    }
+
+    .icon-button svg {
+      width: 22px;
+      height: 22px;
+      display: block;
+    }
+
+    main {
+      flex: 1;
+    }
+
+    .order-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 11px 20px;
+      border-bottom: 1px solid #e4e4e7;
+      font-size: 12px;
+      line-height: 20px;
+      color: #71717a;
+    }
+
+    .order-meta strong {
+      color: #3f3f46;
+      font-weight: 600;
+    }
+
+    .delivery {
+      padding: 14px 20px 16px;
+      border-bottom: 1px solid #d4d4d8;
+    }
+
+    .eyebrow {
+      margin: 0 0 3px;
+      color: #71717a;
+      font-size: 12px;
+      line-height: 18px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .delivery h2 {
+      margin: 0;
+      font-size: 23px;
+      line-height: 31px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .delivery-detail {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 13px;
+    }
+
+    .shipment-copy {
+      min-width: 0;
+      display: grid;
+      grid-template-columns: 12px 1fr;
+      column-gap: 9px;
+      align-items: start;
+    }
+
+    .status-mark {
+      width: 10px;
+      height: 10px;
+      margin-top: 5px;
+      border-radius: 50%;
+      background: #18181b;
+      box-shadow: 0 0 0 3px #e4e4e7;
+    }
+
+    .shipment-copy strong,
+    .shipment-copy span {
+      display: block;
+    }
+
+    .shipment-copy strong {
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 600;
+    }
+
+    .shipment-copy span {
+      color: #71717a;
+      font-size: 12px;
+      line-height: 18px;
+    }
+
+    .track-button {
+      flex: none;
+      padding: 8px 11px;
+      border: 1px solid #18181b;
+      border-radius: 4px;
+      background: #18181b;
+      color: #ffffff;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 600;
+    }
+
+    .section-heading {
+      margin: 0;
+      padding: 12px 20px 9px;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 700;
+    }
+
+    .item-row {
+      display: grid;
+      grid-template-columns: 64px minmax(0, 1fr) auto;
+      gap: 12px;
+      align-items: center;
+      padding: 9px 20px;
+      border-bottom: 1px solid #e4e4e7;
+    }
+
+    .item-row img {
+      width: 64px;
+      height: 64px;
+      display: block;
+      object-fit: cover;
+      border-radius: 4px;
+      background: #d4d4d8;
+    }
+
+    .item-info {
+      min-width: 0;
+    }
+
+    .item-name {
+      margin: 0;
+      font-size: 14px;
+      line-height: 19px;
+      font-weight: 600;
+    }
+
+    .item-detail {
+      margin: 3px 0 0;
+      color: #71717a;
+      font-size: 12px;
+      line-height: 18px;
+    }
+
+    .item-price {
+      align-self: start;
+      padding-top: 2px;
+      white-space: nowrap;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 600;
+    }
+
+    .payment {
+      border-bottom: 1px solid #d4d4d8;
+    }
+
+    .payment-lines {
+      padding: 0 20px 10px;
+    }
+
+    .amount-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 3px 0;
+      color: #52525b;
+      font-size: 13px;
+      line-height: 20px;
+    }
+
+    .amount-row span:last-child {
+      white-space: nowrap;
+      color: #18181b;
+    }
+
+    .amount-row.total {
+      margin-top: 5px;
+      padding-top: 9px;
+      border-top: 1px solid #d4d4d8;
+      color: #18181b;
+      font-size: 16px;
+      line-height: 22px;
+      font-weight: 700;
+    }
+
+    .payment-method {
+      margin: 6px 0 0;
+      color: #71717a;
+      font-size: 12px;
+      line-height: 18px;
+    }
+
+    .address {
+      padding-bottom: 10px;
+    }
+
+    .address-copy {
+      margin: 0;
+      padding: 0 20px;
+      color: #52525b;
+      font-size: 13px;
+      line-height: 20px;
+    }
+
+    .address-copy strong {
+      color: #18181b;
+      font-weight: 600;
+    }
+
+    .tabbar {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      align-items: end;
+      padding: 8px 8px 9px;
+      border-top: 1px solid #d4d4d8;
+      background: #ffffff;
+    }
+
+    .tab {
+      border: 0;
+      padding: 0;
+      background: transparent;
+      color: #a1a1aa;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 500;
+    }
+
+    .tab svg {
+      width: 22px;
+      height: 22px;
+      display: block;
+    }
+
+    .tab.active {
+      color: #18181b;
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <button class="icon-button" type="button" aria-label="Back to orders">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <h1>Order details</h1>
+      <button class="icon-button" type="button" aria-label="More order options">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <circle cx="5" cy="12" r="1.6"/>
+          <circle cx="12" cy="12" r="1.6"/>
+          <circle cx="19" cy="12" r="1.6"/>
+        </svg>
+      </button>
+    </header>
+
+    <main>
+      <div class="order-meta">
+        <span><strong>Order LS-48271</strong></span>
+        <span>Placed May 16, 2025</span>
+      </div>
+
+      <section class="delivery" aria-labelledby="delivery-status">
+        <p class="eyebrow">Delivery status</p>
+        <h2 id="delivery-status">Arrives Friday, May 23</h2>
+        <div class="delivery-detail">
+          <div class="shipment-copy">
+            <span class="status-mark" aria-hidden="true"></span>
+            <div>
+              <strong>In transit</strong>
+              <span>Departed the regional learning hub</span>
+            </div>
+          </div>
+          <button class="track-button" type="button">Track shipment</button>
+        </div>
+      </section>
+
+      <section aria-labelledby="items-heading">
+        <h2 class="section-heading" id="items-heading">Items · 3</h2>
+
+        <div class="item-row">
+          <img src="https://loremflickr.com/64/64/books?lock=4850" width="64" height="64" alt="Spanish workbook and study books">
+          <div class="item-info">
+            <p class="item-name">Spanish B1 Practice Workbook</p>
+            <p class="item-detail">Second edition · Qty 1</p>
+          </div>
+          <div class="item-price">$48.00</div>
+        </div>
+
+        <div class="item-row">
+          <img src="https://loremflickr.com/64/64/study?lock=4851" width="64" height="64" alt="Vocabulary study materials">
+          <div class="item-info">
+            <p class="item-name">Everyday Vocabulary Cards</p>
+            <p class="item-detail">Spanish · Set of 120 · Qty 1</p>
+          </div>
+          <div class="item-price">$36.00</div>
+        </div>
+
+        <div class="item-row">
+          <img src="https://loremflickr.com/64/64/library?lock=4852" width="64" height="64" alt="Pronunciation course book set">
+          <div class="item-info">
+            <p class="item-name">Clear Pronunciation Study Set</p>
+            <p class="item-detail">Book and audio access · Qty 1</p>
+          </div>
+          <div class="item-price">$58.00</div>
+        </div>
+      </section>
+
+      <section class="payment" aria-labelledby="payment-heading">
+        <h2 class="section-heading" id="payment-heading">Payment details</h2>
+        <div class="payment-lines">
+          <div class="amount-row">
+            <span>Items subtotal</span>
+            <span>$142.00</span>
+          </div>
+          <div class="amount-row">
+            <span>Standard shipping</span>
+            <span>$0.00</span>
+          </div>
+          <div class="amount-row">
+            <span>Learning credit</span>
+            <span>−$15.00</span>
+          </div>
+          <div class="amount-row">
+            <span>Sales tax</span>
+            <span>$11.72</span>
+          </div>
+          <div class="amount-row total">
+            <span>Total paid</span>
+            <span>$138.72</span>
+          </div>
+          <p class="payment-method">Paid with Visa ending in 2048 on May 16, 2025</p>
+        </div>
+      </section>
+
+      <section class="address" aria-labelledby="address-heading">
+        <h2 class="section-heading" id="address-heading">Delivery address</h2>
+        <p class="address-copy"><strong>Jordan Mercer</strong><br>824 Willow Terrace, Apt 3B, Portland, OR 97205</p>
+      </section>
+    </main>
+
+    <nav class="tabbar" aria-label="Primary navigation">
+      <button class="tab" type="button">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M4 10.5L12 4L20 10.5V20H14.5V14H9.5V20H4V10.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+        </svg>
+        <span>Home</span>
+      </button>
+      <button class="tab" type="button">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M4 5.5C7.1 4.7 9.8 5.1 12 7V19C9.8 17.1 7.1 16.7 4 17.5V5.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+          <path d="M20 5.5C16.9 4.7 14.2 5.1 12 7V19C14.2 17.1 16.9 16.7 20 17.5V5.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+        </svg>
+        <span>Courses</span>
+      </button>
+      <button class="tab active" type="button" aria-current="page">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M5 7.5L12 4L19 7.5V16.5L12 20L5 16.5V7.5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+          <path d="M5 7.5L12 11L19 7.5M12 11V20" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+        </svg>
+        <span>Orders</span>
+      </button>
+      <button class="tab" type="button">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="12" cy="8" r="3.5" stroke="currentColor" stroke-width="1.7"/>
+          <path d="M5.5 20C6.1 16.7 8.4 15 12 15C15.6 15 17.9 16.7 18.5 20" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+        </svg>
+        <span>Profile</span>
+      </button>
+    </nav>
+  </div>
+</body>
+</html>

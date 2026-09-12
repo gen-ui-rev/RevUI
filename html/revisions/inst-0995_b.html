@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Order Detail — Larkspur</title>
+<style>
+  :root{
+    --ink:#1b1a1d;
+    --muted:#6f6b73;
+    --rule:#e6e3e8;
+    --accent:#8a6a92;
+    --accentSoft:#f4eff6;
+    --deep:#2b2531;
+    --onDeep:rgba(255,255,255,.62);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    padding:40px 0;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    background:#d9d6dc;
+    font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+  }
+  .screen{
+    width:768px;
+    height:1024px;
+    background:#fff;
+    position:relative;
+    display:flex;
+    overflow:hidden;
+  }
+
+  /* ---------- dark vertical rail ---------- */
+  .rail{
+    width:96px;
+    flex:none;
+    background:#191720;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    padding:20px 0 24px;
+    gap:4px;
+  }
+  .brand{
+    width:44px;height:44px;
+    border-radius:50%;
+    border:1px solid rgba(255,255,255,.22);
+    color:#fff;
+    display:flex;align-items:center;justify-content:center;
+    font-size:15px;font-weight:600;
+    margin-bottom:22px;
+  }
+  .tab{
+    width:76px;
+    padding:12px 0 10px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:7px;
+    color:rgba(255,255,255,.55);
+    font-size:11px;
+    border-left:3px solid transparent;
+  }
+  .tab.on{
+    color:#fff;
+    font-weight:600;
+    background:rgba(255,255,255,.08);
+    border-left-color:#c9a9d3;
+  }
+  .rail .spacer{flex:1;}
+
+  /* ---------- main ---------- */
+  .main{
+    flex:1;
+    min-width:0;
+    display:flex;
+    flex-direction:column;
+  }
+
+  /* ---------- dark hero band ---------- */
+  .hero{
+    background:var(--deep);
+    color:#fff;
+    padding:20px 32px 24px;
+  }
+  .topbar{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    padding-bottom:14px;
+  }
+  .back{
+    width:38px;height:38px;
+    border-radius:10px;
+    border:1px solid rgba(255,255,255,.2);
+    display:flex;align-items:center;justify-content:center;
+    color:#fff;
+    flex:none;
+  }
+  .topbar .title{
+    font-size:19px;
+    font-weight:600;
+    flex:1;
+  }
+  .helpbtn{
+    height:38px;
+    padding:0 16px;
+    border:1px solid rgba(255,255,255,.24);
+    border-radius:10px;
+    display:flex;align-items:center;gap:8px;
+    font-size:13px;font-weight:600;
+    color:#fff;
+    flex:none;
+  }
+  .eyebrow{
+    font-size:12px;
+    letter-spacing:.05em;
+    text-transform:uppercase;
+    color:var(--onDeep);
+  }
+  .status{
+    font-size:29px;
+    font-weight:600;
+    line-height:34px;
+    margin-top:7px;
+  }
+  .eta{
+    font-size:14px;
+    font-weight:600;
+    color:#cfb1da;
+    margin-top:5px;
+  }
+
+  .track{
+    display:flex;
+    margin-top:24px;
+  }
+  .tstep{flex:1;min-width:0;}
+  .tline{
+    display:flex;
+    align-items:center;
+    gap:6px;
+  }
+  .tdot{
+    width:11px;height:11px;
+    border-radius:50%;
+    border:2px solid rgba(255,255,255,.3);
+    flex:none;
+  }
+  .tbar{
+    flex:1;
+    height:2px;
+    background:rgba(255,255,255,.18);
+  }
+  .tstep.done .tdot{background:#cfb1da;border-color:#cfb1da;}
+  .tstep.done .tbar{background:#8f6d99;}
+  .tstep .lab{
+    display:block;
+    margin-top:9px;
+    font-size:12px;
+    color:var(--onDeep);
+  }
+  .tstep.done .lab{color:#fff;font-weight:500;}
+
+  .heroInfo{
+    display:flex;
+    margin-top:22px;
+    padding-top:18px;
+    border-top:1px solid rgba(255,255,255,.14);
+    gap:26px;
+  }
+  .heroInfo .cell{
+    flex:1;
+    min-width:0;
+    padding-left:26px;
+    border-left:1px solid rgba(255,255,255,.14);
+  }
+  .heroInfo .cell:first-child{padding-left:0;border-left:none;}
+  .heroInfo .k{
+    font-size:11px;
+    letter-spacing:.07em;
+    text-transform:uppercase;
+    color:var(--onDeep);
+  }
+  .heroInfo .v{
+    font-size:13.5px;
+    line-height:19px;
+    margin-top:5px;
+  }
+  .heroInfo .link{
+    display:inline-block;
+    margin-top:7px;
+    font-size:12.5px;
+    font-weight:600;
+    color:#cfb1da;
+  }
+
+  /* ---------- body: two columns ---------- */
+  .body{
+    flex:1;
+    display:flex;
+    min-height:0;
+  }
+  .colLeft{
+    flex:1;
+    min-width:0;
+    padding:22px 28px 22px 32px;
+  }
+  .colRight{
+    width:296px;
+    flex:none;
+    border-left:1px solid var(--rule);
+    background:#faf8fb;
+    padding:22px 26px;
+  }
+
+  .sechead{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    padding-bottom:8px;
+  }
+  .sechead h2{
+    margin:0;
+    font-size:12px;
+    font-weight:600;
+    letter-spacing:.09em;
+    text-transform:uppercase;
+    color:var(--muted);
+  }
+  .sechead .aside{font-size:12px;color:var(--muted);}
+
+  .item{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    padding:14px 0;
+    border-bottom:1px solid var(--rule);
+  }
+  .glyph{
+    width:48px;height:48px;
+    border:1px solid var(--rule);
+    border-radius:8px;
+    display:flex;align-items:center;justify-content:center;
+    color:var(--accent);
+    background:#fff;
+    flex:none;
+  }
+  .item .body2{flex:1;min-width:0;}
+  .item .name{
+    font-size:16px;
+    font-weight:500;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .item .meta{
+    font-size:12px;
+    color:var(--muted);
+    margin-top:4px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .item .amt{
+    font-size:16px;
+    font-variant-numeric:tabular-nums;
+    flex:none;
+  }
+
+  .activity{margin-top:24px;}
+  .act{
+    display:flex;
+    gap:14px;
+    padding:10px 0;
+  }
+  .act .mark{
+    width:10px;height:10px;
+    border-radius:50%;
+    border:2px solid var(--rule);
+    margin-top:5px;
+    flex:none;
+  }
+  .act.now .mark{background:var(--accent);border-color:var(--accent);}
+  .act .t{font-size:14px;font-weight:500;}
+  .act .s{font-size:12px;color:var(--muted);margin-top:3px;}
+
+  .srow{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    padding:9px 0;
+    font-size:14px;
+    border-bottom:1px solid #eeeaf0;
+  }
+  .srow .k{color:var(--muted);}
+  .srow .v{font-variant-numeric:tabular-nums;}
+  .srow.credit .v{color:var(--accent);}
+  .paycard{
+    margin-top:18px;
+    background:#fff;
+    border:1px solid var(--rule);
+    border-radius:12px;
+    padding:14px 16px;
+    font-size:12.5px;
+    line-height:19px;
+    color:var(--muted);
+  }
+  .paycard .strong{
+    display:block;
+    color:var(--ink);
+    font-size:14px;
+    font-weight:600;
+    margin-bottom:4px;
+  }
+
+  /* ---------- total footer band ---------- */
+  .totalbar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:24px;
+    padding:22px 32px;
+    background:var(--accentSoft);
+    border-top:1px solid #e3d7e8;
+  }
+  .totalbar .k{
+    font-size:13px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:var(--accent);
+    font-weight:600;
+  }
+  .totalbar .sub{
+    font-size:12.5px;
+    color:var(--muted);
+    margin-top:5px;
+  }
+  .totalbar .right{
+    display:flex;
+    align-items:center;
+    gap:22px;
+  }
+  .totalbar .v{
+    font-size:34px;
+    font-weight:700;
+    line-height:38px;
+    font-variant-numeric:tabular-nums;
+  }
+  .receipt{
+    height:46px;
+    padding:0 20px;
+    border-radius:12px;
+    background:var(--accent);
+    color:#fff;
+    display:flex;align-items:center;
+    font-size:14px;font-weight:600;
+  }
+</style>
+</head>
+<body>
+  <div class="screen">
+
+    <nav class="rail">
+      <span class="brand">LK</span>
+      <span class="tab">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5 12 4l8 6.5V20H4z"/><path d="M10 20v-5h4v5"/></svg>
+        Home
+      </span>
+      <span class="tab">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10h18"/></svg>
+        Cards
+      </span>
+      <span class="tab on">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="8" width="17" height="11" rx="1.5"/><path d="M3.5 12h17"/><path d="M12 8v11"/><path d="M12 8 9.5 5.5M12 8l2.5-2.5"/></svg>
+        Rewards
+      </span>
+      <span class="tab">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8.5" r="3.5"/><path d="M5 20c0-3.6 3.1-5.5 7-5.5s7 1.9 7 5.5"/></svg>
+        Profile
+      </span>
+      <span class="spacer"></span>
+      <span class="tab">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 13v-1a8 8 0 0 1 16 0v1"/><path d="M4 13h2.6a1 1 0 0 1 1 1v3.5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1z"/><path d="M20 13h-2.6a1 1 0 0 0-1 1v3.5a1 1 0 0 0 1 1H19a1 1 0 0 0 1-1z"/></svg>
+        Support
+      </span>
+    </nav>
+
+    <div class="main">
+
+      <header class="hero">
+        <div class="topbar">
+          <span class="back" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 5 8 12l6.5 7"/></svg>
+          </span>
+          <span class="title">Order detail</span>
+          <span class="helpbtn">Get help</span>
+        </div>
+
+        <div class="eyebrow">Order DR-48210 &middot; Placed Mar 14, 2025</div>
+        <div class="status">Out for delivery</div>
+        <div class="eta">Arrives today by 8:00 PM</div>
+
+        <div class="track">
+          <div class="tstep done"><span class="tline"><span class="tdot"></span><span class="tbar"></span></span><span class="lab">Placed</span></div>
+          <div class="tstep done"><span class="tline"><span class="tdot"></span><span class="tbar"></span></span><span class="lab">Packed</span></div>
+          <div class="tstep done"><span class="tline"><span class="tdot"></span><span class="tbar"></span></span><span class="lab">In transit</span></div>
+          <div class="tstep"><span class="tline"><span class="tdot"></span></span><span class="lab">Delivered</span></div>
+        </div>
+
+        <div class="heroInfo">
+          <div class="cell">
+            <div class="k">Deliver to</div>
+            <div class="v">Nadia Ellsworth<br>1420 Kestrel Ave, Apt 6C, Portland, OR 97214</div>
+          </div>
+          <div class="cell">
+            <div class="k">Tracking</div>
+            <div class="v">4482 9133 0722</div>
+            <span class="link">Track package &rsaquo;</span>
+          </div>
+          <div class="cell">
+            <div class="k">Delivery window</div>
+            <div class="v">Today, 4:00 &ndash; 8:00 PM<br>Signature not required</div>
+          </div>
+        </div>
+      </header>
+
+      <div class="body">
+
+        <section class="colLeft">
+          <div class="sechead">
+            <h2>Items</h2>
+            <span class="aside">3 items &middot; 4 units</span>
+          </div>
+
+          <div class="item">
+            <span class="glyph" aria-hidden="true">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10.5h18"/><path d="M6.5 14.5h4"/></svg>
+            </span>
+            <span class="body2">
+              <div class="name">Titanium card carrier</div>
+              <div class="meta">Qty 1 &middot; Graphite &middot; Engraved</div>
+            </span>
+            <span class="amt">$68.00</span>
+          </div>
+
+          <div class="item">
+            <span class="glyph" aria-hidden="true">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="6" height="4" rx="1"/><path d="M7 8v4a5 5 0 0 0 5 5h2"/><rect x="15" y="15" width="5" height="4" rx="1"/></svg>
+            </span>
+            <span class="body2">
+              <div class="name">Travel cable kit</div>
+              <div class="meta">Qty 1 &middot; Two-port</div>
+            </span>
+            <span class="amt">$42.00</span>
+          </div>
+
+          <div class="item">
+            <span class="glyph" aria-hidden="true">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5.5A1.5 1.5 0 0 1 6.5 4H19v16H6.5A1.5 1.5 0 0 1 5 18.5z"/><path d="M9 4v16"/><path d="M12 9h4"/><path d="M12 13h4"/></svg>
+            </span>
+            <span class="body2">
+              <div class="name">Ruled pocket notebook</div>
+              <div class="meta">Qty 2 &middot; Mauve cloth</div>
+            </span>
+            <span class="amt">$74.00</span>
+          </div>
+
+          <div class="activity">
+            <div class="sechead"><h2>Shipment activity</h2></div>
+            <div class="act now">
+              <span class="mark"></span>
+              <span>
+                <div class="t">Out for delivery</div>
+                <div class="s">Portland, OR &middot; Today, 6:12 AM</div>
+              </span>
+            </div>
+            <div class="act">
+              <span class="mark"></span>
+              <span>
+                <div class="t">Arrived at local facility</div>
+                <div class="s">Portland, OR &middot; Mar 15, 10:48 PM</div>
+              </span>
+            </div>
+            <div class="act">
+              <span class="mark"></span>
+              <span>
+                <div class="t">Package picked up</div>
+                <div class="s">Reno, NV &middot; Mar 14, 4:30 PM</div>
+              </span>
+            </div>
+          </div>
+        </section>
+
+        <aside class="colRight">
+          <div class="sechead">
+            <h2>Payment</h2>
+            <span class="aside">Charged Mar 14</span>
+          </div>
+          <div class="srow"><span class="k">Subtotal</span><span class="v">$184.00</span></div>
+          <div class="srow"><span class="k">Shipping (2-day)</span><span class="v">$0.00</span></div>
+          <div class="srow"><span class="k">Estimated tax</span><span class="v">$15.64</span></div>
+          <div class="srow credit"><span class="k">Rewards credit</span><span class="v">&minus;$25.00</span></div>
+
+          <div class="paycard">
+            <span class="strong">Larkspur Debit &middot;&middot;&middot;&middot; 4417</span>
+            Authorization 2A19-7740<br>
+            Billed to 1420 Kestrel Ave
+          </div>
+        </aside>
+      </div>
+
+      <div class="totalbar">
+        <div>
+          <div class="k">Total charged</div>
+          <div class="sub">4 units &middot; Larkspur Debit &middot;&middot;&middot;&middot; 4417</div>
+        </div>
+        <div class="right">
+          <span class="v">$174.64</span>
+          <span class="receipt">Download receipt</span>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</body>
+</html>

@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Finding Available Stays</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #e8e7e4;
+      color: #252329;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    .screen {
+      width: 390px;
+      height: 560px;
+      padding: 18px;
+      background: #f4f1ed;
+    }
+
+    .loading-card {
+      position: relative;
+      width: 100%;
+      padding: 20px 21px;
+      overflow: visible;
+      background: #fffdf9;
+      border: 1px solid #ddd8d1;
+      border-radius: 12px;
+      box-shadow: 7px 7px 0 #dfd4da;
+    }
+
+    .loading-card::before {
+      content: "";
+      position: absolute;
+      top: 20px;
+      bottom: 20px;
+      left: 0;
+      width: 4px;
+      border-radius: 0 4px 4px 0;
+      background: #d62f77;
+    }
+
+    .eyebrow-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+
+    .eyebrow {
+      margin: 0;
+      color: #a9205c;
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 17px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .early-stage {
+      flex: 0 0 auto;
+      padding: 4px 9px;
+      border-radius: 999px;
+      background: #f8e3ec;
+      color: #a9205c;
+      font-size: 11px;
+      font-weight: 700;
+      line-height: 16px;
+    }
+
+    h1 {
+      margin: 0;
+      color: #252329;
+      font-size: 23px;
+      font-weight: 650;
+      line-height: 28px;
+      letter-spacing: -0.025em;
+    }
+
+    .trip-details {
+      margin: 7px 0 0;
+      color: #69656c;
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .progress-area {
+      margin-top: 13px;
+      padding: 11px 13px;
+      background: #f8f4f1;
+      border: 1px solid #e5ded8;
+      border-radius: 12px;
+    }
+
+    .progress-title {
+      margin: 0 0 8px;
+      color: #4b464d;
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 17px;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+    }
+
+    .stage-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .stage {
+      position: relative;
+      display: grid;
+      grid-template-columns: 24px 1fr auto;
+      align-items: center;
+      min-width: 0;
+      gap: 8px;
+      color: #88828a;
+      font-size: 13px;
+      font-weight: 600;
+      line-height: 20px;
+    }
+
+    .stage + .stage {
+      margin-top: 7px;
+    }
+
+    .stage-number {
+      width: 22px;
+      height: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid #d2ccd0;
+      border-radius: 50%;
+      background: #fffdf9;
+      color: #8b858b;
+      font-size: 11px;
+      line-height: 20px;
+    }
+
+    .stage.active {
+      color: #2d2930;
+    }
+
+    .stage.active .stage-number {
+      border-color: #d62f77;
+      background: #d62f77;
+      color: #ffffff;
+    }
+
+    .stage-status {
+      color: #a9205c;
+      font-size: 11px;
+      font-weight: 700;
+      line-height: 18px;
+    }
+
+    .destination-photo {
+      width: 294px;
+      height: 96px;
+      margin: 13px auto 0;
+      border: 5px solid #ffffff;
+      border-radius: 10px;
+      object-fit: cover;
+      display: block;
+      background: #dedee2;
+      box-shadow: 0 0 0 1px #ddd8d1;
+    }
+
+    .supporting-copy {
+      margin: 10px 0 0;
+      color: #6e6870;
+      font-size: 13px;
+      line-height: 19px;
+      text-align: center;
+    }
+
+    .cancel-button {
+      width: 100%;
+      margin-top: 13px;
+      padding: 10px 16px;
+      border: 1px solid #cbc4c8;
+      border-radius: 8px;
+      background: transparent;
+      color: #3e3940;
+      font: inherit;
+      font-size: 14px;
+      font-weight: 650;
+      line-height: 20px;
+      cursor: default;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <main class="loading-card" aria-busy="true" aria-live="polite">
+      <div class="eyebrow-row">
+        <p class="eyebrow">Clovertrail stays</p>
+        <span class="early-stage">Just started</span>
+      </div>
+
+      <h1>Finding stays in Santa Barbara</h1>
+      <p class="trip-details">May 18–21 · 2 guests · 1 room</p>
+
+      <section class="progress-area" aria-label="Search stage sequence">
+        <p class="progress-title">Your search sequence</p>
+        <ol class="stage-list">
+          <li class="stage active" aria-current="step">
+            <span class="stage-number">1</span>
+            <span>Find matching properties</span>
+            <span class="stage-status">Active</span>
+          </li>
+          <li class="stage">
+            <span class="stage-number">2</span>
+            <span>Compare live rates</span>
+            <span></span>
+          </li>
+          <li class="stage">
+            <span class="stage-number">3</span>
+            <span>Confirm room availability</span>
+            <span></span>
+          </li>
+        </ol>
+      </section>
+
+      <img
+        class="destination-photo"
+        src="https://loremflickr.com/294/96/cityscape?lock=8450"
+        width="294"
+        height="96"
+        alt="Coastal cityscape in Santa Barbara"
+      >
+
+      <p class="supporting-copy">We are starting with properties that match your dates and guest count.</p>
+      <button class="cancel-button" type="button">Cancel search</button>
+    </main>
+  </div>
+</body>
+</html>

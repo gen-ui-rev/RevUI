@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Wayfare — Send money</title>
+<style>
+  :root{
+    --accent:#C026D3;
+    --accent-10:rgba(192,38,211,0.10);
+    --accent-14:rgba(192,38,211,0.15);
+    --ink:#17151A;
+    --muted:#6D6776;
+    --line:#ECEAEF;
+  }
+  *{box-sizing:border-box;}
+  body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    padding:40px 0;
+    margin:0;
+    background:#DDDAE1;
+    font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    color:var(--ink);
+  }
+  .screen{
+    width:390px;
+    height:844px;
+    background:#FFFFFF;
+    position:relative;
+  }
+  /* top bar */
+  .topbar{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:14px 16px;
+  }
+  .topbar h1{
+    font-size:17px;
+    font-weight:600;
+    margin:0;
+    flex:1;
+  }
+  .iconbtn{
+    width:24px;height:24px;
+    display:flex;align-items:center;justify-content:center;
+    color:var(--ink);
+  }
+  .content{padding:0 16px;}
+
+  /* amount */
+  .amount{
+    background:var(--accent-10);
+    border-radius:4px;
+    padding:14px 16px 16px;
+    margin-top:10px;
+  }
+  .label{
+    font-size:12px;
+    color:var(--muted);
+    letter-spacing:0.02em;
+  }
+  .amount .figure{
+    display:flex;
+    align-items:baseline;
+    gap:6px;
+    margin-top:6px;
+  }
+  .cur{font-size:22px;font-weight:600;color:var(--accent);}
+  .val{font-size:38px;font-weight:600;letter-spacing:-0.02em;}
+  .caret{
+    width:2px;height:34px;
+    background:var(--accent);
+    margin-left:2px;
+  }
+  .unit{
+    margin-left:auto;
+    font-size:13px;
+    font-weight:600;
+    color:var(--accent);
+  }
+  .rule{height:1px;background:rgba(192,38,211,0.22);margin:12px 0 10px;}
+  .kv{
+    display:flex;
+    justify-content:space-between;
+    font-size:13px;
+    line-height:20px;
+  }
+  .kv .k{color:var(--muted);}
+  .kv .v{font-weight:600;}
+  .fine{
+    font-size:12px;
+    color:var(--muted);
+    margin-top:2px;
+  }
+
+  /* chips */
+  .chips{display:flex;gap:8px;margin-top:10px;}
+  .chip{
+    background:var(--accent-10);
+    border-radius:4px;
+    padding:8px 12px;
+    font-size:13px;
+    font-weight:600;
+    color:var(--ink);
+    white-space:nowrap;
+  }
+
+  h2{
+    font-size:12px;
+    font-weight:600;
+    color:var(--muted);
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    margin:18px 0 8px;
+  }
+
+  /* recipient */
+  .recipient{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    background:var(--accent-10);
+    border-radius:4px;
+    padding:12px;
+  }
+  .mono{
+    width:40px;height:40px;
+    border-radius:4px;
+    background:var(--accent-14);
+    color:var(--accent);
+    font-size:14px;
+    font-weight:700;
+    display:flex;align-items:center;justify-content:center;
+    flex:0 0 40px;
+  }
+  .who{min-width:0;flex:1;}
+  .who .name{font-size:15px;font-weight:600;}
+  .who .sub{
+    font-size:12px;
+    color:var(--muted);
+    margin-top:2px;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+  .verified{
+    font-size:12px;
+    font-weight:600;
+    color:#FFFFFF;
+    background:var(--accent);
+    border-radius:4px;
+    padding:3px 6px;
+  }
+  .change{
+    display:flex;align-items:center;gap:2px;
+    font-size:13px;font-weight:600;color:var(--accent);
+  }
+
+  /* recent rows */
+  .row{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    height:52px;
+  }
+  .row .mono{background:#F1EFF3;color:#5C5765;}
+  .row .name{font-size:15px;font-weight:600;}
+  .row .sub{
+    font-size:12px;color:var(--muted);margin-top:2px;
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  }
+  .row .meta{
+    font-size:12px;
+    color:var(--muted);
+    text-align:right;
+    white-space:nowrap;
+  }
+  .divider{height:1px;background:var(--line);}
+
+  /* bookings */
+  .thumbs{display:flex;gap:10px;}
+  .card{
+    width:112px;
+    background:#F5F4F7;
+    border-radius:4px;
+  }
+  .card.sel{background:var(--accent-14);}
+  .card img{
+    width:112px;height:74px;
+    object-fit:cover;
+    display:block;
+    background:#D7D4DB;
+    border-radius:4px 4px 0 0;
+  }
+  .card .cap{padding:6px 8px 8px;}
+  .card .t{
+    font-size:12px;font-weight:600;
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  }
+  .card .d{font-size:12px;color:var(--muted);margin-top:1px;}
+
+  /* cta */
+  .cta{
+    margin-top:16px;
+    height:48px;
+    background:var(--accent);
+    color:#fff;
+    border-radius:4px;
+    font-size:16px;
+    font-weight:600;
+    display:flex;align-items:center;justify-content:center;
+  }
+
+  /* tab bar */
+  .tabs{
+    position:absolute;
+    left:0;bottom:0;
+    width:100%;
+    height:60px;
+    border-top:1px solid var(--line);
+    display:flex;
+    background:#fff;
+  }
+  .tab{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:4px;
+    font-size:12px;
+    color:#8A8494;
+  }
+  .tab.on{color:var(--accent);font-weight:600;}
+</style>
+</head>
+<body>
+  <div class="screen">
+
+    <div class="topbar">
+      <span class="iconbtn" aria-hidden="true">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13.5 4.5 7 11l6.5 6.5"/></svg>
+      </span>
+      <h1>Send money</h1>
+      <span class="iconbtn" aria-hidden="true">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7.5"/><path d="M9.2 8.6a1.9 1.9 0 1 1 2.8 1.7c-.6.4-1 .8-1 1.6"/><path d="M11 15.3h.01"/></svg>
+      </span>
+    </div>
+
+    <div class="content">
+
+      <div class="amount">
+        <div class="label">You send</div>
+        <div class="figure">
+          <span class="cur">$</span>
+          <span class="val">420.00</span>
+          <span class="caret"></span>
+          <span class="unit">USD</span>
+        </div>
+        <div class="rule"></div>
+        <div class="kv"><span class="k">Marta receives</span><span class="v">€386.40</span></div>
+        <div class="kv"><span class="k">Transfer fee</span><span class="v">$0.00</span></div>
+        <div class="fine">Rate 1 USD = 0.92 EUR, locked for 12 minutes. Arrives today by 4:20 PM.</div>
+      </div>
+
+      <div class="chips">
+        <div class="chip">$100</div>
+        <div class="chip">$250</div>
+        <div class="chip">Split evenly · $210</div>
+      </div>
+
+      <h2>Sending to</h2>
+      <div class="recipient">
+        <div class="mono">MR</div>
+        <div class="who">
+          <div class="name">Marta Ruiz</div>
+          <div class="sub">Host · Alfama apartment, Lisbon</div>
+        </div>
+        <span class="verified">Verified</span>
+        <span class="change">Change
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3.5 10.5 8 6 12.5"/></svg>
+        </span>
+      </div>
+
+      <h2>Recent</h2>
+      <div class="row">
+        <div class="mono">DP</div>
+        <div class="who">
+          <div class="name">Devon Park</div>
+          <div class="sub">Trip mate · Porto road trip</div>
+        </div>
+        <div class="meta">$180 · Mar 4</div>
+      </div>
+      <div class="divider"></div>
+      <div class="row">
+        <div class="mono">AB</div>
+        <div class="who">
+          <div class="name">Aisha Bello</div>
+          <div class="sub">Guide · Sintra day tour</div>
+        </div>
+        <div class="meta">$95 · Feb 26</div>
+      </div>
+      <div class="divider"></div>
+      <div class="row">
+        <div class="mono">TL</div>
+        <div class="who">
+          <div class="name">Tomas Lindqvist</div>
+          <div class="sub">Host · Tromsø cabin</div>
+        </div>
+        <div class="meta">$640 · Jan 12</div>
+      </div>
+
+      <h2>Attach to a booking</h2>
+      <div class="thumbs">
+        <div class="card sel">
+          <img src="https://loremflickr.com/112/74/hotel?lock=12360" width="112" height="74" alt="Alfama apartment building in Lisbon">
+          <div class="cap">
+            <div class="t">Alfama stay</div>
+            <div class="d">Apr 8–12</div>
+          </div>
+        </div>
+        <div class="card">
+          <img src="https://loremflickr.com/112/74/beach?lock=12361" width="112" height="74" alt="Beach near the Comporta guesthouse">
+          <div class="cap">
+            <div class="t">Comporta</div>
+            <div class="d">Apr 13–15</div>
+          </div>
+        </div>
+        <div class="card">
+          <img src="https://loremflickr.com/112/74/cityscape?lock=12362" width="112" height="74" alt="Porto city view from the booked loft">
+          <div class="cap">
+            <div class="t">Porto loft</div>
+            <div class="d">Apr 16–18</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="cta">Review transfer</div>
+    </div>
+
+    <div class="tabs">
+      <div class="tab">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M14 8l-2 4-4 2 2-4z"/></svg>
+        Explore
+      </div>
+      <div class="tab">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="7" width="15" height="11" rx="1.5"/><path d="M8.5 7V5.5h5V7"/></svg>
+        Trips
+      </div>
+      <div class="tab on">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 17.5V5.5"/><path d="M6 10.5 11 5.5l5 5"/></svg>
+        Send
+      </div>
+      <div class="tab">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="8.5" r="3.3"/><path d="M4.8 18c1-2.8 3.4-4.2 6.2-4.2S16.2 15.2 17.2 18"/></svg>
+        Account
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

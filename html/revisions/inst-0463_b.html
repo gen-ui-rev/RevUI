@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Soundwell Communities</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #d9dde3;
+      color: #172033;
+      font-family: 'Nunito Sans', system-ui, sans-serif;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .screen {
+      width: 1024px;
+      height: 768px;
+      display: flex;
+      flex-direction: column;
+      background: #eef1f6;
+      box-shadow: 0 18px 44px rgba(23, 32, 51, 0.18);
+    }
+
+    /* ---------- top bar ---------- */
+    .topbar {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      padding: 12px 28px;
+      background: #ffffff;
+      border-bottom: 1px solid #e2e6ec;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex: 0 0 auto;
+    }
+
+    .brand-mark {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      color: #ffffff;
+      background: #2471e8;
+      border-radius: 11px;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+    }
+
+    .service-name {
+      margin: 0;
+      color: #2471e8;
+      font-size: 12px;
+      line-height: 15px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .brand-sub {
+      margin: 2px 0 0;
+      color: #747e8f;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .top-nav {
+      display: flex;
+      gap: 4px;
+      margin-left: 10px;
+    }
+
+    .tab {
+      padding: 9px 13px;
+      color: #5a6474;
+      background: transparent;
+      border: 0;
+      border-radius: 9px;
+      font-size: 14px;
+      line-height: 18px;
+      font-weight: 600;
+    }
+
+    .tab:hover {
+      color: #172033;
+      background: #f0f3f9;
+    }
+
+    .tab.active {
+      color: #2471e8;
+      background: #e7f0fd;
+      font-weight: 700;
+    }
+
+    .top-right {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .search-box {
+      width: 218px;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 9px 11px;
+      background: #f7f9fc;
+      border: 1px solid #dfe4eb;
+      border-radius: 10px;
+    }
+
+    .search-box:hover {
+      border-color: #2471e8;
+    }
+
+    .search-box svg {
+      width: 18px;
+      height: 18px;
+      flex: 0 0 auto;
+      color: #667085;
+    }
+
+    .search-box input {
+      min-width: 0;
+      width: 100%;
+      padding: 0;
+      color: #172033;
+      background: transparent;
+      border: 0;
+      outline: 0;
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .search-box input::placeholder {
+      color: #747e8f;
+      opacity: 1;
+    }
+
+    .create-button {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 9px 14px;
+      color: #ffffff;
+      background: #2471e8;
+      border: 0;
+      border-radius: 10px;
+      font-size: 14px;
+      line-height: 18px;
+      font-weight: 700;
+    }
+
+    .create-button:hover {
+      background: #1a5fcc;
+    }
+
+    .create-button svg {
+      width: 17px;
+      height: 17px;
+    }
+
+    .avatar {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      color: #2471e8;
+      background: #dce8fa;
+      border-radius: 50%;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    /* ---------- main ---------- */
+    main {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      gap: 22px;
+      padding: 20px 28px 22px;
+    }
+
+    .col-main {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .block-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .block-head h2 {
+      margin: 0;
+      font-size: 17px;
+      line-height: 22px;
+      font-weight: 700;
+    }
+
+    .block-head span {
+      color: #747e8f;
+      font-size: 12px;
+      line-height: 17px;
+      white-space: nowrap;
+    }
+
+    .sort-button {
+      padding: 5px 11px;
+      color: #4d586b;
+      background: #ffffff;
+      border: 1px solid #dce2ea;
+      border-radius: 8px;
+      font-size: 12px;
+      line-height: 17px;
+      font-weight: 600;
+    }
+
+    .sort-button:hover {
+      color: #2471e8;
+      border-color: #2471e8;
+    }
+
+    /* categories first */
+    .cat-grid {
+      margin-top: 10px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+
+    .cat {
+      padding: 12px 14px;
+      text-align: left;
+      background: #ffffff;
+      border: 1px solid #e2e8f1;
+      border-radius: 12px;
+    }
+
+    .cat:hover {
+      border-color: #2471e8;
+      box-shadow: 0 6px 16px rgba(36, 113, 232, 0.13);
+    }
+
+    .cat.active {
+      background: #e9f1fe;
+      border-color: #2471e8;
+    }
+
+    .cat-name {
+      margin: 0;
+      color: #172033;
+      font-size: 14px;
+      line-height: 19px;
+      font-weight: 700;
+    }
+
+    .cat-count {
+      margin: 3px 0 0;
+      color: #6b7586;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .cat.active .cat-count {
+      color: #2471e8;
+      font-weight: 600;
+    }
+
+    .list-block {
+      margin-top: 20px;
+    }
+
+    .table {
+      margin-top: 10px;
+      background: #ffffff;
+      border: 1px solid #e4e9f0;
+      border-radius: 12px;
+    }
+
+    .thead,
+    .trow {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 8px 16px;
+    }
+
+    .thead {
+      padding-top: 9px;
+      padding-bottom: 9px;
+      color: #747e8f;
+      background: #f7f9fc;
+      border-bottom: 1px solid #e8ecf3;
+      border-radius: 12px 12px 0 0;
+      font-size: 11px;
+      line-height: 15px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .trow {
+      border-bottom: 1px solid #f0f3f7;
+    }
+
+    .trow:last-child {
+      border-bottom: 0;
+    }
+
+    .trow:hover {
+      background: #f7faff;
+    }
+
+    .c-name {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      gap: 11px;
+    }
+
+    .community-art {
+      width: 36px;
+      height: 36px;
+      flex: 0 0 auto;
+      border-radius: 9px;
+    }
+
+    .community-name {
+      margin: 0;
+      overflow: hidden;
+      font-size: 14px;
+      line-height: 19px;
+      font-weight: 700;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .community-meta {
+      margin: 1px 0 0;
+      overflow: hidden;
+      color: #747e8f;
+      font-size: 12px;
+      line-height: 16px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .c-members {
+      width: 96px;
+      flex: 0 0 96px;
+      color: #4d586b;
+      font-size: 13px;
+      line-height: 18px;
+    }
+
+    .c-focus {
+      width: 168px;
+      flex: 0 0 168px;
+      overflow: hidden;
+      color: #6b7586;
+      font-size: 13px;
+      line-height: 18px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .c-action {
+      width: 84px;
+      flex: 0 0 84px;
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .join-button {
+      padding: 6px 14px;
+      color: #2471e8;
+      background: #ffffff;
+      border: 1px solid #2471e8;
+      border-radius: 9px;
+      font-size: 13px;
+      line-height: 17px;
+      font-weight: 700;
+    }
+
+    .join-button:hover {
+      color: #ffffff;
+      background: #2471e8;
+    }
+
+    .list-foot {
+      margin: auto 0 0;
+      padding-top: 14px;
+      color: #747e8f;
+      font-size: 12px;
+      line-height: 17px;
+    }
+
+    /* ---------- right rail ---------- */
+    .rail {
+      width: 288px;
+      flex: 0 0 288px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .rail-card {
+      padding: 14px 16px;
+      background: #ffffff;
+      border: 1px solid #e4e9f0;
+      border-radius: 12px;
+    }
+
+    .rail-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .rail-head h3 {
+      margin: 0;
+      font-size: 15px;
+      line-height: 20px;
+      font-weight: 700;
+    }
+
+    .rail-link {
+      padding: 0;
+      color: #2471e8;
+      background: transparent;
+      border: 0;
+      font-size: 12px;
+      line-height: 17px;
+      font-weight: 700;
+    }
+
+    .rail-link:hover {
+      text-decoration: underline;
+    }
+
+    .rail-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 8px;
+      padding: 5px 6px;
+      border-radius: 9px;
+    }
+
+    .rail-row:hover {
+      background: #f5f8fd;
+    }
+
+    .rail-art {
+      width: 30px;
+      height: 30px;
+      flex: 0 0 auto;
+      border-radius: 9px;
+    }
+
+    .rail-name {
+      margin: 0;
+      overflow: hidden;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 700;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .rail-sub {
+      margin: 1px 0 0;
+      color: #747e8f;
+      font-size: 11px;
+      line-height: 15px;
+    }
+
+    .invite {
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid #f0f3f7;
+    }
+
+    .invite:first-of-type {
+      padding-top: 0;
+      border-top: 0;
+    }
+
+    .invite-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .btn-small {
+      padding: 6px 13px;
+      color: #ffffff;
+      background: #2471e8;
+      border: 0;
+      border-radius: 9px;
+      font-size: 13px;
+      line-height: 17px;
+      font-weight: 700;
+    }
+
+    .btn-small:hover {
+      background: #1a5fcc;
+    }
+
+    .btn-small.ghost {
+      color: #4d586b;
+      background: #ffffff;
+      border: 1px solid #d6dde7;
+      font-weight: 600;
+    }
+
+    .btn-small.ghost:hover {
+      color: #2471e8;
+      border-color: #2471e8;
+    }
+
+    .rail-text {
+      margin: 6px 0 0;
+      color: #4d586b;
+      font-size: 12px;
+      line-height: 17px;
+    }
+
+    .art-one { background: #dce8fa; }
+    .art-two { background: #d7e9e4; }
+    .art-three { background: #e7e0f2; }
+    .art-four { background: #f1e3d7; }
+    .art-five { background: #dae4ee; }
+    .art-six { background: #e8dfdc; }
+    .art-seven { background: #dce9df; }
+    .art-eight { background: #e1e3f2; }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true">SW</span>
+        <div>
+          <p class="service-name">Soundwell</p>
+          <p class="brand-sub">Community hub</p>
+        </div>
+      </div>
+
+      <nav class="top-nav" aria-label="Primary navigation">
+        <button class="tab" type="button">Home</button>
+        <button class="tab" type="button">Browse</button>
+        <button class="tab active" type="button" aria-current="page">Communities</button>
+        <button class="tab" type="button">Library</button>
+      </nav>
+
+      <div class="top-right">
+        <div class="search-box" role="search">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="10.8" cy="10.8" r="6.3" stroke="currentColor" stroke-width="1.8"/>
+            <path d="m15.5 15.5 4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+          <input type="text" aria-label="Search communities" placeholder="Search communities" readonly>
+        </div>
+        <button class="create-button" type="button" title="Create a new community">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M8.5 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" stroke="currentColor" stroke-width="1.8"/>
+            <path d="M3.5 18.5c.4-3 2.1-4.7 5-4.7 1.4 0 2.5.4 3.3 1.1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+            <path d="M16.5 9v8M12.5 13h8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+          Create
+        </button>
+        <span class="avatar" title="Amara Reyes" aria-hidden="true">AR</span>
+      </div>
+    </header>
+
+    <main>
+      <div class="col-main">
+        <div class="block-head">
+          <h2>Browse by category</h2>
+          <span>248 communities open to join</span>
+        </div>
+
+        <div class="cat-grid" aria-label="Community categories">
+          <button class="cat active" type="button">
+            <p class="cat-name">All communities</p>
+            <p class="cat-count">248 groups</p>
+          </button>
+          <button class="cat" type="button">
+            <p class="cat-name">Music</p>
+            <p class="cat-count">96 groups</p>
+          </button>
+          <button class="cat" type="button">
+            <p class="cat-name">Video</p>
+            <p class="cat-count">52 groups</p>
+          </button>
+          <button class="cat" type="button">
+            <p class="cat-name">Podcasts</p>
+            <p class="cat-count">74 groups</p>
+          </button>
+        </div>
+
+        <div class="list-block">
+          <div class="block-head">
+            <h2>Recommended communities</h2>
+            <button class="sort-button" type="button">Sort: Best match</button>
+          </div>
+
+          <section class="table" aria-label="Recommended communities">
+            <div class="thead">
+              <span class="c-name">Community</span>
+              <span class="c-members">Members</span>
+              <span class="c-focus">Focus</span>
+              <span class="c-action">Action</span>
+            </div>
+
+            <article class="trow">
+              <div class="c-name">
+                <div class="community-art art-one" aria-hidden="true"></div>
+                <div>
+                  <p class="community-name">Indie Film Scores</p>
+                  <p class="community-meta">Music · Public</p>
+                </div>
+              </div>
+              <span class="c-members">12,800</span>
+              <span class="c-focus">Soundtrack swaps</span>
+              <span class="c-action"><button class="join-button" type="button">Join</button></span>
+            </article>
+
+            <article class="trow">
+              <div class="c-name">
+                <div class="community-art art-two" aria-hidden="true"></div>
+                <div>
+                  <p class="community-name">Deep Cut Jazz</p>
+                  <p class="community-meta">Music · Public</p>
+                </div>
+              </div>
+              <span class="c-members">8,420</span>
+              <span class="c-focus">Weekly listening</span>
+              <span class="c-action"><button class="join-button" type="button">Join</button></span>
+            </article>
+
+            <article class="trow">
+              <div class="c-name">
+                <div class="community-art art-five" aria-hidden="true"></div>
+                <div>
+                  <p class="community-name">Story Podcast Circle</p>
+                  <p class="community-meta">Podcasts · Public</p>
+                </div>
+              </div>
+              <span class="c-members">9,730</span>
+              <span class="c-focus">Episode notes</span>
+              <span class="c-action"><button class="join-button" type="button">Join</button></span>
+            </article>
+
+            <article class="trow">
+              <div class="c-name">
+                <div class="community-art art-seven" aria-hidden="true"></div>
+                <div>
+                  <p class="community-name">Ambient After Hours</p>
+                  <p class="community-meta">Music · Public</p>
+                </div>
+              </div>
+              <span class="c-members">7,660</span>
+              <span class="c-focus">Quiet playlists</span>
+              <span class="c-action"><button class="join-button" type="button">Join</button></span>
+            </article>
+
+            <article class="trow">
+              <div class="c-name">
+                <div class="community-art art-three" aria-hidden="true"></div>
+                <div>
+                  <p class="community-name">Documentary Club</p>
+                  <p class="community-meta">Video · Public</p>
+                </div>
+              </div>
+              <span class="c-members">6,105</span>
+              <span class="c-focus">New releases</span>
+              <span class="c-action"><button class="join-button" type="button">Join</button></span>
+            </article>
+
+            <article class="trow">
+              <div class="c-name">
+                <div class="community-art art-eight" aria-hidden="true"></div>
+                <div>
+                  <p class="community-name">Music Video Archive</p>
+                  <p class="community-meta">Video · Public</p>
+                </div>
+              </div>
+              <span class="c-members">5,870</span>
+              <span class="c-focus">Visual favorites</span>
+              <span class="c-action"><button class="join-button" type="button">Join</button></span>
+            </article>
+
+            <article class="trow">
+              <div class="c-name">
+                <div class="community-art art-four" aria-hidden="true"></div>
+                <div>
+                  <p class="community-name">Synth Workshop</p>
+                  <p class="community-meta">Music · Invite only</p>
+                </div>
+              </div>
+              <span class="c-members">4,980</span>
+              <span class="c-focus">Production talk</span>
+              <span class="c-action"><button class="join-button" type="button">Ask</button></span>
+            </article>
+
+            <article class="trow">
+              <div class="c-name">
+                <div class="community-art art-six" aria-hidden="true"></div>
+                <div>
+                  <p class="community-name">Live Session Fans</p>
+                  <p class="community-meta">Music · Public</p>
+                </div>
+              </div>
+              <span class="c-members">3,240</span>
+              <span class="c-focus">Concert recordings</span>
+              <span class="c-action"><button class="join-button" type="button">Join</button></span>
+            </article>
+          </section>
+        </div>
+
+        <p class="list-foot">Showing 8 of 248 communities · matched to your listening history</p>
+      </div>
+
+      <aside class="rail" aria-label="Your community activity">
+        <section class="rail-card">
+          <div class="rail-head">
+            <h3>Your communities</h3>
+            <button class="rail-link" type="button">See all</button>
+          </div>
+          <div class="rail-row">
+            <span class="rail-art art-two" aria-hidden="true"></span>
+            <div>
+              <p class="rail-name">Vinyl Restorers</p>
+              <p class="rail-sub">4 new posts today</p>
+            </div>
+          </div>
+          <div class="rail-row">
+            <span class="rail-art art-four" aria-hidden="true"></span>
+            <div>
+              <p class="rail-name">Late Night Mixdown</p>
+              <p class="rail-sub">2 new posts today</p>
+            </div>
+          </div>
+          <div class="rail-row">
+            <span class="rail-art art-three" aria-hidden="true"></span>
+            <div>
+              <p class="rail-name">Score Study Group</p>
+              <p class="rail-sub">Listening room open now</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="rail-card">
+          <div class="rail-head">
+            <h3>Invitations</h3>
+            <span class="rail-sub">2 pending</span>
+          </div>
+          <div class="invite">
+            <p class="rail-name">Field Recording Society</p>
+            <p class="rail-sub">Invited by Mara Chen · 2,410 members</p>
+            <div class="invite-actions">
+              <button class="btn-small" type="button">Accept</button>
+              <button class="btn-small ghost" type="button">Decline</button>
+            </div>
+          </div>
+          <div class="invite">
+            <p class="rail-name">Modular Patch Club</p>
+            <p class="rail-sub">Invited by Devon Ruiz · 1,180 members</p>
+            <div class="invite-actions">
+              <button class="btn-small" type="button">Accept</button>
+              <button class="btn-small ghost" type="button">Decline</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="rail-card">
+          <div class="rail-head">
+            <h3>Weekly digest</h3>
+          </div>
+          <p class="rail-text">Twelve new communities matched your listening this week. Digests land every Monday morning.</p>
+          <div class="invite-actions">
+            <button class="btn-small ghost" type="button">Manage digest</button>
+          </div>
+        </section>
+      </aside>
+    </main>
+  </div>
+</body>
+</html>

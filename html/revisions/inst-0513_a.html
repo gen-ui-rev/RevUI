@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Asterly Learning Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #d9dee4;
+      color: #1f2937;
+      font-family: 'Manrope', system-ui, sans-serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #f3f5f7;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px 11px;
+      background: #ffffff;
+      border-bottom: 1px solid #e6e9ed;
+    }
+
+    .brand {
+      margin: 0 0 1px;
+      color: #48a9db;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      color: #18212f;
+      font-size: 20px;
+      line-height: 28px;
+      font-weight: 700;
+    }
+
+    .icon-button {
+      width: 40px;
+      height: 40px;
+      padding: 0;
+      display: grid;
+      place-items: center;
+      border: 1px solid #e2e7eb;
+      border-radius: 14px;
+      background: #ffffff;
+      color: #4b5563;
+    }
+
+    .icon-button svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    main {
+      flex: 1;
+      min-height: 0;
+      padding: 12px 14px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .card {
+      background: #ffffff;
+      border-radius: 14px;
+      box-shadow: 0 3px 12px rgba(31, 41, 55, 0.07);
+    }
+
+    h2 {
+      margin: 0;
+      color: #202a37;
+      font-size: 16px;
+      line-height: 22px;
+      font-weight: 700;
+    }
+
+    .caption {
+      margin: 1px 0 0;
+      color: #77818d;
+      font-size: 12px;
+      line-height: 17px;
+      font-weight: 500;
+    }
+
+    .card-heading,
+    .goal-top,
+    .activity-heading {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .courses-card {
+      padding: 14px 15px 8px;
+      border: 1px solid #dceef7;
+      box-shadow: 0 5px 16px rgba(40, 134, 181, 0.11);
+    }
+
+    .active-menu {
+      min-width: 78px;
+      padding: 6px 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      border: 0;
+      border-radius: 18px;
+      background: #e6f5fc;
+      color: #238fc7;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 700;
+    }
+
+    .active-menu svg {
+      width: 13px;
+      height: 13px;
+    }
+
+    .course-list {
+      margin-top: 7px;
+    }
+
+    .course-row {
+      display: grid;
+      grid-template-columns: 24px minmax(0, 1fr) 66px;
+      align-items: center;
+      gap: 9px;
+      padding: 8px 0;
+      border-top: 1px solid #edf0f2;
+    }
+
+    .course-row.priority {
+      margin: 0 -6px;
+      padding: 9px 6px;
+      border-top: 0;
+      border-radius: 10px;
+      background: #f2faff;
+    }
+
+    .priority-number {
+      width: 24px;
+      height: 24px;
+      display: grid;
+      place-items: center;
+      border-radius: 8px;
+      background: #edf1f4;
+      color: #687482;
+      font-size: 11px;
+      line-height: 15px;
+      font-weight: 700;
+    }
+
+    .priority .priority-number {
+      background: #55b6e7;
+      color: #ffffff;
+    }
+
+    .course-name {
+      margin: 0;
+      color: #27313e;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .course-detail {
+      margin: 1px 0 0;
+      color: #7a8490;
+      font-size: 11px;
+      line-height: 16px;
+      font-weight: 500;
+    }
+
+    .course-progress {
+      text-align: right;
+    }
+
+    .course-percent {
+      display: block;
+      margin-bottom: 5px;
+      color: #34404e;
+      font-size: 11px;
+      line-height: 15px;
+      font-weight: 700;
+    }
+
+    .progress-track {
+      width: 66px;
+      height: 6px;
+      border-radius: 14px;
+      background: #e8eef1;
+    }
+
+    .progress-fill {
+      height: 6px;
+      border-radius: 14px;
+      background: #55b6e7;
+    }
+
+    .goal-card {
+      padding: 13px 15px;
+    }
+
+    .goal-content {
+      margin-top: 8px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .progress-ring {
+      position: relative;
+      width: 88px;
+      height: 88px;
+      flex: 0 0 88px;
+      display: grid;
+      place-items: center;
+    }
+
+    .progress-ring svg {
+      position: absolute;
+      inset: 0;
+      width: 88px;
+      height: 88px;
+      transform: rotate(-90deg);
+    }
+
+    .ring-track {
+      fill: none;
+      stroke: #e6f2f8;
+      stroke-width: 9;
+    }
+
+    .ring-value {
+      fill: none;
+      stroke: #55b6e7;
+      stroke-width: 9;
+      stroke-linecap: round;
+      stroke-dasharray: 91 100;
+    }
+
+    .ring-text {
+      position: relative;
+      text-align: center;
+    }
+
+    .ring-percent {
+      display: block;
+      color: #17202d;
+      font-size: 19px;
+      line-height: 24px;
+      font-weight: 700;
+    }
+
+    .ring-label {
+      display: block;
+      color: #77818d;
+      font-size: 11px;
+      line-height: 14px;
+      font-weight: 500;
+    }
+
+    .goal-details {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .goal-time {
+      margin: 0;
+      color: #17202d;
+      font-size: 23px;
+      line-height: 29px;
+      font-weight: 700;
+    }
+
+    .goal-subtext {
+      margin: 1px 0 9px;
+      color: #677280;
+      font-size: 12px;
+      line-height: 17px;
+      font-weight: 500;
+    }
+
+    .goal-meta {
+      display: flex;
+      gap: 18px;
+      padding-top: 8px;
+      border-top: 1px solid #edf0f2;
+    }
+
+    .meta-value {
+      color: #26313e;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 700;
+    }
+
+    .meta-label {
+      margin-left: 3px;
+      color: #7b8590;
+      font-size: 11px;
+      line-height: 16px;
+    }
+
+    .metrics-card {
+      padding: 11px 8px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .metric {
+      padding: 0 8px;
+      text-align: center;
+      border-right: 1px solid #e8ebee;
+    }
+
+    .metric:last-child {
+      border-right: 0;
+    }
+
+    .metric-value {
+      display: block;
+      color: #202a37;
+      font-size: 18px;
+      line-height: 23px;
+      font-weight: 700;
+    }
+
+    .metric-label {
+      display: block;
+      margin-top: 1px;
+      color: #77818d;
+      font-size: 11px;
+      line-height: 16px;
+      font-weight: 500;
+    }
+
+    .activity-card {
+      padding: 12px 15px;
+    }
+
+    .activity-total {
+      color: #48a9db;
+      font-size: 13px;
+      line-height: 19px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .chart {
+      margin-top: 8px;
+    }
+
+    .bar-area {
+      height: 52px;
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      align-items: end;
+      gap: 9px;
+      border-bottom: 1px solid #e6e9ed;
+    }
+
+    .bar-column {
+      height: 100%;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+    }
+
+    .bar {
+      width: 18px;
+      min-height: 6px;
+      border-radius: 6px 6px 0 0;
+      background: #cfe9f6;
+    }
+
+    .bar.active {
+      background: #55b6e7;
+    }
+
+    .day-labels {
+      margin-top: 5px;
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 9px;
+      text-align: center;
+      color: #7a8490;
+      font-size: 11px;
+      line-height: 15px;
+      font-weight: 500;
+    }
+
+    .tabbar {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      padding: 8px 8px 9px;
+      background: #ffffff;
+      border-top: 1px solid #e3e7ea;
+    }
+
+    .tab {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      color: #7b8590;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 500;
+    }
+
+    .tab svg {
+      width: 21px;
+      height: 21px;
+    }
+
+    .tab.active {
+      color: #3fa7db;
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <div>
+        <p class="brand">Asterly</p>
+        <h1>Learning dashboard</h1>
+      </div>
+      <button class="icon-button" type="button" aria-label="Notifications">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M6.8 9.4a5.2 5.2 0 0 1 10.4 0c0 5.9 2.3 6.4 2.3 6.4H4.5s2.3-.5 2.3-6.4Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+          <path d="M9.8 18.3a2.4 2.4 0 0 0 4.4 0" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </header>
+
+    <main>
+      <section class="card courses-card" aria-labelledby="courses-title-a">
+        <div class="card-heading">
+          <div>
+            <h2 id="courses-title-a">Course priorities</h2>
+            <p class="caption">Recommended study order</p>
+          </div>
+          <button class="active-menu" type="button" aria-label="Show 3 active courses">
+            <span>3 active</span>
+            <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="m4 6 4 4 4-4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+
+        <div class="course-list">
+          <div class="course-row priority">
+            <span class="priority-number">1</span>
+            <div>
+              <p class="course-name">Spanish Foundations</p>
+              <p class="course-detail">Next: Talking about routines</p>
+            </div>
+            <div class="course-progress">
+              <span class="course-percent">72%</span>
+              <div class="progress-track"><div class="progress-fill" style="width:72%;"></div></div>
+            </div>
+          </div>
+
+          <div class="course-row">
+            <span class="priority-number">2</span>
+            <div>
+              <p class="course-name">Vocabulary Builder</p>
+              <p class="course-detail">22 of 36 lessons</p>
+            </div>
+            <div class="course-progress">
+              <span class="course-percent">61%</span>
+              <div class="progress-track"><div class="progress-fill" style="width:61%;"></div></div>
+            </div>
+          </div>
+
+          <div class="course-row">
+            <span class="priority-number">3</span>
+            <div>
+              <p class="course-name">Everyday Listening</p>
+              <p class="course-detail">8 of 18 lessons</p>
+            </div>
+            <div class="course-progress">
+              <span class="course-percent">44%</span>
+              <div class="progress-track"><div class="progress-fill" style="width:44%;"></div></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="card goal-card" aria-labelledby="goal-title-a">
+        <div class="goal-top">
+          <div>
+            <h2 id="goal-title-a">Weekly learning goal</h2>
+            <p class="caption">Monday–Sunday</p>
+          </div>
+          <p class="caption">Ends Mar 9</p>
+        </div>
+
+        <div class="goal-content">
+          <div class="progress-ring" aria-label="91 percent complete">
+            <svg viewBox="0 0 42 42" aria-hidden="true">
+              <circle class="ring-track" cx="21" cy="21" r="15.9"></circle>
+              <circle class="ring-value" cx="21" cy="21" r="15.9" pathLength="100"></circle>
+            </svg>
+            <div class="ring-text">
+              <span class="ring-percent">91%</span>
+              <span class="ring-label">complete</span>
+            </div>
+          </div>
+
+          <div class="goal-details">
+            <p class="goal-time">4h 32m</p>
+            <p class="goal-subtext">28 minutes left of your 5-hour goal</p>
+            <div class="goal-meta">
+              <span><span class="meta-value">7</span><span class="meta-label">Lessons</span></span>
+              <span><span class="meta-value">5 days</span><span class="meta-label">Streak</span></span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="card metrics-card" aria-label="Learning metrics">
+        <div class="metric">
+          <span class="metric-value">86%</span>
+          <span class="metric-label">Accuracy</span>
+        </div>
+        <div class="metric">
+          <span class="metric-value">128</span>
+          <span class="metric-label">Words learned</span>
+        </div>
+        <div class="metric">
+          <span class="metric-value">42m</span>
+          <span class="metric-label">Daily average</span>
+        </div>
+      </section>
+
+      <section class="card activity-card" aria-labelledby="activity-title-a">
+        <div class="activity-heading">
+          <div>
+            <h2 id="activity-title-a">Daily activity</h2>
+            <p class="caption">Minutes studied this week</p>
+          </div>
+          <span class="activity-total">272 min</span>
+        </div>
+
+        <div class="chart" aria-label="Daily study minutes: Monday 32, Tuesday 48, Wednesday 26, Thursday 55, Friday 43, Saturday 68, Sunday 0">
+          <div class="bar-area">
+            <div class="bar-column"><div class="bar" style="height:42%;"></div></div>
+            <div class="bar-column"><div class="bar" style="height:66%;"></div></div>
+            <div class="bar-column"><div class="bar" style="height:35%;"></div></div>
+            <div class="bar-column"><div class="bar" style="height:76%;"></div></div>
+            <div class="bar-column"><div class="bar" style="height:59%;"></div></div>
+            <div class="bar-column"><div class="bar active" style="height:94%;"></div></div>
+            <div class="bar-column"><div class="bar" style="height:8%;"></div></div>
+          </div>
+          <div class="day-labels" aria-hidden="true">
+            <span>Mon</span>
+            <span>Tue</span>
+            <span>Wed</span>
+            <span>Thu</span>
+            <span>Fri</span>
+            <span>Sat</span>
+            <span>Sun</span>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <nav class="tabbar" aria-label="Primary navigation">
+      <div class="tab active" aria-current="page">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <rect x="3.5" y="3.5" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.8"/>
+          <rect x="13.5" y="3.5" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.8"/>
+          <rect x="3.5" y="13.5" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.8"/>
+          <rect x="13.5" y="13.5" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.8"/>
+        </svg>
+        <span>Dashboard</span>
+      </div>
+
+      <div class="tab">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M4 5.5c2.6-.8 5.3-.3 8 1.5v12c-2.7-1.8-5.4-2.3-8-1.5v-12Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+          <path d="M20 5.5c-2.6-.8-5.3-.3-8 1.5v12c2.7-1.8 5.4-2.3 8-1.5v-12Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+        </svg>
+        <span>Learn</span>
+      </div>
+
+      <div class="tab">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M12 3.5 14.5 9l6 .7-4.4 4 1.2 5.8L12 16.6l-5.3 2.9 1.2-5.8-4.4-4 6-.7L12 3.5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+        </svg>
+        <span>Practice</span>
+      </div>
+
+      <div class="tab">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="12" cy="8" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+          <path d="M5 20c.7-4 3.1-6 7-6s6.3 2 7 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+        <span>Profile</span>
+      </div>
+    </nav>
+  </div>
+</body>
+</html>

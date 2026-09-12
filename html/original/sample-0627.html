@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Course Reviews</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#16161d;
+    --muted:#5d5d6b;
+    --accent:#4338ca;
+    --a04:rgba(67,56,202,0.05);
+    --a08:rgba(67,56,202,0.09);
+    --a14:rgba(67,56,202,0.15);
+  }
+  *{box-sizing:border-box;}
+  body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    padding:40px 0;
+    margin:0;
+    background:#e6e6e2;
+    font-family:'Source Serif 4', Georgia, serif;
+  }
+  .screen{
+    width:390px;
+    height:844px;
+    background:#fdfdfb;
+    position:relative;
+    color:var(--ink);
+    display:flex;
+    flex-direction:column;
+  }
+
+  /* top bar */
+  .topbar{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:18px 16px 14px;
+  }
+  .topbar svg{display:block;}
+  .tb-title{
+    font-size:17px;
+    font-weight:600;
+    line-height:1.2;
+  }
+  .tb-sub{
+    font-size:12px;
+    color:var(--muted);
+    line-height:1.3;
+    margin-top:2px;
+  }
+  .tb-text{flex:1;min-width:0;}
+  .tb-text .tb-title,.tb-text .tb-sub{
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .iconbtn{
+    width:28px;height:28px;
+    display:flex;align-items:center;justify-content:center;
+    color:var(--ink);
+    flex:none;
+  }
+
+  /* summary */
+  .summary{
+    background:var(--a08);
+    padding:20px 20px 22px;
+    display:flex;
+    gap:22px;
+  }
+  .score-col{width:108px;flex:none;}
+  .score{
+    font-size:46px;
+    font-weight:700;
+    line-height:1;
+    letter-spacing:-1px;
+    color:var(--accent);
+  }
+  .stars{display:flex;gap:3px;margin-top:8px;}
+  .stars svg{display:block;}
+  .ratings-count{
+    font-size:12px;
+    color:var(--muted);
+    margin-top:8px;
+    line-height:1.4;
+  }
+  .dist{flex:1;min-width:0;}
+  .dist-row{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    height:20px;
+  }
+  .dist-row + .dist-row{margin-top:4px;}
+  .dist-lab{
+    font-size:12px;
+    color:var(--muted);
+    width:9px;
+    flex:none;
+    text-align:right;
+  }
+  .track{
+    flex:1;
+    height:8px;
+    background:var(--a14);
+  }
+  .fill{height:8px;background:var(--accent);}
+  .dist-val{
+    font-size:12px;
+    color:var(--muted);
+    width:34px;
+    flex:none;
+    text-align:right;
+  }
+
+  /* facets */
+  .facets{
+    display:flex;
+    padding:14px 20px 0;
+    gap:0;
+  }
+  .facet{
+    flex:1;
+    background:var(--a04);
+    padding:10px 10px 11px;
+  }
+  .facet + .facet{margin-left:8px;}
+  .facet-val{
+    font-size:15px;
+    font-weight:600;
+    line-height:1.2;
+  }
+  .facet-lab{
+    font-size:12px;
+    color:var(--muted);
+    margin-top:3px;
+    line-height:1.3;
+  }
+
+  /* section head */
+  .sec-head{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    padding:22px 20px 10px;
+  }
+  .sec-title{font-size:15px;font-weight:700;}
+  .sort{
+    font-size:12px;
+    color:var(--accent);
+    font-weight:600;
+  }
+
+  /* reviews */
+  .list{padding:0 20px;}
+  .review{padding:14px 0 16px;}
+  .review + .review{border-top:1px solid var(--a14);}
+  .r-top{
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .r-name{
+    font-size:14px;
+    font-weight:600;
+    flex:1;
+    min-width:0;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .r-date{font-size:12px;color:var(--muted);flex:none;}
+  .r-stars{display:flex;gap:2px;margin-top:6px;}
+  .r-body{
+    font-size:14px;
+    line-height:1.5;
+    margin-top:7px;
+    color:#26262f;
+  }
+  .r-foot{
+    font-size:12px;
+    color:var(--muted);
+    margin-top:9px;
+  }
+  .reply{
+    background:var(--a08);
+    padding:10px 12px;
+    margin-top:10px;
+  }
+  .reply-who{
+    font-size:12px;
+    font-weight:600;
+    color:var(--accent);
+  }
+  .reply-txt{
+    font-size:13px;
+    line-height:1.45;
+    margin-top:4px;
+    color:#26262f;
+  }
+
+  /* tab bar */
+  .tabbar{
+    position:absolute;
+    left:0;bottom:0;
+    width:100%;
+    display:flex;
+    background:#fdfdfb;
+    border-top:1px solid var(--a14);
+    padding:9px 0 12px;
+  }
+  .tab{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:4px;
+    color:var(--muted);
+    font-size:12px;
+  }
+  .tab.on{color:var(--accent);font-weight:600;}
+</style>
+</head>
+<body>
+<div class="screen">
+
+  <div class="topbar">
+    <div class="iconbtn">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12.5 4L6.5 10l6 6"/></svg>
+    </div>
+    <div class="tb-text">
+      <div class="tb-title">Spanish B1 — Conversation Lab</div>
+      <div class="tb-sub">Ratings and reviews</div>
+    </div>
+    <div class="iconbtn">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M3.5 5.5h13M6 10h8M8.5 14.5h3"/></svg>
+    </div>
+  </div>
+
+  <div class="summary">
+    <div class="score-col">
+      <div class="score">4.6</div>
+      <div class="stars">
+        <svg width="15" height="15" viewBox="0 0 20 20" fill="#4338ca"><path d="M10 1.6l2.6 5.3 5.8.85-4.2 4.1 1 5.75L10 14.9l-5.2 2.7 1-5.75L1.6 7.75l5.8-.85z"/></svg>
+        <svg width="15" height="15" viewBox="0 0 20 20" fill="#4338ca"><path d="M10 1.6l2.6 5.3 5.8.85-4.2 4.1 1 5.75L10 14.9l-5.2 2.7 1-5.75L1.6 7.75l5.8-.85z"/></svg>
+        <svg width="15" height="15" viewBox="0 0 20 20" fill="#4338ca"><path d="M10 1.6l2.6 5.3 5.8.85-4.2 4.1 1 5.75L10 14.9l-5.2 2.7 1-5.75L1.6 7.75l5.8-.85z"/></svg>
+        <svg width="15" height="15" viewBox="0 0 20 20" fill="#4338ca"><path d="M10 1.6l2.6 5.3 5.8.85-4.2 4.1 1 5.75L10 14.9l-5.2 2.7 1-5.75L1.6 7.75l5.8-.85z"/></svg>
+        <svg width="15" height="15" viewBox="0 0 20 20" fill="rgba(67,56,202,0.3)"><path d="M10 1.6l2.6 5.3 5.8.85-4.2 4.1 1 5.75L10 14.9l-5.2 2.7 1-5.75L1.6 7.75l5.8-.85z"/></svg>
+      </div>
+      <div class="ratings-count">1,284 ratings<br>412 written reviews</div>
+    </div>
+    <div class="dist">
+      <div class="dist-row"><div class="dist-lab">5</div><div class="track"><div class="fill" style="width:74%"></div></div><div class="dist-val">946</div></div>
+      <div class="dist-row"><div class="dist-lab">4</div><div class="track"><div class="fill" style="width:17%"></div></div><div class="dist-val">218</div></div>
+      <div class="dist-row"><div class="dist-lab">3</div><div class="track"><div class="fill" style="width:6%"></div></div><div class="dist-val">77</div></div>
+      <div class="dist-row"><div class="dist-lab">2</div><div class="track"><div class="fill" style="width:2%"></div></div><div class="dist-val">28</div></div>
+      <div class="dist-row"><div class="dist-lab">1</div><div class="track"><div class="fill" style="width:1%"></div></div><div class="dist-val">15</div></div>
+    </div>
+  </div>
+
+  <div class="facets">
+    <div class="facet">
+      <div class="facet-val">4.8</div>
+      <div class="facet-lab">Instructor</div>
+    </div>
+    <div class="facet">
+      <div class="facet-val">4.5</div>
+      <div class="facet-lab">Pacing</div>
+    </div>
+    <div class="facet">
+      <div class="facet-val">4.2</div>
+      <div class="facet-lab">Practice load</div>
+    </div>
+  </div>
+
+  <div class="sec-head">
+    <div class="sec-title">Recent reviews</div>
+    <div class="sort">Most helpful</div>
+  </div>
+
+  <div class="list">
+
+    <div class="review">
+      <div class="r-top">
+        <div class="r-name">Marisol Devane</div>
+        <div class="r-date">Mar 14, 2024</div>
+      </div>
+      <div class="r-stars">
+        <svg width="13" height="13" viewBox="0 0 20 20" fill="#4338ca"><path d="M10 1.6l2.6 5.3 5.8.85-4.2 4.1 1 5.75L10 14.9l-5.2 2.7 1-5.75L1.6 7.75l5.8-.85z"/></svg>
+        <svg width="13" height="13" viewBox="0 0 20 20" fill="#4338ca"><path d="M10 1.6l2.6 5.3 5.8.85-4.2 4.1 1 5.75L10 14.9l-5.2 2.7 1-5.75L1.6 7.75l5.8-.85z"/></svg>
+        <svg width="13" height="13" viewBox="0 0 20 20" fill="#4338ca"><path d="M10 1.6l2.6 5.3 5.8.85-4.2 4.1 1 5.75L10 14.9l-5.2 2.7 1-5.75L1.6 7.75l5.8-.85z"/></svg>
+        <svg width="13" height="13" viewBox="0 0 20 20" fill="#4338ca"><path d="M10 1.6l2.6 5.3 5.8.85-4.2 4.1 1 5.75L10 14.9l-5.2 2.7 1-5.75L1.6 7.75l5.8-.85z"/></svg>
+        <svg width="13" height="13" viewBox="0 0 20 20" fill="#4338ca"><path d="M10 1.6l2.6 5.3 5.8.85-4.2 4.1 1 5.75L10 14.9l-5.2 2.7 1-5.75L1.6 7.75l5.8-.85z"/></svg>
+      </div>
+      <div class="r-body">The weekly live sessions are small enough that everyone speaks twice. I stopped translating in my head around unit 6.</div>
+      <div class="r-foot">Completed 18 of 24 units · Helpful (86)</div>
+    </div>
+
+    <div class="review">
+      <div class="r-top">
+        <div class="r-name">Curtis Bellweather</div>
+        <div class="r-date">Mar 9, 2024</div>
+      </div>
+      <div class="r-stars">
+        <svg width="13" height="13" viewBox="0 0 20 20" fill="#4338ca"><path d="M10 1.6l2.6 5.3 5.8.85-4.2 4.1 1 5.75L10 14.9l-5.2 2.7 1-5.75L1.6 7.75l5.8-.85z"/></svg>
+        <svg width="13" height="13" viewBox="0 0 20 20" fill="#4338ca"><path d="M10 1.6l2.6 5.3 5.8.85-4.2 4.1 1 5.75L10 14.9l-5.2 2.7 1-5.75L1.6 7.75l5.8-.85z"/></svg>
+        <svg width="13" height="13" viewBox="0 0 20 20" fill="#4338ca"><path d="M10 1.6l2.6 5.3 5.8.85-4.2 4.1 1 5.75L10 14.9l-5.2 2.7 1-5.75L1.6 7.75l5.8-.85z"/></svg>
+        <svg width="13" height="13" viewBox="0 0 20 20" fill="rgba(67,56,202,0.3)"><path d="M10 1.6l2.6 5.3 5.8.85-4.2 4.1 1 5.75L10 14.9l-5.2 2.7 1-5.75L1.6 7.75l5.8-.85z"/></svg>
+        <svg width="13" height="13" viewBox="0 0 20 20" fill="rgba(67,56,202,0.3)"><path d="M10 1.6l2.6 5.3 5.8.85-4.2 4.1 1 5.75L10 14.9l-5.2 2.7 1-5.75L1.6 7.75l5.8-.85z"/></svg>
+      </div>
+      <div class="r-body">Good material, but the grammar drills between units 9 and 12 repeat almost word for word.</div>
+      <div class="r-foot">Completed 11 of 24 units · Helpful (34)</div>
+      <div class="reply">
+        <div class="reply-who">Reply from Elena Marchetti, instructor</div>
+        <div class="reply-txt">Units 9–12 were rewritten on March 1. The new drills pull from your own recorded answers.</div>
+      </div>
+    </div>
+
+    <div class="review">
+      <div class="r-top">
+        <div class="r-name">Priya Anand-Rourke</div>
+        <div class="r-date">Mar 2, 2024</div>
+      </div>
+      <div class="r-stars">
+        <svg width="13" height="13" viewBox="0 0 20 20" fill="#4338ca"><path d="M10 1.6l2.6 5.3 5.8.85-4.2 4.1 1 5.75L10 14.9l-5.2 2.7 1-5.75L1.6 7.75l5.8-.85z"/></svg>
+        <svg width="13" height="13" viewBox="0 0 20 20" fill="#4338ca"><path d="M10 1.6l2.6 5.3 5.8.85-4.2 4.1 1 5.75L10 14.9l-5.2 2.7 1-5.75L1.6 7.75l5.8-.85z"/></svg>
+        <svg width="13" height="13" viewBox="0 0 20 20" fill="#4338ca"><path d="M10 1.6l2.6 5.3 5.8.85-4.2 4.1 1 5.75L10 14.9l-5.2 2.7 1-5.75L1.6 7.75l5.8-.85z"/></svg>
+        <svg width="13" height="13" viewBox="0 0 20 20" fill="#4338ca"><path d="M10 1.6l2.6 5.3 5.8.85-4.2 4.1 1 5.75L10 14.9l-5.2 2.7 1-5.75L1.6 7.75l5.8-.85z"/></svg>
+        <svg width="13" height="13" viewBox="0 0 20 20" fill="rgba(67,56,202,0.3)"><path d="M10 1.6l2.6 5.3 5.8.85-4.2 4.1 1 5.75L10 14.9l-5.2 2.7 1-5.75L1.6 7.75l5.8-.85z"/></svg>
+      </div>
+      <div class="r-body">Worth the $89 if you show up for the calls. On demand alone it is closer to a workbook.</div>
+      <div class="r-foot">Completed 24 of 24 units · Helpful (52)</div>
+    </div>
+
+  </div>
+
+  <div class="tabbar">
+    <div class="tab">
+      <svg width="21" height="21" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><path d="M3 9.2L11 3l8 6.2V19H3z"/></svg>
+      <span>Home</span>
+    </div>
+    <div class="tab">
+      <svg width="21" height="21" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><path d="M4 4h6a2 2 0 012 2v12a2 2 0 00-2-2H4z"/><path d="M18 4h-6a2 2 0 00-2 2v12a2 2 0 012-2h6z"/></svg>
+      <span>Courses</span>
+    </div>
+    <div class="tab on">
+      <svg width="21" height="21" viewBox="0 0 22 22" fill="currentColor"><path d="M11 2.4l2.7 5.5 6.1.9-4.4 4.3 1 6.1L11 16.3l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg>
+      <span>Reviews</span>
+    </div>
+    <div class="tab">
+      <svg width="21" height="21" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><circle cx="11" cy="7.5" r="3.3"/><path d="M4.5 18.5c0-3.3 2.9-5.3 6.5-5.3s6.5 2 6.5 5.3"/></svg>
+      <span>Profile</span>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

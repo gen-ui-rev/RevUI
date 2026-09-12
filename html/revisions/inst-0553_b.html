@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Roamstead Recipe</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 32px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #e9e7ec;
+      color: #242128;
+      font-family: 'Roboto', system-ui, sans-serif;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #ffffff;
+    }
+
+    .top-bar {
+      height: 52px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      padding: 0 10px;
+      background: #ffffff;
+    }
+
+    .icon-button {
+      width: 40px;
+      height: 40px;
+      padding: 0;
+      display: grid;
+      place-items: center;
+      border: 0;
+      border-radius: 6px;
+      background: transparent;
+      color: #302b35;
+    }
+
+    .top-title {
+      flex: 1;
+      margin: 0;
+      text-align: center;
+      font-size: 16px;
+      line-height: 20px;
+      font-weight: 500;
+    }
+
+    .hero {
+      width: 390px;
+      height: 164px;
+      margin: 0;
+      flex-shrink: 0;
+      background: #cbc6d1;
+    }
+
+    .hero img {
+      width: 390px;
+      height: 164px;
+      object-fit: cover;
+      display: block;
+      background: #cbc6d1;
+    }
+
+    .recipe-intro {
+      flex-shrink: 0;
+      padding: 10px 16px 8px;
+      background: #ffffff;
+    }
+
+    .recipe-intro h1 {
+      margin: 0;
+      color: #6330aa;
+      font-size: 24px;
+      line-height: 29px;
+      font-weight: 700;
+    }
+
+    .origin {
+      margin: 3px 0 0;
+      color: #69636e;
+      font-size: 14px;
+      line-height: 19px;
+    }
+
+    .facts {
+      margin-top: 5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #4d4652;
+      font-size: 14px;
+      line-height: 19px;
+    }
+
+    .fact-separator {
+      color: #a295ad;
+    }
+
+    .serving-radio {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .scale-panel {
+      flex-shrink: 0;
+      padding: 7px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid #eeeaf1;
+      border-bottom: 1px solid #eeeaf1;
+      background: #faf8fc;
+    }
+
+    .scale-heading {
+      margin: 0;
+      color: #39333e;
+      font-size: 14px;
+      line-height: 18px;
+      font-weight: 500;
+    }
+
+    .scale-caption {
+      display: block;
+      margin-top: 1px;
+      color: #7a7380;
+      font-size: 11px;
+      line-height: 14px;
+      font-weight: 400;
+    }
+
+    .serving-options {
+      display: flex;
+      padding: 2px;
+      border-radius: 8px;
+      background: #ebe5f1;
+    }
+
+    .serving-options label {
+      min-width: 43px;
+      padding: 5px 7px;
+      border-radius: 6px;
+      color: #665f6c;
+      text-align: center;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 500;
+      cursor: pointer;
+    }
+
+    #serve2:checked ~ .scale-panel label[for="serve2"],
+    #serve4:checked ~ .scale-panel label[for="serve4"],
+    #serve6:checked ~ .scale-panel label[for="serve6"] {
+      background: #ffffff;
+      color: #6330aa;
+      font-weight: 700;
+      box-shadow: 0 1px 3px rgba(53, 35, 68, 0.16);
+    }
+
+    .recipe-content {
+      flex: 1;
+      padding: 7px 16px 5px;
+      background: #ffffff;
+    }
+
+    .section-title {
+      margin: 0;
+      color: #2b2730;
+      font-size: 16px;
+      line-height: 23px;
+      font-weight: 700;
+    }
+
+    .section-note {
+      float: right;
+      color: #766f7c;
+      font-size: 12px;
+      font-weight: 400;
+    }
+
+    .ingredient-list {
+      margin: 3px 0 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .ingredient-row {
+      min-height: 27px;
+      padding: 4px 0;
+      display: grid;
+      grid-template-columns: 82px 1fr;
+      align-items: center;
+      column-gap: 10px;
+      font-size: 14px;
+      line-height: 19px;
+    }
+
+    .amount {
+      padding: 3px 6px;
+      border-radius: 6px;
+      background: #f1ebf9;
+      color: #6330aa;
+      font-weight: 500;
+      text-align: center;
+    }
+
+    .amount-value {
+      display: none;
+    }
+
+    #serve2:checked ~ .recipe-content .for-two,
+    #serve4:checked ~ .recipe-content .for-four,
+    #serve6:checked ~ .recipe-content .for-six {
+      display: inline;
+    }
+
+    .ingredient-name {
+      color: #37313c;
+    }
+
+    .steps-section {
+      margin-top: 6px;
+    }
+
+    .step-list {
+      margin-top: 2px;
+    }
+
+    .step-row {
+      padding: 3px 0;
+      display: grid;
+      grid-template-columns: 32px 1fr;
+      align-items: start;
+      column-gap: 9px;
+    }
+
+    .step-number {
+      width: 32px;
+      height: 32px;
+      display: grid;
+      place-items: center;
+      border-radius: 6px;
+      background: #eee5f8;
+      color: #6330aa;
+      font-size: 14px;
+      line-height: 18px;
+      font-weight: 700;
+    }
+
+    .step-copy h3 {
+      margin: 0;
+      color: #332e38;
+      font-size: 14px;
+      line-height: 18px;
+      font-weight: 500;
+    }
+
+    .step-copy p {
+      margin: 1px 0 0;
+      color: #67606c;
+      font-size: 13px;
+      line-height: 17px;
+    }
+
+    .tab-bar {
+      height: 68px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      padding: 7px 8px;
+      background: #faf9fb;
+    }
+
+    .tab-item {
+      width: 78px;
+      padding: 5px 4px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      border-radius: 6px;
+      color: #77717c;
+      font-size: 12px;
+      line-height: 15px;
+      font-weight: 500;
+    }
+
+    .tab-item.active {
+      background: #eee6f8;
+      color: #6330aa;
+    }
+
+    svg {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="top-bar">
+      <button class="icon-button" type="button" aria-label="Go back">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M15 5L8 12L15 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <p class="top-title">Roamstead Kitchen</p>
+      <button class="icon-button" type="button" aria-label="Save recipe">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M7 4.5C7 3.67 7.67 3 8.5 3H15.5C16.33 3 17 3.67 17 4.5V21L12 17.8L7 21V4.5Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </header>
+
+    <figure class="hero">
+      <img src="https://loremflickr.com/390/164/cityscape?lock=7450" width="390" height="164" alt="Sunlit Lisbon waterfront viewed from the old city">
+    </figure>
+
+    <section class="recipe-intro" aria-labelledby="recipe-title">
+      <h1 id="recipe-title">Lisbon lemon rice</h1>
+      <p class="origin">From the Alfama Market Walk · Lisbon, Portugal</p>
+      <div class="facts" aria-label="Recipe details">
+        <span>35 minutes</span>
+        <span class="fact-separator">•</span>
+        <span>Easy</span>
+      </div>
+    </section>
+
+    <input class="serving-radio" type="radio" name="servings" id="serve2">
+    <input class="serving-radio" type="radio" name="servings" id="serve4" checked>
+    <input class="serving-radio" type="radio" name="servings" id="serve6">
+
+    <section class="scale-panel" aria-labelledby="scale-title">
+      <h2 class="scale-heading" id="scale-title">
+        Scale recipe
+        <span class="scale-caption">Amounts update by serving</span>
+      </h2>
+      <div class="serving-options" role="group" aria-label="Choose serving count">
+        <label for="serve2">2</label>
+        <label for="serve4">4</label>
+        <label for="serve6">6</label>
+      </div>
+    </section>
+
+    <main class="recipe-content">
+      <section aria-labelledby="ingredients-title">
+        <h2 class="section-title" id="ingredients-title">
+          Ingredients
+          <span class="section-note">6 items</span>
+        </h2>
+        <ul class="ingredient-list">
+          <li class="ingredient-row">
+            <span class="amount">
+              <span class="amount-value for-two">½ cup</span>
+              <span class="amount-value for-four">1 cup</span>
+              <span class="amount-value for-six">1½ cups</span>
+            </span>
+            <span class="ingredient-name">Long-grain rice</span>
+          </li>
+          <li class="ingredient-row">
+            <span class="amount">
+              <span class="amount-value for-two">1 tbsp</span>
+              <span class="amount-value for-four">2 tbsp</span>
+              <span class="amount-value for-six">3 tbsp</span>
+            </span>
+            <span class="ingredient-name">Olive oil</span>
+          </li>
+          <li class="ingredient-row">
+            <span class="amount">
+              <span class="amount-value for-two">½ small</span>
+              <span class="amount-value for-four">1 small</span>
+              <span class="amount-value for-six">1½ small</span>
+            </span>
+            <span class="ingredient-name">Yellow onion, diced</span>
+          </li>
+          <li class="ingredient-row">
+            <span class="amount">
+              <span class="amount-value for-two">1 clove</span>
+              <span class="amount-value for-four">2 cloves</span>
+              <span class="amount-value for-six">3 cloves</span>
+            </span>
+            <span class="ingredient-name">Garlic, minced</span>
+          </li>
+          <li class="ingredient-row">
+            <span class="amount">
+              <span class="amount-value for-two">¾ cup</span>
+              <span class="amount-value for-four">1½ cups</span>
+              <span class="amount-value for-six">2¼ cups</span>
+            </span>
+            <span class="ingredient-name">Vegetable broth</span>
+          </li>
+          <li class="ingredient-row">
+            <span class="amount">
+              <span class="amount-value for-two">½</span>
+              <span class="amount-value for-four">1</span>
+              <span class="amount-value for-six">1½</span>
+            </span>
+            <span class="ingredient-name">Lemon, zest and juice</span>
+          </li>
+        </ul>
+      </section>
+
+      <section class="steps-section" aria-labelledby="steps-title">
+        <h2 class="section-title" id="steps-title">Cooking steps</h2>
+        <div class="step-list">
+          <article class="step-row">
+            <div class="step-number">1</div>
+            <div class="step-copy">
+              <h3>Soften the aromatics</h3>
+              <p>Cook onion in warm oil for 5 minutes; add garlic.</p>
+            </div>
+          </article>
+          <article class="step-row">
+            <div class="step-number">2</div>
+            <div class="step-copy">
+              <h3>Toast and simmer</h3>
+              <p>Add rice and broth; cover and simmer for 18 minutes.</p>
+            </div>
+          </article>
+          <article class="step-row">
+            <div class="step-number">3</div>
+            <div class="step-copy">
+              <h3>Rest and finish</h3>
+              <p>Rest for 5 minutes, then fluff and add lemon.</p>
+            </div>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <nav class="tab-bar" aria-label="Primary navigation">
+      <div class="tab-item">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M4 10.5L12 4L20 10.5V20H14.5V14H9.5V20H4V10.5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+        </svg>
+        <span>Explore</span>
+      </div>
+      <div class="tab-item">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M5 7.5H19V19H5V7.5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+          <path d="M8 7.5V5.5C8 4.67 8.67 4 9.5 4H14.5C15.33 4 16 4.67 16 5.5V7.5" stroke="currentColor" stroke-width="1.8"/>
+          <path d="M5 12H19" stroke="currentColor" stroke-width="1.8"/>
+        </svg>
+        <span>Trips</span>
+      </div>
+      <div class="tab-item active" aria-current="page">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M7 4.5C7 3.67 7.67 3 8.5 3H15.5C16.33 3 17 3.67 17 4.5V21L12 17.8L7 21V4.5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+        </svg>
+        <span>Saved</span>
+      </div>
+      <div class="tab-item">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="12" cy="8" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+          <path d="M5.5 20C6.2 16.6 8.42 15 12 15C15.58 15 17.8 16.6 18.5 20" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+        <span>Profile</span>
+      </div>
+    </nav>
+  </div>
+</body>
+</html>

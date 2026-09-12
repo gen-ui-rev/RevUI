@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trellis Market Activity</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #e8e9ee;
+      color: #202132;
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #fcfcff;
+      color: #202132;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+      padding: 14px 18px 10px;
+      background: #ffffff;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+      font-size: 15px;
+      font-weight: 700;
+      color: #292a3a;
+    }
+
+    .brand-mark {
+      width: 30px;
+      height: 30px;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+      border-radius: 6px;
+      color: #5146c8;
+      background: rgba(81, 70, 200, 0.11);
+    }
+
+    .icon-button {
+      width: 36px;
+      height: 36px;
+      padding: 0;
+      display: grid;
+      place-items: center;
+      border: 0;
+      border-radius: 6px;
+      color: #4a4b5d;
+      background: rgba(81, 70, 200, 0.07);
+    }
+
+    .hero {
+      flex-shrink: 0;
+      padding: 10px 20px 13px;
+      background: #ffffff;
+    }
+
+    .hero h1 {
+      margin: 0;
+      color: #202132;
+      font-size: 26px;
+      line-height: 1.25;
+      letter-spacing: -0.6px;
+      font-weight: 700;
+    }
+
+    .hero p {
+      margin: 5px 0 0;
+      color: #707184;
+      font-size: 13px;
+      line-height: 1.45;
+      font-weight: 400;
+    }
+
+    .filters {
+      display: flex;
+      gap: 6px;
+      flex-shrink: 0;
+      padding: 0 20px 12px;
+      background: #ffffff;
+    }
+
+    .filter {
+      min-width: 0;
+      padding: 9px 11px;
+      border: 0;
+      border-radius: 6px;
+      white-space: nowrap;
+      color: #606174;
+      background: rgba(81, 70, 200, 0.06);
+      font-size: 12px;
+      line-height: 1;
+      font-weight: 600;
+    }
+
+    .filter.active {
+      color: #ffffff;
+      background: #5146c8;
+    }
+
+    .activity-feed {
+      flex: 1;
+      padding: 11px 20px 8px;
+      background: #fcfcff;
+    }
+
+    .day-group {
+      margin: 0 0 11px;
+    }
+
+    .day-group:last-child {
+      margin-bottom: 0;
+    }
+
+    .day-heading {
+      margin: 0 0 6px 2px;
+      color: #77788a;
+      font-size: 12px;
+      line-height: 1.4;
+      font-weight: 700;
+      letter-spacing: 0.15px;
+    }
+
+    .event {
+      display: grid;
+      grid-template-columns: 38px minmax(0, 1fr) 48px;
+      align-items: center;
+      gap: 10px;
+      min-height: 55px;
+      margin-bottom: 4px;
+      padding: 7px 9px;
+      border-radius: 6px;
+      background: rgba(81, 70, 200, 0.055);
+    }
+
+    .event:last-child {
+      margin-bottom: 0;
+    }
+
+    .event-icon {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      border-radius: 6px;
+      color: #5146c8;
+      background: rgba(81, 70, 200, 0.11);
+    }
+
+    .event-copy {
+      min-width: 0;
+    }
+
+    .event-title {
+      margin: 0;
+      overflow: hidden;
+      color: #292a3a;
+      font-size: 14px;
+      line-height: 1.35;
+      font-weight: 600;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .event-detail {
+      margin: 2px 0 0;
+      overflow: hidden;
+      color: #747587;
+      font-size: 12px;
+      line-height: 1.35;
+      font-weight: 400;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .event-time {
+      align-self: start;
+      padding-top: 3px;
+      color: #858697;
+      font-size: 12px;
+      line-height: 1.35;
+      font-weight: 500;
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .tabbar {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      flex-shrink: 0;
+      padding: 7px 10px 9px;
+      background: #ffffff;
+      box-shadow: 0 -1px 0 #ececf3;
+    }
+
+    .tab {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      padding: 5px 2px 4px;
+      border: 0;
+      border-radius: 6px;
+      color: #858697;
+      background: transparent;
+      font-size: 12px;
+      line-height: 1.2;
+      font-weight: 500;
+    }
+
+    .tab.active {
+      color: #5146c8;
+      background: rgba(81, 70, 200, 0.08);
+      font-weight: 700;
+    }
+
+    svg {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none">
+            <path d="M5 8.5 12 4l7 4.5v7L12 20l-7-4.5v-7Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+            <path d="m5.5 8.5 6.5 4 6.5-4M12 12.5V20" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+          </svg>
+        </span>
+        <span>Trellis Market</span>
+      </div>
+      <button class="icon-button" aria-label="Search activity">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+          <circle cx="10.8" cy="10.8" r="6.3" stroke="currentColor" stroke-width="1.8"/>
+          <path d="m15.5 15.5 4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </header>
+
+    <section class="hero">
+      <h1>Activity</h1>
+      <p>Your marketplace history, with the newest updates first.</p>
+    </section>
+
+    <nav class="filters" aria-label="Activity filters">
+      <button class="filter active">All activity</button>
+      <button class="filter">Shopping</button>
+      <button class="filter">Selling</button>
+      <button class="filter">Account</button>
+    </nav>
+
+    <main class="activity-feed">
+      <section class="day-group" aria-labelledby="today-heading">
+        <h2 class="day-heading" id="today-heading">Today</h2>
+
+        <article class="event">
+          <div class="event-icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <path d="M12 19.5s-7-4.1-7-9.2A3.8 3.8 0 0 1 12 8a3.8 3.8 0 0 1 7 2.3c0 5.1-7 9.2-7 9.2Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="event-copy">
+            <p class="event-title">Saved a linen table runner</p>
+            <p class="event-detail">From Harbor Home Goods</p>
+          </div>
+          <time class="event-time">10:42 AM</time>
+        </article>
+
+        <article class="event">
+          <div class="event-icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <path d="M5 8.5h14v10H5v-10Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+              <path d="M8 8.5V7a4 4 0 0 1 8 0v1.5M9 12h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="event-copy">
+            <p class="event-title">Offer accepted for $48.00</p>
+            <p class="event-detail">Oak bedside shelf</p>
+          </div>
+          <time class="event-time">9:18 AM</time>
+        </article>
+
+        <article class="event">
+          <div class="event-icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <path d="M4.5 7.5h10v9h-10v-9ZM14.5 10h3l2 2.5v4h-5V10Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+              <circle cx="8" cy="17.5" r="1.5" stroke="currentColor" stroke-width="1.7"/>
+              <circle cx="17" cy="17.5" r="1.5" stroke="currentColor" stroke-width="1.7"/>
+            </svg>
+          </div>
+          <div class="event-copy">
+            <p class="event-title">Your sold item was shipped</p>
+            <p class="event-detail">Canvas weekender bag</p>
+          </div>
+          <time class="event-time">8:03 AM</time>
+        </article>
+      </section>
+
+      <section class="day-group" aria-labelledby="yesterday-heading">
+        <h2 class="day-heading" id="yesterday-heading">Yesterday</h2>
+
+        <article class="event">
+          <div class="event-icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <circle cx="12" cy="12" r="7.5" stroke="currentColor" stroke-width="1.7"/>
+              <path d="M9 12.2 11 14l4.5-4.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="event-copy">
+            <p class="event-title">Payout deposited</p>
+            <p class="event-detail">$72.40 sent to checking • 1842</p>
+          </div>
+          <time class="event-time">4:36 PM</time>
+        </article>
+
+        <article class="event">
+          <div class="event-icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <path d="M6 18.5V7.8L12 5l6 2.8v10.7H6Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+              <path d="M9 11h6M9 14h4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="event-copy">
+            <p class="event-title">Listed a ceramic vase</p>
+            <p class="event-detail">Home decor · $34.00</p>
+          </div>
+          <time class="event-time">1:12 PM</time>
+        </article>
+
+        <article class="event">
+          <div class="event-icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <path d="M7 16.5h10M8.5 14V9.5a3.5 3.5 0 0 1 7 0V14l1.5 2.5H7L8.5 14Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+              <path d="M10.5 19h3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="event-copy">
+            <p class="event-title">Price alert matched</p>
+            <p class="event-detail">Wool throws under $60</p>
+          </div>
+          <time class="event-time">8:25 AM</time>
+        </article>
+      </section>
+
+      <section class="day-group" aria-labelledby="monday-heading">
+        <h2 class="day-heading" id="monday-heading">Monday, June 9</h2>
+
+        <article class="event">
+          <div class="event-icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <path d="m12 5 2.1 4.3 4.7.7-3.4 3.3.8 4.7-4.2-2.2L7.8 18l.8-4.7L5.2 10l4.7-.7L12 5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="event-copy">
+            <p class="event-title">Reviewed a recent purchase</p>
+            <p class="event-detail">Handwoven storage basket</p>
+          </div>
+          <time class="event-time">6:14 PM</time>
+        </article>
+
+        <article class="event">
+          <div class="event-icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <path d="M7 11V8.5a5 5 0 0 1 10 0V11M6 11h12v8H6v-8Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+              <path d="M12 14v2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="event-copy">
+            <p class="event-title">Password updated</p>
+            <p class="event-detail">Account security change</p>
+          </div>
+          <time class="event-time">11:09 AM</time>
+        </article>
+      </section>
+    </main>
+
+    <nav class="tabbar" aria-label="Primary navigation">
+      <button class="tab">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="m4.5 11 7.5-6 7.5 6v8H15v-5H9v5H4.5v-8Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+        </svg>
+        <span>Home</span>
+      </button>
+      <button class="tab">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="10.5" cy="10.5" r="5.5" stroke="currentColor" stroke-width="1.7"/>
+          <path d="m14.5 14.5 4 4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+        </svg>
+        <span>Browse</span>
+      </button>
+      <button class="tab">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M5 7.5h14v11H5v-11Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+          <path d="M9 7.5V6a3 3 0 0 1 6 0v1.5M12 11v4M10 13h4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+        </svg>
+        <span>Sell</span>
+      </button>
+      <button class="tab active" aria-current="page">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M6.5 7.5h11M6.5 12h11M6.5 16.5h11" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+          <circle cx="4.5" cy="7.5" r=".8" fill="currentColor"/>
+          <circle cx="4.5" cy="12" r=".8" fill="currentColor"/>
+          <circle cx="4.5" cy="16.5" r=".8" fill="currentColor"/>
+        </svg>
+        <span>Activity</span>
+      </button>
+    </nav>
+  </div>
+</body>
+</html>

@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kernote Remote Care</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #e7e5e1;
+      color: #292524;
+      font-family: 'Poppins', system-ui, sans-serif;
+    }
+
+    button {
+      margin: 0;
+      padding: 0;
+      border-radius: 0;
+      font: inherit;
+      cursor: default;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #faf9f7;
+      border: 1px solid #d6d3cf;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 15px 18px;
+      border-bottom: 1px solid #dedbd6;
+      background: #faf9f7;
+    }
+
+    .topbar-button {
+      width: 32px;
+      height: 28px;
+      flex: 0 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 0;
+      background: transparent;
+      color: #57534e;
+    }
+
+    .topbar-title {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .product-name {
+      margin: 0;
+      color: #292524;
+      font-size: 15px;
+      line-height: 20px;
+      font-weight: 600;
+    }
+
+    .view-name {
+      margin: 1px 0 0;
+      color: #78716c;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .secure-label {
+      flex: 0 0 auto;
+      padding: 4px 7px;
+      border: 1px solid #9ca8a2;
+      color: #586a62;
+      font-size: 10px;
+      line-height: 14px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .topbar svg,
+    .control-button svg {
+      display: block;
+      width: 22px;
+      height: 22px;
+    }
+
+    .consultation-content {
+      flex: 1;
+      min-height: 0;
+      padding: 16px 18px 13px;
+    }
+
+    .session-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .page-title {
+      margin: 0;
+      color: #292524;
+      font-size: 22px;
+      line-height: 29px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+
+    .session-status {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex: 0 0 auto;
+      margin: 0;
+      color: #5e7168;
+      font-size: 11px;
+      line-height: 17px;
+      font-weight: 600;
+    }
+
+    .status-mark {
+      width: 7px;
+      height: 7px;
+      background: #6e887c;
+    }
+
+    .visit-card {
+      margin-top: 10px;
+      padding: 11px 12px;
+      border: 1px solid #d1cec8;
+      background: #f1f0ec;
+    }
+
+    .visit-reason-label {
+      margin: 0;
+      color: #78716c;
+      font-size: 10px;
+      line-height: 15px;
+      font-weight: 600;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+    }
+
+    .visit-reason {
+      margin: 2px 0 0;
+      color: #292524;
+      font-size: 15px;
+      line-height: 21px;
+      font-weight: 600;
+    }
+
+    .schedule-row {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      margin-top: 7px;
+      padding-top: 7px;
+      border-top: 1px solid #d8d5cf;
+      color: #57534e;
+      font-size: 12px;
+      line-height: 18px;
+    }
+
+    .schedule-row svg {
+      width: 16px;
+      height: 16px;
+      flex: 0 0 auto;
+    }
+
+    .patient-stage {
+      width: 100%;
+      height: 218px;
+      margin-top: 12px;
+      border: 1px solid #929b96;
+      background: #c8cac5;
+      box-shadow: inset 0 0 0 5px #e4e5e1;
+    }
+
+    .patient-caption {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 9px 1px;
+      border-bottom: 1px solid #dedbd6;
+    }
+
+    .patient-info {
+      min-width: 0;
+    }
+
+    .patient-name {
+      margin: 0;
+      overflow: hidden;
+      color: #292524;
+      font-size: 15px;
+      line-height: 21px;
+      font-weight: 600;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .patient-role {
+      margin: 1px 0 0;
+      color: #78716c;
+      font-size: 12px;
+      line-height: 18px;
+    }
+
+    .audio-state {
+      flex: 0 0 auto;
+      padding: 4px 7px;
+      border: 1px solid #a9b3ae;
+      color: #586a62;
+      font-size: 11px;
+      line-height: 16px;
+      font-weight: 500;
+    }
+
+    .care-team {
+      margin-top: 12px;
+    }
+
+    .section-heading {
+      margin: 0;
+      color: #44403c;
+      font-size: 13px;
+      line-height: 20px;
+      font-weight: 600;
+    }
+
+    .team-list {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 9px;
+      margin-top: 7px;
+    }
+
+    .team-member {
+      min-width: 0;
+      display: grid;
+      grid-template-columns: 42px 1fr;
+      align-items: center;
+      gap: 9px;
+      padding: 8px;
+      border: 1px solid #d8d5cf;
+      background: #f5f4f1;
+    }
+
+    .member-image {
+      width: 42px;
+      height: 42px;
+      border: 1px solid #c4c1bb;
+    }
+
+    .doctor-tone {
+      background: #d4d8d3;
+    }
+
+    .nurse-tone {
+      background: #ded9d1;
+    }
+
+    .member-copy {
+      min-width: 0;
+    }
+
+    .member-name {
+      margin: 0;
+      overflow: hidden;
+      color: #292524;
+      font-size: 11px;
+      line-height: 16px;
+      font-weight: 600;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .member-role {
+      margin: 1px 0 0;
+      overflow: hidden;
+      color: #78716c;
+      font-size: 10px;
+      line-height: 15px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .call-controls {
+      padding: 13px 16px 15px;
+      border-top: 1px solid #d6d3cf;
+      background: #f0efeb;
+    }
+
+    .control-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+
+    .control {
+      min-width: 0;
+      text-align: center;
+    }
+
+    .control-button {
+      width: 52px;
+      height: 52px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto;
+      border: 1px solid #a8a29e;
+      background: #faf9f7;
+      color: #44403c;
+    }
+
+    .control-button.leave {
+      border-color: #735a57;
+      background: #735a57;
+      color: #faf9f7;
+    }
+
+    .control-label {
+      margin: 6px 0 0;
+      color: #57534e;
+      font-size: 11px;
+      line-height: 17px;
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <button class="topbar-button" type="button" aria-label="Return to care visits">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M15 5L8 12L15 19" stroke="currentColor" stroke-width="1.8" stroke-linecap="square" stroke-linejoin="miter"/>
+        </svg>
+      </button>
+
+      <div class="topbar-title">
+        <p class="product-name">Kernote</p>
+        <p class="view-name">Remote care</p>
+      </div>
+
+      <span class="secure-label">Private</span>
+    </header>
+
+    <main class="consultation-content">
+      <div class="session-row">
+        <h1 class="page-title">Care consultation</h1>
+        <p class="session-status">
+          <span class="status-mark" aria-hidden="true"></span>
+          In session
+        </p>
+      </div>
+
+      <section class="visit-card" aria-labelledby="visit-reason-heading">
+        <p class="visit-reason-label" id="visit-reason-heading">Visit reason</p>
+        <p class="visit-reason">Post-op wound check</p>
+        <div class="schedule-row">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <rect x="4" y="5" width="16" height="15" stroke="currentColor" stroke-width="1.6"/>
+            <path d="M8 3V7M16 3V7M4 9H20" stroke="currentColor" stroke-width="1.6"/>
+          </svg>
+          <span><strong>Scheduled:</strong> Today, 2:00 PM</span>
+        </div>
+      </section>
+
+      <div class="patient-stage" role="img" aria-label="Video feed for Avery Cole"></div>
+
+      <div class="patient-caption">
+        <div class="patient-info">
+          <p class="patient-name">Avery Cole</p>
+          <p class="patient-role">Patient</p>
+        </div>
+        <span class="audio-state">Speaking</span>
+      </div>
+
+      <section class="care-team" aria-labelledby="care-team-heading">
+        <h2 class="section-heading" id="care-team-heading">Care team</h2>
+        <div class="team-list">
+          <article class="team-member">
+            <div class="member-image doctor-tone" role="img" aria-label="Video feed for Dr. Maya Chen"></div>
+            <div class="member-copy">
+              <p class="member-name">Dr. Maya Chen</p>
+              <p class="member-role">Surgeon</p>
+            </div>
+          </article>
+
+          <article class="team-member">
+            <div class="member-image nurse-tone" role="img" aria-label="Video feed for Eli Brooks"></div>
+            <div class="member-copy">
+              <p class="member-name">Eli Brooks</p>
+              <p class="member-role">Care nurse</p>
+            </div>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <nav class="call-controls" aria-label="Remote care controls">
+      <div class="control-grid">
+        <div class="control">
+          <button class="control-button" type="button" aria-label="Mute microphone">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <rect x="8" y="3" width="8" height="12" stroke="currentColor" stroke-width="1.7"/>
+              <path d="M5 11V12C5 15.866 8.13401 19 12 19C15.866 19 19 15.866 19 12V11" stroke="currentColor" stroke-width="1.7" stroke-linecap="square"/>
+              <path d="M12 19V22" stroke="currentColor" stroke-width="1.7"/>
+            </svg>
+          </button>
+          <p class="control-label">Mic</p>
+        </div>
+
+        <div class="control">
+          <button class="control-button" type="button" aria-label="Turn camera off">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <rect x="3" y="6" width="13" height="12" stroke="currentColor" stroke-width="1.7"/>
+              <path d="M16 10L21 7V17L16 14" stroke="currentColor" stroke-width="1.7" stroke-linejoin="miter"/>
+            </svg>
+          </button>
+          <p class="control-label">Camera</p>
+        </div>
+
+        <div class="control">
+          <button class="control-button" type="button" aria-label="Open visit notes">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M5 3H15L19 7V21H5V3Z" stroke="currentColor" stroke-width="1.7"/>
+              <path d="M15 3V7H19M8 12H16M8 16H14" stroke="currentColor" stroke-width="1.7" stroke-linecap="square"/>
+            </svg>
+          </button>
+          <p class="control-label">Notes</p>
+        </div>
+
+        <div class="control">
+          <button class="control-button leave" type="button" aria-label="Leave consultation">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M4 15.5C5.8 13.2 8.6 12 12 12C15.4 12 18.2 13.2 20 15.5L17.5 19L14.5 17.5V14.8C12.9 14.3 11.1 14.3 9.5 14.8V17.5L6.5 19L4 15.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="miter"/>
+            </svg>
+          </button>
+          <p class="control-label">Leave</p>
+        </div>
+      </div>
+    </nav>
+  </div>
+</body>
+</html>

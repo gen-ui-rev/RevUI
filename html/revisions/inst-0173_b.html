@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Episode — Verba Daily</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --violet:#6321c8;
+    --violet-dark:#421285;
+    --violet-soft:#f0e9fb;
+    --ink:#17161a;
+    --muted:#6b6a74;
+    --line:#e4e3e8;
+    --ground:#ececed;
+  }
+  *{box-sizing:border-box;}
+  body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    padding:40px 0;
+    margin:0;
+    background:#4a4a4f;
+    font-family:'Source Serif 4', Georgia, serif;
+    color:var(--ink);
+  }
+  .screen{
+    width:390px;
+    height:844px;
+    background:var(--ground);
+    position:relative;
+    display:flex;
+    flex-direction:column;
+  }
+  .body{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+  }
+  .card{
+    background:#fff;
+    box-shadow:0 1px 3px rgba(20,18,30,.10);
+  }
+
+  .episode-visual{
+    position:relative;
+    color:#fff;
+  }
+  .episode-visual img{
+    width:390px;
+    height:150px;
+    object-fit:cover;
+    display:block;
+    background:#c9c9cd;
+  }
+  .episode-visual:after{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:linear-gradient(to bottom, rgba(12,8,20,.55), rgba(12,8,20,.02) 56%, rgba(12,8,20,.58));
+    pointer-events:none;
+  }
+  .visual-nav{
+    position:absolute;
+    z-index:1;
+    top:0;
+    left:0;
+    right:0;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding:8px 12px;
+  }
+  .visual-nav .iconbtn{
+    width:32px;
+    height:32px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex:none;
+    color:#fff;
+    background:rgba(18,12,28,.32);
+  }
+  .visual-title{
+    flex:1;
+    text-align:center;
+    min-width:0;
+  }
+  .visual-title strong{
+    display:block;
+    font-size:14px;
+    line-height:17px;
+  }
+  .visual-title span{
+    display:block;
+    font-size:11px;
+    line-height:14px;
+    color:rgba(255,255,255,.86);
+  }
+  .level{
+    position:absolute;
+    z-index:1;
+    left:12px;
+    bottom:10px;
+    padding:4px 8px;
+    background:var(--violet);
+    font-size:11px;
+    line-height:15px;
+    font-weight:600;
+    letter-spacing:.04em;
+    text-transform:uppercase;
+  }
+
+  .episode-copy{padding:11px 16px 12px;}
+  .series{
+    font-size:12px;
+    line-height:16px;
+    color:var(--violet);
+    font-weight:600;
+  }
+  h1{
+    margin:3px 0 0;
+    font-size:21px;
+    line-height:27px;
+    font-weight:700;
+  }
+  .time-card{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-top:7px;
+    padding:7px 10px;
+    background:var(--violet-soft);
+    border-left:3px solid var(--violet);
+  }
+  .time-card strong{
+    font-size:17px;
+    line-height:20px;
+    color:var(--violet-dark);
+    white-space:nowrap;
+  }
+  .time-card span{
+    font-size:11px;
+    line-height:15px;
+    color:var(--muted);
+  }
+  .listen-row{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-top:10px;
+  }
+  .round-play{
+    width:44px;
+    height:44px;
+    border:0;
+    border-radius:50%;
+    background:var(--violet);
+    color:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex:none;
+  }
+  .listen-copy{
+    min-width:0;
+    flex:1;
+  }
+  .listen-copy strong{
+    display:block;
+    font-size:14px;
+    line-height:18px;
+  }
+  .listen-copy span{
+    display:block;
+    font-size:11px;
+    line-height:15px;
+    color:var(--muted);
+  }
+  .mini-action{
+    width:38px;
+    height:38px;
+    border:1px solid var(--line);
+    background:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex:none;
+  }
+  .byline{
+    display:flex;
+    align-items:center;
+    gap:7px;
+    margin-top:8px;
+    padding-top:7px;
+    border-top:1px solid var(--line);
+    color:var(--muted);
+    font-size:11px;
+    line-height:15px;
+  }
+  .byline .mono{
+    width:24px;
+    height:24px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex:none;
+    background:#f3f2f5;
+    color:var(--violet);
+    font-size:10px;
+    font-weight:700;
+  }
+  .byline strong{
+    color:var(--ink);
+    font-weight:600;
+  }
+
+  .sec{padding:10px 16px 11px;}
+  .sechead{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    margin-bottom:4px;
+  }
+  .sechead h2{
+    margin:0;
+    font-size:13px;
+    line-height:18px;
+    font-weight:700;
+    letter-spacing:.05em;
+    text-transform:uppercase;
+  }
+  .sechead span{
+    font-size:11px;
+    color:var(--muted);
+  }
+
+  .chapter{
+    display:grid;
+    grid-template-columns:44px 1fr auto;
+    align-items:center;
+    column-gap:10px;
+    padding:7px 0;
+    border-top:1px solid var(--line);
+  }
+  .chapter:first-of-type{border-top:0;}
+  .chapter .stamp{
+    font-size:11px;
+    color:var(--muted);
+  }
+  .chapter .name{
+    min-width:0;
+    font-size:14px;
+    line-height:18px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .chapter .length{
+    font-size:11px;
+    color:var(--muted);
+  }
+  .chapter.current{
+    margin:0 -16px;
+    padding-left:16px;
+    padding-right:16px;
+    background:var(--violet-soft);
+    border-top-color:transparent;
+  }
+  .chapter.current .stamp,
+  .chapter.current .name{
+    color:var(--violet);
+    font-weight:600;
+  }
+
+  .course-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    margin-top:2px;
+  }
+  .course-item{
+    min-width:0;
+    padding:8px;
+    border:1px solid var(--line);
+    background:#fff;
+  }
+  .course-top{
+    display:flex;
+    align-items:center;
+    gap:7px;
+  }
+  .course-item img{
+    width:72px;
+    height:56px;
+    object-fit:cover;
+    display:block;
+    background:#c9c9cd;
+    flex:none;
+  }
+  .course-kind{
+    font-size:10px;
+    line-height:14px;
+    color:var(--violet);
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:.04em;
+  }
+  .course-time{
+    margin-top:2px;
+    font-size:11px;
+    line-height:14px;
+    color:var(--muted);
+  }
+  .course-name{
+    margin-top:6px;
+    font-size:13px;
+    line-height:17px;
+    font-weight:600;
+  }
+
+  .tabs{
+    height:64px;
+    flex:none;
+    display:flex;
+    background:#fff;
+    border-top:1px solid var(--line);
+  }
+  .tab{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:3px;
+    color:var(--muted);
+    font-size:11px;
+  }
+  .tab.on{
+    color:var(--violet);
+    font-weight:600;
+  }
+</style>
+</head>
+<body>
+<div class="screen">
+
+  <div class="body">
+
+    <div class="card episode">
+      <div class="episode-visual">
+        <img src="https://loremflickr.com/390/150/library?lock=3040" width="390" height="150" alt="Reading room with long tables where the episode was recorded">
+
+        <div class="visual-nav">
+          <div class="iconbtn" aria-label="Back">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M15 4l-8 8 8 8"/></svg>
+          </div>
+          <div class="visual-title">
+            <strong>Verba Daily</strong>
+            <span>Season 3 · Episode 42</span>
+          </div>
+          <div class="iconbtn" aria-label="Save">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 3h12v18l-6-5-6 5V3z"/></svg>
+          </div>
+        </div>
+
+        <div class="level">Spanish B1</div>
+      </div>
+
+      <div class="episode-copy">
+        <div class="series">Intermediate listening lesson</div>
+        <h1>At the Pharmacy: Asking for What You Actually Need</h1>
+
+        <div class="time-card">
+          <strong>16 min left</strong>
+          <span>Continue from 12:04 in this 28-minute episode</span>
+        </div>
+
+        <div class="listen-row">
+          <button class="round-play" aria-label="Resume episode">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M6 3l15 9-15 9V3z"/></svg>
+          </button>
+          <div class="listen-copy">
+            <strong>Resume listening</strong>
+            <span>Transcript and 14 practice drills included</span>
+          </div>
+          <div class="mini-action" aria-label="Download">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v13m0 0l-5-5m5 5l5-5M4 20h16"/></svg>
+          </div>
+          <div class="mini-action" aria-label="Transcript">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 4h14v16H5z"/><path d="M8 9h8M8 13h8M8 17h5"/></svg>
+          </div>
+        </div>
+
+        <div class="byline">
+          <div class="mono">MR</div>
+          <span>Hosted by <strong>Marisol Reyes</strong>, Spanish B1 course lead</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card sec">
+      <div class="sechead">
+        <h2>Episode outline</h2>
+        <span>Current chapter highlighted</span>
+      </div>
+      <div class="chapter">
+        <span class="stamp">00:00</span>
+        <span class="name">Warm-up: rolling the double r</span>
+        <span class="length">4:12</span>
+      </div>
+      <div class="chapter current">
+        <span class="stamp">04:12</span>
+        <span class="name">Dialogue at the pharmacy counter</span>
+        <span class="length">9:38</span>
+      </div>
+      <div class="chapter">
+        <span class="stamp">13:50</span>
+        <span class="name">Past subjunctive and review</span>
+        <span class="length">14:16</span>
+      </div>
+    </div>
+
+    <div class="card sec">
+      <div class="sechead">
+        <h2>Continue Unit 6</h2>
+        <span>Two activities</span>
+      </div>
+      <div class="course-grid">
+        <div class="course-item">
+          <div class="course-top">
+            <img src="https://loremflickr.com/72/56/books?lock=3041" width="72" height="56" alt="Stack of Spanish grammar workbooks">
+            <div>
+              <div class="course-kind">Next</div>
+              <div class="course-time">24 min</div>
+            </div>
+          </div>
+          <div class="course-name">Refills and Receipts</div>
+        </div>
+
+        <div class="course-item">
+          <div class="course-top">
+            <img src="https://loremflickr.com/72/56/study?lock=3042" width="72" height="56" alt="Notebook and headphones set up for a listening drill">
+            <div>
+              <div class="course-kind">Drill</div>
+              <div class="course-time">14 cards</div>
+            </div>
+          </div>
+          <div class="course-name">Pharmacy Vocabulary</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="tabs">
+    <div class="tab">
+      <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 20V10l8-6 8 6v10H4z"/></svg>
+      Home
+    </div>
+    <div class="tab on">
+      <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 5h9a3 3 0 013 3v11H7a3 3 0 01-3-3V5z"/><path d="M20 8v11"/></svg>
+      Lessons
+    </div>
+    <div class="tab">
+      <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 19V9m5 10V5m5 14v-7m5 7V8"/></svg>
+      Progress
+    </div>
+    <div class="tab">
+      <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="8" r="4"/><path d="M4 20c1.5-3.6 4.4-5.4 8-5.4s6.5 1.8 8 5.4"/></svg>
+      Profile
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

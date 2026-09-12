@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ledgerwave Audio Player</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #d6d3d1;
+      color: #292524;
+      font-family: 'Roboto', system-ui, sans-serif;
+    }
+
+    .screen {
+      width: 390px;
+      height: 560px;
+      padding: 18px 24px;
+      display: flex;
+      align-items: center;
+      background: #e7e5e4;
+    }
+
+    .player {
+      width: 100%;
+      padding: 16px;
+      background: #ffffff;
+      box-shadow: 0 8px 24px rgba(41, 37, 36, 0.10);
+    }
+
+    .cover {
+      width: 302px;
+      height: 150px;
+      display: block;
+      margin: 0 auto;
+      object-fit: cover;
+      background: #a8a29e;
+    }
+
+    .episode {
+      margin-top: 12px;
+    }
+
+    .series {
+      margin: 0 0 4px;
+      color: #78716c;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      line-height: 1.4;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      color: #1c1917;
+      font-size: 21px;
+      font-weight: 700;
+      line-height: 1.22;
+    }
+
+    .byline {
+      margin: 5px 0 0;
+      color: #57534e;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .progress-area {
+      margin-top: 13px;
+    }
+
+    .progress-track {
+      position: relative;
+      width: 100%;
+      height: 4px;
+      background: #d6d3d1;
+    }
+
+    .progress-fill {
+      width: 42%;
+      height: 4px;
+      background: #78716c;
+    }
+
+    .progress-thumb {
+      position: absolute;
+      top: 50%;
+      left: 42%;
+      width: 12px;
+      height: 12px;
+      background: #78716c;
+      border: 2px solid #ffffff;
+      transform: translate(-50%, -50%);
+    }
+
+    .time-row {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 6px;
+      color: #78716c;
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .controls {
+      display: grid;
+      grid-template-columns: 44px 44px 56px 44px 44px;
+      justify-content: center;
+      align-items: center;
+      gap: 5px;
+      margin-top: 9px;
+    }
+
+    button {
+      appearance: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 44px;
+      height: 44px;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: #44403c;
+      font: inherit;
+    }
+
+    button svg {
+      width: 22px;
+      height: 22px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .speed {
+      color: #57534e;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .play {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: #57534e;
+      color: #ffffff;
+      box-shadow: 0 5px 12px rgba(68, 64, 60, 0.28);
+    }
+
+    .play svg {
+      width: 25px;
+      height: 25px;
+      margin-left: 2px;
+      fill: currentColor;
+      stroke: none;
+    }
+
+    .bookmark {
+      border: 1px solid #d6d3d1;
+      border-radius: 50%;
+      color: #57534e;
+    }
+
+    .queue {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 10px;
+      align-items: center;
+      margin-top: 13px;
+      padding-top: 11px;
+      border-top: 1px solid #e7e5e4;
+    }
+
+    .queue-label {
+      margin: 0 0 2px;
+      color: #78716c;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      line-height: 1.4;
+      text-transform: uppercase;
+    }
+
+    .queue-title {
+      margin: 0;
+      color: #292524;
+      font-size: 13px;
+      font-weight: 500;
+      line-height: 1.4;
+    }
+
+    .queue-meta {
+      margin: 2px 0 0;
+      color: #78716c;
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .queue-duration {
+      color: #57534e;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <main class="player" aria-label="Ledgerwave audio player">
+      <img
+        class="cover"
+        src="https://loremflickr.com/302/150/city?lock=3670"
+        width="302"
+        height="150"
+        alt="Downtown office towers featured in the episode"
+      >
+
+      <section class="episode" aria-labelledby="episode-title-a">
+        <p class="series">Ledgerwave Daily Brief</p>
+        <h1 id="episode-title-a">What Lower Rates Mean for Your Savings</h1>
+        <p class="byline">Hosted by Avery Stone · March 14, 2025</p>
+      </section>
+
+      <section class="progress-area" aria-label="Playback progress">
+        <div class="progress-track">
+          <div class="progress-fill"></div>
+          <div class="progress-thumb"></div>
+        </div>
+        <div class="time-row">
+          <span>12:18</span>
+          <span>29:24</span>
+        </div>
+      </section>
+
+      <div class="controls" aria-label="Playback controls">
+        <button class="speed" type="button" aria-label="Playback speed">1×</button>
+
+        <button type="button" aria-label="Rewind 15 seconds">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M8 7H4V3"></path>
+            <path d="M4.5 7.5A8 8 0 1 1 4 16"></path>
+            <path d="M9.5 10.5v4"></path>
+            <path d="M14 11v3.5"></path>
+          </svg>
+        </button>
+
+        <button class="play" type="button" aria-label="Play">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M8 5.5v13l11-6.5z"></path>
+          </svg>
+        </button>
+
+        <button type="button" aria-label="Forward 15 seconds">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M16 7h4V3"></path>
+            <path d="M19.5 7.5A8 8 0 1 0 20 16"></path>
+            <path d="M9.5 10.5v4"></path>
+            <path d="M14 11v3.5"></path>
+          </svg>
+        </button>
+
+        <button class="bookmark" type="button" aria-label="Save current episode">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M7 4.5h10v15l-5-3.2-5 3.2z"></path>
+          </svg>
+        </button>
+      </div>
+
+      <section class="queue" aria-label="Up next">
+        <div>
+          <p class="queue-label">Up next</p>
+          <p class="queue-title">The New Rules of Credit Card Rewards</p>
+          <p class="queue-meta">Ledgerwave Daily Brief</p>
+        </div>
+        <span class="queue-duration">18 min</span>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

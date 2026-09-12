@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Luma Cart Pet Profile Setup</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    :root {
+      --violet: #6f43d6;
+      --violet-soft: #f3effd;
+      --text: #201d27;
+      --muted: #706b78;
+      --border: #dedbe3;
+      --surface: #ffffff;
+      --canvas: #ecebef;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: var(--canvas);
+      color: var(--text);
+      font-family: 'Poppins', system-ui, sans-serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: var(--surface);
+      border: 1px solid #d4d1d8;
+    }
+
+    .topbar {
+      height: 58px;
+      flex: 0 0 58px;
+      display: grid;
+      grid-template-columns: 44px 1fr 52px;
+      align-items: center;
+      padding: 0 10px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .icon-button {
+      width: 38px;
+      height: 38px;
+      padding: 0;
+      display: grid;
+      place-items: center;
+      border: 0;
+      background: transparent;
+      color: var(--text);
+    }
+
+    .topbar-title {
+      text-align: center;
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .skip-button {
+      padding: 7px 4px;
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 500;
+      text-align: right;
+    }
+
+    .step-tabs {
+      height: 46px;
+      flex: 0 0 46px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .step-tab {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      color: #89848e;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .step-tab.complete {
+      color: #56515d;
+    }
+
+    .step-tab.active {
+      color: var(--violet);
+      font-weight: 600;
+    }
+
+    .step-tab.active::after {
+      content: "";
+      position: absolute;
+      right: 18px;
+      bottom: -1px;
+      left: 18px;
+      height: 2px;
+      background: var(--violet);
+    }
+
+    .step-number {
+      width: 19px;
+      height: 19px;
+      display: grid;
+      place-items: center;
+      border: 1px solid currentColor;
+      border-radius: 50%;
+      font-size: 11px;
+      line-height: 1;
+    }
+
+    main {
+      flex: 1 1 auto;
+      min-height: 0;
+      padding: 14px 16px 10px;
+    }
+
+    .intro h1 {
+      margin: 0;
+      font-size: 22px;
+      line-height: 1.35;
+      font-weight: 600;
+      letter-spacing: -0.2px;
+    }
+
+    .intro p {
+      margin: 3px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .section {
+      margin-top: 12px;
+    }
+
+    .section-title {
+      margin: 0 0 7px;
+      font-size: 15px;
+      line-height: 1.5;
+      font-weight: 600;
+    }
+
+    .pet-settings-card {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: #fff;
+    }
+
+    .pet-summary {
+      display: grid;
+      grid-template-columns: 48px 1fr auto;
+      align-items: center;
+      gap: 10px;
+      padding: 10px;
+    }
+
+    .pet-avatar {
+      width: 48px;
+      height: 48px;
+      display: grid;
+      place-items: center;
+      border-radius: 14px;
+      background: var(--violet);
+      color: #fff;
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .pet-copy {
+      min-width: 0;
+    }
+
+    .pet-name-line {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .pet-name {
+      overflow: hidden;
+      font-size: 14px;
+      font-weight: 600;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .primary-tag {
+      padding: 2px 6px;
+      border-radius: 10px;
+      background: var(--violet-soft);
+      color: var(--violet);
+      font-size: 10px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .pet-details {
+      margin-top: 2px;
+      overflow: hidden;
+      color: var(--muted);
+      font-size: 12px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .edit-button {
+      padding: 6px 8px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: #fff;
+      color: var(--violet);
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .preference-heading {
+      margin: 0;
+      padding: 8px 10px 5px;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.2px;
+      text-transform: uppercase;
+    }
+
+    .preference-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      padding: 0 6px 7px;
+    }
+
+    .preference-item {
+      min-width: 0;
+      margin: 3px;
+      padding: 7px 8px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: #faf9fb;
+    }
+
+    .preference-label {
+      overflow: hidden;
+      color: var(--muted);
+      font-size: 10px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .preference-value {
+      margin-top: 1px;
+      overflow: hidden;
+      font-size: 12px;
+      font-weight: 600;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .section-heading-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 7px;
+    }
+
+    .section-heading-row .section-title {
+      margin: 0;
+    }
+
+    .helper-label {
+      color: var(--muted);
+      font-size: 11px;
+      white-space: nowrap;
+    }
+
+    .category-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 112px);
+      gap: 8px 11px;
+    }
+
+    .category-card {
+      position: relative;
+      width: 112px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: #fff;
+    }
+
+    .category-card.selected {
+      border-color: var(--violet);
+      box-shadow: inset 0 0 0 1px var(--violet);
+    }
+
+    .category-card img {
+      width: 110px;
+      height: 62px;
+      display: block;
+      object-fit: cover;
+      background-color: #e5e2e8;
+      border-radius: 7px 7px 0 0;
+    }
+
+    .category-name {
+      padding: 5px 7px 6px;
+      overflow: hidden;
+      font-size: 12px;
+      font-weight: 500;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .selection-mark {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      width: 20px;
+      height: 20px;
+      display: grid;
+      place-items: center;
+      border: 1px solid #fff;
+      border-radius: 6px;
+      background: var(--violet);
+      color: #fff;
+    }
+
+    .delivery-note {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 10px;
+      padding: 8px 10px;
+      border-radius: 6px;
+      background: var(--violet-soft);
+      color: #55446f;
+      font-size: 11px;
+      line-height: 1.4;
+    }
+
+    .delivery-note svg {
+      flex: 0 0 auto;
+      color: var(--violet);
+    }
+
+    .action-bar {
+      flex: 0 0 78px;
+      display: grid;
+      grid-template-columns: 104px 1fr;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 16px;
+      border-top: 1px solid var(--border);
+      background: #fff;
+    }
+
+    .secondary-action,
+    .primary-action {
+      min-height: 48px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .secondary-action {
+      border: 1px solid var(--border);
+      background: #fff;
+      color: #5f5a65;
+    }
+
+    .primary-action {
+      border: 1px solid var(--violet);
+      background: var(--violet);
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <button class="icon-button" type="button" aria-label="Go back">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <div class="topbar-title">Luma Cart for pets</div>
+      <button class="skip-button" type="button">Skip</button>
+    </header>
+
+    <nav class="step-tabs" aria-label="Setup progress">
+      <div class="step-tab complete">
+        <span class="step-number">1</span>
+        <span>Household</span>
+      </div>
+      <div class="step-tab active" aria-current="step">
+        <span class="step-number">2</span>
+        <span>Preferences</span>
+      </div>
+      <div class="step-tab">
+        <span class="step-number">3</span>
+        <span>Delivery</span>
+      </div>
+    </nav>
+
+    <main>
+      <section class="intro">
+        <h1>Make Pepper’s shop personal</h1>
+        <p>Tell us what fits her routine so relevant supplies appear first.</p>
+      </section>
+
+      <section class="section" aria-labelledby="profile-heading">
+        <h2 class="section-title" id="profile-heading">Pet profile and preferences</h2>
+        <div class="pet-settings-card">
+          <div class="pet-summary">
+            <div class="pet-avatar" aria-label="Pepper monogram">P</div>
+            <div class="pet-copy">
+              <div class="pet-name-line">
+                <span class="pet-name">Pepper</span>
+                <span class="primary-tag">Primary pet</span>
+              </div>
+              <div class="pet-details">Cat · Domestic shorthair · 3 years</div>
+            </div>
+            <button class="edit-button" type="button">Edit</button>
+          </div>
+
+          <h3 class="preference-heading">Shopping preferences</h3>
+          <div class="preference-grid">
+            <div class="preference-item">
+              <div class="preference-label">Food format</div>
+              <div class="preference-value">Wet food</div>
+            </div>
+            <div class="preference-item">
+              <div class="preference-label">Lifestyle</div>
+              <div class="preference-value">Indoor</div>
+            </div>
+            <div class="preference-item">
+              <div class="preference-label">Diet focus</div>
+              <div class="preference-value">Hairball care</div>
+            </div>
+            <div class="preference-item">
+              <div class="preference-label">Typical budget</div>
+              <div class="preference-value">$15–$60</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" aria-labelledby="categories-heading">
+        <div class="section-heading-row">
+          <h2 class="section-title" id="categories-heading">Favorite departments</h2>
+          <span class="helper-label">Choose any</span>
+        </div>
+
+        <div class="category-grid">
+          <div class="category-card selected">
+            <img src="https://loremflickr.com/110/62/fashion?lock=1850" width="110" height="62" alt="Featured collection for cat food">
+            <div class="selection-mark" aria-hidden="true">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                <path d="M2.2 6.2L4.7 8.5L9.8 3.4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <div class="category-name">Food</div>
+          </div>
+
+          <div class="category-card">
+            <img src="https://loremflickr.com/110/62/sneakers?lock=1851" width="110" height="62" alt="Featured collection for pet travel">
+            <div class="category-name">Travel</div>
+          </div>
+
+          <div class="category-card selected">
+            <img src="https://loremflickr.com/110/62/furniture?lock=1852" width="110" height="62" alt="Featured collection for cat furniture">
+            <div class="selection-mark" aria-hidden="true">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                <path d="M2.2 6.2L4.7 8.5L9.8 3.4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <div class="category-name">Cat furniture</div>
+          </div>
+
+          <div class="category-card selected">
+            <img src="https://loremflickr.com/110/62/product?lock=1853" width="110" height="62" alt="Featured collection for interactive toys">
+            <div class="selection-mark" aria-hidden="true">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                <path d="M2.2 6.2L4.7 8.5L9.8 3.4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <div class="category-name">Toys</div>
+          </div>
+
+          <div class="category-card">
+            <img src="https://loremflickr.com/110/62/fashion?lock=1854" width="110" height="62" alt="Featured collection for collars and apparel">
+            <div class="category-name">Collars</div>
+          </div>
+
+          <div class="category-card selected">
+            <img src="https://loremflickr.com/110/62/product?lock=1855" width="110" height="62" alt="Featured collection for litter and care">
+            <div class="selection-mark" aria-hidden="true">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                <path d="M2.2 6.2L4.7 8.5L9.8 3.4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <div class="category-name">Litter & care</div>
+          </div>
+        </div>
+
+        <div class="delivery-note">
+          <svg width="17" height="17" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <path d="M3 5.5H12.5V14.5H3V5.5Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
+            <path d="M12.5 8H15.5L17 10.5V14.5H12.5V8Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
+            <circle cx="6" cy="15" r="1.5" stroke="currentColor" stroke-width="1.4"/>
+            <circle cx="14.5" cy="15" r="1.5" stroke="currentColor" stroke-width="1.4"/>
+          </svg>
+          Recommendations will use Pepper’s needs and your delivery area.
+        </div>
+      </section>
+    </main>
+
+    <footer class="action-bar">
+      <button class="secondary-action" type="button">Back</button>
+      <button class="primary-action" type="button">Save pet setup</button>
+    </footer>
+  </div>
+</body>
+</html>

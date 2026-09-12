@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Ledgerpoint — Select Properties</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;}
+  body{
+    font-family:'Inter',system-ui,sans-serif;
+    background:#dcdde0;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    margin:0;
+    -webkit-font-smoothing:antialiased;
+  }
+  .screen{
+    width:1024px;
+    height:768px;
+    background:#f5f5f6;
+    display:flex;
+    flex-direction:column;
+    color:#1c2024;
+  }
+
+  .globalbar{
+    background:#fff;
+    border-bottom:1px solid #dedfe2;
+    display:flex;
+    align-items:center;
+    padding:0 30px;
+  }
+  .brand{
+    display:flex;
+    align-items:center;
+    gap:9px;
+    margin-right:42px;
+    font-size:16px;
+    font-weight:700;
+  }
+  .brandmark{
+    width:26px;
+    height:26px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#34393f;
+    color:#fff;
+    font-size:13px;
+  }
+  .tabs{
+    display:flex;
+    align-items:stretch;
+    gap:30px;
+  }
+  .tab{
+    display:flex;
+    align-items:center;
+    gap:7px;
+    padding:21px 0 18px;
+    border-bottom:3px solid transparent;
+    color:#858a90;
+    font-size:12px;
+    font-weight:500;
+  }
+  .tab.active{
+    color:#24282d;
+    border-bottom-color:#3f444a;
+    font-weight:700;
+  }
+  .account{
+    margin-left:auto;
+    display:flex;
+    align-items:center;
+    gap:9px;
+    color:#555b61;
+    font-size:12px;
+    font-weight:600;
+  }
+  .avatar{
+    width:28px;
+    height:28px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#e4e5e7;
+    color:#3f444a;
+    font-size:11px;
+    font-weight:700;
+  }
+
+  .contextbar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:14px 30px;
+    background:#fafafa;
+    border-bottom:1px solid #e4e4e7;
+  }
+  .context-left{
+    display:flex;
+    align-items:center;
+    gap:11px;
+  }
+  .back{
+    width:26px;
+    height:26px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border:1px solid #d9dade;
+    color:#555b61;
+    background:#fff;
+  }
+  .context-title{
+    font-size:13px;
+    font-weight:600;
+  }
+  .clear{
+    border:0;
+    background:transparent;
+    color:#646a70;
+    font-family:inherit;
+    font-size:12px;
+    font-weight:600;
+    padding:6px 0;
+  }
+
+  .main{
+    flex:1;
+    min-height:0;
+    padding:22px 30px 26px;
+  }
+  .intro{
+    display:flex;
+    align-items:flex-end;
+    justify-content:space-between;
+    gap:28px;
+    margin-bottom:20px;
+  }
+  .eyebrow{
+    margin:0 0 6px;
+    color:#7c8288;
+    font-size:10px;
+    font-weight:700;
+    letter-spacing:.09em;
+    text-transform:uppercase;
+  }
+  h1{
+    margin:0 0 6px;
+    font-size:25px;
+    line-height:1.2;
+    letter-spacing:-.02em;
+  }
+  .sub{
+    margin:0;
+    color:#696f76;
+    font-size:12px;
+    line-height:1.45;
+  }
+  .selection-cap{
+    flex:none;
+    padding:9px 12px;
+    background:#e9eaec;
+    color:#4d5359;
+    font-size:11px;
+    font-weight:700;
+  }
+
+  .desktop-grid{
+    display:grid;
+    grid-template-columns:minmax(0,1fr) 266px;
+    gap:24px;
+    align-items:start;
+  }
+  .list-head{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    margin-bottom:9px;
+  }
+  .list-head h2{
+    margin:0;
+    font-size:14px;
+  }
+  .list-head span{
+    color:#81868c;
+    font-size:11px;
+    font-weight:500;
+  }
+
+  .funding-list{
+    background:#fff;
+    border:1px solid #dedfe2;
+  }
+  .type-group{
+    display:grid;
+    grid-template-columns:112px minmax(0,1fr);
+    border-top:1px solid #e7e7ea;
+  }
+  .type-group:first-child{border-top:0;}
+  .type-label{
+    padding:15px 13px;
+    background:#f0f0f2;
+    border-right:1px solid #e2e3e6;
+  }
+  .type-label strong{
+    display:block;
+    color:#41464c;
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:.05em;
+  }
+  .type-label span{
+    display:block;
+    margin-top:4px;
+    color:#8b9095;
+    font-size:10px;
+  }
+  .property-row{
+    display:grid;
+    grid-template-columns:72px minmax(0,1fr) 100px 94px 22px;
+    align-items:center;
+    gap:13px;
+    padding:10px 13px;
+  }
+  .property-row.selected{background:#fafafa;}
+  .thumb{
+    width:72px;
+    height:72px;
+    display:block;
+    object-fit:cover;
+    background:#d8d9dc;
+  }
+  .details{min-width:0;}
+  .name{
+    margin:0 0 4px;
+    font-size:13px;
+    font-weight:700;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .place{
+    margin:0;
+    color:#6f757b;
+    font-size:11px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .metric-label{
+    display:block;
+    margin-bottom:3px;
+    color:#92969b;
+    font-size:9px;
+    font-weight:700;
+    letter-spacing:.04em;
+    text-transform:uppercase;
+  }
+  .metric-value{
+    display:block;
+    color:#444a50;
+    font-size:11px;
+    font-weight:600;
+  }
+  .status{
+    min-width:0;
+    color:#73797f;
+    font-size:10px;
+    line-height:1.35;
+  }
+  .status.selected{
+    color:#4d5359;
+    font-weight:600;
+  }
+  .badge{
+    display:inline-block;
+    background:#ececef;
+    color:#555b61;
+    padding:3px 6px;
+    font-size:9px;
+    font-weight:700;
+  }
+  .box{
+    width:22px;
+    height:22px;
+    border:1.5px solid #b6b9bd;
+    background:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .box.on{
+    border-color:#3f444a;
+    background:#3f444a;
+    color:#fff;
+  }
+
+  .summary{
+    background:#2f3439;
+    color:#fff;
+    padding:20px;
+  }
+  .summary .eyebrow{color:#aeb3b8;}
+  .summary h2{
+    margin:0 0 5px;
+    font-size:18px;
+  }
+  .summary-intro{
+    margin:0 0 18px;
+    color:#b9bec3;
+    font-size:11px;
+    line-height:1.45;
+  }
+  .summary-row{
+    display:flex;
+    justify-content:space-between;
+    gap:14px;
+    padding:10px 0;
+    border-top:1px solid #494e53;
+    color:#bec2c6;
+    font-size:11px;
+  }
+  .summary-row strong{
+    color:#fff;
+    font-size:12px;
+    font-weight:600;
+    text-align:right;
+  }
+  .split-block{
+    margin:7px 0 16px;
+    padding:14px;
+    background:#3c4147;
+  }
+  .split-line{
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:12px;
+    font-size:11px;
+    line-height:1.4;
+  }
+  .split-line span{color:#d0d3d6;}
+  .split-line strong{
+    white-space:nowrap;
+    font-size:13px;
+  }
+  .yieldline{
+    margin:8px 0 0;
+    padding-top:8px;
+    border-top:1px solid #555a60;
+    color:#bec2c6;
+    font-size:10px;
+    line-height:1.4;
+  }
+  .yieldline strong{color:#fff;}
+  .cta{
+    width:100%;
+    border:0;
+    background:#fff;
+    color:#292e33;
+    font-family:inherit;
+    font-size:12px;
+    font-weight:700;
+    padding:12px 10px;
+  }
+  .fineprint{
+    margin:10px 0 0;
+    color:#aeb3b8;
+    font-size:9px;
+    line-height:1.4;
+    text-align:center;
+  }
+</style>
+</head>
+<body>
+  <div class="screen">
+    <header class="globalbar">
+      <div class="brand">
+        <span class="brandmark">L</span>
+        Ledgerpoint
+      </div>
+
+      <nav class="tabs">
+        <div class="tab">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 10.5L12 4l8 6.5V20H4z"/></svg>
+          Home
+        </div>
+        <div class="tab active">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 19V9m5 10V5m5 14v-7m5 7V8"/></svg>
+          Invest
+        </div>
+        <div class="tab">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 12h4l2.5 6L14 6l2.5 6H21"/></svg>
+          Activity
+        </div>
+      </nav>
+
+      <div class="account">
+        <span class="avatar">AM</span>
+        Alex Morgan
+      </div>
+    </header>
+
+    <div class="contextbar">
+      <div class="context-left">
+        <span class="back" aria-hidden="true">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M15 5l-7 7 7 7"/></svg>
+        </span>
+        <span class="context-title">Allocate Contribution</span>
+      </div>
+      <button class="clear">Clear selection</button>
+    </div>
+
+    <main class="main">
+      <div class="intro">
+        <div>
+          <p class="eyebrow">April deposit</p>
+          <h1>Choose where $450 goes</h1>
+          <p class="sub">Select up to three properties. The deposit is split evenly between them on April 28.</p>
+        </div>
+        <div class="selection-cap">2 of 3 selected</div>
+      </div>
+
+      <div class="desktop-grid">
+        <section>
+          <div class="list-head">
+            <h2>Open for funding</h2>
+            <span>Grouped by property type</span>
+          </div>
+
+          <div class="funding-list">
+            <section class="type-group">
+              <div class="type-label">
+                <strong>Office</strong>
+                <span>1 property</span>
+              </div>
+              <div class="property-row selected">
+                <img class="thumb" src="https://loremflickr.com/72/72/architecture?lock=9720" width="72" height="72" alt="Brick office building at Harborline Offices in Seattle">
+                <div class="details">
+                  <p class="name">Harborline Offices</p>
+                  <p class="place">Seattle, WA · Office</p>
+                </div>
+                <div>
+                  <span class="metric-label">Target yield</span>
+                  <span class="metric-value">5.8%</span>
+                </div>
+                <div class="status selected">
+                  <span class="metric-label">Minimum</span>
+                  $120
+                </div>
+                <span class="box on" aria-hidden="true">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
+                </span>
+              </div>
+            </section>
+
+            <section class="type-group">
+              <div class="type-label">
+                <strong>Residential</strong>
+                <span>1 property</span>
+              </div>
+              <div class="property-row selected">
+                <img class="thumb" src="https://loremflickr.com/72/72/city?lock=9721" width="72" height="72" alt="Converted loft block at Grant Street Lofts in Denver">
+                <div class="details">
+                  <p class="name">Grant Street Lofts</p>
+                  <p class="place">Denver, CO · Residential</p>
+                </div>
+                <div>
+                  <span class="metric-label">Target yield</span>
+                  <span class="metric-value">6.2%</span>
+                </div>
+                <div class="status selected">
+                  <span class="metric-label">Minimum</span>
+                  $100
+                </div>
+                <span class="box on" aria-hidden="true">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
+                </span>
+              </div>
+            </section>
+
+            <section class="type-group">
+              <div class="type-label">
+                <strong>Retail</strong>
+                <span>1 property</span>
+              </div>
+              <div class="property-row">
+                <img class="thumb" src="https://loremflickr.com/72/72/office?lock=9722" width="72" height="72" alt="Storefront row at Copper Row Retail in Austin">
+                <div class="details">
+                  <p class="name">Copper Row Retail</p>
+                  <p class="place">Austin, TX · Retail</p>
+                </div>
+                <div>
+                  <span class="metric-label">Target yield</span>
+                  <span class="metric-value">4.9%</span>
+                </div>
+                <div class="status">
+                  <span class="badge">Closes Friday</span>
+                </div>
+                <span class="box" aria-hidden="true"></span>
+              </div>
+            </section>
+
+            <section class="type-group">
+              <div class="type-label">
+                <strong>Industrial</strong>
+                <span>1 property</span>
+              </div>
+              <div class="property-row">
+                <img class="thumb" src="https://loremflickr.com/72/72/architecture?lock=9723" width="72" height="72" alt="Warehouse exterior at Meridian Logistics in Reno">
+                <div class="details">
+                  <p class="name">Meridian Logistics</p>
+                  <p class="place">Reno, NV · Industrial</p>
+                </div>
+                <div>
+                  <span class="metric-label">Target yield</span>
+                  <span class="metric-value">5.1%</span>
+                </div>
+                <div class="status">
+                  <span class="metric-label">Minimum</span>
+                  $150
+                </div>
+                <span class="box" aria-hidden="true"></span>
+              </div>
+            </section>
+          </div>
+        </section>
+
+        <aside class="summary">
+          <p class="eyebrow">Deposit summary</p>
+          <h2>Your allocation</h2>
+          <p class="summary-intro">Review the current distribution before continuing.</p>
+
+          <div class="summary-row">
+            <span>Deposit amount</span>
+            <strong>$450</strong>
+          </div>
+          <div class="summary-row">
+            <span>Funding date</span>
+            <strong>April 28</strong>
+          </div>
+          <div class="summary-row">
+            <span>Selected</span>
+            <strong>2 properties</strong>
+          </div>
+
+          <div class="split-block">
+            <div class="split-line">
+              <span>Split evenly across 2 properties</span>
+              <strong>$225 each</strong>
+            </div>
+            <p class="yieldline">Average target yield of selected properties: <strong>6.0%</strong></p>
+          </div>
+
+          <button class="cta">Review deposit</button>
+          <p class="fineprint">No funds move until you confirm.</p>
+        </aside>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

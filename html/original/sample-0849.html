@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rill Finance Activity</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #e8e6e7;
+      color: #252124;
+      font-family: 'Manrope', system-ui, sans-serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #ffffff;
+      border: 1px solid #d9d5d7;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      padding: 20px 20px 15px;
+      border-bottom: 1px solid #ece8ea;
+    }
+
+    .service-name {
+      margin: 0 0 2px;
+      color: #887f84;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 27px;
+      line-height: 1.2;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+    }
+
+    .mark-read {
+      margin: 0 0 3px;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: #b82f5c;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: default;
+    }
+
+    .filters {
+      display: flex;
+      gap: 28px;
+      padding: 0 20px;
+      border-bottom: 1px solid #ece8ea;
+    }
+
+    .filter {
+      position: relative;
+      padding: 14px 0 12px;
+      border: 0;
+      background: transparent;
+      color: #81787d;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .filter.active {
+      color: #252124;
+      font-weight: 700;
+    }
+
+    .filter.active::after {
+      content: "";
+      position: absolute;
+      right: 0;
+      bottom: -1px;
+      left: 0;
+      height: 3px;
+      background: #c93667;
+    }
+
+    .count {
+      margin-left: 4px;
+      color: #b82f5c;
+    }
+
+    main {
+      flex: 1;
+      padding: 0 20px;
+    }
+
+    .section-heading {
+      margin: 0;
+      padding: 20px 0 9px;
+      color: #736b6f;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .notification {
+      display: grid;
+      grid-template-columns: 12px minmax(0, 1fr);
+      gap: 8px;
+      padding: 13px 0;
+      border-bottom: 1px solid #efebed;
+    }
+
+    .marker {
+      width: 7px;
+      height: 7px;
+      margin-top: 7px;
+      border-radius: 50%;
+      background: transparent;
+    }
+
+    .notification.unread .marker {
+      background: #c93667;
+    }
+
+    .notification-title {
+      margin: 0;
+      color: #2d292b;
+      font-size: 15px;
+      line-height: 1.35;
+      font-weight: 500;
+    }
+
+    .notification.unread .notification-title {
+      font-weight: 700;
+    }
+
+    .notification-message {
+      margin: 3px 0 0;
+      color: #5f575b;
+      font-size: 14px;
+      line-height: 1.35;
+      font-weight: 400;
+    }
+
+    .notification-meta {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      margin: 5px 0 0;
+      color: #91888d;
+      font-size: 12px;
+      line-height: 1.3;
+      font-weight: 500;
+    }
+
+    .unread-label {
+      color: #b82f5c;
+      font-weight: 700;
+    }
+
+    .meta-divider {
+      color: #c4bdc0;
+    }
+
+    .tabbar {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      padding: 10px 8px 11px;
+      border-top: 1px solid #ded9dc;
+      background: #ffffff;
+    }
+
+    .tab {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      border: 0;
+      padding: 0;
+      background: transparent;
+      color: #8c8388;
+      font-size: 12px;
+      line-height: 1.2;
+      font-weight: 500;
+    }
+
+    .tab.active {
+      color: #b82f5c;
+      font-weight: 700;
+    }
+
+    .tab svg {
+      width: 22px;
+      height: 22px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <div>
+        <p class="service-name">Rill Finance</p>
+        <h1>Activity</h1>
+      </div>
+      <button class="mark-read" type="button">Mark all read</button>
+    </header>
+
+    <nav class="filters" aria-label="Activity filters">
+      <button class="filter active" type="button">All <span class="count">6</span></button>
+      <button class="filter" type="button">Unread <span class="count">2</span></button>
+    </nav>
+
+    <main>
+      <section aria-labelledby="today-heading">
+        <h2 class="section-heading" id="today-heading">Today</h2>
+
+        <article class="notification unread">
+          <span class="marker" aria-hidden="true"></span>
+          <div>
+            <p class="notification-title">Deposit received</p>
+            <p class="notification-message">$3,240.18 from Northline Studio</p>
+            <p class="notification-meta">
+              <span class="unread-label">Unread</span>
+              <span class="meta-divider">•</span>
+              <span>Today, 9:42 AM</span>
+            </p>
+          </div>
+        </article>
+
+        <article class="notification unread">
+          <span class="marker" aria-hidden="true"></span>
+          <div>
+            <p class="notification-title">Transfer completed</p>
+            <p class="notification-message">$450.00 moved to Harbor Savings</p>
+            <p class="notification-meta">
+              <span class="unread-label">Unread</span>
+              <span class="meta-divider">•</span>
+              <span>Today, 8:16 AM</span>
+            </p>
+          </div>
+        </article>
+
+        <article class="notification">
+          <span class="marker" aria-hidden="true"></span>
+          <div>
+            <p class="notification-title">Card purchase posted</p>
+            <p class="notification-message">$68.42 at Moss &amp; Vale Market</p>
+            <p class="notification-meta">
+              <span>Today, 7:05 AM</span>
+            </p>
+          </div>
+        </article>
+      </section>
+
+      <section aria-labelledby="earlier-heading">
+        <h2 class="section-heading" id="earlier-heading">Earlier</h2>
+
+        <article class="notification">
+          <span class="marker" aria-hidden="true"></span>
+          <div>
+            <p class="notification-title">Dividend payment received</p>
+            <p class="notification-message">$24.16 added to your investing account</p>
+            <p class="notification-meta">
+              <span>Mar 11, 4:18 PM</span>
+            </p>
+          </div>
+        </article>
+
+        <article class="notification">
+          <span class="marker" aria-hidden="true"></span>
+          <div>
+            <p class="notification-title">Monthly statement available</p>
+            <p class="notification-message">Your February cash account statement is ready</p>
+            <p class="notification-meta">
+              <span>Mar 10, 11:30 AM</span>
+            </p>
+          </div>
+        </article>
+
+        <article class="notification">
+          <span class="marker" aria-hidden="true"></span>
+          <div>
+            <p class="notification-title">Sign-in from a new device</p>
+            <p class="notification-message">Web browser on a computer in Portland, OR</p>
+            <p class="notification-meta">
+              <span>Mar 9, 6:54 PM</span>
+            </p>
+          </div>
+        </article>
+      </section>
+    </main>
+
+    <nav class="tabbar" aria-label="Primary navigation">
+      <button class="tab" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M3.5 10.5 12 3.8l8.5 6.7"></path>
+          <path d="M5.5 9.5v10h13v-10"></path>
+          <path d="M9.5 19.5v-6h5v6"></path>
+        </svg>
+        <span>Home</span>
+      </button>
+
+      <button class="tab" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M4 7.5h16v11H4z"></path>
+          <path d="M4 10.5h16"></path>
+          <path d="M7 15h3"></path>
+          <path d="M6 7.5V5.8h12v1.7"></path>
+        </svg>
+        <span>Money</span>
+      </button>
+
+      <button class="tab active" type="button" aria-current="page">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 8.5h18C21 16 18 16 18 9Z"></path>
+          <path d="M9.5 20h5"></path>
+        </svg>
+        <span>Activity</span>
+      </button>
+
+      <button class="tab" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="8" r="3.5"></circle>
+          <path d="M5.5 20c.6-4 2.8-6 6.5-6s5.9 2 6.5 6"></path>
+        </svg>
+        <span>Profile</span>
+      </button>
+    </nav>
+  </div>
+</body>
+</html>

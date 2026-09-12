@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Halyard — Post</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --taupe:#8A7968;
+    --taupe-dk:#6C5D4E;
+    --taupe-lt:#EFEBE5;
+    --ink:#221F1C;
+    --body:#3C3833;
+    --muted:#7C766E;
+    --line:#E4DFD8;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    padding:40px 0;
+    background:#D4CEC5;
+    font-family:'Source Sans 3', system-ui, sans-serif;
+  }
+  .screen{
+    width:390px;
+    height:844px;
+    background:#FFFFFF;
+    display:flex;
+    flex-direction:column;
+    color:var(--ink);
+  }
+
+  /* top bar */
+  .topbar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:15px 16px;
+    border-bottom:1px solid var(--line);
+  }
+  .topbar .tb-title{
+    font-size:14px;
+    font-weight:600;
+    letter-spacing:.02em;
+  }
+  .topbar .tb-sub{
+    font-size:12px;
+    color:var(--muted);
+    text-align:center;
+    line-height:14px;
+  }
+  .tb-center{display:flex;flex-direction:column;align-items:center;gap:1px;}
+  .icon-btn{
+    width:22px;height:22px;
+    display:flex;align-items:center;justify-content:center;
+    color:var(--body);
+  }
+
+  main{flex:1;display:flex;flex-direction:column;min-height:0;}
+
+  /* post */
+  .post{padding:16px 16px 12px;}
+  .author{display:flex;align-items:center;gap:12px;}
+  .mono{
+    width:40px;height:40px;
+    background:var(--taupe);
+    color:#fff;
+    font-size:15px;font-weight:600;letter-spacing:.04em;
+    display:flex;align-items:center;justify-content:center;
+    flex:0 0 auto;
+  }
+  .who{flex:1;min-width:0;}
+  .who .nm{font-size:15px;font-weight:600;line-height:19px;}
+  .who .mt{font-size:13px;color:var(--muted);line-height:17px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .tag{
+    font-size:12px;
+    color:var(--taupe-dk);
+    border:1px solid var(--taupe);
+    padding:1px 6px;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    flex:0 0 auto;
+  }
+  h1{
+    font-family:'Playfair Display', Georgia, serif;
+    font-weight:600;
+    font-size:20px;
+    line-height:26px;
+    margin:12px 0 0;
+  }
+  .post p{
+    margin:6px 0 0;
+    font-size:15px;
+    line-height:22px;
+    color:var(--body);
+  }
+
+  /* attached doc */
+  .doc{
+    display:flex;align-items:center;gap:10px;
+    padding:11px 16px;
+    border-top:1px solid var(--line);
+    border-bottom:1px solid var(--line);
+  }
+  .doc svg{color:var(--taupe-dk);flex:0 0 auto;}
+  .doc .dn{font-size:14px;font-weight:600;line-height:20px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .doc .dm{font-size:13px;color:var(--muted);line-height:20px;flex:0 0 auto;}
+
+  /* photos */
+  .shots{display:flex;}
+  .shots img{
+    display:block;
+    object-fit:cover;
+    background:#CFC9C0;
+  }
+
+  /* reactions */
+  .reactions{
+    display:flex;align-items:center;gap:8px;
+    padding:12px 16px;
+    border-bottom:1px solid var(--line);
+  }
+  .chip{
+    display:flex;align-items:center;gap:6px;
+    height:26px;
+    padding:0 10px;
+    font-size:13px;
+    line-height:26px;
+  }
+  .chip.on{background:var(--taupe);color:#fff;font-weight:600;}
+  .chip.off{border:1px solid var(--line);color:var(--body);}
+  .seen{margin-left:auto;font-size:13px;color:var(--muted);}
+
+  /* comments */
+  .c-head{
+    display:flex;align-items:baseline;gap:8px;
+    padding:12px 16px 8px;
+  }
+  .c-head h2{
+    font-family:'Playfair Display', Georgia, serif;
+    font-weight:600;
+    font-size:17px;
+    line-height:22px;
+    margin:0;
+  }
+  .c-head .ct{font-size:13px;color:var(--muted);}
+  .c-head .sort{margin-left:auto;font-size:13px;color:var(--taupe-dk);font-weight:600;}
+
+  .cmt{
+    display:flex;gap:10px;
+    padding:9px 16px;
+    border-bottom:1px solid var(--line);
+  }
+  .cmt:first-of-type{border-top:1px solid var(--line);}
+  .cmono{
+    width:32px;height:32px;flex:0 0 auto;
+    background:var(--taupe-lt);
+    color:var(--taupe-dk);
+    font-size:13px;font-weight:600;letter-spacing:.04em;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .cbody{min-width:0;}
+  .cline{display:flex;align-items:baseline;gap:6px;line-height:18px;}
+  .cline .cn{font-size:14px;font-weight:600;}
+  .cline .cw{font-size:12px;color:var(--muted);}
+  .cbody p{margin:2px 0 0;font-size:14px;line-height:20px;color:var(--body);}
+
+  .viewall{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:11px 16px;
+    border-bottom:1px solid var(--line);
+    font-size:14px;font-weight:600;color:var(--taupe-dk);
+  }
+
+  /* composer */
+  .composer{
+    display:flex;align-items:center;gap:10px;
+    padding:12px 16px;
+    border-top:1px solid var(--line);
+  }
+  .composer .cmono{width:30px;height:30px;}
+  .field{
+    flex:1;
+    height:30px;
+    border:1px solid var(--line);
+    display:flex;align-items:center;
+    padding:0 10px;
+    font-size:14px;
+    color:var(--muted);
+  }
+  .send{color:var(--taupe);display:flex;align-items:center;}
+
+  /* tab bar */
+  .tabs{
+    display:flex;
+    border-top:1px solid var(--line);
+    padding:8px 0;
+  }
+  .tab{
+    flex:1;
+    display:flex;flex-direction:column;align-items:center;gap:3px;
+    font-size:12px;
+    color:var(--muted);
+  }
+  .tab.active{color:var(--taupe-dk);font-weight:600;}
+</style>
+</head>
+<body>
+<div class="screen">
+
+  <div class="topbar">
+    <span class="icon-btn" aria-label="Back">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M15 5l-7 7 7 7"/></svg>
+    </span>
+    <span class="tb-center">
+      <span class="tb-title">Design Ops</span>
+      <span class="tb-sub">Team feed · 24 members</span>
+    </span>
+    <span class="icon-btn" aria-label="Save post">
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M6 3h12v18l-6-4.5L6 21z"/></svg>
+    </span>
+  </div>
+
+  <main>
+    <div class="post">
+      <div class="author">
+        <div class="mono">RM</div>
+        <div class="who">
+          <div class="nm">Renata Mahoney</div>
+          <div class="mt">Product Ops · Mar 14, 9:42 AM</div>
+        </div>
+        <span class="tag">Pinned</span>
+      </div>
+
+      <h1>Sprint 24 retro notes are up</h1>
+      <p>Everything from Thursday's session is in the shared doc, including the three workflow changes we agreed to try. Board photos are attached below.</p>
+    </div>
+
+    <div class="doc">
+      <svg width="16" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M14 3H6v18h12V7z"/><path d="M14 3v4h4"/></svg>
+      <span class="dn">Retro 24 — decisions and owners</span>
+      <span class="dm">3 pages</span>
+    </div>
+
+    <div class="shots">
+      <img src="https://loremflickr.com/130/88/notebook?lock=2661" width="130" height="88" alt="Handwritten retro notes in an open notebook">
+      <img src="https://loremflickr.com/130/88/meeting?lock=2662" width="130" height="88" alt="Team gathered around the retro board">
+      <img src="https://loremflickr.com/130/88/desk?lock=2663" width="130" height="88" alt="Desk with sticky notes sorted into columns">
+    </div>
+
+    <div class="reactions">
+      <span class="chip on">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 12.5l5 5L20 6.5"/></svg>
+        Acknowledged 24
+      </span>
+      <span class="chip off">Watching 6</span>
+      <span class="seen">Seen by 31</span>
+    </div>
+
+    <div class="c-head">
+      <h2>Comments</h2>
+      <span class="ct">18</span>
+      <span class="sort">Newest</span>
+    </div>
+
+    <div class="cmt">
+      <div class="cmono">PV</div>
+      <div class="cbody">
+        <div class="cline"><span class="cn">Priya Venkatesan</span><span class="cw">34m</span></div>
+        <p>Can we move the design sync to Wednesday? Thursday is packed for the whole team this cycle.</p>
+      </div>
+    </div>
+
+    <div class="cmt">
+      <div class="cmono">MO</div>
+      <div class="cbody">
+        <div class="cline"><span class="cn">Marcus Oyelaran</span><span class="cw">1h</span></div>
+        <p>Taking the API cleanup item.</p>
+      </div>
+    </div>
+
+    <div class="cmt">
+      <div class="cmono">DL</div>
+      <div class="cbody">
+        <div class="cline"><span class="cn">Dana Lindqvist</span><span class="cw">2h</span></div>
+        <p>Migration checklist is in the doc now. Two items still need owners before Friday's cutoff.</p>
+      </div>
+    </div>
+
+    <div class="viewall">
+      <span>View all 18 comments</span>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 5l7 7-7 7"/></svg>
+    </div>
+  </main>
+
+  <div class="composer">
+    <div class="cmono">AK</div>
+    <div class="field">Add a comment</div>
+    <span class="send">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 12h15"/><path d="M13 6l6 6-6 6"/></svg>
+    </span>
+  </div>
+
+  <nav class="tabs">
+    <span class="tab active">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h10"/></svg>
+      Feed
+    </span>
+    <span class="tab">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4h16v16H4z"/><path d="M8 12.5l3 3 5-6"/></svg>
+      Tasks
+    </span>
+    <span class="tab">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h16v14H4z"/><path d="M4 10h16"/><path d="M9 3v4"/><path d="M15 3v4"/></svg>
+      Calendar
+    </span>
+    <span class="tab">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 13l3-8h10l3 8v6H4z"/><path d="M4 13h5l1 3h4l1-3h5"/></svg>
+      Inbox
+    </span>
+  </nav>
+
+</div>
+</body>
+</html>

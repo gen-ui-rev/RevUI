@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Quorum — Capture defect</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;}
+  body{
+    min-height:100vh;display:flex;justify-content:center;align-items:flex-start;
+    padding:40px 0;margin:0;background:#d9d8d2;
+    font-family:'Nunito Sans',system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .screen{
+    width:390px;height:844px;background:#f7f6f2;color:#1c1d18;
+    display:flex;flex-direction:column;position:relative;
+  }
+
+  .topbar{
+    display:flex;align-items:center;gap:12px;
+    padding:16px 18px;border-bottom:1px solid #dfded6;
+  }
+  .topbar .title{font-size:16px;font-weight:700;flex:1;}
+  .icon-btn{display:flex;align-items:center;justify-content:center;width:24px;height:24px;color:#3b3d34;flex:none;}
+  .flash{display:flex;align-items:center;gap:6px;color:#6f7d2c;font-size:13px;font-weight:600;}
+
+  .location{
+    display:flex;align-items:center;gap:14px;
+    padding:11px 18px;border-bottom:1px solid #dfded6;
+  }
+  .location .lines{flex:1;min-width:0;}
+  .location .k{
+    display:block;font-size:12px;font-weight:600;color:#83857a;
+    letter-spacing:.06em;text-transform:uppercase;
+  }
+  .location .v{
+    display:block;font-size:15px;font-weight:600;margin-top:2px;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+
+  .finder{height:392px;background:#24251f;position:relative;flex:none;}
+  .finder .stamp{
+    position:absolute;left:18px;top:16px;font-size:12px;font-weight:600;
+    color:#d1d4bf;letter-spacing:.08em;text-transform:uppercase;
+  }
+  .finder .zoom{
+    position:absolute;right:18px;top:16px;font-size:12px;font-weight:600;color:#d1d4bf;
+  }
+  .finder .issue{
+    position:absolute;left:18px;bottom:16px;font-size:12px;font-weight:600;color:#d1d4bf;
+  }
+
+  .hint{
+    display:flex;align-items:center;gap:10px;
+    padding:12px 18px;border-bottom:1px solid #dfded6;
+  }
+  .dot{width:9px;height:9px;background:#6f7d2c;flex:none;}
+  .hint .main{font-size:14px;font-weight:600;flex:1;white-space:nowrap;}
+  .hint .sub{font-size:12px;color:#83857a;white-space:nowrap;}
+
+  .steps{
+    display:flex;align-items:flex-start;padding:10px 12px 9px;
+    border-bottom:1px solid #dfded6;
+  }
+  .step{flex:1;text-align:center;position:relative;color:#898b80;}
+  .step:not(:last-child)::after{
+    content:"";position:absolute;left:64%;right:-36%;top:12px;height:1px;background:#d6d5cd;
+  }
+  .step.done:not(:last-child)::after{background:#9ca865;}
+  .num{
+    width:25px;height:25px;margin:0 auto 4px;border:1px solid #b9bab1;
+    background:#f7f6f2;display:flex;align-items:center;justify-content:center;
+    font-size:12px;font-weight:700;position:relative;z-index:1;
+  }
+  .step.done{color:#52554a;}
+  .step.done .num{background:#e5e8d4;border-color:#9ca865;color:#566120;}
+  .step.current{color:#6f7d2c;font-weight:700;}
+  .step.current .num{background:#6f7d2c;border-color:#6f7d2c;color:#fff;}
+  .step-name{display:block;font-size:11px;font-weight:700;line-height:14px;}
+  .step-state{display:block;font-size:9px;line-height:12px;text-transform:uppercase;letter-spacing:.04em;}
+
+  .capture{
+    flex:1;display:flex;align-items:center;justify-content:space-between;
+    padding:0 26px;
+  }
+  .side{
+    width:78px;display:flex;flex-direction:column;align-items:center;
+    gap:7px;color:#3b3d34;
+  }
+  .side .lbl{font-size:12px;font-weight:600;color:#6b6d62;}
+  .side.done{color:#6f7d2c;}
+  .side.done .lbl{color:#6f7d2c;}
+  .shutter{
+    width:78px;height:78px;background:#6f7d2c;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .shutter i{display:block;width:52px;height:52px;border:2px solid #eef0e2;}
+
+  .tabs{height:72px;border-top:1px solid #dfded6;display:flex;flex:none;}
+  .tabs a{
+    flex:1;text-decoration:none;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;gap:5px;
+    color:#7b7d72;font-size:12px;font-weight:600;
+  }
+  .tabs a.on{color:#6f7d2c;}
+</style>
+</head>
+<body>
+<div class="screen">
+
+  <div class="topbar">
+    <span class="icon-btn" aria-hidden="true">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 4l12 12M16 4L4 16"/></svg>
+    </span>
+    <span class="title">Capture defect</span>
+    <span class="flash">
+      <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M11 2L5 11h4l-1 7 7-10h-4l1-6z"/></svg>
+      Auto
+    </span>
+    <span class="icon-btn" aria-hidden="true">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 3h14v14H3zM8 3v14M13 3v14M3 8h14M3 13h14"/></svg>
+    </span>
+  </div>
+
+  <div class="location">
+    <span class="icon-btn" aria-hidden="true">
+      <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M11 20s6-5.7 6-11a6 6 0 10-12 0c0 5.3 6 11 6 11z"/>
+        <circle cx="11" cy="9" r="2.2"/>
+      </svg>
+    </span>
+    <span class="lines">
+      <span class="k">Site location</span>
+      <span class="v">Tower B · Level 3 · Room 3.14</span>
+    </span>
+    <span class="icon-btn" aria-hidden="true">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 3l6 6-6 6"/></svg>
+    </span>
+  </div>
+
+  <div class="finder">
+    <svg width="390" height="392" viewBox="0 0 390 392" fill="none" aria-hidden="true">
+      <path d="M56 72L334 72L346 320L48 320Z" fill="#b0bb52" fill-opacity=".05" stroke="#b0bb52" stroke-width="1.8"/>
+      <g stroke="#777b6d" stroke-width="1.4">
+        <path d="M72 94h246M68 142h256M64 190h264M60 238h272M56 286h280"/>
+        <path d="M125 74v246M268 74v246"/>
+      </g>
+      <path d="M215 104l-13 31 16 21-25 34 18 19-24 30 13 18-22 38" stroke="#c6cd72" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      <g stroke="#b0bb52" stroke-width="3">
+        <path d="M30 62V40h22M360 62V40h-22M30 330v22h22M360 330v22h-22"/>
+      </g>
+      <g stroke="#d6dac3" stroke-width="1.4">
+        <circle cx="198" cy="189" r="43" stroke-dasharray="5 5"/>
+        <path d="M198 139v12M198 227v12M148 189h12M236 189h12"/>
+      </g>
+    </svg>
+    <span class="stamp">Wall crack</span>
+    <span class="zoom">1.0x</span>
+    <span class="issue">Defect photo 2 of 3</span>
+  </div>
+
+  <div class="hint">
+    <span class="dot"></span>
+    <span class="main">Keep the crack inside the guide</span>
+    <span class="sub">Location saved</span>
+  </div>
+
+  <div class="steps" aria-label="Defect report steps">
+    <div class="step done">
+      <span class="num">1</span>
+      <span class="step-name">Locate</span>
+      <span class="step-state">Done</span>
+    </div>
+    <div class="step current">
+      <span class="num">2</span>
+      <span class="step-name">Photos</span>
+      <span class="step-state">Current</span>
+    </div>
+    <div class="step">
+      <span class="num">3</span>
+      <span class="step-name">Details</span>
+      <span class="step-state">Pending</span>
+    </div>
+    <div class="step">
+      <span class="num">4</span>
+      <span class="step-name">Review</span>
+      <span class="step-state">Pending</span>
+    </div>
+  </div>
+
+  <div class="capture">
+    <span class="side">
+      <svg width="26" height="26" viewBox="0 0 26 26" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M5 7h4l1.5-2h5L17 7h4v13H5z"/><circle cx="13" cy="13.5" r="3.8"/>
+      </svg>
+      <span class="lbl">1 photo</span>
+    </span>
+
+    <span class="shutter"><i></i></span>
+
+    <span class="side done">
+      <svg width="26" height="26" viewBox="0 0 26 26" fill="none" stroke="currentColor" stroke-width="1.7">
+        <path d="M4 14l6 6L22 7"/>
+      </svg>
+      <span class="lbl">Next</span>
+    </span>
+  </div>
+
+  <nav class="tabs">
+    <a href="#">
+      <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 9.5L11 3l8 6.5V19H3z"/></svg>
+      Home
+    </a>
+    <a href="#">
+      <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 3h12v16H5zM8 7h6M8 11h6M8 15h4"/></svg>
+      Reports
+    </a>
+    <a href="#" class="on">
+      <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 7h4l1.5-2h5L15 7h4v11H3z"/><circle cx="11" cy="12" r="3.4"/></svg>
+      Capture
+    </a>
+    <a href="#">
+      <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 6l2.5 2.5L11 4M4 15l2.5 2.5L11 13M13 6h6M13 16h6"/></svg>
+      Actions
+    </a>
+  </nav>
+
+</div>
+</body>
+</html>

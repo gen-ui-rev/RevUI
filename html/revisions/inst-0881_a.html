@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Wanderline — Trail Briefing</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{ --blue:#2f6bff; --navy:#0b1119; }
+  *{ box-sizing:border-box; }
+  body{
+    min-height:100vh; display:flex; justify-content:center; align-items:flex-start;
+    padding:40px 0; margin:0; background:#e6e7ea;
+    font-family:'Plus Jakarta Sans', system-ui, sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .screen{
+    width:390px; height:844px; position:relative; background:#0d1116; color:#fff;
+  }
+
+  .briefing{ position:absolute; inset:0 0 64px; }
+  .briefing img.hero{
+    position:absolute; inset:0; width:390px; height:780px;
+    object-fit:cover; display:block; background:#1a2029;
+  }
+  .scrim{
+    position:absolute; inset:0;
+    background:
+      linear-gradient(to bottom, rgba(6,11,17,.76) 0, rgba(6,11,17,.28) 25%, rgba(6,11,17,.08) 47%, rgba(6,11,17,.84) 100%);
+  }
+
+  .progress-panel{
+    position:absolute; top:10px; left:12px; right:12px;
+    padding:9px 11px 10px; border-radius:8px;
+    background:rgba(7,12,19,.9); border:1px solid rgba(255,255,255,.22);
+    box-shadow:0 4px 18px rgba(0,0,0,.28);
+  }
+  .progress-copy{
+    display:flex; align-items:center; justify-content:space-between;
+    margin-bottom:7px; font-size:11px; line-height:14px;
+  }
+  .progress-copy strong{
+    font-size:12px; font-weight:700; letter-spacing:.03em;
+  }
+  .progress-copy span{ color:rgba(255,255,255,.7); font-weight:500; }
+  .progress-track{ display:flex; gap:5px; }
+  .segment{
+    flex:1; height:6px; border-radius:8px; background:rgba(255,255,255,.2);
+  }
+  .segment.done{ background:#fff; }
+  .segment.current{
+    background:linear-gradient(to right, var(--blue) 68%, rgba(255,255,255,.2) 68%);
+    box-shadow:0 0 0 1px rgba(47,107,255,.3);
+  }
+
+  .head{
+    position:absolute; top:73px; left:14px; right:14px;
+    display:flex; align-items:center; gap:10px;
+  }
+  .guide-mark{
+    width:38px; height:38px; border-radius:8px; background:var(--blue);
+    display:flex; align-items:center; justify-content:center; flex:none;
+    font-size:12px; font-weight:700; letter-spacing:.04em;
+    border:1px solid rgba(255,255,255,.28);
+  }
+  .who{ min-width:0; flex:1; }
+  .who .name{
+    font-size:14px; font-weight:700; line-height:19px;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  }
+  .who .meta{
+    font-size:12px; line-height:16px; color:rgba(255,255,255,.76);
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  }
+  .weather{
+    flex:none; padding:6px 9px; border-radius:6px;
+    background:rgba(8,13,20,.65); border:1px solid rgba(255,255,255,.2);
+    font-size:12px; font-weight:600;
+  }
+
+  .foot{ position:absolute; left:14px; right:14px; bottom:16px; }
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:6px;
+    padding:5px 8px; border-radius:5px; background:var(--blue);
+    font-size:11px; line-height:14px; font-weight:700;
+    text-transform:uppercase; letter-spacing:.06em;
+  }
+  .eyebrow i{
+    width:6px; height:6px; border-radius:50%; background:#fff; display:block;
+  }
+  .title{
+    margin:11px 0 0; font-size:24px; line-height:30px; font-weight:700;
+    text-shadow:0 2px 5px rgba(0,0,0,.5);
+  }
+  .caption{
+    margin:6px 0 0; font-size:14px; line-height:21px; font-weight:500;
+    color:rgba(255,255,255,.9); text-shadow:0 1px 3px rgba(0,0,0,.55);
+  }
+  .notice{
+    margin-top:12px; padding:10px 11px; border-left:3px solid #ffcb45;
+    border-radius:4px; background:rgba(9,14,20,.76);
+    font-size:12px; line-height:17px; color:rgba(255,255,255,.86);
+  }
+  .notice strong{ color:#fff; }
+  .base{
+    margin-top:10px; display:flex; align-items:center; gap:10px;
+    padding:9px; border-radius:7px;
+    background:rgba(8,13,20,.82); border:1px solid rgba(255,255,255,.18);
+  }
+  .base img{
+    width:48px; height:48px; border-radius:5px; object-fit:cover;
+    display:block; background:#1a2029; flex:none;
+  }
+  .base .txt{ min-width:0; flex:1; }
+  .base .label{
+    font-size:10px; line-height:14px; color:#8fb0ff;
+    font-weight:700; text-transform:uppercase; letter-spacing:.06em;
+  }
+  .base .name{
+    font-size:13px; line-height:18px; font-weight:600;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  }
+  .base .action{
+    flex:none; padding:8px 10px; border-radius:5px; background:#fff;
+    color:#111923; font-size:12px; font-weight:700;
+  }
+
+  .tabs{
+    position:absolute; left:0; right:0; bottom:0; height:64px;
+    display:flex; align-items:center; background:var(--navy);
+    border-top:1px solid rgba(255,255,255,.13);
+  }
+  .tab{
+    flex:1; display:flex; flex-direction:column; align-items:center; gap:4px;
+    color:rgba(255,255,255,.52); font-size:11px; font-weight:500;
+  }
+  .tab.on{ color:#fff; font-weight:700; }
+  .tab.on svg{ color:var(--blue); }
+  .tab svg{ display:block; }
+</style>
+</head>
+<body>
+  <div class="screen">
+    <main class="briefing">
+      <img class="hero" src="https://loremflickr.com/390/780/mountain?lock=11661" width="390" height="780" alt="Morning fog over the ridge trail above Halvard Fjord">
+      <div class="scrim"></div>
+
+      <div class="progress-panel" aria-label="Briefing step 2 of 4">
+        <div class="progress-copy">
+          <strong>TRAIL BRIEFING</strong>
+          <span>Step 2 of 4</span>
+        </div>
+        <div class="progress-track">
+          <div class="segment done"></div>
+          <div class="segment current"></div>
+          <div class="segment"></div>
+          <div class="segment"></div>
+        </div>
+      </div>
+
+      <header class="head">
+        <div class="guide-mark">HT</div>
+        <div class="who">
+          <div class="name">Halvard Trails Field Team</div>
+          <div class="meta">Ridge Route · Updated today at 6:15 a.m.</div>
+        </div>
+        <div class="weather">8°C</div>
+      </header>
+
+      <section class="foot">
+        <div class="eyebrow"><i></i> Morning route</div>
+        <h1 class="title">Fog clears after the first climb</h1>
+        <p class="caption">Leave from the lodge gate by 7:00 a.m. Allow three hours to reach the second overlook before winds strengthen.</p>
+
+        <div class="notice">
+          <strong>Guide note:</strong> Keep right at the blue cairn. The lower creek crossing is closed today.
+        </div>
+
+        <div class="base">
+          <img src="https://loremflickr.com/48/48/hotel?lock=11664" width="48" height="48" alt="Vantia Ridge Lodge exterior">
+          <div class="txt">
+            <div class="label">Tonight’s base</div>
+            <div class="name">Vantia Ridge Lodge · 1.2 mi away</div>
+          </div>
+          <div class="action">Details</div>
+        </div>
+      </section>
+    </main>
+
+    <nav class="tabs" aria-label="Primary navigation">
+      <div class="tab">
+        <svg width="21" height="21" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"/><path d="M14.2 7.8l-1.7 4.7-4.7 1.7 1.7-4.7z"/>
+        </svg>
+        Route
+      </div>
+      <div class="tab">
+        <svg width="21" height="21" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 18l4.3-10 3.1 5 2.2-3.2L18 18z"/><path d="M3 18h16"/>
+        </svg>
+        Conditions
+      </div>
+      <div class="tab on">
+        <svg width="21" height="21" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="4" y="3.5" width="14" height="15" rx="2"/><path d="M7.5 8h7M7.5 11.5h7M7.5 15h4"/>
+        </svg>
+        Briefing
+      </div>
+      <div class="tab">
+        <svg width="21" height="21" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M11 19a8 8 0 100-16 8 8 0 000 16z"/><path d="M7.5 11l2.2 2.2 4.8-5"/>
+        </svg>
+        Check-in
+      </div>
+    </nav>
+  </div>
+</body>
+</html>

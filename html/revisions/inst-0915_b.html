@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tandem — Work Orders</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --sky:#0a84c8;
+    --sky-soft:#e6f3fb;
+    --ink:#161c22;
+    --mid:#5a6672;
+    --line:#e7eaee;
+    --ground:#f2f4f7;
+    --p1:#d94436;
+    --p1-soft:#fdeceb;
+    --p2:#b3781a;
+    --p2-soft:#fdf3e2;
+    --p3:#5a6672;
+    --p3-soft:#eef1f4;
+  }
+  *{box-sizing:border-box;}
+  body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    padding:40px 0;
+    margin:0;
+    background:#d8dbe0;
+    font-family:'Roboto', system-ui, sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .screen{
+    width:390px;
+    height:844px;
+    background:var(--ground);
+    position:relative;
+    display:flex;
+    flex-direction:column;
+  }
+
+  /* Top bar */
+  .topbar{
+    background:#ffffff;
+    border-bottom:1px solid var(--line);
+    padding:18px 16px 14px;
+  }
+  .topbar-row{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    gap:12px;
+  }
+  .title{
+    font-size:24px;
+    font-weight:700;
+    color:var(--ink);
+    letter-spacing:-0.2px;
+    margin:0;
+  }
+  .mark{
+    font-size:14px;
+    font-weight:500;
+    color:var(--sky);
+    white-space:nowrap;
+  }
+  .subline{
+    margin-top:6px;
+    font-size:13px;
+    color:var(--mid);
+  }
+  .count{
+    display:inline-block;
+    background:var(--sky);
+    color:#fff;
+    font-size:12px;
+    font-weight:500;
+    line-height:18px;
+    padding:0 8px;
+    border-radius:6px;
+    margin-right:8px;
+  }
+
+  /* Filters */
+  .filters{
+    display:flex;
+    gap:7px;
+    padding:12px 16px 4px;
+  }
+  .chip{
+    display:flex;
+    align-items:center;
+    gap:5px;
+    font-size:13px;
+    font-weight:500;
+    color:var(--mid);
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:6px;
+    padding:6px 10px;
+    line-height:18px;
+    white-space:nowrap;
+  }
+  .chip .num{
+    font-size:11px;
+    font-weight:700;
+    line-height:16px;
+    padding:0 5px;
+    border-radius:8px;
+    background:var(--p3-soft);
+    color:#63707c;
+  }
+  .chip.on{
+    background:var(--sky);
+    border-color:var(--sky);
+    color:#fff;
+  }
+  .chip.on .num{background:rgba(255,255,255,0.24);color:#fff;}
+
+  /* Body */
+  .list{
+    flex:1;
+    padding:8px 16px 0;
+  }
+  .group-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    margin:14px 2px 8px;
+  }
+  .group-name{
+    font-size:12px;
+    font-weight:700;
+    letter-spacing:0.7px;
+    text-transform:uppercase;
+    color:#5a6672;
+  }
+  .group-head.critical .group-name{color:var(--p1);}
+  .group-num{
+    font-size:11px;
+    font-weight:500;
+    color:#7b8794;
+    white-space:nowrap;
+  }
+  .card{
+    background:#fff;
+    border-radius:6px;
+    box-shadow:0 1px 3px rgba(22,28,34,0.10);
+    overflow:hidden;
+  }
+  .row{
+    display:flex;
+    align-items:flex-start;
+    gap:11px;
+    padding:12px 13px;
+    border-bottom:1px solid var(--line);
+    border-left:4px solid transparent;
+  }
+  .row:last-child{border-bottom:none;}
+  .row.p1{border-left-color:var(--p1);}
+  .row.p2{border-left-color:#e8a33d;}
+  .row.p3{border-left-color:#c3cbd3;}
+  .unit{
+    width:38px;
+    height:38px;
+    flex:0 0 38px;
+    border-radius:6px;
+    font-size:12px;
+    font-weight:700;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    letter-spacing:0.3px;
+  }
+  .row.p1 .unit{background:var(--p1-soft);color:var(--p1);}
+  .row.p2 .unit{background:var(--p2-soft);color:var(--p2);}
+  .row.p3 .unit{background:var(--p3-soft);color:var(--p3);}
+  .body{flex:1;min-width:0;}
+  .text{
+    font-size:14px;
+    line-height:19px;
+    color:#3d4852;
+    margin:0;
+  }
+  .row.open .text{color:var(--ink);}
+  .who{font-weight:500;color:var(--ink);}
+  .item{color:#3d4852;}
+  .metaline{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    margin-top:6px;
+    min-width:0;
+  }
+  .tag{
+    font-size:10px;
+    font-weight:700;
+    letter-spacing:0.4px;
+    text-transform:uppercase;
+    line-height:16px;
+    padding:0 6px;
+    border-radius:4px;
+    flex:0 0 auto;
+  }
+  .tag.p1{background:var(--p1-soft);color:var(--p1);}
+  .tag.p2{background:var(--p2-soft);color:var(--p2);}
+  .tag.p3{background:var(--p3-soft);color:var(--p3);}
+  .meta{
+    font-size:12px;
+    color:#7b8794;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .due{
+    flex:0 0 56px;
+    text-align:right;
+    font-size:11px;
+    font-weight:500;
+    color:#7b8794;
+    line-height:15px;
+    padding-top:2px;
+  }
+  .due.late{color:var(--p1);}
+
+  /* Tab bar */
+  .tabbar{
+    display:flex;
+    background:#fff;
+    border-top:1px solid var(--line);
+    padding:8px 8px 14px;
+  }
+  .tab{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:4px;
+    font-size:11px;
+    color:#8a949e;
+  }
+  .tab.active{color:var(--sky);font-weight:500;}
+  .tab svg{display:block;}
+</style>
+</head>
+<body>
+  <div class="screen">
+
+    <header class="topbar">
+      <div class="topbar-row">
+        <h1 class="title">Work Orders</h1>
+        <span class="mark">Bulk assign</span>
+      </div>
+      <div class="subline"><span class="count">6 open</span>Grouped by urgency · Riverside portfolio</div>
+    </header>
+
+    <div class="filters">
+      <span class="chip on">All<span class="num">24</span></span>
+      <span class="chip">New<span class="num">6</span></span>
+      <span class="chip">Overdue<span class="num">2</span></span>
+      <span class="chip">Mine<span class="num">5</span></span>
+    </div>
+
+    <main class="list">
+      <div class="group-head critical">
+        <span class="group-name">Critical — same day</span>
+        <span class="group-num">2 requests</span>
+      </div>
+      <div class="card">
+
+        <div class="row p1 open">
+          <div class="unit">4B</div>
+          <div class="body">
+            <p class="text"><span class="who">Marisol Ellsworth</span> reports <span class="item">no hot water in the primary bath</span></p>
+            <div class="metaline">
+              <span class="tag p1">Emergency</span>
+              <span class="meta">Riverside Court · 9:42 AM</span>
+            </div>
+          </div>
+          <div class="due">Due 1:40p</div>
+        </div>
+
+        <div class="row p1 open">
+          <div class="unit">L2</div>
+          <div class="body">
+            <p class="text"><span class="who">Dev Patel</span> flagged <span class="item">Elevator 2 stuck between floors 3 and 4</span></p>
+            <div class="metaline">
+              <span class="tag p1">Emergency</span>
+              <span class="meta">Alder House · 8:15 AM</span>
+            </div>
+          </div>
+          <div class="due late">Overdue</div>
+        </div>
+
+      </div>
+
+      <div class="group-head">
+        <span class="group-name">Routine — this week</span>
+        <span class="group-num">4 requests</span>
+      </div>
+      <div class="card">
+
+        <div class="row p2">
+          <div class="unit">7C</div>
+          <div class="body">
+            <p class="text"><span class="who">Colin Vega</span> reports a <span class="item">slow leak under the kitchen sink</span></p>
+            <div class="metaline">
+              <span class="tag p2">High</span>
+              <span class="meta">Riverside Court · 7:50 AM</span>
+            </div>
+          </div>
+          <div class="due">Due Wed</div>
+        </div>
+
+        <div class="row p2 open">
+          <div class="unit">12A</div>
+          <div class="body">
+            <p class="text"><span class="who">Renee Fischer</span> reports the <span class="item">HVAC is not cooling</span></p>
+            <div class="metaline">
+              <span class="tag p2">High</span>
+              <span class="meta">Bayview Lofts · Yesterday</span>
+            </div>
+          </div>
+          <div class="due">Due Thu</div>
+        </div>
+
+        <div class="row p3">
+          <div class="unit">5F</div>
+          <div class="body">
+            <p class="text"><span class="who">Priya Nandakumar</span> reports a <span class="item">hallway light out on floor 5</span></p>
+            <div class="metaline">
+              <span class="tag p3">Routine</span>
+              <span class="meta">Alder House · Yesterday</span>
+            </div>
+          </div>
+          <div class="due">Due Fri</div>
+        </div>
+
+        <div class="row p3">
+          <div class="unit">2D</div>
+          <div class="body">
+            <p class="text"><span class="who">Tomas Bright</span> logged a <span class="item">dishwasher that will not drain</span></p>
+            <div class="metaline">
+              <span class="tag p3">Routine</span>
+              <span class="meta">Bayview Lofts · Monday</span>
+            </div>
+          </div>
+          <div class="due">Next wk</div>
+        </div>
+
+      </div>
+    </main>
+
+    <nav class="tabbar">
+      <div class="tab">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5 12 4l8 6.5V20a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1z"/></svg>
+        Buildings
+      </div>
+      <div class="tab">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6h11M9 12h11M9 18h11"/><path d="m3.5 5.8 1.3 1.4L7.2 4.6"/><path d="m3.5 11.8 1.3 1.4 2.4-2.6"/><path d="m3.5 17.8 1.3 1.4 2.4-2.6"/></svg>
+        Jobs
+      </div>
+      <div class="tab active">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8.5a6 6 0 1 0-12 0c0 5-2 6.5-2 6.5h16s-2-1.5-2-6.5z"/><path d="M10.5 19a2 2 0 0 0 3 0"/></svg>
+        Requests
+      </div>
+      <div class="tab">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8.5" r="3.7"/><path d="M4.8 20c.9-3.4 3.7-5.2 7.2-5.2s6.3 1.8 7.2 5.2"/></svg>
+        You
+      </div>
+    </nav>
+
+  </div>
+</body>
+</html>

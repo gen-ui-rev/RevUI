@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gatherly Camera</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #d9dee0;
+      color: #172126;
+      font-family: 'Nunito Sans', system-ui, sans-serif;
+    }
+
+    button {
+      border: 0;
+      padding: 0;
+      color: inherit;
+      background: none;
+      font: inherit;
+    }
+
+    .screen {
+      position: relative;
+      width: 390px;
+      height: 844px;
+      display: grid;
+      grid-template-rows: auto 500px 1fr auto;
+      background: #edf1f2;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 15px 16px;
+      background: #ffffff;
+      border-bottom: 1px solid #dce2e4;
+    }
+
+    .topbar h1 {
+      min-width: 0;
+      margin: 0;
+      flex: 1;
+      font-size: 20px;
+      line-height: 28px;
+      font-weight: 700;
+    }
+
+    .icon-button {
+      width: 28px;
+      height: 28px;
+      display: grid;
+      place-items: center;
+    }
+
+    .icon-button svg {
+      width: 24px;
+      height: 24px;
+      display: block;
+    }
+
+    .viewfinder {
+      position: relative;
+      margin: 0;
+      background: #6a7376;
+    }
+
+    .viewfinder > img {
+      width: 390px;
+      height: 500px;
+      display: block;
+      object-fit: cover;
+      background: #687377;
+    }
+
+    .viewfinder-shade {
+      position: absolute;
+      inset: 0;
+      background: rgba(7, 18, 22, 0.12);
+      pointer-events: none;
+    }
+
+    .camera-tools {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .camera-tool {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      color: #ffffff;
+      background: rgba(20, 30, 34, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      border-radius: 21px;
+    }
+
+    .camera-tool svg {
+      width: 22px;
+      height: 22px;
+      display: block;
+    }
+
+    .focus-frame {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 88px;
+      height: 88px;
+      transform: translate(-50%, -50%) rotate(45deg);
+    }
+
+    .focus-frame span {
+      position: absolute;
+      width: 31px;
+      height: 31px;
+      border-color: #43e0eb;
+      border-style: solid;
+      filter: drop-shadow(0 1px 1px rgba(3, 27, 31, 0.45));
+    }
+
+    .focus-frame .tl {
+      top: 0;
+      left: 0;
+      border-width: 3px 0 0 3px;
+    }
+
+    .focus-frame .tr {
+      top: 0;
+      right: 0;
+      border-width: 3px 3px 0 0;
+    }
+
+    .focus-frame .bl {
+      bottom: 0;
+      left: 0;
+      border-width: 0 0 3px 3px;
+    }
+
+    .focus-frame .br {
+      right: 0;
+      bottom: 0;
+      border-width: 0 3px 3px 0;
+    }
+
+    .focus-dot {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 8px;
+      height: 8px;
+      background: #43e0eb;
+      border: 2px solid rgba(255, 255, 255, 0.85);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .grid-status {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      margin: 0;
+      padding: 5px 9px;
+      color: #ffffff;
+      background: rgba(20, 30, 34, 0.72);
+      font-size: 12px;
+      line-height: 17px;
+      font-weight: 700;
+    }
+
+    .camera-note {
+      position: absolute;
+      bottom: 14px;
+      left: 50%;
+      margin: 0;
+      padding: 7px 10px;
+      color: #ffffff;
+      background: rgba(20, 30, 34, 0.78);
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 600;
+      white-space: nowrap;
+      transform: translateX(-50%);
+    }
+
+    .capture-area {
+      display: flex;
+      align-items: center;
+      padding: 10px 16px;
+      background: #edf1f2;
+    }
+
+    .capture-card {
+      width: 100%;
+      padding: 10px 14px;
+      background: #ffffff;
+      box-shadow: 0 4px 16px rgba(26, 42, 47, 0.12);
+    }
+
+    .capture-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .mode-tabs {
+      display: flex;
+      gap: 20px;
+    }
+
+    .mode {
+      position: relative;
+      padding: 0 2px 5px;
+      color: #657176;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 700;
+      letter-spacing: 0.7px;
+      text-transform: uppercase;
+    }
+
+    .mode.active {
+      color: #087d89;
+    }
+
+    .mode.active::after {
+      content: "";
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      height: 3px;
+      background: #19cee0;
+    }
+
+    .audience-change {
+      color: #087d89;
+      font-size: 12px;
+      line-height: 17px;
+      font-weight: 700;
+    }
+
+    .audience-panel {
+      margin-top: 8px;
+      padding: 7px 9px;
+      display: grid;
+      grid-template-columns: 30px 1fr auto;
+      align-items: center;
+      gap: 8px;
+      background: #f4f7f7;
+      border-left: 4px solid #087d89;
+    }
+
+    .audience-icon {
+      width: 30px;
+      height: 30px;
+      display: grid;
+      place-items: center;
+      color: #087d89;
+      background: #dff4f5;
+      border-radius: 50%;
+    }
+
+    .audience-icon svg {
+      width: 17px;
+      height: 17px;
+      display: block;
+    }
+
+    .audience-text {
+      min-width: 0;
+    }
+
+    .audience-text small {
+      display: block;
+      color: #647075;
+      font-size: 11px;
+      line-height: 14px;
+      font-weight: 600;
+    }
+
+    .audience-text strong {
+      display: block;
+      color: #263338;
+      font-size: 13px;
+      line-height: 17px;
+      font-weight: 700;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+
+    .confirmation {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      color: #344247;
+      font-size: 12px;
+      line-height: 17px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .confirmation input {
+      width: 17px;
+      height: 17px;
+      margin: 0;
+      accent-color: #087d89;
+    }
+
+    .capture-row {
+      display: grid;
+      grid-template-columns: 64px 1fr 64px;
+      align-items: center;
+      margin-top: 8px;
+    }
+
+    .recent-photo {
+      width: 48px;
+      height: 48px;
+      margin-left: 8px;
+      padding: 0;
+      border: 2px solid #ffffff;
+      outline: 1px solid #aeb8bc;
+      background: #727d81;
+    }
+
+    .recent-photo img {
+      width: 44px;
+      height: 44px;
+      display: block;
+      object-fit: cover;
+      background: #727d81;
+    }
+
+    .shutter-wrap {
+      display: flex;
+      justify-content: center;
+    }
+
+    .shutter {
+      width: 64px;
+      height: 64px;
+      display: grid;
+      place-items: center;
+      border: 3px solid #087d89;
+      border-radius: 50%;
+      background: #ffffff;
+      box-shadow: 0 0 0 3px #dff4f5;
+    }
+
+    .shutter::after {
+      content: "";
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: #19cee0;
+    }
+
+    .flip-camera {
+      width: 48px;
+      height: 48px;
+      margin-left: 8px;
+      display: grid;
+      place-items: center;
+      color: #344247;
+      background: #edf1f2;
+    }
+
+    .flip-camera svg {
+      width: 25px;
+      height: 25px;
+      display: block;
+    }
+
+    .tabbar {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      padding: 7px 8px 8px;
+      background: #ffffff;
+      border-top: 1px solid #dce2e4;
+    }
+
+    .tab {
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      color: #748086;
+      font-size: 12px;
+      line-height: 17px;
+      font-weight: 600;
+    }
+
+    .tab svg {
+      width: 22px;
+      height: 22px;
+      display: block;
+    }
+
+    .tab.active {
+      color: #087d89;
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <button class="icon-button" type="button" aria-label="Close camera">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M6 6L18 18M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="square"/>
+        </svg>
+      </button>
+      <h1>New moment</h1>
+      <button class="icon-button" type="button" aria-label="Camera settings">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M12 8.25A3.75 3.75 0 1 0 12 15.75 3.75 3.75 0 0 0 12 8.25Z" stroke="currentColor" stroke-width="1.8"/>
+          <path d="M19 13.25V10.75L16.9 10.1C16.75 9.65 16.56 9.23 16.32 8.83L17.35 6.9 15.58 5.13 13.64 6.16C13.25 5.93 12.82 5.75 12.38 5.6L11.72 3.5H9.22L8.57 5.6C8.12 5.75 7.7 5.94 7.3 6.17L5.37 5.14 3.6 6.91 4.63 8.85C4.4 9.24 4.22 9.67 4.07 10.11L2 10.76V13.26L4.08 13.91C4.23 14.36 4.42 14.78 4.65 15.18L3.62 17.11 5.39 18.88 7.33 17.85C7.72 18.08 8.15 18.26 8.59 18.41L9.24 20.5H11.74L12.39 18.41C12.84 18.26 13.26 18.07 13.66 17.84L15.59 18.87 17.36 17.1 16.33 15.16C16.56 14.77 16.74 14.34 16.89 13.9L19 13.25Z" stroke="currentColor" stroke-width="1.5"/>
+        </svg>
+      </button>
+    </header>
+
+    <figure class="viewfinder">
+      <img src="https://loremflickr.com/390/500/street?lock=7110" width="390" height="500" alt="A lively neighborhood street framed in the camera viewfinder">
+      <div class="viewfinder-shade"></div>
+      <p class="grid-status">Composition grid off</p>
+
+      <div class="camera-tools">
+        <button class="camera-tool" type="button" aria-label="Flash off">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M13 2L6.5 13H11L10 22L17.5 10H13L13 2Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="miter"/>
+            <path d="M4 4L20 20" stroke="currentColor" stroke-width="1.8"/>
+          </svg>
+        </button>
+        <button class="camera-tool" type="button" aria-label="Camera timer">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M12 7V12L15.5 14" stroke="currentColor" stroke-width="1.8" stroke-linecap="square"/>
+            <path d="M8.5 3H15.5M12 3V5M18.5 6.5L20 5" stroke="currentColor" stroke-width="1.8"/>
+            <circle cx="12" cy="13" r="8" stroke="currentColor" stroke-width="1.8"/>
+          </svg>
+        </button>
+        <button class="camera-tool" type="button" aria-label="Show composition grid" aria-pressed="false">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <rect x="3.5" y="3.5" width="17" height="17" stroke="currentColor" stroke-width="1.7"/>
+            <path d="M9 4V20M15 4V20M4 9H20M4 15H20" stroke="currentColor" stroke-width="1.4"/>
+            <path d="M3 21L21 3" stroke="currentColor" stroke-width="1.8"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="focus-frame" aria-hidden="true">
+        <span class="tl"></span>
+        <span class="tr"></span>
+        <span class="bl"></span>
+        <span class="br"></span>
+      </div>
+      <div class="focus-dot" aria-hidden="true"></div>
+      <p class="camera-note">Tap a subject to set focus</p>
+    </figure>
+
+    <main class="capture-area">
+      <section class="capture-card" aria-label="Camera controls">
+        <div class="capture-heading">
+          <div class="mode-tabs" aria-label="Capture mode">
+            <button class="mode active" type="button">Photo</button>
+            <button class="mode" type="button">Scan</button>
+          </div>
+          <button class="audience-change" type="button">Change audience</button>
+        </div>
+
+        <div class="audience-panel">
+          <span class="audience-icon">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/>
+              <path d="M3.5 12H20.5M12 3C14.3 5.4 15.5 8.4 15.5 12C15.5 15.6 14.3 18.6 12 21M12 3C9.7 5.4 8.5 8.4 8.5 12C8.5 15.6 9.7 18.6 12 21" stroke="currentColor" stroke-width="1.5"/>
+            </svg>
+          </span>
+          <span class="audience-text">
+            <small>Posting to</small>
+            <strong>Neighborhood Circle</strong>
+          </span>
+          <label class="confirmation">
+            <input type="checkbox" checked>
+            <span>Confirm</span>
+          </label>
+        </div>
+
+        <div class="capture-row">
+          <button class="recent-photo" type="button" aria-label="Open recent photos">
+            <img src="https://loremflickr.com/44/44/cafe?lock=7111" width="44" height="44" alt="Recent photo of a neighborhood cafe">
+          </button>
+
+          <div class="shutter-wrap">
+            <button class="shutter" type="button" aria-label="Take photo for confirmed audience, Neighborhood Circle"></button>
+          </div>
+
+          <button class="flip-camera" type="button" aria-label="Switch camera">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M7 7H5.5A2.5 2.5 0 0 0 3 9.5V17A2.5 2.5 0 0 0 5.5 19H18.5A2.5 2.5 0 0 0 21 16.5V9.5A2.5 2.5 0 0 0 18.5 7H17L15.5 5H8.5L7 7Z" stroke="currentColor" stroke-width="1.7"/>
+              <path d="M9 11A4 4 0 0 1 15.5 10M15 13A4 4 0 0 1 8.5 14" stroke="currentColor" stroke-width="1.7"/>
+              <path d="M15.5 8.5V10.5H13.5M8.5 15.5V13.5H10.5" stroke="currentColor" stroke-width="1.7"/>
+            </svg>
+          </button>
+        </div>
+      </section>
+    </main>
+
+    <nav class="tabbar" aria-label="Primary navigation">
+      <button class="tab" type="button">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M3 10.5L12 3L21 10.5V20H15V14H9V20H3V10.5Z" stroke="currentColor" stroke-width="1.8"/>
+        </svg>
+        <span>Home</span>
+      </button>
+      <button class="tab" type="button">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="1.8"/>
+          <path d="M16 16L21 21" stroke="currentColor" stroke-width="1.8"/>
+        </svg>
+        <span>Explore</span>
+      </button>
+      <button class="tab active" type="button" aria-current="page">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M4 8.5A2.5 2.5 0 0 1 6.5 6H8L9.5 4H14.5L16 6H17.5A2.5 2.5 0 0 1 20 8.5V17.5A2.5 2.5 0 0 1 17.5 20H6.5A2.5 2.5 0 0 1 4 17.5V8.5Z" stroke="currentColor" stroke-width="1.8"/>
+          <circle cx="12" cy="13" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+        </svg>
+        <span>Camera</span>
+      </button>
+      <button class="tab" type="button">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M4 5H20V17H9L5 20V17H4V5Z" stroke="currentColor" stroke-width="1.8"/>
+          <path d="M8 9H16M8 13H13" stroke="currentColor" stroke-width="1.6"/>
+        </svg>
+        <span>Messages</span>
+      </button>
+      <button class="tab" type="button">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.8"/>
+          <path d="M4.5 21C4.8 16.8 7.5 14.5 12 14.5C16.5 14.5 19.2 16.8 19.5 21" stroke="currentColor" stroke-width="1.8"/>
+        </svg>
+        <span>Profile</span>
+      </button>
+    </nav>
+  </div>
+</body>
+</html>

@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Save Item</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #dedbde;
+      color: #262126;
+      font-family: 'Nunito Sans', system-ui, sans-serif;
+    }
+
+    .screen {
+      width: 390px;
+      height: 560px;
+      padding: 24px;
+      background: #ebe8eb;
+      border: 1px solid #d3ced3;
+      box-shadow: inset 0 0 28px rgba(60, 48, 57, 0.08);
+    }
+
+    .panel-stack {
+      position: relative;
+      width: 100%;
+      padding: 6px 6px 0 0;
+    }
+
+    .panel-stack::before {
+      content: "";
+      position: absolute;
+      top: 6px;
+      right: 0;
+      bottom: 0;
+      left: 6px;
+      background: #d9d4d9;
+      border: 1px solid #cbc5cb;
+      border-radius: 8px;
+    }
+
+    .save-panel {
+      position: relative;
+      width: 100%;
+      margin: 0;
+      padding: 20px;
+      background: #fdfcfd;
+      border: 1px solid #cfc9cf;
+      border-radius: 8px;
+      box-shadow:
+        inset 0 1px 0 #ffffff,
+        inset 0 -2px 4px rgba(65, 51, 61, 0.05);
+    }
+
+    .save-panel h1 {
+      margin: 0;
+      color: #9f145f;
+      font-size: 24px;
+      line-height: 1.25;
+      font-weight: 700;
+    }
+
+    .intro {
+      margin: 4px 0 0;
+      color: #665f66;
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .product {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-top: 16px;
+    }
+
+    .product img {
+      width: 72px;
+      height: 72px;
+      flex: 0 0 72px;
+      display: block;
+      object-fit: cover;
+      background: #dedade;
+      border: 1px solid #c9c3c9;
+      border-radius: 5px;
+      box-shadow: inset 0 0 0 3px rgba(255, 255, 255, 0.45);
+    }
+
+    .product-copy {
+      min-width: 0;
+    }
+
+    .product-name {
+      margin: 0;
+      font-size: 15px;
+      line-height: 1.3;
+      font-weight: 700;
+    }
+
+    .variant-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-top: 5px;
+    }
+
+    .variant-chip {
+      padding: 2px 7px;
+      background: #eee9ed;
+      border: 1px solid #d6d0d5;
+      border-radius: 4px;
+      color: #5e565d;
+      font-size: 11px;
+      line-height: 1.35;
+      font-weight: 600;
+    }
+
+    .product-price {
+      margin: 5px 0 0;
+      color: #665f66;
+      font-size: 14px;
+      line-height: 1.3;
+    }
+
+    fieldset {
+      margin: 17px 0 0;
+      padding: 0;
+      border: 0;
+    }
+
+    legend {
+      width: 100%;
+      margin: 0 0 8px;
+      padding: 0;
+      font-size: 14px;
+      line-height: 1.35;
+      font-weight: 700;
+    }
+
+    .list-options {
+      padding: 5px;
+      background: #e9e5e9;
+      border: 1px solid #d1cbd1;
+      border-radius: 8px;
+      box-shadow: inset 0 2px 5px rgba(55, 42, 52, 0.1);
+    }
+
+    .list-option {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 7px 9px;
+      border: 1px solid transparent;
+      border-radius: 5px;
+      cursor: default;
+    }
+
+    .list-option + .list-option {
+      margin-top: 3px;
+    }
+
+    .list-option.selected {
+      background: #ffffff;
+      border-color: #d1cbd1;
+      box-shadow: 0 2px 5px rgba(55, 42, 52, 0.12);
+    }
+
+    .list-option input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .radio {
+      width: 18px;
+      height: 18px;
+      flex: 0 0 18px;
+      display: grid;
+      place-items: center;
+      border: 1px solid #9f969e;
+      border-radius: 50%;
+      background: #f8f6f8;
+      box-shadow: inset 0 1px 2px rgba(50, 38, 47, 0.12);
+    }
+
+    .selected .radio {
+      border-color: #a41464;
+      background: #ffffff;
+    }
+
+    .selected .radio::after {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #a41464;
+    }
+
+    .list-copy {
+      min-width: 0;
+    }
+
+    .list-name {
+      display: block;
+      font-size: 14px;
+      line-height: 1.25;
+      font-weight: 600;
+    }
+
+    .list-count {
+      display: block;
+      margin-top: 1px;
+      color: #756e75;
+      font-size: 12px;
+      line-height: 1.25;
+    }
+
+    .save-button {
+      width: 100%;
+      margin-top: 16px;
+      padding: 11px 16px;
+      border: 1px solid #8e1057;
+      border-radius: 6px;
+      background: linear-gradient(180deg, #bd1a73 0%, #a91462 100%);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.28),
+        0 2px 0 #7f0d4d;
+      color: #ffffff;
+      font: 700 15px/1.35 'Nunito Sans', system-ui, sans-serif;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <div class="panel-stack">
+      <form class="save-panel">
+        <h1>Save item</h1>
+        <p class="intro">Choose where you want to keep this item.</p>
+
+        <div class="product">
+          <img src="https://loremflickr.com/72/72/fashion?lock=10690" width="72" height="72" alt="Sand-colored linen utility overshirt">
+          <div class="product-copy">
+            <p class="product-name">Linen utility overshirt</p>
+            <div class="variant-row" aria-label="Selected variant">
+              <span class="variant-chip">Natural flax</span>
+              <span class="variant-chip">Size L</span>
+            </div>
+            <p class="product-price">$68.00</p>
+          </div>
+        </div>
+
+        <fieldset>
+          <legend>Save to</legend>
+          <div class="list-options">
+            <label class="list-option">
+              <input type="radio" name="save-location">
+              <span class="radio" aria-hidden="true"></span>
+              <span class="list-copy">
+                <span class="list-name">For later</span>
+                <span class="list-count">12 saved items</span>
+              </span>
+            </label>
+
+            <label class="list-option selected">
+              <input type="radio" name="save-location" checked>
+              <span class="radio" aria-hidden="true"></span>
+              <span class="list-copy">
+                <span class="list-name">Summer outfits</span>
+                <span class="list-count">7 saved items</span>
+              </span>
+            </label>
+
+            <label class="list-option">
+              <input type="radio" name="save-location">
+              <span class="radio" aria-hidden="true"></span>
+              <span class="list-copy">
+                <span class="list-name">Gift ideas</span>
+                <span class="list-count">4 saved items</span>
+              </span>
+            </label>
+          </div>
+        </fieldset>
+
+        <button class="save-button" type="button">Save to Summer outfits</button>
+      </form>
+    </div>
+  </div>
+</body>
+</html>

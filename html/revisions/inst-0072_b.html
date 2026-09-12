@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Milepost — Technician Work Order</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --accent:#755E4D;
+    --ink:#211D1A;
+    --muted:#746B64;
+    --line:#E6E0DB;
+    --soft:#F2EFEC;
+    --done:#3E735D;
+    --done-bg:#E7F0EB;
+    --active:#A36325;
+    --active-bg:#F7EBDD;
+    --queued:#746B64;
+    --queued-bg:#EFEBE8;
+  }
+  *{box-sizing:border-box}
+  body{
+    min-height:100vh;display:flex;justify-content:center;align-items:flex-start;
+    padding:40px 0;margin:0;background:#CFC8C2;
+    font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased;
+  }
+  .screen{
+    width:390px;height:844px;background:#FBFAF9;position:relative;color:var(--ink);
+  }
+
+  .player{position:relative;width:390px;height:240px;background:#171411}
+  .player img{
+    width:390px;height:240px;object-fit:cover;display:block;background:#171411;
+    filter:brightness(1.13) contrast(1.09) saturate(1.02);
+  }
+  .scrim{
+    position:absolute;inset:0;
+    background:linear-gradient(to bottom,rgba(10,8,7,.34),transparent 32%,transparent 55%,rgba(10,8,7,.5));
+  }
+  .topbar{
+    position:absolute;top:0;left:0;right:0;padding:10px 12px;
+    display:flex;align-items:center;justify-content:space-between;color:#fff;
+  }
+  .top-left{display:flex;align-items:center;gap:8px}
+  .iconbtn{
+    width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;
+    color:#fff;background:rgba(22,18,15,.76);border:1px solid rgba(255,255,255,.25);
+  }
+  .video-title{
+    padding:8px 10px;border-radius:9px;background:rgba(22,18,15,.76);
+    border:1px solid rgba(255,255,255,.25);
+  }
+  .video-title strong{display:block;font-size:11px;font-weight:700}
+  .video-title span{display:block;margin-top:2px;font-size:10px;color:rgba(255,255,255,.78)}
+  .quality{
+    padding:6px 8px;border-radius:7px;background:rgba(22,18,15,.76);
+    font-size:10px;font-weight:700;border:1px solid rgba(255,255,255,.25);
+  }
+  .play{
+    position:absolute;left:50%;top:91px;transform:translateX(-50%);
+    width:58px;height:58px;border-radius:14px;background:rgba(117,94,77,.94);
+    display:flex;align-items:center;justify-content:center;color:#fff;
+    border:2px solid #fff;box-shadow:0 4px 14px rgba(0,0,0,.3);
+  }
+  .control-dock{
+    position:absolute;left:12px;right:12px;bottom:10px;padding:10px 11px 9px;
+    background:rgba(22,18,15,.82);border:1px solid rgba(255,255,255,.22);
+    border-radius:11px;color:#fff;
+  }
+  .track{position:relative;height:5px;border-radius:3px;background:rgba(255,255,255,.35)}
+  .fill{position:absolute;left:0;top:0;bottom:0;width:42%;border-radius:3px;background:#E4C6AC}
+  .knob{
+    position:absolute;left:42%;top:-4px;width:13px;height:13px;border-radius:50%;
+    background:#fff;transform:translateX(-6px);
+  }
+  .dock-row{display:flex;align-items:center;justify-content:space-between;margin-top:9px}
+  .dock-left,.dock-right{display:flex;align-items:center;gap:13px}
+  .dock-row span{font-size:11px;font-weight:650}
+  .plain-icon{display:flex;align-items:center;justify-content:center;color:#fff}
+
+  .content{padding:13px 15px 0}
+  .titleline{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+  .titlecopy{min-width:0}
+  .mode{
+    font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--accent);
+  }
+  h1{margin:3px 0 0;font-size:17px;line-height:1.28;font-weight:650;letter-spacing:-.2px}
+  .priority{
+    margin-top:2px;border-radius:7px;padding:6px 8px;background:var(--active-bg);
+    color:var(--active);font-size:10px;font-weight:700;white-space:nowrap;
+  }
+  .meta{margin-top:5px;font-size:11px;color:var(--muted)}
+
+  .ticket{
+    margin-top:10px;border:1px solid #DCD3CC;border-radius:10px;background:#fff;
+    display:grid;grid-template-columns:1fr auto;
+  }
+  .ticket-main{padding:10px 11px}
+  .ticket-id{font-size:10px;font-weight:700;color:var(--accent);letter-spacing:.4px}
+  .ticket-task{font-size:13px;font-weight:650;margin-top:3px}
+  .ticket-meta{font-size:10px;color:var(--muted);margin-top:4px}
+  .ticket-side{
+    border-left:1px dashed #DCD3CC;padding:10px;display:flex;flex-direction:column;
+    justify-content:center;align-items:center;min-width:70px;
+  }
+  .ticket-side strong{font-size:16px}
+  .ticket-side span{font-size:9px;color:var(--muted);margin-top:2px;text-transform:uppercase}
+
+  .section-title{
+    margin-top:12px;display:flex;align-items:baseline;justify-content:space-between;
+  }
+  .section-title h2{font-size:14px;margin:0;font-weight:700}
+  .section-title span{font-size:10px;color:var(--muted)}
+
+  .pipeline{margin-top:6px}
+  .stage{display:grid;grid-template-columns:56px 1fr;align-items:center;margin-top:5px}
+  .stage-label{
+    align-self:stretch;border-radius:9px 0 0 9px;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;text-align:center;
+  }
+  .stage-label strong{font-size:12px}
+  .stage-label span{font-size:8px;font-weight:700;text-transform:uppercase;margin-top:2px}
+  .stage.done .stage-label{background:var(--done-bg);color:var(--done)}
+  .stage.active .stage-label{background:var(--active-bg);color:var(--active)}
+  .stage.queued .stage-label{background:var(--queued-bg);color:var(--queued)}
+  .clip{
+    min-width:0;display:flex;align-items:center;gap:9px;padding:6px 7px;
+    border:1px solid var(--line);border-left:0;border-radius:0 9px 9px 0;background:#fff;
+  }
+  .stage.active .clip{border-color:#E9D5BE;background:#FFFCF8}
+  .clip img{
+    width:64px;height:44px;object-fit:cover;display:block;border-radius:7px;background:#DED7D1;
+  }
+  .clip-copy{flex:1;min-width:0}
+  .clip-title{
+    font-size:12px;font-weight:650;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .clip-sub{font-size:10px;color:var(--muted);margin-top:3px}
+  .duration{font-size:10px;color:var(--muted);font-variant-numeric:tabular-nums}
+
+  .tabbar{
+    position:absolute;left:0;right:0;bottom:0;height:66px;background:#FBFAF9;
+    border-top:1px solid #EDE8E4;display:flex;align-items:center;
+  }
+  .tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;color:#8C837C}
+  .tab span{font-size:11px;font-weight:500}
+  .tab.active{color:var(--accent)}
+  .tab.active span{font-weight:700}
+</style>
+</head>
+<body>
+<div class="screen">
+
+  <div class="player">
+    <img src="https://loremflickr.com/390/240/hotel?lock=1920" width="390" height="240" alt="Enhanced property inspection footage showing the villa terrace">
+    <div class="scrim"></div>
+
+    <div class="topbar">
+      <div class="top-left">
+        <div class="iconbtn" aria-label="Back to work orders">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
+        </div>
+        <div class="video-title">
+          <strong>Terrace inspection</strong>
+          <span>Technician playback</span>
+        </div>
+      </div>
+      <div class="quality">HD</div>
+    </div>
+
+    <div class="play" aria-label="Pause">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><rect x="6.5" y="5" width="4" height="14" rx="1.2"/><rect x="13.5" y="5" width="4" height="14" rx="1.2"/></svg>
+    </div>
+
+    <div class="control-dock">
+      <div class="track">
+        <div class="fill"></div>
+        <div class="knob"></div>
+      </div>
+      <div class="dock-row">
+        <div class="dock-left">
+          <div class="plain-icon" aria-label="Previous clip">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M7 6h2v12H7z"/><path d="M19 6.5v11a.6.6 0 0 1-.93.5l-8-5.5a.6.6 0 0 1 0-1l8-5.5a.6.6 0 0 1 .93.5z"/></svg>
+          </div>
+          <span>2:14 / 5:18</span>
+          <div class="plain-icon" aria-label="Next clip">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M15 6h2v12h-2z"/><path d="M5 6.5v11a.6.6 0 0 0 .93.5l8-5.5a.6.6 0 0 0 0-1l-8-5.5A.6.6 0 0 0 5 6.5z"/></svg>
+          </div>
+        </div>
+        <div class="dock-right">
+          <div class="plain-icon" aria-label="Captions on">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M10 10.5a2.5 2.5 0 1 0 0 3"/><path d="M17 10.5a2.5 2.5 0 1 0 0 3"/></svg>
+          </div>
+          <div class="plain-icon" aria-label="Full screen">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5"/><path d="M20 15v5h-5"/><path d="M20 9V4h-5"/><path d="M4 15v5h5"/></svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="content">
+    <div class="titleline">
+      <div class="titlecopy">
+        <div class="mode">Field service · Technician</div>
+        <h1>Villa Serrano safety inspection</h1>
+      </div>
+      <div class="priority">High priority</div>
+    </div>
+    <div class="meta">Positano hillside · Assigned to Elena Rossi</div>
+
+    <div class="ticket">
+      <div class="ticket-main">
+        <div class="ticket-id">WORK ORDER WO-1842</div>
+        <div class="ticket-task">Terrace and access safety check</div>
+        <div class="ticket-meta">Due today, 4:30 PM · Property occupied</div>
+      </div>
+      <div class="ticket-side">
+        <strong>3/7</strong>
+        <span>Reviewed</span>
+      </div>
+    </div>
+
+    <div class="section-title">
+      <h2>Footage by progress</h2>
+      <span>Review in order</span>
+    </div>
+
+    <div class="pipeline">
+      <div class="stage done">
+        <div class="stage-label">
+          <strong>01</strong>
+          <span>Done</span>
+        </div>
+        <div class="clip">
+          <img src="https://loremflickr.com/64/44/hotel?lock=1922" width="64" height="44" alt="Completed bedroom fixtures inspection thumbnail">
+          <div class="clip-copy">
+            <div class="clip-title">Bedroom fixtures</div>
+            <div class="clip-sub">No issue recorded</div>
+          </div>
+          <div class="duration">2:40</div>
+        </div>
+      </div>
+
+      <div class="stage active">
+        <div class="stage-label">
+          <strong>02</strong>
+          <span>Active</span>
+        </div>
+        <div class="clip">
+          <img src="https://loremflickr.com/64/44/beach?lock=1921" width="64" height="44" alt="Active terrace and sea wall inspection thumbnail">
+          <div class="clip-copy">
+            <div class="clip-title">Terrace and sea wall</div>
+            <div class="clip-sub">1:04 remaining</div>
+          </div>
+          <div class="duration">1:12</div>
+        </div>
+      </div>
+
+      <div class="stage queued">
+        <div class="stage-label">
+          <strong>03</strong>
+          <span>Queued</span>
+        </div>
+        <div class="clip">
+          <img src="https://loremflickr.com/64/44/mountain?lock=1923" width="64" height="44" alt="Queued harbor stair access inspection thumbnail">
+          <div class="clip-copy">
+            <div class="clip-title">Harbor stair access</div>
+            <div class="clip-sub">Rail and lighting check</div>
+          </div>
+          <div class="duration">3:58</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tabbar">
+    <div class="tab active">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4h12v16H6z"/><path d="M9 8h6M9 12h6M9 16h4"/></svg>
+      <span>Jobs</span>
+    </div>
+    <div class="tab">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16v14H4z"/><path d="M8 3v5M16 3v5M4 10h16"/></svg>
+      <span>Calendar</span>
+    </div>
+    <div class="tab">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v12H8l-4 3z"/></svg>
+      <span>Dispatch</span>
+    </div>
+    <div class="tab">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M5 21a7 7 0 0 1 14 0"/></svg>
+      <span>Account</span>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

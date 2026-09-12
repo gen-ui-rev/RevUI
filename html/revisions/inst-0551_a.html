@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ledgerbay — Reminder</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --slate:#3d4a5c;
+    --slate-soft:#eef0f3;
+    --ink:#14181d;
+    --muted:#6c757f;
+    --line:#e2e5e9;
+    --warm-fill:#f7f5f2;
+    --warm-line:#e7e1d8;
+  }
+  *{box-sizing:border-box;}
+  body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    padding:40px 0;
+    margin:0;
+    background:#e9eaec;
+    font-family:'Source Sans 3', system-ui, sans-serif;
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+  }
+  .screen{
+    position:relative;
+    width:390px;
+    height:844px;
+    background:#fff;
+    display:flex;
+    flex-direction:column;
+  }
+
+  /* top bar */
+  .topbar{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:16px 20px;
+    border-bottom:1px solid var(--line);
+  }
+  .topbar h1{
+    font-family:'Playfair Display', Georgia, serif;
+    font-weight:600;
+    font-size:19px;
+    margin:0;
+    letter-spacing:.2px;
+  }
+  .iconbtn{
+    width:28px;height:28px;
+    display:flex;align-items:center;justify-content:center;
+    color:var(--ink);
+    margin-left:-4px;
+  }
+  .topbar .right{
+    margin-left:auto;
+    font-size:14px;
+    color:var(--muted);
+  }
+
+  /* content */
+  .content{
+    flex:1;
+    padding:18px 20px;
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+  }
+
+  /* hero */
+  .hero{
+    border:1px solid var(--line);
+    border-radius:14px;
+    overflow:hidden;
+  }
+  .hero img{
+    display:block;
+    width:348px;
+    height:110px;
+    object-fit:cover;
+    background:#d6d9dd;
+  }
+  .hero .body{
+    padding:12px 14px 14px;
+  }
+  .kicker{
+    font-size:12px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:var(--muted);
+  }
+  .hero h2{
+    font-family:'Playfair Display', Georgia, serif;
+    font-weight:600;
+    font-size:20px;
+    line-height:26px;
+    margin:4px 0 6px;
+  }
+  .hero .facts{
+    display:flex;
+    align-items:baseline;
+    gap:8px;
+    font-size:14px;
+    line-height:20px;
+  }
+  .hero .amount{font-weight:600;}
+  .hero .dot{color:#c3c8ce;}
+  .hero .due{color:var(--muted);}
+
+  /* section */
+  .sec-head{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    margin-bottom:10px;
+  }
+  .sec-head h3{
+    font-family:'Playfair Display', Georgia, serif;
+    font-weight:600;
+    font-size:16px;
+    margin:0;
+  }
+  .sec-head span{
+    font-size:13px;
+    color:var(--muted);
+  }
+
+  /* chips */
+  .chips{
+    display:flex;
+    gap:10px;
+    margin-bottom:14px;
+  }
+  .chip{
+    flex:1;
+    text-align:center;
+    padding:9px 0;
+    font-size:14px;
+    border:1px solid var(--line);
+    border-radius:14px;
+    color:var(--muted);
+  }
+  .chip.on{
+    background:var(--slate);
+    border-color:var(--slate);
+    color:#fff;
+    font-weight:600;
+  }
+
+  /* list — borderless warm-gray block, full-width dividers */
+  .list{
+    background:var(--warm-fill);
+    border:none;
+    border-radius:14px;
+    overflow:hidden;
+  }
+  .row{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:12px 14px;
+    border-top:1px solid var(--warm-line);
+  }
+  .row:first-child{border-top:none;}
+  .row .label{
+    font-size:15px;
+    line-height:20px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .row .sub{
+    font-size:13px;
+    color:var(--muted);
+    line-height:18px;
+  }
+  .row .val{
+    margin-left:auto;
+    font-size:14px;
+    color:var(--slate);
+    font-weight:600;
+    white-space:nowrap;
+  }
+  .row .chev{
+    color:#b1a99e;
+    display:flex;
+    margin-right:-2px;
+  }
+  .tag{
+    margin-left:auto;
+    font-size:12px;
+    font-weight:600;
+    color:#fff;
+    background:var(--slate);
+    border-radius:14px;
+    padding:3px 9px;
+    white-space:nowrap;
+  }
+  .stacked{display:flex;flex-direction:column;min-width:0;}
+
+  /* save */
+  .save{
+    margin-top:auto;
+    background:var(--slate);
+    color:#fff;
+    border-radius:14px;
+    text-align:center;
+    padding:15px 0;
+    font-size:15px;
+    font-weight:600;
+  }
+
+  /* tab bar */
+  .tabbar{
+    border-top:1px solid var(--line);
+    display:flex;
+    padding:10px 8px 16px;
+  }
+  .tab{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:5px;
+    font-size:12px;
+    color:#98a0a9;
+  }
+  .tab.on{color:var(--slate);font-weight:600;}
+</style>
+</head>
+<body>
+  <div class="screen">
+
+    <div class="topbar">
+      <span class="iconbtn" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
+      </span>
+      <h1>Reminder schedule</h1>
+      <span class="right">Edit payee</span>
+    </div>
+
+    <div class="content">
+
+      <div class="hero">
+        <img src="https://loremflickr.com/348/110/architecture?lock=7420" width="348" height="110" alt="Facade of the Harbor Line apartment building">
+        <div class="body">
+          <div class="kicker">Reminder for</div>
+          <h2>Rent — Harbor Line Apts</h2>
+          <div class="facts">
+            <span class="amount">$2,180.00</span>
+            <span class="dot">·</span>
+            <span class="due">Autopay from Everyday Checking</span>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="sec-head">
+          <h3>Repeat cycle</h3>
+          <span>Every month on the 1st</span>
+        </div>
+        <div class="chips">
+          <div class="chip">Weekly</div>
+          <div class="chip on">Monthly</div>
+          <div class="chip">Quarterly</div>
+        </div>
+        <div class="list">
+          <div class="row">
+            <div class="stacked">
+              <span class="label">Wednesday, March 1</span>
+              <span class="sub">Alert 8:30 AM</span>
+            </div>
+            <span class="tag">Next</span>
+          </div>
+          <div class="row">
+            <div class="stacked">
+              <span class="label">Saturday, April 1</span>
+              <span class="sub">Alert 8:30 AM</span>
+            </div>
+            <span class="val">$2,180.00</span>
+          </div>
+          <div class="row">
+            <div class="stacked">
+              <span class="label">Monday, May 1</span>
+              <span class="sub">Alert 8:30 AM</span>
+            </div>
+            <span class="val">$2,180.00</span>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="sec-head">
+          <h3>Delivery</h3>
+        </div>
+        <div class="list">
+          <div class="row">
+            <span class="label">Alert time</span>
+            <span class="val">8:30 AM</span>
+            <span class="chev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span>
+          </div>
+          <div class="row">
+            <span class="label">Lead time</span>
+            <span class="val">3 days before</span>
+            <span class="chev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span>
+          </div>
+          <div class="row">
+            <span class="label">Send to</span>
+            <span class="val">Push, Email</span>
+            <span class="chev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="save">Save reminder</div>
+
+    </div>
+
+    <div class="tabbar">
+      <div class="tab">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12l8-7 8 7"/><path d="M6 11v8h12v-8"/></svg>
+        <span>Overview</span>
+      </div>
+      <div class="tab">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8 9h8M8 13h5"/></svg>
+        <span>Bills</span>
+      </div>
+      <div class="tab on">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M18 15v-4a6 6 0 10-12 0v4l-1.5 2.5h15z"/><path d="M10 20h4"/></svg>
+        <span>Reminders</span>
+      </div>
+      <div class="tab">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.4"/><path d="M5 20c1.4-3.4 4-5 7-5s5.6 1.6 7 5"/></svg>
+        <span>Profile</span>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

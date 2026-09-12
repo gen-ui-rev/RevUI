@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Suggested People</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #e9eeed;
+      color: #172221;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    button {
+      font: inherit;
+      cursor: pointer;
+    }
+
+    .screen {
+      width: 1024px;
+      height: 768px;
+      display: flex;
+      background: #ffffff;
+      box-shadow: 0 12px 40px rgba(23, 34, 33, 0.12);
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 240px;
+      flex: 0 0 240px;
+      padding: 26px 22px;
+      border-right: 1px solid #dce3e1;
+      background: #f5f9f8;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .brand {
+      color: #086b66;
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      margin-bottom: 24px;
+    }
+
+    .side-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .side-nav a {
+      padding: 9px 12px;
+      border-radius: 6px;
+      color: #3f4d4b;
+      font-size: 14px;
+      text-decoration: none;
+    }
+
+    .side-nav a.active {
+      background: #dcefed;
+      color: #086b66;
+      font-weight: 600;
+    }
+
+    .side-note {
+      margin-top: 26px;
+      padding: 14px;
+      border: 1px solid #dce3e1;
+      border-radius: 8px;
+      background: #ffffff;
+    }
+
+    .side-note h2 {
+      margin: 0 0 6px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .side-note p {
+      margin: 0;
+      color: #697573;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .side-foot {
+      margin-top: auto;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .me {
+      width: 30px;
+      height: 30px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: #dcefed;
+      color: #086b66;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .me-name {
+      color: #3f4d4b;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    /* Main */
+    .main {
+      flex: 1 1 auto;
+      min-width: 0;
+      padding: 28px 32px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .section-label {
+      margin: 0 0 6px;
+      color: #087f78;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 24px;
+      line-height: 1.2;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+
+    .intro {
+      margin: 8px 0 0;
+      color: #63706e;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .toolbar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 20px 0 14px;
+    }
+
+    .filter {
+      padding: 7px 13px;
+      border: 1px solid #dce3e1;
+      border-radius: 6px;
+      background: #ffffff;
+      color: #3f4d4b;
+      font-size: 13px;
+      line-height: 1.2;
+    }
+
+    .filter.on {
+      border-color: #0b8f86;
+      background: #eaf6f5;
+      color: #086b66;
+      font-weight: 600;
+    }
+
+    .toolbar .right {
+      margin-left: auto;
+      color: #8a9694;
+      font-size: 12px;
+    }
+
+    /* Table */
+    .table {
+      border: 1px solid #dce3e1;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) minmax(0, 1.2fr) 140px 80px 96px;
+      align-items: center;
+      gap: 16px;
+      padding: 11px 16px;
+      border-bottom: 1px solid #e7edec;
+    }
+
+    .row:last-child {
+      border-bottom: 0;
+    }
+
+    .row.head {
+      padding: 9px 16px;
+      background: #f5f9f8;
+      color: #8a9694;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+    }
+
+    .cell-person {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      min-width: 0;
+    }
+
+    .initials {
+      width: 36px;
+      height: 36px;
+      flex: 0 0 auto;
+      display: grid;
+      place-items: center;
+      border-radius: 6px;
+      background: #dcefed;
+      color: #086b66;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .person-copy {
+      min-width: 0;
+    }
+
+    .name {
+      margin: 0 0 2px;
+      overflow: hidden;
+      color: #172221;
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 1.3;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .handle {
+      margin: 0;
+      overflow: hidden;
+      color: #8a9694;
+      font-size: 12px;
+      line-height: 1.3;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .context {
+      margin: 0;
+      overflow: hidden;
+      color: #697573;
+      font-size: 13px;
+      line-height: 1.35;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .tag {
+      display: inline-block;
+      max-width: 100%;
+      overflow: hidden;
+      padding: 4px 9px;
+      border-radius: 999px;
+      background: #eef3f2;
+      color: #3f4d4b;
+      font-size: 12px;
+      line-height: 1.3;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .when {
+      color: #8a9694;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .follow {
+      width: 96px;
+      padding: 7px 10px;
+      border: 1px solid #0b8f86;
+      border-radius: 6px;
+      background: #ffffff;
+      color: #087b74;
+      font-size: 13px;
+      font-weight: 600;
+      line-height: 1.2;
+    }
+
+    .footer {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    .count {
+      color: #8a9694;
+      font-size: 13px;
+    }
+
+    .footer-actions {
+      margin-left: auto;
+      display: flex;
+      gap: 10px;
+    }
+
+    .ghost {
+      padding: 9px 15px;
+      border: 1px solid #dce3e1;
+      border-radius: 6px;
+      background: #ffffff;
+      color: #3f4d4b;
+      font-size: 13px;
+      font-weight: 600;
+      line-height: 1.2;
+    }
+
+    .view-all {
+      padding: 9px 18px;
+      border: 0;
+      border-radius: 6px;
+      background: #0b8f86;
+      color: #ffffff;
+      font-size: 13px;
+      font-weight: 600;
+      line-height: 1.2;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <aside class="sidebar">
+      <div class="brand">Commonly</div>
+      <nav class="side-nav">
+        <a href="#">Home feed</a>
+        <a href="#">Communities</a>
+        <a href="#">Messages</a>
+        <a class="active" href="#">Suggested people</a>
+        <a href="#">Saved posts</a>
+        <a href="#">Settings</a>
+      </nav>
+
+      <div class="side-note">
+        <h2>How suggestions work</h2>
+        <p>We look at who your connections follow and which communities you post in. Hide anyone to stop seeing them.</p>
+      </div>
+
+      <div class="side-foot">
+        <div class="me" aria-hidden="true">RM</div>
+        <span class="me-name">Rowan Mills</span>
+      </div>
+    </aside>
+
+    <section class="main" aria-labelledby="suggestions-title">
+      <p class="section-label">Suggested for you</p>
+      <h1 id="suggestions-title">People worth following</h1>
+      <p class="intro">Based on your conversations and communities on Commonly.</p>
+
+      <div class="toolbar">
+        <button class="filter on" type="button">All</button>
+        <button class="filter" type="button">Followed by friends</button>
+        <button class="filter" type="button">Your communities</button>
+        <span class="right">Sorted by relevance</span>
+      </div>
+
+      <div class="table">
+        <div class="row head">
+          <span>Person</span>
+          <span>Why we suggest them</span>
+          <span>Community</span>
+          <span>Last post</span>
+          <span></span>
+        </div>
+
+        <article class="row">
+          <div class="cell-person">
+            <div class="initials" aria-hidden="true">AM</div>
+            <div class="person-copy">
+              <p class="name">Avery Mercer</p>
+              <p class="handle">@averymercer</p>
+            </div>
+          </div>
+          <p class="context">Followed by Rowan and 8 others</p>
+          <span class="tag">Local news</span>
+          <span class="when">2h ago</span>
+          <button class="follow" type="button">Follow</button>
+        </article>
+
+        <article class="row">
+          <div class="cell-person">
+            <div class="initials" aria-hidden="true">JL</div>
+            <div class="person-copy">
+              <p class="name">Jordan Lane</p>
+              <p class="handle">@jordanlane</p>
+            </div>
+          </div>
+          <p class="context">Active in Neighborhood Notes</p>
+          <span class="tag">Neighborhood</span>
+          <span class="when">5h ago</span>
+          <button class="follow" type="button">Follow</button>
+        </article>
+
+        <article class="row">
+          <div class="cell-person">
+            <div class="initials" aria-hidden="true">SC</div>
+            <div class="person-copy">
+              <p class="name">Sydney Cole</p>
+              <p class="handle">@sydcole</p>
+            </div>
+          </div>
+          <p class="context">Followed by Devon and 5 others</p>
+          <span class="tag">Design</span>
+          <span class="when">Yesterday</span>
+          <button class="follow" type="button">Follow</button>
+        </article>
+
+        <article class="row">
+          <div class="cell-person">
+            <div class="initials" aria-hidden="true">PN</div>
+            <div class="person-copy">
+              <p class="name">Priya Nadar</p>
+              <p class="handle">@priyanadar</p>
+            </div>
+          </div>
+          <p class="context">Writes the Riverside Weekly</p>
+          <span class="tag">Local news</span>
+          <span class="when">Yesterday</span>
+          <button class="follow" type="button">Follow</button>
+        </article>
+
+        <article class="row">
+          <div class="cell-person">
+            <div class="initials" aria-hidden="true">TO</div>
+            <div class="person-copy">
+              <p class="name">Theo Okonkwo</p>
+              <p class="handle">@theookonkwo</p>
+            </div>
+          </div>
+          <p class="context">Followed by Maya and 3 others</p>
+          <span class="tag">Cycling</span>
+          <span class="when">2 days ago</span>
+          <button class="follow" type="button">Follow</button>
+        </article>
+
+        <article class="row">
+          <div class="cell-person">
+            <div class="initials" aria-hidden="true">HB</div>
+            <div class="person-copy">
+              <p class="name">Harriet Boone</p>
+              <p class="handle">@harrietboone</p>
+            </div>
+          </div>
+          <p class="context">Moderates Local Makers Circle</p>
+          <span class="tag">Makers</span>
+          <span class="when">3 days ago</span>
+          <button class="follow" type="button">Follow</button>
+        </article>
+
+        <article class="row">
+          <div class="cell-person">
+            <div class="initials" aria-hidden="true">DK</div>
+            <div class="person-copy">
+              <p class="name">Dev Kaminski</p>
+              <p class="handle">@devkaminski</p>
+            </div>
+          </div>
+          <p class="context">Followed by Sydney and 2 others</p>
+          <span class="tag">Gardening</span>
+          <span class="when">4 days ago</span>
+          <button class="follow" type="button">Follow</button>
+        </article>
+      </div>
+
+      <div class="footer">
+        <span class="count">Showing 7 of 42 suggestions</span>
+        <div class="footer-actions">
+          <button class="ghost" type="button">Hide these</button>
+          <button class="view-all" type="button">See all suggestions</button>
+        </div>
+      </div>
+    </section>
+  </div>
+</body>
+</html>

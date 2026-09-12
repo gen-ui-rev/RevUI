@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stridewell Location Permission</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 24px 0;
+      background: #dde0da;
+      color: #171a16;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    .screen {
+      width: 1024px;
+      height: 768px;
+      display: flex;
+      background: #eff1ed;
+      box-shadow: 0 18px 48px rgba(25, 31, 22, 0.16);
+    }
+
+    /* ---------- left brand panel ---------- */
+    .brand-panel {
+      width: 392px;
+      padding: 56px 44px;
+      background: #1c2512;
+      color: #eff1ed;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .service-name {
+      margin: 0;
+      color: #c7f43d;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .brand-headline {
+      margin: 28px 0 14px;
+      font-size: 30px;
+      line-height: 1.22;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-copy {
+      margin: 0;
+      color: #b7bfae;
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    .brand-metrics {
+      margin-top: 34px;
+      display: flex;
+      gap: 34px;
+    }
+
+    .brand-metrics div {
+      min-width: 0;
+    }
+
+    .metric-value {
+      margin: 0;
+      font-size: 21px;
+      font-weight: 600;
+      color: #c7f43d;
+    }
+
+    .metric-label {
+      margin: 4px 0 0;
+      font-size: 12px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: #8f9887;
+    }
+
+    .brand-foot {
+      margin: 0;
+      padding-top: 26px;
+      border-top: 1px solid rgba(239, 241, 237, 0.16);
+      color: #9aa392;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    /* ---------- right content column ---------- */
+    .content {
+      flex: 1;
+      padding: 60px 72px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .permission-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 56px;
+      height: 56px;
+      margin-bottom: 24px;
+      border-radius: 4px;
+      background: #c7f43d;
+      color: #1c2512;
+    }
+
+    .permission-icon svg {
+      width: 28px;
+      height: 28px;
+    }
+
+    h1 {
+      margin: 0 0 14px;
+      font-size: 32px;
+      line-height: 1.18;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+
+    .description {
+      margin: 0 0 14px;
+      max-width: 460px;
+      color: #4f554c;
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    .privacy-note {
+      margin: 0 0 30px;
+      max-width: 460px;
+      color: #72776f;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    /* ---------- flow guidance ---------- */
+    .flow-guide {
+      padding: 20px 22px;
+      margin-bottom: 24px;
+      border: 1px solid #dcdfd6;
+      border-radius: 4px;
+      background: #f7f8f4;
+    }
+
+    .flow-label {
+      margin: 0 0 14px;
+      color: #62685f;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .flow-steps {
+      display: flex;
+      gap: 14px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .flow-steps li {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .flow-track {
+      height: 4px;
+      border-radius: 2px;
+      background: #dfe2d9;
+    }
+
+    .flow-steps li.done .flow-track,
+    .flow-steps li.current .flow-track {
+      background: #a9d331;
+    }
+
+    .flow-steps li.current .flow-track {
+      background: #7f9f21;
+    }
+
+    .flow-step-name {
+      margin: 10px 0 0;
+      font-size: 13px;
+      font-weight: 600;
+      color: #9aa092;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .flow-steps li.done .flow-step-name {
+      color: #5d6357;
+    }
+
+    .flow-steps li.current .flow-step-name {
+      color: #1f2a13;
+    }
+
+    .flow-step-hint {
+      margin: 3px 0 0;
+      font-size: 12px;
+      color: #8b9083;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .flow-next {
+      margin: 16px 0 0;
+      padding-top: 14px;
+      border-top: 1px solid #e3e6dd;
+      color: #5b6156;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    /* ---------- actions ---------- */
+    .actions {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .primary-action,
+    .secondary-action {
+      border-radius: 4px;
+      font: inherit;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .primary-action {
+      padding: 13px 40px;
+      border: 1px solid #add82d;
+      background: #c7f43d;
+      color: #17200e;
+    }
+
+    .secondary-action {
+      padding: 12px 26px;
+      border: 1px solid #d3d7cc;
+      background: #ffffff;
+      color: #4f554c;
+    }
+
+    .shortcut-hint {
+      margin: 0 0 0 auto;
+      color: #8b9083;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <aside class="brand-panel">
+      <div>
+        <p class="service-name">Stridewell</p>
+        <h2 class="brand-headline">Outdoor tracking, set up once.</h2>
+        <p class="brand-copy">
+          Route maps, live pace and elevation for every run, ride and hike you record on this computer.
+        </p>
+        <div class="brand-metrics">
+          <div>
+            <p class="metric-value">1.2 s</p>
+            <p class="metric-label">GPS refresh</p>
+          </div>
+          <div>
+            <p class="metric-value">±3 m</p>
+            <p class="metric-label">Route accuracy</p>
+          </div>
+        </div>
+      </div>
+      <p class="brand-foot">
+        Indoor workouts still record without location — treadmill and rower sessions are unaffected.
+      </p>
+    </aside>
+
+    <main class="content">
+      <section aria-labelledby="permission-title">
+        <div class="permission-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M12 21C12 21 18.5 15.2 18.5 9.5C18.5 5.91 15.59 3 12 3C8.41 3 5.5 5.91 5.5 9.5C5.5 15.2 12 21 12 21Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+            <circle cx="12" cy="9.5" r="2.25" stroke="currentColor" stroke-width="1.8"/>
+          </svg>
+        </div>
+
+        <h1 id="permission-title">Allow location access</h1>
+        <p class="description">
+          Stridewell uses your location to map distance and pace during outdoor workouts.
+        </p>
+        <p class="privacy-note">
+          Your location is collected only while a workout is active. You can change this permission in system settings.
+        </p>
+
+        <div class="flow-guide">
+          <p class="flow-label">Setup progress — step 2 of 3</p>
+          <ol class="flow-steps">
+            <li class="done">
+              <div class="flow-track"></div>
+              <p class="flow-step-name">Profile</p>
+              <p class="flow-step-hint">Completed</p>
+            </li>
+            <li class="current">
+              <div class="flow-track"></div>
+              <p class="flow-step-name">Location access</p>
+              <p class="flow-step-hint">You are here</p>
+            </li>
+            <li>
+              <div class="flow-track"></div>
+              <p class="flow-step-name">Connect devices</p>
+              <p class="flow-step-hint">Watch or HR strap</p>
+            </li>
+          </ol>
+          <p class="flow-next">
+            Continuing opens your browser's location prompt, then takes you to device pairing.
+          </p>
+        </div>
+
+        <div class="actions">
+          <button class="primary-action" type="button">Continue</button>
+          <button class="secondary-action" type="button">Not now</button>
+          <p class="shortcut-hint">You can finish setup later from Settings</p>
+        </div>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Community Activity Chart</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #e5e8eb;
+      color: #25313b;
+      font-family: 'Poppins', system-ui, sans-serif;
+    }
+
+    .screen {
+      width: 390px;
+      height: 560px;
+      padding: 20px;
+      background: #eef1f3;
+    }
+
+    .chart-card {
+      width: 100%;
+      padding: 19px 20px;
+      background: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(33, 47, 59, 0.09);
+    }
+
+    .eyebrow {
+      margin: 0 0 3px;
+      color: #74818b;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      color: #202b33;
+      font-size: 20px;
+      font-weight: 600;
+      line-height: 1.35;
+    }
+
+    .period-tabs {
+      margin: 8px 0 0;
+      padding: 3px;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 3px;
+      border: 1px solid #dce1e5;
+      border-radius: 8px;
+      background: #f2f4f6;
+    }
+
+    .period-tabs input {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .period-tabs label {
+      padding: 6px 2px;
+      border-radius: 5px;
+      color: #6b7780;
+      font-size: 10px;
+      font-weight: 500;
+      line-height: 1.4;
+      text-align: center;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+
+    .period-tabs input:checked + label {
+      background: #ffffff;
+      color: #5c55b9;
+      box-shadow: 0 1px 4px rgba(50, 60, 70, 0.13);
+    }
+
+    .period-tabs input:focus-visible + label {
+      outline: 2px solid #7770d7;
+      outline-offset: 1px;
+    }
+
+    .summary {
+      margin-top: 12px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .total {
+      margin: 0;
+      color: #655ec7;
+      font-size: 32px;
+      font-weight: 600;
+      line-height: 1.2;
+    }
+
+    .total-label {
+      margin: 0 0 3px;
+      color: #53616b;
+      font-size: 11px;
+      line-height: 1.45;
+      text-align: right;
+    }
+
+    .comparison {
+      display: block;
+      color: #655ec7;
+      font-weight: 500;
+    }
+
+    .chart {
+      margin-top: 14px;
+    }
+
+    .plot-row {
+      display: grid;
+      grid-template-columns: 34px minmax(0, 1fr);
+      column-gap: 8px;
+    }
+
+    .axis {
+      height: 164px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding-bottom: 1px;
+      color: #8a959d;
+      font-size: 11px;
+      line-height: 1;
+      text-align: right;
+    }
+
+    .plot {
+      position: relative;
+      height: 164px;
+      border-bottom: 1px solid #cfd6db;
+    }
+
+    .grid-line {
+      position: absolute;
+      right: 0;
+      left: 0;
+      height: 1px;
+      background: #e7ebee;
+    }
+
+    .grid-line.one {
+      top: 0;
+    }
+
+    .grid-line.two {
+      top: 33.33%;
+    }
+
+    .grid-line.three {
+      top: 66.66%;
+    }
+
+    .bars {
+      position: absolute;
+      inset: 0 4px;
+      z-index: 1;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+    }
+
+    .bar-column {
+      width: 25px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+    }
+
+    .stack {
+      width: 22px;
+      display: flex;
+      flex-direction: column-reverse;
+    }
+
+    .segment {
+      width: 100%;
+    }
+
+    .posts {
+      background: #655ec7;
+    }
+
+    .replies {
+      background: #42aa91;
+    }
+
+    .reactions {
+      background: #9bd9cf;
+    }
+
+    .day-labels {
+      margin: 7px 0 0 42px;
+      padding: 0 4px;
+      display: flex;
+      justify-content: space-between;
+      color: #68757e;
+      font-size: 11px;
+      line-height: 1.4;
+    }
+
+    .day-labels span {
+      width: 25px;
+      text-align: center;
+    }
+
+    .legend {
+      margin-top: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: #53616b;
+      font-size: 11px;
+      line-height: 1.4;
+    }
+
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+
+    .legend-mark {
+      width: 9px;
+      height: 9px;
+      flex: 0 0 auto;
+      border-radius: 50%;
+    }
+
+    .chart-note {
+      margin: 12px 0 0;
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-left: 3px solid #655ec7;
+      border-radius: 0 7px 7px 0;
+      background: #f4f3fb;
+      color: #53616b;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .chart-note strong {
+      color: #4f49a8;
+      font-size: 14px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .chart-note span {
+      padding-left: 10px;
+      border-left: 1px solid #d9d6ef;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <section class="chart-card" aria-labelledby="activity-title-b">
+      <header>
+        <p class="eyebrow">Commonfield Community</p>
+        <h1 id="activity-title-b">Member activity</h1>
+
+        <fieldset class="period-tabs" aria-label="Select activity date range">
+          <input type="radio" id="period-old-b" name="period-b">
+          <label for="period-old-b">May 5–11</label>
+
+          <input type="radio" id="period-current-b" name="period-b" checked>
+          <label for="period-current-b">May 12–18</label>
+
+          <input type="radio" id="period-new-b" name="period-b">
+          <label for="period-new-b">May 19–25</label>
+        </fieldset>
+      </header>
+
+      <div class="summary">
+        <p class="total">4,286</p>
+        <p class="total-label">
+          Total interactions
+          <span class="comparison">12% above last week</span>
+        </p>
+      </div>
+
+      <div class="chart" role="img" aria-label="Stacked bar chart of posts, replies, and reactions from Monday through Sunday. Friday had the highest activity with 820 interactions.">
+        <div class="plot-row">
+          <div class="axis" aria-hidden="true">
+            <span>900</span>
+            <span>600</span>
+            <span>300</span>
+            <span>0</span>
+          </div>
+
+          <div class="plot" aria-hidden="true">
+            <div class="grid-line one"></div>
+            <div class="grid-line two"></div>
+            <div class="grid-line three"></div>
+
+            <div class="bars">
+              <div class="bar-column">
+                <div class="stack">
+                  <div class="segment posts" style="height:29px;"></div>
+                  <div class="segment replies" style="height:44px;"></div>
+                  <div class="segment reactions" style="height:56px;"></div>
+                </div>
+              </div>
+              <div class="bar-column">
+                <div class="stack">
+                  <div class="segment posts" style="height:23px;"></div>
+                  <div class="segment replies" style="height:34px;"></div>
+                  <div class="segment reactions" style="height:38px;"></div>
+                </div>
+              </div>
+              <div class="bar-column">
+                <div class="stack">
+                  <div class="segment posts" style="height:34px;"></div>
+                  <div class="segment replies" style="height:49px;"></div>
+                  <div class="segment reactions" style="height:60px;"></div>
+                </div>
+              </div>
+              <div class="bar-column">
+                <div class="stack">
+                  <div class="segment posts" style="height:25px;"></div>
+                  <div class="segment replies" style="height:37px;"></div>
+                  <div class="segment reactions" style="height:48px;"></div>
+                </div>
+              </div>
+              <div class="bar-column">
+                <div class="stack">
+                  <div class="segment posts" style="height:37px;"></div>
+                  <div class="segment replies" style="height:52px;"></div>
+                  <div class="segment reactions" style="height:64px;"></div>
+                </div>
+              </div>
+              <div class="bar-column">
+                <div class="stack">
+                  <div class="segment posts" style="height:21px;"></div>
+                  <div class="segment replies" style="height:29px;"></div>
+                  <div class="segment reactions" style="height:36px;"></div>
+                </div>
+              </div>
+              <div class="bar-column">
+                <div class="stack">
+                  <div class="segment posts" style="height:20px;"></div>
+                  <div class="segment replies" style="height:28px;"></div>
+                  <div class="segment reactions" style="height:36px;"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="day-labels" aria-hidden="true">
+          <span>Mon</span>
+          <span>Tue</span>
+          <span>Wed</span>
+          <span>Thu</span>
+          <span>Fri</span>
+          <span>Sat</span>
+          <span>Sun</span>
+        </div>
+
+        <div class="legend" aria-label="Chart legend">
+          <span class="legend-item">
+            <span class="legend-mark posts"></span>
+            Posts
+          </span>
+          <span class="legend-item">
+            <span class="legend-mark replies"></span>
+            Replies
+          </span>
+          <span class="legend-item">
+            <span class="legend-mark reactions"></span>
+            Reactions
+          </span>
+        </div>
+      </div>
+
+      <p class="chart-note">
+        <strong>Friday · 820</strong>
+        <span>Most active day</span>
+      </p>
+    </section>
+  </div>
+</body>
+</html>

@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vesper Language Lesson</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #d8d8d2;
+      color: #f1f1eb;
+      font-family: 'Roboto', system-ui, sans-serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      background: #11120f;
+    }
+
+    .player {
+      width: 390px;
+      height: 468px;
+      position: relative;
+      flex: 0 0 auto;
+      background: #27291f;
+    }
+
+    .player-image {
+      width: 390px;
+      height: 468px;
+      display: block;
+      object-fit: cover;
+      background: #27291f;
+    }
+
+    .video-tint {
+      position: absolute;
+      inset: 0;
+      background: rgba(9, 10, 7, 0.59);
+    }
+
+    .top-bar {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+      background: rgba(14, 15, 11, 0.74);
+    }
+
+    .icon-button {
+      width: 36px;
+      height: 36px;
+      padding: 0;
+      border: 1px solid rgba(255, 255, 255, 0.24);
+      border-radius: 4px;
+      display: grid;
+      place-items: center;
+      color: #f5f5ef;
+      background: rgba(17, 18, 15, 0.74);
+    }
+
+    .icon-button svg,
+    .nav-item svg {
+      width: 21px;
+      height: 21px;
+      display: block;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .service-name {
+      flex: 1;
+      font-size: 16px;
+      line-height: 20px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
+    .lesson-marker {
+      position: absolute;
+      top: 98px;
+      left: 16px;
+      right: 16px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 7px;
+      color: #d5d6cb;
+      font-size: 12px;
+      line-height: 18px;
+      font-weight: 500;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+    }
+
+    .lesson-marker span {
+      padding: 3px 7px;
+      border: 1px solid rgba(196, 205, 117, 0.55);
+      border-radius: 3px;
+      color: #c4cd75;
+      background: rgba(17, 18, 15, 0.7);
+    }
+
+    .center-controls {
+      position: absolute;
+      top: 163px;
+      left: 0;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .skip-button {
+      width: 44px;
+      height: 44px;
+      position: relative;
+      padding: 0;
+      border: 0;
+      display: grid;
+      place-items: center;
+      color: #f1f1eb;
+      background: transparent;
+    }
+
+    .skip-button svg {
+      width: 29px;
+      height: 29px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.7;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .skip-label {
+      position: absolute;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .play-button {
+      width: 62px;
+      height: 62px;
+      padding: 0;
+      border: 1px solid #a7ae68;
+      border-radius: 4px;
+      display: grid;
+      place-items: center;
+      color: #17180f;
+      background: #a7ae68;
+    }
+
+    .play-button svg {
+      width: 29px;
+      height: 29px;
+      margin-left: 3px;
+      fill: currentColor;
+      stroke: none;
+    }
+
+    .player-info {
+      position: absolute;
+      left: 16px;
+      right: 16px;
+      bottom: 18px;
+    }
+
+    .player-kicker {
+      margin: 0 0 4px;
+      color: #c4cd75;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .player-title {
+      margin: 0 0 3px;
+      font-size: 20px;
+      line-height: 25px;
+      font-weight: 500;
+    }
+
+    .player-subtitle {
+      margin: 0 0 14px;
+      color: #d0d1c7;
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 4px;
+      position: relative;
+      background: rgba(255, 255, 255, 0.28);
+    }
+
+    .progress-fill {
+      width: 40.6%;
+      height: 4px;
+      background: #a7ae68;
+    }
+
+    .progress-thumb {
+      width: 10px;
+      height: 10px;
+      position: absolute;
+      top: -3px;
+      left: calc(40.6% - 5px);
+      border-radius: 50%;
+      background: #a7ae68;
+    }
+
+    .time-row {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 7px;
+      color: #d7d8ce;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .lesson-summary {
+      flex: 0 0 auto;
+      padding: 12px 16px 11px;
+      border-bottom: 1px solid #34362e;
+    }
+
+    .summary-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 5px;
+    }
+
+    .section-label {
+      margin: 0;
+      color: #a7ae68;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .difficulty-chip {
+      flex: 0 0 auto;
+      padding: 3px 7px;
+      border: 1px solid #666b48;
+      border-radius: 3px;
+      color: #d9dda8;
+      background: #25281c;
+      font-size: 11px;
+      line-height: 15px;
+      font-weight: 500;
+    }
+
+    .lesson-title {
+      margin: 0 0 3px;
+      font-size: 18px;
+      line-height: 23px;
+      font-weight: 500;
+    }
+
+    .lesson-meta {
+      margin: 0;
+      color: #aeb0a7;
+      font-size: 13px;
+      line-height: 18px;
+    }
+
+    .path {
+      flex: 0 0 auto;
+      padding: 10px 16px 0;
+    }
+
+    .path-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 3px;
+    }
+
+    .path-title {
+      margin: 0;
+      font-size: 16px;
+      line-height: 22px;
+      font-weight: 500;
+    }
+
+    .path-count {
+      color: #92948c;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .step {
+      display: grid;
+      grid-template-columns: 30px 96px minmax(0, 1fr);
+      gap: 10px;
+      padding: 7px 0;
+      border-bottom: 1px solid #2e3029;
+    }
+
+    .step:last-child {
+      border-bottom: 0;
+    }
+
+    .step-marker {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      padding-top: 12px;
+    }
+
+    .step:not(:last-child) .step-marker::after {
+      content: "";
+      width: 2px;
+      position: absolute;
+      top: 36px;
+      bottom: -12px;
+      left: 14px;
+      background: #596039;
+    }
+
+    .step-number {
+      width: 28px;
+      height: 28px;
+      position: relative;
+      z-index: 1;
+      border: 1px solid #a7ae68;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      color: #17180f;
+      background: #a7ae68;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .queue-image {
+      width: 96px;
+      height: 54px;
+      display: block;
+      object-fit: cover;
+      border-radius: 4px;
+      align-self: center;
+      background: #292b24;
+    }
+
+    .step-copy {
+      min-width: 0;
+      align-self: center;
+    }
+
+    .step-stage {
+      margin: 0 0 1px;
+      color: #a7ae68;
+      font-size: 10px;
+      line-height: 14px;
+      font-weight: 700;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+    }
+
+    .step-name {
+      margin: 0 0 2px;
+      overflow: hidden;
+      color: #ecece6;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 500;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .step-meta {
+      margin: 0;
+      color: #95978f;
+      font-size: 11px;
+      line-height: 15px;
+    }
+
+    .tab-bar {
+      min-height: 68px;
+      margin-top: auto;
+      display: flex;
+      align-items: stretch;
+      border-top: 1px solid #3a3c33;
+      background: #151612;
+    }
+
+    .nav-item {
+      width: 25%;
+      padding: 8px 4px 7px;
+      border: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 4px;
+      color: #8f9188;
+      background: transparent;
+      font-size: 12px;
+      line-height: 15px;
+      font-weight: 500;
+    }
+
+    .nav-item.active {
+      padding-top: 6px;
+      border-top: 2px solid #a7ae68;
+      color: #a7ae68;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <section class="player" aria-label="Language lesson video player">
+      <img class="player-image" src="https://loremflickr.com/390/468/studio?lock=9630" width="390" height="468" alt="A dim recording studio shown in the current lesson">
+      <div class="video-tint"></div>
+
+      <header class="top-bar">
+        <button class="icon-button" type="button" aria-label="Close lesson">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M15 5l-7 7 7 7"></path>
+          </svg>
+        </button>
+        <div class="service-name">Vesper Learn</div>
+        <button class="icon-button" type="button" aria-label="Caption settings">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="3" y="5" width="18" height="14" rx="1"></rect>
+            <path d="M10 10a3 3 0 1 0 0 4M18 10a3 3 0 1 0 0 4"></path>
+          </svg>
+        </button>
+        <button class="icon-button" type="button" aria-label="More lesson options">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="5" cy="12" r="1" fill="currentColor" stroke="none"></circle>
+            <circle cx="12" cy="12" r="1" fill="currentColor" stroke="none"></circle>
+            <circle cx="19" cy="12" r="1" fill="currentColor" stroke="none"></circle>
+          </svg>
+        </button>
+      </header>
+
+      <div class="lesson-marker">English listening <span>B1</span></div>
+
+      <div class="center-controls">
+        <button class="skip-button" type="button" aria-label="Go back 10 seconds">
+          <svg viewBox="0 0 32 32" aria-hidden="true">
+            <path d="M7 11V5m0 0h6M7 5l4 4"></path>
+            <path d="M8.5 10A10 10 0 1 1 6 18"></path>
+          </svg>
+          <span class="skip-label">10</span>
+        </button>
+
+        <button class="play-button" type="button" aria-label="Resume lesson">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M7 4l13 8-13 8z"></path>
+          </svg>
+        </button>
+
+        <button class="skip-button" type="button" aria-label="Go forward 10 seconds">
+          <svg viewBox="0 0 32 32" aria-hidden="true">
+            <path d="M25 11V5m0 0h-6m6 0l-4 4"></path>
+            <path d="M23.5 10A10 10 0 1 0 26 18"></path>
+          </svg>
+          <span class="skip-label">10</span>
+        </button>
+      </div>
+
+      <div class="player-info">
+        <p class="player-kicker">Lesson 4 · Context clues</p>
+        <h1 class="player-title">The Room Below</h1>
+        <p class="player-subtitle">Listen for directions and location phrases.</p>
+        <div class="progress-track" aria-label="18 minutes 42 seconds of 46 minutes 8 seconds">
+          <div class="progress-fill"></div>
+          <div class="progress-thumb"></div>
+        </div>
+        <div class="time-row">
+          <span>18:42</span>
+          <span>46:08</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="lesson-summary" aria-labelledby="lesson-heading">
+      <div class="summary-top">
+        <p class="section-label">Current lesson</p>
+        <span class="difficulty-chip">Expected difficulty · Intermediate</span>
+      </div>
+      <h2 class="lesson-title" id="lesson-heading">English through The Quiet Frequency</h2>
+      <p class="lesson-meta">English audio · English captions · Focus: listening</p>
+    </section>
+
+    <section class="path" aria-labelledby="path-heading">
+      <div class="path-header">
+        <h2 class="path-title" id="path-heading">Lesson path</h2>
+        <span class="path-count">2 stages remaining</span>
+      </div>
+
+      <div class="step">
+        <div class="step-marker" aria-hidden="true">
+          <span class="step-number">1</span>
+        </div>
+        <img class="queue-image" src="https://loremflickr.com/96/54/concert?lock=9631" width="96" height="54" alt="A dark concert stage from the next listening lesson">
+        <div class="step-copy">
+          <p class="step-stage">Stage 1 · Listening</p>
+          <p class="step-name">Dead Air</p>
+          <p class="step-meta">12 min · B1 expected</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-marker" aria-hidden="true">
+          <span class="step-number">2</span>
+        </div>
+        <img class="queue-image" src="https://loremflickr.com/96/54/vinyl?lock=9632" width="96" height="54" alt="A vinyl record featured in the vocabulary lesson">
+        <div class="step-copy">
+          <p class="step-stage">Stage 2 · Vocabulary</p>
+          <p class="step-name">Second Pressing</p>
+          <p class="step-meta">10 min · B1+ expected</p>
+        </div>
+      </div>
+    </section>
+
+    <nav class="tab-bar" aria-label="Primary navigation">
+      <button class="nav-item" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M3 11l9-7 9 7"></path>
+          <path d="M5 10v10h14V10"></path>
+        </svg>
+        <span>Home</span>
+      </button>
+
+      <button class="nav-item" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="10.5" cy="10.5" r="6.5"></circle>
+          <path d="M15.5 15.5L21 21"></path>
+        </svg>
+        <span>Explore</span>
+      </button>
+
+      <button class="nav-item active" type="button" aria-current="page">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <rect x="3" y="4" width="18" height="16" rx="1"></rect>
+          <path d="M10 9l5 3-5 3z"></path>
+        </svg>
+        <span>Lesson</span>
+      </button>
+
+      <button class="nav-item" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M5 4h14v16H5z"></path>
+          <path d="M9 4v16"></path>
+        </svg>
+        <span>Words</span>
+      </button>
+    </nav>
+  </div>
+</body>
+</html>

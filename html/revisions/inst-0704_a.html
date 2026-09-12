@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Compare plans — Loomdesk</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --em:#059669;
+    --em-dark:#047857;
+    --em-tint:#ecfdf5;
+    --ink:#16191d;
+    --gray:#6b7280;
+    --line:#e7e9ed;
+    --ground:#f4f5f7;
+    --white:#fff;
+  }
+  *{box-sizing:border-box;}
+  body{
+    min-height:100vh;
+    margin:0;
+    padding:24px 0;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    background:#d9dce1;
+    color:var(--ink);
+    font-family:'Manrope',system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .screen{
+    width:1024px;
+    height:768px;
+    display:flex;
+    position:relative;
+    background:var(--ground);
+    box-shadow:0 14px 40px rgba(26,32,44,.16);
+  }
+
+  .sidebar{
+    width:208px;
+    flex:none;
+    display:flex;
+    flex-direction:column;
+    padding:22px 14px 18px;
+    background:#fff;
+    border-right:1px solid var(--line);
+  }
+  .brand{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:0 10px 22px;
+    font-size:18px;
+    line-height:24px;
+    font-weight:700;
+  }
+  .brandmark{
+    width:30px;
+    height:30px;
+    display:grid;
+    place-items:center;
+    border-radius:8px;
+    background:var(--em);
+    color:#fff;
+    font-size:15px;
+  }
+  .navlabel{
+    padding:0 12px 8px;
+    color:#9ca3af;
+    font-size:11px;
+    line-height:16px;
+    font-weight:700;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+  }
+  nav{
+    display:flex;
+    flex-direction:column;
+    gap:4px;
+  }
+  nav a{
+    min-height:42px;
+    padding:9px 12px;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    border-radius:7px;
+    color:var(--gray);
+    font-size:14px;
+    line-height:20px;
+    text-decoration:none;
+  }
+  nav a.active{
+    color:var(--em-dark);
+    background:var(--em-tint);
+    font-weight:700;
+  }
+  nav svg{width:20px;height:20px;display:block;flex:none;}
+  .sidebar-foot{
+    margin-top:auto;
+    padding:14px 12px 0;
+    border-top:1px solid var(--line);
+  }
+  .workspace-mini{
+    color:var(--gray);
+    font-size:12px;
+    line-height:17px;
+  }
+  .workspace-mini strong{
+    display:block;
+    color:var(--ink);
+    font-size:13px;
+    line-height:19px;
+  }
+
+  .app{
+    min-width:0;
+    flex:1;
+    display:flex;
+    flex-direction:column;
+  }
+  .topbar{
+    min-height:64px;
+    padding:0 24px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    background:#fff;
+    border-bottom:1px solid var(--line);
+  }
+  .titlewrap{display:flex;align-items:center;gap:12px;}
+  .back{
+    width:32px;
+    height:32px;
+    padding:6px;
+    display:block;
+    border:1px solid var(--line);
+    border-radius:7px;
+    background:#fff;
+  }
+  .topbar h1{
+    margin:0;
+    font-size:20px;
+    line-height:28px;
+    font-weight:700;
+  }
+  .topbar .path{
+    color:var(--gray);
+    font-size:13px;
+    line-height:18px;
+  }
+
+  main{
+    min-height:0;
+    padding:18px 24px 14px;
+  }
+  .overview{
+    display:grid;
+    grid-template-columns:minmax(0,1fr) 274px;
+    gap:14px;
+    margin-bottom:14px;
+  }
+  .ctx{
+    min-width:0;
+    display:flex;
+    align-items:center;
+    gap:14px;
+    padding:10px 12px;
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:8px;
+    box-shadow:0 1px 3px rgba(16,25,45,.05);
+  }
+  .ctx img{
+    width:64px;
+    height:64px;
+    display:block;
+    flex:none;
+    object-fit:cover;
+    border-radius:7px;
+    background:#dfe2e6;
+  }
+  .ctx .body{min-width:0;flex:1;}
+  .ctx .name{
+    overflow:hidden;
+    color:var(--ink);
+    font-size:15px;
+    line-height:21px;
+    font-weight:700;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+  .ctx .sub{
+    color:var(--gray);
+    font-size:12px;
+    line-height:17px;
+  }
+  .usage{
+    margin-top:5px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .usage span{
+    flex:none;
+    color:var(--gray);
+    font-size:12px;
+    line-height:16px;
+  }
+  .bar{
+    max-width:180px;
+    height:6px;
+    flex:1;
+    border-radius:6px;
+    background:var(--line);
+  }
+  .bar i{
+    width:48%;
+    height:6px;
+    display:block;
+    border-radius:6px;
+    background:var(--em);
+  }
+  .billing{
+    padding:12px;
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:8px;
+    box-shadow:0 1px 3px rgba(16,25,45,.05);
+  }
+  .billing-label{
+    margin-bottom:8px;
+    color:var(--gray);
+    font-size:12px;
+    line-height:16px;
+    font-weight:700;
+  }
+  .seg{
+    height:38px;
+    padding:3px;
+    display:flex;
+    border:1px solid var(--line);
+    border-radius:7px;
+    background:var(--ground);
+  }
+  .seg span{
+    flex:1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:5px;
+    color:var(--gray);
+    font-size:12px;
+    line-height:16px;
+  }
+  .seg .on{
+    background:var(--em);
+    color:#fff;
+    font-weight:700;
+    box-shadow:0 1px 2px rgba(5,150,105,.2);
+  }
+
+  .table{
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:8px;
+    box-shadow:0 1px 3px rgba(16,25,45,.05);
+  }
+  .head,
+  .row{
+    display:grid;
+    grid-template-columns:190px repeat(3,1fr);
+  }
+  .head{
+    border-bottom:1px solid var(--line);
+  }
+  .head .lbl{
+    padding:10px 14px;
+    display:flex;
+    align-items:flex-end;
+    color:var(--gray);
+    font-size:12px;
+    line-height:16px;
+  }
+  .head .col{
+    padding:7px 6px 8px;
+    text-align:center;
+    border-left:1px solid var(--line);
+  }
+  .head .col.mid{background:var(--em-tint);}
+  .tier{
+    color:var(--gray);
+    font-size:12px;
+    line-height:16px;
+    font-weight:700;
+  }
+  .head .mid .tier{color:var(--em-dark);}
+  .price{
+    margin-top:1px;
+    font-size:18px;
+    line-height:22px;
+    font-weight:700;
+  }
+  .unit{
+    color:var(--gray);
+    font-size:11px;
+    line-height:14px;
+  }
+  .group{
+    padding:5px 14px;
+    border-bottom:1px solid var(--line);
+    background:#f8f9fa;
+    color:#4b5563;
+    font-size:11px;
+    line-height:16px;
+    font-weight:700;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+  }
+  .row{
+    min-height:32px;
+    border-bottom:1px solid var(--line);
+    align-items:stretch;
+  }
+  .row:last-child{border-bottom:none;}
+  .row .lbl{
+    min-width:0;
+    padding:7px 14px;
+    overflow:hidden;
+    font-size:13px;
+    line-height:18px;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+  .row .v{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-left:1px solid var(--line);
+    color:var(--gray);
+    font-size:12px;
+    line-height:18px;
+    text-align:center;
+  }
+  .row .v.mid{
+    background:var(--em-tint);
+    color:var(--ink);
+    font-weight:700;
+  }
+  .check{width:15px;height:15px;display:block;}
+  .note{
+    margin:8px 2px 0;
+    color:var(--gray);
+    font-size:11px;
+    line-height:16px;
+  }
+</style>
+</head>
+<body>
+<div class="screen">
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="brandmark">L</span>
+      Loomdesk
+    </div>
+    <div class="navlabel">Workspace</div>
+    <nav aria-label="Primary navigation">
+      <a href="#">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5L12 4l8 6.5V20H4z"/></svg>
+        Home
+      </a>
+      <a href="#">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l4 4v14H6z"/><path d="M9 12h7M9 16h5"/></svg>
+        Notes
+      </a>
+      <a href="#">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/></svg>
+        Calendar
+      </a>
+      <a href="#" class="active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.2"/><path d="M12 3.5v2M12 18.5v2M4.6 7.8l1.7 1M17.7 15.2l1.7 1M4.6 16.2l1.7-1M17.7 8.8l1.7-1"/></svg>
+        Settings
+      </a>
+    </nav>
+    <div class="sidebar-foot">
+      <div class="workspace-mini">
+        Current workspace
+        <strong>Northline Design</strong>
+      </div>
+    </div>
+  </aside>
+
+  <div class="app">
+    <header class="topbar">
+      <div class="titlewrap">
+        <svg class="back" viewBox="0 0 24 24" fill="none" stroke="#16191d" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M15 5l-7 7 7 7"/>
+        </svg>
+        <h1>Compare plans</h1>
+      </div>
+      <div class="path">Settings / Billing</div>
+    </header>
+
+    <main>
+      <div class="overview">
+        <section class="ctx">
+          <img src="https://loremflickr.com/64/64/workspace?lock=9401" width="64" height="64" alt="Cover photo of the Northline Design workspace">
+          <div class="body">
+            <div class="name">Northline Design</div>
+            <div class="sub">Team plan · renews March 14, 2026</div>
+            <div class="usage">
+              <span>12 of 25 member seats used</span>
+              <div class="bar"><i></i></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="billing">
+          <div class="billing-label">Billing frequency</div>
+          <div class="seg">
+            <span class="on">Annual · 20% off</span>
+            <span>Monthly</span>
+          </div>
+        </section>
+      </div>
+
+      <section class="table" aria-label="Plan feature comparison">
+        <div class="head">
+          <div class="lbl">Billed per user, annually</div>
+          <div class="col">
+            <div class="tier">Free</div>
+            <div class="price">$0</div>
+            <div class="unit">forever</div>
+          </div>
+          <div class="col mid">
+            <div class="tier">Team · current</div>
+            <div class="price">$9</div>
+            <div class="unit">/user/mo</div>
+          </div>
+          <div class="col">
+            <div class="tier">Business</div>
+            <div class="price">$18</div>
+            <div class="unit">/user/mo</div>
+          </div>
+        </div>
+
+        <div class="group">Capacity</div>
+        <div class="row">
+          <div class="lbl">Members</div><div class="v">3</div><div class="v mid">25</div><div class="v">Unlimited</div>
+        </div>
+        <div class="row">
+          <div class="lbl">Guest access</div><div class="v">&ndash;</div><div class="v mid">10</div><div class="v">Unlimited</div>
+        </div>
+        <div class="row">
+          <div class="lbl">File storage</div><div class="v">2 GB</div><div class="v mid">100 GB</div><div class="v">1 TB</div>
+        </div>
+        <div class="row">
+          <div class="lbl">Version history</div><div class="v">7 days</div><div class="v mid">90 days</div><div class="v">2 years</div>
+        </div>
+        <div class="row">
+          <div class="lbl">Shared calendars</div><div class="v">1</div><div class="v mid">10</div><div class="v">Unlimited</div>
+        </div>
+
+        <div class="group">Workflow</div>
+        <div class="row">
+          <div class="lbl">Task automations</div><div class="v">&ndash;</div><div class="v mid">200/mo</div><div class="v">5,000/mo</div>
+        </div>
+
+        <div class="group">Security and administration</div>
+        <div class="row">
+          <div class="lbl">Admin roles</div>
+          <div class="v">&ndash;</div>
+          <div class="v mid"><svg class="check" viewBox="0 0 20 20" fill="none" stroke="#059669" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-label="Included"><path d="M4 10.5l4 4 8-9"/></svg></div>
+          <div class="v"><svg class="check" viewBox="0 0 20 20" fill="none" stroke="#059669" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-label="Included"><path d="M4 10.5l4 4 8-9"/></svg></div>
+        </div>
+        <div class="row">
+          <div class="lbl">Single sign-on</div>
+          <div class="v">&ndash;</div><div class="v mid">&ndash;</div>
+          <div class="v"><svg class="check" viewBox="0 0 20 20" fill="none" stroke="#059669" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-label="Included"><path d="M4 10.5l4 4 8-9"/></svg></div>
+        </div>
+        <div class="row">
+          <div class="lbl">Audit log export</div>
+          <div class="v">&ndash;</div><div class="v mid">&ndash;</div>
+          <div class="v"><svg class="check" viewBox="0 0 20 20" fill="none" stroke="#059669" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-label="Included"><path d="M4 10.5l4 4 8-9"/></svg></div>
+        </div>
+
+        <div class="group">Support</div>
+        <div class="row">
+          <div class="lbl">Priority support</div>
+          <div class="v">&ndash;</div>
+          <div class="v mid"><svg class="check" viewBox="0 0 20 20" fill="none" stroke="#059669" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-label="Included"><path d="M4 10.5l4 4 8-9"/></svg></div>
+          <div class="v"><svg class="check" viewBox="0 0 20 20" fill="none" stroke="#059669" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-label="Included"><path d="M4 10.5l4 4 8-9"/></svg></div>
+        </div>
+        <div class="row">
+          <div class="lbl">Response time</div><div class="v">48 hrs</div><div class="v mid">12 hrs</div><div class="v">2 hrs</div>
+        </div>
+      </section>
+
+      <p class="note">Prices in USD. Annual plans are billed on the workspace renewal date; seat changes are prorated.</p>
+    </main>
+  </div>
+</div>
+</body>
+</html>

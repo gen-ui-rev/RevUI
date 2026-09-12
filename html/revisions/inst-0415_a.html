@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VelaLearn Wallet</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #e9e6e5;
+      color: #282326;
+      font-family: 'Source Sans 3', system-ui, sans-serif;
+    }
+
+    button,
+    a {
+      font: inherit;
+    }
+
+    .screen {
+      position: relative;
+      width: 390px;
+      height: 844px;
+      background: #fffdfc;
+      border: 1px solid #d8d2d2;
+    }
+
+    .topbar {
+      display: grid;
+      grid-template-columns: 40px 1fr 40px;
+      align-items: center;
+      padding: 16px 16px 15px;
+      border-bottom: 1px solid #eadfe2;
+      background: #fffdfc;
+    }
+
+    .topbar h1 {
+      margin: 0;
+      text-align: center;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 20px;
+      line-height: 1.4;
+      font-weight: 700;
+    }
+
+    .icon-button {
+      width: 40px;
+      padding: 5px;
+      display: grid;
+      place-items: center;
+      border: 0;
+      background: transparent;
+      color: #3d3438;
+    }
+
+    .icon-button svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .balance-hero {
+      padding: 23px 22px 20px;
+      background: #b84668;
+      color: #ffffff;
+    }
+
+    .eyebrow {
+      margin: 0;
+      font-size: 12px;
+      line-height: 1.5;
+      font-weight: 600;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      color: #f8dfe6;
+    }
+
+    .balance-amount {
+      margin: 3px 0 1px;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 46px;
+      line-height: 1.2;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .balance-description {
+      margin: 0;
+      font-size: 14px;
+      line-height: 1.5;
+      color: #fff4f6;
+    }
+
+    .balance-actions {
+      margin-top: 23px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+    }
+
+    .expiry {
+      margin: 0;
+      max-width: 185px;
+      font-size: 14px;
+      line-height: 1.4;
+      color: #fff4f6;
+    }
+
+    .add-funds {
+      min-width: 108px;
+      padding: 10px 17px;
+      border: 0;
+      border-radius: 10px;
+      background: #ffffff;
+      color: #9f3153;
+      font-size: 14px;
+      line-height: 1.5;
+      font-weight: 600;
+    }
+
+    .learners-section {
+      padding: 19px 22px 18px;
+      border-bottom: 1px solid #eadfe2;
+    }
+
+    .section-heading {
+      margin: 0;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 16px;
+      line-height: 1.5;
+      font-weight: 700;
+    }
+
+    .learners-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    .pool-unassigned {
+      font-size: 14px;
+      line-height: 1.4;
+      font-weight: 600;
+      color: #9f3153;
+      white-space: nowrap;
+    }
+
+    .learners-caption {
+      margin: 4px 0 0;
+      font-size: 12px;
+      line-height: 1.5;
+      color: #756a6e;
+    }
+
+    .learner-list {
+      margin-top: 8px;
+    }
+
+    .learner-row {
+      display: grid;
+      grid-template-columns: 34px minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 12px;
+      padding: 9px 0;
+      border-top: 1px solid #eadfe2;
+    }
+
+    .learner-avatar {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: #f3e2e8;
+      color: #9f3153;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .learner-copy {
+      min-width: 0;
+    }
+
+    .learner-name {
+      margin: 0;
+      font-size: 14px;
+      line-height: 1.4;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .learner-meta {
+      margin: 3px 0 0;
+      font-size: 12px;
+      line-height: 1.4;
+      color: #786e72;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .allocate-btn {
+      padding: 6px 13px;
+      border: 1px solid #dcbfc8;
+      border-radius: 999px;
+      background: #ffffff;
+      color: #9f3153;
+      font-size: 13px;
+      line-height: 1.4;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .activity-section {
+      padding: 19px 22px 0;
+    }
+
+    .activity-header {
+      padding-bottom: 12px;
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .activity-link {
+      color: #9f3153;
+      text-decoration: none;
+      font-size: 14px;
+      line-height: 1.5;
+      font-weight: 600;
+    }
+
+    .activity-list {
+      border-top: 1px solid #eadfe2;
+    }
+
+    .activity-row {
+      display: grid;
+      grid-template-columns: 52px minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 12px;
+      padding: 11px 0;
+      border-bottom: 1px solid #eadfe2;
+    }
+
+    .activity-row img {
+      width: 52px;
+      height: 52px;
+      display: block;
+      object-fit: cover;
+      border-radius: 10px;
+      background: #e8dfe1;
+    }
+
+    .activity-copy {
+      min-width: 0;
+    }
+
+    .activity-learner {
+      margin: 0;
+      font-size: 15px;
+      line-height: 1.4;
+      font-weight: 600;
+      color: #282326;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .activity-detail {
+      margin: 3px 0 0;
+      font-size: 12px;
+      line-height: 1.4;
+      color: #786e72;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .activity-amount {
+      margin: 0;
+      padding-left: 4px;
+      font-size: 13px;
+      line-height: 1.4;
+      font-weight: 400;
+      color: #6f6468;
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .activity-amount.credit {
+      color: #557f66;
+    }
+
+    .tabbar {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      padding: 9px 12px 8px;
+      border-top: 1px solid #ddd5d7;
+      background: #fffdfc;
+    }
+
+    .tab {
+      padding: 2px 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      color: #776d70;
+      text-decoration: none;
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .tab svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .tab.active {
+      color: #aa385b;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <button class="icon-button" type="button" aria-label="Go back">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M15.5 5L8.5 12L15.5 19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <h1>Family Wallet</h1>
+      <button class="icon-button" type="button" aria-label="Wallet information">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.7"/>
+          <path d="M12 10.5V16" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+          <circle cx="12" cy="7.5" r="1" fill="currentColor"/>
+        </svg>
+      </button>
+    </header>
+
+    <main>
+      <section class="balance-hero" aria-labelledby="balance-heading">
+        <p class="eyebrow">Shared family balance</p>
+        <h2 class="balance-amount" id="balance-heading">$184.50</h2>
+        <p class="balance-description">Managed by you for Mira and Theo Alvarez.</p>
+        <div class="balance-actions">
+          <p class="expiry">No credits expire before December 31, 2025.</p>
+          <button class="add-funds" type="button">Add funds</button>
+        </div>
+      </section>
+
+      <section class="learners-section" aria-labelledby="learners-heading">
+        <div class="learners-header">
+          <h2 class="section-heading" id="learners-heading">Linked learners</h2>
+          <span class="pool-unassigned">$74.50 unassigned</span>
+        </div>
+        <p class="learners-caption">Give credits from the shared pool to a learner.</p>
+        <div class="learner-list">
+          <div class="learner-row">
+            <span class="learner-avatar" aria-hidden="true">MA</span>
+            <div class="learner-copy">
+              <p class="learner-name">Mira Alvarez</p>
+              <p class="learner-meta">Spanish B1 · $62.00 available</p>
+            </div>
+            <button class="allocate-btn" type="button">Give credits</button>
+          </div>
+          <div class="learner-row">
+            <span class="learner-avatar" aria-hidden="true">TA</span>
+            <div class="learner-copy">
+              <p class="learner-name">Theo Alvarez</p>
+              <p class="learner-meta">Writing lab · $48.00 available</p>
+            </div>
+            <button class="allocate-btn" type="button">Give credits</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="activity-section" aria-labelledby="activity-heading">
+        <div class="activity-header">
+          <h2 class="section-heading" id="activity-heading">Recent activity</h2>
+          <a class="activity-link" href="#">See all</a>
+        </div>
+
+        <div class="activity-list">
+          <div class="activity-row">
+            <img src="https://loremflickr.com/52/52/classroom?lock=5810" width="52" height="52" alt="Classroom for the Spanish Conversation Lab">
+            <div class="activity-copy">
+              <p class="activity-learner">Mira Alvarez</p>
+              <p class="activity-detail">Spanish Conversation Lab · May 22</p>
+            </div>
+            <p class="activity-amount">−$18.00</p>
+          </div>
+
+          <div class="activity-row">
+            <img src="https://loremflickr.com/52/52/books?lock=5811" width="52" height="52" alt="Books for the Writing for Work course">
+            <div class="activity-copy">
+              <p class="activity-learner">Theo Alvarez</p>
+              <p class="activity-detail">Writing for Work course · May 18</p>
+            </div>
+            <p class="activity-amount">−$24.00</p>
+          </div>
+
+          <div class="activity-row">
+            <img src="https://loremflickr.com/52/52/study?lock=5812" width="52" height="52" alt="Study materials for Listening Essentials">
+            <div class="activity-copy">
+              <p class="activity-learner">Mira Alvarez</p>
+              <p class="activity-detail">Listening Essentials refund · May 14</p>
+            </div>
+            <p class="activity-amount credit">+$12.00</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <nav class="tabbar" aria-label="Primary navigation">
+      <a class="tab" href="#">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M4 10.5L12 4L20 10.5V19.5H14.5V14H9.5V19.5H4V10.5Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+        </svg>
+        <span>Home</span>
+      </a>
+      <a class="tab" href="#">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M4.5 5.5C7.1 5.2 9.7 5.8 12 7.3V19C9.7 17.5 7.1 16.9 4.5 17.2V5.5Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+          <path d="M19.5 5.5C16.9 5.2 14.3 5.8 12 7.3V19C14.3 17.5 16.9 16.9 19.5 17.2V5.5Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+        </svg>
+        <span>Courses</span>
+      </a>
+      <a class="tab" href="#">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M12 4V20M4 12H20" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+          <circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.6"/>
+        </svg>
+        <span>Practice</span>
+      </a>
+      <a class="tab active" href="#" aria-current="page">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M4 7.5C4 6.1 5.1 5 6.5 5H18.5V19H6.5C5.1 19 4 17.9 4 16.5V7.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+          <path d="M15 10H20V15H15C13.6 15 12.5 13.9 12.5 12.5C12.5 11.1 13.6 10 15 10Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+          <circle cx="15.5" cy="12.5" r="0.9" fill="currentColor"/>
+        </svg>
+        <span>Wallet</span>
+      </a>
+    </nav>
+  </div>
+</body>
+</html>

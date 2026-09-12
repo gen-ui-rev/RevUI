@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Wayfare — Identify Plants</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --amber:#e9a13a;
+    --ink:#11100e;
+    --surface:#1b1815;
+    --line:rgba(255,255,255,0.14);
+    --text:#f4f0ea;
+    --muted:#a49c91;
+  }
+  *{box-sizing:border-box;}
+  body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    padding:40px 0;
+    margin:0;
+    background:#6f6a63;
+    font-family:'Source Serif 4', Georgia, serif;
+  }
+  .screen{
+    width:390px;
+    height:844px;
+    background:var(--ink);
+    color:var(--text);
+    display:flex;
+    flex-direction:column;
+    position:relative;
+  }
+
+  /* top bar */
+  .topbar{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:16px 18px;
+  }
+  .topbar h1{
+    font-size:17px;
+    font-weight:600;
+    margin:0;
+    letter-spacing:0.01em;
+  }
+  .topbar .sub{
+    font-size:12px;
+    color:var(--muted);
+    margin:2px 0 0;
+  }
+  .tb-title{flex:1;min-width:0;}
+  .iconbtn{
+    width:34px;height:34px;
+    border:1px solid var(--line);
+    border-radius:14px;
+    display:flex;align-items:center;justify-content:center;
+    color:var(--text);
+    flex:none;
+  }
+  .iconbtn.plain{border:none;}
+  .iconbtn.on{border-color:var(--amber);color:var(--amber);}
+
+  /* search by name (no camera) */
+  .search{padding:0 18px 2px;}
+  .field{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    border:1px solid var(--line);
+    border-radius:14px;
+    background:var(--surface);
+    padding:11px 13px;
+  }
+  .field .ph{
+    flex:1;
+    min-width:0;
+    font-size:13px;
+    color:var(--muted);
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .field .az{
+    flex:none;
+    font-size:11px;
+    font-weight:600;
+    letter-spacing:0.06em;
+    color:var(--amber);
+    border:1px solid rgba(233,161,58,0.5);
+    border-radius:9px;
+    padding:3px 7px;
+  }
+  .fieldhint{
+    margin:6px 3px 0;
+    font-size:11px;
+    color:var(--muted);
+  }
+
+  /* viewfinder */
+  .viewfinder{
+    position:relative;
+    width:100%;
+    height:250px;
+    flex:none;
+    background:#2a2622;
+    margin-top:10px;
+  }
+  .viewfinder img{
+    display:block;
+    width:390px;height:250px;
+    object-fit:cover;
+    background:#2a2622;
+  }
+  .hint{
+    position:absolute;
+    top:12px;left:50%;
+    transform:translateX(-50%);
+    background:rgba(17,16,14,0.78);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:7px 14px;
+    font-size:12px;
+    color:var(--text);
+    white-space:nowrap;
+  }
+  .frame{
+    position:absolute;
+    left:56px;right:56px;
+    top:52px;height:88px;
+  }
+  .frame span{
+    position:absolute;
+    width:24px;height:24px;
+    border:2px solid var(--amber);
+  }
+  .frame .tl{top:0;left:0;border-right:none;border-bottom:none;border-radius:6px 0 0 0;}
+  .frame .tr{top:0;right:0;border-left:none;border-bottom:none;border-radius:0 6px 0 0;}
+  .frame .bl{bottom:0;left:0;border-right:none;border-top:none;border-radius:0 0 0 6px;}
+  .frame .br{bottom:0;right:0;border-left:none;border-top:none;border-radius:0 0 6px 0;}
+
+  .result{
+    position:absolute;
+    left:14px;right:14px;bottom:14px;
+    background:rgba(17,16,14,0.9);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:12px 14px;
+    display:flex;
+    align-items:center;
+    gap:12px;
+  }
+  .result .body{flex:1;min-width:0;}
+  .flag{
+    font-size:12px;
+    color:var(--amber);
+    font-weight:600;
+    letter-spacing:0.03em;
+    margin:0 0 3px;
+  }
+  .result h2{
+    font-size:20px;
+    font-weight:600;
+    margin:0;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .result .meta{
+    font-size:12px;
+    color:var(--muted);
+    margin:4px 0 0;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .cta{
+    flex:none;
+    background:var(--amber);
+    color:#221b0e;
+    font-size:14px;
+    font-weight:600;
+    border-radius:14px;
+    padding:10px 14px;
+  }
+
+  /* modes + capture */
+  .capture{padding:16px 18px 10px;}
+  .modes{
+    display:flex;
+    gap:8px;
+    justify-content:center;
+  }
+  .mode{
+    font-size:14px;
+    padding:7px 15px;
+    border-radius:14px;
+    border:1px solid var(--line);
+    color:var(--muted);
+  }
+  .mode.active{
+    background:var(--amber);
+    border-color:var(--amber);
+    color:#221b0e;
+    font-weight:600;
+  }
+  .shutterrow{
+    margin-top:14px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+  }
+  .thumbbtn{
+    width:46px;height:46px;
+    border-radius:14px;
+    overflow:hidden;
+    border:1px solid var(--line);
+    flex:none;
+  }
+  .thumbbtn img{
+    display:block;width:44px;height:44px;
+    object-fit:cover;background:#2a2622;
+  }
+  .shutter{
+    width:64px;height:64px;
+    border-radius:50%;
+    border:3px solid var(--amber);
+    display:flex;align-items:center;justify-content:center;
+    flex:none;
+  }
+  .shutter i{
+    display:block;
+    width:50px;height:50px;
+    border-radius:50%;
+    background:var(--amber);
+  }
+  .flipbtn{
+    width:46px;height:46px;
+    border-radius:50%;
+    border:1px solid var(--line);
+    display:flex;align-items:center;justify-content:center;
+    color:var(--text);
+    flex:none;
+  }
+
+  /* recents — time first */
+  .recents{padding:12px 18px 0;}
+  .rechead{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    margin-bottom:8px;
+  }
+  .rechead h3{
+    font-size:14px;
+    font-weight:600;
+    margin:0;
+  }
+  .rechead a{
+    font-size:12px;
+    color:var(--amber);
+    text-decoration:none;
+  }
+  .dayhead{
+    margin:0 0 5px;
+    font-size:11px;
+    font-weight:600;
+    letter-spacing:0.09em;
+    text-transform:uppercase;
+    color:var(--muted);
+  }
+  .daygroup + .daygroup{margin-top:8px;}
+  .scanrow{
+    display:flex;
+    align-items:center;
+    gap:11px;
+    padding:6px 0;
+    border-bottom:1px solid rgba(255,255,255,0.07);
+  }
+  .scanrow:last-child{border-bottom:none;}
+  .scanrow .time{
+    flex:none;
+    width:60px;
+    font-size:12px;
+    font-weight:600;
+    color:var(--amber);
+  }
+  .scanrow img{
+    display:block;
+    width:36px;height:36px;
+    border-radius:10px;
+    object-fit:cover;
+    background:#2a2622;
+    flex:none;
+  }
+  .scanrow .who{flex:1;min-width:0;}
+  .scanrow .who p{
+    margin:0;
+    font-size:13px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .scanrow .who span{
+    display:block;
+    font-size:11px;
+    color:var(--muted);
+    margin-top:1px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+
+  /* tab bar */
+  .tabbar{
+    margin-top:auto;
+    display:flex;
+    border-top:1px solid var(--line);
+    background:var(--surface);
+    padding:10px 8px 14px;
+  }
+  .tab{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:4px;
+    font-size:12px;
+    color:var(--muted);
+  }
+  .tab.active{color:var(--amber);}
+</style>
+</head>
+<body>
+  <div class="screen">
+
+    <header class="topbar">
+      <div class="iconbtn plain" aria-label="Back">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
+      </div>
+      <div class="tb-title">
+        <h1>Identify a plant</h1>
+        <p class="sub">Sintra hills · offline flora guide ready</p>
+      </div>
+      <div class="iconbtn on" aria-label="Flash on">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L4 14h6l-1 8 9-12h-6l1-8z"/></svg>
+      </div>
+      <div class="iconbtn" aria-label="Scanning tips">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5"/><path d="M12 8h.01"/></svg>
+      </div>
+    </header>
+
+    <section class="search">
+      <div class="field">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#a49c91" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4 4"/></svg>
+        <span class="ph">Search by common or Latin name</span>
+        <span class="az">A–Z</span>
+      </div>
+      <p class="fieldhint">No camera needed — 12,400 species stored offline.</p>
+    </section>
+
+    <section class="viewfinder">
+      <img src="https://loremflickr.com/390/250/plant?lock=12860" width="390" height="250" alt="Live camera view of a fleshy-leaved succulent in a terracotta pot">
+      <div class="hint">Fill the frame with one leaf, front-lit</div>
+      <div class="frame">
+        <span class="tl"></span><span class="tr"></span><span class="bl"></span><span class="br"></span>
+      </div>
+      <div class="result">
+        <div class="body">
+          <p class="flag">MATCH 94%</p>
+          <h2>Jade Plant</h2>
+          <p class="meta">Crassula ovata · succulent · water every 3 wks</p>
+        </div>
+        <div class="cta">Details</div>
+      </div>
+    </section>
+
+    <section class="capture">
+      <div class="modes">
+        <div class="mode active">Leaf</div>
+        <div class="mode">Flower</div>
+        <div class="mode">Bark</div>
+        <div class="mode">Fruit</div>
+      </div>
+      <div class="shutterrow">
+        <div class="thumbbtn" aria-label="Last capture: succulent rosette">
+          <img src="https://loremflickr.com/44/44/succulent?lock=12861" width="44" height="44" alt="Thumbnail of the last photo taken, a succulent rosette">
+        </div>
+        <div class="shutter" aria-label="Capture"><i></i></div>
+        <div class="flipbtn" aria-label="Switch camera">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V7a2 2 0 012-2h9"/><path d="M13 3l2.5 2L13 7"/><path d="M20 15v2a2 2 0 01-2 2H9"/><path d="M11 21l-2.5-2L11 17"/></svg>
+        </div>
+      </div>
+    </section>
+
+    <section class="recents">
+      <div class="rechead">
+        <h3>Recent scans</h3>
+        <a href="#">Newest first · All 18</a>
+      </div>
+      <div class="daygroup">
+        <p class="dayhead">Today</p>
+        <div class="scanrow">
+          <span class="time">2:14 PM</span>
+          <img src="https://loremflickr.com/36/36/leaf?lock=12862" width="36" height="36" alt="Scan of a woody rosemary sprig">
+          <div class="who">
+            <p>Rosemary</p>
+            <span>Salvia rosmarinus</span>
+          </div>
+        </div>
+        <div class="scanrow">
+          <span class="time">11:02 AM</span>
+          <img src="https://loremflickr.com/36/36/fern?lock=12863" width="36" height="36" alt="Scan of a lady fern frond">
+          <div class="who">
+            <p>Lady Fern</p>
+            <span>Athyrium filix-femina</span>
+          </div>
+        </div>
+      </div>
+      <div class="daygroup">
+        <p class="dayhead">Yesterday</p>
+        <div class="scanrow">
+          <span class="time">5:48 PM</span>
+          <img src="https://loremflickr.com/36/36/ivy?lock=12864" width="36" height="36" alt="Scan of English ivy climbing a wall">
+          <div class="who">
+            <p>English Ivy</p>
+            <span>Hedera helix</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <nav class="tabbar">
+      <div class="tab">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5 5-2z"/></svg>
+        Explore
+      </div>
+      <div class="tab">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21v-7"/><path d="M12 14c-4 0-6-2.5-6-6 4 0 6 2.5 6 6z"/><path d="M12 14c0-3.5 2-6 6-6 0 3.5-2 6-6 6z"/></svg>
+        My Plants
+      </div>
+      <div class="tab active">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8V6a2 2 0 012-2h2"/><path d="M20 8V6a2 2 0 00-2-2h-2"/><path d="M4 16v2a2 2 0 002 2h2"/><path d="M20 16v2a2 2 0 01-2 2h-2"/><circle cx="12" cy="12" r="3.2"/></svg>
+        Identify
+      </div>
+      <div class="tab">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 8h6"/><path d="M8 12h8"/><path d="M8 16h5"/></svg>
+        Journal
+      </div>
+    </nav>
+
+  </div>
+</body>
+</html>

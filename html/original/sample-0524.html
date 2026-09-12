@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LumaCast Feedback</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #dfe3e8;
+      color: #172234;
+      font-family: 'Source Serif 4', Georgia, serif;
+    }
+
+    button,
+    textarea,
+    input {
+      font: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #fbfcfe;
+    }
+
+    .topbar {
+      min-height: 64px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 20px;
+      background: #175fb8;
+      color: #ffffff;
+    }
+
+    .back-button {
+      width: 36px;
+      height: 36px;
+      padding: 6px;
+      display: grid;
+      place-items: center;
+      border: 0;
+      border-radius: 0;
+      background: rgba(255,255,255,0.14);
+      color: #ffffff;
+    }
+
+    .topbar-copy {
+      min-width: 0;
+    }
+
+    .service-name {
+      margin: 0;
+      font-size: 12px;
+      line-height: 16px;
+      opacity: 0.82;
+    }
+
+    .page-title {
+      margin: 0;
+      font-size: 19px;
+      line-height: 24px;
+      font-weight: 600;
+    }
+
+    main {
+      flex: 1;
+      padding: 20px 20px 14px;
+    }
+
+    .intro h1 {
+      margin: 0;
+      font-size: 29px;
+      line-height: 34px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+    }
+
+    .intro p {
+      margin: 5px 0 0;
+      font-size: 14px;
+      line-height: 20px;
+      color: #5a6677;
+    }
+
+    .episode-block {
+      margin-top: 16px;
+      padding: 12px 14px;
+      background: rgba(23, 95, 184, 0.09);
+    }
+
+    .eyebrow {
+      margin: 0 0 2px;
+      color: #175fb8;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .episode-title {
+      margin: 0;
+      font-size: 16px;
+      line-height: 21px;
+      font-weight: 600;
+    }
+
+    .episode-meta {
+      margin: 2px 0 0;
+      color: #667181;
+      font-size: 13px;
+      line-height: 18px;
+    }
+
+    fieldset {
+      min-width: 0;
+      margin: 19px 0 0;
+      padding: 0;
+      border: 0;
+    }
+
+    legend,
+    .field-label {
+      display: block;
+      padding: 0;
+      font-size: 17px;
+      line-height: 22px;
+      font-weight: 600;
+    }
+
+    .field-hint {
+      margin: 2px 0 0;
+      color: #697484;
+      font-size: 13px;
+      line-height: 18px;
+    }
+
+    .rating-scale {
+      margin-top: 10px;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 6px;
+    }
+
+    .rating-option {
+      position: relative;
+    }
+
+    .rating-option input,
+    .topic-option input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .rating-option label {
+      height: 50px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: rgba(23, 95, 184, 0.09);
+      color: #47566a;
+      cursor: default;
+    }
+
+    .rating-option input:checked + label {
+      background: #175fb8;
+      color: #ffffff;
+    }
+
+    .rating-number {
+      font-size: 18px;
+      line-height: 20px;
+      font-weight: 600;
+    }
+
+    .rating-word {
+      margin-top: 2px;
+      font-size: 12px;
+      line-height: 14px;
+    }
+
+    .topics {
+      margin-top: 10px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 7px;
+    }
+
+    .topic-option {
+      position: relative;
+    }
+
+    .topic-option label {
+      min-height: 38px;
+      padding: 9px 11px;
+      display: flex;
+      align-items: center;
+      background: rgba(23, 95, 184, 0.09);
+      color: #344257;
+      font-size: 14px;
+      line-height: 20px;
+      cursor: default;
+    }
+
+    .topic-option input:checked + label {
+      background: rgba(23, 95, 184, 0.19);
+      color: #124f9a;
+      font-weight: 600;
+    }
+
+    .comment-field {
+      margin-top: 19px;
+    }
+
+    textarea {
+      width: 100%;
+      height: 82px;
+      margin-top: 8px;
+      padding: 11px 12px;
+      display: block;
+      resize: none;
+      border: 0;
+      border-radius: 0;
+      outline: 0;
+      background: rgba(23, 95, 184, 0.07);
+      color: #172234;
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    textarea::placeholder {
+      color: #778293;
+      opacity: 1;
+    }
+
+    .character-count {
+      margin: 4px 0 0;
+      text-align: right;
+      color: #778293;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .privacy-note {
+      margin-top: 13px;
+      padding: 9px 11px;
+      display: flex;
+      align-items: flex-start;
+      gap: 9px;
+      background: rgba(23, 95, 184, 0.09);
+      color: #40516a;
+      font-size: 13px;
+      line-height: 18px;
+    }
+
+    .privacy-note svg {
+      flex: 0 0 auto;
+      margin-top: 1px;
+      color: #175fb8;
+    }
+
+    .submit-button {
+      width: 100%;
+      height: 46px;
+      margin-top: 12px;
+      border: 0;
+      border-radius: 0;
+      background: #175fb8;
+      color: #ffffff;
+      font-size: 16px;
+      line-height: 22px;
+      font-weight: 600;
+    }
+
+    .tabbar {
+      min-height: 68px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      background: #eef2f7;
+    }
+
+    .tab {
+      border: 0;
+      border-radius: 0;
+      padding: 8px 4px 7px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      background: transparent;
+      color: #687385;
+      font-size: 12px;
+      line-height: 15px;
+    }
+
+    .tab.active {
+      background: rgba(23, 95, 184, 0.11);
+      color: #175fb8;
+      font-weight: 600;
+    }
+
+    .tab svg {
+      width: 22px;
+      height: 22px;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <button class="back-button" type="button" aria-label="Go back">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" aria-hidden="true">
+          <path d="M15 5L8 12L15 19" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter"/>
+        </svg>
+      </button>
+      <div class="topbar-copy">
+        <p class="service-name">LumaCast</p>
+        <p class="page-title">Listening feedback</p>
+      </div>
+    </header>
+
+    <main>
+      <section class="intro" aria-labelledby="feedback-heading">
+        <h1 id="feedback-heading">How was this episode?</h1>
+        <p>Your response helps us improve recommendations and playback.</p>
+      </section>
+
+      <section class="episode-block" aria-label="Episode being reviewed">
+        <p class="eyebrow">Recently played</p>
+        <p class="episode-title">The Quiet Work of City Trees</p>
+        <p class="episode-meta">Field Notes Daily · 28 minutes</p>
+      </section>
+
+      <form>
+        <fieldset>
+          <legend>Overall satisfaction</legend>
+          <p class="field-hint">Choose one rating.</p>
+          <div class="rating-scale">
+            <div class="rating-option">
+              <input type="radio" id="rating-1" name="rating">
+              <label for="rating-1">
+                <span class="rating-number">1</span>
+                <span class="rating-word">Poor</span>
+              </label>
+            </div>
+            <div class="rating-option">
+              <input type="radio" id="rating-2" name="rating">
+              <label for="rating-2">
+                <span class="rating-number">2</span>
+                <span class="rating-word">Fair</span>
+              </label>
+            </div>
+            <div class="rating-option">
+              <input type="radio" id="rating-3" name="rating">
+              <label for="rating-3">
+                <span class="rating-number">3</span>
+                <span class="rating-word">Okay</span>
+              </label>
+            </div>
+            <div class="rating-option">
+              <input type="radio" id="rating-4" name="rating" checked>
+              <label for="rating-4">
+                <span class="rating-number">4</span>
+                <span class="rating-word">Good</span>
+              </label>
+            </div>
+            <div class="rating-option">
+              <input type="radio" id="rating-5" name="rating">
+              <label for="rating-5">
+                <span class="rating-number">5</span>
+                <span class="rating-word">Great</span>
+              </label>
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>What shaped your rating?</legend>
+          <p class="field-hint">Select any that apply.</p>
+          <div class="topics">
+            <div class="topic-option">
+              <input type="checkbox" id="topic-content" checked>
+              <label for="topic-content">Interesting content</label>
+            </div>
+            <div class="topic-option">
+              <input type="checkbox" id="topic-audio" checked>
+              <label for="topic-audio">Clear audio</label>
+            </div>
+            <div class="topic-option">
+              <input type="checkbox" id="topic-pace">
+              <label for="topic-pace">Comfortable pace</label>
+            </div>
+            <div class="topic-option">
+              <input type="checkbox" id="topic-relevance">
+              <label for="topic-relevance">Good recommendation</label>
+            </div>
+          </div>
+        </fieldset>
+
+        <div class="comment-field">
+          <label class="field-label" for="comment">Anything else?</label>
+          <textarea id="comment" maxlength="300" placeholder="Share a detail about the episode or your listening experience."></textarea>
+          <p class="character-count">0 of 300 characters</p>
+        </div>
+
+        <div class="privacy-note">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" aria-hidden="true">
+            <rect x="5" y="10" width="14" height="10" fill="currentColor" opacity="0.18"/>
+            <path d="M8 10V7.5C8 5.01 9.79 3 12 3C14.21 3 16 5.01 16 7.5V10M5 10H19V20H5V10Z" stroke="currentColor" stroke-width="1.7"/>
+          </svg>
+          <span>This feedback is private. It will not appear as a public review or be shared with the show.</span>
+        </div>
+
+        <button class="submit-button" type="button">Submit private feedback</button>
+      </form>
+    </main>
+
+    <nav class="tabbar" aria-label="Primary navigation">
+      <button class="tab" type="button">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M4 10L12 4L20 10V20H14V14H10V20H4V10Z" stroke="currentColor" stroke-width="1.8"/>
+        </svg>
+        <span>Home</span>
+      </button>
+      <button class="tab" type="button">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M5 4H18C19.1 4 20 4.9 20 6V19H7C5.9 19 5 18.1 5 17V4Z" stroke="currentColor" stroke-width="1.8"/>
+          <path d="M8 8H17M8 12H17" stroke="currentColor" stroke-width="1.8"/>
+        </svg>
+        <span>Library</span>
+      </button>
+      <button class="tab active" type="button" aria-current="page">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M4 5H20V16H11L7 20V16H4V5Z" stroke="currentColor" stroke-width="1.8"/>
+          <path d="M8 9H16M8 12H14" stroke="currentColor" stroke-width="1.8"/>
+        </svg>
+        <span>Feedback</span>
+      </button>
+    </nav>
+  </div>
+</body>
+</html>

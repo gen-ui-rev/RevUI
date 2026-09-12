@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Course Learning Path</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 32px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #e8ece9;
+      color: #17201c;
+      font-family: 'Inter', system-ui, sans-serif;
+    }
+
+    button,
+    a {
+      font: inherit;
+    }
+
+    button {
+      color: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #ffffff;
+      border: 1px solid #d8dedb;
+    }
+
+    .topbar {
+      flex: 0 0 auto;
+      display: flex;
+      align-items: center;
+      padding: 9px 16px;
+      border-bottom: 1px solid #e4e8e6;
+    }
+
+    .back-button,
+    .icon-button {
+      width: 36px;
+      height: 36px;
+      padding: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 0;
+      background: transparent;
+    }
+
+    .back-button svg,
+    .icon-button svg {
+      width: 21px;
+      height: 21px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .brand {
+      min-width: 0;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-left: 6px;
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-mark {
+      width: 21px;
+      height: 21px;
+      color: #087f5b;
+    }
+
+    .top-actions {
+      display: flex;
+      gap: 2px;
+    }
+
+    .content {
+      min-height: 0;
+      flex: 1;
+      padding: 8px 16px 0;
+    }
+
+    .hero {
+      position: relative;
+    }
+
+    .hero img {
+      width: 358px;
+      height: 124px;
+      display: block;
+      object-fit: cover;
+      background: #cfd9d3;
+      border-radius: 14px;
+    }
+
+    .level-label {
+      position: absolute;
+      left: 10px;
+      bottom: 10px;
+      padding: 5px 8px;
+      border: 1px solid #dce4e0;
+      border-radius: 7px;
+      background: #ffffff;
+      color: #244138;
+      font-size: 12px;
+      line-height: 14px;
+      font-weight: 600;
+    }
+
+    .course-summary {
+      padding: 10px 0 11px;
+    }
+
+    .eyebrow {
+      margin: 0 0 3px;
+      color: #087f5b;
+      font-size: 13px;
+      line-height: 17px;
+      font-weight: 600;
+    }
+
+    h1 {
+      margin: 0;
+      color: #17201c;
+      font-size: 23px;
+      line-height: 28px;
+      letter-spacing: -0.025em;
+      font-weight: 700;
+    }
+
+    .course-meta {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-top: 6px;
+      color: #66716c;
+      font-size: 13px;
+      line-height: 18px;
+    }
+
+    .rating {
+      color: #355148;
+      font-weight: 600;
+    }
+
+    .dot {
+      color: #a0aaa5;
+    }
+
+    .section-tabs {
+      display: flex;
+      border-top: 1px solid #e4e8e6;
+      border-bottom: 1px solid #e4e8e6;
+    }
+
+    .section-tab {
+      position: relative;
+      flex: 1;
+      padding: 12px 0 11px;
+      border: 0;
+      background: transparent;
+      color: #6b756f;
+      font-size: 14px;
+      line-height: 18px;
+      font-weight: 500;
+    }
+
+    .section-tab.active {
+      color: #087f5b;
+      font-weight: 600;
+    }
+
+    .section-tab.active::after {
+      position: absolute;
+      right: 14px;
+      bottom: -1px;
+      left: 14px;
+      height: 2px;
+      content: "";
+      background: #087f5b;
+    }
+
+    .curriculum-heading {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 0 8px;
+    }
+
+    .heading-kicker {
+      margin: 0 0 1px;
+      color: #087f5b;
+      font-size: 11px;
+      line-height: 15px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .curriculum-heading h2 {
+      margin: 0;
+      font-size: 17px;
+      line-height: 22px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+
+    .path-total {
+      flex: 0 0 auto;
+      padding-bottom: 2px;
+      color: #6e7873;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 500;
+    }
+
+    .lesson-list {
+      border-top: 1px solid #e4e8e6;
+    }
+
+    .lesson-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 5px 0;
+      border-bottom: 1px solid #e4e8e6;
+    }
+
+    .lesson-number {
+      position: relative;
+      z-index: 0;
+      flex: 0 0 28px;
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid #b9ddd0;
+      border-radius: 50%;
+      background: #ffffff;
+      color: #087f5b;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .lesson-row:first-child .lesson-number {
+      border-color: #087f5b;
+      background: #087f5b;
+      color: #ffffff;
+    }
+
+    .lesson-row:not(:last-child) .lesson-number::after {
+      position: absolute;
+      z-index: -1;
+      top: 26px;
+      left: 11px;
+      width: 2px;
+      height: 20px;
+      content: "";
+      background: #b9ddd0;
+    }
+
+    .lesson-copy {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .lesson-title {
+      overflow: hidden;
+      color: #26312c;
+      font-size: 14px;
+      line-height: 17px;
+      font-weight: 500;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .lesson-detail {
+      margin-top: 1px;
+      color: #7a847f;
+      font-size: 12px;
+      line-height: 15px;
+    }
+
+    .lesson-row:first-child .lesson-detail {
+      color: #087f5b;
+      font-weight: 600;
+    }
+
+    .lesson-duration {
+      flex: 0 0 auto;
+      color: #6e7873;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 500;
+    }
+
+    .instructor-card {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      margin-top: 9px;
+      padding: 9px 10px;
+      border: 1px solid #dfe5e2;
+      border-radius: 14px;
+    }
+
+    .monogram {
+      flex: 0 0 44px;
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 14px;
+      background: #dcefe7;
+      color: #087f5b;
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .instructor-copy {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .instructor-label {
+      margin-bottom: 2px;
+      color: #78827d;
+      font-size: 12px;
+      line-height: 15px;
+    }
+
+    .instructor-name {
+      color: #26312c;
+      font-size: 14px;
+      line-height: 18px;
+      font-weight: 600;
+    }
+
+    .instructor-detail {
+      overflow: hidden;
+      color: #6e7873;
+      font-size: 12px;
+      line-height: 16px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .enrollment-bar {
+      flex: 0 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 10px 16px;
+      border-top: 1px solid #dfe5e2;
+      background: #ffffff;
+    }
+
+    .price-block {
+      min-width: 91px;
+    }
+
+    .price-label {
+      color: #75807a;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .price {
+      color: #17201c;
+      font-size: 21px;
+      line-height: 26px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .enroll-button {
+      flex: 1;
+      padding: 12px 18px;
+      border: 1px solid #087f5b;
+      border-radius: 14px;
+      background: #087f5b;
+      color: #ffffff;
+      font-size: 15px;
+      line-height: 20px;
+      font-weight: 700;
+    }
+
+    .tabbar {
+      flex: 0 0 auto;
+      display: flex;
+      border-top: 1px solid #dfe5e2;
+      background: #ffffff;
+    }
+
+    .nav-item {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+      justify-content: center;
+      gap: 3px;
+      padding: 8px 2px 7px;
+      color: #76817b;
+      text-decoration: none;
+      font-size: 12px;
+      line-height: 14px;
+      font-weight: 500;
+    }
+
+    .nav-item.active {
+      color: #087f5b;
+      font-weight: 600;
+    }
+
+    .nav-item svg {
+      width: 20px;
+      height: 20px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.7;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <button class="back-button" type="button" aria-label="Go back">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M15 18l-6-6 6-6"></path>
+        </svg>
+      </button>
+
+      <div class="brand">
+        <svg class="brand-mark" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M5 5.5c3.3 0 5.7 1 7 3 1.3-2 3.7-3 7-3v12c-3.3 0-5.7 1-7 3-1.3-2-3.7-3-7-3z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"></path>
+          <path d="M12 8.5v12" fill="none" stroke="currentColor" stroke-width="1.8"></path>
+        </svg>
+        Morrowlane
+      </div>
+
+      <div class="top-actions">
+        <button class="icon-button" type="button" aria-label="Save course">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M6.5 4.5h11v16l-5.5-3.4-5.5 3.4z"></path>
+          </svg>
+        </button>
+        <button class="icon-button" type="button" aria-label="Share course">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="18" cy="5" r="2.5"></circle>
+            <circle cx="6" cy="12" r="2.5"></circle>
+            <circle cx="18" cy="19" r="2.5"></circle>
+            <path d="M8.2 10.8l7.6-4.5M8.2 13.2l7.6 4.5"></path>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <main class="content">
+      <div class="hero">
+        <img src="https://loremflickr.com/358/124/classroom?lock=11650" width="358" height="124" alt="A bright classroom prepared for a communication lesson">
+        <div class="level-label">Intermediate</div>
+      </div>
+
+      <section class="course-summary" aria-labelledby="course-title-a">
+        <p class="eyebrow">Business English</p>
+        <h1 id="course-title-a">Practical English for Confident Meetings</h1>
+        <div class="course-meta">
+          <span class="rating">4.8 rating</span>
+          <span class="dot">•</span>
+          <span>326 reviews</span>
+          <span class="dot">•</span>
+          <span>2h 36m</span>
+        </div>
+      </section>
+
+      <nav class="section-tabs" aria-label="Course sections">
+        <button class="section-tab active" type="button">Curriculum</button>
+        <button class="section-tab" type="button">Instructor</button>
+        <button class="section-tab" type="button">Reviews</button>
+      </nav>
+
+      <section aria-labelledby="curriculum-title-a">
+        <div class="curriculum-heading">
+          <div>
+            <p class="heading-kicker">5-step guided sequence</p>
+            <h2 id="curriculum-title-a">Your learning path</h2>
+          </div>
+          <span class="path-total">2h 36m total</span>
+        </div>
+
+        <div class="lesson-list">
+          <div class="lesson-row">
+            <div class="lesson-number">1</div>
+            <div class="lesson-copy">
+              <div class="lesson-title">Opening a meeting clearly</div>
+              <div class="lesson-detail">Start here · Video lesson</div>
+            </div>
+            <div class="lesson-duration">18 min</div>
+          </div>
+
+          <div class="lesson-row">
+            <div class="lesson-number">2</div>
+            <div class="lesson-copy">
+              <div class="lesson-title">Sharing updates with structure</div>
+              <div class="lesson-detail">Build clarity · Practice</div>
+            </div>
+            <div class="lesson-duration">31 min</div>
+          </div>
+
+          <div class="lesson-row">
+            <div class="lesson-number">3</div>
+            <div class="lesson-copy">
+              <div class="lesson-title">Clarifying questions politely</div>
+              <div class="lesson-detail">Strengthen understanding</div>
+            </div>
+            <div class="lesson-duration">27 min</div>
+          </div>
+
+          <div class="lesson-row">
+            <div class="lesson-number">4</div>
+            <div class="lesson-copy">
+              <div class="lesson-title">Agreeing and disagreeing</div>
+              <div class="lesson-detail">Navigate discussion · Quiz</div>
+            </div>
+            <div class="lesson-duration">34 min</div>
+          </div>
+
+          <div class="lesson-row">
+            <div class="lesson-number">5</div>
+            <div class="lesson-copy">
+              <div class="lesson-title">Closing with next steps</div>
+              <div class="lesson-detail">Complete the path · Practice</div>
+            </div>
+            <div class="lesson-duration">46 min</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="instructor-card" aria-label="Course instructor">
+        <div class="monogram">ME</div>
+        <div class="instructor-copy">
+          <div class="instructor-label">Your guide</div>
+          <div class="instructor-name">Mara Ellison</div>
+          <div class="instructor-detail">Workplace communication coach · 8 courses</div>
+        </div>
+      </section>
+    </main>
+
+    <aside class="enrollment-bar" aria-label="Enrollment">
+      <div class="price-block">
+        <div class="price-label">Full course</div>
+        <div class="price">$48</div>
+      </div>
+      <button class="enroll-button" type="button">Enroll now</button>
+    </aside>
+
+    <nav class="tabbar" aria-label="Primary navigation">
+      <a class="nav-item active" href="#" aria-current="page">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="11" cy="11" r="6.5"></circle>
+          <path d="M16 16l4 4"></path>
+        </svg>
+        <span>Explore</span>
+      </a>
+      <a class="nav-item" href="#">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M4.5 5.5c3.4 0 5.9 1 7.5 3 1.6-2 4.1-3 7.5-3v12c-3.4 0-5.9 1-7.5 3-1.6-2-4.1-3-7.5-3z"></path>
+          <path d="M12 8.5v12"></path>
+        </svg>
+        <span>My learning</span>
+      </a>
+      <a class="nav-item" href="#">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M6.5 4.5h11v16l-5.5-3.4-5.5 3.4z"></path>
+        </svg>
+        <span>Saved</span>
+      </a>
+      <a class="nav-item" href="#">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="8" r="3.5"></circle>
+          <path d="M5.5 20c.7-4 2.8-6 6.5-6s5.8 2 6.5 6"></path>
+        </svg>
+        <span>Profile</span>
+      </a>
+    </nav>
+  </div>
+</body>
+</html>

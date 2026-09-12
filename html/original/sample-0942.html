@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gatherly Team Map</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #e8e6e5;
+      color: #29252b;
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      position: relative;
+      background: #fbfaf9;
+    }
+
+    .top-bar {
+      position: absolute;
+      inset: 0 0 auto 0;
+      z-index: 5;
+      padding: 16px 16px 14px;
+      background: #fbfaf9;
+    }
+
+    .title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .eyebrow {
+      margin: 0 0 3px;
+      color: #80617f;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 24px;
+      line-height: 1.2;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .profile-button {
+      width: 40px;
+      height: 40px;
+      padding: 0;
+      display: grid;
+      place-items: center;
+      border: 0;
+      border-radius: 50%;
+      color: #765775;
+      background: #eee6ee;
+    }
+
+    .profile-button svg {
+      width: 21px;
+      height: 21px;
+    }
+
+    .filters {
+      display: flex;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .filter {
+      height: 36px;
+      padding: 0 12px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      border: 0;
+      border-radius: 10px;
+      color: #504a52;
+      background: #f1eeee;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .filter.active {
+      color: #674766;
+      background: #eadfea;
+    }
+
+    .filter svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .map-area {
+      position: absolute;
+      top: 116px;
+      right: 0;
+      bottom: 76px;
+      left: 0;
+      background: #eeeae7;
+    }
+
+    .map-drawing {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .map-control {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      width: 42px;
+      height: 42px;
+      padding: 0;
+      display: grid;
+      place-items: center;
+      border: 0;
+      border-radius: 10px;
+      color: #604e60;
+      background: #fbfaf9;
+      box-shadow: 0 2px 8px rgba(49, 40, 49, 0.12);
+    }
+
+    .map-control svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .marker {
+      position: absolute;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .marker-button {
+      width: 38px;
+      height: 38px;
+      padding: 0;
+      display: grid;
+      place-items: center;
+      border: 0;
+      border-radius: 50%;
+      color: #765775;
+      background: #f7f2f7;
+      box-shadow: 0 2px 7px rgba(49, 40, 49, 0.16);
+    }
+
+    .marker-button svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .marker-label {
+      margin-top: 5px;
+      padding: 6px 8px;
+      border-radius: 10px;
+      color: #514951;
+      background: #fbfaf9;
+      box-shadow: 0 2px 7px rgba(49, 40, 49, 0.1);
+      font-size: 12px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .marker.one {
+      top: 116px;
+      left: 65px;
+    }
+
+    .marker.two {
+      top: 248px;
+      right: 34px;
+    }
+
+    .selected-marker {
+      position: absolute;
+      top: 176px;
+      left: 203px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .selected-pin {
+      width: 44px;
+      height: 44px;
+      padding: 0;
+      display: grid;
+      place-items: center;
+      border: 0;
+      border-radius: 50%;
+      color: #ffffff;
+      background: #7d5a7c;
+      box-shadow: 0 3px 9px rgba(73, 52, 72, 0.24);
+    }
+
+    .selected-pin svg {
+      width: 21px;
+      height: 21px;
+    }
+
+    .selected-label {
+      margin-top: 6px;
+      padding: 7px 9px;
+      border-radius: 10px;
+      color: #ffffff;
+      background: #7d5a7c;
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .event-card {
+      position: absolute;
+      right: 16px;
+      bottom: 18px;
+      left: 16px;
+      z-index: 4;
+      padding: 16px;
+      border-radius: 10px;
+      background: #fbfaf9;
+      box-shadow: 0 5px 16px rgba(48, 39, 48, 0.16);
+    }
+
+    .event-heading {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .event-heading h2 {
+      margin: 0;
+      font-size: 18px;
+      line-height: 1.25;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+
+    .event-heading p {
+      margin: 4px 0 0;
+      color: #746e75;
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    .live-chip {
+      flex: 0 0 auto;
+      padding: 6px 8px;
+      border-radius: 10px;
+      color: #6c4e6b;
+      background: #eadfea;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .event-meta {
+      display: flex;
+      gap: 22px;
+      margin-top: 14px;
+    }
+
+    .meta-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #4c464d;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .meta-item svg {
+      width: 17px;
+      height: 17px;
+      flex: 0 0 auto;
+      color: #856783;
+    }
+
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 15px;
+    }
+
+    .attendees {
+      display: flex;
+      align-items: center;
+    }
+
+    .attendee {
+      width: 29px;
+      height: 29px;
+      margin-right: -7px;
+      display: grid;
+      place-items: center;
+      border: 2px solid #fbfaf9;
+      border-radius: 50%;
+      color: #755a74;
+      background: #e7dce6;
+    }
+
+    .attendee:nth-child(2) {
+      color: #705f69;
+      background: #e7e0dd;
+    }
+
+    .attendee:nth-child(3) {
+      color: #5c6670;
+      background: #dfe5e7;
+    }
+
+    .attendee svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    .attendee-count {
+      margin-left: 12px;
+      color: #746e75;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .open-event {
+      height: 38px;
+      padding: 0 14px;
+      border: 0;
+      border-radius: 10px;
+      color: #ffffff;
+      background: #7d5a7c;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .tab-bar {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 6;
+      height: 76px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      padding: 9px 8px 8px;
+      background: #fbfaf9;
+      box-shadow: 0 -2px 10px rgba(48, 39, 48, 0.08);
+    }
+
+    .tab {
+      padding: 3px 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      border: 0;
+      color: #898389;
+      background: transparent;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .tab svg {
+      width: 21px;
+      height: 21px;
+    }
+
+    .tab.active {
+      color: #765775;
+    }
+
+    .active-mark {
+      width: 28px;
+      height: 3px;
+      margin-top: 1px;
+      border-radius: 10px;
+      background: #8b6889;
+    }
+
+    .tab:not(.active) .active-mark {
+      background: transparent;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="top-bar">
+      <div class="title-row">
+        <div>
+          <p class="eyebrow">Tuesday, May 14</p>
+          <h1>Team map</h1>
+        </div>
+        <button class="profile-button" aria-label="Open profile">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="12" cy="8" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+            <path d="M5.5 19c.7-3.1 3-5 6.5-5s5.8 1.9 6.5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+      <div class="filters">
+        <button class="filter active">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <rect x="4" y="6" width="16" height="14" rx="2" stroke="currentColor" stroke-width="1.8"/>
+            <path d="M8 3.5V8M16 3.5V8M4 10h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+          Today
+        </button>
+        <button class="filter">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="9" cy="9" r="3" stroke="currentColor" stroke-width="1.8"/>
+            <circle cx="17" cy="10" r="2.4" stroke="currentColor" stroke-width="1.8"/>
+            <path d="M3.8 19c.6-3 2.4-4.7 5.2-4.7s4.6 1.7 5.2 4.7M14.7 15.1c2.9-.6 4.8.7 5.5 3.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+          All teams
+        </button>
+      </div>
+    </header>
+
+    <main class="map-area" aria-label="Map showing today's team sessions">
+      <svg class="map-drawing" viewBox="0 0 390 652" preserveAspectRatio="none" aria-hidden="true">
+        <rect width="390" height="652" fill="#eeeae7"/>
+        <path d="M0 74L83 43L149 66L219 35L390 71V138L315 121L225 151L135 123L55 151L0 132Z" fill="#e4dfdc"/>
+        <path d="M0 344L72 310L141 333L207 309L274 331L390 291V385L302 410L224 381L145 414L69 387L0 411Z" fill="#e5dfdc"/>
+        <path d="M37 0C57 79 46 141 78 213C107 278 100 351 71 430C54 476 59 565 86 652" fill="none" stroke="#fbfaf9" stroke-width="22"/>
+        <path d="M0 186C81 176 141 200 208 187C285 172 326 122 390 115" fill="none" stroke="#fbfaf9" stroke-width="18"/>
+        <path d="M0 505C84 476 134 477 205 497C274 517 328 509 390 468" fill="none" stroke="#fbfaf9" stroke-width="22"/>
+        <path d="M165 0C179 70 166 135 183 202C200 269 253 313 257 395C261 482 227 554 239 652" fill="none" stroke="#faf8f7" stroke-width="16"/>
+        <path d="M292 0C272 86 304 145 318 212C334 289 314 359 341 431C363 490 353 572 336 652" fill="none" stroke="#faf8f7" stroke-width="18"/>
+        <path d="M0 267C68 248 139 263 197 250C270 233 318 243 390 267" fill="none" stroke="#f8f6f4" stroke-width="10"/>
+        <path d="M109 0L118 98L99 176L126 252L113 338L135 433L118 525L132 652" fill="none" stroke="#d5cfcc" stroke-width="2"/>
+        <path d="M0 452L92 431L179 450L271 429L390 439" fill="none" stroke="#d5cfcc" stroke-width="2"/>
+        <path d="M210 0L217 82L203 165L222 246L214 326" fill="none" stroke="#d5cfcc" stroke-width="2"/>
+        <rect x="18" y="18" width="86" height="43" rx="8" fill="#ddd7d3"/>
+        <rect x="232" y="63" width="78" height="56" rx="8" fill="#e0dad7"/>
+        <rect x="91" y="213" width="55" height="67" rx="8" fill="#ddd7d4"/>
+        <rect x="279" y="188" width="82" height="48" rx="8" fill="#e1dbd8"/>
+        <rect x="18" y="289" width="61" height="54" rx="8" fill="#ddd7d4"/>
+        <rect x="277" y="354" width="78" height="61" rx="8" fill="#ddd8d4"/>
+        <text x="18" y="94" fill="#979095" font-size="11" font-weight="600">CEDAR HALL</text>
+        <text x="242" y="141" fill="#979095" font-size="11" font-weight="600">NORTH WORKSHOP</text>
+        <text x="281" y="254" fill="#979095" font-size="11" font-weight="600">PAPER ROOM</text>
+        <text x="19" y="368" fill="#979095" font-size="11" font-weight="600">UNION COURT</text>
+        <text x="280" y="437" fill="#979095" font-size="11" font-weight="600">FIELD STUDIO</text>
+      </svg>
+
+      <button class="map-control" aria-label="Center map">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.8"/>
+          <path d="M12 3v3M12 18v3M3 12h3M18 12h3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+      </button>
+
+      <div class="marker one">
+        <button class="marker-button" aria-label="Planning session at Cedar Hall">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <rect x="5" y="6" width="14" height="13" rx="2" stroke="currentColor" stroke-width="1.8"/>
+            <path d="M8 4v4M16 4v4M5 10h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+        </button>
+        <span class="marker-label">Planning · 9:00 AM</span>
+      </div>
+
+      <div class="selected-marker">
+        <button class="selected-pin" aria-label="Selected design review">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M12 21s6-5.3 6-11a6 6 0 1 0-12 0c0 5.7 6 11 6 11Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+            <circle cx="12" cy="10" r="2.2" stroke="currentColor" stroke-width="1.8"/>
+          </svg>
+        </button>
+        <span class="selected-label">Design review · 10:30 AM</span>
+      </div>
+
+      <div class="marker two">
+        <button class="marker-button" aria-label="Writing session at Paper Room">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M6 4h9l3 3v13H6V4Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+            <path d="M15 4v4h4M9 12h6M9 16h5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+        </button>
+        <span class="marker-label">Writing · 2:00 PM</span>
+      </div>
+
+      <section class="event-card" aria-labelledby="event-title">
+        <div class="event-heading">
+          <div>
+            <h2 id="event-title">Design review</h2>
+            <p>Product workspace · North Workshop</p>
+          </div>
+          <span class="live-chip">Next</span>
+        </div>
+
+        <div class="event-meta">
+          <div class="meta-item">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.8"/>
+              <path d="M12 7.5V12l3 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+            </svg>
+            10:30–11:15 AM
+          </div>
+          <div class="meta-item">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M12 21s6-5.3 6-11a6 6 0 1 0-12 0c0 5.7 6 11 6 11Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+              <circle cx="12" cy="10" r="2" stroke="currentColor" stroke-width="1.8"/>
+            </svg>
+            8 min away
+          </div>
+        </div>
+
+        <div class="card-footer">
+          <div class="attendees" aria-label="Mara Wells, Ellis Grant, and two others">
+            <span class="attendee">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <circle cx="12" cy="8" r="3" stroke="currentColor" stroke-width="1.8"/>
+                <path d="M6 19c.6-3 2.7-4.7 6-4.7s5.4 1.7 6 4.7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+              </svg>
+            </span>
+            <span class="attendee">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <circle cx="12" cy="8" r="3" stroke="currentColor" stroke-width="1.8"/>
+                <path d="M6 19c.6-3 2.7-4.7 6-4.7s5.4 1.7 6 4.7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+              </svg>
+            </span>
+            <span class="attendee">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <circle cx="12" cy="8" r="3" stroke="currentColor" stroke-width="1.8"/>
+                <path d="M6 19c.6-3 2.7-4.7 6-4.7s5.4 1.7 6 4.7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+              </svg>
+            </span>
+            <span class="attendee-count">4 attending</span>
+          </div>
+          <button class="open-event">Open event</button>
+        </div>
+      </section>
+    </main>
+
+    <nav class="tab-bar" aria-label="Primary navigation">
+      <button class="tab active">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M4 6.5 9 4l6 2.5L20 4v13.5L15 20l-6-2.5L4 20V6.5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+          <path d="M9 4v13.5M15 6.5V20" stroke="currentColor" stroke-width="1.8"/>
+        </svg>
+        Map
+        <span class="active-mark"></span>
+      </button>
+      <button class="tab">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <rect x="4" y="5.5" width="16" height="14.5" rx="2" stroke="currentColor" stroke-width="1.8"/>
+          <path d="M8 3.5v4M16 3.5v4M4 10h16M8 14h2M14 14h2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+        Schedule
+        <span class="active-mark"></span>
+      </button>
+      <button class="tab">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M6 4h12v16H6V4Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+          <path d="M9 8h6M9 12h6M9 16h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+        Notes
+        <span class="active-mark"></span>
+      </button>
+      <button class="tab">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="9" cy="8.5" r="3" stroke="currentColor" stroke-width="1.8"/>
+          <circle cx="17" cy="10" r="2.4" stroke="currentColor" stroke-width="1.8"/>
+          <path d="M3.8 19c.6-3 2.4-4.7 5.2-4.7s4.6 1.7 5.2 4.7M14.7 15.1c2.9-.6 4.8.7 5.5 3.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+        Team
+        <span class="active-mark"></span>
+      </button>
+    </nav>
+  </div>
+</body>
+</html>

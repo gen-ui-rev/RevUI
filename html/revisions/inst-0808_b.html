@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Morrow Post Detail</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 32px 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #e9e6e8;
+      color: #29252a;
+      font-family: 'Inter', system-ui, sans-serif;
+    }
+
+    button {
+      font: inherit;
+      cursor: pointer;
+    }
+
+    .screen {
+      width: 1024px;
+      height: 768px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      border-radius: 10px;
+      background: #f3eff2;
+      box-shadow: 0 6px 26px rgba(45, 36, 43, 0.18);
+    }
+
+    /* ---------- desktop menu bar ---------- */
+    .topbar {
+      flex: 0 0 58px;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      padding: 0 20px;
+      background: #fcfbfc;
+      border-bottom: 1px solid #e7dfe4;
+    }
+
+    .brand {
+      margin: 0;
+      color: #895878;
+      font-size: 16px;
+      line-height: 21px;
+      font-weight: 700;
+      letter-spacing: 0.2px;
+    }
+
+    .menu {
+      display: flex;
+      gap: 2px;
+    }
+
+    .menu-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 7px 11px;
+      border: 0;
+      border-radius: 6px;
+      color: #6b636b;
+      background: transparent;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 500;
+    }
+
+    .menu-item:hover {
+      background: rgba(151, 100, 139, 0.1);
+      color: #4a424a;
+    }
+
+    .menu-item.active {
+      background: rgba(151, 100, 139, 0.16);
+      color: #895878;
+      font-weight: 600;
+    }
+
+    .searchfield {
+      margin-left: auto;
+      width: 250px;
+      padding: 7px 12px;
+      border: 1px solid #e3dae0;
+      border-radius: 6px;
+      background: #f8f5f7;
+      color: #918891;
+      font-size: 13px;
+      line-height: 18px;
+    }
+
+    .icon-button {
+      width: 32px;
+      height: 32px;
+      padding: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 0;
+      border-radius: 6px;
+      color: #393139;
+      background: transparent;
+    }
+
+    .icon-button:hover {
+      background: rgba(151, 100, 139, 0.12);
+    }
+
+    .icon-button svg,
+    .action svg,
+    .menu-item svg,
+    .play-button svg {
+      display: block;
+      width: 18px;
+      height: 18px;
+    }
+
+    .me {
+      width: 32px;
+      height: 32px;
+      flex: 0 0 32px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #d9ced6;
+      color: #62525e;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    /* ---------- stage ---------- */
+    .stage {
+      flex: 1 1 auto;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    .post-area {
+      flex: 1 1 auto;
+      display: flex;
+      justify-content: center;
+      padding: 18px 20px;
+    }
+
+    .post-card {
+      width: 700px;
+      padding: 16px 18px;
+      border: 1px solid #e9e1e6;
+      border-radius: 10px;
+      background: #fcfbfc;
+      box-shadow: 0 1px 3px rgba(45, 36, 43, 0.05);
+    }
+
+    .breadcrumb {
+      margin: 0 0 10px;
+      color: #8b828a;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .author-row {
+      display: flex;
+      align-items: center;
+      min-height: 44px;
+    }
+
+    .avatar {
+      flex: 0 0 auto;
+      width: 44px;
+      height: 44px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #a77b9d;
+      color: #ffffff;
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .author-copy {
+      min-width: 0;
+      margin-left: 11px;
+    }
+
+    .author-name {
+      margin: 0;
+      font-size: 14px;
+      line-height: 19px;
+      font-weight: 600;
+    }
+
+    .author-meta {
+      margin: 2px 0 0;
+      color: #746c73;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .header-tools {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .follow {
+      padding: 7px 14px;
+      border: 0;
+      border-radius: 6px;
+      background: rgba(151, 100, 139, 0.14);
+      color: #794c70;
+      font-size: 13px;
+      line-height: 17px;
+      font-weight: 600;
+    }
+
+    .follow:hover {
+      background: rgba(151, 100, 139, 0.22);
+    }
+
+    .post-copy {
+      margin: 10px 0 0;
+      font-size: 15px;
+      line-height: 20px;
+    }
+
+    .media-row {
+      margin-top: 12px;
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+    }
+
+    .hero {
+      width: 400px;
+      height: 170px;
+      border-radius: 8px;
+      object-fit: cover;
+      display: block;
+      background: #d8d0d6;
+    }
+
+    .media-side {
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+
+    .track-card {
+      padding: 9px 11px;
+      min-height: 60px;
+      display: flex;
+      align-items: center;
+      border-radius: 8px;
+      background: rgba(151, 100, 139, 0.12);
+    }
+
+    .play-button {
+      width: 36px;
+      height: 36px;
+      flex: 0 0 36px;
+      padding: 0;
+      border: 0;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      background: #936384;
+    }
+
+    .track-copy {
+      min-width: 0;
+      margin-left: 10px;
+    }
+
+    .track-title {
+      margin: 0;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .track-meta {
+      margin: 2px 0 0;
+      color: #71666f;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .duration {
+      margin-left: auto;
+      padding-left: 8px;
+      color: #71666f;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 500;
+    }
+
+    .stats {
+      margin: 10px 0 0;
+      color: #7c737b;
+      font-size: 12px;
+      line-height: 17px;
+    }
+
+    .actions {
+      min-height: 42px;
+      margin-top: 10px;
+      padding: 0 6px;
+      display: flex;
+      align-items: center;
+      border-radius: 8px;
+      background: rgba(151, 100, 139, 0.08);
+    }
+
+    .action {
+      padding: 8px 10px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border: 0;
+      border-radius: 6px;
+      color: #625a60;
+      background: transparent;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 500;
+    }
+
+    .action:hover {
+      background: rgba(151, 100, 139, 0.12);
+    }
+
+    .action.liked {
+      color: #885579;
+    }
+
+    .action.share {
+      margin-left: auto;
+    }
+
+    /* ---------- comments docked along the bottom ---------- */
+    .comments-dock {
+      flex: 0 0 auto;
+      padding: 12px 20px 16px;
+      background: #fcfbfc;
+      border-top: 1px solid #e2d9df;
+    }
+
+    .dock-head {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      margin-bottom: 9px;
+    }
+
+    .dock-head h2 {
+      margin: 0;
+      font-size: 14px;
+      line-height: 19px;
+      font-weight: 600;
+    }
+
+    .dock-head .hint {
+      color: #8b828a;
+      font-size: 12px;
+      line-height: 17px;
+    }
+
+    .dock-head a {
+      margin-left: auto;
+      color: #855777;
+      text-decoration: none;
+      font-size: 12px;
+      line-height: 17px;
+      font-weight: 600;
+    }
+
+    .comment-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .comment {
+      padding: 10px 12px;
+      border: 1px solid #eee7ec;
+      border-left: 3px solid rgba(151, 100, 139, 0.35);
+      border-radius: 8px;
+      background: #faf8f9;
+    }
+
+    .comment-top {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .comment-avatar {
+      width: 26px;
+      height: 26px;
+      flex: 0 0 26px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(151, 100, 139, 0.17);
+      color: #704a67;
+      font-size: 11px;
+      line-height: 15px;
+      font-weight: 700;
+    }
+
+    .comment-name {
+      margin: 0;
+      font-size: 13px;
+      line-height: 17px;
+      font-weight: 600;
+    }
+
+    .comment-meta {
+      margin-left: auto;
+      color: #817981;
+      font-size: 11px;
+      line-height: 15px;
+    }
+
+    .comment-text {
+      margin: 6px 0 0;
+      color: #403a3f;
+      font-size: 13px;
+      line-height: 18px;
+    }
+
+    .comment-reply {
+      margin: 5px 0 0;
+      color: #855777;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 600;
+    }
+
+    .reply-row {
+      margin-top: 12px;
+      display: flex;
+      align-items: center;
+    }
+
+    .reply-avatar {
+      width: 32px;
+      height: 32px;
+      flex: 0 0 32px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #d9ced6;
+      color: #62525e;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .reply-entry {
+      min-height: 36px;
+      margin-left: 10px;
+      padding: 8px 12px;
+      flex: 1;
+      border: 1px solid #e3dae0;
+      border-radius: 6px;
+      background: #f8f5f7;
+      color: #8b828a;
+      font-size: 13px;
+      line-height: 20px;
+    }
+
+    .send {
+      margin-left: 10px;
+      padding: 9px 18px;
+      border: 0;
+      border-radius: 6px;
+      background: #936384;
+      color: #ffffff;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <p class="brand">Morrow</p>
+      <nav class="menu" aria-label="Morrow navigation">
+        <button class="menu-item" type="button">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="m4 10 8-6 8 6v9a1 1 0 0 1-1 1h-5v-6h-4v6H5a1 1 0 0 1-1-1v-9Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+          </svg>
+          <span>Home</span>
+        </button>
+        <button class="menu-item active" type="button">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="1.8"/>
+            <path d="m16 16 4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+          <span>Explore</span>
+        </button>
+        <button class="menu-item" type="button">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <rect x="4" y="5" width="16" height="14" rx="1" stroke="currentColor" stroke-width="1.7"/>
+            <path d="M9 9v6M15 7v10" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+          </svg>
+          <span>Library</span>
+        </button>
+        <button class="menu-item" type="button">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="12" cy="8" r="3.5" stroke="currentColor" stroke-width="1.7"/>
+            <path d="M5.5 20c.5-4 2.7-6 6.5-6s6 2 6.5 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+          </svg>
+          <span>Profile</span>
+        </button>
+      </nav>
+      <div class="searchfield">Search posts, artists, sessions</div>
+      <button class="icon-button" type="button" aria-label="More options">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <circle cx="5" cy="12" r="1.7"/>
+          <circle cx="12" cy="12" r="1.7"/>
+          <circle cx="19" cy="12" r="1.7"/>
+        </svg>
+      </button>
+      <div class="me" aria-hidden="true">JL</div>
+    </header>
+
+    <div class="stage">
+      <div class="post-area">
+        <main class="post-card" aria-label="Post by Mara Vance">
+          <p class="breadcrumb">Explore / Fieldroom Stage / Post</p>
+
+          <div class="author-row">
+            <div class="avatar" aria-hidden="true">MV</div>
+            <div class="author-copy">
+              <p class="author-name">Mara Vance</p>
+              <p class="author-meta">@maravance · May 18 at 9:24 PM</p>
+            </div>
+            <div class="header-tools">
+              <button class="follow" type="button">Follow</button>
+              <button class="icon-button" type="button" aria-label="Share post">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="m14 5 5-1-1 5M19 4l-8 8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M18 13v5a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <p class="post-copy">Still thinking about last night’s closing set. We saved the version of “Northbound” with the extended guitar outro—listen from 18:42.</p>
+
+          <div class="media-row">
+            <img class="hero" src="https://loremflickr.com/400/170/concert?lock=10750" width="400" height="170" alt="Crowd watching a live concert under stage lights">
+            <div class="media-side">
+              <div class="track-card" aria-label="Audio clip">
+                <button class="play-button" type="button" aria-label="Play Northbound live session">
+                  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <path d="M8.2 5.7c0-.9 1-1.4 1.8-.9l8.1 6.3c.6.4.6 1.3 0 1.8L10 19.2c-.8.6-1.8 0-1.8-.9V5.7Z"/>
+                  </svg>
+                </button>
+                <div class="track-copy">
+                  <p class="track-title">Northbound — Live Session</p>
+                  <p class="track-meta">Mara Vance · Fieldroom Stage</p>
+                </div>
+                <span class="duration">24:16</span>
+              </div>
+
+              <p class="stats">4,102 plays · 1,284 likes · 28 comments<br>Recorded May 17 · Fieldroom Stage, Portland</p>
+
+              <div class="actions" aria-label="Post reactions">
+                <button class="action liked" type="button">
+                  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <path d="M12 20.4 10.6 19C5.5 14.4 2.2 11.4 2.2 7.7A5.4 5.4 0 0 1 7.7 2.2c1.7 0 3.3.8 4.3 2 1-1.2 2.6-2 4.3-2a5.4 5.4 0 0 1 5.5 5.5c0 3.7-3.3 6.7-8.4 11.3L12 20.4Z"/>
+                  </svg>
+                  <span>1,284</span>
+                </button>
+                <button class="action" type="button">
+                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M20 11.5a7.5 7.5 0 0 1-8 7.5 9.2 9.2 0 0 1-3.6-.8L4 19.5l1.4-4A7.4 7.4 0 0 1 4 11.5 7.5 7.5 0 0 1 12 4a7.5 7.5 0 0 1 8 7.5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+                  </svg>
+                  <span>28</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+
+      <section class="comments-dock" aria-labelledby="comments-title">
+        <div class="dock-head">
+          <h2 id="comments-title">Comments</h2>
+          <span class="hint">28 replies · newest first</span>
+          <a href="#">Open full thread</a>
+        </div>
+
+        <div class="comment-grid">
+          <article class="comment">
+            <div class="comment-top">
+              <div class="comment-avatar" aria-hidden="true">TH</div>
+              <p class="comment-name">Theo Hart</p>
+              <span class="comment-meta">12 min</span>
+            </div>
+            <p class="comment-text">That outro sounded huge in the room. Glad this version was saved.</p>
+            <p class="comment-reply">Reply</p>
+          </article>
+
+          <article class="comment">
+            <div class="comment-top">
+              <div class="comment-avatar" aria-hidden="true">NC</div>
+              <p class="comment-name">Nora Cole</p>
+              <span class="comment-meta">8 min</span>
+            </div>
+            <p class="comment-text">The change at 19:08 is my favorite part of the whole night.</p>
+            <p class="comment-reply">Reply</p>
+          </article>
+
+          <article class="comment">
+            <div class="comment-top">
+              <div class="comment-avatar" aria-hidden="true">EB</div>
+              <p class="comment-name">Elliot Brooks</p>
+              <span class="comment-meta">3 min</span>
+            </div>
+            <p class="comment-text">Adding this session to my late-night queue right now.</p>
+            <p class="comment-reply">Reply</p>
+          </article>
+        </div>
+
+        <div class="reply-row">
+          <div class="reply-avatar" aria-hidden="true">JL</div>
+          <div class="reply-entry">Add a comment</div>
+          <button class="send" type="button">Post comment</button>
+        </div>
+      </section>
+    </div>
+  </div>
+</body>
+</html>

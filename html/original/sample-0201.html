@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Conversation with Avery Cole</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #e8e7e3;
+      color: #282927;
+      font-family: 'Source Serif 4', Georgia, serif;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      color: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #ffffff;
+      border: 1px solid #cfcec8;
+    }
+
+    .topbar {
+      display: grid;
+      grid-template-columns: 40px minmax(0, 1fr) 40px;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 12px;
+      border-bottom: 1px solid #deddd8;
+    }
+
+    .icon-button {
+      width: 40px;
+      height: 40px;
+      padding: 0;
+      display: grid;
+      place-items: center;
+      border: 0;
+      background: transparent;
+    }
+
+    .icon-button svg,
+    .composer-button svg,
+    .nav-item svg {
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.7;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .title-block {
+      min-width: 0;
+      text-align: center;
+    }
+
+    .title {
+      margin: 0;
+      overflow: hidden;
+      color: #222320;
+      font-size: 17px;
+      font-weight: 700;
+      line-height: 20px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .presence {
+      margin: 2px 0 0;
+      color: #777872;
+      font-size: 12px;
+      line-height: 15px;
+    }
+
+    .listing {
+      margin: 10px 14px 0;
+      padding: 8px;
+      display: grid;
+      grid-template-columns: 44px minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 10px;
+      border: 1px solid #d9d8d2;
+      border-radius: 10px;
+    }
+
+    .listing-art {
+      width: 44px;
+      height: 44px;
+      display: grid;
+      place-items: center;
+      background: #f4f3ef;
+      border: 1px solid #deddd7;
+      border-radius: 10px;
+      color: #555650;
+    }
+
+    .listing-art svg {
+      width: 29px;
+      height: 29px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .listing-copy {
+      min-width: 0;
+    }
+
+    .listing-name {
+      margin: 0;
+      overflow: hidden;
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 18px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .listing-detail {
+      margin: 2px 0 0;
+      color: #6f706a;
+      font-size: 12px;
+      line-height: 15px;
+    }
+
+    .view-button {
+      padding: 6px 9px;
+      border: 1px solid #c9c8c2;
+      border-radius: 10px;
+      background: #ffffff;
+      font-size: 13px;
+      font-weight: 600;
+      line-height: 16px;
+    }
+
+    .conversation {
+      min-height: 0;
+      flex: 1;
+      padding: 10px 14px 8px;
+    }
+
+    .day-divider {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+      color: #85867f;
+      font-size: 12px;
+      line-height: 16px;
+      text-align: center;
+    }
+
+    .day-divider::before,
+    .day-divider::after {
+      height: 1px;
+      flex: 1;
+      content: "";
+      background: #e2e1dc;
+    }
+
+    .message {
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+      margin-bottom: 7px;
+    }
+
+    .message.outgoing {
+      justify-content: flex-end;
+    }
+
+    .avatar {
+      width: 28px;
+      height: 28px;
+      flex: 0 0 28px;
+      display: grid;
+      place-items: center;
+      border: 1px solid #cecdc7;
+      border-radius: 50%;
+      background: #f5f4f0;
+      color: #666761;
+    }
+
+    .avatar svg {
+      width: 18px;
+      height: 18px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .message-stack {
+      max-width: 278px;
+    }
+
+    .bubble {
+      padding: 8px 10px;
+      border: 1px solid #d7d6d0;
+      border-radius: 10px;
+      background: #f6f5f2;
+      font-size: 14px;
+      line-height: 18px;
+    }
+
+    .bubble p {
+      margin: 0;
+    }
+
+    .outgoing .bubble {
+      border-color: #363733;
+      background: #363733;
+      color: #ffffff;
+    }
+
+    .message-meta {
+      margin-top: 2px;
+      color: #85867f;
+      font-size: 12px;
+      line-height: 15px;
+    }
+
+    .outgoing .message-meta {
+      text-align: right;
+    }
+
+    .proposal {
+      margin: 2px 36px 9px;
+      padding: 7px 10px;
+      border: 1px solid #d9d8d2;
+      border-radius: 10px;
+      color: #565752;
+      font-size: 13px;
+      line-height: 17px;
+      text-align: center;
+    }
+
+    .proposal strong {
+      font-weight: 600;
+    }
+
+    .composer {
+      padding: 8px 12px;
+      border-top: 1px solid #deddd8;
+    }
+
+    .composer-box {
+      display: grid;
+      grid-template-columns: 38px minmax(0, 1fr) 38px;
+      align-items: center;
+      border: 1px solid #c9c8c2;
+      border-radius: 10px;
+      background: #ffffff;
+    }
+
+    .composer-button {
+      width: 38px;
+      height: 42px;
+      padding: 0;
+      display: grid;
+      place-items: center;
+      border: 0;
+      background: transparent;
+    }
+
+    .composer-button.send {
+      color: #30312e;
+    }
+
+    .composer-input {
+      width: 100%;
+      height: 42px;
+      padding: 0 4px;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      color: #292a27;
+      font-size: 14px;
+    }
+
+    .composer-input::placeholder {
+      color: #8a8b84;
+      opacity: 1;
+    }
+
+    .tabbar {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border-top: 1px solid #d8d7d1;
+      background: #fbfbf9;
+    }
+
+    .nav-item {
+      min-width: 0;
+      padding: 7px 2px 6px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      border: 0;
+      background: transparent;
+      color: #85867f;
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 14px;
+    }
+
+    .nav-item.active {
+      color: #2f302d;
+      font-weight: 600;
+    }
+
+    .nav-item svg {
+      width: 21px;
+      height: 21px;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <button class="icon-button" type="button" aria-label="Back to messages">
+        <svg width="23" height="23" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M15 5 8 12l7 7"></path>
+        </svg>
+      </button>
+
+      <div class="title-block">
+        <h1 class="title">Avery Cole</h1>
+        <p class="presence">Active 12 minutes ago</p>
+      </div>
+
+      <button class="icon-button" type="button" aria-label="Conversation options">
+        <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="5" cy="12" r="1"></circle>
+          <circle cx="12" cy="12" r="1"></circle>
+          <circle cx="19" cy="12" r="1"></circle>
+        </svg>
+      </button>
+    </header>
+
+    <section class="listing" aria-label="Listing under discussion">
+      <div class="listing-art" aria-hidden="true">
+        <svg viewBox="0 0 32 32">
+          <path d="M5 11h22"></path>
+          <path d="M7 11 9 7h14l2 4"></path>
+          <path d="M8 11v14"></path>
+          <path d="M24 11v14"></path>
+          <path d="M6 25h4"></path>
+          <path d="M22 25h4"></path>
+        </svg>
+      </div>
+      <div class="listing-copy">
+        <p class="listing-name">Walnut side table</p>
+        <p class="listing-detail">$86.00 · Local pickup</p>
+      </div>
+      <button class="view-button" type="button">View</button>
+    </section>
+
+    <main class="conversation" aria-label="Conversation">
+      <div class="day-divider">Today</div>
+
+      <div class="message incoming">
+        <div class="avatar" aria-hidden="true">
+          <svg viewBox="0 0 20 20">
+            <circle cx="10" cy="7" r="3"></circle>
+            <path d="M4.5 16c.8-3 2.7-4.5 5.5-4.5s4.7 1.5 5.5 4.5"></path>
+          </svg>
+        </div>
+        <div class="message-stack">
+          <div class="bubble">
+            <p>Hi, is the walnut side table still available for pickup?</p>
+          </div>
+          <div class="message-meta">9:14 AM</div>
+        </div>
+      </div>
+
+      <div class="message outgoing">
+        <div class="message-stack">
+          <div class="bubble">
+            <p>Yes, it is. I’m in North Park.</p>
+          </div>
+          <div class="message-meta">9:18 AM · Read</div>
+        </div>
+      </div>
+
+      <div class="message incoming">
+        <div class="avatar" aria-hidden="true">
+          <svg viewBox="0 0 20 20">
+            <circle cx="10" cy="7" r="3"></circle>
+            <path d="M4.5 16c.8-3 2.7-4.5 5.5-4.5s4.7 1.5 5.5 4.5"></path>
+          </svg>
+        </div>
+        <div class="message-stack">
+          <div class="bubble">
+            <p>Great. Are there any scratches on the top?</p>
+          </div>
+          <div class="message-meta">9:20 AM</div>
+        </div>
+      </div>
+
+      <div class="message outgoing">
+        <div class="message-stack">
+          <div class="bubble">
+            <p>One light mark near the back edge. I can send a close-up.</p>
+          </div>
+          <div class="message-meta">9:23 AM · Read</div>
+        </div>
+      </div>
+
+      <div class="message incoming">
+        <div class="avatar" aria-hidden="true">
+          <svg viewBox="0 0 20 20">
+            <circle cx="10" cy="7" r="3"></circle>
+            <path d="M4.5 16c.8-3 2.7-4.5 5.5-4.5s4.7 1.5 5.5 4.5"></path>
+          </svg>
+        </div>
+        <div class="message-stack">
+          <div class="bubble">
+            <p>That works for me. Would Saturday at 10:30 AM be okay?</p>
+          </div>
+          <div class="message-meta">9:26 AM</div>
+        </div>
+      </div>
+
+      <div class="proposal">
+        <strong>Pickup proposed</strong> · Sat, May 18 at 10:30 AM
+      </div>
+
+      <div class="message outgoing">
+        <div class="message-stack">
+          <div class="bubble">
+            <p>Saturday works. I’ll hold it for you through 11:00 AM.</p>
+          </div>
+          <div class="message-meta">9:29 AM · Delivered</div>
+        </div>
+      </div>
+    </main>
+
+    <form class="composer" aria-label="Write a message">
+      <div class="composer-box">
+        <button class="composer-button" type="button" aria-label="Attach a photo">
+          <svg width="21" height="21" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M8.5 12.5 14 7a3.2 3.2 0 0 1 4.5 4.5l-7 7a5 5 0 0 1-7-7l7.2-7.2"></path>
+          </svg>
+        </button>
+        <input class="composer-input" type="text" aria-label="Message Avery Cole" placeholder="Message Avery">
+        <button class="composer-button send" type="submit" aria-label="Send message">
+          <svg width="21" height="21" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="m4 5 16 7-16 7 3-7-3-7Z"></path>
+            <path d="M7 12h13"></path>
+          </svg>
+        </button>
+      </div>
+    </form>
+
+    <nav class="tabbar" aria-label="Primary navigation">
+      <button class="nav-item" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M4 10.5 12 4l8 6.5"></path>
+          <path d="M6 9.5V20h12V9.5"></path>
+        </svg>
+        <span>Browse</span>
+      </button>
+
+      <button class="nav-item" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="11" cy="11" r="6.5"></circle>
+          <path d="m16 16 4 4"></path>
+        </svg>
+        <span>Search</span>
+      </button>
+
+      <button class="nav-item active" type="button" aria-current="page">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M4 5.5h16v11H9l-5 3v-14Z"></path>
+        </svg>
+        <span>Messages</span>
+      </button>
+
+      <button class="nav-item" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="8" r="3.5"></circle>
+          <path d="M5.5 20c.8-4 3-6 6.5-6s5.7 2 6.5 6"></path>
+        </svg>
+        <span>Account</span>
+      </button>
+    </nav>
+  </div>
+</body>
+</html>

@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Property Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 32px 0;
+    margin: 0;
+    background: #E5E8EB;
+    font-family: 'Manrope', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .screen {
+    width: 768px;
+    height: 1024px;
+    position: relative;
+    display: flex;
+    color: #172029;
+    background: #FBFCFC;
+  }
+
+  /* expanded left rail */
+  .rail {
+    width: 178px;
+    flex: 0 0 178px;
+    display: flex;
+    flex-direction: column;
+    padding: 27px 16px 22px;
+    color: #DCE8EE;
+    background: #123A4D;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    margin: 0 8px 38px;
+  }
+  .brand-mark {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #123A4D;
+    background: #FFFFFF;
+    font-size: 13px;
+    font-weight: 700;
+  }
+  .brand-copy b {
+    display: block;
+    color: #FFFFFF;
+    font-size: 13px;
+  }
+  .brand-copy span {
+    display: block;
+    margin-top: 2px;
+    color: #9FB7C3;
+    font-size: 9px;
+  }
+  .nav-label {
+    margin: 0 10px 10px;
+    color: #7FA0AF;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+  }
+  .nav {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 11px;
+    color: #AFC3CD;
+    font-size: 12px;
+    font-weight: 500;
+  }
+  .nav-item svg {
+    flex: 0 0 auto;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.65;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .nav-item.on {
+    color: #FFFFFF;
+    background: #23617D;
+  }
+  .rail-card {
+    margin-top: auto;
+    padding: 14px;
+    background: rgba(255,255,255,0.08);
+  }
+  .rail-card-label {
+    color: #9FB7C3;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.7px;
+    text-transform: uppercase;
+  }
+  .rail-card b {
+    display: block;
+    margin-top: 6px;
+    color: #FFFFFF;
+    font-size: 12px;
+  }
+  .rail-card span {
+    display: block;
+    margin-top: 3px;
+    color: #AFC3CD;
+    font-size: 9.5px;
+    line-height: 1.45;
+  }
+
+  /* workspace */
+  .main {
+    min-width: 0;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 29px 26px 22px;
+  }
+  .topbar h1 {
+    margin: 0;
+    font-size: 25px;
+    line-height: 1.2;
+    letter-spacing: -0.6px;
+  }
+  .topbar p {
+    margin: 5px 0 0;
+    color: #7B8791;
+    font-size: 11.5px;
+  }
+  .top-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .icon-button {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #43525E;
+    border: 1px solid #DCE2E6;
+    background: #FFFFFF;
+  }
+  .icon-button svg {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.7;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .content {
+    min-height: 0;
+    flex: 1;
+    display: grid;
+    grid-template-columns: 190px minmax(0, 1fr);
+    gap: 18px;
+    align-items: start;
+    padding: 0 26px 28px;
+  }
+
+  /* summary column */
+  .summary-panel {
+    padding: 21px 18px;
+    border-top: 4px solid #1781A8;
+    background: #FFFFFF;
+    box-shadow: 0 1px 0 #E2E7EA;
+  }
+  .summary-label {
+    color: #6E7B86;
+    font-size: 9.5px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .total {
+    margin-top: 9px;
+    color: #123A4D;
+    font-size: 44px;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -1.8px;
+  }
+  .total-unit {
+    margin-top: 4px;
+    color: #344550;
+    font-size: 13px;
+    font-weight: 700;
+  }
+  .summary-note {
+    margin-top: 10px;
+    color: #77848E;
+    font-size: 10.5px;
+    line-height: 1.5;
+  }
+  .stat {
+    padding: 15px 0;
+    border-top: 1px solid #E8ECEF;
+  }
+  .stat.first { margin-top: 17px; }
+  .stat-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .stat-name {
+    color: #66747E;
+    font-size: 10.5px;
+  }
+  .stat-value {
+    color: #1F2D36;
+    font-size: 15px;
+    font-weight: 700;
+  }
+  .stat-sub {
+    margin-top: 4px;
+    color: #91A0AA;
+    font-size: 9.5px;
+  }
+  .inspection-card {
+    margin-top: 16px;
+    padding: 16px;
+    color: #75420F;
+    background: #FFF3E1;
+  }
+  .inspection-card svg {
+    fill: none;
+    stroke: #B66516;
+    stroke-width: 1.7;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .inspection-card b {
+    display: block;
+    margin-top: 9px;
+    font-size: 14px;
+  }
+  .inspection-card p {
+    margin: 5px 0 0;
+    font-size: 10px;
+    line-height: 1.5;
+  }
+  .mini-heading {
+    margin: 22px 0 10px;
+    color: #70808A;
+    font-size: 9.5px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .visit {
+    padding: 11px 0;
+    border-top: 1px solid #E1E6E9;
+  }
+  .visit-date {
+    color: #1781A8;
+    font-size: 9px;
+    font-weight: 700;
+  }
+  .visit-name {
+    margin-top: 4px;
+    color: #2A3943;
+    font-size: 10.5px;
+    font-weight: 700;
+    line-height: 1.4;
+  }
+
+  /* table-like building list */
+  .list-panel {
+    background: #FFFFFF;
+    box-shadow: 0 1px 0 #E2E7EA;
+  }
+  .list-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 17px 14px;
+    border-bottom: 1px solid #E7EBEE;
+  }
+  .list-title h2 {
+    margin: 0;
+    font-size: 16px;
+    letter-spacing: -0.2px;
+  }
+  .add-button {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: #126A8D;
+    font-size: 10px;
+    font-weight: 700;
+  }
+  .add-button svg {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+  }
+  .column-head {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 44px;
+    gap: 8px;
+    padding: 10px 17px;
+    color: #8A969F;
+    background: #F7F9FA;
+    font-size: 8.5px;
+    font-weight: 700;
+    letter-spacing: 0.7px;
+    text-transform: uppercase;
+  }
+  .column-head span:last-child { text-align: right; }
+  .building-row {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding: 14px 16px;
+    border-bottom: 1px solid #EBEEF0;
+  }
+  .building-row:last-child { border-bottom: 0; }
+  .building-mark {
+    width: 37px;
+    height: 37px;
+    flex: 0 0 37px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #216E8B;
+    background: #E9F3F6;
+  }
+  .building-mark svg {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.55;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .building-copy {
+    min-width: 0;
+    flex: 1;
+  }
+  .building-name {
+    overflow: hidden;
+    color: #24323B;
+    font-size: 12.5px;
+    font-weight: 700;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .building-meta {
+    overflow: hidden;
+    margin-top: 4px;
+    color: #7C8992;
+    font-size: 9.5px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .unit-count {
+    flex: 0 0 40px;
+    color: #263640;
+    font-size: 12px;
+    font-weight: 700;
+    text-align: right;
+  }
+  .unit-count span {
+    display: block;
+    margin-top: 2px;
+    color: #96A1A9;
+    font-size: 8px;
+    font-weight: 500;
+  }
+</style>
+</head>
+<body>
+<div class="screen">
+  <aside class="rail">
+    <div class="brand">
+      <div class="brand-mark">NP</div>
+      <div class="brand-copy">
+        <b>North Property</b>
+        <span>Manager workspace</span>
+      </div>
+    </div>
+
+    <div class="nav-label">Workspace</div>
+    <nav class="nav">
+      <div class="nav-item">
+        <svg width="20" height="20" viewBox="0 0 24 24"><path d="M4 11l8-6 8 6"/><path d="M6 10v10h12V10"/></svg>
+        <span>Dashboard</span>
+      </div>
+      <div class="nav-item on">
+        <svg width="20" height="20" viewBox="0 0 24 24"><path d="M5 21V4h10v17"/><path d="M15 9h4v12M8 8h3M8 12h3M8 16h3"/></svg>
+        <span>Properties</span>
+      </div>
+      <div class="nav-item">
+        <svg width="20" height="20" viewBox="0 0 24 24"><circle cx="12" cy="8.5" r="3.4"/><path d="M5 20c0-3.6 3.1-5.5 7-5.5s7 1.9 7 5.5"/></svg>
+        <span>Residents</span>
+      </div>
+      <div class="nav-item">
+        <svg width="20" height="20" viewBox="0 0 24 24"><path d="M5 4h14v16H5z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>
+        <span>Maintenance</span>
+      </div>
+      <div class="nav-item">
+        <svg width="20" height="20" viewBox="0 0 24 24"><path d="M4 5h16v11H8l-4 4z"/><path d="M8 9h8M8 12h5"/></svg>
+        <span>Messages</span>
+      </div>
+      <div class="nav-item">
+        <svg width="20" height="20" viewBox="0 0 24 24"><path d="M5 19V9M12 19V5M19 19v-7"/><path d="M3 19h18"/></svg>
+        <span>Reports</span>
+      </div>
+    </nav>
+
+    <div class="rail-card">
+      <div class="rail-card-label">Signed in</div>
+      <b>Alex Kim</b>
+      <span>Portfolio manager<br>Northside region</span>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div>
+        <h1>Property portfolio</h1>
+        <p>Building status and inspection records</p>
+      </div>
+      <div class="top-actions">
+        <div class="icon-button">
+          <svg width="19" height="19" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4 4"/></svg>
+        </div>
+        <div class="icon-button">
+          <svg width="19" height="19" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+        </div>
+      </div>
+    </header>
+
+    <div class="content">
+      <aside>
+        <div class="summary-panel">
+          <div class="summary-label">Total portfolio</div>
+          <div class="total">186</div>
+          <div class="total-unit">managed units</div>
+          <div class="summary-note">Across 8 buildings in the Northside region</div>
+
+          <div class="stat first">
+            <div class="stat-row">
+              <span class="stat-name">Occupied</span>
+              <span class="stat-value">174</span>
+            </div>
+            <div class="stat-sub">93.5% occupancy</div>
+          </div>
+          <div class="stat">
+            <div class="stat-row">
+              <span class="stat-name">Vacant</span>
+              <span class="stat-value">12</span>
+            </div>
+            <div class="stat-sub">4 ready to lease</div>
+          </div>
+          <div class="stat">
+            <div class="stat-row">
+              <span class="stat-name">Open work orders</span>
+              <span class="stat-value">9</span>
+            </div>
+            <div class="stat-sub">2 marked urgent</div>
+          </div>
+        </div>
+
+        <div class="inspection-card">
+          <svg width="21" height="21" viewBox="0 0 24 24"><path d="M12 4l9 16H3z"/><path d="M12 9v5M12 17h.01"/></svg>
+          <b>3 inspections due</b>
+          <p>Cedar Row is next on Mar 12, followed by Riverside Lofts.</p>
+        </div>
+
+        <div class="mini-heading">Next visits</div>
+        <div class="visit">
+          <div class="visit-date">MAR 12 · 10:00 AM</div>
+          <div class="visit-name">Cedar Row annual inspection</div>
+        </div>
+        <div class="visit">
+          <div class="visit-date">MAR 15 · 1:30 PM</div>
+          <div class="visit-name">Riverside fire system review</div>
+        </div>
+      </aside>
+
+      <section class="list-panel">
+        <div class="list-title">
+          <h2>Buildings</h2>
+          <div class="add-button">
+            <svg width="14" height="14" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+            Add
+          </div>
+        </div>
+        <div class="column-head">
+          <span>Building and last inspection</span>
+          <span>Units</span>
+        </div>
+
+        <div class="building-row">
+          <div class="building-mark">
+            <svg width="21" height="21" viewBox="0 0 24 24"><path d="M5 21V4h10v17M15 9h4v12"/><path d="M8 8h3M8 12h3M8 16h3"/></svg>
+          </div>
+          <div class="building-copy">
+            <div class="building-name">Harbor Point</div>
+            <div class="building-meta">Last inspection Mar 6</div>
+          </div>
+          <div class="unit-count">32<span>units</span></div>
+        </div>
+
+        <div class="building-row">
+          <div class="building-mark">
+            <svg width="21" height="21" viewBox="0 0 24 24"><path d="M4 21V7l8-4 8 4v14"/><path d="M8 10h2M14 10h2M8 14h2M14 14h2M10 21v-4h4v4"/></svg>
+          </div>
+          <div class="building-copy">
+            <div class="building-name">Maple Court</div>
+            <div class="building-meta">Last inspection Feb 28</div>
+          </div>
+          <div class="unit-count">24<span>units</span></div>
+        </div>
+
+        <div class="building-row">
+          <div class="building-mark">
+            <svg width="21" height="21" viewBox="0 0 24 24"><path d="M5 21V5h14v16"/><path d="M8 9h3M14 9h2M8 13h3M14 13h2M10 21v-4h4v4"/></svg>
+          </div>
+          <div class="building-copy">
+            <div class="building-name">The Linden</div>
+            <div class="building-meta">Last inspection Feb 21</div>
+          </div>
+          <div class="unit-count">28<span>units</span></div>
+        </div>
+
+        <div class="building-row">
+          <div class="building-mark">
+            <svg width="21" height="21" viewBox="0 0 24 24"><path d="M3 21h18M5 21V9l7-5 7 5v12"/><path d="M9 12h6M9 16h6"/></svg>
+          </div>
+          <div class="building-copy">
+            <div class="building-name">Cedar Row</div>
+            <div class="building-meta">Last inspection Feb 14 · Due Mar 12</div>
+          </div>
+          <div class="unit-count">18<span>units</span></div>
+        </div>
+
+        <div class="building-row">
+          <div class="building-mark">
+            <svg width="21" height="21" viewBox="0 0 24 24"><path d="M5 21V4h10v17M15 9h4v12"/><path d="M8 8h3M8 12h3M8 16h3"/></svg>
+          </div>
+          <div class="building-copy">
+            <div class="building-name">Riverside Lofts</div>
+            <div class="building-meta">Last inspection Feb 8 · Due Mar 15</div>
+          </div>
+          <div class="unit-count">36<span>units</span></div>
+        </div>
+
+        <div class="building-row">
+          <div class="building-mark">
+            <svg width="21" height="21" viewBox="0 0 24 24"><path d="M4 21V7l8-4 8 4v14"/><path d="M8 10h2M14 10h2M8 14h2M14 14h2M10 21v-4h4v4"/></svg>
+          </div>
+          <div class="building-copy">
+            <div class="building-name">Oak Terrace</div>
+            <div class="building-meta">Last inspection Jan 30 · Due Mar 18</div>
+          </div>
+          <div class="unit-count">20<span>units</span></div>
+        </div>
+
+        <div class="building-row">
+          <div class="building-mark">
+            <svg width="21" height="21" viewBox="0 0 24 24"><path d="M5 21V5h14v16"/><path d="M8 9h3M14 9h2M8 13h3M14 13h2M10 21v-4h4v4"/></svg>
+          </div>
+          <div class="building-copy">
+            <div class="building-name">Parkview House</div>
+            <div class="building-meta">Last inspection Jan 22</div>
+          </div>
+          <div class="unit-count">16<span>units</span></div>
+        </div>
+
+        <div class="building-row">
+          <div class="building-mark">
+            <svg width="21" height="21" viewBox="0 0 24 24"><path d="M3 21h18M5 21V9l7-5 7 5v12"/><path d="M9 12h6M9 16h6"/></svg>
+          </div>
+          <div class="building-copy">
+            <div class="building-name">Birch Lane</div>
+            <div class="building-meta">Last inspection Jan 15</div>
+          </div>
+          <div class="unit-count">12<span>units</span></div>
+        </div>
+      </section>
+    </div>
+  </main>
+</div>
+</body>
+</html>

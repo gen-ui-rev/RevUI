@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Northstar Learning Plans</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 28px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #172033;
+      background: #e7e9ed;
+      font-family: 'Source Sans 3', system-ui, sans-serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      width: 1024px;
+      height: 768px;
+      display: flex;
+      background: #ffffff;
+      border: 1px solid #d7dce5;
+      box-shadow: 0 12px 34px rgba(25, 35, 55, 0.1);
+    }
+
+    .sidebar {
+      width: 210px;
+      flex: none;
+      display: flex;
+      flex-direction: column;
+      padding: 22px 16px 18px;
+      color: #dce7fb;
+      background: #182640;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 7px 22px;
+      color: #ffffff;
+      font-size: 17px;
+      font-weight: 600;
+    }
+
+    .brand-mark {
+      width: 30px;
+      height: 30px;
+      display: grid;
+      place-items: center;
+      flex: none;
+      color: #82afff;
+      border: 2px solid currentColor;
+      border-radius: 10px;
+    }
+
+    .nav-label {
+      margin: 8px 10px 7px;
+      color: #8999b6;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .side-nav,
+    .plan-nav {
+      display: grid;
+      gap: 4px;
+    }
+
+    .side-item,
+    .plan-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 10px;
+      color: #b9c6dc;
+      border-radius: 7px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .side-item svg {
+      width: 19px;
+      height: 19px;
+      flex: none;
+      stroke: currentColor;
+    }
+
+    .side-item.active {
+      color: #ffffff;
+      background: #263a5c;
+    }
+
+    .plan-item {
+      position: relative;
+      padding-left: 39px;
+      color: #aebcd2;
+    }
+
+    .plan-item::before {
+      content: "";
+      position: absolute;
+      left: 20px;
+      width: 5px;
+      height: 5px;
+      background: #6f809d;
+      border-radius: 50%;
+    }
+
+    .plan-item.active {
+      color: #ffffff;
+      background: #214f96;
+    }
+
+    .plan-item.active::before {
+      background: #9ec0ff;
+    }
+
+    .sidebar-footer {
+      margin-top: auto;
+      padding: 14px 10px 0;
+      border-top: 1px solid #31415b;
+    }
+
+    .profile-name {
+      color: #ffffff;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .profile-detail {
+      margin-top: 2px;
+      color: #98a8c2;
+      font-size: 12px;
+    }
+
+    .workspace {
+      min-width: 0;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: #fbfcfe;
+    }
+
+    .workspace-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 13px 28px;
+      background: #ffffff;
+      border-bottom: 1px solid #e0e5ec;
+    }
+
+    .breadcrumb {
+      color: #6b7689;
+      font-size: 13px;
+    }
+
+    .breadcrumb strong {
+      color: #27344b;
+      font-weight: 600;
+    }
+
+    .help-button {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 6px 10px;
+      color: #4e5b71;
+      background: #ffffff;
+      border: 1px solid #d8dee7;
+      border-radius: 7px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .help-button svg {
+      width: 17px;
+      height: 17px;
+    }
+
+    main {
+      flex: 1;
+      padding: 18px 28px 15px;
+    }
+
+    .hero {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 30px;
+    }
+
+    .eyebrow {
+      margin: 0 0 2px;
+      color: #1e63d5;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.075em;
+      text-transform: uppercase;
+    }
+
+    h1,
+    h2 {
+      font-family: 'Playfair Display', Georgia, serif;
+    }
+
+    h1 {
+      margin: 0;
+      color: #15213a;
+      font-size: 29px;
+      line-height: 1.08;
+    }
+
+    .intro {
+      margin: 5px 0 0;
+      max-width: 480px;
+      color: #5f6a7e;
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
+    .billing-control {
+      display: flex;
+      flex: none;
+      padding: 3px;
+      background: #e8edf5;
+      border: 1px solid #dde3ec;
+      border-radius: 8px;
+    }
+
+    .billing-option {
+      padding: 6px 11px;
+      color: #66748b;
+      font-size: 12px;
+      font-weight: 600;
+      border-radius: 5px;
+      white-space: nowrap;
+    }
+
+    .billing-option.selected {
+      color: #184f9f;
+      background: #ffffff;
+      box-shadow: 0 1px 3px rgba(23, 35, 55, 0.1);
+    }
+
+    .plan-grid,
+    .feature-row,
+    .section-heading {
+      display: grid;
+      grid-template-columns: 190px repeat(3, minmax(0, 1fr));
+    }
+
+    .plan-grid {
+      margin-top: 14px;
+      background: #ffffff;
+      border: 1px solid #d3dae5;
+      border-radius: 8px;
+    }
+
+    .price-label {
+      display: flex;
+      align-items: center;
+      padding: 10px 13px;
+      color: #68758a;
+      font-size: 12px;
+      line-height: 1.3;
+    }
+
+    .plan {
+      padding: 7px 6px 8px;
+      text-align: center;
+      border-left: 1px solid #e0e5ec;
+    }
+
+    .plan.standard {
+      background: #edf4ff;
+      box-shadow: inset 0 3px #1e63d5;
+    }
+
+    .plan-name {
+      color: #2b374d;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .standard .plan-name {
+      color: #1e63d5;
+    }
+
+    .plan-price {
+      margin-top: 2px;
+      color: #14213a;
+      font-size: 21px;
+      line-height: 1.05;
+      font-weight: 600;
+    }
+
+    .plan-term {
+      margin-top: 2px;
+      color: #6d788c;
+      font-size: 11px;
+    }
+
+    .best-fit {
+      display: inline-block;
+      margin-top: 3px;
+      padding: 1px 7px;
+      color: #1553a8;
+      background: #dbe9ff;
+      border-radius: 10px;
+      font-size: 10px;
+      font-weight: 600;
+    }
+
+    .comparison-heading {
+      margin: 11px 0 5px;
+      color: #17233b;
+      font-size: 18px;
+      line-height: 1.2;
+    }
+
+    .comparison {
+      display: grid;
+      gap: 7px;
+    }
+
+    .feature-section {
+      background: #ffffff;
+      border: 1px solid #d5dce6;
+      border-radius: 7px;
+    }
+
+    .section-heading {
+      align-items: center;
+      background: #f2f5f9;
+      border-bottom: 1px solid #dde3eb;
+      border-radius: 7px 7px 0 0;
+    }
+
+    .section-heading h3 {
+      margin: 0;
+      padding: 5px 12px;
+      color: #35435a;
+      font-size: 12px;
+      line-height: 1.2;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .column-context {
+      padding: 5px 7px;
+      text-align: center;
+      color: #8791a2;
+      font-size: 10px;
+      font-weight: 600;
+      border-left: 1px solid #e0e5ec;
+      text-transform: uppercase;
+    }
+
+    .column-context.standard {
+      color: #1e63d5;
+      background: #e8f1ff;
+    }
+
+    .feature-row {
+      align-items: center;
+    }
+
+    .feature-row + .feature-row {
+      border-top: 1px solid #e8ebf0;
+    }
+
+    .feature-label {
+      padding: 5px 12px;
+      color: #303c51;
+      font-size: 12px;
+      line-height: 1.2;
+    }
+
+    .feature-value {
+      padding: 5px 6px;
+      text-align: center;
+      color: #526076;
+      font-size: 12px;
+      line-height: 1.2;
+      border-left: 1px solid #e8ebf0;
+    }
+
+    .feature-value.standard {
+      color: #174f9f;
+      background: #f4f8fe;
+      font-weight: 600;
+    }
+
+    .note {
+      margin: 7px 0 0;
+      color: #687387;
+      font-size: 11px;
+      line-height: 1.3;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <aside class="sidebar">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
+            <path d="M5 6.5C8.2 6.5 10.2 7.2 12 9v9c-1.8-1.8-3.8-2.5-7-2.5v-9Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+            <path d="M19 6.5c-3.2 0-5.2.7-7 2.5v9c1.8-1.8 3.8-2.5 7-2.5v-9Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+          </svg>
+        </span>
+        <span>Northstar<br>Learning</span>
+      </div>
+
+      <div class="nav-label">Workspace</div>
+      <nav class="side-nav" aria-label="Primary navigation">
+        <div class="side-item">
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M4 10.5 12 4l8 6.5V20H4v-9.5Z" stroke-width="1.8" stroke-linejoin="round"/>
+            <path d="M9.5 20v-6h5v6" stroke-width="1.8" stroke-linejoin="round"/>
+          </svg>
+          <span>Home</span>
+        </div>
+        <div class="side-item">
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M5 5.5h5.2c1 0 1.8.8 1.8 1.8V20c0-1.1-.9-2-2-2H5V5.5Z" stroke-width="1.8" stroke-linejoin="round"/>
+            <path d="M19 5.5h-5.2c-1 0-1.8.8-1.8 1.8V20c0-1.1.9-2 2-2h5V5.5Z" stroke-width="1.8" stroke-linejoin="round"/>
+          </svg>
+          <span>Courses</span>
+        </div>
+        <div class="side-item">
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M5 19V9m7 10V5m7 14v-7" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+          <span>Progress</span>
+        </div>
+        <div class="side-item active">
+          <svg viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="8" r="3.5" stroke-width="1.8"/>
+            <path d="M5.5 20c.5-4 2.7-6 6.5-6s6 2 6.5 6" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+          <span>Account</span>
+        </div>
+      </nav>
+
+      <div class="nav-label">Subscription</div>
+      <nav class="plan-nav" aria-label="Pricing sections">
+        <div class="plan-item active">Plans</div>
+        <div class="plan-item">Billing FAQ</div>
+        <div class="plan-item">For Teams</div>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="profile-name">Alex Morgan</div>
+        <div class="profile-detail">Current plan: Starter</div>
+      </div>
+    </aside>
+
+    <div class="workspace">
+      <header class="workspace-header">
+        <div class="breadcrumb">Account / <strong>Learning plans</strong></div>
+        <button class="help-button" type="button" aria-label="Plan information">
+          <svg viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/>
+            <path d="M12 10.8v5.4M12 7.4h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          Plan information
+        </button>
+      </header>
+
+      <main>
+        <div class="hero">
+          <div>
+            <p class="eyebrow">Learning plans</p>
+            <h1>Compare course access</h1>
+            <p class="intro">Choose the lessons, feedback, and live instruction that fit your study routine.</p>
+          </div>
+
+          <div class="billing-control" aria-label="Billing period">
+            <div class="billing-option">Monthly</div>
+            <div class="billing-option selected">Annual · Save 20%</div>
+          </div>
+        </div>
+
+        <section class="plan-grid" aria-label="Plan prices">
+          <div class="price-label">Monthly price when billed annually</div>
+          <div class="plan">
+            <div class="plan-name">Starter</div>
+            <div class="plan-price">$0</div>
+            <div class="plan-term">No charge</div>
+          </div>
+          <div class="plan standard">
+            <div class="plan-name">Standard</div>
+            <div class="plan-price">$12</div>
+            <div class="plan-term">$144 yearly</div>
+            <span class="best-fit">Best fit</span>
+          </div>
+          <div class="plan">
+            <div class="plan-name">Complete</div>
+            <div class="plan-price">$24</div>
+            <div class="plan-term">$288 yearly</div>
+          </div>
+        </section>
+
+        <h2 class="comparison-heading">Plan details</h2>
+
+        <section class="comparison" aria-label="Plan feature comparison">
+          <section class="feature-section" aria-labelledby="course-access">
+            <div class="section-heading">
+              <h3 id="course-access">Course access</h3>
+              <div class="column-context">Starter</div>
+              <div class="column-context standard">Standard</div>
+              <div class="column-context">Complete</div>
+            </div>
+            <div class="feature-row">
+              <div class="feature-label">Course library</div>
+              <div class="feature-value">8 courses</div>
+              <div class="feature-value standard">60 courses</div>
+              <div class="feature-value">All 140+</div>
+            </div>
+            <div class="feature-row">
+              <div class="feature-label">Practice library</div>
+              <div class="feature-value">Core</div>
+              <div class="feature-value standard">Full</div>
+              <div class="feature-value">Full</div>
+            </div>
+            <div class="feature-row">
+              <div class="feature-label">Offline lessons</div>
+              <div class="feature-value">No</div>
+              <div class="feature-value standard">Yes</div>
+              <div class="feature-value">Yes</div>
+            </div>
+          </section>
+
+          <section class="feature-section" aria-labelledby="learning-support">
+            <div class="section-heading">
+              <h3 id="learning-support">Learning support</h3>
+              <div class="column-context">Starter</div>
+              <div class="column-context standard">Standard</div>
+              <div class="column-context">Complete</div>
+            </div>
+            <div class="feature-row">
+              <div class="feature-label">Live classes</div>
+              <div class="feature-value">None</div>
+              <div class="feature-value standard">2 monthly</div>
+              <div class="feature-value">8 monthly</div>
+            </div>
+            <div class="feature-row">
+              <div class="feature-label">Writing feedback</div>
+              <div class="feature-value">3 monthly</div>
+              <div class="feature-value standard">Unlimited</div>
+              <div class="feature-value">Unlimited</div>
+            </div>
+            <div class="feature-row">
+              <div class="feature-label">Certificates</div>
+              <div class="feature-value">No</div>
+              <div class="feature-value standard">Included</div>
+              <div class="feature-value">Included</div>
+            </div>
+          </section>
+
+          <section class="feature-section" aria-labelledby="account-benefits">
+            <div class="section-heading">
+              <h3 id="account-benefits">Account benefits</h3>
+              <div class="column-context">Starter</div>
+              <div class="column-context standard">Standard</div>
+              <div class="column-context">Complete</div>
+            </div>
+            <div class="feature-row">
+              <div class="feature-label">Learner profiles</div>
+              <div class="feature-value">1</div>
+              <div class="feature-value standard">1</div>
+              <div class="feature-value">4</div>
+            </div>
+            <div class="feature-row">
+              <div class="feature-label">Tutor session savings</div>
+              <div class="feature-value">None</div>
+              <div class="feature-value standard">10%</div>
+              <div class="feature-value">20%</div>
+            </div>
+          </section>
+        </section>
+
+        <p class="note">Annual plans renew every 12 months. Change plans in account settings before your next renewal date.</p>
+      </main>
+    </div>
+  </div>
+</body>
+</html>

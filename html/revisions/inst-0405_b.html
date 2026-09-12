@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daily Market Audio Player</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #e3e7eb;
+      color: #17212b;
+      font-family: 'Roboto', system-ui, sans-serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 560px;
+      padding: 24px;
+      background: #eef1f4;
+    }
+
+    .player-card {
+      width: 100%;
+      padding: 12px;
+      background: #ffffff;
+      box-shadow: 0 8px 22px rgba(28, 42, 56, 0.10);
+    }
+
+    .cover {
+      width: 318px;
+      height: 64px;
+      object-fit: cover;
+      display: block;
+      background: #cbd5dc;
+    }
+
+    .player-body {
+      padding: 14px 4px 0;
+    }
+
+    .eyebrow {
+      margin: 0 0 4px;
+      color: #1689c9;
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 17px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      color: #17212b;
+      font-size: 20px;
+      font-weight: 700;
+      line-height: 25px;
+    }
+
+    .publisher {
+      margin: 4px 0 0;
+      color: #64717d;
+      font-size: 13px;
+      line-height: 18px;
+    }
+
+    .keypoints {
+      margin-top: 12px;
+    }
+
+    .keypoints-title {
+      margin: 0 0 5px;
+      color: #293641;
+      font-size: 11px;
+      font-weight: 700;
+      line-height: 15px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .keypoints-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .keypoints-list li {
+      position: relative;
+      padding-left: 14px;
+      color: #46545f;
+      font-size: 12px;
+      line-height: 17px;
+    }
+
+    .keypoints-list li + li {
+      margin-top: 4px;
+    }
+
+    .keypoints-list li::before {
+      content: "";
+      position: absolute;
+      top: 7px;
+      left: 2px;
+      width: 4px;
+      height: 4px;
+      background: #2da9e8;
+    }
+
+    .speed-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid #e2e7eb;
+    }
+
+    .speed-caption {
+      color: #6b7782;
+      font-size: 11px;
+      font-weight: 700;
+      line-height: 15px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .speed-group {
+      display: flex;
+    }
+
+    .speed-option {
+      width: 48px;
+      height: 30px;
+      padding: 0;
+      margin-left: -1px;
+      border: 1px solid #d4dce2;
+      border-radius: 0;
+      background: #ffffff;
+      color: #48555f;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .speed-option.selected {
+      border-color: #2da9e8;
+      background: #2da9e8;
+      color: #ffffff;
+    }
+
+    .progress-area {
+      margin-top: 14px;
+    }
+
+    .progress-track {
+      position: relative;
+      width: 100%;
+      height: 4px;
+      background: #dce3e8;
+    }
+
+    .progress-fill {
+      width: 38%;
+      height: 4px;
+      background: #2da9e8;
+    }
+
+    .progress-knob {
+      position: absolute;
+      top: -4px;
+      left: calc(38% - 6px);
+      width: 12px;
+      height: 12px;
+      background: #2da9e8;
+      border: 2px solid #ffffff;
+      border-radius: 50%;
+    }
+
+    .time-row {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 6px;
+      color: #6b7782;
+      font-size: 12px;
+      line-height: 17px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .controls {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      margin-top: 14px;
+    }
+
+    .control-button {
+      width: 42px;
+      height: 42px;
+      padding: 0;
+      display: grid;
+      place-items: center;
+      border: 1px solid #d4dce2;
+      border-radius: 0;
+      background: #ffffff;
+      color: #33414d;
+    }
+
+    .control-button.primary {
+      width: 48px;
+      height: 48px;
+      border-color: #2da9e8;
+      background: #2da9e8;
+      color: #ffffff;
+    }
+
+    .control-button svg {
+      width: 20px;
+      height: 20px;
+      display: block;
+    }
+
+    .primary svg {
+      width: 24px;
+      height: 24px;
+    }
+
+    .next-line {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px solid #e2e7eb;
+    }
+
+    .next-tag {
+      color: #1689c9;
+      font-size: 11px;
+      font-weight: 700;
+      line-height: 20px;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+    }
+
+    .next-title {
+      min-width: 0;
+      flex: 1;
+      margin: 0;
+      overflow: hidden;
+      color: #27343e;
+      font-size: 13px;
+      font-weight: 500;
+      line-height: 20px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .duration {
+      color: #67737d;
+      font-size: 12px;
+      line-height: 20px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .visually-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      white-space: nowrap;
+      border: 0;
+      clip: rect(0 0 0 0);
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <main class="player-card" aria-label="Northbank daily market audio player">
+      <img
+        class="cover"
+        src="https://loremflickr.com/318/64/chart?lock=5690"
+        width="318"
+        height="64"
+        alt="Financial market chart displayed across several monitors"
+      >
+
+      <div class="player-body">
+        <p class="eyebrow">Northbank Daily Audio</p>
+        <h1>Market Open: Rates Hold Steady</h1>
+        <p class="publisher">Morning Briefing · April 18, 2025</p>
+
+        <section class="keypoints" aria-labelledby="keypoints-heading">
+          <h2 class="keypoints-title" id="keypoints-heading">Summary</h2>
+          <ul class="keypoints-list">
+            <li>Policy rate unchanged at 4.25% for a third meeting</li>
+            <li>Two-year yields slipped four basis points overnight</li>
+            <li>Bank earnings lead Friday's calendar</li>
+          </ul>
+        </section>
+
+        <div class="speed-row">
+          <span class="speed-caption" id="speed-label">Speed</span>
+          <div class="speed-group" role="group" aria-labelledby="speed-label">
+            <button class="speed-option" type="button">0.75×</button>
+            <button class="speed-option selected" type="button" aria-pressed="true">1×</button>
+            <button class="speed-option" type="button">1.5×</button>
+          </div>
+        </div>
+
+        <div class="progress-area">
+          <div
+            class="progress-track"
+            role="progressbar"
+            aria-label="Playback progress"
+            aria-valuemin="0"
+            aria-valuemax="100"
+            aria-valuenow="38"
+          >
+            <div class="progress-fill"></div>
+            <div class="progress-knob"></div>
+          </div>
+          <div class="time-row">
+            <span>4:28</span>
+            <span>11:42</span>
+          </div>
+        </div>
+
+        <div class="controls" aria-label="Playback controls">
+          <button class="control-button" type="button" aria-label="Rewind 15 seconds">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M8 7H4V3" stroke="currentColor" stroke-width="1.8" stroke-linecap="square" stroke-linejoin="miter"/>
+              <path d="M4.7 7.2A8 8 0 1 1 4 15" stroke="currentColor" stroke-width="1.8" stroke-linecap="square"/>
+              <path d="M9 10.2v4.2M12.5 10.2h2v4.2h-2" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/>
+            </svg>
+          </button>
+
+          <button class="control-button primary" type="button" aria-label="Pause">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M8 6v12M16 6v12" stroke="currentColor" stroke-width="2.5" stroke-linecap="square"/>
+            </svg>
+          </button>
+
+          <button class="control-button" type="button" aria-label="Forward 30 seconds">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M16 7h4V3" stroke="currentColor" stroke-width="1.8" stroke-linecap="square" stroke-linejoin="miter"/>
+              <path d="M19.3 7.2A8 8 0 1 0 20 15" stroke="currentColor" stroke-width="1.8" stroke-linecap="square"/>
+              <path d="M8.5 10.2h2v4.2h-2M13 10.2h2v4.2h-2" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/>
+            </svg>
+          </button>
+        </div>
+
+        <div class="next-line">
+          <span class="next-tag">Next</span>
+          <p class="next-title">What Lower Bond Yields Mean</p>
+          <span class="duration">8:16</span>
+        </div>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

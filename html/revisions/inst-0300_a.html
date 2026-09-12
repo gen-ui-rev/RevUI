@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Billing</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #e8e6e8;
+    color: #262226;
+    font-family: 'Roboto', system-ui, sans-serif;
+  }
+
+  .screen {
+    width: 1024px;
+    height: 768px;
+    padding: 32px 40px;
+    background: #f7f6f7;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .top-bar {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 32px;
+    margin-bottom: 24px;
+  }
+
+  .top-bar h1 {
+    margin: 0;
+    font-size: 30px;
+    line-height: 37px;
+    font-weight: 700;
+    letter-spacing: -0.4px;
+  }
+
+  .top-bar p {
+    margin: 4px 0 0;
+    color: #716b71;
+    font-size: 14px;
+    line-height: 20px;
+  }
+
+  .primary-button {
+    padding: 10px 20px;
+    color: #ffffff;
+    background: #bd1857;
+    border: 1px solid #a6154d;
+    border-radius: 8px;
+    font: inherit;
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 500;
+    cursor: pointer;
+  }
+
+  .layout {
+    display: grid;
+    grid-template-columns: 376px 1fr;
+    gap: 24px;
+    align-items: start;
+  }
+
+  .left-col {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .card {
+    padding: 18px;
+    background: #ffffff;
+    border: 1px solid #dedade;
+    border-radius: 12px;
+  }
+
+  .card h2 {
+    margin: 0 0 12px;
+    font-size: 16px;
+    line-height: 21px;
+    font-weight: 700;
+  }
+
+  .next-charge {
+    background: #fff1f6;
+    border-color: #f2b7ce;
+  }
+
+  .charge-top {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .charge-icon {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    color: #c91f62;
+    background: #ffffff;
+    border: 1px solid #edb1c8;
+    border-radius: 10px;
+  }
+
+  .charge-icon svg,
+  .payment-icon svg,
+  .icon-button svg {
+    width: 20px;
+    height: 20px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.7;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .eyebrow {
+    margin: 0;
+    color: #7b5262;
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+  }
+
+  .charge-value {
+    margin: 2px 0 0;
+    color: #a6154d;
+    font-size: 22px;
+    line-height: 27px;
+    font-weight: 700;
+  }
+
+  .charge-detail {
+    margin: 12px 0 0;
+    color: #554b50;
+    font-size: 14px;
+    line-height: 20px;
+  }
+
+  .charge-link {
+    margin-top: 12px;
+  }
+
+  .plan-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 7px 0;
+    border-bottom: 1px solid #f0edf0;
+  }
+
+  .plan-row:last-child {
+    padding-bottom: 0;
+    border-bottom: 0;
+  }
+
+  .plan-label {
+    margin: 0;
+    color: #777077;
+    font-size: 13px;
+    line-height: 18px;
+  }
+
+  .plan-value {
+    margin: 0;
+    font-size: 13px;
+    line-height: 18px;
+    font-weight: 500;
+  }
+
+  .payment-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .payment-icon {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    color: #625b62;
+    border: 1px solid #dedade;
+    border-radius: 10px;
+  }
+
+  .payment-copy {
+    min-width: 0;
+    flex: 1;
+  }
+
+  .payment-name {
+    margin: 0;
+    font-size: 14px;
+    line-height: 19px;
+    font-weight: 500;
+  }
+
+  .payment-note {
+    margin: 1px 0 0;
+    color: #777077;
+    font-size: 12px;
+    line-height: 17px;
+  }
+
+  .text-button {
+    padding: 0;
+    color: #bd1857;
+    background: none;
+    border: 0;
+    font: inherit;
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 500;
+    cursor: pointer;
+  }
+
+  .invoice-card h2 {
+    margin: 0 0 2px;
+    font-size: 18px;
+    line-height: 23px;
+  }
+
+  .invoice-sub {
+    margin: 0 0 6px;
+    color: #777077;
+    font-size: 13px;
+    line-height: 18px;
+  }
+
+  .invoice-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .invoice-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 14px 0;
+    border-bottom: 1px solid #ebe8eb;
+  }
+
+  .invoice-copy {
+    min-width: 0;
+    flex: 1;
+  }
+
+  .invoice-date {
+    margin: 0;
+    font-size: 14px;
+    line-height: 19px;
+    font-weight: 500;
+  }
+
+  .invoice-id {
+    margin: 1px 0 0;
+    color: #7a737a;
+    font-size: 12px;
+    line-height: 17px;
+  }
+
+  .status {
+    flex: 0 0 auto;
+    padding: 3px 10px;
+    color: #2c6b41;
+    background: #eef7f0;
+    border: 1px solid #cfe6d7;
+    border-radius: 999px;
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 500;
+  }
+
+  .invoice-amount {
+    flex: 0 0 76px;
+    margin: 0;
+    text-align: right;
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 500;
+  }
+
+  .icon-button {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    color: #625b62;
+    background: #ffffff;
+    border: 1px solid #dedade;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+
+  .invoice-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid #e3dfe3;
+  }
+
+  .invoice-footer p {
+    margin: 0;
+    color: #777077;
+    font-size: 13px;
+    line-height: 18px;
+  }
+
+  .support-note {
+    margin: 22px 0 0;
+    color: #716b71;
+    font-size: 13px;
+    line-height: 18px;
+  }
+</style>
+</head>
+<body>
+  <div class="screen">
+    <header class="top-bar">
+      <div>
+        <h1>Billing</h1>
+        <p>Manage your Driftplay streaming subscription.</p>
+      </div>
+      <button class="primary-button" type="button">Manage plan</button>
+    </header>
+
+    <div class="layout">
+      <div class="left-col">
+        <section class="card next-charge" aria-labelledby="next-charge-title">
+          <div class="charge-top">
+            <div class="charge-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                <rect x="3.5" y="5.5" width="17" height="15" rx="2"></rect>
+                <path d="M7.5 3.5v4M16.5 3.5v4M3.5 9.5h17"></path>
+                <path d="M8 13h3M8 16.5h5"></path>
+              </svg>
+            </div>
+            <div>
+              <p class="eyebrow" id="next-charge-title">Next monthly charge</p>
+              <p class="charge-value">$12.99 on May 18</p>
+            </div>
+          </div>
+          <p class="charge-detail">Premium Audio renews automatically each month.</p>
+          <div class="charge-link">
+            <button class="text-button" type="button">Manage renewal</button>
+          </div>
+        </section>
+
+        <section class="card" aria-labelledby="plan-title">
+          <h2 id="plan-title">Current plan</h2>
+          <div class="plan-row">
+            <p class="plan-label">Plan</p>
+            <p class="plan-value">Premium Audio</p>
+          </div>
+          <div class="plan-row">
+            <p class="plan-label">Price</p>
+            <p class="plan-value">$12.99 / month</p>
+          </div>
+          <div class="plan-row">
+            <p class="plan-label">Devices</p>
+            <p class="plan-value">3 at the same time</p>
+          </div>
+          <div class="plan-row">
+            <p class="plan-label">Billing cycle</p>
+            <p class="plan-value">18th of each month</p>
+          </div>
+        </section>
+
+        <section class="card" aria-labelledby="payment-title">
+          <h2 id="payment-title">Payment method</h2>
+          <div class="payment-row">
+            <div class="payment-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                <rect x="2.5" y="5" width="19" height="14" rx="2.5"></rect>
+                <path d="M2.5 9.5h19M6.5 15h4"></path>
+              </svg>
+            </div>
+            <div class="payment-copy">
+              <p class="payment-name">Card ending in 4826</p>
+              <p class="payment-note">Expires 08/27</p>
+            </div>
+            <button class="text-button" type="button">Update</button>
+          </div>
+        </section>
+      </div>
+
+      <section class="card invoice-card" aria-labelledby="invoice-title">
+        <h2 id="invoice-title">Invoice history</h2>
+        <p class="invoice-sub">Receipts for the last five billing periods.</p>
+        <ul class="invoice-list">
+          <li class="invoice-row">
+            <div class="invoice-copy">
+              <p class="invoice-date">April 18, 2025</p>
+              <p class="invoice-id">Invoice DP-10483</p>
+            </div>
+            <span class="status">Paid</span>
+            <p class="invoice-amount">$12.99</p>
+            <button class="icon-button" type="button" aria-label="Download invoice DP-10483">
+              <svg viewBox="0 0 24 24">
+                <path d="M12 4v10.5M8 11l4 4 4-4"></path>
+                <path d="M5 19h14"></path>
+              </svg>
+            </button>
+          </li>
+          <li class="invoice-row">
+            <div class="invoice-copy">
+              <p class="invoice-date">March 18, 2025</p>
+              <p class="invoice-id">Invoice DP-09841</p>
+            </div>
+            <span class="status">Paid</span>
+            <p class="invoice-amount">$12.99</p>
+            <button class="icon-button" type="button" aria-label="Download invoice DP-09841">
+              <svg viewBox="0 0 24 24">
+                <path d="M12 4v10.5M8 11l4 4 4-4"></path>
+                <path d="M5 19h14"></path>
+              </svg>
+            </button>
+          </li>
+          <li class="invoice-row">
+            <div class="invoice-copy">
+              <p class="invoice-date">February 18, 2025</p>
+              <p class="invoice-id">Invoice DP-09176</p>
+            </div>
+            <span class="status">Paid</span>
+            <p class="invoice-amount">$12.99</p>
+            <button class="icon-button" type="button" aria-label="Download invoice DP-09176">
+              <svg viewBox="0 0 24 24">
+                <path d="M12 4v10.5M8 11l4 4 4-4"></path>
+                <path d="M5 19h14"></path>
+              </svg>
+            </button>
+          </li>
+          <li class="invoice-row">
+            <div class="invoice-copy">
+              <p class="invoice-date">January 18, 2025</p>
+              <p class="invoice-id">Invoice DP-08610</p>
+            </div>
+            <span class="status">Paid</span>
+            <p class="invoice-amount">$12.99</p>
+            <button class="icon-button" type="button" aria-label="Download invoice DP-08610">
+              <svg viewBox="0 0 24 24">
+                <path d="M12 4v10.5M8 11l4 4 4-4"></path>
+                <path d="M5 19h14"></path>
+              </svg>
+            </button>
+          </li>
+          <li class="invoice-row">
+            <div class="invoice-copy">
+              <p class="invoice-date">December 18, 2024</p>
+              <p class="invoice-id">Invoice DP-08042</p>
+            </div>
+            <span class="status">Paid</span>
+            <p class="invoice-amount">$10.99</p>
+            <button class="icon-button" type="button" aria-label="Download invoice DP-08042">
+              <svg viewBox="0 0 24 24">
+                <path d="M12 4v10.5M8 11l4 4 4-4"></path>
+                <path d="M5 19h14"></path>
+              </svg>
+            </button>
+          </li>
+        </ul>
+        <div class="invoice-footer">
+          <p>Invoices are emailed to rowan@driftplay.com on the day of each charge.</p>
+          <button class="text-button" type="button">View all</button>
+        </div>
+      </section>
+    </div>
+
+    <p class="support-note">Questions about a charge? Contact billing support Monday to Friday, 9am–6pm.</p>
+  </div>
+</body>
+</html>

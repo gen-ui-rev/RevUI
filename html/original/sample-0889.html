@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Porchlight — Crop &amp; Adjust</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  body{
+    min-height:100vh;display:flex;justify-content:center;align-items:flex-start;
+    padding:40px 0;margin:0;background:#d8d8d4;
+    font-family:'Source Serif 4', Georgia, serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .screen{
+    width:390px;height:844px;background:#f0f0ee;
+    display:flex;flex-direction:column;position:relative;
+    color:#20201c;
+  }
+
+  /* top bar */
+  .topbar{
+    background:#ffffff;border-bottom:1px solid #e4e4e0;
+    padding:15px 16px;display:flex;align-items:baseline;justify-content:space-between;
+  }
+  .topbar .act{font-size:15px;color:#6d6d66;line-height:22px;}
+  .topbar .title{font-size:17px;font-weight:600;line-height:22px;}
+  .topbar .next{font-size:15px;font-weight:600;color:#1c7a45;line-height:22px;}
+
+  /* preview */
+  .preview{position:relative;height:288px;background:#191914;}
+  .preview img.hero{width:390px;height:288px;object-fit:cover;display:block;background:#2a2a24;}
+  .scrim{position:absolute;background:rgba(15,15,12,.5);}
+  .s-left{left:0;top:0;bottom:0;width:88px;}
+  .s-right{right:0;top:0;bottom:0;width:88px;}
+  .s-top{left:88px;right:88px;top:0;height:10px;}
+  .s-bot{left:88px;right:88px;bottom:0;height:10px;}
+  .frame{position:absolute;left:88px;top:10px;width:214px;height:268px;
+    border:1px solid rgba(255,255,255,.85);box-sizing:border-box;}
+  .gl{position:absolute;background:rgba(255,255,255,.35);}
+  .gv1{top:0;bottom:0;left:33.33%;width:1px;}
+  .gv2{top:0;bottom:0;left:66.66%;width:1px;}
+  .gh1{left:0;right:0;top:33.33%;height:1px;}
+  .gh2{left:0;right:0;top:66.66%;height:1px;}
+  .cn{position:absolute;width:20px;height:20px;box-sizing:border-box;}
+  .cn-tl{top:-2px;left:-2px;border-top:3px solid #2fae68;border-left:3px solid #2fae68;}
+  .cn-tr{top:-2px;right:-2px;border-top:3px solid #2fae68;border-right:3px solid #2fae68;}
+  .cn-bl{bottom:-2px;left:-2px;border-bottom:3px solid #2fae68;border-left:3px solid #2fae68;}
+  .cn-br{bottom:-2px;right:-2px;border-bottom:3px solid #2fae68;border-right:3px solid #2fae68;}
+  .readout{
+    position:absolute;left:50%;transform:translateX(-50%);bottom:14px;
+    background:rgba(15,15,12,.68);color:#fff;font-size:12px;line-height:16px;
+    padding:4px 10px;border-radius:4px;white-space:nowrap;
+  }
+
+  /* main body */
+  .body{padding:12px 12px 0;}
+
+  .chips{display:flex;gap:8px;margin-bottom:10px;}
+  .chip{
+    font-size:13px;line-height:17px;padding:8px 12px;border-radius:4px;
+    background:#ffffff;border:1px solid #e0e0dc;color:#4a4a44;
+  }
+  .chip.on{background:#1c7a45;border-color:#1c7a45;color:#ffffff;font-weight:600;}
+
+  .card{
+    background:#ffffff;border-radius:4px;padding:12px;
+    box-shadow:0 1px 3px rgba(30,30,25,.10);
+  }
+  .card + .card{margin-top:10px;}
+  .cardhead{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:10px;}
+  .cardhead .lbl{font-size:12px;line-height:16px;color:#78786f;letter-spacing:.02em;}
+  .cardhead .aux{font-size:12px;line-height:16px;color:#78786f;}
+  .cardhead .reset{font-size:13px;line-height:16px;color:#1c7a45;font-weight:600;}
+
+  .thumbs{display:flex;gap:8px;}
+  .thumbs img{width:48px;height:48px;object-fit:cover;display:block;background:#e6e6e2;border-radius:4px;}
+  .thumbs .cur{outline:2px solid #1c7a45;outline-offset:1px;border-radius:4px;}
+  .more{
+    width:48px;height:48px;border-radius:4px;background:#f0f0ec;border:1px solid #e2e2de;
+    box-sizing:border-box;display:flex;align-items:center;justify-content:center;
+    font-size:13px;color:#78786f;
+  }
+
+  .srow + .srow{margin-top:8px;}
+  .srow .line{display:flex;align-items:baseline;justify-content:space-between;}
+  .srow .name{font-size:14px;line-height:18px;}
+  .srow .val{font-size:13px;line-height:18px;font-weight:600;color:#1c7a45;}
+  .srow .val.zero{color:#8d8d84;font-weight:400;}
+  .track{position:relative;height:12px;margin-top:8px;}
+  .track .rail{position:absolute;top:5px;left:0;right:0;height:3px;background:#e6e6e2;border-radius:4px;}
+  .track .tick{position:absolute;top:2px;left:50%;width:1px;height:9px;background:#d2d2cc;}
+  .track .fill{position:absolute;top:5px;height:3px;background:#1c7a45;border-radius:4px;}
+  .track .knob{position:absolute;top:0;width:12px;height:12px;border-radius:50%;background:#1c7a45;}
+
+  /* tab bar */
+  .tabbar{
+    position:absolute;left:0;right:0;bottom:0;
+    background:#ffffff;border-top:1px solid #e4e4e0;
+    display:flex;padding:8px 0 9px;
+  }
+  .tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;color:#8a8a81;}
+  .tab.on{color:#1c7a45;}
+  .tab span{font-size:12px;line-height:14px;}
+  .tab.on span{font-weight:600;}
+</style>
+</head>
+<body>
+  <div class="screen">
+
+    <div class="topbar">
+      <div class="act">Cancel</div>
+      <div class="title">Crop &amp; Adjust</div>
+      <div class="next">Next</div>
+    </div>
+
+    <div class="preview">
+      <img class="hero" src="https://loremflickr.com/390/288/friends?lock=11760" width="390" height="288" alt="Group of friends on a rooftop, the photo being cropped">
+      <div class="scrim s-left"></div>
+      <div class="scrim s-right"></div>
+      <div class="scrim s-top"></div>
+      <div class="scrim s-bot"></div>
+      <div class="frame">
+        <div class="gl gv1"></div><div class="gl gv2"></div>
+        <div class="gl gh1"></div><div class="gl gh2"></div>
+        <div class="cn cn-tl"></div><div class="cn cn-tr"></div>
+        <div class="cn cn-bl"></div><div class="cn cn-br"></div>
+      </div>
+      <div class="readout">1200 &times; 1500 &middot; straighten &minus;3.5&deg;</div>
+    </div>
+
+    <div class="body">
+
+      <div class="chips">
+        <div class="chip">Free</div>
+        <div class="chip">Original</div>
+        <div class="chip">1:1</div>
+        <div class="chip on">4:5</div>
+        <div class="chip">16:9</div>
+      </div>
+
+      <div class="card">
+        <div class="cardhead">
+          <div class="lbl">Photos in this post</div>
+          <div class="aux">3 of 5 edited</div>
+        </div>
+        <div class="thumbs">
+          <img class="cur" src="https://loremflickr.com/48/48/friends?lock=11761" width="48" height="48" alt="Thumbnail of the rooftop group photo now being edited">
+          <img src="https://loremflickr.com/48/48/cafe?lock=11762" width="48" height="48" alt="Thumbnail of a corner table at the cafe">
+          <img src="https://loremflickr.com/48/48/street?lock=11763" width="48" height="48" alt="Thumbnail of the street outside the cafe">
+          <img src="https://loremflickr.com/48/48/party?lock=11764" width="48" height="48" alt="Thumbnail of the party after dinner">
+          <div class="more">+1</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="cardhead">
+          <div class="lbl">Adjustments</div>
+          <div class="reset">Reset all</div>
+        </div>
+
+        <div class="srow">
+          <div class="line"><div class="name">Brightness</div><div class="val">+12</div></div>
+          <div class="track">
+            <div class="rail"></div><div class="tick"></div>
+            <div class="fill" style="left:50%;width:6%"></div>
+            <div class="knob" style="left:calc(56% - 6px)"></div>
+          </div>
+        </div>
+
+        <div class="srow">
+          <div class="line"><div class="name">Contrast</div><div class="val">&minus;6</div></div>
+          <div class="track">
+            <div class="rail"></div><div class="tick"></div>
+            <div class="fill" style="left:47%;width:3%"></div>
+            <div class="knob" style="left:calc(47% - 6px)"></div>
+          </div>
+        </div>
+
+        <div class="srow">
+          <div class="line"><div class="name">Saturation</div><div class="val">+8</div></div>
+          <div class="track">
+            <div class="rail"></div><div class="tick"></div>
+            <div class="fill" style="left:50%;width:4%"></div>
+            <div class="knob" style="left:calc(54% - 6px)"></div>
+          </div>
+        </div>
+
+        <div class="srow">
+          <div class="line"><div class="name">Warmth</div><div class="val zero">0</div></div>
+          <div class="track">
+            <div class="rail"></div><div class="tick"></div>
+            <div class="knob" style="left:calc(50% - 6px)"></div>
+          </div>
+        </div>
+
+        <div class="srow">
+          <div class="line"><div class="name">Highlights</div><div class="val">&minus;18</div></div>
+          <div class="track">
+            <div class="rail"></div><div class="tick"></div>
+            <div class="fill" style="left:41%;width:9%"></div>
+            <div class="knob" style="left:calc(41% - 6px)"></div>
+          </div>
+        </div>
+
+        <div class="srow">
+          <div class="line"><div class="name">Shadows</div><div class="val">+22</div></div>
+          <div class="track">
+            <div class="rail"></div><div class="tick"></div>
+            <div class="fill" style="left:50%;width:11%"></div>
+            <div class="knob" style="left:calc(61% - 6px)"></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="tabbar">
+      <div class="tab on">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square">
+          <path d="M6 3v13a2 2 0 0 0 2 2h13"/><path d="M18 21V8a2 2 0 0 0-2-2H3"/>
+        </svg>
+        <span>Crop</span>
+      </div>
+      <div class="tab">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+          <path d="M4 7h16M4 17h16"/><circle cx="10" cy="7" r="2.4" fill="#fff"/><circle cx="16" cy="17" r="2.4" fill="#fff"/>
+        </svg>
+        <span>Adjust</span>
+      </div>
+      <div class="tab">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+          <path d="M20 6.5A8.5 8.5 0 1 0 21 12"/><path d="M20 3v4h-4"/>
+        </svg>
+        <span>Rotate</span>
+      </div>
+      <div class="tab">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square">
+          <rect x="4" y="4" width="16" height="16"/><rect x="8" y="8" width="8" height="8"/>
+        </svg>
+        <span>Frame</span>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Lingua Loop — Spanish B2 Cohort</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --mauve:#8A6486;
+    --mauve-dark:#6E4C6B;
+    --ground:#EEECEF;
+    --ink:#211E23;
+    --muted:#756F78;
+    --line:#DCD8DD;
+    --shadow:0 1px 2px rgba(33,30,35,.10);
+  }
+  *{box-sizing:border-box;}
+  body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    padding:40px 0;
+    margin:0;
+    background:#C9C4CB;
+    font-family:'Plus Jakarta Sans', system-ui, sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .screen{
+    width:390px;
+    height:844px;
+    background:var(--ground);
+    display:flex;
+    flex-direction:column;
+    color:var(--ink);
+  }
+
+  /* top bar */
+  .topbar{
+    background:#fff;
+    box-shadow:var(--shadow);
+    padding:14px 16px;
+    display:flex;
+    align-items:center;
+    gap:12px;
+  }
+  .iconbtn{
+    width:24px;height:24px;
+    display:flex;align-items:center;justify-content:center;
+    flex:0 0 auto;
+    color:var(--ink);
+  }
+  .gavatar{
+    width:34px;height:34px;flex:0 0 auto;
+    background:#E4DEE5;
+    display:flex;align-items:center;justify-content:center;
+    color:var(--mauve-dark);
+  }
+  .ttl{min-width:0;flex:1;}
+  .ttl h1{
+    margin:0;
+    font-size:16px;
+    font-weight:600;
+    line-height:20px;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .ttl p{
+    margin:1px 0 0;
+    font-size:12px;
+    font-weight:400;
+    color:var(--muted);
+    line-height:16px;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+
+  /* pinned strip */
+  .pinned{
+    background:#fff;
+    border-top:1px solid var(--line);
+    padding:10px 16px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    color:var(--mauve-dark);
+  }
+  .pinned span{
+    font-size:13px;
+    font-weight:500;
+    line-height:18px;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .pinned em{
+    font-style:normal;
+    color:var(--muted);
+    font-weight:400;
+    flex:0 0 auto;
+    font-size:12px;
+  }
+
+  /* thread — grouped stretches, latest pinned to the composer */
+  .thread{
+    flex:1;
+    padding:16px;
+    display:flex;
+    flex-direction:column;
+    justify-content:flex-end;
+    min-height:0;
+  }
+
+  /* time separator between stretches */
+  .tsep{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin:10px 0 10px;
+  }
+  .tsep:first-child{margin-top:0;}
+  .tsep::before,
+  .tsep::after{
+    content:"";
+    flex:1;
+    height:1px;
+    background:var(--line);
+  }
+  .tsep span{
+    flex:0 0 auto;
+    background:#fff;
+    border:1px solid var(--line);
+    color:var(--muted);
+    font-size:11px;
+    font-weight:600;
+    letter-spacing:.07em;
+    text-transform:uppercase;
+    line-height:16px;
+    padding:1px 9px;
+  }
+
+  /* a stretch of consecutive messages from one sender */
+  .group{
+    display:flex;
+    gap:8px;
+    align-items:flex-start;
+    margin-bottom:8px;
+  }
+  .group.out{justify-content:flex-end;}
+  .avatar{
+    width:32px;height:32px;flex:0 0 auto;
+    background:#E4DEE5;
+    display:flex;align-items:center;justify-content:center;
+    color:var(--mauve-dark);
+  }
+  .stack{
+    display:flex;
+    flex-direction:column;
+    gap:3px;
+    min-width:0;
+    max-width:250px;
+  }
+  .out .stack{align-items:flex-end;}
+  .name{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    font-size:13px;
+    font-weight:600;
+    color:var(--mauve-dark);
+    line-height:18px;
+    margin-bottom:3px;
+    min-width:0;
+  }
+  .name b{
+    font-weight:600;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .tag{
+    font-size:12px;font-weight:600;color:var(--mauve-dark);
+    border:1px solid var(--mauve);
+    padding:0 5px;line-height:16px;flex:0 0 auto;
+  }
+  .bubble{
+    background:#fff;
+    box-shadow:var(--shadow);
+    padding:10px 12px;
+  }
+  .body{font-size:15px;line-height:20px;margin:0;}
+  .out .bubble{background:var(--mauve);box-shadow:none;color:#fff;}
+
+  .file{
+    display:flex;align-items:center;gap:10px;
+    border:1px solid var(--line);
+    padding:8px 10px;
+  }
+  .file svg{flex:0 0 auto;color:var(--mauve-dark);}
+  .file b{display:block;font-size:14px;font-weight:600;line-height:18px;}
+  .file small{display:block;font-size:12px;color:var(--muted);line-height:16px;}
+
+  .typing{
+    display:flex;align-items:center;gap:8px;
+    padding-left:40px;
+    font-size:12px;color:var(--muted);
+    line-height:18px;
+  }
+  .dots{display:flex;gap:3px;}
+  .dots i{width:4px;height:4px;background:var(--mauve);display:block;}
+
+  /* composer */
+  .composer{
+    background:#fff;
+    border-top:1px solid var(--line);
+    padding:12px 16px;
+    display:flex;
+    align-items:center;
+    gap:12px;
+  }
+  .field{
+    flex:1;
+    border:1px solid var(--line);
+    padding:10px 12px;
+    font-size:15px;
+    line-height:20px;
+    color:var(--muted);
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .send{
+    width:40px;height:40px;flex:0 0 auto;
+    background:var(--mauve);
+    color:#fff;
+    display:flex;align-items:center;justify-content:center;
+  }
+</style>
+</head>
+<body>
+  <div class="screen">
+
+    <header class="topbar">
+      <div class="iconbtn" aria-hidden="true">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
+      </div>
+      <div class="gavatar" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="9" r="3.2"/><path d="M3.5 19c0-3 2.5-4.8 5.5-4.8s5.5 1.8 5.5 4.8"/><path d="M16 6.4a3 3 0 010 5.6"/><path d="M17.6 14.6c2 .6 3.4 2.1 3.4 4.4"/></svg>
+      </div>
+      <div class="ttl">
+        <h1>Spanish B2 · Tuesday Cohort</h1>
+        <p>5 members · Ana, Diego, Priya, Ruben +1</p>
+      </div>
+      <div class="iconbtn" aria-hidden="true">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 11v6"/><path d="M12 7.8h.01"/></svg>
+      </div>
+    </header>
+
+    <div class="pinned">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4h6l-1 5 3.5 3.5H5.5L9 9z"/><path d="M12 13v7"/></svg>
+      <span>Unit 12 worksheet due Friday, 11:59 PM</span>
+      <em>Pinned</em>
+    </div>
+
+    <main class="thread">
+
+      <div class="tsep"><span>Today · 8:41 AM</span></div>
+
+      <div class="group">
+        <div class="avatar" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8.5" r="3.4"/><path d="M5 19.5c0-3.4 3.1-5.3 7-5.3s7 1.9 7 5.3"/></svg>
+        </div>
+        <div class="stack">
+          <div class="name"><b>Diego Salcedo</b></div>
+          <div class="bubble"><p class="body">Worksheet is done.</p></div>
+          <div class="bubble"><p class="body">Section 3 nearly broke me.</p></div>
+        </div>
+      </div>
+
+      <div class="group">
+        <div class="avatar" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8.5" r="3.4"/><path d="M5 19.5c0-3.4 3.1-5.3 7-5.3s7 1.9 7 5.3"/></svg>
+        </div>
+        <div class="stack">
+          <div class="name"><b>Priya Anand</b></div>
+          <div class="bubble"><p class="body">Did anyone read item 12 as past tense?</p></div>
+        </div>
+      </div>
+
+      <div class="tsep"><span>8:47 AM</span></div>
+
+      <div class="group">
+        <div class="avatar" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8.5" r="3.4"/><path d="M5 19.5c0-3.4 3.1-5.3 7-5.3s7 1.9 7 5.3"/></svg>
+        </div>
+        <div class="stack">
+          <div class="name"><b>Diego Salcedo</b></div>
+          <div class="bubble">
+            <div class="file">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3.5H7a1.5 1.5 0 00-1.5 1.5v14A1.5 1.5 0 007 20.5h10a1.5 1.5 0 001.5-1.5V8z"/><path d="M14 3.5V8h4.5"/></svg>
+              <span>
+                <b>unit12-notes.pdf</b>
+                <small>240 KB · 4 pages</small>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="group">
+        <div class="avatar" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8.5" r="3.4"/><path d="M5 19.5c0-3.4 3.1-5.3 7-5.3s7 1.9 7 5.3"/></svg>
+        </div>
+        <div class="stack">
+          <div class="name"><b>Ana Bermudez</b><span class="tag">Tutor</span></div>
+          <div class="bubble"><p class="body">Item 12 is hypothetical — ojalá plus imperfect.</p></div>
+        </div>
+      </div>
+
+      <div class="tsep"><span>8:54 AM</span></div>
+
+      <div class="group out">
+        <div class="stack">
+          <div class="bubble"><p class="body">Got it. Can we start at 7:15 tomorrow?</p></div>
+        </div>
+      </div>
+
+      <div class="typing">
+        <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
+        Priya is typing
+      </div>
+    </main>
+
+    <footer class="composer">
+      <div class="iconbtn" aria-hidden="true">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
+      </div>
+      <div class="field">Message the cohort</div>
+      <div class="send" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12L20 5l-7 15-2.6-5.9z"/><path d="M10.4 14.1L20 5"/></svg>
+      </div>
+    </footer>
+
+  </div>
+</body>
+</html>

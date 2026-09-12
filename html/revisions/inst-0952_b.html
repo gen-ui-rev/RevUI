@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Kindred — Community Insights</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body {
+    min-height: 100vh;
+    margin: 0;
+    padding: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #e9eaec;
+    color: #10151c;
+    font-family: 'Inter', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .screen {
+    width: 1024px;
+    height: 768px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    background: #ffffff;
+    border: 1px solid #dfe2e6;
+    box-shadow: 0 18px 50px rgba(25, 32, 44, 0.09);
+  }
+
+  .topbar {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    padding: 15px 24px;
+    border-bottom: 1px solid #e4e6ea;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    flex: none;
+  }
+  .brand-mark {
+    width: 29px;
+    height: 29px;
+    display: grid;
+    place-items: center;
+    border-radius: 7px;
+    background: #10151c;
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 700;
+  }
+  .brand-name {
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+  }
+  .topnav {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .topnav a {
+    padding: 7px 10px;
+    border-radius: 5px;
+    color: #68717d;
+    font-size: 12px;
+    font-weight: 500;
+    text-decoration: none;
+  }
+  .topnav a.on {
+    color: #1f5eff;
+    background: #eef3ff;
+    font-weight: 700;
+  }
+  .account {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    color: #303842;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .avatar {
+    width: 30px;
+    height: 30px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: #e7ebf2;
+    color: #4c5664;
+    font-size: 11px;
+    font-weight: 700;
+  }
+
+  .titlebar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 13px 24px;
+    border-bottom: 1px solid #e4e6ea;
+    background: #fafbfc;
+  }
+  .title-group {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    min-width: 0;
+  }
+  .titlebar h1 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -0.35px;
+  }
+  .titlebar .community {
+    overflow: hidden;
+    color: #6b7480;
+    font-size: 12px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .range {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 7px 10px;
+    border: 1px solid #d6dae0;
+    border-radius: 5px;
+    background: #ffffff;
+    color: #303842;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .range svg { display: block; }
+
+  .dashboard {
+    flex: 1;
+    padding: 18px 24px 20px;
+    background: #f5f6f8;
+  }
+  .summary-grid {
+    display: grid;
+    grid-template-columns: 1.3fr 1fr 1fr;
+    gap: 14px;
+  }
+  .metric {
+    padding: 13px 16px;
+    border: 1px solid #e0e3e8;
+    border-radius: 7px;
+    background: #ffffff;
+  }
+  .metric .label {
+    color: #6b7480;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.55px;
+    text-transform: uppercase;
+  }
+  .metric .line {
+    display: flex;
+    align-items: baseline;
+    gap: 9px;
+    margin-top: 7px;
+  }
+  .metric .num {
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: -0.8px;
+    line-height: 1;
+  }
+  .metric .delta {
+    color: #1f5eff;
+    font-size: 11px;
+    font-weight: 700;
+  }
+  .metric .detail {
+    margin-top: 5px;
+    color: #7a838f;
+    font-size: 10px;
+  }
+
+  .middle-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.65fr) minmax(280px, 0.95fr);
+    gap: 14px;
+    margin-top: 14px;
+  }
+  .panel {
+    padding: 15px 17px;
+    border: 1px solid #e0e3e8;
+    border-radius: 7px;
+    background: #ffffff;
+  }
+  .panel-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .panel-head h2 {
+    margin: 0;
+    font-size: 13px;
+    font-weight: 700;
+  }
+  .panel-head .aside {
+    color: #727b87;
+    font-size: 10px;
+    white-space: nowrap;
+  }
+
+  .trend-chart {
+    height: 112px;
+    display: flex;
+    align-items: flex-end;
+    gap: 18px;
+    margin-top: 15px;
+    padding: 0 5px;
+    border-bottom: 1px solid #dfe3e8;
+    background:
+      linear-gradient(to bottom,
+        transparent 24%,
+        #eff1f4 25%,
+        transparent 26%,
+        transparent 49%,
+        #eff1f4 50%,
+        transparent 51%,
+        transparent 74%,
+        #eff1f4 75%,
+        transparent 76%);
+  }
+  .trend-chart .col {
+    height: 100%;
+    flex: 1;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+  }
+  .trend-chart .bar {
+    width: 58%;
+    min-width: 28px;
+    border-radius: 4px 4px 0 0;
+    background: #dce2e9;
+  }
+  .trend-chart .col.on .bar { background: #1f5eff; }
+  .axis {
+    display: flex;
+    gap: 18px;
+    padding: 0 5px;
+    margin-top: 6px;
+  }
+  .axis span {
+    flex: 1;
+    color: #89919c;
+    font-size: 10px;
+    text-align: center;
+  }
+  .axis span.on {
+    color: #1f5eff;
+    font-weight: 700;
+  }
+
+  .source-list {
+    margin-top: 10px;
+  }
+  .src {
+    display: grid;
+    grid-template-columns: 96px 1fr 42px;
+    align-items: center;
+    gap: 9px;
+    padding: 8px 0;
+  }
+  .src + .src { border-top: 1px solid #f0f1f3; }
+  .src .name {
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .src .track {
+    height: 5px;
+    border-radius: 4px;
+    background: #edf0f4;
+  }
+  .src .fill {
+    height: 5px;
+    border-radius: 4px;
+    background: #1f5eff;
+  }
+  .src .val {
+    text-align: right;
+    font-size: 11px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .posts-panel {
+    margin-top: 14px;
+  }
+  .post-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0;
+    margin-top: 11px;
+  }
+  .post {
+    min-width: 0;
+    display: grid;
+    grid-template-columns: 56px minmax(0, 1fr);
+    gap: 11px;
+    padding: 2px 16px 2px 0;
+  }
+  .post + .post {
+    padding-left: 16px;
+    border-left: 1px solid #e7e9ed;
+  }
+  .post img {
+    width: 56px;
+    height: 56px;
+    display: block;
+    border-radius: 5px;
+    object-fit: cover;
+    background: #dfe4ea;
+  }
+  .post .content { min-width: 0; }
+  .post .title {
+    display: -webkit-box;
+    overflow: hidden;
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1.35;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+  .post .meta {
+    overflow: hidden;
+    margin-top: 4px;
+    color: #6b7480;
+    font-size: 9px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .post .reach {
+    margin-top: 6px;
+    color: #1f5eff;
+    font-size: 10px;
+    font-weight: 700;
+  }
+</style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark">K</div>
+        <div class="brand-name">Kindred</div>
+      </div>
+
+      <nav class="topnav">
+        <a href="#">Home</a>
+        <a href="#">Explore</a>
+        <a href="#" class="on">Insights</a>
+        <a href="#">Chats</a>
+      </nav>
+
+      <div class="account">
+        <div class="avatar">DW</div>
+        Dana Whitfield
+      </div>
+    </header>
+
+    <div class="titlebar">
+      <div class="title-group">
+        <h1>Community Insights</h1>
+        <span class="community">Northside Runners · 12,408 members</span>
+      </div>
+      <div class="range">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#303842" stroke-width="1.8">
+          <rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M8 3v4M16 3v4M3.5 10h17"/>
+        </svg>
+        Last 7 days
+      </div>
+    </div>
+
+    <main class="dashboard">
+      <div class="summary-grid">
+        <section class="metric">
+          <div class="label">Active members today</div>
+          <div class="line">
+            <div class="num">4,182</div>
+            <div class="delta">+11.4%</div>
+          </div>
+          <div class="detail">428 more active members than the daily average</div>
+        </section>
+        <section class="metric">
+          <div class="label">Daily average</div>
+          <div class="line">
+            <div class="num">3,754</div>
+          </div>
+          <div class="detail">Across the past seven days</div>
+        </section>
+        <section class="metric">
+          <div class="label">Community size</div>
+          <div class="line">
+            <div class="num">12,408</div>
+          </div>
+          <div class="detail">Northside Runners members</div>
+        </section>
+      </div>
+
+      <div class="middle-grid">
+        <section class="panel">
+          <div class="panel-head">
+            <h2>Active members by day</h2>
+            <span class="aside">Peak: 4,182 on Sunday</span>
+          </div>
+          <div class="trend-chart">
+            <div class="col"><div class="bar" style="height:44px"></div></div>
+            <div class="col"><div class="bar" style="height:57px"></div></div>
+            <div class="col"><div class="bar" style="height:50px"></div></div>
+            <div class="col"><div class="bar" style="height:68px"></div></div>
+            <div class="col"><div class="bar" style="height:61px"></div></div>
+            <div class="col"><div class="bar" style="height:75px"></div></div>
+            <div class="col on"><div class="bar" style="height:104px"></div></div>
+          </div>
+          <div class="axis">
+            <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span>
+            <span>Fri</span><span>Sat</span><span class="on">Sun</span>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head">
+            <h2>Where activity happened</h2>
+            <span class="aside">4,182 sessions</span>
+          </div>
+          <div class="source-list">
+            <div class="src">
+              <div class="name">Group chats</div>
+              <div class="track"><div class="fill" style="width:100%"></div></div>
+              <div class="val">1,940</div>
+            </div>
+            <div class="src">
+              <div class="name">Feed posts</div>
+              <div class="track"><div class="fill" style="width:62%"></div></div>
+              <div class="val">1,206</div>
+            </div>
+            <div class="src">
+              <div class="name">Story replies</div>
+              <div class="track"><div class="fill" style="width:31%"></div></div>
+              <div class="val">604</div>
+            </div>
+            <div class="src">
+              <div class="name">Direct messages</div>
+              <div class="track"><div class="fill" style="width:22%"></div></div>
+              <div class="val">432</div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <section class="panel posts-panel">
+        <div class="panel-head">
+          <h2>Top posts today</h2>
+          <span class="aside">Ranked by reach</span>
+        </div>
+        <div class="post-grid">
+          <article class="post">
+            <img src="https://loremflickr.com/56/56/party?lock=12600" width="56" height="56" alt="Members celebrating at the season finish line party">
+            <div class="content">
+              <div class="title">Season finish line party recap</div>
+              <div class="meta">Dana Whitfield · 6:40 AM</div>
+              <div class="reach">18,940 reach</div>
+            </div>
+          </article>
+          <article class="post">
+            <img src="https://loremflickr.com/56/56/cafe?lock=12601" width="56" height="56" alt="Coffee table at the Saturday post-run cafe meetup">
+            <div class="content">
+              <div class="title">Saturday coffee meetup moved to Ellis St.</div>
+              <div class="meta">Marcus Oyelaran · 8:12 AM</div>
+              <div class="reach">12,376 reach</div>
+            </div>
+          </article>
+          <article class="post">
+            <img src="https://loremflickr.com/56/56/street?lock=12602" width="56" height="56" alt="Empty city street on the new evening route">
+            <div class="content">
+              <div class="title">New 6-mile evening route, photos inside</div>
+              <div class="meta">Priya Raghunath · 11:05 AM</div>
+              <div class="reach">9,508 reach</div>
+            </div>
+          </article>
+        </div>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

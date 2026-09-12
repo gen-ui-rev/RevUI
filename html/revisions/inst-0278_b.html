@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Choose a Location</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #dfe3e1;
+      color: #17201c;
+      font-family: 'Nunito Sans', system-ui, sans-serif;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      color: inherit;
+    }
+
+    .screen {
+      position: relative;
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #f3f5f4;
+    }
+
+    .topbar {
+      display: grid;
+      grid-template-columns: 44px 1fr 44px;
+      align-items: center;
+      padding: 14px 16px;
+      background: #ffffff;
+      border-bottom: 1px solid #dce2df;
+    }
+
+    .topbar h1 {
+      margin: 0;
+      text-align: center;
+      font-size: 19px;
+      line-height: 28px;
+      font-weight: 700;
+    }
+
+    .icon-button {
+      width: 44px;
+      height: 40px;
+      padding: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 0;
+      background: transparent;
+    }
+
+    .icon-button.end {
+      color: #087b59;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    main {
+      flex: 1;
+      padding: 20px 18px 16px;
+    }
+
+    .intro {
+      margin-bottom: 16px;
+    }
+
+    .intro h2 {
+      margin: 0 0 5px;
+      font-size: 23px;
+      line-height: 30px;
+      font-weight: 700;
+    }
+
+    .intro p {
+      margin: 0;
+      color: #5d6963;
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    /* Search card: flat, no container surface — underlined field + outline chip */
+    .search-card {
+      padding: 0;
+      background: transparent;
+      box-shadow: none;
+    }
+
+    .search-field {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-height: 46px;
+      padding: 0 2px 8px;
+      background: transparent;
+      border: 0;
+      border-bottom: 2px solid #17201c;
+    }
+
+    .search-field svg {
+      flex: 0 0 auto;
+      color: #17201c;
+    }
+
+    .search-field input {
+      width: 100%;
+      min-width: 0;
+      padding: 0;
+      color: #17201c;
+      background: transparent;
+      border: 0;
+      outline: 0;
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .search-field input::placeholder {
+      color: #8b958f;
+      opacity: 1;
+      font-weight: 400;
+    }
+
+    .search-hint {
+      margin: 8px 2px 0;
+      color: #7b857f;
+      font-size: 12px;
+      line-height: 17px;
+    }
+
+    .current-location {
+      width: auto;
+      margin-top: 12px;
+      padding: 8px 15px 8px 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: #087b59;
+      background: transparent;
+      border: 1.5px solid #a8bdb4;
+      border-radius: 999px;
+      text-align: left;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 700;
+    }
+
+    .section {
+      margin-top: 24px;
+    }
+
+    .section-heading {
+      margin: 0 0 9px;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 700;
+      color: #46524c;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+    }
+
+    .location-list {
+      background: #ffffff;
+      border: 1px solid #e0e5e2;
+    }
+
+    .location-row {
+      width: 100%;
+      min-height: 72px;
+      padding: 13px 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: #ffffff;
+      border: 0;
+      border-bottom: 1px solid #e6eae8;
+      text-align: left;
+    }
+
+    .location-row:last-child {
+      border-bottom: 0;
+    }
+
+    .location-copy {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .location-title-line {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .location-title {
+      overflow: hidden;
+      color: #17201c;
+      font-size: 15px;
+      line-height: 21px;
+      font-weight: 700;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .default-label {
+      flex: 0 0 auto;
+      padding: 2px 6px;
+      color: #087b59;
+      background: #e4f2ed;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 700;
+    }
+
+    .location-address {
+      margin-top: 3px;
+      overflow: hidden;
+      color: #66716b;
+      font-size: 14px;
+      line-height: 20px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .chevron {
+      flex: 0 0 auto;
+      color: #8a948f;
+    }
+
+    .recent-list {
+      border-top: 1px solid #dce2df;
+    }
+
+    .recent-row {
+      width: 100%;
+      min-height: 58px;
+      padding: 10px 4px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: transparent;
+      border: 0;
+      border-bottom: 1px solid #dce2df;
+      text-align: left;
+    }
+
+    .recent-copy {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .recent-name {
+      overflow: hidden;
+      font-size: 15px;
+      line-height: 20px;
+      font-weight: 600;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .recent-detail {
+      margin-top: 2px;
+      overflow: hidden;
+      color: #6b756f;
+      font-size: 13px;
+      line-height: 18px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .tabbar {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      background: #ffffff;
+      border-top: 1px solid #d7deda;
+    }
+
+    .tab {
+      min-height: 76px;
+      padding: 10px 4px 9px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      color: #6b756f;
+      background: transparent;
+      border: 0;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 600;
+    }
+
+    .tab.active {
+      color: #087b59;
+    }
+
+    .tab svg,
+    .icon-button svg,
+    .current-location svg,
+    .chevron svg {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <button class="icon-button" type="button" aria-label="Go back">
+        <svg width="23" height="23" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M15 5L8 12L15 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <h1>Choose location</h1>
+      <button class="icon-button end" type="button">Done</button>
+    </header>
+
+    <main>
+      <section class="intro" aria-labelledby="location-heading">
+        <h2 id="location-heading">Where are you connecting?</h2>
+        <p>Choose an area to see nearby circles, posts, and events.</p>
+      </section>
+
+      <section class="search-card" aria-label="Address search">
+        <label class="search-field">
+          <svg width="21" height="21" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="2"/>
+            <path d="M16 16L21 21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          <input type="text" aria-label="Search address or neighborhood" placeholder="Search address or neighborhood">
+        </label>
+        <p class="search-hint">Try a street, a ZIP code, or a neighborhood name.</p>
+        <button class="current-location" type="button">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="2"/>
+            <circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.8"/>
+            <path d="M12 2V5M12 19V22M2 12H5M19 12H22" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+          <span>Use my current location</span>
+        </button>
+      </section>
+
+      <section class="section" aria-labelledby="saved-heading">
+        <h3 class="section-heading" id="saved-heading">Saved locations</h3>
+        <div class="location-list">
+          <button class="location-row" type="button">
+            <span class="location-copy">
+              <span class="location-title-line">
+                <span class="location-title">Home</span>
+                <span class="default-label">Default</span>
+              </span>
+              <span class="location-address">482 Willow Street, Portland, OR 97205</span>
+            </span>
+            <span class="chevron">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M9 5L16 12L9 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+          </button>
+
+          <button class="location-row" type="button">
+            <span class="location-copy">
+              <span class="location-title-line">
+                <span class="location-title">Work</span>
+              </span>
+              <span class="location-address">1018 Harbor Avenue, Portland, OR 97209</span>
+            </span>
+            <span class="chevron">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M9 5L16 12L9 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+          </button>
+
+          <button class="location-row" type="button">
+            <span class="location-copy">
+              <span class="location-title-line">
+                <span class="location-title">Riverside Community Center</span>
+              </span>
+              <span class="location-address">226 North Cedar Road, Portland, OR 97227</span>
+            </span>
+            <span class="chevron">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M9 5L16 12L9 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+          </button>
+        </div>
+      </section>
+
+      <section class="section" aria-labelledby="recent-heading">
+        <h3 class="section-heading" id="recent-heading">Recent searches</h3>
+        <div class="recent-list">
+          <button class="recent-row" type="button">
+            <span class="recent-copy">
+              <span class="recent-name">Alberta Arts District</span>
+              <span class="recent-detail">Portland, OR</span>
+            </span>
+            <span class="chevron">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M9 5L16 12L9 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+          </button>
+          <button class="recent-row" type="button">
+            <span class="recent-copy">
+              <span class="recent-name">Sellwood Riverfront</span>
+              <span class="recent-detail">Portland, OR</span>
+            </span>
+            <span class="chevron">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M9 5L16 12L9 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+          </button>
+        </div>
+      </section>
+    </main>
+
+    <nav class="tabbar" aria-label="Main navigation">
+      <button class="tab" type="button">
+        <svg width="23" height="23" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M4 10.5L12 4L20 10.5V20H15V14H9V20H4V10.5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+        </svg>
+        <span>Home</span>
+      </button>
+      <button class="tab" type="button">
+        <svg width="23" height="23" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M5 5H19V16H10L6 20V16H5V5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+          <path d="M8 9H16M8 12H14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+        <span>Chats</span>
+      </button>
+      <button class="tab active" type="button" aria-current="page">
+        <svg width="23" height="23" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M19 10C19 15.2 12 21 12 21C12 21 5 15.2 5 10C5 6.13 8.13 3 12 3C15.87 3 19 6.13 19 10Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+          <circle cx="12" cy="10" r="2.5" stroke="currentColor" stroke-width="1.8"/>
+        </svg>
+        <span>Places</span>
+      </button>
+      <button class="tab" type="button">
+        <svg width="23" height="23" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.8"/>
+          <path d="M4.5 21C5.2 16.9 8 15 12 15C16 15 18.8 16.9 19.5 21" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+        <span>Profile</span>
+      </button>
+    </nav>
+  </div>
+</body>
+</html>

@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Waypost — Filtered Activity</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1E1B1F;
+    --muted:#6F6A72;
+    --faint:#8C8790;
+    --line:#E4E1E4;
+    --accent:#875C8D;
+    --accent-soft:#F3EDF6;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:#E8E6E4;
+    font-family:'Manrope',system-ui,sans-serif;
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+  }
+  .screen{
+    width:390px;
+    height:560px;
+    padding:18px;
+    background:#EFEEEC;
+  }
+  .card{
+    background:#FFFFFF;
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:15px;
+  }
+  .head{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    gap:10px;
+  }
+  .head h1{
+    margin:0;
+    font-size:18px;
+    font-weight:700;
+    letter-spacing:-0.01em;
+  }
+  .range{
+    font-size:12px;
+    font-weight:500;
+    color:var(--faint);
+    white-space:nowrap;
+  }
+  .rule{
+    height:1px;
+    margin:12px 0;
+    background:var(--line);
+  }
+  .filter-label{
+    margin:0 0 8px;
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:.07em;
+    text-transform:uppercase;
+    color:var(--faint);
+  }
+  .filter-input{
+    position:absolute;
+    opacity:0;
+    pointer-events:none;
+  }
+  .filters{
+    display:flex;
+    flex-wrap:wrap;
+    gap:6px;
+  }
+  .filters label{
+    padding:6px 10px;
+    border:1px solid var(--line);
+    border-radius:999px;
+    background:#FFFFFF;
+    color:var(--muted);
+    font-size:12px;
+    font-weight:700;
+    line-height:1;
+    cursor:pointer;
+  }
+  #all:checked ~ .filters label[for="all"],
+  #stays:checked ~ .filters label[for="stays"],
+  #alerts:checked ~ .filters label[for="alerts"],
+  #saved:checked ~ .filters label[for="saved"],
+  #maps:checked ~ .filters label[for="maps"]{
+    border-color:var(--accent);
+    background:var(--accent);
+    color:#FFFFFF;
+  }
+  .summary{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    margin:15px 0 11px;
+  }
+  .summary strong{
+    font-size:13px;
+    font-weight:700;
+  }
+  .summary span{
+    font-size:11px;
+    font-weight:500;
+    color:var(--faint);
+    white-space:nowrap;
+  }
+  .count-copy{display:none;}
+  #all:checked ~ .summary .count-all,
+  #stays:checked ~ .summary .count-stays,
+  #alerts:checked ~ .summary .count-alerts,
+  #saved:checked ~ .summary .count-saved,
+  #maps:checked ~ .summary .count-maps{display:inline;}
+  ul.activity{
+    list-style:none;
+    margin:0;
+    padding:0;
+  }
+  .item{
+    position:relative;
+    padding:0 0 13px 43px;
+  }
+  .item:last-child{padding-bottom:0;}
+  .item::before{
+    content:"";
+    position:absolute;
+    left:15px;
+    top:31px;
+    bottom:0;
+    width:1px;
+    background:var(--line);
+  }
+  .item:last-child::before{display:none;}
+  .node{
+    position:absolute;
+    top:0;
+    left:0;
+    width:31px;
+    height:31px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border:1px solid var(--line);
+    border-radius:13px;
+    background:#FFFFFF;
+    color:var(--muted);
+  }
+  .node.on{
+    border-color:var(--accent);
+    background:var(--accent);
+    color:#FFFFFF;
+  }
+  .top{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    gap:8px;
+    padding-top:1px;
+  }
+  .title{
+    min-width:0;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+    font-size:13px;
+    font-weight:700;
+  }
+  .time{
+    flex:none;
+    color:var(--faint);
+    font-size:11px;
+    font-weight:500;
+    white-space:nowrap;
+  }
+  .meta{
+    margin:3px 0 0;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+    color:var(--muted);
+    font-size:12px;
+  }
+  .amount{
+    color:var(--accent);
+    font-weight:700;
+  }
+  #stays:checked ~ .activity .item:not(.stays),
+  #alerts:checked ~ .activity .item:not(.alerts),
+  #saved:checked ~ .activity .item:not(.saved),
+  #maps:checked ~ .activity .item:not(.maps){display:none;}
+  .foot{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-top:14px;
+    padding-top:12px;
+    border-top:1px solid var(--line);
+  }
+  .foot .link{
+    color:var(--accent);
+    font-size:12px;
+    font-weight:700;
+  }
+  .foot .hint{
+    color:var(--faint);
+    font-size:11px;
+    font-weight:500;
+  }
+</style>
+</head>
+<body>
+  <div class="screen">
+    <div class="card">
+      <div class="head">
+        <h1>Activity</h1>
+        <span class="range">Last 30 days</span>
+      </div>
+      <div class="rule"></div>
+
+      <p class="filter-label">Show activity for</p>
+      <input class="filter-input" type="radio" name="activity-filter" id="all">
+      <input class="filter-input" type="radio" name="activity-filter" id="stays" checked>
+      <input class="filter-input" type="radio" name="activity-filter" id="alerts">
+      <input class="filter-input" type="radio" name="activity-filter" id="saved">
+      <input class="filter-input" type="radio" name="activity-filter" id="maps">
+
+      <div class="filters">
+        <label for="all">All</label>
+        <label for="stays">Stays</label>
+        <label for="alerts">Alerts</label>
+        <label for="saved">Saved</label>
+        <label for="maps">Maps</label>
+      </div>
+
+      <div class="summary">
+        <strong>Recent activity</strong>
+        <span class="count-copy count-all">5 events</span>
+        <span class="count-copy count-stays">2 stay events</span>
+        <span class="count-copy count-alerts">1 alert</span>
+        <span class="count-copy count-saved">1 saved place</span>
+        <span class="count-copy count-maps">1 map event</span>
+      </div>
+
+      <ul class="activity">
+        <li class="item stays">
+          <span class="node on">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17v-6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6"/><path d="M3 17h18"/><path d="M7 9V7a1 1 0 0 1 1-1h3v3"/><path d="M13 9V6h3a1 1 0 0 1 1 1v2"/><path d="M5 17v2"/><path d="M19 17v2"/></svg>
+          </span>
+          <div class="top"><span class="title">Booking confirmed</span><span class="time">Today, 4:12 PM</span></div>
+          <p class="meta">Casa Delmar, Lisbon · 2 nights · <span class="amount">$268</span></p>
+        </li>
+        <li class="item alerts">
+          <span class="node">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20.6 12.6 12.4 20.8a2 2 0 0 1-2.8 0l-6.4-6.4a2 2 0 0 1-.6-1.4V4.6A1.6 1.6 0 0 1 4.2 3h8.4a2 2 0 0 1 1.4.6l6.6 6.6a1.7 1.7 0 0 1 0 2.4Z"/><circle cx="7.6" cy="7.6" r="1.3"/></svg>
+          </span>
+          <div class="top"><span class="title">Price drop alert</span><span class="time">Today, 1:30 PM</span></div>
+          <p class="meta">Portland → Denver, Apr 18 · now <span class="amount">$184</span></p>
+        </li>
+        <li class="item saved">
+          <span class="node">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4h10a1 1 0 0 1 1 1v15l-6-4-6 4V5a1 1 0 0 1 1-1Z"/></svg>
+          </span>
+          <div class="top"><span class="title">Place saved</span><span class="time">Today, 11:05 AM</span></div>
+          <p class="meta">Miradouro da Graça · Lisbon 2025</p>
+        </li>
+        <li class="item maps">
+          <span class="node">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4 3 6.4v13.2L9 17l6 2.6 6-2.4V4l-6 2.4Z"/><path d="M9 4v13"/><path d="M15 6.4v13.2"/></svg>
+          </span>
+          <div class="top"><span class="title">Offline map downloaded</span><span class="time">Yesterday</span></div>
+          <p class="meta">Algarve coast · 142 MB · expires May 2</p>
+        </li>
+        <li class="item stays">
+          <span class="node">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4.5l2.4 4.9 5.4.8-3.9 3.8.9 5.4-4.8-2.5-4.8 2.5.9-5.4L4.2 10.2l5.4-.8Z"/></svg>
+          </span>
+          <div class="top"><span class="title">Stay reviewed</span><span class="time">Yesterday</span></div>
+          <p class="meta">Harbor Inn, Porto · 4 of 5 stars</p>
+        </li>
+      </ul>
+
+      <div class="foot">
+        <span class="link">Earlier activity</span>
+        <span class="hint">Choose a type to narrow results</span>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

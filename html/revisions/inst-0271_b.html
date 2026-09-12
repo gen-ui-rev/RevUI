@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Driftstay Beginner Trail Plan</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #d8d8d5;
+      color: #292a29;
+      font-family: 'Nunito Sans', system-ui, sans-serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      position: relative;
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #f5f4f0;
+      border: 1px solid #c7c7c2;
+    }
+
+    .top-bar {
+      padding: 14px 16px 0;
+    }
+
+    .progress {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 5px;
+      width: 100%;
+    }
+
+    .progress-segment {
+      height: 3px;
+      background: #d4d4cf;
+      border-radius: 4px;
+    }
+
+    .progress-segment.complete {
+      background: #555754;
+    }
+
+    .progress-segment.current {
+      position: relative;
+    }
+
+    .progress-segment.current::before {
+      content: "";
+      display: block;
+      width: 64%;
+      height: 100%;
+      background: #555754;
+      border-radius: 4px;
+    }
+
+    .navigation {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 15px;
+    }
+
+    .publisher {
+      display: flex;
+      align-items: center;
+      min-width: 0;
+    }
+
+    .publisher-mark {
+      width: 36px;
+      height: 36px;
+      margin-right: 10px;
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      border: 1px solid #aeada8;
+      border-radius: 4px;
+      color: #4e504d;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .publisher-copy {
+      min-width: 0;
+    }
+
+    .publisher-name {
+      margin: 0;
+      font-size: 15px;
+      line-height: 19px;
+      font-weight: 700;
+    }
+
+    .publisher-meta {
+      margin: 1px 0 0;
+      color: #747570;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .icon-button {
+      width: 36px;
+      height: 36px;
+      padding: 0;
+      display: grid;
+      place-items: center;
+      border: 0;
+      background: transparent;
+      color: #40413f;
+    }
+
+    .icon-button svg {
+      width: 21px;
+      height: 21px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.7;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .guide {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 30px 18px 20px;
+    }
+
+    .route-kicker {
+      margin: 0 0 9px;
+      color: #70726d;
+      font-size: 12px;
+      line-height: 17px;
+      font-weight: 700;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      max-width: 340px;
+      margin: 0;
+      color: #292a29;
+      font-size: 34px;
+      line-height: 1.08;
+      font-weight: 600;
+      letter-spacing: -0.035em;
+    }
+
+    .route-facts {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin: 15px 0 19px;
+    }
+
+    .fact {
+      padding: 5px 9px;
+      border: 1px solid #c7c8c2;
+      border-radius: 3px;
+      color: #5e605c;
+      font-size: 11px;
+      line-height: 15px;
+      font-weight: 700;
+    }
+
+    .schedule {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      border: 1px solid #c9cac4;
+      border-radius: 6px;
+      background: #faf9f6;
+    }
+
+    .schedule-item {
+      display: grid;
+      grid-template-columns: 82px minmax(0, 1fr);
+      gap: 14px;
+      padding: 15px 16px;
+    }
+
+    .schedule-item + .schedule-item {
+      border-top: 1px solid #d4d5cf;
+    }
+
+    .time-block {
+      border-right: 1px solid #d4d5cf;
+      padding-right: 12px;
+    }
+
+    .day-stage {
+      margin: 0 0 3px;
+      color: #777974;
+      font-size: 10px;
+      line-height: 14px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .time {
+      margin: 0;
+      font-size: 15px;
+      line-height: 20px;
+      font-weight: 700;
+    }
+
+    .stage-title {
+      margin: 0;
+      font-size: 15px;
+      line-height: 20px;
+      font-weight: 700;
+    }
+
+    .stage-copy {
+      margin: 4px 0 0;
+      color: #62645f;
+      font-size: 12px;
+      line-height: 18px;
+    }
+
+    .readiness {
+      margin-top: auto;
+      padding-top: 16px;
+      border-top: 1px solid #c9cac4;
+    }
+
+    .readiness-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 10px;
+    }
+
+    .readiness-title {
+      margin: 0;
+      font-size: 14px;
+      line-height: 19px;
+      font-weight: 700;
+    }
+
+    .weather {
+      margin: 0;
+      color: #686a65;
+      font-size: 12px;
+      line-height: 17px;
+    }
+
+    .readiness-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      border: 1px solid #c9cac4;
+      border-radius: 5px;
+      background: #e9e9e4;
+    }
+
+    .readiness-stat {
+      min-width: 0;
+      padding: 10px 8px;
+      text-align: center;
+    }
+
+    .readiness-stat + .readiness-stat {
+      border-left: 1px solid #c9cac4;
+    }
+
+    .stat-value {
+      margin: 0;
+      color: #353734;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 700;
+    }
+
+    .stat-label {
+      margin: 2px 0 0;
+      color: #737570;
+      font-size: 10px;
+      line-height: 14px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="top-bar">
+      <div class="progress" aria-label="Guide 2 of 4">
+        <span class="progress-segment complete"></span>
+        <span class="progress-segment current"></span>
+        <span class="progress-segment"></span>
+        <span class="progress-segment"></span>
+      </div>
+
+      <div class="navigation">
+        <div class="publisher">
+          <div class="publisher-mark" aria-hidden="true">D</div>
+          <div class="publisher-copy">
+            <p class="publisher-name">Driftstay Park Notes</p>
+            <p class="publisher-meta">Acadia for first-timers · 2 of 4</p>
+          </div>
+        </div>
+
+        <div class="nav-actions">
+          <button class="icon-button" type="button" aria-label="More options">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="5" cy="12" r="1"></circle>
+              <circle cx="12" cy="12" r="1"></circle>
+              <circle cx="19" cy="12" r="1"></circle>
+            </svg>
+          </button>
+          <button class="icon-button" type="button" aria-label="Close guide">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M5 5l14 14"></path>
+              <path d="M19 5L5 19"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main class="guide">
+      <section aria-labelledby="guide-title">
+        <p class="route-kicker">Beginner route · Jordan Pond</p>
+        <h1 id="guide-title">Your first trail day in three simple stages.</h1>
+
+        <div class="route-facts" aria-label="Route facts">
+          <span class="fact">3.3-mile loop</span>
+          <span class="fact">Mostly level</span>
+          <span class="fact">Allow 2.5 hours</span>
+        </div>
+
+        <ol class="schedule" aria-label="First-time hiking itinerary">
+          <li class="schedule-item">
+            <div class="time-block">
+              <p class="day-stage">Early morning</p>
+              <p class="time">8:00 AM</p>
+            </div>
+            <div>
+              <p class="stage-title">Meet the trail</p>
+              <p class="stage-copy">Use the south lot, visit the map board, and start clockwise.</p>
+            </div>
+          </li>
+          <li class="schedule-item">
+            <div class="time-block">
+              <p class="day-stage">Mid-morning</p>
+              <p class="time">9:00 AM</p>
+            </div>
+            <div>
+              <p class="stage-title">Cross the quiet shore</p>
+              <p class="stage-copy">Take your time on the timber path and yield at narrow spots.</p>
+            </div>
+          </li>
+          <li class="schedule-item">
+            <div class="time-block">
+              <p class="day-stage">Late morning</p>
+              <p class="time">10:30 AM</p>
+            </div>
+            <div>
+              <p class="stage-title">Return and reset</p>
+              <p class="stage-copy">Finish near the pond house, stretch, and refill your water.</p>
+            </div>
+          </li>
+        </ol>
+      </section>
+
+      <aside class="readiness" aria-labelledby="readiness-title">
+        <div class="readiness-header">
+          <p class="readiness-title" id="readiness-title">Ready for the loop</p>
+          <p class="weather">Cool start · Dry path</p>
+        </div>
+        <div class="readiness-grid">
+          <div class="readiness-stat">
+            <p class="stat-value">1 L</p>
+            <p class="stat-label">Water</p>
+          </div>
+          <div class="readiness-stat">
+            <p class="stat-value">Low boots</p>
+            <p class="stat-label">Footwear</p>
+          </div>
+          <div class="readiness-stat">
+            <p class="stat-value">Map saved</p>
+            <p class="stat-label">Navigation</p>
+          </div>
+        </div>
+      </aside>
+    </main>
+  </div>
+</body>
+</html>

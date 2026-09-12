@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Marketplace Seller — Crop Listing Photo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --accent:#3B7DFF;
+    --line:rgba(255,255,255,0.13);
+    --bg:#111317;
+    --panel:#16181D;
+    --dim:#8C919B;
+  }
+  *{box-sizing:border-box;}
+  body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    padding:40px 0;
+    margin:0;
+    background:#5C5F66;
+    font-family:'Source Sans 3', system-ui, sans-serif;
+  }
+  .screen{
+    width:390px;
+    height:844px;
+    background:var(--bg);
+    color:#F2F4F7;
+    display:flex;
+    flex-direction:column;
+    position:relative;
+  }
+
+  /* top bar */
+  .topbar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:14px 16px;
+    border-bottom:1px solid var(--line);
+  }
+  .topbar h1{
+    margin:0;
+    font-family:'Playfair Display', Georgia, serif;
+    font-weight:600;
+    font-size:17px;
+    line-height:20px;
+    letter-spacing:0.2px;
+  }
+  .tb-btn{font-size:15px;line-height:20px;color:var(--dim);}
+  .tb-btn.save{color:var(--accent);font-weight:600;}
+
+  /* context strip */
+  .context{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    padding:10px 16px;
+    border-bottom:1px solid var(--line);
+  }
+  .context .ep{
+    font-size:14px;
+    line-height:18px;
+    color:#D6D9DF;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .context .draft{
+    flex:none;
+    font-size:12px;
+    line-height:16px;
+    color:var(--accent);
+    border:1px solid var(--accent);
+    border-radius:6px;
+    padding:1px 7px;
+  }
+
+  /* preview */
+  .preview{
+    position:relative;
+    width:390px;
+    height:260px;
+    background:#0A0B0D;
+  }
+  .preview img{
+    display:block;
+    width:390px;
+    height:260px;
+    object-fit:cover;
+    background:#22252B;
+  }
+  .mask{position:absolute;background:rgba(8,9,11,0.62);}
+  .m-top{left:0;top:0;width:390px;height:8px;}
+  .m-bottom{left:0;bottom:0;width:390px;height:8px;}
+  .m-left{left:0;top:8px;width:73px;height:244px;}
+  .m-right{right:0;top:8px;width:73px;height:244px;}
+  .cropbox{
+    position:absolute;
+    left:73px;top:8px;
+    width:244px;height:244px;
+    border:1px solid rgba(255,255,255,0.9);
+  }
+  .gl{position:absolute;background:rgba(255,255,255,0.32);}
+  .gl.v1{left:81px;top:0;width:1px;height:244px;}
+  .gl.v2{left:163px;top:0;width:1px;height:244px;}
+  .gl.h1{top:81px;left:0;height:1px;width:244px;}
+  .gl.h2{top:163px;left:0;height:1px;width:244px;}
+  .corner{position:absolute;width:20px;height:20px;border:0 solid var(--accent);}
+  .c-tl{left:-2px;top:-2px;border-left-width:3px;border-top-width:3px;}
+  .c-tr{right:-2px;top:-2px;border-right-width:3px;border-top-width:3px;}
+  .c-bl{left:-2px;bottom:-2px;border-left-width:3px;border-bottom-width:3px;}
+  .c-br{right:-2px;bottom:-2px;border-right-width:3px;border-bottom-width:3px;}
+
+  /* readout */
+  .readout{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:8px 16px;
+    border-top:1px solid var(--line);
+    border-bottom:1px solid var(--line);
+    font-size:12px;
+    line-height:16px;
+    color:var(--dim);
+  }
+  .readout .reset{color:var(--accent);font-weight:600;}
+
+  /* chips */
+  .chips{
+    display:flex;
+    gap:8px;
+    padding:10px 16px;
+    border-bottom:1px solid var(--line);
+  }
+  .chip{
+    flex:1;
+    text-align:center;
+    font-size:13px;
+    line-height:18px;
+    padding:5px 0;
+    border:1px solid var(--line);
+    border-radius:6px;
+    color:#C8CCD3;
+  }
+  .chip.on{
+    background:var(--accent);
+    border-color:var(--accent);
+    color:#fff;
+    font-weight:600;
+  }
+
+  /* section header */
+  .sec-head{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    font-size:12px;
+    line-height:16px;
+    letter-spacing:0.6px;
+    text-transform:uppercase;
+    color:var(--dim);
+  }
+
+  /* before / after compare */
+  .compare{
+    padding:10px 16px;
+    border-bottom:1px solid var(--line);
+  }
+  .cmp{
+    display:flex;
+    align-items:flex-start;
+    gap:10px;
+    margin-top:8px;
+  }
+  .thumb{flex:none;}
+  .thumb img{
+    display:block;
+    object-fit:cover;
+    border-radius:6px;
+    background:#22252B;
+    border:1px solid var(--line);
+  }
+  .thumb.crop img{border:2px solid var(--accent);}
+  .thumb span{
+    display:block;
+    margin-top:4px;
+    font-size:12px;
+    line-height:15px;
+    color:var(--dim);
+    text-align:center;
+  }
+  .thumb.crop span{color:#F2F4F7;font-weight:600;}
+  .cmp-note{
+    margin:0;
+    font-size:12px;
+    line-height:15px;
+    color:#A9AFB9;
+  }
+
+  /* adjust, grouped by type */
+  .adjust{padding:12px 16px 6px;}
+  .grp-head{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    font-size:12px;
+    line-height:16px;
+    letter-spacing:0.6px;
+    text-transform:uppercase;
+    color:var(--dim);
+    margin-bottom:6px;
+  }
+  .grp-head.second{margin-top:10px;}
+  .grp-head em{font-style:normal;color:#6F757F;letter-spacing:0;text-transform:none;}
+  .row{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    height:34px;
+  }
+  .row .lbl{
+    width:82px;
+    flex:none;
+    font-size:14px;
+    line-height:18px;
+    color:#DDE1E7;
+  }
+  .track{
+    position:relative;
+    flex:1;
+    height:3px;
+    background:rgba(255,255,255,0.16);
+  }
+  .fill{position:absolute;left:0;top:0;height:3px;background:var(--accent);}
+  .knob{
+    position:absolute;
+    top:-5px;
+    width:13px;height:13px;
+    border-radius:6px;
+    background:#fff;
+    margin-left:-6px;
+  }
+  .val{
+    width:46px;
+    flex:none;
+    text-align:right;
+    font-size:14px;
+    line-height:18px;
+    font-variant-numeric:tabular-nums;
+    color:#9AA0AA;
+  }
+  .val.set{color:#F2F4F7;font-weight:600;}
+
+  .spacer{flex:1;}
+
+  /* tab bar */
+  .tabbar{
+    display:flex;
+    border-top:1px solid var(--line);
+    background:var(--panel);
+  }
+  .tab{
+    flex:1;
+    padding:10px 0;
+    text-align:center;
+    color:var(--dim);
+  }
+  .tab.on{color:var(--accent);}
+  .tab svg{display:block;margin:0 auto 4px;}
+  .tab span{font-size:12px;line-height:15px;}
+</style>
+</head>
+<body>
+<div class="screen">
+
+  <div class="topbar">
+    <span class="tb-btn">Cancel</span>
+    <h1>Crop Listing Photo</h1>
+    <span class="tb-btn save">Save</span>
+  </div>
+
+  <div class="context">
+    <span class="ep">Listing #4821 — Walnut Dining Chair, Set of 4</span>
+    <span class="draft">Draft</span>
+  </div>
+
+  <div class="preview">
+    <img src="https://loremflickr.com/390/260/concert?lock=2420" width="390" height="260" alt="Listing photo being cropped for the cover image">
+    <div class="mask m-top"></div>
+    <div class="mask m-bottom"></div>
+    <div class="mask m-left"></div>
+    <div class="mask m-right"></div>
+    <div class="cropbox">
+      <div class="gl v1"></div>
+      <div class="gl v2"></div>
+      <div class="gl h1"></div>
+      <div class="gl h2"></div>
+      <div class="corner c-tl"></div>
+      <div class="corner c-tr"></div>
+      <div class="corner c-bl"></div>
+      <div class="corner c-br"></div>
+    </div>
+  </div>
+
+  <div class="readout">
+    <span>1:1 · 1080 × 1080 px · offset X 62 Y 18</span>
+    <span class="reset">Reset</span>
+  </div>
+
+  <div class="chips">
+    <div class="chip on">1:1</div>
+    <div class="chip">4:5</div>
+    <div class="chip">4:3</div>
+    <div class="chip">16:9</div>
+    <div class="chip">Free</div>
+  </div>
+
+  <div class="compare">
+    <div class="sec-head">
+      <span>Before cropping</span>
+      <span>3024 × 4032 px</span>
+    </div>
+    <div class="cmp">
+      <div class="thumb">
+        <img src="https://loremflickr.com/72/54/concert?lock=2420" width="72" height="54" alt="Full uncropped photo as uploaded by the seller">
+        <span>Original</span>
+      </div>
+      <div class="thumb crop">
+        <img src="https://loremflickr.com/54/54/concert?lock=2420" width="54" height="54" alt="Square cover crop taken from the uploaded photo">
+        <span>Crop</span>
+      </div>
+      <p class="cmp-note">The full upload sits at left. Your square cover keeps the chair set centred and trims 18% from the edges.</p>
+    </div>
+  </div>
+
+  <div class="adjust">
+    <div class="grp-head">
+      <span>Light</span>
+      <em>2 changed</em>
+    </div>
+    <div class="row">
+      <span class="lbl">Brightness</span>
+      <span class="track"><span class="fill" style="width:58%"></span><span class="knob" style="left:58%"></span></span>
+      <span class="val set">+12</span>
+    </div>
+    <div class="row">
+      <span class="lbl">Contrast</span>
+      <span class="track"><span class="fill" style="width:66%"></span><span class="knob" style="left:66%"></span></span>
+      <span class="val set">+18</span>
+    </div>
+
+    <div class="grp-head second">
+      <span>Colour &amp; detail</span>
+      <em>1 changed</em>
+    </div>
+    <div class="row">
+      <span class="lbl">Warmth</span>
+      <span class="track"><span class="fill" style="width:44%"></span><span class="knob" style="left:44%"></span></span>
+      <span class="val set">−6</span>
+    </div>
+    <div class="row">
+      <span class="lbl">Sharpness</span>
+      <span class="track"><span class="fill" style="width:50%"></span><span class="knob" style="left:50%"></span></span>
+      <span class="val">0</span>
+    </div>
+  </div>
+
+  <div class="spacer"></div>
+
+  <div class="tabbar">
+    <div class="tab on">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M7 3v14h14"/><path d="M3 7h14v14"/></svg>
+      <span>Crop</span>
+    </div>
+    <div class="tab">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M5 4v16M12 4v16M19 4v16"/><circle cx="5" cy="9" r="2.2"/><circle cx="12" cy="15" r="2.2"/><circle cx="19" cy="8" r="2.2"/></svg>
+      <span>Adjust</span>
+    </div>
+    <div class="tab">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><rect x="3" y="7" width="18" height="10" rx="1.5"/><path d="M8 7v10M16 7v10"/></svg>
+      <span>Photos</span>
+    </div>
+    <div class="tab">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M12 16V4"/><path d="M8 8l4-4 4 4"/><path d="M4 16v4h16v-4"/></svg>
+      <span>Publish</span>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

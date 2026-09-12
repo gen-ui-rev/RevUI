@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Medication reminder schedule</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;}
+  body{
+    font-family:'Manrope', system-ui, sans-serif;
+    background:#dedfdb;
+    margin:0;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    color:#1c1d1a;
+    -webkit-font-smoothing:antialiased;
+  }
+  .screen{
+    width:1024px;
+    height:768px;
+    padding:62px;
+    background:#efefeb;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+  }
+  .card{
+    width:900px;
+    background:#ffffff;
+    border-radius:12px;
+    box-shadow:0 10px 32px rgba(34,35,30,.12);
+    display:grid;
+    grid-template-columns:410px 1fr;
+  }
+  .left-panel{
+    padding:34px;
+    background:#626d39;
+    color:#ffffff;
+    border-radius:12px 0 0 12px;
+  }
+  .hero{
+    display:block;
+    width:342px;
+    height:90px;
+    object-fit:cover;
+    background:#d6d7cf;
+    border-radius:8px;
+    box-shadow:0 4px 14px rgba(20,23,12,.18);
+  }
+  .left-copy{
+    margin-top:29px;
+  }
+  .time-label{
+    margin:0 0 7px;
+    color:#e0e4d0;
+    font-size:12px;
+    font-weight:700;
+    letter-spacing:.09em;
+    text-transform:uppercase;
+  }
+  .time{
+    font-size:54px;
+    line-height:1;
+    font-weight:700;
+    letter-spacing:-.045em;
+  }
+  .zone{
+    margin:9px 0 0;
+    color:#e0e4d0;
+    font-size:13px;
+  }
+  .status{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:16px;
+    margin-top:28px;
+    padding-top:20px;
+    border-top:1px solid rgba(255,255,255,.22);
+  }
+  .status-copy strong{
+    display:block;
+    font-size:14px;
+  }
+  .status-copy span{
+    display:block;
+    margin-top:3px;
+    color:#e0e4d0;
+    font-size:12px;
+  }
+  .toggle{
+    width:52px;
+    height:30px;
+    padding:4px;
+    flex:none;
+    border-radius:15px;
+    background:#ffffff;
+    display:flex;
+    justify-content:flex-end;
+  }
+  .knob{
+    width:22px;
+    height:22px;
+    border-radius:50%;
+    background:#626d39;
+  }
+  .right-panel{
+    padding:35px 38px 34px;
+  }
+  .eyebrow{
+    margin:0 0 6px;
+    color:#697442;
+    font-size:12px;
+    font-weight:700;
+    letter-spacing:.09em;
+    text-transform:uppercase;
+  }
+  h1{
+    margin:0;
+    font-size:25px;
+    line-height:1.25;
+    font-weight:700;
+  }
+  .family{
+    margin:7px 0 28px;
+    color:#72766b;
+    font-size:14px;
+  }
+  .schedule-heading{
+    margin:0 0 11px;
+    font-size:13px;
+    font-weight:700;
+  }
+  .days{
+    display:flex;
+    gap:7px;
+  }
+  .day{
+    flex:1 1 0;
+    height:40px;
+    border:1px solid #dedfd8;
+    border-radius:20px;
+    color:#85897d;
+    font-size:13px;
+    font-weight:700;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .day.on{
+    border-color:#626d39;
+    background:#626d39;
+    color:#ffffff;
+  }
+  .note{
+    margin:10px 0 23px;
+    color:#73776b;
+    font-size:12px;
+    line-height:1.45;
+  }
+  .settings{
+    padding:15px 17px 3px;
+    border-left:4px solid #9aa66c;
+    border-radius:6px;
+    background:#f3f1e8;
+  }
+  .settings-heading{
+    margin:0 0 4px;
+    color:#616a3c;
+    font-size:12px;
+    font-weight:700;
+  }
+  .row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:16px;
+    padding:13px 0;
+    border-top:1px solid #deddd3;
+    font-size:14px;
+  }
+  .row:first-of-type{border-top:0;}
+  .val{
+    color:#6f7368;
+    font-weight:500;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .actions{
+    display:flex;
+    align-items:center;
+    justify-content:flex-end;
+    gap:12px;
+    margin-top:21px;
+  }
+  .cancel,
+  .save{
+    height:44px;
+    border-radius:7px;
+    padding:0 21px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:14px;
+    font-weight:700;
+  }
+  .cancel{
+    color:#62665c;
+    border:1px solid #d8dad2;
+    background:#ffffff;
+  }
+  .save{
+    min-width:154px;
+    color:#ffffff;
+    background:#626d39;
+  }
+</style>
+</head>
+<body>
+  <div class="screen">
+    <div class="card">
+      <section class="left-panel" aria-label="Medication reminder time">
+        <img class="hero" src="https://loremflickr.com/342/90/study?lock=9883" width="342" height="90" alt="Notebook and Spanish textbook open on a study desk">
+
+        <div class="left-copy">
+          <p class="time-label">Scheduled dose</p>
+          <div class="time">7:30 PM</div>
+          <p class="zone">Local time · Chicago</p>
+        </div>
+
+        <div class="status">
+          <div class="status-copy">
+            <strong>Reminder active</strong>
+            <span>Notifications are enabled</span>
+          </div>
+          <div class="toggle" aria-label="Reminder enabled"><div class="knob"></div></div>
+        </div>
+      </section>
+
+      <section class="right-panel" aria-label="Medication reminder details">
+        <p class="eyebrow">Medication reminder</p>
+        <h1>Evening medication reminder</h1>
+        <p class="family">For Elena Martinez</p>
+
+        <p class="schedule-heading">Days to remind</p>
+        <div class="days">
+          <div class="day on">M</div>
+          <div class="day on">T</div>
+          <div class="day on">W</div>
+          <div class="day on">T</div>
+          <div class="day on">F</div>
+          <div class="day">S</div>
+          <div class="day">S</div>
+        </div>
+        <p class="note">Repeats weekdays · next reminder Wednesday, March 12</p>
+
+        <div class="settings">
+          <p class="settings-heading">Notification settings</p>
+          <div class="row">
+            <span>Alert style</span>
+            <span class="val">Push and email</span>
+          </div>
+          <div class="row">
+            <span>Missed dose follow-up</span>
+            <span class="val">On</span>
+          </div>
+        </div>
+
+        <div class="actions">
+          <div class="cancel">Cancel</div>
+          <div class="save">Save reminder</div>
+        </div>
+      </section>
+    </div>
+  </div>
+</body>
+</html>

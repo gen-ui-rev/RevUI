@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Account — Vessel Health</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 40px 0;
+    margin: 0;
+    background: #d8d6cf;
+    font-family: 'Source Serif 4', Georgia, serif;
+    color: #16150f;
+  }
+  .screen {
+    width: 390px;
+    height: 844px;
+    background: #ffffff;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #cbc8be;
+  }
+
+  /* top bar */
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 16px 14px;
+    border-bottom: 1px solid #e2dfd4;
+  }
+  .topbar h1 { font-size: 20px; font-weight: 700; margin: 0; letter-spacing: .01em; }
+  .topbar .tools { display: flex; gap: 18px; align-items: center; }
+  .ico { display: block; }
+
+  /* profile */
+  .profile {
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    padding: 16px;
+    border-bottom: 1px solid #e2dfd4;
+  }
+  .mono {
+    width: 58px; height: 58px;
+    background: #f7d000;
+    color: #16150f;
+    font-size: 22px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    flex: 0 0 58px;
+    letter-spacing: .02em;
+  }
+  .pname { font-size: 19px; font-weight: 700; line-height: 1.2; }
+  .pmeta { font-size: 13px; color: #6f6c60; margin-top: 4px; }
+  .editlink {
+    margin-left: auto;
+    font-size: 13px;
+    font-weight: 600;
+    border: 1px solid #16150f;
+    padding: 6px 11px;
+    white-space: nowrap;
+  }
+
+  /* yellow week block */
+  .week {
+    background: #f7d000;
+    padding: 16px 16px 18px;
+  }
+  .klabel {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: .12em;
+    font-weight: 600;
+  }
+  .week .big {
+    font-size: 30px;
+    font-weight: 700;
+    margin-top: 8px;
+    line-height: 1.05;
+  }
+  .week .sub { font-size: 13px; margin-top: 5px; }
+  .bar {
+    margin-top: 13px;
+    height: 8px;
+    background: rgba(22,21,15,.18);
+    display: flex;
+  }
+  .bar > i { display: block; height: 8px; width: 80%; background: #16150f; }
+  .barnote {
+    display: flex; justify-content: space-between;
+    font-size: 12px; margin-top: 6px;
+  }
+
+  /* stat strip */
+  .stats {
+    display: flex;
+    border-bottom: 1px solid #e2dfd4;
+  }
+  .stats > div {
+    flex: 1 1 0;
+    padding: 13px 12px 15px;
+    border-right: 1px solid #e2dfd4;
+  }
+  .stats > div:last-child { border-right: 0; }
+  .stats .sl { font-size: 12px; color: #6f6c60; }
+  .stats .sv { font-size: 17px; font-weight: 600; margin-top: 4px; white-space: nowrap; }
+
+  /* sections */
+  .shead {
+    display: flex; align-items: baseline; justify-content: space-between;
+    padding: 15px 16px 9px;
+  }
+  .shead .st { font-size: 12px; text-transform: uppercase; letter-spacing: .12em; font-weight: 600; color: #16150f; }
+  .shead .sa { font-size: 12px; color: #6f6c60; }
+
+  .row {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    padding: 10px 16px;
+    border-top: 1px solid #e2dfd4;
+  }
+  .row img {
+    width: 62px; height: 62px;
+    object-fit: cover;
+    display: block;
+    background: #cbc8be;
+    flex: 0 0 62px;
+  }
+  .rmain { min-width: 0; flex: 1 1 auto; }
+  .rt {
+    font-size: 15px; font-weight: 600;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .rm { font-size: 13px; color: #6f6c60; margin-top: 4px; }
+  .rv { font-size: 14px; font-weight: 600; white-space: nowrap; }
+
+  .arow {
+    display: flex; align-items: center; gap: 10px;
+    padding: 12px 16px;
+    border-top: 1px solid #e2dfd4;
+  }
+  .arow .at { font-size: 15px; }
+  .arow .av { margin-left: auto; font-size: 13px; color: #6f6c60; white-space: nowrap; }
+  .last { border-bottom: 1px solid #e2dfd4; }
+
+  /* tab bar */
+  .tabs {
+    margin-top: auto;
+    display: flex;
+    border-top: 1px solid #e2dfd4;
+    background: #fff;
+  }
+  .tab {
+    flex: 1 1 0;
+    padding: 10px 0 14px;
+    text-align: center;
+    color: #6f6c60;
+    font-size: 12px;
+  }
+  .tab.on { color: #16150f; font-weight: 600; }
+  .tab .mark {
+    width: 18px; height: 3px; background: #f7d000;
+    margin: 0 auto 6px;
+  }
+  .tab .markoff { width: 18px; height: 3px; margin: 0 auto 6px; }
+  .tab svg { margin-bottom: 3px; }
+</style>
+</head>
+<body>
+  <div class="screen">
+
+    <div class="topbar">
+      <h1>Account</h1>
+      <div class="tools">
+        <svg class="ico" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#16150f" stroke-width="1.4">
+          <path d="M10 2.5 3 5.5v4.2c0 3.6 2.8 6.6 7 7.8 4.2-1.2 7-4.2 7-7.8V5.5L10 2.5z"/>
+        </svg>
+        <svg class="ico" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#16150f" stroke-width="1.4">
+          <circle cx="10" cy="10" r="2.6"/>
+          <path d="M10 1.8v2.4M10 15.8v2.4M18.2 10h-2.4M4.2 10H1.8M15.8 4.2l-1.7 1.7M5.9 14.1l-1.7 1.7M15.8 15.8l-1.7-1.7M5.9 5.9 4.2 4.2"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="profile">
+      <div class="mono">NW</div>
+      <div>
+        <div class="pname">Nora Whitfield</div>
+        <div class="pmeta">Member since March 2023 · Premium</div>
+      </div>
+      <div class="editlink">Edit</div>
+    </div>
+
+    <div class="week">
+      <div class="klabel">This week</div>
+      <div class="big">4 of 5 sessions</div>
+      <div class="sub">Two days left in your goal window, set Monday.</div>
+      <div class="bar"><i></i></div>
+      <div class="barnote"><span>Mar 10 – Mar 16</span><span>80%</span></div>
+    </div>
+
+    <div class="stats">
+      <div>
+        <div class="sl">Avg sleep</div>
+        <div class="sv">7h 12m</div>
+      </div>
+      <div>
+        <div class="sl">Resting HR</div>
+        <div class="sv">58 bpm</div>
+      </div>
+      <div>
+        <div class="sl">Daily steps</div>
+        <div class="sv">8,430</div>
+      </div>
+    </div>
+
+    <div class="shead">
+      <span class="st">Recent activity</span>
+      <span class="sa">Last 3 days</span>
+    </div>
+
+    <div class="row">
+      <img src="https://loremflickr.com/62/62/running?lock=10020" width="62" height="62" alt="Runner on a park path from the morning run session">
+      <div class="rmain">
+        <div class="rt">Morning run — River Loop</div>
+        <div class="rm">Tue, Mar 12 · 42 min · 396 kcal</div>
+      </div>
+      <div class="rv">5.2 mi</div>
+    </div>
+
+    <div class="row">
+      <img src="https://loremflickr.com/62/62/gym?lock=10021" width="62" height="62" alt="Free weights in a gym from the strength session">
+      <div class="rmain">
+        <div class="rt">Strength — lower body</div>
+        <div class="rm">Mon, Mar 11 · 55 min · 412 kcal</div>
+      </div>
+      <div class="rv">14 sets</div>
+    </div>
+
+    <div class="row last">
+      <img src="https://loremflickr.com/62/62/salad?lock=10022" width="62" height="62" alt="Grain and greens bowl logged for lunch">
+      <div class="rmain">
+        <div class="rt">Lunch — grain bowl</div>
+        <div class="rm">Mon, Mar 11 · 12:40 PM · 38 g protein</div>
+      </div>
+      <div class="rv">610 kcal</div>
+    </div>
+
+    <div class="shead">
+      <span class="st">Account</span>
+    </div>
+
+    <div class="arow">
+      <span class="at">Membership</span>
+      <span class="av">Premium · renews Apr 2</span>
+    </div>
+    <div class="arow">
+      <span class="at">Connected devices</span>
+      <span class="av">2 active</span>
+    </div>
+    <div class="arow last">
+      <span class="at">Data and privacy</span>
+      <span class="av">Export, sharing</span>
+    </div>
+
+    <div class="tabs">
+      <div class="tab">
+        <div class="markoff"></div>
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#6f6c60" stroke-width="1.4"><path d="M3 10.5 10 4l7 6.5"/><path d="M5 10v6h10v-6"/></svg>
+        <div>Today</div>
+      </div>
+      <div class="tab">
+        <div class="markoff"></div>
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#6f6c60" stroke-width="1.4"><path d="M3 15l4-5 3.2 3L17 5"/></svg>
+        <div>Trends</div>
+      </div>
+      <div class="tab">
+        <div class="markoff"></div>
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#6f6c60" stroke-width="1.4"><path d="M10 4v12M4 10h12"/></svg>
+        <div>Log</div>
+      </div>
+      <div class="tab on">
+        <div class="mark"></div>
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#16150f" stroke-width="1.4"><circle cx="10" cy="7" r="3.2"/><path d="M4 17c0-3.1 2.7-5 6-5s6 1.9 6 5"/></svg>
+        <div>Account</div>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

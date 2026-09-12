@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Article Detail — Northstar Learning</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #dedbdd;
+      color: #272329;
+      font-family: 'Inter', system-ui, sans-serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      width: 1024px;
+      height: 768px;
+      display: flex;
+      background: #fcfbfc;
+      border: 1px solid #cbc6ca;
+    }
+
+    /* ---------- slim dark icon rail ---------- */
+    .rail {
+      width: 62px;
+      flex: 0 0 62px;
+      padding: 14px 0 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: #2b2530;
+    }
+
+    .brand {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      border-radius: 12px;
+      background: #9a6b89;
+      color: #fff;
+      font-size: 13px;
+      line-height: 17px;
+      font-weight: 700;
+    }
+
+    .rail-nav {
+      margin-top: 22px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .rail-tab {
+      width: 44px;
+      height: 44px;
+      padding: 0;
+      border: 0;
+      display: grid;
+      place-items: center;
+      border-radius: 14px;
+      background: transparent;
+      color: rgba(255, 255, 255, 0.58);
+    }
+
+    .rail-tab.active {
+      background: rgba(255, 255, 255, 0.15);
+      color: #fff;
+    }
+
+    .rail-tab svg {
+      width: 21px;
+      height: 21px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.7;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .rail-foot {
+      margin-top: auto;
+      width: 30px;
+      height: 30px;
+      display: grid;
+      place-items: center;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.12);
+      color: #efe7ed;
+      font-size: 11px;
+      line-height: 14px;
+      font-weight: 700;
+    }
+
+    /* ---------- content ---------- */
+    .content {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .topbar {
+      min-height: 48px;
+      padding: 0 22px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 1px solid #e5e1e4;
+      background: #fcfbfc;
+    }
+
+    .icon-button {
+      width: 34px;
+      height: 34px;
+      padding: 0;
+      border: 0;
+      display: grid;
+      place-items: center;
+      color: #373138;
+      background: transparent;
+      border-radius: 11px;
+    }
+
+    .icon-button svg {
+      width: 19px;
+      height: 19px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .crumbs {
+      min-width: 0;
+      font-size: 13px;
+      line-height: 18px;
+      color: #777078;
+      font-weight: 500;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .crumbs strong {
+      color: #403a40;
+      font-weight: 600;
+    }
+
+    .banner {
+      position: relative;
+    }
+
+    .hero {
+      width: 960px;
+      height: 210px;
+      display: block;
+      object-fit: cover;
+      background: #d9d4d7;
+    }
+
+    .banner-overlay {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      top: 0;
+      padding: 0 40px 22px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      background: linear-gradient(to bottom, rgba(24, 19, 26, 0.05), rgba(24, 19, 26, 0.82));
+    }
+
+    .topic {
+      color: #efd9e6;
+      font-size: 12px;
+      line-height: 18px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 4px 0 0;
+      max-width: 700px;
+      color: #fff;
+      font-size: 29px;
+      line-height: 36px;
+      letter-spacing: -0.025em;
+      font-weight: 700;
+    }
+
+    main {
+      flex: 1;
+      min-height: 0;
+      padding: 24px 0 20px;
+    }
+
+    .layout {
+      width: 800px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 208px;
+      gap: 34px;
+      align-items: start;
+    }
+
+    .reading {
+      min-width: 0;
+    }
+
+    .lead {
+      margin: 0 0 14px;
+      color: #5c555d;
+      font-size: 17px;
+      line-height: 26px;
+    }
+
+    .reading h2 {
+      margin: 0 0 6px;
+      color: #2c272d;
+      font-size: 20px;
+      line-height: 26px;
+      font-weight: 700;
+    }
+
+    .reading p.text {
+      margin: 0 0 10px;
+      color: #49434a;
+      font-size: 15px;
+      line-height: 23px;
+    }
+
+    .reading p.text:last-of-type {
+      margin-bottom: 0;
+    }
+
+    .takeaway {
+      margin-top: 14px;
+      padding: 12px 16px;
+      border-left: 3px solid #9a6b89;
+      border-radius: 14px;
+      background: #f1e9ee;
+    }
+
+    .takeaway-label {
+      display: block;
+      margin-bottom: 3px;
+      color: #77516a;
+      font-size: 12px;
+      line-height: 17px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .takeaway p {
+      margin: 0;
+      color: #443a41;
+      font-size: 15px;
+      line-height: 21px;
+      font-weight: 500;
+    }
+
+    /* ---------- side notes ---------- */
+    .sidenote {
+      padding: 14px;
+      border: 1px solid #e5e1e4;
+      border-radius: 16px;
+      background: #f8f5f7;
+    }
+
+    .author-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .monogram {
+      width: 38px;
+      height: 38px;
+      flex: 0 0 38px;
+      display: grid;
+      place-items: center;
+      border-radius: 13px;
+      background: #eadfe7;
+      color: #78536d;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 700;
+    }
+
+    .author-name {
+      margin: 0;
+      color: #342f35;
+      font-size: 14px;
+      line-height: 19px;
+      font-weight: 600;
+    }
+
+    .author-role {
+      margin: 1px 0 0;
+      color: #777078;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .article-meta {
+      margin: 10px 0 0;
+      color: #777078;
+      font-size: 12px;
+      line-height: 17px;
+    }
+
+    .side-actions {
+      margin-top: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .side-button {
+      height: 36px;
+      padding: 0 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid #d9d3d8;
+      border-radius: 11px;
+      background: #fff;
+      color: #3a343b;
+      font-size: 13px;
+      line-height: 17px;
+      font-weight: 600;
+    }
+
+    .side-button svg {
+      width: 16px;
+      height: 16px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .side-heading {
+      margin: 16px 0 6px;
+      padding-top: 12px;
+      border-top: 1px solid #dfdade;
+      color: #77516a;
+      font-size: 11px;
+      line-height: 15px;
+      font-weight: 700;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+    }
+
+    .side-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .side-list li + li {
+      margin-top: 9px;
+    }
+
+    .side-list a {
+      color: #3b353c;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .side-list span {
+      display: block;
+      margin-top: 1px;
+      color: #7d757d;
+      font-size: 11px;
+      line-height: 15px;
+    }
+
+    .caption {
+      margin: 10px 0 0;
+      color: #7d757d;
+      font-size: 11px;
+      line-height: 15px;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <nav class="rail" aria-label="Primary navigation">
+      <div class="brand" aria-hidden="true">NS</div>
+
+      <div class="rail-nav">
+        <button class="rail-tab" type="button" aria-label="Home">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 10.5L12 4l8 6.5V20h-6v-6h-4v6H4z"></path>
+          </svg>
+        </button>
+
+        <button class="rail-tab active" type="button" aria-label="Learn" aria-current="page">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4.5 5.5c3.2-.7 5.7-.1 7.5 1.7v12c-1.8-1.8-4.3-2.4-7.5-1.7z"></path>
+            <path d="M19.5 5.5c-3.2-.7-5.7-.1-7.5 1.7v12c1.8-1.8 4.3-2.4 7.5-1.7z"></path>
+          </svg>
+        </button>
+
+        <button class="rail-tab" type="button" aria-label="Practice">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M5 5h14v14H5z"></path>
+            <path d="M8.5 9h7M8.5 12h7M8.5 15h4"></path>
+          </svg>
+        </button>
+
+        <button class="rail-tab" type="button" aria-label="Profile">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="8" r="3.2"></circle>
+            <path d="M5.5 20c.7-4 3-6 6.5-6s5.8 2 6.5 6"></path>
+          </svg>
+        </button>
+      </div>
+
+      <div class="rail-foot" aria-hidden="true">MV</div>
+    </nav>
+
+    <div class="content">
+      <header class="topbar">
+        <button class="icon-button" type="button" aria-label="Back to articles">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M15 18l-6-6 6-6"></path>
+          </svg>
+        </button>
+        <div class="crumbs"><strong>Northstar Journal</strong> / Learning science / Study guide</div>
+      </header>
+
+      <article>
+        <div class="banner">
+          <img
+            class="hero"
+            src="https://loremflickr.com/960/210/books?lock=4070"
+            width="960"
+            height="210"
+            alt="Open books arranged on a table for a vocabulary study session">
+          <div class="banner-overlay">
+            <span class="topic">Learning Science</span>
+            <h1>Why Stories Make New Words Easier to Remember</h1>
+          </div>
+        </div>
+
+        <main>
+          <div class="layout">
+            <section class="reading" aria-labelledby="memory-heading">
+              <p class="lead">Context gives unfamiliar vocabulary more ways to stay connected in memory — and more paths back to it later.</p>
+
+              <h2 id="memory-heading">Memory follows meaning</h2>
+              <p class="text">A word list asks your brain to store isolated facts. A story links each word to a place, an action, and a reason it matters.</p>
+              <p class="text">When you meet the word again, those details become retrieval cues. A two-sentence scene can beat repeated copying.</p>
+              <p class="text">Retell your scene aloud the next day without looking at it.</p>
+
+              <aside class="takeaway">
+                <span class="takeaway-label">Practice prompt</span>
+                <p>Use “hesitate,” “glimpse,” and “relieved” in one connected scene.</p>
+              </aside>
+
+              <p class="caption">Photo: a memorable setting can anchor the meaning of a new word.</p>
+            </section>
+
+            <aside class="sidenote" aria-label="Article details">
+              <div class="author-row">
+                <div class="monogram" aria-hidden="true">MV</div>
+                <div>
+                  <p class="author-name">Mira Vance</p>
+                  <p class="author-role">Learning Editor</p>
+                </div>
+              </div>
+
+              <p class="article-meta">April 18, 2025 · 6 min read</p>
+
+              <div class="side-actions">
+                <button class="side-button" type="button">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M6.5 4.5h11v15l-5.5-3.4-5.5 3.4z"></path>
+                  </svg>
+                  <span>Save article</span>
+                </button>
+                <button class="side-button" type="button">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <circle cx="18" cy="5" r="2.2"></circle>
+                    <circle cx="6" cy="12" r="2.2"></circle>
+                    <circle cx="18" cy="19" r="2.2"></circle>
+                    <path d="M8 11l8-5M8 13l8 5"></path>
+                  </svg>
+                  <span>Share</span>
+                </button>
+              </div>
+
+              <p class="side-heading">More in this series</p>
+              <ul class="side-list">
+                <li>
+                  <a href="#">Spacing beats cramming</a>
+                  <span>Study guide · 5 min</span>
+                </li>
+                <li>
+                  <a href="#">Reading aloud and recall</a>
+                  <span>Study guide · 4 min</span>
+                </li>
+              </ul>
+            </aside>
+          </div>
+        </main>
+      </article>
+    </div>
+  </div>
+</body>
+</html>

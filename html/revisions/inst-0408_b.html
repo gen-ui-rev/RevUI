@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Perch — Activity</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  body{
+    min-height:100vh;display:flex;justify-content:center;align-items:flex-start;
+    padding:40px 0;margin:0;background:#5c606a;
+    font-family:'Roboto',system-ui,sans-serif;-webkit-font-smoothing:antialiased;
+  }
+  .screen{
+    width:390px;height:844px;background:#f1f2f5;position:relative;
+    display:flex;flex-direction:column;color:#16181d;
+  }
+
+  /* top bar */
+  .topbar{background:#fff;padding:14px 16px 10px;border-bottom:1px solid #e4e6eb;}
+  .topbar-row{display:flex;align-items:baseline;justify-content:space-between;}
+  .topbar h1{font-size:22px;line-height:26px;font-weight:700;margin:0;letter-spacing:-.2px;}
+  .markall{font-size:14px;line-height:18px;font-weight:500;color:#4338ca;}
+  .subline{margin:4px 0 0;font-size:13px;line-height:16px;color:#71767f;}
+
+  /* find panel */
+  .find{padding:10px 16px 8px;}
+  .find-label{
+    font-size:12px;line-height:16px;font-weight:700;letter-spacing:.9px;
+    text-transform:uppercase;color:#82868f;margin:0 0 6px 1px;
+  }
+  .findfield{
+    display:flex;align-items:center;gap:8px;height:38px;box-sizing:border-box;
+    background:#fff;border:1px solid #c9ccd4;border-radius:4px;padding:0 10px;color:#8b9099;
+  }
+  .findfield svg{display:block;flex:0 0 16px;}
+  .findfield .ph{font-size:14px;line-height:18px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .recent{display:flex;align-items:center;gap:8px;margin-top:6px;}
+  .rlabel{font-size:12px;line-height:16px;font-weight:500;color:#82868f;}
+  .rchip{
+    font-size:12px;line-height:16px;padding:4px 9px;border-radius:12px;
+    background:#e8e7fb;color:#4338ca;font-weight:500;white-space:nowrap;
+  }
+
+  /* grouped list */
+  .list{padding:0 16px 16px;}
+  .group{
+    background:#fff;border-radius:4px;box-shadow:0 1px 3px rgba(22,24,29,.10);
+    margin-bottom:10px;overflow:hidden;
+  }
+  .group:last-child{margin-bottom:0;}
+  .ghead{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:9px 12px;border-bottom:1px solid #e9ebef;background:#fafbfc;
+  }
+  .gname{font-size:12px;line-height:16px;font-weight:700;letter-spacing:.9px;
+    text-transform:uppercase;color:#4b5059;}
+  .gcount{font-size:12px;line-height:16px;color:#82868f;}
+
+  .item{display:flex;gap:12px;padding:11px 12px;}
+  .item + .item{border-top:1px solid #eef0f3;}
+  .mono{
+    width:40px;height:40px;flex:0 0 40px;border-radius:4px;background:#e8e7fb;
+    color:#4338ca;font-size:14px;font-weight:700;letter-spacing:.3px;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .item.read .mono{background:#eceef2;color:#6f747d;}
+  .thumb{width:40px;height:40px;flex:0 0 40px;border-radius:4px;object-fit:cover;display:block;background:#dfe1e6;}
+  .body{flex:1;min-width:0;}
+  .acct{
+    margin:0;font-size:12px;line-height:16px;font-weight:700;letter-spacing:.4px;
+    text-transform:uppercase;color:#4338ca;
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  }
+  .item.read .acct{color:#8b9099;}
+  .titlerow{display:flex;align-items:flex-start;gap:8px;}
+  .title{font-size:15px;line-height:20px;font-weight:700;flex:1;min-width:0;
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .item.read .title{font-weight:500;color:#3d424b;}
+  .dot{width:8px;height:8px;flex:0 0 8px;border-radius:50%;background:#4338ca;margin-top:6px;}
+  .time{font-size:12px;line-height:20px;color:#8b9099;white-space:nowrap;}
+  .text{margin:1px 0 0;font-size:14px;line-height:19px;color:#5c616b;
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .item.read .text{color:#7b8089;}
+  .shot{margin-top:10px;width:278px;height:48px;object-fit:cover;display:block;
+    background:#dfe1e6;border-radius:4px;}
+
+  /* tab bar */
+  .tabbar{
+    position:absolute;left:0;right:0;bottom:0;height:68px;background:#fff;
+    border-top:1px solid #e4e6eb;display:flex;align-items:flex-start;padding-top:10px;
+  }
+  .tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;
+    font-size:12px;line-height:14px;color:#82868f;}
+  .tab.active{color:#4338ca;font-weight:500;}
+  .tab svg{display:block;}
+</style>
+</head>
+<body>
+  <div class="screen">
+
+    <header class="topbar">
+      <div class="topbar-row">
+        <h1>Activity</h1>
+        <div class="markall">Mark all read</div>
+      </div>
+      <p class="subline">3 unread · newest first inside each type</p>
+    </header>
+
+    <section class="find">
+      <p class="find-label">Find a past notice</p>
+      <div class="findfield">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <span class="ph">Account, amount, or date</span>
+      </div>
+      <div class="recent">
+        <span class="rlabel">Recent</span>
+        <span class="rchip">Harborline Market</span>
+        <span class="rchip">Deposits over $1,000</span>
+      </div>
+    </section>
+
+    <main class="list">
+
+      <div class="group">
+        <div class="ghead">
+          <div class="gname">Money</div>
+          <div class="gcount">3 notices</div>
+        </div>
+
+        <article class="item">
+          <div class="mono">HD</div>
+          <div class="body">
+            <p class="acct">Everyday Checking ••1042</p>
+            <div class="titlerow">
+              <div class="title">Deposit posted</div>
+              <div class="dot"></div>
+              <div class="time">8:42 AM</div>
+            </div>
+            <p class="text">$2,480.00 payroll from Halverson Design</p>
+          </div>
+        </article>
+
+        <article class="item">
+          <div class="mono">HM</div>
+          <div class="body">
+            <p class="acct">Sapphire Card ••4417</p>
+            <div class="titlerow">
+              <div class="title">Spending alert</div>
+              <div class="dot"></div>
+              <div class="time">7:15 AM</div>
+            </div>
+            <p class="text">Harborline Market — $184.20 over cap</p>
+          </div>
+        </article>
+
+        <article class="item">
+          <div class="mono">PI</div>
+          <div class="body">
+            <p class="acct">Perch Invest brokerage</p>
+            <div class="titlerow">
+              <div class="title">Portfolio summary</div>
+              <div class="dot"></div>
+              <div class="time">Yesterday</div>
+            </div>
+            <p class="text">Up 3.1% to $48,215.60 in October</p>
+            <img class="shot" src="https://loremflickr.com/278/48/chart?lock=5720" width="278" height="48" alt="Line chart of October portfolio performance">
+          </div>
+        </article>
+      </div>
+
+      <div class="group">
+        <div class="ghead">
+          <div class="gname">Security</div>
+          <div class="gcount">1 notice</div>
+        </div>
+
+        <article class="item read">
+          <div class="mono">PS</div>
+          <div class="body">
+            <p class="acct">Perch account security</p>
+            <div class="titlerow">
+              <div class="title">New device sign-in</div>
+              <div class="time">Mon</div>
+            </div>
+            <p class="text">Chrome on macOS — Portland, OR</p>
+          </div>
+        </article>
+      </div>
+
+      <div class="group">
+        <div class="ghead">
+          <div class="gname">Service updates</div>
+          <div class="gcount">1 notice</div>
+        </div>
+
+        <article class="item read">
+          <img class="thumb" src="https://loremflickr.com/40/40/architecture?lock=5721" width="40" height="40" alt="Exterior of the Pearl District branch building">
+          <div class="body">
+            <p class="acct">Pearl District branch</p>
+            <div class="titlerow">
+              <div class="title">Branch hours updated</div>
+              <div class="time">Nov 2</div>
+            </div>
+            <p class="text">Opens 9:00 a.m. Saturdays from Nov 9</p>
+          </div>
+        </article>
+      </div>
+
+    </main>
+
+    <nav class="tabbar">
+      <div class="tab">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 4l9 6.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>
+        Home
+      </div>
+      <div class="tab">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18M16.5 14.5h1.5"/></svg>
+        Accounts
+      </div>
+      <div class="tab active">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 9a6 6 0 1 0-12 0c0 5-2 6.5-2 6.5h16S18 14 18 9z"/><path d="M10.5 19a2 2 0 0 0 3 0"/></svg>
+        Activity
+      </div>
+      <div class="tab">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 14a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-2.7 1.1V20a2 2 0 1 1-4 0v-.2A1.6 1.6 0 0 0 7.5 18l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1A1.6 1.6 0 0 0 4 12.5H4a2 2 0 1 1 0-4h.1A1.6 1.6 0 0 0 5.6 6l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 2.7-1.1V2a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 2.7 1.1l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0 1.1 2.7H20a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1.3z"/></svg>
+        Settings
+      </div>
+    </nav>
+
+  </div>
+</body>
+</html>

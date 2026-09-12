@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Episode Details — Mosswave</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #e7e9e5;
+      color: #172019;
+      font-family: 'Nunito Sans', system-ui, sans-serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #fbfcfa;
+      border: 1px solid #cfd5cf;
+    }
+
+    .topbar {
+      display: grid;
+      grid-template-columns: 36px 1fr 36px;
+      align-items: center;
+      padding: 14px 14px 13px;
+      border-bottom: 1px solid #dfe4df;
+      background: #fbfcfa;
+    }
+
+    .topbar-title {
+      margin: 0;
+      text-align: center;
+      font-size: 16px;
+      line-height: 24px;
+      font-weight: 700;
+    }
+
+    .icon-button {
+      width: 36px;
+      padding: 4px;
+      border: 0;
+      background: transparent;
+      color: #172019;
+      display: grid;
+      place-items: center;
+    }
+
+    .icon-button svg {
+      width: 24px;
+      height: 24px;
+      display: block;
+    }
+
+    main {
+      flex: 1;
+      min-height: 0;
+      padding: 14px 16px 10px;
+    }
+
+    .episode-hero {
+      display: grid;
+      grid-template-columns: 112px minmax(0, 1fr);
+      gap: 14px;
+      align-items: start;
+    }
+
+    .cover {
+      width: 112px;
+      height: 112px;
+      border-radius: 4px;
+      background: #b8cfbd;
+      border: 1px solid #9eb7a4;
+    }
+
+    .episode-copy {
+      min-width: 0;
+    }
+
+    .eyebrow {
+      margin: 0 0 4px;
+      color: #23844a;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 22px;
+      line-height: 27px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+
+    .series {
+      margin: 7px 0 0;
+      font-size: 14px;
+      line-height: 19px;
+      font-weight: 700;
+    }
+
+    .publisher {
+      margin: 1px 0 0;
+      color: #657067;
+      font-size: 12px;
+      line-height: 17px;
+    }
+
+    .actions {
+      display: grid;
+      grid-template-columns: 1fr 92px;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .primary-action,
+    .secondary-action {
+      border-radius: 4px;
+      padding: 10px 14px;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 700;
+    }
+
+    .primary-action {
+      border: 1px solid #23844a;
+      background: #23844a;
+      color: #ffffff;
+    }
+
+    .secondary-action {
+      border: 1px solid #aeb8b0;
+      background: transparent;
+      color: #263029;
+    }
+
+    .facts {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      margin-top: 14px;
+      padding: 9px 0;
+      border-top: 1px solid #dfe4df;
+      border-bottom: 1px solid #dfe4df;
+      color: #59645c;
+      font-size: 12px;
+      line-height: 17px;
+    }
+
+    .facts span:last-child {
+      text-align: right;
+    }
+
+    .about {
+      padding: 13px 0;
+    }
+
+    .section-title {
+      margin: 0;
+      font-size: 16px;
+      line-height: 22px;
+      font-weight: 700;
+    }
+
+    .description {
+      margin: 5px 0 0;
+      color: #3f4942;
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .text-link {
+      display: inline-block;
+      margin-top: 6px;
+      border: 0;
+      padding: 0;
+      background: transparent;
+      color: #237a46;
+      font-size: 14px;
+      line-height: 19px;
+      font-weight: 700;
+    }
+
+    .chapters {
+      border-top: 1px solid #dfe4df;
+      padding-top: 13px;
+    }
+
+    .chapter-heading {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 7px;
+    }
+
+    .chapter-count {
+      color: #6a746c;
+      font-size: 12px;
+      line-height: 17px;
+    }
+
+    .chapter-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      counter-reset: chapter;
+    }
+
+    .chapter-card {
+      counter-increment: chapter;
+      padding: 8px 9px;
+      border: 1px solid #dce3dd;
+      border-radius: 5px;
+      background: #f7f9f6;
+      min-width: 0;
+    }
+
+    .card-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      margin-bottom: 4px;
+    }
+
+    .chapter-number {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      color: #657067;
+      font-size: 11px;
+      line-height: 16px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .chapter-number::after {
+      content: counter(chapter);
+      width: 18px;
+      height: 18px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: #dfece2;
+      color: #237a46;
+      font-size: 11px;
+      line-height: 18px;
+    }
+
+    .timestamp {
+      color: #23844a;
+      font-size: 11px;
+      line-height: 16px;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .chapter-title {
+      margin: 0;
+      color: #202922;
+      font-size: 13px;
+      line-height: 17px;
+      font-weight: 700;
+    }
+
+    .chapter-summary {
+      margin: 2px 0 0;
+      color: #677169;
+      font-size: 11px;
+      line-height: 15px;
+    }
+
+    .credits {
+      display: grid;
+      grid-template-columns: 78px 1fr;
+      gap: 8px;
+      padding-top: 10px;
+      color: #5e6961;
+      font-size: 12px;
+      line-height: 18px;
+    }
+
+    .credits strong {
+      color: #283229;
+      font-weight: 700;
+    }
+
+    .tabbar {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      padding: 8px 12px 9px;
+      border-top: 1px solid #d8ded8;
+      background: #fbfcfa;
+    }
+
+    .tab {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      border: 0;
+      padding: 0;
+      background: transparent;
+      color: #727c74;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 700;
+    }
+
+    .tab.active {
+      color: #23844a;
+    }
+
+    .tab svg {
+      width: 22px;
+      height: 22px;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <button class="icon-button" type="button" aria-label="Go back">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M15 5L8 12L15 19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <p class="topbar-title">Episode</p>
+      <button class="icon-button" type="button" aria-label="More options">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <circle cx="5" cy="12" r="1.7"/>
+          <circle cx="12" cy="12" r="1.7"/>
+          <circle cx="19" cy="12" r="1.7"/>
+        </svg>
+      </button>
+    </header>
+
+    <main>
+      <section class="episode-hero" aria-labelledby="episode-title">
+        <div class="cover" role="img" aria-label="Green episode artwork"></div>
+        <div class="episode-copy">
+          <p class="eyebrow">Episode 86</p>
+          <h1 id="episode-title">How City Trees Share Water</h1>
+          <p class="series">Field Notes Weekly</p>
+          <p class="publisher">A Mosswave original</p>
+        </div>
+      </section>
+
+      <div class="actions" aria-label="Episode actions">
+        <button class="primary-action" type="button">Play episode</button>
+        <button class="secondary-action" type="button">Save</button>
+      </div>
+
+      <div class="facts" aria-label="Episode information">
+        <span>May 16, 2025 · 42 min</span>
+        <span>Clean</span>
+      </div>
+
+      <section class="about" aria-labelledby="about-title">
+        <h2 class="section-title" id="about-title">About this episode</h2>
+        <p class="description">
+          Ecologist Mara Ellison maps the underground pathways that help street trees move water, survive heat, and support neighboring plants.
+        </p>
+        <button class="text-link" type="button">Read full notes</button>
+      </section>
+
+      <section class="chapters" aria-labelledby="chapters-title">
+        <div class="chapter-heading">
+          <h2 class="section-title" id="chapters-title">Chapter index</h2>
+          <span class="chapter-count">Select a starting point</span>
+        </div>
+
+        <ol class="chapter-grid">
+          <li class="chapter-card">
+            <div class="card-meta">
+              <span class="chapter-number">Part</span>
+              <span class="timestamp">00:00</span>
+            </div>
+            <p class="chapter-title">A hotter block</p>
+            <p class="chapter-summary">Why neighboring streets can feel different</p>
+          </li>
+
+          <li class="chapter-card">
+            <div class="card-meta">
+              <span class="chapter-number">Part</span>
+              <span class="timestamp">08:24</span>
+            </div>
+            <p class="chapter-title">The network below</p>
+            <p class="chapter-summary">Tracing water through roots and soil</p>
+          </li>
+
+          <li class="chapter-card">
+            <div class="card-meta">
+              <span class="chapter-number">Part</span>
+              <span class="timestamp">19:10</span>
+            </div>
+            <p class="chapter-title">Sharing during drought</p>
+            <p class="chapter-summary">What changes when rainfall disappears</p>
+          </li>
+
+          <li class="chapter-card">
+            <div class="card-meta">
+              <span class="chapter-number">Part</span>
+              <span class="timestamp">31:46</span>
+            </div>
+            <p class="chapter-title">Designing cooler streets</p>
+            <p class="chapter-summary">Practical lessons for city planners</p>
+          </li>
+        </ol>
+
+        <div class="credits">
+          <strong>Featuring</strong>
+          <span>Mara Ellison, urban ecologist</span>
+          <strong>Produced by</strong>
+          <span>Jonah Mercer and Tessa Vale</span>
+        </div>
+      </section>
+    </main>
+
+    <nav class="tabbar" aria-label="Primary navigation">
+      <button class="tab" type="button">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M4 10.5L12 4L20 10.5V20H14.5V14H9.5V20H4V10.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+        </svg>
+        <span>Home</span>
+      </button>
+      <button class="tab active" type="button" aria-current="page">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="1.7"/>
+          <path d="M16 16L20 20" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+        </svg>
+        <span>Browse</span>
+      </button>
+      <button class="tab" type="button">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M5 5.5H9V19H5V5.5ZM10 5.5H14V19H10V5.5ZM15 7L19 6V18L15 19V7Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+        </svg>
+        <span>Library</span>
+      </button>
+    </nav>
+  </div>
+</body>
+</html>

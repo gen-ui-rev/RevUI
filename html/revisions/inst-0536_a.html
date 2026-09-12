@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Staff sync alert — Nocturne</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 40px 0;
+    margin: 0;
+    background: #E7E7E4;
+    font-family: 'Source Sans 3', system-ui, sans-serif;
+    color: #24262A;
+    -webkit-font-smoothing: antialiased;
+  }
+  .screen {
+    width: 390px;
+    height: 560px;
+    padding: 16px;
+    background: #ECECEA;
+  }
+  .card {
+    background: rgba(88, 92, 99, 0.09);
+    border-radius: 12px;
+    padding: 18px;
+  }
+  .alert-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .alert-label {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    color: #3F4247;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+  }
+  .mark {
+    width: 34px;
+    height: 34px;
+    border-radius: 9px;
+    background: rgba(88, 92, 99, 0.16);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .severity {
+    border: 1px solid rgba(143, 79, 57, 0.32);
+    border-radius: 999px;
+    padding: 4px 9px;
+    background: rgba(143, 79, 57, 0.09);
+    color: #7B4635;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  h1 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-weight: 700;
+    font-size: 24px;
+    line-height: 1.2;
+    margin: 14px 0 0;
+  }
+  .body {
+    margin: 6px 0 0;
+    color: #565A60;
+    font-size: 14px;
+    line-height: 1.4;
+  }
+  .breakpoint {
+    margin-top: 14px;
+    padding: 13px 14px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.48);
+    border: 1px solid rgba(88, 92, 99, 0.12);
+  }
+  .break-top {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    font-size: 13px;
+  }
+  .break-title { font-weight: 600; }
+  .break-value {
+    color: #7B4635;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .track {
+    position: relative;
+    height: 8px;
+    margin-top: 10px;
+    border-radius: 999px;
+    background: rgba(88, 92, 99, 0.15);
+  }
+  .track-fill {
+    width: 63%;
+    height: 100%;
+    border-radius: 999px 0 0 999px;
+    background: #666A70;
+  }
+  .break-marker {
+    position: absolute;
+    top: -4px;
+    left: calc(63% - 2px);
+    width: 4px;
+    height: 16px;
+    border-radius: 2px;
+    background: #8F4F39;
+  }
+  .track-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 6px;
+    color: #73777D;
+    font-size: 11px;
+  }
+  .facts {
+    margin-top: 12px;
+    padding: 3px 13px;
+    border-radius: 10px;
+    background: rgba(88, 92, 99, 0.08);
+  }
+  .fact {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 8px 0;
+    font-size: 13px;
+  }
+  .fact + .fact { border-top: 1px solid rgba(88, 92, 99, 0.14); }
+  .fact .k { color: #666A70; }
+  .fact .v {
+    min-width: 0;
+    color: #282A2E;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .actions { margin-top: 14px; }
+  .btn {
+    display: block;
+    width: 100%;
+    padding: 11px 10px;
+    border-radius: 9px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .btn-primary {
+    background: #3A3D42;
+    color: #F5F5F2;
+  }
+  .secondary-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+  }
+  .secondary-actions .btn {
+    flex: 1;
+    background: rgba(88, 92, 99, 0.13);
+    color: #33363B;
+  }
+  .code {
+    margin: 10px 0 0;
+    text-align: center;
+    color: #74787E;
+    font-size: 11px;
+  }
+</style>
+</head>
+<body>
+  <div class="screen">
+    <div class="card">
+      <div class="alert-head">
+        <div class="alert-label">
+          <div class="mark" aria-hidden="true">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#4C5057" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 3 2.8 19h18.4L12 3Z"/>
+              <path d="M12 9v4.5"/>
+              <path d="M12 17h.01"/>
+            </svg>
+          </div>
+          Staff alert
+        </div>
+        <span class="severity">Needs review</span>
+      </div>
+
+      <h1>Maya Chen · Study night 2</h1>
+      <p class="body">The wristband disconnected while uploading the March 8 recording.</p>
+
+      <div class="breakpoint">
+        <div class="break-top">
+          <span class="break-title">Upload interrupted</span>
+          <span class="break-value">4 h 18 m of 6 h 49 m</span>
+        </div>
+        <div class="track" aria-label="Upload stopped at 63 percent">
+          <div class="track-fill"></div>
+          <div class="break-marker"></div>
+        </div>
+        <div class="track-labels">
+          <span>10:46 PM</span>
+          <span>Stopped 3:04 AM</span>
+          <span>5:35 AM</span>
+        </div>
+      </div>
+
+      <div class="facts">
+        <div class="fact">
+          <span class="k">Patient ID</span>
+          <span class="v">NC-18427</span>
+        </div>
+        <div class="fact">
+          <span class="k">Device</span>
+          <span class="v">Rest Band 2 · RB-0916</span>
+        </div>
+      </div>
+
+      <div class="actions">
+        <a class="btn btn-primary" href="#">Resume upload from break</a>
+        <div class="secondary-actions">
+          <a class="btn" href="#">Open patient record</a>
+          <a class="btn" href="#">Message patient</a>
+        </div>
+      </div>
+
+      <p class="code">SYN-402 · Alert created Mar 8 at 5:47 AM</p>
+    </div>
+  </div>
+</body>
+</html>

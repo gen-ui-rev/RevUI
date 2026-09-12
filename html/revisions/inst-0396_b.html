@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Search — Verba Course Library</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 40px 0;
+    margin: 0;
+    background: #55504b;
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .screen {
+    width: 390px;
+    height: 844px;
+    background: #F1EFEC;
+    position: relative;
+    color: #1F1C19;
+  }
+  .topbar {
+    background: #FFFFFF;
+    padding: 14px 16px 12px;
+    border-bottom: 1px solid #E4E0DB;
+  }
+  .searchrow { display: flex; align-items: center; gap: 10px; }
+  .back {
+    width: 28px;
+    height: 28px;
+    flex: 0 0 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #4C453D;
+  }
+  .field {
+    flex: 1 1 auto;
+    height: 42px;
+    border: 1.5px solid #8A7968;
+    border-radius: 6px;
+    background: #FFFFFF;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 10px;
+    min-width: 0;
+  }
+  .field .q {
+    flex: 1 1 auto;
+    font-size: 15px;
+    font-weight: 500;
+    color: #1F1C19;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .field .caret {
+    width: 1.5px;
+    height: 18px;
+    background: #8A7968;
+    flex: 0 0 1.5px;
+  }
+  .clear {
+    width: 18px;
+    height: 18px;
+    flex: 0 0 18px;
+    border-radius: 50%;
+    background: #D7D1CA;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #FFFFFF;
+  }
+  .chips {
+    display: flex;
+    gap: 8px;
+    padding: 12px 16px;
+    background: #FFFFFF;
+    border-bottom: 1px solid #E4E0DB;
+  }
+  .chip {
+    height: 32px;
+    padding: 0 12px;
+    border-radius: 6px;
+    border: 1px solid #D8D7E8;
+    background: #F5F4FB;
+    color: #55516F;
+    font-size: 13px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+  }
+  .chip.on {
+    background: #595477;
+    border-color: #595477;
+    color: #FFFFFF;
+  }
+  .body { padding: 14px 16px 0; }
+  .meta-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  .count { font-size: 13px; color: #6E665D; }
+  .count b { color: #1F1C19; font-weight: 600; }
+  .sort {
+    font-size: 13px;
+    font-weight: 600;
+    color: #595477;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .card {
+    background: #FFFFFF;
+    border-radius: 7px;
+    box-shadow: 0 1px 3px rgba(31, 28, 25, 0.08);
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin-bottom: 7px;
+  }
+  .card img {
+    width: 72px;
+    height: 72px;
+    border-radius: 6px;
+    object-fit: cover;
+    display: block;
+    background: #DAD4CC;
+    flex: 0 0 72px;
+  }
+  .info {
+    min-width: 0;
+    flex: 1 1 auto;
+  }
+  .title {
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.25;
+    margin: 0 0 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .tutor {
+    font-size: 12px;
+    color: #6E665D;
+    margin: 0 0 8px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .facts {
+    font-size: 11px;
+    color: #857C72;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    white-space: nowrap;
+  }
+  .facts .dot {
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: #C6BFB6;
+  }
+  .facts .rate { color: #4C453D; font-weight: 700; }
+  .save-action {
+    width: 57px;
+    height: 30px;
+    padding: 0;
+    flex: 0 0 57px;
+    border: 1px solid #696384;
+    border-radius: 6px;
+    background: #FFFFFF;
+    color: #595477;
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+  }
+  .save-action.saved {
+    background: #EEEAF6;
+    border-color: #D7D1E5;
+    color: #595477;
+  }
+  .subhead {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #857C72;
+    margin: 15px 0 8px;
+  }
+  .related {
+    background: #FFFFFF;
+    border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(31, 28, 25, 0.08);
+  }
+  .rel {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 11px 12px;
+    border-bottom: 1px solid #EFEBE6;
+    font-size: 14px;
+    color: #322D28;
+  }
+  .rel:last-child { border-bottom: none; }
+  .rel span {
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .rel svg { flex: 0 0 14px; color: #A9A199; }
+  .tabbar {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 62px;
+    background: #FFFFFF;
+    border-top: 1px solid #E4E0DB;
+    display: flex;
+    align-items: center;
+  }
+  .tab {
+    flex: 1 1 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    font-weight: 500;
+    color: #9A928A;
+  }
+  .tab.active { color: #595477; font-weight: 600; }
+</style>
+</head>
+<body>
+  <div class="screen">
+    <div class="topbar">
+      <div class="searchrow">
+        <div class="back" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
+        </div>
+        <div class="field">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#8A7968" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M16.5 16.5L21 21"/></svg>
+          <div class="q">spanish conversation</div>
+          <div class="caret"></div>
+          <div class="clear">
+            <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="chips">
+      <div class="chip on">All 14</div>
+      <div class="chip">Speaking</div>
+      <div class="chip">Beginner</div>
+      <div class="chip">Live class</div>
+    </div>
+
+    <div class="body">
+      <div class="meta-row">
+        <div class="count"><b>14 courses</b> for “spanish conversation”</div>
+        <div class="sort">Relevance
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+        </div>
+      </div>
+
+      <div class="card">
+        <img src="https://loremflickr.com/72/72/classroom?lock=5560" width="72" height="72" alt="Students talking in a language classroom">
+        <div class="info">
+          <p class="title">Everyday Spanish Conversation</p>
+          <p class="tutor">Marisol Duarte</p>
+          <div class="facts"><span>Intermediate</span><span class="dot"></span><span>24 lessons</span><span class="dot"></span><span class="rate">4.8</span></div>
+        </div>
+        <button class="save-action" aria-label="Save Everyday Spanish Conversation">
+          <svg width="11" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M6 4h12v17l-6-4-6 4z"/></svg>
+          Save
+        </button>
+      </div>
+
+      <div class="card">
+        <img src="https://loremflickr.com/72/72/books?lock=5561" width="72" height="72" alt="Spanish phrasebooks stacked on a desk">
+        <div class="info">
+          <p class="title">Spanish for Travel: Real Dialogues</p>
+          <p class="tutor">Diego Salazar</p>
+          <div class="facts"><span>Beginner</span><span class="dot"></span><span>18 lessons</span><span class="dot"></span><span class="rate">4.7</span></div>
+        </div>
+        <button class="save-action saved" aria-label="Saved Spanish for Travel: Real Dialogues">
+          <svg width="11" height="13" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M6 4h12v17l-6-4-6 4z"/></svg>
+          Saved
+        </button>
+      </div>
+
+      <div class="card">
+        <img src="https://loremflickr.com/72/72/study?lock=5562" width="72" height="72" alt="Learner practicing speaking with headphones">
+        <div class="info">
+          <p class="title">Conversation Lab: Latin America</p>
+          <p class="tutor">Paula Ferreira</p>
+          <div class="facts"><span>Advanced</span><span class="dot"></span><span>32 lessons</span><span class="dot"></span><span class="rate">4.9</span></div>
+        </div>
+        <button class="save-action" aria-label="Save Conversation Lab: Latin America">
+          <svg width="11" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M6 4h12v17l-6-4-6 4z"/></svg>
+          Save
+        </button>
+      </div>
+
+      <div class="card">
+        <img src="https://loremflickr.com/72/72/library?lock=5563" width="72" height="72" alt="Quiet library corner used for study sessions">
+        <div class="info">
+          <p class="title">Pronunciation and Rhythm</p>
+          <p class="tutor">Andres Loera</p>
+          <div class="facts"><span>All levels</span><span class="dot"></span><span>12 lessons</span><span class="dot"></span><span class="rate">4.6</span></div>
+        </div>
+        <button class="save-action" aria-label="Save Pronunciation and Rhythm">
+          <svg width="11" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M6 4h12v17l-6-4-6 4z"/></svg>
+          Save
+        </button>
+      </div>
+
+      <div class="card">
+        <img src="https://loremflickr.com/72/72/classroom?lock=5564" width="72" height="72" alt="Small group seated for a live speaking class">
+        <div class="info">
+          <p class="title">Weekly Live Speaking Circle</p>
+          <p class="tutor">Rosa Villalba</p>
+          <div class="facts"><span>Intermediate</span><span class="dot"></span><span>Tue 7 PM</span><span class="dot"></span><span class="rate">4.8</span></div>
+        </div>
+        <button class="save-action" aria-label="Save Weekly Live Speaking Circle">
+          <svg width="11" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M6 4h12v17l-6-4-6 4z"/></svg>
+          Save
+        </button>
+      </div>
+
+      <div class="subhead">Related searches</div>
+      <div class="related">
+        <div class="rel"><span>spanish conversation practice</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 17L7 7"/><path d="M7 15V7h8"/></svg>
+        </div>
+        <div class="rel"><span>tutors for spoken spanish</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 17L7 7"/><path d="M7 15V7h8"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="tabbar">
+      <div class="tab">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5L12 4l8 6.5V20H4z"/></svg>
+        Home
+      </div>
+      <div class="tab active">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M16.5 16.5L21 21"/></svg>
+        Search
+      </div>
+      <div class="tab">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h6v16H5zM13 4h6v16h-6z"/></svg>
+        Library
+      </div>
+      <div class="tab">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="9" r="3.5"/><path d="M5 20c1.5-3.5 4-5 7-5s5.5 1.5 7 5"/></svg>
+        Profile
+      </div>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Planwell Inbox</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 36px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #dfe2e8;
+      color: #242632;
+      font-family: 'Source Serif 4', Georgia, serif;
+    }
+
+    button {
+      margin: 0;
+      border: 0;
+      font: inherit;
+      color: inherit;
+      cursor: default;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      background: #f3f4f7;
+      border: 1px solid #cfd2da;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 16px;
+      background: #4f46a5;
+      color: #ffffff;
+    }
+
+    .menu-button {
+      width: 32px;
+      height: 32px;
+      display: grid;
+      place-items: center;
+      padding: 0;
+      background: transparent;
+    }
+
+    .menu-button svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .brand {
+      margin: 0;
+      font-size: 20px;
+      line-height: 28px;
+      font-weight: 600;
+      letter-spacing: -0.2px;
+    }
+
+    .top-spacer {
+      flex: 1;
+    }
+
+    .compose-button {
+      padding: 5px 12px 6px;
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      border-radius: 4px;
+      background: transparent;
+      color: #ffffff;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 600;
+    }
+
+    .mail-heading {
+      padding: 13px 16px 12px;
+      background: #f3f4f7;
+    }
+
+    .title-line {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .title-line h1 {
+      margin: 0;
+      color: #20222c;
+      font-size: 24px;
+      line-height: 32px;
+      font-weight: 600;
+    }
+
+    .unread-count {
+      color: #5e6270;
+      font-size: 14px;
+      line-height: 20px;
+      white-space: nowrap;
+    }
+
+    .search-box {
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 8px 11px;
+      border: 1px solid #d6d8df;
+      border-radius: 4px;
+      background: #ffffff;
+      color: #737785;
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .search-box svg {
+      width: 18px;
+      height: 18px;
+      flex: 0 0 auto;
+    }
+
+    .mail-tabs {
+      display: flex;
+      align-items: flex-end;
+      padding: 0 16px;
+      border-bottom: 1px solid #d9dbe2;
+      background: #ffffff;
+    }
+
+    .mail-tab {
+      position: relative;
+      padding: 9px 13px 10px;
+      background: transparent;
+      color: #666a77;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 400;
+    }
+
+    .mail-tab:first-child {
+      padding-left: 0;
+      padding-right: 16px;
+    }
+
+    .mail-tab.active {
+      color: #4f46a5;
+      font-weight: 600;
+    }
+
+    .mail-tab.active::after {
+      content: "";
+      position: absolute;
+      right: 13px;
+      bottom: -1px;
+      left: 13px;
+      height: 3px;
+      background: #4f46a5;
+    }
+
+    .mail-tab:first-child.active::after {
+      left: 0;
+      right: 16px;
+    }
+
+    .mail-list-area {
+      padding: 10px 12px 0;
+    }
+
+    .mail-list {
+      background: #ffffff;
+      border: 1px solid #dedfe5;
+      border-radius: 4px;
+      box-shadow: 0 2px 7px rgba(35, 38, 55, 0.1);
+    }
+
+    .mail-row {
+      position: relative;
+      display: grid;
+      grid-template-columns: 36px minmax(0, 1fr);
+      gap: 10px;
+      padding: 9px 10px;
+      border-bottom: 1px solid #e5e6ea;
+      color: #30323d;
+      text-decoration: none;
+    }
+
+    .mail-row:last-child {
+      border-bottom: 0;
+    }
+
+    .mail-row.unread::before {
+      content: "";
+      position: absolute;
+      top: 12px;
+      left: -1px;
+      width: 3px;
+      height: 32px;
+      background: #4f46a5;
+    }
+
+    .monogram {
+      width: 36px;
+      height: 36px;
+      display: grid;
+      place-items: center;
+      border-radius: 4px;
+      background: #e6e7ec;
+      color: #505361;
+      font-size: 14px;
+      line-height: 18px;
+      font-weight: 600;
+    }
+
+    .unread .monogram {
+      background: #e7e5f6;
+      color: #4f46a5;
+    }
+
+    .mail-copy {
+      min-width: 0;
+    }
+
+    .sender-line {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      font-size: 14px;
+      line-height: 19px;
+    }
+
+    .sender {
+      min-width: 0;
+      flex: 1;
+      color: #30323d;
+    }
+
+    .unread .sender,
+    .unread .subject {
+      color: #20222c;
+      font-weight: 600;
+    }
+
+    .mail-time {
+      flex: 0 0 auto;
+      color: #747784;
+      font-size: 12px;
+      line-height: 18px;
+      white-space: nowrap;
+    }
+
+    .subject,
+    .preview {
+      display: block;
+      font-size: 14px;
+      line-height: 19px;
+    }
+
+    .subject {
+      color: #40434f;
+    }
+
+    .preview {
+      color: #777b87;
+    }
+
+    .truncate {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .bottom-nav {
+      margin-top: auto;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border-top: 1px solid #d9dbe2;
+      background: #ffffff;
+    }
+
+    .nav-item {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      padding: 7px 4px 8px;
+      background: transparent;
+      color: #707481;
+      font-size: 12px;
+      line-height: 17px;
+    }
+
+    .nav-item svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .nav-item.active {
+      color: #4f46a5;
+      font-weight: 600;
+    }
+
+    .nav-item.active::before {
+      content: "";
+      position: absolute;
+      top: -1px;
+      left: 26px;
+      right: 26px;
+      height: 3px;
+      background: #4f46a5;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <button class="menu-button" aria-label="Open navigation">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+          <path d="M4 7h16M4 12h16M4 17h16"></path>
+        </svg>
+      </button>
+      <p class="brand">Planwell</p>
+      <div class="top-spacer"></div>
+      <button class="compose-button">Compose</button>
+    </header>
+
+    <section class="mail-heading" aria-labelledby="inbox-title">
+      <div class="title-line">
+        <h1 id="inbox-title">Inbox</h1>
+        <span class="unread-count">3 unread</span>
+      </div>
+      <div class="search-box" role="search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+          <circle cx="10.8" cy="10.8" r="6.8"></circle>
+          <path d="m16 16 4.2 4.2"></path>
+        </svg>
+        <span>Search mail</span>
+      </div>
+    </section>
+
+    <nav class="mail-tabs" aria-label="Mailbox filters">
+      <button class="mail-tab active">Focused</button>
+      <button class="mail-tab">All mail</button>
+      <button class="mail-tab">Assigned</button>
+    </nav>
+
+    <main class="mail-list-area">
+      <div class="mail-list" aria-label="Focused messages">
+        <a class="mail-row unread" href="#" aria-label="Unread message from Mara Vell">
+          <span class="monogram">MV</span>
+          <span class="mail-copy">
+            <span class="sender-line">
+              <span class="sender truncate">Mara Vell</span>
+              <span class="mail-time">9:42 AM</span>
+            </span>
+            <span class="subject truncate">Launch review moved to Thursday</span>
+            <span class="preview truncate">I updated the agenda and added the final owners.</span>
+          </span>
+        </a>
+
+        <a class="mail-row unread" href="#" aria-label="Unread message from Owen Pryce">
+          <span class="monogram">OP</span>
+          <span class="mail-copy">
+            <span class="sender-line">
+              <span class="sender truncate">Owen Pryce</span>
+              <span class="mail-time">8:15 AM</span>
+            </span>
+            <span class="subject truncate">Two comments on the roadmap</span>
+            <span class="preview truncate">The milestones are clear. I left notes on timing.</span>
+          </span>
+        </a>
+
+        <a class="mail-row unread" href="#" aria-label="Unread message from Elsie Ward">
+          <span class="monogram">EW</span>
+          <span class="mail-copy">
+            <span class="sender-line">
+              <span class="sender truncate">Elsie Ward</span>
+              <span class="mail-time">7:36 AM</span>
+            </span>
+            <span class="subject truncate">Notes from workspace planning</span>
+            <span class="preview truncate">Here are the decisions and open questions from today.</span>
+          </span>
+        </a>
+
+        <a class="mail-row" href="#" aria-label="Message from Jonah Reed">
+          <span class="monogram">JR</span>
+          <span class="mail-copy">
+            <span class="sender-line">
+              <span class="sender truncate">Jonah Reed</span>
+              <span class="mail-time">Yesterday</span>
+            </span>
+            <span class="subject truncate">Re: Vendor access checklist</span>
+            <span class="preview truncate">Security approved the revised list for next week.</span>
+          </span>
+        </a>
+
+        <a class="mail-row" href="#" aria-label="Message from Tessa Cole">
+          <span class="monogram">TC</span>
+          <span class="mail-copy">
+            <span class="sender-line">
+              <span class="sender truncate">Tessa Cole</span>
+              <span class="mail-time">Yesterday</span>
+            </span>
+            <span class="subject truncate">May scheduling summary</span>
+            <span class="preview truncate">Four interviews remain, with one conflict to resolve.</span>
+          </span>
+        </a>
+
+        <a class="mail-row" href="#" aria-label="Message from Planwell Updates">
+          <span class="monogram">PU</span>
+          <span class="mail-copy">
+            <span class="sender-line">
+              <span class="sender truncate">Planwell Updates</span>
+              <span class="mail-time">May 14</span>
+            </span>
+            <span class="subject truncate">Your weekly work digest</span>
+            <span class="preview truncate">Seven tasks closed and three notes shared this week.</span>
+          </span>
+        </a>
+
+        <a class="mail-row" href="#" aria-label="Message from Nolan Avery">
+          <span class="monogram">NA</span>
+          <span class="mail-copy">
+            <span class="sender-line">
+              <span class="sender truncate">Nolan Avery</span>
+              <span class="mail-time">May 12</span>
+            </span>
+            <span class="subject truncate">Draft: research handoff</span>
+            <span class="preview truncate">The interview archive is ready for your review.</span>
+          </span>
+        </a>
+      </div>
+    </main>
+
+    <nav class="bottom-nav" aria-label="Primary navigation">
+      <button class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true">
+          <path d="M4 5.5h16v13H4z"></path>
+          <path d="m4 7 8 6 8-6"></path>
+        </svg>
+        <span>Work</span>
+      </button>
+      <button class="nav-item active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true">
+          <rect x="3.5" y="5" width="17" height="14"></rect>
+          <path d="m4 7 8 6 8-6"></path>
+        </svg>
+        <span>Mail</span>
+      </button>
+      <button class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true">
+          <path d="M5 4.5h14v15H5z"></path>
+          <path d="M8 8h8M8 12h8M8 16h5"></path>
+        </svg>
+        <span>Notes</span>
+      </button>
+      <button class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="3.5" y="5.5" width="17" height="15"></rect>
+          <path d="M7 3.5v4M17 3.5v4M3.5 10h17"></path>
+        </svg>
+        <span>Calendar</span>
+      </button>
+    </nav>
+  </div>
+</body>
+</html>

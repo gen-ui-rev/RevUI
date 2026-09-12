@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wavefield Plans</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 32px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #e7e5e4;
+      color: #292524;
+      font-family: 'Inter', system-ui, sans-serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #ffffff;
+      border: 1px solid #d6d3d1;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 13px 16px;
+      border-bottom: 1px solid #e7e5e4;
+      background: #ffffff;
+    }
+
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      min-width: 0;
+      gap: 10px;
+    }
+
+    .icon-button {
+      width: 28px;
+      height: 28px;
+      padding: 4px;
+      display: grid;
+      place-items: center;
+      border: 0;
+      background: transparent;
+      color: #44403c;
+    }
+
+    .topbar-title {
+      margin: 0;
+      font-size: 16px;
+      line-height: 22px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .details-link {
+      border: 0;
+      padding: 5px 0;
+      background: transparent;
+      color: #57534e;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 600;
+    }
+
+    main {
+      flex: 1;
+      min-height: 0;
+      padding: 16px 16px 10px;
+    }
+
+    .intro h1 {
+      margin: 0;
+      font-size: 25px;
+      line-height: 31px;
+      font-weight: 600;
+      letter-spacing: -0.4px;
+      color: #1c1917;
+    }
+
+    .intro p {
+      margin: 5px 0 0;
+      max-width: 340px;
+      color: #78716c;
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .billing {
+      margin-top: 13px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    .billing-copy {
+      min-width: 0;
+    }
+
+    .billing-label {
+      display: block;
+      color: #292524;
+      font-size: 14px;
+      line-height: 18px;
+      font-weight: 600;
+    }
+
+    .billing-note {
+      display: block;
+      margin-top: 1px;
+      color: #a8a29e;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .segmented {
+      display: flex;
+      flex-shrink: 0;
+      padding: 2px;
+      border: 1px solid #d6d3d1;
+      border-radius: 4px;
+      background: #fafaf9;
+    }
+
+    .segment {
+      border: 0;
+      border-radius: 2px;
+      padding: 6px 10px;
+      background: transparent;
+      color: #78716c;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 600;
+    }
+
+    .segment.active {
+      background: #57534e;
+      color: #ffffff;
+    }
+
+    .plan-grid {
+      margin-top: 12px;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 6px;
+      align-items: stretch;
+    }
+
+    .plan-card {
+      min-width: 0;
+      padding: 9px;
+      border: 1px solid #d6d3d1;
+      border-radius: 6px;
+      background: #ffffff;
+    }
+
+    .plan-card.current {
+      background: #fafaf9;
+    }
+
+    .plan-card.featured {
+      padding: 8px;
+      border: 2px solid #292524;
+      background: #292524;
+      box-shadow: 0 4px 10px rgba(41, 37, 36, 0.16);
+    }
+
+    .plan-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 4px;
+    }
+
+    .plan-name {
+      margin: 0;
+      color: #292524;
+      font-size: 14px;
+      line-height: 18px;
+      font-weight: 600;
+    }
+
+    .plan-tag {
+      flex-shrink: 0;
+      padding: 1px 4px;
+      border: 1px solid #d6d3d1;
+      border-radius: 999px;
+      color: #78716c;
+      background: #ffffff;
+      font-size: 9px;
+      line-height: 13px;
+      font-weight: 700;
+      letter-spacing: 0.1px;
+    }
+
+    .featured .plan-tag {
+      border-color: #78716c;
+      background: #ffffff;
+      color: #292524;
+    }
+
+    .plan-meta {
+      margin: 2px 0 0;
+      color: #78716c;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .plan-price {
+      margin: 8px 0 0;
+      color: #1c1917;
+      font-size: 20px;
+      line-height: 24px;
+      font-weight: 600;
+      letter-spacing: -0.3px;
+    }
+
+    .plan-period {
+      margin: 0;
+      color: #78716c;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .plan-summary {
+      margin: 7px 0 0;
+      color: #57534e;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .featured .plan-name,
+    .featured .plan-price {
+      color: #ffffff;
+    }
+
+    .featured .plan-meta,
+    .featured .plan-period {
+      color: #d6d3d1;
+    }
+
+    .featured .plan-summary {
+      color: #f5f5f4;
+      font-weight: 500;
+    }
+
+    .comparison-heading {
+      margin: 16px 0 0;
+      font-size: 16px;
+      line-height: 22px;
+      font-weight: 600;
+      color: #292524;
+    }
+
+    .comparison {
+      width: 100%;
+      margin-top: 7px;
+      border-collapse: separate;
+      border-spacing: 0;
+      table-layout: fixed;
+      border: 1px solid #d6d3d1;
+      border-radius: 4px;
+      color: #44403c;
+    }
+
+    .comparison th,
+    .comparison td {
+      padding: 8px 6px;
+      border-bottom: 1px solid #e7e5e4;
+      text-align: center;
+      vertical-align: middle;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .comparison th {
+      background: #fafaf9;
+      color: #57534e;
+      font-weight: 600;
+    }
+
+    .comparison th:first-child,
+    .comparison td:first-child {
+      width: 43%;
+      padding-left: 10px;
+      text-align: left;
+    }
+
+    .comparison th:nth-child(3),
+    .comparison td:nth-child(3) {
+      background: #f5f5f4;
+      color: #292524;
+    }
+
+    .comparison th:nth-child(3) {
+      box-shadow: inset 0 2px 0 #57534e;
+    }
+
+    .comparison td:first-child {
+      color: #57534e;
+      font-weight: 400;
+    }
+
+    .comparison td:not(:first-child) {
+      font-weight: 600;
+    }
+
+    .comparison tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .included {
+      color: #57534e;
+    }
+
+    .unavailable {
+      color: #a8a29e;
+      font-weight: 400;
+    }
+
+    .terms {
+      margin: 9px 0 0;
+      color: #78716c;
+      font-size: 12px;
+      line-height: 17px;
+    }
+
+    .tabbar {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      padding: 7px 8px 8px;
+      border-top: 1px solid #e7e5e4;
+      background: #ffffff;
+    }
+
+    .tab {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      border: 0;
+      padding: 2px 0;
+      background: transparent;
+      color: #a8a29e;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .tab.active {
+      color: #57534e;
+      font-weight: 600;
+    }
+
+    svg {
+      display: block;
+      width: 20px;
+      height: 20px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="icon-button" type="button" aria-label="Go back">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M15 18l-6-6 6-6"></path>
+          </svg>
+        </button>
+        <p class="topbar-title">Wavefield plans</p>
+      </div>
+      <button class="details-link" type="button">Details</button>
+    </header>
+
+    <main>
+      <section class="intro" aria-labelledby="page-title">
+        <h1 id="page-title">Compare listening plans</h1>
+        <p>Review catalog access, audio quality, downloads, and sharing before changing your plan.</p>
+      </section>
+
+      <div class="billing" aria-label="Billing period">
+        <div class="billing-copy">
+          <span class="billing-label">Billing period</span>
+          <span class="billing-note">Prices in USD</span>
+        </div>
+        <div class="segmented">
+          <button class="segment active" type="button" aria-pressed="true">Monthly</button>
+          <button class="segment" type="button" aria-pressed="false">Annual</button>
+        </div>
+      </div>
+
+      <section class="plan-grid" aria-label="Available plans">
+        <article class="plan-card current">
+          <div class="plan-top">
+            <h2 class="plan-name">Free</h2>
+            <span class="plan-tag">Current</span>
+          </div>
+          <p class="plan-meta">1 listener</p>
+          <p class="plan-price">$0</p>
+          <p class="plan-period">per month</p>
+          <p class="plan-summary">Shuffle play with ads</p>
+        </article>
+
+        <article class="plan-card featured">
+          <div class="plan-top">
+            <h2 class="plan-name">Plus</h2>
+            <span class="plan-tag">Popular</span>
+          </div>
+          <p class="plan-meta">1 listener</p>
+          <p class="plan-price">$10.99</p>
+          <p class="plan-period">per month</p>
+          <p class="plan-summary">Full catalog, no ads</p>
+        </article>
+
+        <article class="plan-card">
+          <div class="plan-top">
+            <h2 class="plan-name">Family</h2>
+          </div>
+          <p class="plan-meta">Up to 6</p>
+          <p class="plan-price">$16.99</p>
+          <p class="plan-period">per month</p>
+          <p class="plan-summary">Separate profiles, one bill</p>
+        </article>
+      </section>
+
+      <h2 class="comparison-heading">Plan features</h2>
+
+      <table class="comparison" aria-label="Plan feature comparison">
+        <thead>
+          <tr>
+            <th scope="col">Feature</th>
+            <th scope="col">Free</th>
+            <th scope="col">Plus</th>
+            <th scope="col">Family</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Audio ads</td>
+            <td>Yes</td>
+            <td class="included">None</td>
+            <td class="included">None</td>
+          </tr>
+          <tr>
+            <td>On-demand play</td>
+            <td>Limited</td>
+            <td class="included">Yes</td>
+            <td class="included">Yes</td>
+          </tr>
+          <tr>
+            <td>Offline listening</td>
+            <td class="unavailable">—</td>
+            <td class="included">Yes</td>
+            <td class="included">Yes</td>
+          </tr>
+          <tr>
+            <td>Audio quality</td>
+            <td>Standard</td>
+            <td>High</td>
+            <td>High</td>
+          </tr>
+          <tr>
+            <td>Concurrent streams</td>
+            <td>1</td>
+            <td>1</td>
+            <td>6</td>
+          </tr>
+          <tr>
+            <td>Listener profiles</td>
+            <td>1</td>
+            <td>1</td>
+            <td>6</td>
+          </tr>
+          <tr>
+            <td>Audiobooks monthly</td>
+            <td class="unavailable">—</td>
+            <td>15 hr</td>
+            <td>15 hr</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p class="terms">Family members must live at the same US address. Taxes may apply based on billing location.</p>
+    </main>
+
+    <nav class="tabbar" aria-label="Primary navigation">
+      <button class="tab" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M3 10.5L12 3l9 7.5"></path>
+          <path d="M5.5 9.5V21h13V9.5"></path>
+          <path d="M9.5 21v-6h5v6"></path>
+        </svg>
+        <span>Home</span>
+      </button>
+
+      <button class="tab" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="11" cy="11" r="7"></circle>
+          <path d="M20 20l-4-4"></path>
+        </svg>
+        <span>Browse</span>
+      </button>
+
+      <button class="tab" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M5 4v16"></path>
+          <path d="M9 4v16"></path>
+          <path d="M13 6l6-2v14l-6 2z"></path>
+        </svg>
+        <span>Library</span>
+      </button>
+
+      <button class="tab active" type="button" aria-current="page">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="8" r="3.5"></circle>
+          <path d="M5 21c.7-4 3-6 7-6s6.3 2 7 6"></path>
+        </svg>
+        <span>Account</span>
+      </button>
+    </nav>
+  </div>
+</body>
+</html>

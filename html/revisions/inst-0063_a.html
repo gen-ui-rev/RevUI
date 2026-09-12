@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crop Frame — Pulseyard Pro</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #e7e4e5;
+      color: #231f21;
+      font-family: 'Manrope', system-ui, sans-serif;
+    }
+
+    button {
+      margin: 0;
+      padding: 0;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      color: inherit;
+      font: inherit;
+      cursor: default;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #ffffff;
+    }
+
+    .topbar {
+      min-height: 56px;
+      padding: 0 16px;
+      display: grid;
+      grid-template-columns: 72px 1fr 72px;
+      align-items: center;
+      border-bottom: 1px solid #ded9db;
+      background: #ffffff;
+    }
+
+    .topbar button {
+      min-height: 40px;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .cancel {
+      text-align: left;
+      color: #60595c;
+    }
+
+    .done {
+      text-align: right;
+      color: #bd315d;
+      font-weight: 700 !important;
+    }
+
+    .title-wrap {
+      min-width: 0;
+      text-align: center;
+    }
+
+    .title {
+      margin: 0;
+      overflow: hidden;
+      color: #231f21;
+      font-size: 15px;
+      font-weight: 700;
+      line-height: 20px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .title-meta {
+      display: block;
+      overflow: hidden;
+      color: #8a8184;
+      font-size: 11px;
+      font-weight: 500;
+      line-height: 14px;
+      letter-spacing: 0.03em;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .preview {
+      padding: 12px 0 10px;
+      background: #181617;
+      color: #cfc8cb;
+    }
+
+    .image-stage {
+      position: relative;
+      width: 270px;
+      height: 270px;
+      margin: 0 auto;
+      background: #393536;
+    }
+
+    .image-stage img {
+      width: 270px;
+      height: 270px;
+      display: block;
+      object-fit: cover;
+      background: #393536;
+    }
+
+    .shade {
+      position: absolute;
+      background: rgba(15, 12, 13, 0.58);
+      pointer-events: none;
+    }
+
+    .shade-top {
+      top: 0;
+      left: 0;
+      width: 270px;
+      height: 27px;
+    }
+
+    .shade-bottom {
+      top: 243px;
+      left: 0;
+      width: 270px;
+      height: 27px;
+    }
+
+    .shade-left {
+      top: 27px;
+      left: 0;
+      width: 27px;
+      height: 216px;
+    }
+
+    .shade-right {
+      top: 27px;
+      right: 0;
+      width: 27px;
+      height: 216px;
+    }
+
+    .crop-frame {
+      position: absolute;
+      top: 27px;
+      left: 27px;
+      width: 216px;
+      height: 216px;
+      border: 1px solid rgba(255, 255, 255, 0.9);
+      pointer-events: none;
+    }
+
+    .grid-v,
+    .grid-h {
+      position: absolute;
+      background: rgba(255, 255, 255, 0.44);
+    }
+
+    .grid-v {
+      top: 0;
+      width: 1px;
+      height: 100%;
+    }
+
+    .grid-v.one {
+      left: 33.333%;
+    }
+
+    .grid-v.two {
+      left: 66.666%;
+    }
+
+    .grid-h {
+      left: 0;
+      width: 100%;
+      height: 1px;
+    }
+
+    .grid-h.one {
+      top: 33.333%;
+    }
+
+    .grid-h.two {
+      top: 66.666%;
+    }
+
+    .handle {
+      position: absolute;
+      width: 18px;
+      height: 18px;
+    }
+
+    .handle::before,
+    .handle::after {
+      position: absolute;
+      content: "";
+      background: #cf3d69;
+    }
+
+    .handle::before {
+      width: 18px;
+      height: 3px;
+    }
+
+    .handle::after {
+      width: 3px;
+      height: 18px;
+    }
+
+    .handle.tl {
+      top: -2px;
+      left: -2px;
+    }
+
+    .handle.tr {
+      top: -2px;
+      right: -2px;
+      transform: rotate(90deg);
+    }
+
+    .handle.br {
+      right: -2px;
+      bottom: -2px;
+      transform: rotate(180deg);
+    }
+
+    .handle.bl {
+      bottom: -2px;
+      left: -2px;
+      transform: rotate(270deg);
+    }
+
+    .preview-help {
+      margin: 0;
+      padding: 8px 16px 0;
+      overflow: hidden;
+      font-size: 11px;
+      font-weight: 500;
+      line-height: 16px;
+      letter-spacing: 0.02em;
+      text-align: center;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .crop-panel {
+      background: #ffffff;
+    }
+
+    .panel-heading {
+      min-height: 40px;
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #e5e0e2;
+      background: #fbfafb;
+    }
+
+    .panel-heading h2 {
+      margin: 0;
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 20px;
+      letter-spacing: 0.01em;
+    }
+
+    .reset {
+      min-height: 34px;
+      color: #8a8184;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .panel-row {
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      border-bottom: 1px solid #e5e0e2;
+    }
+
+    .guides-row {
+      min-height: 44px;
+    }
+
+    .delivery-row {
+      min-height: 60px;
+    }
+
+    .row-label {
+      width: 74px;
+      flex: 0 0 74px;
+      color: #4d4648;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .chips {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .chip {
+      min-height: 30px;
+      padding: 0 9px;
+      border: 1px solid #d6cfd2;
+      color: #5d5558;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .chip.selected {
+      border-color: #bd315d;
+      background: #bd315d;
+      color: #ffffff;
+      font-weight: 700;
+    }
+
+    .frame-row {
+      min-height: 66px;
+      padding: 12px 16px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      column-gap: 8px;
+      border-bottom: 1px solid #e5e0e2;
+      background: #fcfbfc;
+    }
+
+    .field .k {
+      display: block;
+      color: #8a8184;
+      font-size: 11px;
+      font-weight: 500;
+      line-height: 14px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .field .v {
+      display: block;
+      color: #231f21;
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 20px;
+    }
+
+    .control-row {
+      min-height: 48px;
+      padding: 0 16px;
+      display: grid;
+      grid-template-columns: 96px 1fr 48px;
+      align-items: center;
+      column-gap: 10px;
+      border-bottom: 1px solid #e5e0e2;
+    }
+
+    .control-name {
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .control-value {
+      color: #6f6669;
+      font-size: 12px;
+      font-weight: 700;
+      text-align: right;
+    }
+
+    .slider {
+      position: relative;
+      height: 22px;
+    }
+
+    .slider-track {
+      position: absolute;
+      top: 10px;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: #d8d1d4;
+    }
+
+    .slider-fill {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      height: 2px;
+      background: #bd315d;
+    }
+
+    .slider-thumb {
+      position: absolute;
+      top: 4px;
+      width: 14px;
+      height: 14px;
+      margin-left: -7px;
+      border: 3px solid #bd315d;
+      background: #ffffff;
+    }
+
+    .roll .slider-fill {
+      width: 8%;
+    }
+
+    .roll .slider-thumb {
+      left: 58%;
+    }
+
+    .keyh .slider-fill {
+      width: 0;
+    }
+
+    .keyh .slider-thumb {
+      left: 50%;
+    }
+
+    .keyv .slider-fill {
+      left: 44%;
+      width: 6%;
+    }
+
+    .keyv .slider-thumb {
+      left: 44%;
+    }
+
+    .transform-row {
+      min-height: 52px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .transform-button {
+      min-height: 52px;
+      padding: 0 6px;
+      border-right: 1px solid #e5e0e2;
+      color: #4d4648;
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 16px;
+      text-align: center;
+    }
+
+    .transform-button:last-child {
+      border-right: 0;
+    }
+
+    .tool-tabs {
+      min-height: 66px;
+      margin-top: auto;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border-top: 1px solid #d8d2d4;
+      background: #fbfafb;
+    }
+
+    .tool-tab {
+      position: relative;
+      min-height: 66px;
+      color: #746b6e;
+      font-size: 13px;
+      font-weight: 500;
+      text-align: center;
+    }
+
+    .tool-tab.active {
+      color: #bd315d;
+      font-weight: 700;
+    }
+
+    .tool-tab.active::before {
+      position: absolute;
+      top: -1px;
+      left: 16px;
+      right: 16px;
+      height: 3px;
+      content: "";
+      background: #bd315d;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <button class="cancel" type="button">Discard</button>
+      <div class="title-wrap">
+        <h1 class="title">Crop — match day frame</h1>
+        <span class="title-meta">IMG_2481 · 4288 × 4288 · RAW</span>
+      </div>
+      <button class="done" type="button">Export</button>
+    </header>
+
+    <main>
+      <section class="preview" aria-label="Frame crop preview">
+        <div class="image-stage">
+          <img src="https://loremflickr.com/270/270/running?lock=1810" width="270" height="270" alt="Runner training on an outdoor path">
+          <div class="shade shade-top"></div>
+          <div class="shade shade-bottom"></div>
+          <div class="shade shade-left"></div>
+          <div class="shade shade-right"></div>
+          <div class="crop-frame" aria-hidden="true">
+            <span class="grid-v one"></span>
+            <span class="grid-v two"></span>
+            <span class="grid-h one"></span>
+            <span class="grid-h two"></span>
+            <span class="handle tl"></span>
+            <span class="handle tr"></span>
+            <span class="handle br"></span>
+            <span class="handle bl"></span>
+          </div>
+        </div>
+        <p class="preview-help">Thirds guide on · Print safe area shown</p>
+      </section>
+
+      <section class="crop-panel" aria-labelledby="crop-heading">
+        <div class="panel-heading">
+          <h2 id="crop-heading">Crop &amp; perspective</h2>
+          <button class="reset" type="button">Reset all</button>
+        </div>
+
+        <div class="panel-row guides-row">
+          <span class="row-label">Guides</span>
+          <div class="chips" aria-label="Overlay guides">
+            <button class="chip selected" type="button">Thirds</button>
+            <button class="chip" type="button">Golden</button>
+            <button class="chip" type="button">Diagonals</button>
+            <button class="chip" type="button">Off</button>
+          </div>
+        </div>
+
+        <div class="panel-row delivery-row">
+          <span class="row-label">Delivery</span>
+          <div class="chips" aria-label="Delivery preset">
+            <button class="chip" type="button">Press 3:2</button>
+            <button class="chip selected" type="button">Roster 1:1</button>
+            <button class="chip" type="button">Web 16:9</button>
+          </div>
+        </div>
+
+        <div class="frame-row" aria-label="Frame measurements">
+          <span class="field"><span class="k">Crop width</span><span class="v">2048 px</span></span>
+          <span class="field"><span class="k">Crop height</span><span class="v">2048 px</span></span>
+          <span class="field"><span class="k">Density</span><span class="v">300 dpi</span></span>
+        </div>
+
+        <div class="control-row roll">
+          <span class="control-name">Roll</span>
+          <div class="slider" aria-label="Roll set to positive 2.4 degrees">
+            <span class="slider-track"></span>
+            <span class="slider-fill"></span>
+            <span class="slider-thumb"></span>
+          </div>
+          <span class="control-value">+2.4°</span>
+        </div>
+
+        <div class="control-row keyh">
+          <span class="control-name">Keystone H</span>
+          <div class="slider" aria-label="Horizontal keystone set to zero">
+            <span class="slider-track"></span>
+            <span class="slider-fill"></span>
+            <span class="slider-thumb"></span>
+          </div>
+          <span class="control-value">0.0</span>
+        </div>
+
+        <div class="control-row keyv">
+          <span class="control-name">Keystone V</span>
+          <div class="slider" aria-label="Vertical keystone set to negative 6">
+            <span class="slider-track"></span>
+            <span class="slider-fill"></span>
+            <span class="slider-thumb"></span>
+          </div>
+          <span class="control-value">−6.0</span>
+        </div>
+
+        <div class="transform-row" aria-label="Orientation controls">
+          <button class="transform-button" type="button">Rotate 90° CCW</button>
+          <button class="transform-button" type="button">Flip H</button>
+          <button class="transform-button" type="button">Flip V</button>
+        </div>
+      </section>
+    </main>
+
+    <nav class="tool-tabs" aria-label="Photo editing tools">
+      <button class="tool-tab active" type="button" aria-current="page">Crop</button>
+      <button class="tool-tab" type="button">Tone</button>
+      <button class="tool-tab" type="button">Color</button>
+      <button class="tool-tab" type="button">Metadata</button>
+    </nav>
+  </div>
+</body>
+</html>

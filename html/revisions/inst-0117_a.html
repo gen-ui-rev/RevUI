@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Northpane Team Focus Report</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 24px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #d4d4d8;
+      color: #27272a;
+      font-family: 'Source Serif 4', Georgia, serif;
+    }
+
+    button {
+      font: inherit;
+      color: inherit;
+      cursor: pointer;
+    }
+
+    .screen {
+      width: 1024px;
+      height: 768px;
+      display: flex;
+      overflow: hidden;
+      background: #f4f4f5;
+      box-shadow: 0 18px 44px rgba(39, 39, 42, 0.18);
+    }
+
+    /* ---------- sidebar ---------- */
+    .sidebar {
+      width: 224px;
+      flex: 0 0 224px;
+      display: flex;
+      flex-direction: column;
+      padding: 16px 12px;
+      background: #ffffff;
+      border-right: 1px solid #e4e4e7;
+    }
+
+    .identity {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+      padding: 0 4px;
+    }
+
+    .product-mark {
+      width: 34px;
+      height: 34px;
+      flex: 0 0 34px;
+      display: grid;
+      place-items: center;
+      border-radius: 6px;
+      background: #27272a;
+      color: #ffffff;
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .identity-copy {
+      min-width: 0;
+    }
+
+    .product-name {
+      font-size: 16px;
+      line-height: 18px;
+      font-weight: 600;
+    }
+
+    .workspace-name {
+      overflow: hidden;
+      color: #71717a;
+      font-size: 12px;
+      line-height: 16px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .side-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      margin-top: 20px;
+    }
+
+    .side-nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      padding: 9px 10px;
+      border: 0;
+      border-radius: 6px;
+      background: transparent;
+      color: #52525b;
+      font-size: 14px;
+      line-height: 20px;
+      text-align: left;
+    }
+
+    .side-nav-item svg {
+      width: 18px;
+      height: 18px;
+      flex: 0 0 18px;
+      stroke: currentColor;
+    }
+
+    .side-nav-item.active {
+      background: #e4e4e7;
+      color: #18181b;
+      font-weight: 600;
+    }
+
+    .side-note {
+      margin-top: auto;
+      padding: 10px 4px 0;
+      border-top: 1px solid #e4e4e7;
+      color: #71717a;
+      font-size: 12px;
+      line-height: 17px;
+    }
+
+    .side-note strong {
+      display: block;
+      color: #3f3f46;
+      font-weight: 600;
+    }
+
+    /* ---------- workspace column ---------- */
+    .workspace {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 11px 24px;
+      background: #ffffff;
+      border-bottom: 1px solid #e4e4e7;
+    }
+
+    .crumbs {
+      color: #71717a;
+      font-size: 13px;
+      line-height: 18px;
+      white-space: nowrap;
+    }
+
+    .crumbs strong {
+      color: #27272a;
+      font-weight: 600;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .search-field {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 250px;
+      height: 34px;
+      padding: 0 10px;
+      border: 1px solid #d4d4d8;
+      border-radius: 6px;
+      background: #ffffff;
+      color: #a1a1aa;
+      font-size: 13px;
+      line-height: 18px;
+    }
+
+    .search-field svg {
+      width: 16px;
+      height: 16px;
+      flex: 0 0 16px;
+      stroke: #71717a;
+      fill: none;
+    }
+
+    .icon-button {
+      width: 34px;
+      height: 34px;
+      padding: 0;
+      display: grid;
+      place-items: center;
+      border: 1px solid #e4e4e7;
+      border-radius: 6px;
+      background: #ffffff;
+    }
+
+    .icon-button svg {
+      width: 18px;
+      height: 18px;
+      stroke: #52525b;
+    }
+
+    .section-tabs {
+      display: flex;
+      padding: 0 24px;
+      background: #ffffff;
+      border-bottom: 1px solid #e4e4e7;
+    }
+
+    .section-tab {
+      position: relative;
+      flex: 0 0 auto;
+      margin-right: 26px;
+      padding: 12px 2px 11px;
+      border: 0;
+      background: transparent;
+      color: #71717a;
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .section-tab.active {
+      color: #18181b;
+      font-weight: 600;
+    }
+
+    .section-tab.active::after {
+      position: absolute;
+      right: 0;
+      bottom: -1px;
+      left: 0;
+      height: 2px;
+      background: #3f3f46;
+      content: "";
+    }
+
+    main {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      padding: 20px 24px 24px;
+    }
+
+    .page-heading {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .page-heading h1 {
+      margin: 0;
+      color: #18181b;
+      font-size: 22px;
+      line-height: 26px;
+      font-weight: 600;
+    }
+
+    .page-heading p {
+      margin: 2px 0 0;
+      color: #71717a;
+      font-size: 14px;
+      line-height: 18px;
+    }
+
+    .heading-actions {
+      flex: 0 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .date-control {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 11px;
+      border: 1px solid #d4d4d8;
+      border-radius: 6px;
+      background: #ffffff;
+      color: #3f3f46;
+      font-size: 13px;
+      line-height: 18px;
+      white-space: nowrap;
+    }
+
+    .date-control svg {
+      width: 15px;
+      height: 15px;
+      stroke: currentColor;
+      fill: none;
+    }
+
+    .export-button {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 14px;
+      border: 1px solid #27272a;
+      border-radius: 6px;
+      background: #27272a;
+      color: #ffffff;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .export-button svg {
+      width: 16px;
+      height: 16px;
+      stroke: #ffffff;
+      fill: none;
+    }
+
+    .card-row {
+      display: grid;
+      grid-template-columns: 1fr 240px;
+      gap: 16px;
+      margin-top: 16px;
+      align-items: stretch;
+    }
+
+    .chart-card,
+    .summary-card {
+      padding: 16px;
+      border: 1px solid #e4e4e7;
+      border-radius: 6px;
+      background: #ffffff;
+      box-shadow: 0 4px 14px rgba(39, 39, 42, 0.06);
+    }
+
+    .chart-card-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .chart-card-header h2 {
+      margin: 0;
+      color: #3f3f46;
+      font-size: 15px;
+      line-height: 18px;
+      font-weight: 600;
+    }
+
+    .chart-card-header p {
+      margin: 1px 0 0;
+      color: #71717a;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .legend {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      color: #52525b;
+      font-size: 12px;
+      line-height: 18px;
+      white-space: nowrap;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .legend-bar {
+      width: 12px;
+      height: 8px;
+      background: #52525b;
+    }
+
+    .legend-bar.weekend {
+      background: #d4d4d8;
+    }
+
+    .legend-line {
+      width: 15px;
+      height: 0;
+      border-top: 2px dashed #a1a1aa;
+    }
+
+    .chart {
+      width: 100%;
+      height: 270px;
+      display: block;
+      margin-top: 4px;
+    }
+
+    .chart text {
+      fill: #71717a;
+      font-family: 'Source Serif 4', Georgia, serif;
+      font-size: 11px;
+    }
+
+    .summary-card h2 {
+      margin: 0;
+      color: #3f3f46;
+      font-size: 15px;
+      line-height: 18px;
+      font-weight: 600;
+    }
+
+    .summary-metric {
+      margin-top: 6px;
+      color: #18181b;
+      font-size: 30px;
+      line-height: 38px;
+      font-weight: 600;
+    }
+
+    .summary-sub {
+      color: #71717a;
+      font-size: 12px;
+      line-height: 17px;
+    }
+
+    .summary-row {
+      margin-top: 9px;
+      padding-top: 9px;
+      border-top: 1px solid #e4e4e7;
+    }
+
+    .summary-row span {
+      display: block;
+      color: #71717a;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .summary-row strong {
+      display: block;
+      color: #27272a;
+      font-size: 14px;
+      line-height: 19px;
+      font-weight: 600;
+    }
+
+    .contributors {
+      margin-top: 16px;
+    }
+
+    .contributors-heading {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    .contributors-heading h2 {
+      margin: 0;
+      color: #27272a;
+      font-size: 16px;
+      line-height: 21px;
+      font-weight: 600;
+    }
+
+    .contributors-heading span {
+      color: #71717a;
+      font-size: 12px;
+      line-height: 17px;
+    }
+
+    .contributor-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .contributor-card {
+      display: grid;
+      grid-template-columns: 30px minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border: 1px solid #e4e4e7;
+      border-radius: 6px;
+      background: #ffffff;
+    }
+
+    .monogram {
+      width: 30px;
+      height: 30px;
+      display: grid;
+      place-items: center;
+      border-radius: 6px;
+      background: #e4e4e7;
+      color: #3f3f46;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .person-copy {
+      min-width: 0;
+    }
+
+    .person-name {
+      overflow: hidden;
+      color: #27272a;
+      font-size: 14px;
+      line-height: 17px;
+      font-weight: 600;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .person-role {
+      overflow: hidden;
+      color: #71717a;
+      font-size: 12px;
+      line-height: 15px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .person-value {
+      text-align: right;
+    }
+
+    .person-hours {
+      color: #27272a;
+      font-size: 14px;
+      line-height: 17px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .person-share {
+      color: #71717a;
+      font-size: 12px;
+      line-height: 15px;
+      white-space: nowrap;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <aside class="sidebar">
+      <div class="identity">
+        <div class="product-mark" aria-hidden="true">N</div>
+        <div class="identity-copy">
+          <div class="product-name">Northpane</div>
+          <div class="workspace-name">Alder Product Team</div>
+        </div>
+      </div>
+
+      <nav class="side-nav" aria-label="Primary navigation">
+        <button class="side-nav-item" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 10.5L12 4l8 6.5"></path>
+            <path d="M6.5 9.5V20h11V9.5"></path>
+            <path d="M10 20v-6h4v6"></path>
+          </svg>
+          Home
+        </button>
+        <button class="side-nav-item" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="4" y="5" width="16" height="15" rx="1"></rect>
+            <path d="M8 3v4M16 3v4M4 10h16"></path>
+          </svg>
+          Work
+        </button>
+        <button class="side-nav-item active" type="button" aria-current="page">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 20V11h3v9M10.5 20V5h3v15M16 20v-7h3v7"></path>
+            <path d="M3 20h18"></path>
+          </svg>
+          Reports
+        </button>
+        <button class="side-nav-item" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="9" cy="8" r="3"></circle>
+            <circle cx="17" cy="9" r="2.5"></circle>
+            <path d="M3.5 20c.4-4 2.1-6 5.5-6s5.1 2 5.5 6"></path>
+            <path d="M14 15.2c3.8-.5 5.8 1.1 6.5 4.8"></path>
+          </svg>
+          Team
+        </button>
+        <button class="side-nav-item" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"></path>
+          </svg>
+          Settings
+        </button>
+      </nav>
+
+      <div class="side-note">
+        <strong>Report refreshed 9:40 AM</strong>
+        Calendar data through Mar 16, 2025
+      </div>
+    </aside>
+
+    <div class="workspace">
+      <header class="topbar">
+        <div class="crumbs">Reports <span aria-hidden="true">/</span> <strong>Team focus</strong></div>
+        <div class="top-actions">
+          <div class="search-field">
+            <svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round">
+              <circle cx="11" cy="11" r="6.5"></circle>
+              <path d="M16 16l4 4"></path>
+            </svg>
+            Search reports and people
+          </div>
+          <button class="icon-button" type="button" aria-label="Report options">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round">
+              <circle cx="5" cy="12" r="1"></circle>
+              <circle cx="12" cy="12" r="1"></circle>
+              <circle cx="19" cy="12" r="1"></circle>
+            </svg>
+          </button>
+        </div>
+      </header>
+
+      <nav class="section-tabs" aria-label="Report sections">
+        <button class="section-tab" type="button">Activity</button>
+        <button class="section-tab active" type="button" aria-current="page">Focus</button>
+        <button class="section-tab" type="button">Meetings</button>
+      </nav>
+
+      <main>
+        <section class="page-heading" aria-labelledby="page-title">
+          <div>
+            <h1 id="page-title">Team focus time</h1>
+            <p>Protected work hours across six teammates</p>
+          </div>
+          <div class="heading-actions">
+            <button class="date-control" type="button" aria-label="Date range, March 3 through March 16, 2025">
+              <svg viewBox="0 0 20 20" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="4.5" width="14" height="12" rx="1"></rect>
+                <path d="M7 3v3M13 3v3M3 8.5h14"></path>
+              </svg>
+              Mar 3–16, 2025
+              <svg viewBox="0 0 20 20" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M6 8l4 4 4-4"></path>
+              </svg>
+            </button>
+            <button class="export-button" type="button">
+              <svg viewBox="0 0 20 20" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M10 3v9M6.5 8.5L10 12l3.5-3.5"></path>
+                <path d="M4 15h12"></path>
+              </svg>
+              Export report
+            </button>
+          </div>
+        </section>
+
+        <div class="card-row">
+          <section class="chart-card" aria-labelledby="chart-title">
+            <div class="chart-card-header">
+              <div>
+                <h2 id="chart-title">Completed focus hours</h2>
+                <p>Daily total, Mar 3 – Mar 16</p>
+              </div>
+              <div class="legend" aria-label="Chart legend">
+                <span class="legend-item"><span class="legend-bar" aria-hidden="true"></span>Workday</span>
+                <span class="legend-item"><span class="legend-bar weekend" aria-hidden="true"></span>Weekend</span>
+                <span class="legend-item"><span class="legend-line" aria-hidden="true"></span>Daily goal</span>
+              </div>
+            </div>
+
+            <svg class="chart" viewBox="0 0 464 270" role="img" aria-label="Bar chart of completed team focus hours from March 3 through March 16, with a daily goal of five hours">
+              <line x1="30" y1="30" x2="456" y2="30" stroke="#e4e4e7" stroke-width="1"/>
+              <line x1="30" y1="80" x2="456" y2="80" stroke="#e4e4e7" stroke-width="1"/>
+              <line x1="30" y1="130" x2="456" y2="130" stroke="#e4e4e7" stroke-width="1"/>
+              <line x1="30" y1="180" x2="456" y2="180" stroke="#e4e4e7" stroke-width="1"/>
+              <line x1="30" y1="230" x2="456" y2="230" stroke="#d4d4d8" stroke-width="1"/>
+
+              <text x="4" y="34">8h</text>
+              <text x="4" y="84">6h</text>
+              <text x="4" y="134">4h</text>
+              <text x="4" y="184">2h</text>
+
+              <line x1="30" y1="105" x2="456" y2="105" stroke="#a1a1aa" stroke-width="1.5" stroke-dasharray="4 4"/>
+              <text x="36" y="100">5h goal</text>
+
+              <rect x="38" y="114" width="16" height="116" fill="#52525b"/>
+              <rect x="68" y="101" width="16" height="129" fill="#52525b"/>
+              <rect x="98" y="137" width="16" height="93" fill="#52525b"/>
+              <rect x="128" y="91" width="16" height="139" fill="#52525b"/>
+              <rect x="158" y="126" width="16" height="104" fill="#52525b"/>
+              <rect x="188" y="204" width="16" height="26" fill="#d4d4d8"/>
+              <rect x="218" y="213" width="16" height="17" fill="#d4d4d8"/>
+              <rect x="248" y="121" width="16" height="109" fill="#52525b"/>
+              <rect x="278" y="108" width="16" height="122" fill="#52525b"/>
+              <rect x="308" y="86" width="16" height="144" fill="#18181b"/>
+              <rect x="338" y="134" width="16" height="96" fill="#52525b"/>
+              <rect x="368" y="98" width="16" height="132" fill="#52525b"/>
+              <rect x="398" y="197" width="16" height="33" fill="#d4d4d8"/>
+              <rect x="428" y="207" width="16" height="23" fill="#d4d4d8"/>
+
+              <text x="32" y="250">Mar 3</text>
+              <text x="130" y="250">6</text>
+              <text x="248" y="250">10</text>
+              <text x="338" y="250">13</text>
+              <text x="428" y="250">16</text>
+
+              <text x="288" y="79" fill="#27272a">6h 50m</text>
+            </svg>
+          </section>
+
+          <section class="summary-card" aria-labelledby="summary-title">
+            <h2 id="summary-title">Period summary</h2>
+            <div class="summary-metric">67h 40m</div>
+            <div class="summary-sub">96% of the 70h team goal</div>
+            <div class="summary-row">
+              <span>Daily average</span>
+              <strong>4h 50m</strong>
+            </div>
+            <div class="summary-row">
+              <span>Goal reached</span>
+              <strong>8 of 10 workdays</strong>
+            </div>
+            <div class="summary-row">
+              <span>Vs. prior period</span>
+              <strong>+2h 10m</strong>
+            </div>
+            <div class="summary-row">
+              <span>Best day</span>
+              <strong>Mar 12 · 6h 50m</strong>
+            </div>
+          </section>
+        </div>
+
+        <section class="contributors" aria-labelledby="contributors-title">
+          <div class="contributors-heading">
+            <h2 id="contributors-title">Top contributors</h2>
+            <span>All six teammates · Mar 3–16, 2025</span>
+          </div>
+          <div class="contributor-grid">
+            <div class="contributor-card">
+              <div class="monogram" aria-hidden="true">MB</div>
+              <div class="person-copy">
+                <div class="person-name">Mara Bell</div>
+                <div class="person-role">Product design</div>
+              </div>
+              <div class="person-value">
+                <div class="person-hours">13h 25m</div>
+                <div class="person-share">20%</div>
+              </div>
+            </div>
+            <div class="contributor-card">
+              <div class="monogram" aria-hidden="true">CT</div>
+              <div class="person-copy">
+                <div class="person-name">Caleb Tate</div>
+                <div class="person-role">Engineering</div>
+              </div>
+              <div class="person-value">
+                <div class="person-hours">12h 50m</div>
+                <div class="person-share">19%</div>
+              </div>
+            </div>
+            <div class="contributor-card">
+              <div class="monogram" aria-hidden="true">EW</div>
+              <div class="person-copy">
+                <div class="person-name">Elena Ward</div>
+                <div class="person-role">Research</div>
+              </div>
+              <div class="person-value">
+                <div class="person-hours">11h 40m</div>
+                <div class="person-share">17%</div>
+              </div>
+            </div>
+            <div class="contributor-card">
+              <div class="monogram" aria-hidden="true">JN</div>
+              <div class="person-copy">
+                <div class="person-name">Jonah Nash</div>
+                <div class="person-role">Product management</div>
+              </div>
+              <div class="person-value">
+                <div class="person-hours">10h 55m</div>
+                <div class="person-share">16%</div>
+              </div>
+            </div>
+            <div class="contributor-card">
+              <div class="monogram" aria-hidden="true">PR</div>
+              <div class="person-copy">
+                <div class="person-name">Priya Raman</div>
+                <div class="person-role">Engineering</div>
+              </div>
+              <div class="person-value">
+                <div class="person-hours">9h 50m</div>
+                <div class="person-share">15%</div>
+              </div>
+            </div>
+            <div class="contributor-card">
+              <div class="monogram" aria-hidden="true">TO</div>
+              <div class="person-copy">
+                <div class="person-name">Tom Okafor</div>
+                <div class="person-role">Data science</div>
+              </div>
+              <div class="person-value">
+                <div class="person-hours">9h 00m</div>
+                <div class="person-share">13%</div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+</body>
+</html>

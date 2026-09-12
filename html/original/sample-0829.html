@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verbloom Sentence Annotation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #e4e7eb;
+      color: #1d2733;
+      font-family: 'Poppins', system-ui, sans-serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      padding: 24px 20px;
+      background: #f2f4f6;
+    }
+
+    .editor {
+      width: 100%;
+      background: #ffffff;
+      border-radius: 4px;
+      box-shadow: 0 8px 24px rgba(29, 39, 51, 0.09);
+    }
+
+    .editor-header {
+      padding: 18px 18px 15px;
+      border-bottom: 1px solid #e4e8ed;
+    }
+
+    .eyebrow {
+      margin: 0 0 3px;
+      color: #2563c9;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      color: #18212b;
+      font-size: 21px;
+      line-height: 1.35;
+      font-weight: 600;
+    }
+
+    .lesson-meta {
+      margin: 4px 0 0;
+      color: #657181;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .tool-section {
+      padding: 13px 16px 14px;
+      border-bottom: 1px solid #e4e8ed;
+    }
+
+    .section-label {
+      margin: 0 0 8px;
+      color: #536170;
+      font-size: 12px;
+      line-height: 1.4;
+      font-weight: 500;
+    }
+
+    .tools {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 7px;
+    }
+
+    .tool {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      padding: 8px 5px;
+      border: 1px solid #d7dde4;
+      border-radius: 4px;
+      background: #ffffff;
+      color: #44515f;
+      font-size: 12px;
+      line-height: 1.4;
+      font-weight: 500;
+    }
+
+    .tool svg {
+      width: 17px;
+      height: 17px;
+      flex: 0 0 auto;
+    }
+
+    .tool.active {
+      border-color: #2563c9;
+      background: #2563c9;
+      color: #ffffff;
+    }
+
+    .workspace {
+      padding: 14px 16px 15px;
+      background: #f8f9fa;
+      border-bottom: 1px solid #e4e8ed;
+    }
+
+    .instruction {
+      margin: 0 0 11px;
+      color: #273442;
+      font-size: 14px;
+      line-height: 1.5;
+      font-weight: 500;
+    }
+
+    .paper {
+      position: relative;
+      padding: 14px 15px 15px;
+      border: 1px solid #dfe4e9;
+      border-radius: 4px;
+      background: #ffffff;
+    }
+
+    .question-number {
+      margin: 0 0 10px;
+      color: #778390;
+      font-size: 12px;
+      line-height: 1.4;
+      font-weight: 500;
+    }
+
+    .sentence {
+      position: relative;
+      z-index: 1;
+      margin: 0;
+      color: #1d2733;
+      font-size: 16px;
+      line-height: 1.8;
+      font-weight: 400;
+    }
+
+    .hint {
+      position: relative;
+      z-index: 1;
+      margin: 10px 0 0;
+      color: #778390;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .annotation {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    .canvas-status {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 9px;
+      color: #657181;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .canvas-status svg {
+      width: 15px;
+      height: 15px;
+      color: #2563c9;
+      flex: 0 0 auto;
+    }
+
+    .actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 13px 16px;
+    }
+
+    .clear-button,
+    .submit-button {
+      border-radius: 4px;
+      font-size: 14px;
+      line-height: 1.5;
+      font-weight: 500;
+    }
+
+    .clear-button {
+      padding: 8px 4px;
+      border: 0;
+      background: transparent;
+      color: #5e6a78;
+    }
+
+    .submit-button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      padding: 9px 14px;
+      border: 1px solid #2563c9;
+      background: #2563c9;
+      color: #ffffff;
+    }
+
+    .submit-button svg {
+      width: 16px;
+      height: 16px;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <main class="editor" aria-label="Verbloom sentence annotation exercise">
+      <header class="editor-header">
+        <p class="eyebrow">Verbloom Practice · 4 of 6</p>
+        <h1>Annotate this sentence</h1>
+        <p class="lesson-meta">Grammar review · Dependent clauses</p>
+      </header>
+
+      <section class="tool-section" aria-labelledby="tool-label">
+        <p class="section-label" id="tool-label">Annotation tools</p>
+        <div class="tools" role="toolbar" aria-label="Drawing tools">
+          <button class="tool active" type="button" aria-pressed="true">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M4 20l4.2-1 10.6-10.6a2 2 0 0 0 0-2.8l-.4-.4a2 2 0 0 0-2.8 0L5 15.8 4 20Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+              <path d="m14.5 6.3 3.2 3.2" stroke="currentColor" stroke-width="1.8"/>
+            </svg>
+            Pen
+          </button>
+          <button class="tool" type="button">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="m5 15 8.8-8.8 4 4L9 19H5v-4Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+              <path d="M12.2 7.8 16.2 12M4 21h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+            </svg>
+            Mark
+          </button>
+          <button class="tool" type="button">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <rect x="5" y="5" width="14" height="14" rx="1" stroke="currentColor" stroke-width="1.8"/>
+              <circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.8"/>
+            </svg>
+            Shape
+          </button>
+          <button class="tool" type="button">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="m7.2 17.8-3-3a2 2 0 0 1 0-2.8l6.8-6.8a2 2 0 0 1 2.8 0l5 5a2 2 0 0 1 0 2.8L14 17.8H7.2Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+              <path d="m9 7.2 7.8 7.8M13.5 17.8H20" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+            </svg>
+            Erase
+          </button>
+        </div>
+      </section>
+
+      <section class="workspace" aria-label="Sentence canvas">
+        <p class="instruction">Underline the dependent clause, then circle the conjunction.</p>
+
+        <div class="paper">
+          <p class="question-number">Sentence 4</p>
+          <p class="sentence">Although it was raining, the class continued outside.</p>
+          <p class="hint">Use blue ink to mark both parts.</p>
+
+          <svg class="annotation" viewBox="0 0 316 138" preserveAspectRatio="none" fill="none" aria-hidden="true">
+            <path d="M17 84 C52 87, 92 84, 137 86" stroke="#2563c9" stroke-width="3" stroke-linecap="round"/>
+            <path d="M16 50 C24 43, 72 42, 87 48 C94 52, 94 65, 86 69 C69 74, 31 73, 18 67 C11 63, 10 55, 16 50Z" stroke="#2563c9" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+
+        <div class="canvas-status">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="m5 12 4 4L19 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Draft saved at 2:14 PM
+        </div>
+      </section>
+
+      <footer class="actions">
+        <button class="clear-button" type="button">Clear marks</button>
+        <button class="submit-button" type="button">
+          Submit answer
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="m9 5 7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </footer>
+    </main>
+  </div>
+</body>
+</html>

@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Ledgerly — Quiz</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --sky:#0284c7;
+    --sky-deep:#075985;
+    --sky-soft:#eff8fe;
+    --ink:#141a20;
+    --muted:#6b7580;
+    --line:#e4e7eb;
+  }
+  *{box-sizing:border-box;}
+  body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    padding:40px 0;
+    margin:0;
+    background:#d9dde1;
+    font-family:'Source Serif 4', Georgia, serif;
+    color:var(--ink);
+  }
+  .screen{
+    width:390px;
+    height:844px;
+    background:#f2f4f6;
+    display:flex;
+    flex-direction:column;
+    position:relative;
+  }
+
+  /* top bar */
+  .topbar{
+    background:#ffffff;
+    padding:16px 18px 12px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .iconbtn{
+    width:28px;height:28px;
+    display:flex;align-items:center;justify-content:center;
+    color:#4b5560;
+    flex:0 0 auto;
+  }
+  .iconbtn.flagbtn{
+    border:1px solid var(--line);
+    border-radius:6px;
+    color:var(--sky);
+  }
+  .topbar h1{
+    font-size:16px;
+    font-weight:600;
+    margin:0;
+    flex:1;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .counter{
+    font-size:13px;
+    color:var(--muted);
+    flex:0 0 auto;
+  }
+
+  /* progress — high contrast rail */
+  .progress{
+    background:#ffffff;
+    padding:0 18px 14px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .rail{
+    flex:1;
+    height:10px;
+    border-radius:999px;
+    background:#c9d2da;
+    box-shadow:inset 0 1px 2px rgba(16,24,40,.22);
+    overflow:hidden;
+  }
+  .rail span{
+    display:block;
+    height:100%;
+    width:43.75%;
+    border-radius:999px;
+    background:linear-gradient(90deg,var(--sky),var(--sky-deep));
+    box-shadow:0 0 0 1px rgba(7,89,133,.35);
+  }
+  .pct{
+    font-size:12px;
+    font-weight:700;
+    color:var(--sky-deep);
+    flex:0 0 auto;
+  }
+
+  /* body */
+  .main{
+    flex:1;
+    padding:18px 18px 0;
+    display:flex;
+    flex-direction:column;
+  }
+  .card{
+    background:#fff;
+    border-radius:6px;
+    box-shadow:0 1px 3px rgba(16,24,40,.10);
+    padding:18px;
+  }
+  .metarow{
+    display:flex;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:8px;
+    margin:0 0 10px;
+  }
+  .eyebrow{
+    font-size:12px;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    color:var(--sky);
+    margin:0;
+    font-weight:600;
+  }
+  .chip{
+    font-size:11px;
+    letter-spacing:.04em;
+    text-transform:uppercase;
+    padding:3px 8px;
+    border-radius:999px;
+    font-weight:600;
+  }
+  .chip.diff{
+    background:#fef3e2;
+    color:#a45a08;
+    border:1px solid #f6dcb8;
+  }
+  .chip.pts{
+    background:var(--sky-soft);
+    color:var(--sky-deep);
+    border:1px solid #cbe8f8;
+    margin-left:auto;
+  }
+  .question{
+    font-size:19px;
+    line-height:1.42;
+    font-weight:600;
+    margin:0;
+  }
+  .hint{
+    font-size:13px;
+    color:var(--muted);
+    margin:10px 0 0;
+    line-height:1.45;
+  }
+
+  .options{
+    margin-top:18px;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  .opt{
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:6px;
+    box-shadow:0 1px 3px rgba(16,24,40,.06);
+    padding:14px 14px;
+    display:flex;
+    align-items:center;
+    gap:12px;
+  }
+  .opt .mark{
+    width:26px;height:26px;
+    flex:0 0 auto;
+    border:1px solid var(--line);
+    border-radius:6px;
+    display:flex;align-items:center;justify-content:center;
+    font-size:13px;
+    color:var(--muted);
+  }
+  .opt .label{
+    font-size:16px;
+  }
+  .opt .note{
+    margin-left:auto;
+    font-size:13px;
+    color:var(--muted);
+  }
+  .opt.selected{
+    border:1.5px solid var(--sky);
+    background:var(--sky-soft);
+    padding:13.5px 13.5px;
+  }
+  .opt.selected .mark{
+    background:var(--sky);
+    border-color:var(--sky);
+    color:#fff;
+    font-weight:600;
+  }
+  .opt.selected .label{font-weight:600;}
+
+  .footer{
+    padding:0 18px 14px;
+  }
+  .submit{
+    width:100%;
+    background:var(--sky);
+    color:#fff;
+    border:none;
+    border-radius:6px;
+    padding:15px 0;
+    font-family:inherit;
+    font-size:16px;
+    font-weight:600;
+    text-align:center;
+  }
+  .skip{
+    text-align:center;
+    font-size:14px;
+    color:var(--muted);
+    margin:12px 0 0;
+  }
+
+  /* tab bar */
+  .tabs{
+    background:#fff;
+    border-top:1px solid var(--line);
+    display:flex;
+    padding:10px 0 16px;
+  }
+  .tab{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:4px;
+    font-size:12px;
+    color:#8a939d;
+  }
+  .tab.active{color:var(--sky);}
+</style>
+</head>
+<body>
+  <div class="screen">
+
+    <div class="topbar">
+      <div class="iconbtn" aria-hidden="true">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </div>
+      <h1>Interest &amp; Growth</h1>
+      <div class="counter">4 of 8</div>
+      <div class="iconbtn flagbtn" title="Mark for later" aria-hidden="true">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 21V4h12l-2.5 5L18 14H6"/></svg>
+      </div>
+    </div>
+
+    <div class="progress">
+      <div class="rail"><span></span></div>
+      <div class="pct">44%</div>
+    </div>
+
+    <div class="main">
+      <div class="card">
+        <div class="metarow">
+          <p class="eyebrow">Compound interest</p>
+          <span class="chip diff">Intermediate</span>
+          <span class="chip pts">20 pts</span>
+        </div>
+        <p class="question">You deposit $2,000 in a savings account earning 4.00% APY, compounded annually. You add nothing and withdraw nothing. What is the balance after two years?</p>
+        <p class="hint">Round to the nearest cent. Interest earned in year one also earns interest in year two.</p>
+      </div>
+
+      <div class="options">
+        <div class="opt">
+          <div class="mark">A</div>
+          <div class="label">$2,080.00</div>
+        </div>
+        <div class="opt">
+          <div class="mark">B</div>
+          <div class="label">$2,160.00</div>
+        </div>
+        <div class="opt selected">
+          <div class="mark">C</div>
+          <div class="label">$2,163.20</div>
+          <div class="note">Selected</div>
+        </div>
+        <div class="opt">
+          <div class="mark">D</div>
+          <div class="label">$2,240.00</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <button class="submit">Check answer</button>
+      <p class="skip">Skip for now</p>
+    </div>
+
+    <div class="tabs">
+      <div class="tab">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 4l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/></svg>
+        Accounts
+      </div>
+      <div class="tab active">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h6a2 2 0 0 1 2 2v12a2 2 0 0 0-2-2H4zM20 5h-6a2 2 0 0 0-2 2v12a2 2 0 0 1 2-2h6z"/></svg>
+        Learn
+      </div>
+      <div class="tab">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 18V9M10 18v-6M16 18v-9M22 18V6M2 21h20"/></svg>
+        Invest
+      </div>
+      <div class="tab">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8.5" r="3.8"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0"/></svg>
+        Profile
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

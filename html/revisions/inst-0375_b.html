@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Loopside — Reminder</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --green:#1B8A4B;
+    --tint:rgba(27,138,75,0.10);
+    --tint-strong:rgba(27,138,75,0.18);
+    --ink:#13251C;
+    --muted:#6C7C74;
+    --line:#E4E9E5;
+    --soft:#F6F8F6;
+  }
+  *{box-sizing:border-box;}
+  body{
+    min-height:100vh;
+    margin:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#E7E9E5;
+    font-family:'Poppins',system-ui,sans-serif;
+  }
+  .screen{
+    width:1024px;
+    height:768px;
+    display:flex;
+    flex-direction:column;
+    background:#FFFFFF;
+    color:var(--ink);
+    box-shadow:0 16px 50px rgba(19,37,28,.10);
+  }
+
+  .global-bar{
+    display:flex;
+    align-items:center;
+    padding:14px 28px;
+    border-bottom:1px solid var(--line);
+  }
+  .brand{
+    display:flex;
+    align-items:center;
+    gap:9px;
+    min-width:190px;
+    font-size:17px;
+    font-weight:600;
+  }
+  .brand-mark{
+    width:29px;
+    height:29px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:9px;
+    color:#FFFFFF;
+    background:var(--green);
+    font-size:13px;
+  }
+  .nav{
+    flex:1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+  }
+  .nav-item{
+    display:flex;
+    align-items:center;
+    gap:7px;
+    padding:8px 12px;
+    border-radius:8px;
+    color:#849189;
+    font-size:12px;
+    font-weight:500;
+  }
+  .nav-item.on{
+    color:var(--green);
+    background:var(--tint);
+  }
+  .profile{
+    min-width:190px;
+    display:flex;
+    justify-content:flex-end;
+    align-items:center;
+    gap:9px;
+    color:var(--muted);
+    font-size:12px;
+  }
+  .avatar{
+    width:30px;
+    height:30px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:50%;
+    color:var(--green);
+    background:var(--tint-strong);
+    font-weight:600;
+  }
+
+  .page-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:16px 32px 13px;
+  }
+  .head-left{
+    display:flex;
+    align-items:center;
+    gap:12px;
+  }
+  .back{
+    width:34px;
+    height:34px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:9px;
+    background:var(--soft);
+  }
+  .page-head h1{
+    margin:0;
+    font-size:20px;
+    font-weight:600;
+  }
+  .page-head p{
+    margin:2px 0 0;
+    color:var(--muted);
+    font-size:11px;
+  }
+  .save{
+    padding:9px 18px;
+    border-radius:9px;
+    color:#FFFFFF;
+    background:var(--green);
+    font-size:13px;
+    font-weight:600;
+  }
+
+  .content{
+    flex:1;
+    min-height:0;
+    padding:0 32px 24px;
+  }
+
+  .event-strip{
+    display:grid;
+    grid-template-columns:358px minmax(0,1fr);
+    gap:22px;
+    align-items:center;
+    padding:14px;
+    border:1px solid var(--line);
+    border-radius:13px;
+    background:#FFFFFF;
+  }
+  .event-strip img{
+    display:block;
+    width:358px;
+    height:132px;
+    object-fit:cover;
+    border-radius:10px;
+    background:#CBD5CE;
+  }
+  .event-copy{
+    min-width:0;
+    padding-right:10px;
+  }
+  .event-kicker{
+    color:var(--green);
+    font-size:11px;
+    font-weight:600;
+    text-transform:uppercase;
+    letter-spacing:.5px;
+  }
+  .event-copy h2{
+    margin:4px 0 3px;
+    font-size:20px;
+    font-weight:600;
+  }
+  .event-copy p{
+    margin:0;
+    color:var(--muted);
+    font-size:12px;
+  }
+  .quick-time{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    margin-top:16px;
+  }
+  .time-box{
+    padding:9px 13px;
+    border-radius:9px;
+    background:var(--tint);
+  }
+  .time-box strong{
+    display:block;
+    color:var(--green);
+    font-size:20px;
+    font-weight:600;
+    line-height:1.2;
+  }
+  .time-box span{
+    color:var(--muted);
+    font-size:10px;
+  }
+  .offset{
+    color:var(--ink);
+    font-size:12px;
+    line-height:1.5;
+  }
+
+  .dashboard{
+    display:grid;
+    grid-template-columns:minmax(0,1.45fr) minmax(0,.85fr);
+    gap:18px;
+    margin-top:18px;
+  }
+  .panel{
+    border:1px solid var(--line);
+    border-radius:13px;
+    padding:17px 18px;
+    background:#FFFFFF;
+  }
+  .panel-head{
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:16px;
+  }
+  .panel-head h2{
+    margin:0;
+    font-size:15px;
+    font-weight:600;
+  }
+  .panel-head p{
+    margin:2px 0 0;
+    color:var(--muted);
+    font-size:11px;
+  }
+  .status{
+    padding:4px 9px;
+    border-radius:8px;
+    color:var(--green);
+    background:var(--tint);
+    font-size:11px;
+    font-weight:500;
+  }
+
+  .schedule-board{
+    display:grid;
+    grid-template-columns:174px minmax(0,1fr);
+    gap:18px;
+    margin-top:14px;
+  }
+  .frequency{
+    padding:15px;
+    border-radius:11px;
+    color:#FFFFFF;
+    background:var(--green);
+  }
+  .frequency .label{
+    color:rgba(255,255,255,.76);
+    font-size:10px;
+  }
+  .frequency strong{
+    display:block;
+    margin-top:3px;
+    font-size:22px;
+    font-weight:600;
+  }
+  .frequency span{
+    display:block;
+    margin-top:22px;
+    font-size:11px;
+  }
+
+  .day-picker{
+    min-width:0;
+  }
+  .section-label{
+    margin-bottom:8px;
+    color:var(--muted);
+    font-size:10px;
+    text-transform:uppercase;
+    letter-spacing:.35px;
+  }
+  .days{
+    display:grid;
+    grid-template-columns:repeat(7,1fr);
+    gap:6px;
+  }
+  .day{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    aspect-ratio:1;
+    border:1px solid var(--line);
+    border-radius:8px;
+    color:var(--muted);
+    background:#FFFFFF;
+    font-size:12px;
+  }
+  .day.on{
+    border-color:rgba(27,138,75,.3);
+    color:var(--green);
+    background:var(--tint-strong);
+    font-weight:600;
+  }
+  .frequency-options{
+    display:flex;
+    gap:6px;
+    margin-top:15px;
+  }
+  .chip{
+    padding:7px 9px;
+    border-radius:8px;
+    color:var(--muted);
+    background:var(--soft);
+    font-size:11px;
+    font-weight:500;
+  }
+  .chip.on{
+    color:var(--green);
+    background:var(--tint);
+    box-shadow:inset 0 0 0 1px rgba(27,138,75,.24);
+  }
+  .schedule-meta{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:8px;
+    margin-top:15px;
+  }
+  .meta{
+    padding:10px;
+    border-radius:9px;
+    background:var(--soft);
+  }
+  .meta span{
+    display:block;
+    color:var(--muted);
+    font-size:9px;
+    text-transform:uppercase;
+    letter-spacing:.3px;
+  }
+  .meta strong{
+    display:block;
+    margin-top:3px;
+    font-size:11px;
+    font-weight:500;
+  }
+
+  .date-stack{
+    margin-top:11px;
+  }
+  .date-row{
+    display:grid;
+    grid-template-columns:42px minmax(0,1fr) auto;
+    align-items:center;
+    gap:11px;
+    padding:9px 0;
+    border-bottom:1px solid var(--line);
+    background:#FFFFFF;
+  }
+  .date-row:last-child{border-bottom:0;}
+  .calendar-date{
+    padding:5px 3px;
+    border-radius:7px;
+    color:var(--green);
+    background:var(--tint);
+    text-align:center;
+  }
+  .calendar-date strong{
+    display:block;
+    font-size:14px;
+    line-height:1.05;
+  }
+  .calendar-date span{
+    display:block;
+    font-size:8px;
+    text-transform:uppercase;
+  }
+  .date-copy strong{
+    display:block;
+    font-size:12px;
+    font-weight:500;
+  }
+  .date-copy span{
+    display:block;
+    color:var(--muted);
+    font-size:10px;
+  }
+  .date-time{
+    color:var(--muted);
+    font-size:12px;
+  }
+  .next{
+    color:var(--green);
+    font-weight:500;
+  }
+</style>
+</head>
+<body>
+<div class="screen">
+  <header class="global-bar">
+    <div class="brand">
+      <span class="brand-mark">L</span>
+      Loopside
+    </div>
+
+    <nav class="nav" aria-label="Primary navigation">
+      <div class="nav-item">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5L12 4l8 6.5V20a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1z"/></svg>
+        Feed
+      </div>
+      <div class="nav-item">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="9" r="3.2"/><path d="M3.5 19c.6-3 2.9-4.6 5.5-4.6S13.9 16 14.5 19"/><path d="M16 6.2a3 3 0 0 1 0 5.6"/><path d="M18 14.6c1.8.6 2.9 2.1 3.2 4.4"/></svg>
+        Groups
+      </div>
+      <div class="nav-item on">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9a6 6 0 1 1 12 0c0 4 1.4 5.5 1.4 5.5H4.6S6 13 6 9z"/><path d="M10 18.5a2.2 2.2 0 0 0 4 0"/></svg>
+        Reminders
+      </div>
+      <div class="nav-item">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8.5" r="3.5"/><path d="M4.8 20c.9-3.7 3.7-5.6 7.2-5.6s6.3 1.9 7.2 5.6"/></svg>
+        You
+      </div>
+    </nav>
+
+    <div class="profile">
+      Morgan
+      <span class="avatar">M</span>
+    </div>
+  </header>
+
+  <div class="page-head">
+    <div class="head-left">
+      <span class="back" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#13251C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
+      </span>
+      <div>
+        <h1>Reminder</h1>
+        <p>Edit timing and repeat settings</p>
+      </div>
+    </div>
+    <span class="save">Save changes</span>
+  </div>
+
+  <main class="content">
+    <section class="event-strip">
+      <img src="https://loremflickr.com/358/132/cafe?lock=5321" width="358" height="132" alt="Corner table at the coffee shop where the club meets">
+      <div class="event-copy">
+        <div class="event-kicker">Weekly meetup</div>
+        <h2>Thursday Coffee Club</h2>
+        <p>Halstead Roasters, 4th St</p>
+        <div class="quick-time">
+          <div class="time-box">
+            <strong>7:30 PM</strong>
+            <span>Reminder time</span>
+          </div>
+          <div class="offset">30 minutes before<br>the meetup starts</div>
+        </div>
+      </div>
+    </section>
+
+    <div class="dashboard">
+      <section class="panel">
+        <div class="panel-head">
+          <div>
+            <h2>Repeat settings</h2>
+            <p>The complete schedule is visible here.</p>
+          </div>
+          <span class="status">Repeating</span>
+        </div>
+
+        <div class="schedule-board">
+          <div class="frequency">
+            <div class="label">Current frequency</div>
+            <strong>Weekly</strong>
+            <span>Every Thursday</span>
+          </div>
+
+          <div class="day-picker">
+            <div class="section-label">Day of week</div>
+            <div class="days">
+              <span class="day">S</span>
+              <span class="day">M</span>
+              <span class="day">T</span>
+              <span class="day">W</span>
+              <span class="day on">T</span>
+              <span class="day">F</span>
+              <span class="day">S</span>
+            </div>
+
+            <div class="frequency-options">
+              <span class="chip">Once</span>
+              <span class="chip on">Weekly</span>
+              <span class="chip">Biweekly</span>
+              <span class="chip">Monthly</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="schedule-meta">
+          <div class="meta">
+            <span>Reminder</span>
+            <strong>7:30 PM</strong>
+          </div>
+          <div class="meta">
+            <span>Offset</span>
+            <strong>30 minutes before</strong>
+          </div>
+          <div class="meta">
+            <span>Ends</span>
+            <strong>No end date</strong>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <div>
+            <h2>Next three</h2>
+            <p>Upcoming reminder dates</p>
+          </div>
+        </div>
+
+        <div class="date-stack">
+          <div class="date-row">
+            <div class="calendar-date"><strong>12</strong><span>Jun</span></div>
+            <div class="date-copy">
+              <strong class="next">Thursday · Next</strong>
+              <span>Thursday Coffee Club</span>
+            </div>
+            <span class="date-time">7:30 PM</span>
+          </div>
+          <div class="date-row">
+            <div class="calendar-date"><strong>19</strong><span>Jun</span></div>
+            <div class="date-copy">
+              <strong>Thursday</strong>
+              <span>Thursday Coffee Club</span>
+            </div>
+            <span class="date-time">7:30 PM</span>
+          </div>
+          <div class="date-row">
+            <div class="calendar-date"><strong>26</strong><span>Jun</span></div>
+            <div class="date-copy">
+              <strong>Thursday</strong>
+              <span>Thursday Coffee Club</span>
+            </div>
+            <span class="date-time">7:30 PM</span>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+</div>
+</body>
+</html>

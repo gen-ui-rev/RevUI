@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Stoop Circles</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 40px 0;
+    margin: 0;
+    background: #E6E2DC;
+    font-family: 'Poppins', system-ui, sans-serif;
+    color: #1E1B18;
+  }
+  .screen {
+    width: 390px;
+    height: 844px;
+    background: #FCFBF9;
+    position: relative;
+  }
+
+  /* top bar */
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px 12px;
+  }
+  .topbar h1 {
+    margin: 0;
+    font-size: 20px;
+    line-height: 28px;
+    font-weight: 600;
+    letter-spacing: -0.2px;
+  }
+  .bar-actions { display: flex; align-items: center; gap: 16px; }
+  .bar-actions svg { display: block; }
+
+  /* filter chips */
+  .chips {
+    display: flex;
+    gap: 8px;
+    padding: 0 16px 14px;
+  }
+  .chip {
+    font-size: 13px;
+    line-height: 16px;
+    font-weight: 400;
+    padding: 6px 12px;
+    border: 1px solid #E2DDD5;
+    border-radius: 4px;
+    color: #6E665D;
+    white-space: nowrap;
+  }
+  .chip.on {
+    background: #7C6B5B;
+    border-color: #7C6B5B;
+    color: #FCFBF9;
+    font-weight: 500;
+  }
+
+  /* hero */
+  .hero { padding: 0 16px 16px; }
+  .hero img {
+    display: block;
+    object-fit: cover;
+    background: #DDD7CE;
+    border-radius: 4px;
+    width: 358px;
+    height: 104px;
+  }
+  .hero-meta {
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .hero-name {
+    font-size: 16px;
+    line-height: 22px;
+    font-weight: 600;
+  }
+  .hero-sub {
+    font-size: 13px;
+    line-height: 18px;
+    color: #857D74;
+  }
+  .hero-sub b { color: #7C6B5B; font-weight: 500; }
+  .join-filled {
+    flex: none;
+    font-family: inherit;
+    font-size: 13px;
+    line-height: 16px;
+    font-weight: 500;
+    color: #FCFBF9;
+    background: #7C6B5B;
+    border: 0;
+    border-radius: 4px;
+    padding: 7px 18px;
+  }
+
+  /* sections */
+  .sechead {
+    border-top: 1px solid #E6E1DA;
+    padding: 14px 16px 8px;
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 500;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    color: #8C8479;
+    display: flex;
+    justify-content: space-between;
+  }
+  .sechead span { letter-spacing: 0; text-transform: none; color: #7C6B5B; }
+
+  .row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 9px 16px;
+  }
+  .row + .row { border-top: 1px solid #F0EBE4; }
+  .row img {
+    display: block;
+    object-fit: cover;
+    background: #DDD7CE;
+    border-radius: 4px;
+    width: 42px;
+    height: 42px;
+    flex: none;
+  }
+  .row-text { min-width: 0; flex: 1; }
+  .row-name {
+    font-size: 15px;
+    line-height: 20px;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .row-sub {
+    font-size: 13px;
+    line-height: 17px;
+    color: #8C8479;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .flag {
+    flex: none;
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 500;
+    color: #7C6B5B;
+  }
+  .join-line {
+    flex: none;
+    font-family: inherit;
+    font-size: 13px;
+    line-height: 16px;
+    font-weight: 500;
+    color: #7C6B5B;
+    background: none;
+    border: 1px solid #D6CEC3;
+    border-radius: 4px;
+    padding: 5px 14px;
+  }
+
+  /* tab bar */
+  .tabbar {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-top: 1px solid #E6E1DA;
+    background: #FCFBF9;
+    display: flex;
+    padding: 8px 0 10px;
+  }
+  .tab {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    line-height: 14px;
+    color: #8C8479;
+  }
+  .tab.on { color: #7C6B5B; font-weight: 500; }
+  .tab svg { display: block; }
+</style>
+</head>
+<body>
+<div class="screen">
+
+  <div class="topbar">
+    <h1>Stoop Circles</h1>
+    <div class="bar-actions">
+      <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#1E1B18" stroke-width="1.7" stroke-linecap="round">
+        <circle cx="11" cy="11" r="6.5"/><line x1="16" y1="16" x2="20.5" y2="20.5"/>
+      </svg>
+      <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#1E1B18" stroke-width="1.7" stroke-linecap="round">
+        <line x1="12" y1="4.5" x2="12" y2="19.5"/><line x1="4.5" y1="12" x2="19.5" y2="12"/>
+      </svg>
+    </div>
+  </div>
+
+  <div class="chips">
+    <div class="chip on">All</div>
+    <div class="chip">Fashion</div>
+    <div class="chip">Home</div>
+    <div class="chip">Tech</div>
+    <div class="chip">Local</div>
+  </div>
+
+  <div class="hero">
+    <img src="https://loremflickr.com/358/104/furniture?lock=12720" width="358" height="104" alt="Walnut sideboard and lounge chair listed in the Mid-Century Finds circle">
+    <div class="hero-meta">
+      <div>
+        <div class="hero-name">Mid-Century Finds</div>
+        <div class="hero-sub"><b>Featured</b> · 4,182 members</div>
+      </div>
+      <button class="join-filled">Join</button>
+    </div>
+  </div>
+
+  <div class="sechead">Your circles <span>Manage</span></div>
+
+  <div class="row">
+    <img src="https://loremflickr.com/42/42/fashion?lock=12721" width="42" height="42" alt="Folded selvedge denim jackets from the Denim Exchange circle">
+    <div class="row-text">
+      <div class="row-name">Denim Exchange</div>
+      <div class="row-sub">8,204 members · Active now</div>
+    </div>
+    <div class="flag">12 new</div>
+  </div>
+
+  <div class="row">
+    <img src="https://loremflickr.com/42/42/sneakers?lock=12722" width="42" height="42" alt="Pair of running sneakers posted in the Sneaker Trade Floor circle">
+    <div class="row-text">
+      <div class="row-name">Sneaker Trade Floor</div>
+      <div class="row-sub">12,918 members · 6 drops today</div>
+    </div>
+  </div>
+
+  <div class="row">
+    <img src="https://loremflickr.com/42/42/furniture?lock=12723" width="42" height="42" alt="Small apartment sofa listed in the Apartment Furniture Swap circle">
+    <div class="row-text">
+      <div class="row-name">Apartment Furniture Swap</div>
+      <div class="row-sub">5,470 members · Last post 2h ago</div>
+    </div>
+  </div>
+
+  <div class="row">
+    <img src="https://loremflickr.com/42/42/product?lock=12724" width="42" height="42" alt="Hand-thrown ceramic mugs shared in the Small Batch Ceramics circle">
+    <div class="row-text">
+      <div class="row-name">Small Batch Ceramics</div>
+      <div class="row-sub">1,236 members · Last post yesterday</div>
+    </div>
+  </div>
+
+  <div class="sechead">Near Portland</div>
+
+  <div class="row">
+    <img src="https://loremflickr.com/42/42/product?lock=12725" width="42" height="42" alt="Used film camera body offered in the Camera Gear Trades circle">
+    <div class="row-text">
+      <div class="row-name">Camera Gear Trades</div>
+      <div class="row-sub">3,401 members · Portland, OR</div>
+    </div>
+    <button class="join-line">Join</button>
+  </div>
+
+  <div class="row">
+    <img src="https://loremflickr.com/42/42/fashion?lock=12726" width="42" height="42" alt="Canvas work jacket listed in the Workwear Resale Room circle">
+    <div class="row-text">
+      <div class="row-name">Workwear Resale Room</div>
+      <div class="row-sub">9,065 members · 41 listings this week</div>
+    </div>
+    <button class="join-line">Join</button>
+  </div>
+
+  <div class="row">
+    <img src="https://loremflickr.com/42/42/furniture?lock=12727" width="42" height="42" alt="Open shelving unit posted in the Loft Storage and Shelving circle">
+    <div class="row-text">
+      <div class="row-name">Loft Storage &amp; Shelving</div>
+      <div class="row-sub">2,118 members · Portland, OR</div>
+    </div>
+    <button class="join-line">Join</button>
+  </div>
+
+  <div class="tabbar">
+    <div class="tab">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 8h16l-1.3 11.5H5.3L4 8z"/><path d="M9 8V6.2A3 3 0 0 1 15 6.2V8"/>
+      </svg>
+      Shop
+    </div>
+    <div class="tab">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+        <circle cx="11" cy="11" r="6.5"/><line x1="16" y1="16" x2="20.5" y2="20.5"/>
+      </svg>
+      Search
+    </div>
+    <div class="tab on">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+        <circle cx="9.5" cy="12" r="5.5"/><circle cx="15.5" cy="12" r="5.5"/>
+      </svg>
+      Circles
+    </div>
+    <div class="tab">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="8.5" r="3.8"/><path d="M5 20c1.3-3.4 4-5 7-5s5.7 1.6 7 5"/>
+      </svg>
+      Account
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

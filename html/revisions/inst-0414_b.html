@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Meridian Stay — Account recovery</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#1b2a41;
+    --navy-2:#33486a;
+    --saffron:#e4a512;
+    --saffron-deep:#8a610a;
+    --saffron-soft:#fdf3dd;
+    --canvas:#f1f4f8;
+    --paper:#ffffff;
+    --line:#dde3ec;
+    --muted:#59647a;
+  }
+  *{box-sizing:border-box;}
+  body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    padding:40px 0;
+    margin:0;
+    background:#dcdfe6;
+    font-family:'Source Sans 3', system-ui, sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .screen{
+    width:390px;
+    height:844px;
+    background:var(--canvas);
+    display:flex;
+    flex-direction:column;
+    position:relative;
+    color:var(--navy);
+  }
+
+  /* top bar */
+  .topbar{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:16px 20px;
+    background:var(--navy);
+    color:#fff;
+  }
+  .back{
+    width:34px;height:34px;
+    border:1px solid rgba(255,255,255,.45);
+    border-radius:10px;
+    display:flex;align-items:center;justify-content:center;
+    color:#fff;
+    flex:none;
+  }
+  .topbar .title{
+    font-size:15px;
+    font-weight:600;
+    letter-spacing:.01em;
+  }
+  .topbar .brand{
+    margin-left:auto;
+    font-family:'Playfair Display', Georgia, serif;
+    font-size:15px;
+    font-weight:600;
+    color:var(--saffron);
+  }
+
+  /* body */
+  main{
+    flex:1;
+    padding:22px 22px 0;
+  }
+  h1{
+    font-family:'Playfair Display', Georgia, serif;
+    font-weight:700;
+    font-size:26px;
+    line-height:1.2;
+    margin:0 0 8px;
+  }
+  .lede{
+    font-size:14px;
+    line-height:1.45;
+    color:var(--muted);
+    margin:0 0 18px;
+  }
+
+  /* progress */
+  .progress{ margin-bottom:16px; }
+  .bars{
+    display:flex;
+    gap:6px;
+  }
+  .bars i{
+    flex:1;
+    height:6px;
+    border-radius:3px;
+    background:#c4cdda;
+  }
+  .bars i.done{ background:var(--saffron); }
+  .steps-legend{
+    display:flex;
+    justify-content:space-between;
+    margin-top:7px;
+    font-size:11.5px;
+    letter-spacing:.09em;
+    text-transform:uppercase;
+    font-weight:600;
+    color:#8b95a7;
+  }
+  .steps-legend .now{ color:var(--navy); }
+
+  /* stage cards */
+  .card{
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-radius:14px;
+    overflow:hidden;
+  }
+  .card + .card{ margin-top:14px; }
+  .card-head{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:10px 14px;
+    background:var(--navy);
+    color:#fff;
+  }
+  .card.second .card-head{ background:var(--navy-2); }
+  .badge{
+    width:22px;height:22px;
+    border-radius:50%;
+    background:var(--saffron);
+    color:var(--navy);
+    font-size:12.5px;
+    font-weight:600;
+    display:flex;align-items:center;justify-content:center;
+    flex:none;
+  }
+  .card-head .label{
+    font-size:13.5px;
+    font-weight:600;
+    letter-spacing:.02em;
+  }
+  .card-head .aside{
+    margin-left:auto;
+    font-size:11.5px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:#b9c5d8;
+  }
+  .card-body{ padding:15px; }
+
+  .field-label{
+    display:block;
+    font-size:11.5px;
+    font-weight:600;
+    letter-spacing:.09em;
+    text-transform:uppercase;
+    color:var(--muted);
+    margin-bottom:7px;
+  }
+  .field{
+    border:1.5px solid var(--navy);
+    border-radius:10px;
+    padding:12px 14px;
+    font-size:15.5px;
+    line-height:1.2;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    background:#fbfcfe;
+  }
+  .field-note{
+    font-size:12.5px;
+    color:var(--muted);
+    margin:7px 2px 0;
+    line-height:1.4;
+  }
+  .account{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    border:1px solid var(--line);
+    background:var(--canvas);
+    border-radius:10px;
+    padding:11px;
+    margin-top:12px;
+  }
+  .monogram{
+    width:44px;height:44px;
+    border-radius:10px;
+    background:var(--navy);
+    color:var(--saffron);
+    display:flex;align-items:center;justify-content:center;
+    font-size:15px;
+    font-weight:600;
+    letter-spacing:.04em;
+    flex:none;
+  }
+  .account .name{
+    font-size:14.5px;
+    font-weight:600;
+    line-height:1.3;
+  }
+  .account .sub{
+    font-size:12.5px;
+    color:var(--muted);
+    line-height:1.4;
+    margin-top:2px;
+  }
+
+  .expiry{
+    font-size:12.5px;
+    color:var(--saffron-deep);
+    background:var(--saffron-soft);
+    border-radius:8px;
+    padding:8px 10px;
+    margin:0 0 12px;
+    line-height:1.4;
+  }
+  .send{
+    display:block;
+    width:100%;
+    background:var(--saffron);
+    color:var(--navy);
+    border:none;
+    border-radius:10px;
+    padding:15px;
+    font-size:16px;
+    font-weight:600;
+    text-align:center;
+  }
+
+  .alt{
+    text-align:center;
+    margin-top:20px;
+    font-size:14px;
+    color:var(--navy);
+    font-weight:600;
+  }
+  .alt span{
+    border-bottom:2px solid var(--saffron);
+    padding-bottom:2px;
+  }
+
+  /* tab bar */
+  .tabbar{
+    border-top:1px solid var(--line);
+    display:flex;
+    padding:10px 8px 18px;
+    background:var(--paper);
+  }
+  .tab{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:5px;
+    color:#98a3b5;
+    font-size:12px;
+    letter-spacing:.01em;
+  }
+  .tab.on{ color:var(--navy); font-weight:600; }
+</style>
+</head>
+<body>
+  <div class="screen">
+
+    <div class="topbar">
+      <div class="back" aria-hidden="true">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      </div>
+      <div class="title">Account recovery</div>
+      <div class="brand">Meridian Stay</div>
+    </div>
+
+    <main>
+      <h1>Forgot your<br>password?</h1>
+      <p class="lede">Two stages and you're back into your bookings.</p>
+
+      <div class="progress">
+        <div class="bars"><i class="done"></i><i></i></div>
+        <div class="steps-legend">
+          <span class="now">1 · Your email</span>
+          <span>2 · Reset link</span>
+        </div>
+      </div>
+
+      <section class="card">
+        <div class="card-head">
+          <div class="badge">1</div>
+          <div class="label">Your email</div>
+          <div class="aside">In progress</div>
+        </div>
+        <div class="card-body">
+          <span class="field-label">Email address</span>
+          <div class="field">elena.marchetti@example.com</div>
+          <p class="field-note">We won't change anything until you open the link.</p>
+          <div class="account">
+            <div class="monogram">EM</div>
+            <div>
+              <div class="name">Elena Marchetti</div>
+              <div class="sub">Last signed in on this device Feb 8</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="card second">
+        <div class="card-head">
+          <div class="badge">2</div>
+          <div class="label">Reset link</div>
+          <div class="aside">Next</div>
+        </div>
+        <div class="card-body">
+          <p class="expiry">The link expires 20 minutes after you request it.</p>
+          <div class="send">Send reset link</div>
+        </div>
+      </section>
+
+      <div class="alt"><span>Recover with a phone number instead</span></div>
+    </main>
+
+    <nav class="tabbar">
+      <div class="tab">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/></svg>
+        Explore
+      </div>
+      <div class="tab">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="2.5"/><path d="M9 7V5.5A1.5 1.5 0 0110.5 4h3A1.5 1.5 0 0115 5.5V7"/></svg>
+        Trips
+      </div>
+      <div class="tab">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4h12v16l-6-4-6 4z"/></svg>
+        Saved
+      </div>
+      <div class="tab on">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8.5" r="3.5"/><path d="M5 20c1.3-3.4 4-5 7-5s5.7 1.6 7 5"/></svg>
+        Account
+      </div>
+    </nav>
+
+  </div>
+</body>
+</html>

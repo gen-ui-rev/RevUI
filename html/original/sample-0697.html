@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Sundial — Search</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --teal:#0f7d75;
+    --teal-08:rgba(15,125,117,.08);
+    --teal-14:rgba(15,125,117,.14);
+    --ink:#1b1e1d;
+    --mute:#6c7370;
+  }
+  *{box-sizing:border-box;}
+  body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    padding:40px 0;
+    margin:0;
+    background:#e6e4df;
+    font-family:'Source Serif 4', Georgia, serif;
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+  }
+  .screen{
+    width:390px;
+    height:844px;
+    background:#fff;
+    display:flex;
+    flex-direction:column;
+    position:relative;
+  }
+
+  /* top bar */
+  .topbar{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:12px 16px;
+  }
+  .back{
+    width:28px;height:28px;
+    flex:0 0 28px;
+    display:flex;align-items:center;justify-content:center;
+    color:var(--ink);
+  }
+  .field{
+    flex:1 1 auto;
+    min-width:0;
+    background:var(--teal-08);
+    border-radius:14px;
+    padding:11px 12px;
+    display:flex;
+    align-items:center;
+    gap:9px;
+  }
+  .field .q{
+    flex:1 1 auto;
+    min-width:0;
+    font-size:16px;
+    line-height:22px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .field svg{flex:0 0 auto;}
+  .caret{
+    width:1.5px;height:19px;background:var(--teal);flex:0 0 auto;
+  }
+
+  /* chips */
+  .chips{
+    display:flex;
+    gap:8px;
+    padding:0 16px 14px;
+  }
+  .chip{
+    background:var(--teal-08);
+    border-radius:14px;
+    padding:7px 13px;
+    font-size:13px;
+    line-height:18px;
+    color:#3d4644;
+    white-space:nowrap;
+  }
+  .chip.on{
+    background:var(--teal);
+    color:#fff;
+    font-weight:600;
+  }
+
+  /* results header */
+  .rhead{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    padding:0 28px 10px;
+  }
+  .rhead .count{font-size:14px;line-height:20px;color:var(--mute);}
+  .rhead .count b{font-weight:600;color:var(--ink);}
+  .rhead .sort{font-size:13px;line-height:20px;color:var(--teal);font-weight:600;}
+
+  /* result rows */
+  .row{
+    display:flex;
+    gap:12px;
+    margin:0 16px;
+    padding:12px;
+    border-radius:14px;
+    align-items:flex-start;
+  }
+  .row.top{background:var(--teal-08);}
+  .row img{
+    width:68px;height:68px;
+    flex:0 0 68px;
+    border-radius:14px;
+    object-fit:cover;
+    display:block;
+    background:#d8d5ce;
+  }
+  .body{flex:1 1 auto;min-width:0;padding-top:1px;}
+  .badge{
+    display:inline-block;
+    background:var(--teal-14);
+    color:var(--teal);
+    font-size:12px;
+    line-height:16px;
+    font-weight:600;
+    padding:2px 8px;
+    border-radius:14px;
+    margin-bottom:4px;
+  }
+  .title{
+    font-size:16px;
+    line-height:21px;
+    font-weight:600;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .meta{
+    font-size:14px;
+    line-height:19px;
+    color:#4c5插;
+    color:#4c5350;
+    margin-top:2px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .sub{
+    font-size:12px;
+    line-height:16px;
+    color:var(--mute);
+    margin-top:3px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+
+  /* tab bar */
+  .tabs{
+    margin-top:auto;
+    display:flex;
+    border-top:1px solid #ecebe7;
+    padding:9px 8px 12px;
+  }
+  .tab{
+    flex:1 1 0;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:3px;
+    color:#8d9391;
+    font-size:12px;
+    line-height:16px;
+  }
+  .tab.on{color:var(--teal);font-weight:600;}
+</style>
+</head>
+<body>
+  <div class="screen">
+
+    <div class="topbar">
+      <span class="back" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
+      </span>
+      <div class="field">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#0f7d75" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg>
+        <span class="q">spanish conversation</span>
+        <span class="caret"></span>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6c7370" stroke-width="1.8" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </div>
+    </div>
+
+    <div class="chips">
+      <span class="chip on">Spanish</span>
+      <span class="chip">Beginner</span>
+      <span class="chip">Under 4 hr</span>
+      <span class="chip">Speaking</span>
+    </div>
+
+    <div class="rhead">
+      <span class="count"><b>6 results</b> for “spanish conversation”</span>
+      <span class="sort">Relevance</span>
+    </div>
+
+    <div class="row top">
+      <img src="https://loremflickr.com/68/68/classroom?lock=9320" width="68" height="68" alt="Small group speaking practice in a classroom">
+      <div class="body">
+        <span class="badge">Top match</span>
+        <div class="title">Everyday Spanish Conversation</div>
+        <div class="meta">Ana Reyes · 32 lessons</div>
+        <div class="sub">Beginner · 6 hr 20 min · 4.9 from 2,418 learners</div>
+      </div>
+    </div>
+
+    <div class="row">
+      <img src="https://loremflickr.com/68/68/books?lock=9321" width="68" height="68" alt="Cover art of a Spanish phrase workbook">
+      <div class="body">
+        <div class="title">Conversation Lab: Ordering Food</div>
+        <div class="meta">Diego Marin · 14 lessons</div>
+        <div class="sub">Beginner · 2 hr 05 min · 4.7</div>
+      </div>
+    </div>
+
+    <div class="row">
+      <img src="https://loremflickr.com/68/68/study?lock=9322" width="68" height="68" alt="Learner practicing speaking drills at a desk">
+      <div class="body">
+        <div class="title">Fluent Small Talk in Spanish</div>
+        <div class="meta">Carmen Ortiz · 24 lessons</div>
+        <div class="sub">Intermediate · 4 hr 40 min · 4.8</div>
+      </div>
+    </div>
+
+    <div class="row">
+      <img src="https://loremflickr.com/68/68/library?lock=9323" width="68" height="68" alt="Shelf of Spanish grammar references">
+      <div class="body">
+        <div class="title">Verbs You Actually Speak With</div>
+        <div class="meta">Mateo Salas · 18 lessons</div>
+        <div class="sub">Beginner · 3 hr 10 min · 4.6</div>
+      </div>
+    </div>
+
+    <div class="row">
+      <img src="https://loremflickr.com/68/68/classroom?lock=9324" width="68" height="68" alt="Two learners in a weekly conversation session">
+      <div class="body">
+        <div class="title">Conversation Partners: Weekly</div>
+        <div class="meta">Lucia Fernandez · Live sessions</div>
+        <div class="sub">All levels · 45 min per session · 4.9</div>
+      </div>
+    </div>
+
+    <div class="row">
+      <img src="https://loremflickr.com/68/68/books?lock=9325" width="68" height="68" alt="Travel phrasebook for Spanish speakers">
+      <div class="body">
+        <div class="title">Travel Spanish for Real Trips</div>
+        <div class="meta">Julia Prado · 21 lessons</div>
+        <div class="sub">Beginner · 3 hr 55 min · 4.5</div>
+      </div>
+    </div>
+
+    <nav class="tabs">
+      <div class="tab">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5L12 4l8 6.5V20h-5v-5.5H9V20H4z"/></svg>
+        <span>Home</span>
+      </div>
+      <div class="tab on">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg>
+        <span>Search</span>
+      </div>
+      <div class="tab">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h5.5a2 2 0 012 2v14a1.6 1.6 0 00-1.6-1.6H5z"/><path d="M19 4h-5.5a2 2 0 00-2 2v14a1.6 1.6 0 011.6-1.6H19z"/></svg>
+        <span>Library</span>
+      </div>
+      <div class="tab">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="9" r="3.6"/><path d="M5 20c1.4-3.2 4-4.6 7-4.6s5.6 1.4 7 4.6"/></svg>
+        <span>Profile</span>
+      </div>
+    </nav>
+
+  </div>
+</body>
+</html>

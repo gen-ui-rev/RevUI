@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Property Tour Player</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 40px 0;
+    margin: 0;
+    background: #a1a1aa;
+    font-family: 'Roboto', system-ui, sans-serif;
+    color: #18181b;
+  }
+  .screen {
+    width: 390px;
+    height: 844px;
+    background: #e4e4e7;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+  img { object-fit: cover; display: block; background: #d4d4d8; }
+
+  /* ---------- video stage ---------- */
+  .stage { position: relative; width: 390px; height: 220px; background: #18181b; }
+  .scrim { position: absolute; inset: 0; background: rgba(24,24,27,0.42); }
+  .topctl {
+    position: absolute; top: 0; left: 0; right: 0;
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 14px;
+  }
+  .topctl .lbl { flex: 1; min-width: 0; }
+  .topctl .kicker {
+    font-size: 12px; color: rgba(255,255,255,0.78); letter-spacing: .06em;
+    text-transform: uppercase;
+  }
+  .topctl .name {
+    font-size: 14px; font-weight: 500; color: #fff;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .iconbtn { display: flex; align-items: center; justify-content: center; width: 28px; height: 28px; flex: none; }
+  .center {
+    position: absolute; top: 50%; left: 50%; margin: -28px 0 0 -28px;
+    width: 56px; height: 56px; background: #fff;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .botctl { position: absolute; left: 0; right: 0; bottom: 0; padding: 0 14px 12px; }
+  .track { position: relative; height: 3px; background: rgba(255,255,255,0.35); }
+  .fill { position: absolute; left: 0; top: 0; bottom: 0; width: 43%; background: #fff; }
+  .knob { position: absolute; left: 43%; top: -3.5px; width: 10px; height: 10px; margin-left: -5px; background: #fff; }
+  .times {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-top: 12px;
+  }
+  .times .t { font-size: 12px; color: #fff; font-variant-numeric: tabular-nums; }
+  .times .t span { color: rgba(255,255,255,0.7); }
+  .times .grp { display: flex; align-items: center; gap: 16px; }
+
+  /* ---------- content ---------- */
+  .body { flex: 1; padding: 8px; display: flex; flex-direction: column; gap: 8px; }
+  .card { background: #fff; box-shadow: 0 1px 2px rgba(24,24,27,0.10); }
+
+  .info { padding: 16px; }
+  .info h1 { margin: 0; font-size: 19px; font-weight: 700; line-height: 24px; }
+  .info .meta { margin-top: 6px; font-size: 13px; color: #71717a; line-height: 18px; }
+  .buy {
+    margin-top: 14px; display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  }
+  .price { font-size: 15px; font-weight: 500; }
+  .price em { font-style: normal; font-weight: 400; color: #71717a; font-size: 13px; }
+  .cta {
+    background: #18181b; color: #fff; font-size: 14px; font-weight: 500;
+    padding: 10px 18px; line-height: 16px;
+  }
+
+  .sechead {
+    display: flex; align-items: baseline; justify-content: space-between;
+    padding: 14px 16px 10px;
+  }
+  .sechead h2 {
+    margin: 0; font-size: 12px; font-weight: 700; letter-spacing: .08em;
+    text-transform: uppercase; color: #52525b;
+  }
+  .sechead .count { font-size: 12px; color: #a1a1aa; }
+
+  .row {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 16px; border-top: 1px solid #f4f4f5;
+  }
+  .row .txt { flex: 1; min-width: 0; }
+  .row .ttl {
+    font-size: 15px; font-weight: 500; line-height: 20px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .row .sub { margin-top: 2px; font-size: 13px; color: #71717a; line-height: 17px; }
+  .row .dur { font-size: 13px; color: #71717a; font-variant-numeric: tabular-nums; flex: none; }
+  .mark {
+    display: inline-block; background: #18181b; color: #fff;
+    font-size: 11px; font-weight: 500; letter-spacing: .04em;
+    padding: 3px 6px; line-height: 12px; margin-top: 4px;
+  }
+
+  /* ---------- tab bar ---------- */
+  .tabs {
+    display: flex; background: #fff; border-top: 1px solid #d4d4d8;
+    padding: 8px 0 10px;
+  }
+  .tab {
+    flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px;
+    font-size: 11px; color: #a1a1aa;
+  }
+  .tab.on { color: #18181b; font-weight: 500; }
+</style>
+</head>
+<body>
+<div class="screen">
+
+  <div class="stage">
+    <img src="https://loremflickr.com/390/220/hotel?lock=8420" width="390" height="220" alt="Video still of the Casa Marina living room with balcony doors open">
+    <div class="scrim"></div>
+
+    <div class="topctl">
+      <div class="iconbtn">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="square"><path d="M15 5l-7 7 7 7"/></svg>
+      </div>
+      <div class="lbl">
+        <div class="kicker">Property tour</div>
+        <div class="name">Casa Marina — Alfama, Lisbon</div>
+      </div>
+      <div class="iconbtn">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="#fff"><circle cx="12" cy="5" r="1.7"/><circle cx="12" cy="12" r="1.7"/><circle cx="12" cy="19" r="1.7"/></svg>
+      </div>
+    </div>
+
+    <div class="center">
+      <svg width="20" height="22" viewBox="0 0 20 22" fill="#18181b"><rect x="2" y="1" width="5" height="20"/><rect x="13" y="1" width="5" height="20"/></svg>
+    </div>
+
+    <div class="botctl">
+      <div class="track"><div class="fill"></div><div class="knob"></div></div>
+      <div class="times">
+        <div class="t">4:12 <span>/ 9:36</span></div>
+        <div class="grp">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><rect x="3" y="5" width="18" height="14"/><path d="M7 14h4M14 14h3" stroke-linecap="square"/></svg>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="square"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="body">
+
+    <section class="card info">
+      <h1>Two-bedroom apartment tour</h1>
+      <div class="meta">Filmed May 2024 by the host · 9 min · Captions in English</div>
+      <div class="buy">
+        <div class="price">$168 <em>night · Jun 12–15</em></div>
+        <div class="cta">Check dates</div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="sechead">
+        <h2>Chapters</h2>
+        <span class="count">3 of 6</span>
+      </div>
+      <div class="row">
+        <img src="https://loremflickr.com/96/54/hotel?lock=8421" width="96" height="54" alt="Living room chapter thumbnail">
+        <div class="txt">
+          <div class="ttl">Living room and balcony</div>
+          <div class="mark">PLAYING</div>
+        </div>
+        <div class="dur">3:04</div>
+      </div>
+      <div class="row">
+        <img src="https://loremflickr.com/96/54/cityscape?lock=8422" width="96" height="54" alt="View over Lisbon rooftops chapter thumbnail">
+        <div class="txt">
+          <div class="ttl">Rooftop view at sunset</div>
+          <div class="sub">Starts at 5:38</div>
+        </div>
+        <div class="dur">1:47</div>
+      </div>
+      <div class="row">
+        <img src="https://loremflickr.com/96/54/beach?lock=8423" width="96" height="54" alt="Nearby beach chapter thumbnail">
+        <div class="txt">
+          <div class="ttl">Walk to Cascais beach</div>
+          <div class="sub">Starts at 7:25</div>
+        </div>
+        <div class="dur">2:11</div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="sechead">
+        <h2>Up next</h2>
+      </div>
+      <div class="row">
+        <img src="https://loremflickr.com/88/50/mountain?lock=8424" width="88" height="50" alt="Sintra hills day trip video thumbnail">
+        <div class="txt">
+          <div class="ttl">Day trip: Sintra hills</div>
+          <div class="sub">Guide video · 6 min</div>
+        </div>
+        <div class="dur">6:02</div>
+      </div>
+    </section>
+
+  </div>
+
+  <nav class="tabs">
+    <div class="tab on">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#18181b" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z" stroke-linejoin="round"/></svg>
+      Explore
+    </div>
+    <div class="tab">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#a1a1aa" stroke-width="1.8"><rect x="3" y="7" width="18" height="13"/><path d="M9 7V4h6v3"/></svg>
+      Trips
+    </div>
+    <div class="tab">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#a1a1aa" stroke-width="1.8"><path d="M6 3h12v18l-6-4.5L6 21z" stroke-linejoin="round"/></svg>
+      Saved
+    </div>
+    <div class="tab">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#a1a1aa" stroke-width="1.8"><circle cx="12" cy="8" r="3.6"/><path d="M4.5 20c1.4-3.6 4.2-5.4 7.5-5.4s6.1 1.8 7.5 5.4"/></svg>
+      Account
+    </div>
+  </nav>
+
+</div>
+</body>
+</html>

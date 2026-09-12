@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Roamwise Trip Chat</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #ececef;
+      color: #202126;
+      font-family: 'Roboto', system-ui, sans-serif;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      margin: 0;
+      padding: 0;
+      border: 0;
+      background: none;
+      color: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #ffffff;
+      border: 1px solid #d8d8dd;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-bottom: 1px solid #dedee3;
+      background: #ffffff;
+    }
+
+    .icon-button {
+      width: 36px;
+      height: 36px;
+      flex: 0 0 36px;
+      display: grid;
+      place-items: center;
+      border-radius: 4px;
+    }
+
+    .icon-button svg,
+    .composer-button svg,
+    .send-button svg,
+    .nav-item svg,
+    .trip-icon svg {
+      display: block;
+      width: 20px;
+      height: 20px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .group-mark {
+      width: 36px;
+      height: 36px;
+      flex: 0 0 36px;
+      display: grid;
+      place-items: center;
+      border-radius: 4px;
+      background: #f7d7e8;
+      color: #9f0759;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
+    .conversation-title {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .conversation-title h1 {
+      margin: 0 0 2px;
+      overflow: hidden;
+      color: #17181c;
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 19px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .conversation-title p {
+      margin: 0;
+      overflow: hidden;
+      color: #696970;
+      font-size: 12px;
+      line-height: 15px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .trip-summary {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 14px;
+      border-bottom: 1px solid #dedee3;
+      background: #fff8fb;
+    }
+
+    .trip-icon {
+      width: 28px;
+      height: 28px;
+      flex: 0 0 28px;
+      display: grid;
+      place-items: center;
+      border-radius: 4px;
+      background: #d10a73;
+      color: #ffffff;
+    }
+
+    .trip-icon svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .trip-copy {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .trip-copy strong {
+      display: block;
+      overflow: hidden;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 17px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .trip-copy span {
+      display: block;
+      margin-top: 1px;
+      color: #6c6c74;
+      font-size: 12px;
+      line-height: 15px;
+    }
+
+    .trip-link {
+      color: #b00863;
+      font-size: 13px;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .messages {
+      min-height: 0;
+      flex: 1;
+      padding: 10px 14px 8px;
+      background: #ffffff;
+    }
+
+    .date-divider {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      margin: 0 0 10px;
+      color: #77777e;
+      font-size: 12px;
+      line-height: 15px;
+      text-align: center;
+    }
+
+    .date-divider::before,
+    .date-divider::after {
+      height: 1px;
+      flex: 1;
+      content: "";
+      background: #e1e1e5;
+    }
+
+    .message {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      margin-top: 7px;
+    }
+
+    .message:first-of-type {
+      margin-top: 0;
+    }
+
+    .message.outgoing {
+      justify-content: flex-end;
+    }
+
+    .avatar {
+      width: 28px;
+      height: 28px;
+      flex: 0 0 28px;
+      display: grid;
+      place-items: center;
+      border-radius: 4px;
+      background: #e8e8ec;
+      color: #505057;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .message-body {
+      max-width: 286px;
+      min-width: 0;
+    }
+
+    .outgoing .message-body {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+    }
+
+    .sender {
+      margin: 0 0 3px;
+      color: #56565e;
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 15px;
+    }
+
+    .bubble {
+      display: inline-block;
+      padding: 7px 9px;
+      border: 1px solid #dedee3;
+      border-radius: 4px;
+      background: #f5f5f7;
+      color: #25262b;
+      font-size: 14px;
+      line-height: 18px;
+    }
+
+    .outgoing .bubble {
+      border-color: #efb4d3;
+      background: #fceaf4;
+    }
+
+    .message-meta {
+      margin-top: 3px;
+      color: #85858c;
+      font-size: 12px;
+      line-height: 14px;
+    }
+
+    .shared-hotel {
+      width: 280px;
+      margin-top: 4px;
+      border: 1px solid #d9d9de;
+      border-radius: 4px;
+      background: #ffffff;
+    }
+
+    .shared-hotel img {
+      width: 278px;
+      height: 82px;
+      display: block;
+      object-fit: cover;
+      background: #dedde1;
+      border-radius: 3px 3px 0 0;
+    }
+
+    .hotel-details {
+      padding: 7px 9px 8px;
+    }
+
+    .hotel-title-row {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+
+    .hotel-title {
+      min-width: 0;
+      flex: 1;
+      overflow: hidden;
+      color: #202126;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 17px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .hotel-price {
+      color: #202126;
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 17px;
+      white-space: nowrap;
+    }
+
+    .hotel-subtitle {
+      display: block;
+      margin-top: 2px;
+      color: #6f6f76;
+      font-size: 12px;
+      line-height: 15px;
+    }
+
+    .composer {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-top: 1px solid #dedee3;
+      background: #ffffff;
+    }
+
+    .composer-button {
+      width: 38px;
+      height: 38px;
+      flex: 0 0 38px;
+      display: grid;
+      place-items: center;
+      border: 1px solid #d9d9de;
+      border-radius: 4px;
+      color: #55555d;
+    }
+
+    .message-input {
+      width: 100%;
+      min-width: 0;
+      padding: 9px 10px;
+      border: 1px solid #d9d9de;
+      border-radius: 4px;
+      outline: none;
+      background: #ffffff;
+      color: #24252a;
+      font-size: 14px;
+      line-height: 18px;
+    }
+
+    .message-input::placeholder {
+      color: #85858c;
+      opacity: 1;
+    }
+
+    .send-button {
+      width: 38px;
+      height: 38px;
+      flex: 0 0 38px;
+      display: grid;
+      place-items: center;
+      border-radius: 4px;
+      background: #d10a73;
+      color: #ffffff;
+    }
+
+    .tabbar {
+      display: flex;
+      border-top: 1px solid #d7d7dc;
+      background: #ffffff;
+    }
+
+    .nav-item {
+      min-width: 0;
+      flex: 1;
+      padding: 6px 2px 7px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      color: #6f6f77;
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 14px;
+    }
+
+    .nav-item svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .nav-item.active {
+      color: #c0086b;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <button class="icon-button" type="button" aria-label="Back to messages">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M15 18l-6-6 6-6"></path>
+        </svg>
+      </button>
+
+      <div class="group-mark" aria-hidden="true">MT</div>
+
+      <div class="conversation-title">
+        <h1>Lisbon weekend</h1>
+        <p>Maya Chen, Theo Brooks, and you</p>
+      </div>
+
+      <button class="icon-button" type="button" aria-label="Conversation details">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="12" r="9"></circle>
+          <path d="M12 11v5"></path>
+          <path d="M12 8h.01"></path>
+        </svg>
+      </button>
+    </header>
+
+    <section class="trip-summary" aria-label="Linked trip">
+      <div class="trip-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24">
+          <path d="M6 3v3"></path>
+          <path d="M18 3v3"></path>
+          <rect x="3" y="5" width="18" height="16" rx="2"></rect>
+          <path d="M3 10h18"></path>
+        </svg>
+      </div>
+      <div class="trip-copy">
+        <strong>Lisbon, Portugal</strong>
+        <span>May 16–19 · 3 travelers</span>
+      </div>
+      <button class="trip-link" type="button">View trip</button>
+    </section>
+
+    <main class="messages" aria-label="Conversation messages">
+      <div class="date-divider"><span>Wednesday, May 7</span></div>
+
+      <article class="message incoming">
+        <div class="avatar" aria-hidden="true">TB</div>
+        <div class="message-body">
+          <p class="sender">Theo Brooks</p>
+          <div class="bubble">I found a hotel near the Baixa metro stop. It is still available for all three nights.</div>
+          <div class="message-meta">9:18 AM</div>
+        </div>
+      </article>
+
+      <article class="message incoming">
+        <div class="avatar" aria-hidden="true">MC</div>
+        <div class="message-body">
+          <p class="sender">Maya Chen</p>
+          <div class="bubble">That area works for me. Can we keep the total under $700?</div>
+          <div class="message-meta">9:24 AM</div>
+        </div>
+      </article>
+
+      <article class="message outgoing">
+        <div class="message-body">
+          <div class="bubble">Yes. This one is $618 total and has free cancellation until May 13.</div>
+          <div class="message-meta">9:29 AM · Read by 2</div>
+        </div>
+      </article>
+
+      <article class="message incoming">
+        <div class="avatar" aria-hidden="true">MC</div>
+        <div class="message-body">
+          <p class="sender">Maya Chen</p>
+          <div class="bubble">I saved it to our trip so we can compare.</div>
+          <div class="shared-hotel">
+            <img src="https://loremflickr.com/278/82/hotel?lock=5610" width="278" height="82" alt="Exterior of the Lisbon hotel shared in the conversation">
+            <div class="hotel-details">
+              <div class="hotel-title-row">
+                <span class="hotel-title">Riverside House Baixa</span>
+                <span class="hotel-price">$206/night</span>
+              </div>
+              <span class="hotel-subtitle">8.8 guest rating · Breakfast included</span>
+            </div>
+          </div>
+          <div class="message-meta">9:34 AM</div>
+        </div>
+      </article>
+
+      <article class="message incoming">
+        <div class="avatar" aria-hidden="true">TB</div>
+        <div class="message-body">
+          <p class="sender">Theo Brooks</p>
+          <div class="bubble">The 2:40 PM flight arrives early enough for check-in. I can book that tonight.</div>
+          <div class="message-meta">9:41 AM</div>
+        </div>
+      </article>
+
+      <article class="message outgoing">
+        <div class="message-body">
+          <div class="bubble">Book the flight. I will reserve this hotel after work.</div>
+          <div class="message-meta">9:45 AM · Read by 2</div>
+        </div>
+      </article>
+    </main>
+
+    <form class="composer">
+      <button class="composer-button" type="button" aria-label="Add attachment">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 5v14"></path>
+          <path d="M5 12h14"></path>
+        </svg>
+      </button>
+      <input class="message-input" type="text" aria-label="Message Maya and Theo" placeholder="Message Maya and Theo">
+      <button class="send-button" type="submit" aria-label="Send message">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M21 3L10 14"></path>
+          <path d="M21 3l-7 18-4-7-7-4 18-7z"></path>
+        </svg>
+      </button>
+    </form>
+
+    <nav class="tabbar" aria-label="Primary navigation">
+      <button class="nav-item" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M3 11l9-8 9 8"></path>
+          <path d="M5 10v10h14V10"></path>
+        </svg>
+        <span>Explore</span>
+      </button>
+
+      <button class="nav-item" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M6 3v3"></path>
+          <path d="M18 3v3"></path>
+          <rect x="3" y="5" width="18" height="16" rx="2"></rect>
+          <path d="M3 10h18"></path>
+        </svg>
+        <span>Trips</span>
+      </button>
+
+      <button class="nav-item active" type="button" aria-current="page">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z"></path>
+        </svg>
+        <span>Messages</span>
+      </button>
+
+      <button class="nav-item" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="8" r="4"></circle>
+          <path d="M4 21a8 8 0 0 1 16 0"></path>
+        </svg>
+        <span>Profile</span>
+      </button>
+    </nav>
+  </div>
+</body>
+</html>

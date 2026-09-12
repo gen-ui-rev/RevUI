@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Move to folder</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --accent:#1a5fe0;
+    --line:#e2e5ea;
+    --ink:#141821;
+    --muted:#6b7280;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    padding:0;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:#d9dce1;
+    font-family:'Roboto', system-ui, sans-serif;
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+  }
+  .screen{
+    width:1024px;
+    height:768px;
+    position:relative;
+    overflow:hidden;
+    background:#f2f3f6;
+  }
+
+  /* ---- workspace behind the dialog ---- */
+  .workspace{position:absolute;inset:0;background:#f7f8fa;}
+  .wsbar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:20px;
+    padding:16px 30px;
+    background:#ffffff;
+    border-bottom:1px solid var(--line);
+  }
+  .wsbrand{font-size:15px;font-weight:700;letter-spacing:-0.2px;}
+  .wstabs{display:flex;gap:20px;font-size:13px;color:var(--muted);}
+  .wstabs .on{color:var(--ink);font-weight:500;}
+  .wsuser{font-size:13px;color:var(--muted);}
+  .wsgrid{
+    padding:26px 30px;
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:18px;
+  }
+  .ghost{
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:16px;
+  }
+  .ghost .gt{font-size:14px;font-weight:500;line-height:19px;}
+  .ghost .gm{font-size:12px;color:var(--muted);margin-top:6px;line-height:16px;}
+  .scrim{position:absolute;inset:0;background:rgba(16,20,28,0.46);}
+
+  /* ---- dialog ---- */
+  .dialog{
+    position:absolute;
+    left:50%;
+    top:50%;
+    transform:translate(-50%,-50%);
+    width:722px;
+    background:#ffffff;
+    border:1px solid #d5d9e0;
+    border-radius:14px;
+    padding:30px 34px 26px;
+    box-shadow:0 24px 60px rgba(11,16,26,0.32);
+  }
+  h1{
+    margin:0;
+    font-size:22px;
+    font-weight:700;
+    letter-spacing:-0.3px;
+  }
+  .dsub{
+    margin:6px 0 0;
+    font-size:13px;
+    line-height:18px;
+    color:var(--muted);
+  }
+  .dbody{
+    display:grid;
+    grid-template-columns:236px 1fr;
+    gap:30px;
+    align-items:start;
+    margin-top:22px;
+  }
+  .label{
+    margin:0 0 8px;
+    font-size:11px;
+    font-weight:500;
+    letter-spacing:0.7px;
+    text-transform:uppercase;
+    color:var(--muted);
+  }
+  .noteCard{
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:16px;
+  }
+  .noteCard img{
+    width:96px;
+    height:96px;
+    border-radius:8px;
+    object-fit:cover;
+    display:block;
+    background:#d6d9de;
+  }
+  .noteCard .name{
+    font-size:15px;
+    font-weight:500;
+    line-height:20px;
+    margin-top:14px;
+  }
+  .noteCard .meta{
+    font-size:12px;
+    color:var(--muted);
+    margin-top:4px;
+    line-height:16px;
+  }
+  .footnote{
+    margin:12px 2px 0;
+    font-size:12px;
+    line-height:17px;
+    color:var(--muted);
+  }
+  .list{
+    border:1px solid var(--line);
+    border-radius:10px;
+  }
+  .row{
+    display:grid;
+    grid-template-columns:1fr auto 20px;
+    align-items:center;
+    gap:14px;
+    padding:12px 16px;
+    border-bottom:1px solid var(--line);
+    cursor:pointer;
+  }
+  .row:last-child{border-bottom:none;border-radius:0 0 10px 10px;}
+  .row:first-child{border-radius:10px 10px 0 0;}
+  .row.selected{background:#f3f7fe;}
+  .row .txt{min-width:0;}
+  .row .title{
+    font-size:15px;
+    line-height:20px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .row.selected .title{font-weight:500;color:var(--accent);}
+  .row .count{
+    font-size:12px;
+    color:var(--muted);
+    margin-top:2px;
+    line-height:16px;
+  }
+  .row .updated{
+    font-size:12px;
+    line-height:16px;
+    color:var(--muted);
+    white-space:nowrap;
+    text-align:right;
+  }
+  .mark{flex:none;width:20px;height:20px;}
+  .actions{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:16px;
+    margin-top:24px;
+    padding-top:18px;
+    border-top:1px solid var(--line);
+  }
+  .hint{font-size:12px;color:var(--muted);}
+  .btnrow{display:flex;gap:10px;}
+  .btn{
+    border-radius:9px;
+    font-family:inherit;
+    font-size:14px;
+    font-weight:500;
+    padding:11px 24px;
+    text-align:center;
+    cursor:pointer;
+  }
+  .btn.ghost{
+    border:1px solid var(--line);
+    background:#fff;
+    color:var(--ink);
+  }
+  .btn.primary{
+    border:1px solid var(--accent);
+    background:var(--accent);
+    color:#fff;
+  }
+</style>
+</head>
+<body>
+  <div class="screen">
+
+    <div class="workspace">
+      <div class="wsbar">
+        <div class="wsbrand">Fieldnote</div>
+        <div class="wstabs">
+          <span class="on">All notes</span>
+          <span>Shared</span>
+          <span>Starred</span>
+          <span>Archive</span>
+        </div>
+        <div class="wsuser">Nadia Ellery</div>
+      </div>
+      <div class="wsgrid">
+        <div class="ghost">
+          <div class="gt">Q3 Launch Retrospective</div>
+          <div class="gm">Inbox &middot; Edited Mar 4, 2024</div>
+        </div>
+        <div class="ghost">
+          <div class="gt">Pricing page copy pass</div>
+          <div class="gm">Product Team &middot; Edited Mar 3, 2024</div>
+        </div>
+        <div class="ghost">
+          <div class="gt">Onboarding usability notes</div>
+          <div class="gm">Design Reviews &middot; Edited Mar 1, 2024</div>
+        </div>
+        <div class="ghost">
+          <div class="gt">Support escalation themes</div>
+          <div class="gm">Product Team &middot; Edited Feb 28, 2024</div>
+        </div>
+        <div class="ghost">
+          <div class="gt">Roadmap open questions</div>
+          <div class="gm">Personal Drafts &middot; Edited Feb 26, 2024</div>
+        </div>
+        <div class="ghost">
+          <div class="gt">Beta feedback digest</div>
+          <div class="gm">Launch Archive &middot; Edited Feb 19, 2024</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scrim"></div>
+
+    <div class="dialog">
+      <h1>Move to folder</h1>
+      <p class="dsub">Pick a destination. Sharing and permissions stay the same.</p>
+
+      <div class="dbody">
+        <div>
+          <div class="label">Selected note</div>
+          <div class="noteCard">
+            <img src="https://loremflickr.com/96/96/notebook?lock=5281" width="96" height="96" alt="Cover thumbnail of the note being moved, an open notebook on a desk">
+            <div class="name">Q3 Launch Retrospective</div>
+            <div class="meta">Note &middot; Edited Mar 4, 2024</div>
+          </div>
+          <p class="footnote">Currently in Inbox. Moving keeps sharing with Nadia Ellery and 4 others.</p>
+        </div>
+
+        <div>
+          <div class="label">Destination</div>
+          <div class="list">
+            <div class="row">
+              <div class="txt">
+                <div class="title">Product Team</div>
+                <div class="count">24 notes</div>
+              </div>
+              <div class="updated">Updated Mar 6, 2024</div>
+              <svg class="mark" viewBox="0 0 20 20" aria-hidden="true">
+                <circle cx="10" cy="10" r="8.5" fill="none" stroke="#c8ccd3" stroke-width="1"/>
+              </svg>
+            </div>
+            <div class="row selected">
+              <div class="txt">
+                <div class="title">Design Reviews</div>
+                <div class="count">8 notes</div>
+              </div>
+              <div class="updated">Updated Mar 4, 2024</div>
+              <svg class="mark" viewBox="0 0 20 20" aria-hidden="true">
+                <circle cx="10" cy="10" r="9" fill="#1a5fe0"/>
+                <path d="M6 10.3l2.6 2.6L14.2 7.3" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <div class="row">
+              <div class="txt">
+                <div class="title">Personal Drafts</div>
+                <div class="count">3 notes</div>
+              </div>
+              <div class="updated">Updated Feb 27, 2024</div>
+              <svg class="mark" viewBox="0 0 20 20" aria-hidden="true">
+                <circle cx="10" cy="10" r="8.5" fill="none" stroke="#c8ccd3" stroke-width="1"/>
+              </svg>
+            </div>
+            <div class="row">
+              <div class="txt">
+                <div class="title">Launch Archive</div>
+                <div class="count">41 notes</div>
+              </div>
+              <div class="updated">Updated Jan 18, 2024</div>
+              <svg class="mark" viewBox="0 0 20 20" aria-hidden="true">
+                <circle cx="10" cy="10" r="8.5" fill="none" stroke="#c8ccd3" stroke-width="1"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <div class="hint">Double-click a folder to move it right away.</div>
+        <div class="btnrow">
+          <div class="btn ghost">Cancel</div>
+          <div class="btn primary">Move to Design Reviews</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

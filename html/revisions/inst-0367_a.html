@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cover Frame — Loopcast Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;}
+  body{
+    min-height:100vh;display:flex;justify-content:center;align-items:flex-start;
+    padding:40px 0;margin:0;background:#5d5d66;
+    font-family:'Inter',system-ui,sans-serif;
+  }
+  .screen{
+    width:1024px;height:768px;background:#101014;color:#f2f2f5;
+    display:flex;flex-direction:column;position:relative;
+  }
+
+  /* top bar */
+  .topbar{display:flex;align-items:center;gap:14px;padding:12px 20px;
+    border-bottom:1px solid #1e1e26;background:#14141a;}
+  .iconbtn{width:30px;height:30px;display:flex;align-items:center;justify-content:center;
+    color:#c6c6d0;border:1px solid #262630;border-radius:8px;flex:none;}
+  .tb-txt{min-width:0;}
+  .tb-title{font-size:15px;font-weight:600;line-height:19px;}
+  .tb-sub{font-size:12px;color:#9a9aa6;line-height:15px;margin-top:1px;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .spacer{flex:1;}
+  .ghost{font-size:13px;font-weight:500;color:#c6c6d0;padding:7px 13px;
+    border:1px solid #262630;border-radius:8px;}
+  .save{background:#e0339f;color:#fff;font-size:13px;font-weight:600;
+    padding:8px 18px;border-radius:8px;flex:none;}
+
+  .main{flex:1;display:flex;min-height:0;}
+  .stage{flex:1;display:flex;flex-direction:column;min-width:0;}
+
+  /* editor tabs */
+  .tabs{display:flex;gap:6px;padding:12px 24px 0;}
+  .tab{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:500;
+    color:#84848f;padding:8px 14px;border-radius:8px;}
+  .tab.on{background:rgba(224,51,159,0.16);color:#e0339f;font-weight:600;}
+
+  /* canvas */
+  .canvas{flex:1;display:flex;align-items:center;justify-content:center;padding:18px 24px;}
+  .preview{position:relative;width:600px;height:400px;background:#1a1a20;border-radius:4px;}
+  .preview img{width:600px;height:400px;object-fit:cover;display:block;
+    background:#1a1a20;border-radius:4px;}
+  .scrim{position:absolute;background:rgba(8,8,10,0.6);}
+  .s-top{left:0;top:0;width:600px;height:20px;}
+  .s-bot{left:0;bottom:0;width:600px;height:20px;}
+  .s-left{left:0;top:20px;width:120px;height:360px;}
+  .s-right{right:0;top:20px;width:120px;height:360px;}
+  .cropbox{position:absolute;left:120px;top:20px;width:360px;height:360px;}
+  .gl{position:absolute;background:rgba(255,255,255,0.32);}
+  .gl-v1{left:120px;top:0;width:1px;height:360px;}
+  .gl-v2{left:240px;top:0;width:1px;height:360px;}
+  .gl-h1{left:0;top:120px;width:360px;height:1px;}
+  .gl-h2{left:0;top:240px;width:360px;height:1px;}
+  .hd{position:absolute;background:#e0339f;}
+  .hd-a{left:0;top:0;width:24px;height:3px;}
+  .hd-b{left:0;top:0;width:3px;height:24px;}
+  .hd-c{right:0;top:0;width:24px;height:3px;}
+  .hd-d{right:0;top:0;width:3px;height:24px;}
+  .hd-e{left:0;bottom:0;width:24px;height:3px;}
+  .hd-f{left:0;bottom:0;width:3px;height:24px;}
+  .hd-g{right:0;bottom:0;width:24px;height:3px;}
+  .hd-h{right:0;bottom:0;width:3px;height:24px;}
+  .stamp{position:absolute;left:14px;bottom:10px;background:rgba(8,8,10,0.72);
+    border-radius:6px;padding:5px 10px;font-size:12px;font-weight:500;color:#e8e8ee;}
+
+  /* filmstrip */
+  .filmstrip{padding:14px 24px 20px;border-top:1px solid #1e1e26;background:#121217;}
+  .sec-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:10px;}
+  .sec-title{font-size:12px;font-weight:600;letter-spacing:0.05em;
+    text-transform:uppercase;color:#c6c6d0;}
+  .sec-note{font-size:12px;color:#8b8b96;}
+  .strip{display:flex;gap:12px;}
+  .frame{width:120px;}
+  .frame img{width:120px;height:84px;object-fit:cover;display:block;
+    background:#1a1a20;border-radius:8px;}
+  .bar{height:3px;border-radius:6px;background:transparent;margin-top:5px;}
+  .frame.on .bar{background:#e0339f;}
+  .tc{font-size:12px;color:#8b8b96;margin-top:4px;text-align:center;}
+  .frame.on .tc{color:#f2f2f5;font-weight:500;}
+
+  /* inspector */
+  .inspector{width:320px;border-left:1px solid #1e1e26;background:#14141a;
+    padding:18px 20px 20px;display:flex;flex-direction:column;gap:18px;}
+  .out-k{font-size:12px;font-weight:600;letter-spacing:0.05em;
+    text-transform:uppercase;color:#8b8b96;}
+  .out-v{font-size:18px;font-weight:600;margin-top:4px;}
+  .out-n{font-size:12px;color:#9a9aa6;margin-top:2px;}
+
+  .grp-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:10px;}
+  .chips{display:flex;gap:6px;}
+  .chip{flex:1;text-align:center;font-size:12px;font-weight:500;color:#c6c6d0;
+    background:rgba(224,51,159,0.10);border-radius:7px;padding:8px 0;}
+  .chip.on{background:rgba(224,51,159,0.34);color:#fff;font-weight:600;}
+
+  .ctl{margin-top:12px;}
+  .ctl-head{display:flex;align-items:baseline;justify-content:space-between;
+    font-size:13px;color:#e2e2e8;margin-bottom:6px;}
+  .ctl-head .val{font-size:13px;font-weight:600;font-variant-numeric:tabular-nums;}
+  .track{position:relative;height:20px;}
+  .track .base{position:absolute;left:0;top:8px;width:100%;height:4px;
+    border-radius:6px;background:rgba(224,51,159,0.16);}
+  .track .fill{position:absolute;top:8px;height:4px;border-radius:6px;background:#e0339f;}
+  .track .knob{position:absolute;top:3px;width:14px;height:14px;border-radius:50%;
+    background:#f7d3ec;}
+  .tick{position:absolute;left:50%;top:4px;width:1px;height:12px;
+    background:rgba(255,255,255,0.22);}
+
+  .card{background:#191920;border:1px solid #24242e;border-radius:10px;padding:14px;}
+  .card .ctl{margin-top:10px;}
+  .presets{display:flex;gap:6px;margin-top:12px;}
+  .pbtn{flex:1;text-align:center;font-size:12px;font-weight:500;color:#c6c6d0;
+    border:1px solid #2b2b36;border-radius:7px;padding:7px 0;}
+  .pbtn.on{border-color:#e0339f;color:#fff;background:rgba(224,51,159,0.22);font-weight:600;}
+  .src{font-size:12px;color:#8b8b96;margin-top:10px;}
+  .foot{margin-top:auto;font-size:12px;color:#7c7c88;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+</style>
+</head>
+<body>
+<div class="screen">
+
+  <div class="topbar">
+    <div class="iconbtn" aria-hidden="true">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
+    </div>
+    <div class="tb-txt">
+      <div class="tb-title">Cover Frame</div>
+      <div class="tb-sub">Episode 48 · Night Shift Radio</div>
+    </div>
+    <div class="spacer"></div>
+    <div class="ghost">Reset all</div>
+    <div class="save">Save cover</div>
+  </div>
+
+  <div class="main">
+    <div class="stage">
+
+      <div class="tabs">
+        <div class="tab on">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3v14h14"/><path d="M3 7h14v14"/></svg>
+          Crop
+        </div>
+        <div class="tab">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7h14"/><path d="M5 17h14"/><circle cx="10" cy="7" r="2.4"/><circle cx="15" cy="17" r="2.4"/></svg>
+          Adjust
+        </div>
+        <div class="tab">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v14H4z"/><path d="M9 5v14"/><path d="M15 5v14"/></svg>
+          Trim
+        </div>
+        <div class="tab">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4"/><path d="M8 8l4-4 4 4"/><path d="M5 19h14"/></svg>
+          Export
+        </div>
+      </div>
+
+      <div class="canvas">
+        <div class="preview">
+          <img src="https://loremflickr.com/600/400/concert?lock=5240" width="600" height="400" alt="Stage lights over a crowd at a live concert, the frame being cropped for the episode cover">
+          <div class="scrim s-top"></div>
+          <div class="scrim s-bot"></div>
+          <div class="scrim s-left"></div>
+          <div class="scrim s-right"></div>
+          <div class="cropbox">
+            <div class="gl gl-v1"></div><div class="gl gl-v2"></div>
+            <div class="gl gl-h1"></div><div class="gl gl-h2"></div>
+            <div class="hd hd-a"></div><div class="hd hd-b"></div>
+            <div class="hd hd-c"></div><div class="hd hd-d"></div>
+            <div class="hd hd-e"></div><div class="hd hd-f"></div>
+            <div class="hd hd-g"></div><div class="hd hd-h"></div>
+          </div>
+          <div class="stamp">12:04.6</div>
+        </div>
+      </div>
+
+      <div class="filmstrip">
+        <div class="sec-head">
+          <div class="sec-title">Source frame</div>
+          <div class="sec-note">Clip 28:41 long · 4 suggestions</div>
+        </div>
+        <div class="strip">
+          <div class="frame">
+            <img src="https://loremflickr.com/120/84/studio?lock=5241" width="120" height="84" alt="Recording studio desk with microphone, candidate cover frame">
+            <div class="bar"></div>
+            <div class="tc">04:18</div>
+          </div>
+          <div class="frame on">
+            <img src="https://loremflickr.com/120/84/concert?lock=5242" width="120" height="84" alt="Concert stage wide shot, currently selected cover frame">
+            <div class="bar"></div>
+            <div class="tc">12:04</div>
+          </div>
+          <div class="frame">
+            <img src="https://loremflickr.com/120/84/guitar?lock=5243" width="120" height="84" alt="Guitarist mid performance, candidate cover frame">
+            <div class="bar"></div>
+            <div class="tc">17:52</div>
+          </div>
+          <div class="frame">
+            <img src="https://loremflickr.com/120/84/vinyl?lock=5244" width="120" height="84" alt="Vinyl record on a turntable, candidate cover frame">
+            <div class="bar"></div>
+            <div class="tc">25:33</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="inspector">
+
+      <div>
+        <div class="out-k">Output</div>
+        <div class="out-v">1080 × 1080 px</div>
+        <div class="out-n">74% of source · JPG, quality 92</div>
+      </div>
+
+      <div>
+        <div class="grp-head">
+          <div class="sec-title">Aspect ratio</div>
+          <div class="sec-note">Square</div>
+        </div>
+        <div class="chips">
+          <div class="chip on">1:1</div>
+          <div class="chip">4:5</div>
+          <div class="chip">16:9</div>
+          <div class="chip">9:16</div>
+          <div class="chip">Free</div>
+        </div>
+      </div>
+
+      <div>
+        <div class="grp-head">
+          <div class="sec-title">Angle</div>
+          <div class="sec-note">Auto-level from horizon</div>
+        </div>
+
+        <div class="ctl">
+          <div class="ctl-head"><span>Straighten</span><span class="val">+2.5°</span></div>
+          <div class="track">
+            <div class="base"></div>
+            <div class="tick"></div>
+            <div class="fill" style="left:50%;width:8.5%;"></div>
+            <div class="knob" style="left:calc(58.5% - 7px);"></div>
+          </div>
+        </div>
+
+        <div class="ctl">
+          <div class="ctl-head"><span>Vertical tilt</span><span class="val">−1.2°</span></div>
+          <div class="track">
+            <div class="base"></div>
+            <div class="tick"></div>
+            <div class="fill" style="left:46%;width:4%;"></div>
+            <div class="knob" style="left:calc(46% - 7px);"></div>
+          </div>
+        </div>
+
+        <div class="ctl">
+          <div class="ctl-head"><span>Horizontal tilt</span><span class="val">0.0°</span></div>
+          <div class="track">
+            <div class="base"></div>
+            <div class="tick"></div>
+            <div class="knob" style="left:calc(50% - 7px);"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="grp-head" style="margin-bottom:0;">
+          <div class="sec-title">Size</div>
+          <div class="sec-note">Independent of angle</div>
+        </div>
+        <div class="ctl">
+          <div class="ctl-head"><span>Scale</span><span class="val">108%</span></div>
+          <div class="track">
+            <div class="base"></div>
+            <div class="fill" style="left:0;width:39%;"></div>
+            <div class="knob" style="left:calc(39% - 7px);"></div>
+          </div>
+        </div>
+        <div class="presets">
+          <div class="pbtn">Fit</div>
+          <div class="pbtn on">Fill</div>
+          <div class="pbtn">100%</div>
+        </div>
+        <div class="src">Source 1456 × 816 px · no upscaling</div>
+      </div>
+
+      <div class="foot">Frame 12:04.6 · edits saved to draft</div>
+
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

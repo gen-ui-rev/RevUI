@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lunaro Medication Planner</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #e8e7eb;
+      color: #1e2522;
+      font-family: 'Inter', system-ui, sans-serif;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      color: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #ffffff;
+      border: 1px solid #d6dbd8;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 14px;
+      border-bottom: 1px solid #e2e8e5;
+      background: #ffffff;
+    }
+
+    .icon-button {
+      width: 32px;
+      height: 32px;
+      padding: 5px;
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      border: 0;
+      background: transparent;
+    }
+
+    .assistant-mark {
+      width: 36px;
+      height: 36px;
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      border-radius: 8px;
+      background: #287a62;
+      color: #ffffff;
+    }
+
+    .title-block {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .title-block h1 {
+      margin: 0;
+      font-size: 16px;
+      line-height: 20px;
+      font-weight: 600;
+    }
+
+    .title-block p {
+      margin: 2px 0 0;
+      color: #68736f;
+      font-size: 12px;
+      line-height: 15px;
+    }
+
+    .patient-line {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 8px 16px;
+      color: #46544f;
+      background: #f5faf8;
+      border-bottom: 1px solid #dfe9e5;
+      font-size: 12px;
+      line-height: 17px;
+    }
+
+    .patient-avatar {
+      width: 24px;
+      height: 24px;
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      border-radius: 50%;
+      background: #d8eee6;
+      color: #236d58;
+      font-size: 10px;
+      font-weight: 700;
+    }
+
+    .patient-line strong {
+      color: #26342f;
+      font-weight: 600;
+    }
+
+    .patient-meta {
+      margin-left: auto;
+      color: #287a62;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .conversation {
+      min-height: 0;
+      flex: 1;
+      padding: 12px 16px;
+      background: #ffffff;
+    }
+
+    .time-divider {
+      margin: 0;
+      color: #858e8a;
+      text-align: center;
+      font-size: 11px;
+      line-height: 15px;
+    }
+
+    .message {
+      margin-top: 11px;
+    }
+
+    .assistant-label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 4px;
+      color: #246b57;
+      font-size: 12px;
+      line-height: 18px;
+      font-weight: 600;
+    }
+
+    .mini-mark {
+      width: 18px;
+      height: 18px;
+      display: grid;
+      place-items: center;
+      border-radius: 6px;
+      background: #dff1eb;
+      color: #287a62;
+    }
+
+    .assistant-message p {
+      margin: 0;
+      color: #303936;
+      font-size: 13px;
+      line-height: 19px;
+    }
+
+    .user-message {
+      width: fit-content;
+      max-width: 315px;
+      margin-left: auto;
+      padding: 9px 11px;
+      border-radius: 8px 8px 2px 8px;
+      background: #e4f2ed;
+      color: #1e4c3e;
+      font-size: 13px;
+      line-height: 19px;
+    }
+
+    .plan-card {
+      margin-top: 8px;
+      border: 1px solid #d7dfdc;
+      border-radius: 8px;
+      background: #ffffff;
+    }
+
+    .plan-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 8px 10px;
+      border-bottom: 1px solid #e2e8e5;
+      background: #f8faf9;
+      border-radius: 8px 8px 0 0;
+    }
+
+    .plan-head strong {
+      color: #27342f;
+      font-size: 13px;
+      line-height: 17px;
+      font-weight: 600;
+    }
+
+    .coverage {
+      padding: 3px 7px;
+      border-radius: 10px;
+      background: #dff2e9;
+      color: #21684f;
+      font-size: 10px;
+      line-height: 14px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .dose-row {
+      display: grid;
+      grid-template-columns: 63px minmax(0, 1fr) 20px;
+      gap: 8px;
+      align-items: center;
+      padding: 8px 10px;
+      border-bottom: 1px solid #e7ebe9;
+    }
+
+    .dose-row:last-child {
+      border-bottom: 0;
+    }
+
+    .dose-time {
+      color: #67716d;
+      font-size: 11px;
+      line-height: 15px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .dose-detail {
+      min-width: 0;
+    }
+
+    .dose-detail strong {
+      display: block;
+      color: #28332f;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 600;
+    }
+
+    .dose-detail span {
+      display: block;
+      color: #727c78;
+      font-size: 10px;
+      line-height: 14px;
+    }
+
+    .check {
+      width: 18px;
+      height: 18px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: #e4f3ed;
+      color: #287a62;
+    }
+
+    .plan-note {
+      margin-top: 7px !important;
+      color: #5d6763 !important;
+      font-size: 12px !important;
+      line-height: 17px !important;
+    }
+
+    .suggestions {
+      padding: 9px 16px;
+      border-top: 1px solid #e2e8e5;
+      background: #ffffff;
+    }
+
+    .suggestions-label {
+      margin: 0 0 7px;
+      color: #747d79;
+      font-size: 11px;
+      line-height: 14px;
+      font-weight: 500;
+    }
+
+    .suggestion-row {
+      display: flex;
+      gap: 7px;
+    }
+
+    .suggestion {
+      padding: 7px 9px;
+      border: 1px solid #bcd2ca;
+      border-radius: 6px;
+      background: #ffffff;
+      color: #246b57;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .composer {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 12px;
+      border-top: 1px solid #e2e8e5;
+      background: #ffffff;
+    }
+
+    .input-shell {
+      min-width: 0;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 11px;
+      border: 1px solid #c7cfcc;
+      border-radius: 6px;
+      background: #ffffff;
+    }
+
+    .input-shell svg {
+      flex: 0 0 auto;
+      color: #6f7975;
+    }
+
+    .input-shell input {
+      width: 100%;
+      min-width: 0;
+      padding: 0;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      color: #26312d;
+      font-size: 13px;
+      line-height: 20px;
+    }
+
+    .input-shell input::placeholder {
+      color: #89918e;
+      opacity: 1;
+    }
+
+    .send-button {
+      width: 40px;
+      height: 40px;
+      padding: 9px;
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      border: 0;
+      border-radius: 6px;
+      background: #287a62;
+      color: #ffffff;
+    }
+
+    .tabbar {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      padding: 7px 10px 9px;
+      border-top: 1px solid #dfe5e2;
+      background: #ffffff;
+    }
+
+    .tab {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: #747d79;
+      font-size: 11px;
+      line-height: 14px;
+      font-weight: 500;
+    }
+
+    .tab svg {
+      width: 21px;
+      height: 21px;
+    }
+
+    .tab.active {
+      color: #287a62;
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <button class="icon-button" type="button" aria-label="Go back">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M15 5L8 12L15 19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+
+      <div class="assistant-mark" aria-hidden="true">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none">
+          <path d="M7 10H17C18.1 10 19 10.9 19 12C19 13.1 18.1 14 17 14H7C5.9 14 5 13.1 5 12C5 10.9 5.9 10 7 10Z" stroke="currentColor" stroke-width="1.8"/>
+          <path d="M12 10V14" stroke="currentColor" stroke-width="1.8"/>
+        </svg>
+      </div>
+
+      <div class="title-block">
+        <h1>Medication Planner</h1>
+        <p>Shared support for family caregivers</p>
+      </div>
+
+      <button class="icon-button" type="button" aria-label="Planner options">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="5" cy="12" r="1.5" fill="currentColor"/>
+          <circle cx="12" cy="12" r="1.5" fill="currentColor"/>
+          <circle cx="19" cy="12" r="1.5" fill="currentColor"/>
+        </svg>
+      </button>
+    </header>
+
+    <div class="patient-line">
+      <span class="patient-avatar" aria-hidden="true">EM</span>
+      <span>Plan for <strong>Eleanor Miller</strong></span>
+      <span class="patient-meta">3 daily doses</span>
+    </div>
+
+    <main class="conversation">
+      <p class="time-divider">Today, 8:42 AM</p>
+
+      <div class="message assistant-message">
+        <div class="assistant-label">
+          <span class="mini-mark" aria-hidden="true">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
+              <path d="M7 10H17C18.1 10 19 10.9 19 12C19 13.1 18.1 14 17 14H7C5.9 14 5 13.1 5 12C5 10.9 5.9 10 7 10Z" fill="currentColor"/>
+            </svg>
+          </span>
+          Care Assistant
+        </div>
+        <p>I can organize Eleanor’s medication schedule and help your family coordinate doses.</p>
+      </div>
+
+      <div class="message user-message">
+        Summarize her medication plan for today.
+      </div>
+
+      <div class="message assistant-message">
+        <div class="assistant-label">
+          <span class="mini-mark" aria-hidden="true">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
+              <path d="M7 10H17C18.1 10 19 10.9 19 12C19 13.1 18.1 14 17 14H7C5.9 14 5 13.1 5 12C5 10.9 5.9 10 7 10Z" fill="currentColor"/>
+            </svg>
+          </span>
+          Care Assistant
+        </div>
+        <p>Here is today’s plan. All three medicines have enough supply through the weekend.</p>
+
+        <section class="plan-card" aria-label="Today's medication plan">
+          <div class="plan-head">
+            <strong>Tuesday, May 14</strong>
+            <span class="coverage">Supply confirmed</span>
+          </div>
+
+          <div class="dose-row">
+            <span class="dose-time">8:00 AM</span>
+            <span class="dose-detail">
+              <strong>Lisinopril · 10 mg</strong>
+              <span>1 tablet with breakfast</span>
+            </span>
+            <span class="check" aria-label="Scheduled">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M6 12L10 16L18 8" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+          </div>
+
+          <div class="dose-row">
+            <span class="dose-time">1:00 PM</span>
+            <span class="dose-detail">
+              <strong>Metformin · 500 mg</strong>
+              <span>1 tablet with lunch</span>
+            </span>
+            <span class="check" aria-label="Scheduled">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M6 12L10 16L18 8" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+          </div>
+
+          <div class="dose-row">
+            <span class="dose-time">9:00 PM</span>
+            <span class="dose-detail">
+              <strong>Atorvastatin · 20 mg</strong>
+              <span>1 tablet at bedtime</span>
+            </span>
+            <span class="check" aria-label="Scheduled">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M6 12L10 16L18 8" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+          </div>
+        </section>
+
+        <p class="plan-note">Morning dose is assigned to you. Maya is covering lunch and bedtime.</p>
+      </div>
+    </main>
+
+    <section class="suggestions" aria-label="Suggested prompts">
+      <p class="suggestions-label">Continue planning</p>
+      <div class="suggestion-row">
+        <button class="suggestion" type="button">Mark morning taken</button>
+        <button class="suggestion" type="button">View supplies</button>
+      </div>
+    </section>
+
+    <form class="composer">
+      <label class="input-shell">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+        </svg>
+        <input type="text" aria-label="Message Care Assistant" placeholder="Ask about Eleanor's medicines">
+      </label>
+      <button class="send-button" type="button" aria-label="Send message">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M5 12H19M13 6L19 12L13 18" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </form>
+
+    <nav class="tabbar" aria-label="Primary navigation">
+      <button class="tab" type="button">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M4 10.5L12 4L20 10.5V20H14.5V14H9.5V20H4V10.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+        </svg>
+        <span>Home</span>
+      </button>
+
+      <button class="tab active" type="button" aria-current="page">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <rect x="5" y="4" width="14" height="16" rx="2" stroke="currentColor" stroke-width="1.7"/>
+          <path d="M8 9H16M8 13H16M8 17H12" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+        </svg>
+        <span>Plan</span>
+      </button>
+
+      <button class="tab" type="button">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="8" cy="9" r="3" stroke="currentColor" stroke-width="1.7"/>
+          <circle cx="17" cy="10" r="2.5" stroke="currentColor" stroke-width="1.7"/>
+          <path d="M3.5 20C3.8 16.7 5.5 15 8 15C10.5 15 12.2 16.7 12.5 20M14 16C16.7 15.7 19 17 19.5 20" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+        </svg>
+        <span>Care team</span>
+      </button>
+
+      <button class="tab" type="button">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M5 5.5C5 4.67 5.67 4 6.5 4H17.5C18.33 4 19 4.67 19 5.5V14.5C19 15.33 18.33 16 17.5 16H10L6 20V16H6.5C5.67 16 5 15.33 5 14.5V5.5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+          <path d="M9 9H15M9 12H13" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+        </svg>
+        <span>Assistant</span>
+      </button>
+    </nav>
+  </div>
+</body>
+</html>

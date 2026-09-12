@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Invite Teammates</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 32px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #e8e7eb;
+      color: #25212b;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .screen {
+      width: 768px;
+      height: 1024px;
+      display: flex;
+      background: #ffffff;
+      box-shadow: 0 18px 50px rgba(43, 36, 52, 0.12);
+    }
+
+    .sidebar {
+      width: 108px;
+      flex: none;
+      padding: 22px 12px 18px;
+      display: flex;
+      flex-direction: column;
+      background: #282330;
+      color: #ffffff;
+    }
+
+    .brand {
+      width: 46px;
+      height: 46px;
+      margin: 0 auto 28px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      background: #8058ca;
+      font-size: 19px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+
+    .side-nav {
+      display: grid;
+      gap: 9px;
+    }
+
+    .side-tab {
+      min-height: 66px;
+      padding: 8px 4px;
+      border: 0;
+      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      color: #bbb4c3;
+      background: transparent;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .side-tab.active {
+      color: #ffffff;
+      background: #443851;
+      font-weight: 600;
+    }
+
+    .side-tab svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .sidebar-status {
+      margin-top: auto;
+      padding: 12px 6px 0;
+      border-top: 1px solid #433b4b;
+      color: #bdb6c4;
+      text-align: center;
+      font-size: 11px;
+      line-height: 16px;
+    }
+
+    .workspace {
+      min-width: 0;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: #f8f7fa;
+    }
+
+    .topbar {
+      padding: 18px 24px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: #ffffff;
+      border-bottom: 1px solid #ece9ef;
+    }
+
+    .back-button {
+      width: 44px;
+      height: 44px;
+      flex: none;
+      padding: 0;
+      border: 0;
+      border-radius: 9px;
+      display: grid;
+      place-items: center;
+      color: #312c38;
+      background: #f3f1f5;
+    }
+
+    .topbar-title {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .topbar-title h1 {
+      margin: 0;
+      font-size: 21px;
+      line-height: 27px;
+      font-weight: 650;
+    }
+
+    .topbar-title p {
+      margin: 3px 0 0;
+      color: #77717e;
+      font-size: 13px;
+      line-height: 18px;
+    }
+
+    .member-count {
+      padding: 8px 11px;
+      border-radius: 999px;
+      color: #6842b4;
+      background: #f0eafb;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 650;
+      white-space: nowrap;
+    }
+
+    main {
+      min-height: 0;
+      flex: 1;
+      padding: 26px 24px;
+    }
+
+    .page-heading {
+      margin-bottom: 20px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .page-heading h2 {
+      margin: 0;
+      font-size: 27px;
+      line-height: 34px;
+      font-weight: 650;
+      letter-spacing: -0.5px;
+    }
+
+    .page-heading p {
+      margin: 5px 0 0;
+      max-width: 420px;
+      color: #6d6674;
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .access-note {
+      color: #7a7381;
+      font-size: 12px;
+      line-height: 17px;
+      white-space: nowrap;
+    }
+
+    .team-board {
+      display: grid;
+      grid-template-columns: 280px minmax(0, 1fr);
+      gap: 18px;
+      align-items: start;
+    }
+
+    .invite-panel,
+    .pending-panel {
+      padding: 21px;
+      border-radius: 12px;
+      background: #ffffff;
+      border: 1px solid #ebe7ef;
+      box-shadow: 0 7px 18px rgba(52, 43, 62, 0.05);
+    }
+
+    .invite-panel {
+      background: #f1ecfa;
+      border-color: #e6dcf5;
+    }
+
+    .panel-kicker {
+      margin: 0 0 5px;
+      color: #7046bd;
+      font-size: 12px;
+      line-height: 17px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.7px;
+    }
+
+    .invite-panel h3,
+    .pending-panel h3 {
+      margin: 0;
+      color: #2c2732;
+      font-size: 20px;
+      line-height: 26px;
+      font-weight: 650;
+    }
+
+    .panel-intro {
+      margin: 7px 0 18px;
+      color: #665f6e;
+      font-size: 13px;
+      line-height: 19px;
+    }
+
+    .field-group + .field-group {
+      margin-top: 15px;
+    }
+
+    .field-label {
+      display: block;
+      margin: 0 0 7px;
+      color: #4e4757;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 650;
+    }
+
+    .role-control,
+    .email-input {
+      width: 100%;
+      height: 48px;
+      border: 1px solid #e3dcea;
+      border-radius: 8px;
+      color: #332e39;
+      background: #ffffff;
+      font-size: 14px;
+    }
+
+    .role-control {
+      padding: 0 13px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-weight: 650;
+    }
+
+    .email-input {
+      padding: 0 13px;
+      outline: none;
+    }
+
+    .email-input::placeholder {
+      color: #918b98;
+    }
+
+    .send-button {
+      width: 100%;
+      min-height: 48px;
+      margin-top: 16px;
+      padding: 0 16px;
+      border: 0;
+      border-radius: 8px;
+      color: #ffffff;
+      background: #7046bd;
+      font-size: 14px;
+      font-weight: 650;
+    }
+
+    .permission-note {
+      margin: 12px 0 0;
+      color: #6e6677;
+      font-size: 12px;
+      line-height: 17px;
+    }
+
+    .pending-heading {
+      margin-bottom: 15px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .pending-heading p {
+      margin: 4px 0 0;
+      color: #77717e;
+      font-size: 12px;
+      line-height: 17px;
+    }
+
+    .waiting-count {
+      padding: 5px 9px;
+      border-radius: 999px;
+      color: #625a6b;
+      background: #f2f0f4;
+      font-size: 12px;
+      line-height: 17px;
+      font-weight: 650;
+      white-space: nowrap;
+    }
+
+    .invite-list {
+      display: grid;
+      gap: 11px;
+    }
+
+    .invite-row {
+      padding: 14px;
+      border-radius: 10px;
+      display: grid;
+      grid-template-columns: 44px minmax(0, 1fr);
+      gap: 11px;
+      background: #f8f6fa;
+      border: 1px solid #eeeaf1;
+    }
+
+    .monogram {
+      width: 44px;
+      height: 44px;
+      border-radius: 9px;
+      display: grid;
+      place-items: center;
+      color: #6740ad;
+      background: #e9e0f8;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .invite-details {
+      min-width: 0;
+    }
+
+    .invite-email {
+      overflow: hidden;
+      color: #302b36;
+      font-size: 14px;
+      line-height: 19px;
+      font-weight: 650;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .invite-meta {
+      margin-top: 2px;
+      color: #7a7381;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .invite-actions {
+      grid-column: 1 / -1;
+      padding-top: 10px;
+      border-top: 1px solid #e8e4eb;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .time-left {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: #9b5c20;
+      font-size: 12px;
+      line-height: 17px;
+      font-weight: 650;
+    }
+
+    .time-left svg {
+      width: 16px;
+      height: 16px;
+      flex: none;
+    }
+
+    .resend {
+      min-height: 40px;
+      padding: 0 12px;
+      border: 1px solid #d9ccec;
+      border-radius: 8px;
+      color: #7046bd;
+      background: #ffffff;
+      font-size: 13px;
+      font-weight: 650;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <aside class="sidebar">
+      <div class="brand" aria-label="Riverbend">R</div>
+
+      <nav class="side-nav" aria-label="Main navigation">
+        <button class="side-tab" type="button">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M4 10.5L12 4L20 10.5V20H14.5V14H9.5V20H4V10.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+          </svg>
+          <span>Home</span>
+        </button>
+
+        <button class="side-tab" type="button">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M5 5.5C7.4 4.8 9.7 5.2 12 7V19C9.7 17.2 7.4 16.8 5 17.5V5.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+            <path d="M19 5.5C16.6 4.8 14.3 5.2 12 7V19C14.3 17.2 16.6 16.8 19 17.5V5.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+          </svg>
+          <span>Courses</span>
+        </button>
+
+        <button class="side-tab active" type="button" aria-current="page">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M9 11C10.657 11 12 9.657 12 8C12 6.343 10.657 5 9 5C7.343 5 6 6.343 6 8C6 9.657 7.343 11 9 11Z" stroke="currentColor" stroke-width="1.7"/>
+            <path d="M3.5 19C3.8 15.8 5.6 14 9 14C12.4 14 14.2 15.8 14.5 19" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+            <path d="M15 7C16.657 7 18 8.343 18 10C18 11.657 16.657 13 15 13" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+            <path d="M16.5 15C19 15.3 20.3 16.7 20.5 19" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+          </svg>
+          <span>Team</span>
+        </button>
+
+        <button class="side-tab" type="button">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M12 15.25C13.795 15.25 15.25 13.795 15.25 12C15.25 10.205 13.795 8.75 12 8.75C10.205 8.75 8.75 10.205 8.75 12C8.75 13.795 10.205 15.25 12 15.25Z" stroke="currentColor" stroke-width="1.7"/>
+            <path d="M19 13.2V10.8L16.9 10.1C16.7 9.5 16.5 9 16.1 8.5L17.1 6.5L15.5 4.9L13.5 5.9C13 5.5 12.5 5.3 11.9 5.1L11.2 3H8.8L8.1 5.1C7.5 5.3 7 5.5 6.5 5.9L4.5 4.9L2.9 6.5L3.9 8.5C3.5 9 3.3 9.5 3.1 10.1L1 10.8V13.2L3.1 13.9C3.3 14.5 3.5 15 3.9 15.5L2.9 17.5L4.5 19.1L6.5 18.1C7 18.5 7.5 18.7 8.1 18.9L8.8 21H11.2L11.9 18.9C12.5 18.7 13 18.5 13.5 18.1L15.5 19.1L17.1 17.5L16.1 15.5C16.5 15 16.7 14.5 16.9 13.9L19 13.2Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" transform="translate(2 0) scale(.91)"/>
+          </svg>
+          <span>Settings</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-status">Riverbend<br>Language Lab</div>
+    </aside>
+
+    <div class="workspace">
+      <header class="topbar">
+        <button class="back-button" type="button" aria-label="Go back">
+          <svg width="21" height="21" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <div class="topbar-title">
+          <h1>Invite teammates</h1>
+          <p>Riverbend Language Lab</p>
+        </div>
+        <div class="member-count">4 members</div>
+      </header>
+
+      <main>
+        <div class="page-heading">
+          <div>
+            <h2>Team access</h2>
+            <p>Invite instructors or coordinators and review invitations that are still waiting.</p>
+          </div>
+          <div class="access-note">2 invitations pending</div>
+        </div>
+
+        <div class="team-board">
+          <section class="invite-panel" aria-labelledby="invite-heading-a">
+            <p class="panel-kicker">New invitation</p>
+            <h3 id="invite-heading-a">Add someone</h3>
+            <p class="panel-intro">Choose their access first, then enter the work email where the invitation should be sent.</p>
+
+            <form>
+              <div class="field-group">
+                <span class="field-label">Workspace role</span>
+                <div class="role-control" role="button" aria-label="Selected role: Instructor">
+                  <span>Instructor</span>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M7 10L12 15L17 10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+              </div>
+
+              <div class="field-group">
+                <label class="field-label" for="email-a">Work email</label>
+                <input class="email-input" id="email-a" type="email" value="nora.ellis@riverbend.edu" aria-label="Work email">
+              </div>
+
+              <button class="send-button" type="button">Send invitation</button>
+            </form>
+
+            <p class="permission-note">Instructors can create lessons, review learner work, and view reports. Billing and member roles stay restricted.</p>
+          </section>
+
+          <section class="pending-panel" aria-labelledby="pending-heading-a">
+            <div class="pending-heading">
+              <div>
+                <h3 id="pending-heading-a">Pending invitations</h3>
+                <p>Invitations expire seven days after they are sent.</p>
+              </div>
+              <span class="waiting-count">2 waiting</span>
+            </div>
+
+            <div class="invite-list">
+              <article class="invite-row">
+                <div class="monogram" aria-hidden="true">MC</div>
+                <div class="invite-details">
+                  <div class="invite-email">marin.cole@riverbend.edu</div>
+                  <div class="invite-meta">Instructor · Sent Mar 4, 2025</div>
+                </div>
+                <div class="invite-actions">
+                  <span class="time-left">
+                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      <circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.7"/>
+                      <path d="M12 7.5V12L15 14" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    4 days remaining
+                  </span>
+                  <button class="resend" type="button">Resend</button>
+                </div>
+              </article>
+
+              <article class="invite-row">
+                <div class="monogram" aria-hidden="true">JW</div>
+                <div class="invite-details">
+                  <div class="invite-email">jordan.wells@riverbend.edu</div>
+                  <div class="invite-meta">Coordinator · Sent Mar 2, 2025</div>
+                </div>
+                <div class="invite-actions">
+                  <span class="time-left">
+                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      <circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.7"/>
+                      <path d="M12 7.5V12L15 14" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    2 days remaining
+                  </span>
+                  <button class="resend" type="button">Resend</button>
+                </div>
+              </article>
+            </div>
+          </section>
+        </div>
+      </main>
+    </div>
+  </div>
+</body>
+</html>

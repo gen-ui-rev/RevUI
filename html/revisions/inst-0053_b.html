@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reserve a session time</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#292524;
+    --muted:#78716c;
+    --line:#d6d3d1;
+    --amber:#b45309;
+    --amber-dark:#92400e;
+    --amber-soft:#fffbeb;
+    --rose-soft:#fff1f2;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    min-height:100vh;
+    padding:40px 0;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    background:#e7e5e4;
+    font-family:'Roboto',system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .screen{
+    width:390px;
+    height:560px;
+    padding:18px 24px;
+    background:#fff;
+  }
+  .hero-window{
+    position:relative;
+    width:342px;
+    height:60px;
+    overflow:clip;
+    border-radius:4px;
+    background:#d6d3d1;
+  }
+  .hero{
+    position:absolute;
+    top:-20px;
+    left:0;
+    width:342px;
+    height:120px;
+    display:block;
+    object-fit:cover;
+  }
+  .eyebrow{
+    margin:12px 0 0;
+    color:var(--amber-dark);
+    font-size:11px;
+    line-height:14px;
+    font-weight:700;
+    letter-spacing:.09em;
+    text-transform:uppercase;
+  }
+  h1{
+    margin:4px 0 0;
+    color:var(--ink);
+    font-size:20px;
+    line-height:24px;
+    font-weight:500;
+  }
+  .event-meta{
+    display:flex;
+    align-items:center;
+    gap:7px;
+    margin-top:3px;
+    color:var(--muted);
+    font-size:12px;
+    line-height:16px;
+  }
+  .event-meta .dot{
+    width:3px;
+    height:3px;
+    flex:0 0 auto;
+    border-radius:50%;
+    background:#a8a29e;
+  }
+  .host{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-top:9px;
+  }
+  .mono{
+    width:28px;
+    height:28px;
+    flex:0 0 auto;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border:1px solid #f5d0a9;
+    border-radius:4px;
+    background:var(--amber-soft);
+    color:var(--amber-dark);
+    font-size:11px;
+    font-weight:700;
+  }
+  .host span{
+    min-width:0;
+    overflow:hidden;
+    color:#44403c;
+    font-size:13px;
+    line-height:17px;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+  .time-picker{
+    margin-top:14px;
+  }
+  .time-heading{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+  }
+  .section-label{
+    margin:0;
+    color:var(--ink);
+    font-size:14px;
+    line-height:18px;
+    font-weight:500;
+  }
+  .section-label em{
+    color:var(--muted);
+    font-style:normal;
+    font-weight:400;
+  }
+  .filter-input{
+    position:absolute;
+    width:1px;
+    height:1px;
+    margin:-1px;
+    padding:0;
+    border:0;
+    clip:rect(0 0 0 0);
+  }
+  .availability-filter{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    padding:5px 9px;
+    border:1px solid var(--line);
+    border-radius:14px;
+    color:#57534e;
+    font-size:11px;
+    line-height:14px;
+    font-weight:500;
+    cursor:pointer;
+  }
+  .filter-check{
+    position:relative;
+    width:13px;
+    height:13px;
+    flex:0 0 auto;
+    border:1px solid #a8a29e;
+    border-radius:3px;
+    background:#fff;
+  }
+  #available-only:checked ~ .time-heading .availability-filter{
+    border-color:#f59e0b;
+    background:var(--amber-soft);
+    color:var(--amber-dark);
+  }
+  #available-only:checked ~ .time-heading .filter-check{
+    border-color:var(--amber);
+    background:var(--amber);
+  }
+  #available-only:checked ~ .time-heading .filter-check::after{
+    content:"";
+    position:absolute;
+    left:3px;
+    top:1px;
+    width:4px;
+    height:7px;
+    border-right:2px solid #fff;
+    border-bottom:2px solid #fff;
+    transform:rotate(45deg);
+  }
+  .slots{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:7px;
+    margin-top:9px;
+  }
+  .slot{
+    padding:9px 4px;
+    border:1px solid #d6d3d1;
+    border-radius:5px;
+    background:#fff;
+    color:#44403c;
+    font-size:14px;
+    line-height:18px;
+    font-weight:500;
+    text-align:center;
+  }
+  .slot.sel{
+    border-color:var(--amber);
+    background:var(--amber-soft);
+    color:var(--amber-dark);
+    box-shadow:inset 0 -3px 0 #f59e0b;
+  }
+  .slot.full{
+    border-color:#fecdd3;
+    background:var(--rose-soft);
+    color:#a8a29e;
+    font-weight:400;
+    text-decoration:line-through;
+  }
+  #available-only:checked ~ .slots .full{display:none}
+  .legend{
+    margin:6px 0 0;
+    color:#8c827c;
+    font-size:11px;
+    line-height:14px;
+  }
+  .summary{
+    display:flex;
+    align-items:center;
+    gap:11px;
+    margin-top:11px;
+    padding:9px;
+    border:1px solid #fde68a;
+    border-radius:5px;
+    background:var(--amber-soft);
+  }
+  .summary img{
+    width:48px;
+    height:48px;
+    flex:0 0 auto;
+    display:block;
+    object-fit:cover;
+    border-radius:4px;
+    background:#d6d3d1;
+  }
+  .when{
+    color:var(--ink);
+    font-size:13px;
+    line-height:17px;
+    font-weight:500;
+  }
+  .what{
+    margin-top:2px;
+    color:var(--muted);
+    font-size:11px;
+    line-height:15px;
+  }
+  .confirm{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    margin-top:10px;
+    padding:11px 0;
+    border-radius:5px;
+    background:var(--amber-dark);
+    color:#fff;
+    font-size:14px;
+    line-height:18px;
+    font-weight:500;
+  }
+  .note{
+    margin:7px 0 0;
+    color:#8c827c;
+    font-size:11px;
+    line-height:14px;
+    text-align:center;
+  }
+</style>
+</head>
+<body>
+  <div class="screen">
+    <div class="hero-window">
+      <img class="hero" src="https://loremflickr.com/342/120/studio?lock=1701" width="342" height="120" alt="Recording studio floor set up for the live listening session">
+    </div>
+
+    <p class="eyebrow">Reserve a seat</p>
+    <h1>Vault Sessions: The Low Hum</h1>
+    <div class="event-meta">
+      <span>Friday, March 14</span>
+      <span class="dot" aria-hidden="true"></span>
+      <span>Nightwave Live</span>
+    </div>
+
+    <div class="host">
+      <div class="mono">MD</div>
+      <span>Hosted by Mara Devlin</span>
+    </div>
+
+    <div class="time-picker">
+      <input class="filter-input" type="checkbox" id="available-only" checked>
+
+      <div class="time-heading">
+        <p class="section-label">Start time <em>— Eastern</em></p>
+        <label class="availability-filter" for="available-only">
+          <span class="filter-check" aria-hidden="true"></span>
+          Available only
+        </label>
+      </div>
+
+      <div class="slots">
+        <div class="slot">6:00 PM</div>
+        <div class="slot">6:45 PM</div>
+        <div class="slot sel">7:30 PM</div>
+        <div class="slot">8:15 PM</div>
+        <div class="slot full">9:00 PM</div>
+        <div class="slot">9:45 PM</div>
+      </div>
+      <p class="legend">Turn off the filter to include fully booked sessions.</p>
+    </div>
+
+    <div class="summary">
+      <img src="https://loremflickr.com/48/48/vinyl?lock=1704" width="48" height="48" alt="Vinyl record from the session's featured album">
+      <div>
+        <div class="when">Friday, March 14 · 7:30 PM</div>
+        <div class="what">45 minutes · Studio B, 12 seats</div>
+      </div>
+    </div>
+
+    <div class="confirm">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+        <path d="M3.5 8.6 6.4 11.5 12.5 5.4" stroke="#ffffff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      Confirm 7:30 PM
+    </div>
+    <p class="note">Free to cancel until 5:00 PM on March 14.</p>
+  </div>
+</body>
+</html>

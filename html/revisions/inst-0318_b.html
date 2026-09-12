@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Filter Stays by Stage</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #d9dce1;
+      color: #202124;
+      font-family: 'Roboto', system-ui, sans-serif;
+    }
+
+    button {
+      color: inherit;
+      font: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #f1f2f4;
+      box-shadow: 0 8px 24px rgba(26, 30, 36, 0.14);
+    }
+
+    .topbar {
+      padding: 14px 16px;
+      display: grid;
+      grid-template-columns: 32px 1fr auto;
+      align-items: center;
+      gap: 8px;
+      background: #ffffff;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    .icon-button {
+      width: 28px;
+      height: 28px;
+      padding: 2px;
+      display: grid;
+      place-items: center;
+      border: 0;
+      background: transparent;
+    }
+
+    .topbar h1 {
+      margin: 0;
+      font-size: 20px;
+      line-height: 24px;
+      font-weight: 700;
+    }
+
+    .reset-button {
+      padding: 4px 0;
+      border: 0;
+      background: transparent;
+      color: #b31569;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 500;
+    }
+
+    .trip-context {
+      padding: 9px 16px 10px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 12px;
+      background: #ffffff;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    .trip-copy {
+      min-width: 0;
+    }
+
+    .trip-title {
+      margin: 0;
+      overflow: hidden;
+      font-size: 15px;
+      line-height: 20px;
+      font-weight: 500;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .trip-meta {
+      margin: 1px 0 0;
+      color: #69707a;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .result-count {
+      color: #b31569;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .progress-summary {
+      padding: 10px 14px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 12px;
+      background: #fff7fb;
+      border-bottom: 1px solid #ead3df;
+    }
+
+    .progress-summary strong {
+      display: block;
+      font-size: 14px;
+      line-height: 19px;
+    }
+
+    .progress-summary span {
+      display: block;
+      margin-top: 1px;
+      color: #71666c;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .progress-count {
+      padding: 5px 8px;
+      color: #9d125b;
+      background: #f5d9e8;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .stages {
+      flex: 1;
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .stage {
+      display: grid;
+      grid-template-columns: 42px 1fr;
+      background: #ffffff;
+      border: 1px solid #dfe1e5;
+    }
+
+    .stage-marker {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 11px 6px;
+      color: #70757a;
+      background: #f2f3f5;
+      border-right: 1px solid #dfe1e5;
+    }
+
+    .stage-number {
+      width: 24px;
+      height: 24px;
+      display: grid;
+      place-items: center;
+      border: 1px solid #adb1b7;
+      background: #ffffff;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 700;
+    }
+
+    .stage.completed .stage-marker {
+      color: #33664b;
+      background: #edf6f1;
+      border-right-color: #cfe2d7;
+    }
+
+    .stage.completed .stage-number {
+      border-color: #3f7b5b;
+      background: #3f7b5b;
+      color: #ffffff;
+    }
+
+    .stage.current {
+      border-color: #c21875;
+      box-shadow: 0 2px 8px rgba(156, 18, 91, 0.1);
+    }
+
+    .stage.current .stage-marker {
+      color: #ffffff;
+      background: #c21875;
+      border-right-color: #c21875;
+    }
+
+    .stage.current .stage-number {
+      border-color: #ffffff;
+      background: #ffffff;
+      color: #9d125b;
+    }
+
+    .stage.remaining {
+      color: #666c73;
+      background: #f7f7f8;
+      border-style: dashed;
+      border-color: #bec2c7;
+    }
+
+    .stage.remaining .stage-marker {
+      background: #e9ebee;
+      border-right: 1px dashed #bec2c7;
+    }
+
+    .stage-content {
+      min-width: 0;
+      padding: 10px 12px;
+    }
+
+    .stage-heading {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .stage-heading h2 {
+      margin: 0;
+      font-size: 15px;
+      line-height: 20px;
+      font-weight: 700;
+    }
+
+    .state-label {
+      padding: 2px 6px;
+      background: #eceef1;
+      color: #62676e;
+      font-size: 10px;
+      line-height: 14px;
+      font-weight: 700;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .completed .state-label {
+      color: #33664b;
+      background: #dceee4;
+    }
+
+    .current .state-label {
+      color: #9d125b;
+      background: #f8ddea;
+    }
+
+    .stage-summary {
+      margin: 3px 0 0;
+      overflow: hidden;
+      color: #6d7279;
+      font-size: 12px;
+      line-height: 16px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .selected-summary {
+      color: #202124;
+      font-weight: 500;
+    }
+
+    .choice-grid {
+      margin-top: 9px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .choice {
+      padding: 6px 9px;
+      border: 1px solid #c5c9ce;
+      background: #ffffff;
+      font-size: 13px;
+      line-height: 18px;
+    }
+
+    .choice.selected {
+      border-color: #c21875;
+      background: #fbe7f2;
+      color: #9d125b;
+      font-weight: 700;
+    }
+
+    .current-help {
+      margin: 8px 0 0;
+      color: #676d74;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .remaining-groups {
+      margin-top: 8px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+    }
+
+    .remaining-group {
+      padding: 7px 8px;
+      background: #ffffff;
+      border: 1px solid #d7dadd;
+    }
+
+    .remaining-group strong {
+      display: block;
+      color: #4f555c;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .remaining-group span {
+      display: block;
+      margin-top: 1px;
+      color: #787d84;
+      font-size: 11px;
+      line-height: 15px;
+    }
+
+    .actionbar {
+      padding: 10px 12px;
+      display: grid;
+      grid-template-columns: 92px 1fr;
+      gap: 8px;
+      background: #ffffff;
+      border-top: 1px solid #dfe1e5;
+    }
+
+    .action {
+      min-height: 48px;
+      padding: 11px 10px;
+      border: 1px solid #b8bcc2;
+      background: #ffffff;
+      font-size: 15px;
+      line-height: 24px;
+      font-weight: 500;
+    }
+
+    .action.primary {
+      border-color: #c21875;
+      background: #c21875;
+      color: #ffffff;
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <button class="icon-button" type="button" aria-label="Close filter flow">
+        <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
+          <path d="M6 6L18 18M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"/>
+        </svg>
+      </button>
+      <h1>Filter stays</h1>
+      <button class="reset-button" type="button">Reset</button>
+    </header>
+
+    <section class="trip-context" aria-label="Current stay search">
+      <div class="trip-copy">
+        <p class="trip-title">North Harbor, Bellweather</p>
+        <p class="trip-meta">Jun 18–21 · 2 guests · 1 room</p>
+      </div>
+      <div class="result-count">128 stays</div>
+    </section>
+
+    <section class="progress-summary" aria-label="Filter flow progress">
+      <div>
+        <strong>Build your stay preferences</strong>
+        <span>Two stages complete, one in progress</span>
+      </div>
+      <div class="progress-count">Stage 3 of 4</div>
+    </section>
+
+    <main class="stages">
+      <section class="stage completed" aria-labelledby="stage-one-title">
+        <div class="stage-marker">
+          <span class="stage-number" aria-hidden="true">✓</span>
+        </div>
+        <div class="stage-content">
+          <div class="stage-heading">
+            <h2 id="stage-one-title">1. Sort order</h2>
+            <span class="state-label">Complete</span>
+          </div>
+          <p class="stage-summary">Selected: <span class="selected-summary">Recommended</span></p>
+        </div>
+      </section>
+
+      <section class="stage completed" aria-labelledby="stage-two-title">
+        <div class="stage-marker">
+          <span class="stage-number" aria-hidden="true">✓</span>
+        </div>
+        <div class="stage-content">
+          <div class="stage-heading">
+            <h2 id="stage-two-title">2. Nightly price</h2>
+            <span class="state-label">Complete</span>
+          </div>
+          <p class="stage-summary">Selected range: <span class="selected-summary">$90–$310</span></p>
+        </div>
+      </section>
+
+      <section class="stage current" aria-labelledby="stage-three-title" aria-current="step">
+        <div class="stage-marker">
+          <span class="stage-number">3</span>
+        </div>
+        <div class="stage-content">
+          <div class="stage-heading">
+            <h2 id="stage-three-title">Property type</h2>
+            <span class="state-label">Current</span>
+          </div>
+          <p class="stage-summary">Choose one or more types of stay.</p>
+          <div class="choice-grid" aria-label="Property type choices">
+            <button class="choice selected" type="button">Hotel</button>
+            <button class="choice" type="button">Apartment</button>
+            <button class="choice" type="button">Guesthouse</button>
+            <button class="choice selected" type="button">Resort</button>
+            <button class="choice" type="button">Cabin</button>
+          </div>
+          <p class="current-help">Hotel and resort stays are currently included.</p>
+        </div>
+      </section>
+
+      <section class="stage remaining" aria-labelledby="stage-four-title">
+        <div class="stage-marker">
+          <span class="stage-number">4</span>
+        </div>
+        <div class="stage-content">
+          <div class="stage-heading">
+            <h2 id="stage-four-title">Stay details</h2>
+            <span class="state-label">Remaining</span>
+          </div>
+          <p class="stage-summary">Finish with amenities and guest rating.</p>
+          <div class="remaining-groups">
+            <div class="remaining-group">
+              <strong>Amenities</strong>
+              <span>Cancellation, breakfast, parking</span>
+            </div>
+            <div class="remaining-group">
+              <strong>Guest rating</strong>
+              <span>Any, 7+, 8+ or 9+</span>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="actionbar">
+      <button class="action" type="button">Back</button>
+      <button class="action primary" type="button">Continue to details</button>
+    </footer>
+  </div>
+</body>
+</html>

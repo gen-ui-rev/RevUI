@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Circleline Room Timer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #e8e8e4;
+      color: #171714;
+      font-family: 'Inter', system-ui, sans-serif;
+    }
+
+    .screen {
+      width: 1024px;
+      height: 768px;
+      padding: 38px 48px 40px;
+      display: flex;
+      flex-direction: column;
+      background: #fafaf7;
+      border: 1px solid #d8d8d1;
+      box-shadow: 0 18px 48px rgba(31, 31, 27, 0.09);
+    }
+
+    .room-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 32px;
+      padding-bottom: 28px;
+      border-bottom: 1px solid #d8d8d1;
+    }
+
+    .room-copy {
+      min-width: 0;
+    }
+
+    .eyebrow {
+      margin: 0 0 7px;
+      color: #706f67;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      overflow: hidden;
+      color: #171714;
+      font-size: 25px;
+      font-weight: 600;
+      line-height: 1.25;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      flex-shrink: 0;
+      gap: 24px;
+    }
+
+    .participant-summary {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .people {
+      display: flex;
+      align-items: center;
+    }
+
+    .monogram {
+      width: 38px;
+      height: 38px;
+      margin-left: -8px;
+      display: grid;
+      place-items: center;
+      border: 2px solid #fafaf7;
+      border-radius: 6px;
+      background: #2d2d29;
+      color: #ffffff;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .monogram:first-child {
+      margin-left: 0;
+      background: #6c634b;
+    }
+
+    .participant-count {
+      color: #5f5e57;
+      font-size: 13px;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    button {
+      min-height: 46px;
+      padding: 0 20px;
+      border-radius: 5px;
+      font: inherit;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: default;
+    }
+
+    .invite {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      border: 1px solid #b9b8b0;
+      background: #ffffff;
+      color: #272722;
+    }
+
+    .invite-symbol {
+      font-size: 20px;
+      font-weight: 400;
+      line-height: 1;
+    }
+
+    .timer {
+      flex-grow: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 34px 0 28px;
+      text-align: center;
+    }
+
+    .timer-content {
+      min-width: 430px;
+    }
+
+    .timer-label {
+      margin: 0 0 18px;
+      color: #5f5e57;
+      font-size: 15px;
+      font-weight: 500;
+    }
+
+    .timer-ring {
+      position: relative;
+      width: 320px;
+      height: 320px;
+      margin: 0 auto;
+      display: grid;
+      place-items: center;
+    }
+
+    .timer-ring svg {
+      position: absolute;
+      inset: 0;
+      width: 320px;
+      height: 320px;
+      transform: rotate(-90deg);
+    }
+
+    .timer-value {
+      position: relative;
+      color: #171714;
+      font-size: 76px;
+      font-weight: 600;
+      letter-spacing: -0.055em;
+      line-height: 1;
+    }
+
+    .timer-status {
+      margin: 18px 0 0;
+      color: #706f67;
+      font-size: 13px;
+      font-weight: 400;
+    }
+
+    .controls {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      padding-top: 24px;
+      border-top: 1px solid #d8d8d1;
+    }
+
+    .controls button {
+      min-width: 190px;
+      min-height: 50px;
+    }
+
+    .pause {
+      border: 1px solid #e2b600;
+      background: #f4c62f;
+      color: #171714;
+    }
+
+    .end {
+      border: 1px solid #b9b8b0;
+      background: transparent;
+      color: #34342f;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="room-header">
+      <div class="room-copy">
+        <p class="eyebrow">Circleline room</p>
+        <h1>Neighborhood introductions</h1>
+      </div>
+
+      <div class="header-actions">
+        <div class="participant-summary" aria-label="6 participants joined">
+          <div class="people" aria-label="Hosted by Mara and Owen">
+            <div class="monogram" aria-hidden="true">MR</div>
+            <div class="monogram" aria-hidden="true">OK</div>
+          </div>
+          <span class="participant-count">6 joined</span>
+        </div>
+        <button class="invite" type="button">
+          <span class="invite-symbol" aria-hidden="true">+</span>
+          Invite participants
+        </button>
+      </div>
+    </header>
+
+    <main class="timer">
+      <div class="timer-content">
+        <p class="timer-label">Conversation ends in</p>
+        <div class="timer-ring" role="img" aria-label="18 minutes and 24 seconds remaining, 68 percent">
+          <svg viewBox="0 0 320 320" aria-hidden="true">
+            <circle cx="160" cy="160" r="140" fill="none" stroke="#e2e1da" stroke-width="16"></circle>
+            <circle cx="160" cy="160" r="140" fill="none" stroke="#f4c62f" stroke-width="16" stroke-linecap="butt" stroke-dasharray="598.1 879.6"></circle>
+          </svg>
+          <div class="timer-value">18:24</div>
+        </div>
+        <p class="timer-status">Started at 7:30 PM · 6 people joined</p>
+      </div>
+    </main>
+
+    <div class="controls" aria-label="Timer controls">
+      <button class="pause" type="button">Pause timer</button>
+      <button class="end" type="button">End session</button>
+    </div>
+  </div>
+</body>
+</html>

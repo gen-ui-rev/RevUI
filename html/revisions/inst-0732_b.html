@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wanderdeck Field Ops — Day Route</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 24px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #e6ecee;
+      color: #173139;
+      font-family: 'Manrope', system-ui, sans-serif;
+    }
+
+    button {
+      font: inherit;
+      cursor: pointer;
+    }
+
+    .screen {
+      width: 1024px;
+      height: 768px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      border-radius: 18px;
+      background: #ffffff;
+      box-shadow: 0 18px 44px rgba(23, 49, 57, .14);
+    }
+
+    /* ---------- app bar ---------- */
+    .appbar {
+      flex: none;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding: 0 22px;
+      border-bottom: 1px solid #e2eef0;
+      background: #f5fafb;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+
+    .brand-mark {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      border-radius: 12px;
+      background: #d8f5f8;
+      color: #087f91;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .eyebrow {
+      margin: 0;
+      color: #168da0;
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: .07em;
+    }
+
+    .brand strong {
+      display: block;
+      color: #132d35;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .mainnav {
+      display: flex;
+      gap: 2px;
+    }
+
+    .navlink {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 8px 11px;
+      border-radius: 12px;
+      color: #5f787e;
+      font-size: 13px;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .navlink.active {
+      background: #d1f3f6;
+      color: #07899c;
+      font-weight: 700;
+    }
+
+    .navlink svg,
+    .searchbox svg {
+      width: 17px;
+      height: 17px;
+      flex: none;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.7;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .appbar-right {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .searchbox {
+      width: 208px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border: 1px solid #dbe9eb;
+      border-radius: 12px;
+      background: #ffffff;
+      color: #8b9ea3;
+      font-size: 12.5px;
+      font-weight: 500;
+    }
+
+    .avatar {
+      width: 36px;
+      height: 36px;
+      display: grid;
+      place-items: center;
+      border-radius: 12px;
+      background: #d8f5f8;
+      color: #087f91;
+      font-size: 12.5px;
+      font-weight: 700;
+    }
+
+    /* ---------- sub bar ---------- */
+    .subbar {
+      flex: none;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 14px 22px;
+      border-bottom: 1px solid #eef5f6;
+    }
+
+    .subbar h1 {
+      margin: 0;
+      color: #132d35;
+      font-size: 20px;
+      line-height: 1.25;
+      font-weight: 700;
+    }
+
+    .subbar p {
+      margin: 3px 0 0;
+      color: #71868b;
+      font-size: 12.5px;
+      font-weight: 500;
+    }
+
+    .subbar-tools {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .month-control {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .month-control strong {
+      width: 116px;
+      text-align: center;
+      color: #173139;
+      font-size: 13.5px;
+      font-weight: 700;
+    }
+
+    .icon-button {
+      width: 30px;
+      height: 30px;
+      padding: 0;
+      display: grid;
+      place-items: center;
+      border: 0;
+      border-radius: 12px;
+      background: #edf9fa;
+      color: #38717b;
+    }
+
+    .icon-button svg {
+      width: 17px;
+      height: 17px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .view-switch {
+      display: flex;
+      gap: 2px;
+      padding: 3px;
+      border-radius: 12px;
+      background: #eef9fa;
+    }
+
+    .view-switch span {
+      padding: 6px 12px;
+      border-radius: 10px;
+      color: #678087;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .view-switch .active {
+      background: #cceff4;
+      color: #087e90;
+      font-weight: 700;
+    }
+
+    .primary-button {
+      padding: 10px 15px;
+      border: 0;
+      border-radius: 12px;
+      background: #087e90;
+      color: #ffffff;
+      font-size: 12.5px;
+      font-weight: 700;
+    }
+
+    /* ---------- content ---------- */
+    .content {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      gap: 20px;
+      padding: 18px 22px 22px;
+    }
+
+    .route-pane {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .pane-head {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      padding: 0 2px 12px;
+    }
+
+    .pane-head h2 {
+      margin: 0;
+      color: #173139;
+      font-size: 16px;
+      line-height: 1.25;
+      font-weight: 700;
+    }
+
+    .pane-head span {
+      color: #71868b;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .tl-row {
+      display: grid;
+      grid-template-columns: 74px minmax(0, 1fr);
+      gap: 14px;
+    }
+
+    .tl-time {
+      padding-top: 12px;
+      text-align: right;
+    }
+
+    .tl-time strong {
+      display: block;
+      color: #176f7c;
+      font-size: 12.5px;
+      line-height: 17px;
+      font-weight: 700;
+    }
+
+    .tl-time span {
+      display: block;
+      color: #8b9ea3;
+      font-size: 11.5px;
+      line-height: 16px;
+      font-weight: 500;
+    }
+
+    .tl-card {
+      display: grid;
+      grid-template-columns: 52px minmax(0, 1fr) auto;
+      gap: 12px;
+      align-items: center;
+      padding: 10px 12px;
+      border-radius: 14px;
+      border-left: 3px solid #7fd6e2;
+      background: #effafb;
+    }
+
+    .tl-card.done {
+      border-left-color: #4fbfa9;
+      background: #f2fafa;
+    }
+
+    .tl-card.live {
+      border-left-color: #e2a13c;
+      background: #fdf6ea;
+    }
+
+    .tl-card img {
+      width: 52px;
+      height: 52px;
+      display: block;
+      object-fit: cover;
+      border-radius: 12px;
+      background: #cbdcdf;
+    }
+
+    .tl-copy {
+      min-width: 0;
+    }
+
+    .tl-title {
+      margin: 0;
+      overflow: hidden;
+      color: #173139;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 700;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .tl-meta {
+      margin: 2px 0 0;
+      overflow: hidden;
+      color: #688087;
+      font-size: 12px;
+      line-height: 17px;
+      font-weight: 400;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .chip {
+      padding: 5px 10px;
+      border-radius: 10px;
+      background: #d5eff2;
+      color: #0d6d7c;
+      font-size: 11.5px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .chip.done {
+      background: #d8f0e9;
+      color: #17705d;
+    }
+
+    .chip.live {
+      background: #f7e5c4;
+      color: #8a5c13;
+    }
+
+    .tl-gap {
+      margin: 6px 0 6px 88px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #7c9096;
+      font-size: 11.5px;
+      font-weight: 500;
+    }
+
+    .tl-gap i {
+      width: 34px;
+      height: 1px;
+      background: #ccdee1;
+    }
+
+    /* ---------- rail ---------- */
+    .rail {
+      width: 292px;
+      flex: none;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .card {
+      padding: 14px;
+      border-radius: 16px;
+      border: 1px solid #e4eff1;
+      background: #f7fbfc;
+    }
+
+    .card-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 8px;
+    }
+
+    .card-head h3 {
+      margin: 0;
+      color: #173139;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .card-head .count {
+      color: #0d6d7c;
+      font-size: 11.5px;
+      font-weight: 700;
+    }
+
+    .mini-nav {
+      display: flex;
+      gap: 4px;
+    }
+
+    .mini-nav button {
+      width: 24px;
+      height: 24px;
+      padding: 0;
+      display: grid;
+      place-items: center;
+      border: 0;
+      border-radius: 9px;
+      background: #e8f6f8;
+      color: #38717b;
+    }
+
+    .mini-nav svg {
+      width: 14px;
+      height: 14px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .weekdays,
+    .days {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+    }
+
+    .weekday {
+      height: 20px;
+      display: grid;
+      place-items: center;
+      color: #86989d;
+      font-size: 10.5px;
+      font-weight: 700;
+    }
+
+    .mini-day {
+      height: 34px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      border-radius: 10px;
+      color: #29464d;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .mini-day.muted {
+      color: #aab8bb;
+    }
+
+    .mini-day.has-event {
+      background: #e6f7f9;
+      font-weight: 700;
+    }
+
+    .mini-day.selected {
+      background: #9de6ee;
+      color: #064f5a;
+      font-weight: 700;
+    }
+
+    .mini-day i {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: transparent;
+    }
+
+    .mini-day.has-event i {
+      background: #1f9dae;
+    }
+
+    .mini-day.selected i {
+      background: #064f5a;
+    }
+
+    .crew-item {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 5px 0;
+    }
+
+    .crew-item .dot {
+      width: 8px;
+      height: 8px;
+      flex: none;
+      border-radius: 50%;
+      background: #3fb6a2;
+    }
+
+    .crew-item .dot.busy {
+      background: #e2a13c;
+    }
+
+    .crew-item .dot.off {
+      background: #b6c5c9;
+    }
+
+    .crew-item strong {
+      color: #173139;
+      font-size: 12.5px;
+      font-weight: 700;
+    }
+
+    .crew-item span {
+      margin-left: auto;
+      color: #71868b;
+      font-size: 11.5px;
+      font-weight: 500;
+    }
+
+    .queue-item {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 8px;
+      align-items: center;
+      padding: 7px 0;
+      border-top: 1px solid #e7f1f3;
+    }
+
+    .queue-item:first-of-type {
+      border-top: 0;
+    }
+
+    .queue-item strong {
+      display: block;
+      overflow: hidden;
+      color: #173139;
+      font-size: 12.5px;
+      line-height: 18px;
+      font-weight: 700;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .queue-item span {
+      display: block;
+      overflow: hidden;
+      color: #7d9198;
+      font-size: 11.5px;
+      line-height: 16px;
+      font-weight: 500;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .assign-button {
+      padding: 6px 11px;
+      border: 1px solid #cfe4e7;
+      border-radius: 10px;
+      background: #ffffff;
+      color: #0d6d7c;
+      font-size: 11.5px;
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="appbar">
+      <div class="brand">
+        <div class="brand-mark">WD</div>
+        <div>
+          <p class="eyebrow">WANDERDECK</p>
+          <strong>Field Ops</strong>
+        </div>
+      </div>
+
+      <nav class="mainnav" aria-label="Primary navigation">
+        <span class="navlink">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M3 11.5 12 4l9 7.5"></path>
+            <path d="M5.5 10v10h13V10"></path>
+          </svg>
+          Dispatch
+        </span>
+        <span class="navlink active">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="3.5" y="5.5" width="17" height="15" rx="3"></rect>
+            <path d="M8 3.5v4M16 3.5v4M3.5 10h17"></path>
+          </svg>
+          Schedule
+        </span>
+        <span class="navlink">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="5" y="4" width="14" height="17" rx="3"></rect>
+            <path d="M9 9h6M9 13h6M9 17h3"></path>
+          </svg>
+          Work orders
+        </span>
+        <span class="navlink">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="8" r="4"></circle>
+            <path d="M5 20c.8-4 3.1-6 7-6s6.2 2 7 6"></path>
+          </svg>
+          Technicians
+        </span>
+      </nav>
+
+      <div class="appbar-right">
+        <div class="searchbox">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="11" cy="11" r="6.5"></circle>
+            <path d="m16 16 4 4"></path>
+          </svg>
+          <span>Search work orders</span>
+        </div>
+        <div class="avatar" aria-label="Mara Bell, coordinator">MB</div>
+      </div>
+    </header>
+
+    <div class="subbar">
+      <div>
+        <h1>Wednesday, September 17</h1>
+        <p>North District · 4 assignments · 3 technicians on shift</p>
+      </div>
+      <div class="subbar-tools">
+        <div class="month-control">
+          <button class="icon-button" type="button" aria-label="Previous day">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="m15 18-6-6 6-6"></path>
+            </svg>
+          </button>
+          <strong>Sep 17, 2025</strong>
+          <button class="icon-button" type="button" aria-label="Next day">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="m9 18 6-6-6-6"></path>
+            </svg>
+          </button>
+        </div>
+        <div class="view-switch" aria-label="Calendar view">
+          <span class="active">Day</span>
+          <span>Week</span>
+          <span>Month</span>
+        </div>
+        <button class="primary-button" type="button">Assign job</button>
+      </div>
+    </div>
+
+    <div class="content">
+      <section class="route-pane" aria-label="Route for Wednesday, September 17">
+        <div class="pane-head">
+          <h2>Route timeline</h2>
+          <span>7:30 AM – 6:30 PM · 41 mi · Van 12</span>
+        </div>
+
+        <div class="tl-row">
+          <div class="tl-time">
+            <strong>7:30 AM</strong>
+            <span>9:00 AM</span>
+          </div>
+          <article class="tl-card done">
+            <img src="https://loremflickr.com/52/52/cityscape?lock=9750" width="52" height="52" alt="Harbor Mills plant exterior">
+            <div class="tl-copy">
+              <p class="tl-title">Boiler pressure test</p>
+              <p class="tl-meta">Harbor Mills, 18 Bay St · R. Ortiz</p>
+            </div>
+            <span class="chip done">Completed</span>
+          </article>
+        </div>
+        <div class="tl-gap"><i></i>Travel 30 min · 9.4 mi to Northgate Plaza</div>
+
+        <div class="tl-row">
+          <div class="tl-time">
+            <strong>9:45 AM</strong>
+            <span>11:15 AM</span>
+          </div>
+          <article class="tl-card live">
+            <img src="https://loremflickr.com/52/52/hotel?lock=9751" width="52" height="52" alt="Northgate Plaza building entrance">
+            <div class="tl-copy">
+              <p class="tl-title">HVAC filter service</p>
+              <p class="tl-meta">Northgate Plaza, Unit 4 · D. Ruiz</p>
+            </div>
+            <span class="chip live">On site</span>
+          </article>
+        </div>
+        <div class="tl-gap"><i></i>Lunch and parts pickup · 45 min</div>
+
+        <div class="tl-row">
+          <div class="tl-time">
+            <strong>1:00 PM</strong>
+            <span>2:30 PM</span>
+          </div>
+          <article class="tl-card">
+            <img src="https://loremflickr.com/52/52/cityscape?lock=9752" width="52" height="52" alt="Lantern Square Tower service entrance">
+            <div class="tl-copy">
+              <p class="tl-title">Elevator safety audit</p>
+              <p class="tl-meta">Lantern Square Tower · K. Adeyemi</p>
+            </div>
+            <span class="chip">Scheduled</span>
+          </article>
+        </div>
+        <div class="tl-gap"><i></i>Travel 35 min · 12.1 mi to West Beach</div>
+
+        <div class="tl-row">
+          <div class="tl-time">
+            <strong>4:15 PM</strong>
+            <span>5:45 PM</span>
+          </div>
+          <article class="tl-card">
+            <img src="https://loremflickr.com/52/52/beach?lock=9753" width="52" height="52" alt="West Beach depot generator yard">
+            <div class="tl-copy">
+              <p class="tl-title">Generator load test</p>
+              <p class="tl-meta">West Beach Depot · T. Nakai</p>
+            </div>
+            <span class="chip">Scheduled</span>
+          </article>
+        </div>
+        <div class="tl-gap"><i></i>Return to depot · 6:30 PM · van restock</div>
+      </section>
+
+      <aside class="rail">
+        <section class="card" aria-label="September 2025 schedule">
+          <div class="card-head">
+            <h3>September 2025</h3>
+            <div class="mini-nav">
+              <button type="button" aria-label="Previous month">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="m15 18-6-6 6-6"></path>
+                </svg>
+              </button>
+              <button type="button" aria-label="Next month">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="m9 18 6-6-6-6"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+          <div class="weekdays">
+            <div class="weekday">S</div>
+            <div class="weekday">M</div>
+            <div class="weekday">T</div>
+            <div class="weekday">W</div>
+            <div class="weekday">T</div>
+            <div class="weekday">F</div>
+            <div class="weekday">S</div>
+          </div>
+          <div class="days">
+            <div class="mini-day muted">31<i></i></div>
+            <div class="mini-day has-event">1<i></i></div>
+            <div class="mini-day">2<i></i></div>
+            <div class="mini-day has-event">3<i></i></div>
+            <div class="mini-day">4<i></i></div>
+            <div class="mini-day has-event">5<i></i></div>
+            <div class="mini-day">6<i></i></div>
+
+            <div class="mini-day">7<i></i></div>
+            <div class="mini-day has-event">8<i></i></div>
+            <div class="mini-day">9<i></i></div>
+            <div class="mini-day has-event">10<i></i></div>
+            <div class="mini-day has-event">11<i></i></div>
+            <div class="mini-day">12<i></i></div>
+            <div class="mini-day has-event">13<i></i></div>
+
+            <div class="mini-day">14<i></i></div>
+            <div class="mini-day has-event">15<i></i></div>
+            <div class="mini-day has-event">16<i></i></div>
+            <div class="mini-day selected">17<i></i></div>
+            <div class="mini-day has-event">18<i></i></div>
+            <div class="mini-day">19<i></i></div>
+            <div class="mini-day has-event">20<i></i></div>
+
+            <div class="mini-day">21<i></i></div>
+            <div class="mini-day">22<i></i></div>
+            <div class="mini-day has-event">23<i></i></div>
+            <div class="mini-day">24<i></i></div>
+            <div class="mini-day has-event">25<i></i></div>
+            <div class="mini-day has-event">26<i></i></div>
+            <div class="mini-day">27<i></i></div>
+
+            <div class="mini-day">28<i></i></div>
+            <div class="mini-day has-event">29<i></i></div>
+            <div class="mini-day has-event">30<i></i></div>
+            <div class="mini-day muted">1<i></i></div>
+            <div class="mini-day muted">2<i></i></div>
+            <div class="mini-day muted">3<i></i></div>
+            <div class="mini-day muted">4<i></i></div>
+          </div>
+        </section>
+
+        <section class="card" aria-label="Crew on shift">
+          <div class="card-head">
+            <h3>Crew on shift</h3>
+            <span class="count">3 of 5</span>
+          </div>
+          <div class="crew-item">
+            <span class="dot"></span>
+            <strong>R. Ortiz</strong>
+            <span>Boilers · Available</span>
+          </div>
+          <div class="crew-item">
+            <span class="dot busy"></span>
+            <strong>D. Ruiz</strong>
+            <span>HVAC · On site</span>
+          </div>
+          <div class="crew-item">
+            <span class="dot off"></span>
+            <strong>T. Nakai</strong>
+            <span>Electrical · En route</span>
+          </div>
+        </section>
+
+        <section class="card" aria-label="Unassigned work orders">
+          <div class="card-head">
+            <h3>Unassigned</h3>
+            <span class="count">3 open</span>
+          </div>
+          <div class="queue-item">
+            <div>
+              <strong>Rooftop unit alarm</strong>
+              <span>Cedar Logistics · High priority</span>
+            </div>
+            <button class="assign-button" type="button">Assign</button>
+          </div>
+          <div class="queue-item">
+            <div>
+              <strong>Chiller leak repair</strong>
+              <span>Coastline Cold Store · SLA today</span>
+            </div>
+            <button class="assign-button" type="button">Assign</button>
+          </div>
+          <div class="queue-item">
+            <div>
+              <strong>Pump seal replacement</strong>
+              <span>North Pier Works · Routine</span>
+            </div>
+            <button class="assign-button" type="button">Assign</button>
+          </div>
+        </section>
+      </aside>
+    </div>
+  </div>
+</body>
+</html>

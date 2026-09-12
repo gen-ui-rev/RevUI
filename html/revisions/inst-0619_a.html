@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Taskstead Checkout</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #d9dbdc;
+      color: #202326;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      width: 1024px;
+      height: 768px;
+      display: flex;
+      background: #ffffff;
+      box-shadow: 0 18px 50px rgba(31, 35, 38, .14);
+    }
+
+    .sidebar {
+      width: 176px;
+      flex: 0 0 auto;
+      display: flex;
+      flex-direction: column;
+      padding: 22px 14px 18px;
+      color: #dfe2e4;
+      background: #292d30;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 8px 24px;
+      color: #ffffff;
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .brand-mark {
+      width: 31px;
+      height: 31px;
+      display: grid;
+      place-items: center;
+      background: #f0f1f1;
+      color: #292d30;
+      border-radius: 8px;
+      font-size: 13px;
+      letter-spacing: -.4px;
+    }
+
+    .side-label {
+      margin: 0 8px 8px;
+      color: #8f969a;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .9px;
+      text-transform: uppercase;
+    }
+
+    .side-nav {
+      display: grid;
+      gap: 5px;
+    }
+
+    .nav-item {
+      min-height: 42px;
+      padding: 0 10px;
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      color: #aeb3b6;
+      background: transparent;
+      border: 0;
+      border-radius: 8px;
+      text-align: left;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .nav-item.active {
+      color: #222629;
+      background: #ffffff;
+    }
+
+    .nav-item svg {
+      width: 19px;
+      height: 19px;
+      flex: 0 0 auto;
+    }
+
+    .sidebar-spacer {
+      flex: 1;
+    }
+
+    .account-card {
+      padding: 12px 10px 0;
+      border-top: 1px solid #44494d;
+    }
+
+    .account-name {
+      margin: 0;
+      color: #ffffff;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 600;
+    }
+
+    .account-email {
+      margin: 1px 0 0;
+      overflow: hidden;
+      color: #92989c;
+      font-size: 11px;
+      line-height: 16px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .shell {
+      min-width: 0;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: #f5f6f6;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 16px 24px;
+      background: #ffffff;
+      border-bottom: 1px solid #e2e4e5;
+    }
+
+    .back-button {
+      width: 36px;
+      height: 36px;
+      display: grid;
+      place-items: center;
+      padding: 0;
+      color: #404549;
+      background: #f2f3f3;
+      border: 1px solid #e3e5e6;
+      border-radius: 8px;
+    }
+
+    .topbar-title {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .topbar-title h1 {
+      margin: 0;
+      font-size: 21px;
+      line-height: 26px;
+      font-weight: 650;
+    }
+
+    .topbar-title p {
+      margin: 1px 0 0;
+      color: #74797d;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .secure-mark {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: #656b6f;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .workspace {
+      min-height: 0;
+      flex: 1;
+      padding: 20px 24px 22px;
+    }
+
+    .progress {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .step {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      color: #8a8f92;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .step-number {
+      width: 23px;
+      height: 23px;
+      display: grid;
+      place-items: center;
+      border: 1px solid #cfd2d4;
+      border-radius: 50%;
+      font-size: 11px;
+    }
+
+    .step.done,
+    .step.current {
+      color: #34393d;
+    }
+
+    .step.done .step-number {
+      color: #ffffff;
+      background: #666c71;
+      border-color: #666c71;
+    }
+
+    .step.current .step-number {
+      border: 2px solid #555b60;
+    }
+
+    .step-line {
+      width: 58px;
+      height: 1px;
+      background: #d2d5d6;
+    }
+
+    .checkout-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 330px;
+      gap: 20px;
+      align-items: start;
+    }
+
+    .left-column {
+      display: grid;
+      gap: 14px;
+    }
+
+    .split-sections {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .section-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 7px;
+    }
+
+    .section-heading h2 {
+      margin: 0;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 650;
+    }
+
+    .text-action {
+      padding: 2px 0;
+      color: #5f6569;
+      background: transparent;
+      border: 0;
+      font-size: 12px;
+      line-height: 17px;
+      font-weight: 650;
+    }
+
+    .card {
+      padding: 14px;
+      background: #ffffff;
+      border: 1px solid #dfe2e3;
+      border-radius: 10px;
+    }
+
+    .address-name,
+    .method-title {
+      margin: 0;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 650;
+    }
+
+    .address-line,
+    .muted-line {
+      margin: 2px 0 0;
+      color: #656b6f;
+      font-size: 13px;
+      line-height: 18px;
+    }
+
+    .method-row,
+    .payment-row {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+    }
+
+    .method-copy,
+    .payment-copy {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .method-price {
+      align-self: flex-start;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 650;
+    }
+
+    .radio {
+      width: 18px;
+      height: 18px;
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      background: #60666b;
+      border-radius: 50%;
+    }
+
+    .radio::after {
+      content: "";
+      width: 6px;
+      height: 6px;
+      background: #ffffff;
+      border-radius: 50%;
+    }
+
+    .card-symbol {
+      width: 42px;
+      height: 28px;
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      color: #ffffff;
+      background: #62686d;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .5px;
+    }
+
+    .billing-line {
+      margin: 11px 0 0 53px;
+      padding-top: 10px;
+      color: #6a7074;
+      border-top: 1px solid #e1e3e4;
+      font-size: 12px;
+      line-height: 17px;
+    }
+
+    .help-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 13px 14px;
+      color: #545a5e;
+      background: #eaeced;
+      border-radius: 10px;
+    }
+
+    .help-card svg {
+      width: 20px;
+      height: 20px;
+      flex: 0 0 auto;
+    }
+
+    .help-card p {
+      margin: 0;
+      font-size: 12px;
+      line-height: 18px;
+    }
+
+    .summary-card {
+      padding: 16px;
+      background: #ffffff;
+      border: 1px solid #dfe2e3;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(35, 39, 42, .05);
+    }
+
+    .summary-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .summary-title h2 {
+      margin: 0;
+      font-size: 16px;
+      line-height: 21px;
+    }
+
+    .summary-title span {
+      color: #71767a;
+      font-size: 12px;
+    }
+
+    .product-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .product-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .product-row img {
+      width: 48px;
+      height: 48px;
+      display: block;
+      flex: 0 0 auto;
+      object-fit: cover;
+      background: #d7d9da;
+      border-radius: 7px;
+    }
+
+    .product-copy {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .product-name {
+      margin: 0;
+      overflow: hidden;
+      color: #292d30;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 650;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .product-detail {
+      margin: 2px 0 0;
+      color: #74797d;
+      font-size: 11px;
+      line-height: 16px;
+    }
+
+    .product-price {
+      flex: 0 0 auto;
+      font-size: 13px;
+      line-height: 19px;
+      font-weight: 650;
+    }
+
+    .totals {
+      margin-top: 15px;
+      padding-top: 12px;
+      border-top: 1px solid #e0e2e3;
+    }
+
+    .total-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      color: #62686c;
+      font-size: 12px;
+      line-height: 23px;
+    }
+
+    .total-row.final {
+      margin-top: 5px;
+      padding-top: 10px;
+      color: #222629;
+      border-top: 1px solid #e0e2e3;
+      font-size: 16px;
+      line-height: 23px;
+      font-weight: 700;
+    }
+
+    .due-note {
+      margin: 12px 0 8px;
+      color: #707579;
+      font-size: 11px;
+      line-height: 16px;
+      text-align: center;
+    }
+
+    .pay-button {
+      width: 100%;
+      min-height: 50px;
+      padding: 0 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: #ffffff;
+      background: #24282b;
+      border: 0;
+      border-radius: 25px;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .pay-button span {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <aside class="sidebar">
+      <div class="brand">
+        <span class="brand-mark">TS</span>
+        <span>Taskstead</span>
+      </div>
+
+      <p class="side-label">Workspace</p>
+      <nav class="side-nav" aria-label="App navigation">
+        <button class="nav-item">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M4 5.5H20V18.5H4V5.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+            <path d="M8 3.5V7.5M16 3.5V7.5M4 9.5H20" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+          </svg>
+          Schedule
+        </button>
+        <button class="nav-item">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M6 4H18C19.1 4 20 4.9 20 6V18C20 19.1 19.1 20 18 20H6C4.9 20 4 19.1 4 18V6C4 4.9 4.9 4 6 4Z" stroke="currentColor" stroke-width="1.7"/>
+            <path d="M8 8H16M8 12H16M8 16H13" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+          </svg>
+          Notes
+        </button>
+        <button class="nav-item active">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M5 8H19L18 20H6L5 8Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+            <path d="M9 9V7C9 5.34 10.34 4 12 4C13.66 4 15 5.34 15 7V9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+          Shop
+        </button>
+        <button class="nav-item">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="12" cy="8" r="3.5" stroke="currentColor" stroke-width="1.7"/>
+            <path d="M5.5 20C5.8 16.5 8.25 14.5 12 14.5C15.75 14.5 18.2 16.5 18.5 20" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+          </svg>
+          Account
+        </button>
+      </nav>
+
+      <div class="sidebar-spacer"></div>
+
+      <div class="account-card">
+        <p class="account-name">Morgan Ellis</p>
+        <p class="account-email">morgan@taskstead.com</p>
+      </div>
+    </aside>
+
+    <div class="shell">
+      <header class="topbar">
+        <button class="back-button" aria-label="Go back">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+
+        <div class="topbar-title">
+          <h1>Checkout</h1>
+          <p>Taskstead Supply</p>
+        </div>
+
+        <div class="secure-mark">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <rect x="5" y="10" width="14" height="10" rx="2" stroke="currentColor" stroke-width="1.8"/>
+            <path d="M8 10V7.5C8 5.57 9.57 4 11.5 4H12.5C14.43 4 16 5.57 16 7.5V10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+          Secure checkout
+        </div>
+      </header>
+
+      <main class="workspace">
+        <div class="progress" aria-label="Checkout progress, payment step">
+          <div class="step done"><span class="step-number">✓</span><span>Shipping</span></div>
+          <span class="step-line"></span>
+          <div class="step current"><span class="step-number">2</span><span>Payment</span></div>
+          <span class="step-line"></span>
+          <div class="step"><span class="step-number">3</span><span>Review</span></div>
+        </div>
+
+        <div class="checkout-grid">
+          <div class="left-column">
+            <div class="split-sections">
+              <section>
+                <div class="section-heading">
+                  <h2>Shipping address</h2>
+                  <button class="text-action">Edit</button>
+                </div>
+                <div class="card">
+                  <p class="address-name">Morgan Ellis</p>
+                  <p class="address-line">245 Cedar Lane, Apt 4B</p>
+                  <p class="address-line">Portland, OR 97205</p>
+                </div>
+              </section>
+
+              <section>
+                <div class="section-heading">
+                  <h2>Delivery</h2>
+                  <button class="text-action">Change</button>
+                </div>
+                <div class="card method-row">
+                  <span class="radio" aria-hidden="true"></span>
+                  <div class="method-copy">
+                    <p class="method-title">Standard delivery</p>
+                    <p class="muted-line">Arrives Tuesday, May 20</p>
+                  </div>
+                  <span class="method-price">$4.95</span>
+                </div>
+              </section>
+            </div>
+
+            <section>
+              <div class="section-heading">
+                <h2>Payment method</h2>
+                <button class="text-action">Change</button>
+              </div>
+              <div class="card">
+                <div class="payment-row">
+                  <div class="card-symbol">VISA</div>
+                  <div class="payment-copy">
+                    <p class="method-title">Visa ending in 4827</p>
+                    <p class="muted-line">Expires 08/27</p>
+                  </div>
+                  <span class="radio" aria-hidden="true"></span>
+                </div>
+                <p class="billing-line">Billing address matches shipping</p>
+              </div>
+            </section>
+
+            <div class="help-card">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <rect x="5" y="10" width="14" height="10" rx="2" stroke="currentColor" stroke-width="1.7"/>
+                <path d="M8 10V7.5C8 5.57 9.57 4 11.5 4H12.5C14.43 4 16 5.57 16 7.5V10" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+              </svg>
+              <p>Your card details are encrypted. You can review the full order before payment is submitted.</p>
+            </div>
+          </div>
+
+          <aside class="summary-card">
+            <div class="summary-title">
+              <h2>Order summary</h2>
+              <span>2 items</span>
+            </div>
+
+            <div class="product-list">
+              <div class="product-row">
+                <img src="https://loremflickr.com/48/48/desk?lock=8230" width="48" height="48" alt="Gray weekly planning pad on a desk">
+                <div class="product-copy">
+                  <p class="product-name">Team Planning Pad</p>
+                  <p class="product-detail">Charcoal · Quantity 2</p>
+                </div>
+                <span class="product-price">$56.00</span>
+              </div>
+
+              <div class="product-row">
+                <img src="https://loremflickr.com/48/48/notebook?lock=8231" width="48" height="48" alt="Project cards beside a notebook">
+                <div class="product-copy">
+                  <p class="product-name">Project Marker Set</p>
+                  <p class="product-detail">Neutral · Quantity 1</p>
+                </div>
+                <span class="product-price">$18.00</span>
+              </div>
+            </div>
+
+            <div class="totals">
+              <div class="total-row"><span>Subtotal</span><span>$74.00</span></div>
+              <div class="total-row"><span>Shipping</span><span>$4.95</span></div>
+              <div class="total-row"><span>Estimated tax</span><span>$6.52</span></div>
+              <div class="total-row final"><span>Due today</span><span>$85.47</span></div>
+            </div>
+
+            <p class="due-note">Final amount shown in USD</p>
+            <button class="pay-button">
+              <span>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <rect x="5" y="10" width="14" height="10" rx="2" stroke="currentColor" stroke-width="1.8"/>
+                  <path d="M8 10V7.5C8 5.57 9.57 4 11.5 4H12.5C14.43 4 16 5.57 16 7.5V10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                </svg>
+                Review and pay
+              </span>
+              <strong>$85.47</strong>
+            </button>
+          </aside>
+        </div>
+      </main>
+    </div>
+  </div>
+</body>
+</html>

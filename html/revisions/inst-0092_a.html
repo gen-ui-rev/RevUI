@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pick a draw time — Northline Diagnostics</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 40px 0;
+    margin: 0;
+    background: #ebebe9;
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .screen {
+    width: 390px;
+    height: 560px;
+    padding: 20px 0;
+    background: #ebebe9;
+  }
+  .card {
+    width: 342px;
+    margin: 0 auto;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(28, 25, 23, 0.08);
+    padding: 18px;
+  }
+
+  .lab {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+  }
+  .mono {
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    background: #e6f0f7;
+    color: #17607f;
+    font-size: 14px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+  }
+  .lab-text { min-width: 0; }
+  .lab-name {
+    font-size: 15px;
+    line-height: 19px;
+    font-weight: 600;
+    color: #1c1917;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .lab-meta {
+    font-size: 11.5px;
+    line-height: 15px;
+    color: #78716c;
+    margin-top: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  h1 {
+    font-size: 17px;
+    line-height: 22px;
+    font-weight: 700;
+    color: #1c1917;
+    margin: 14px 0 0;
+    letter-spacing: -0.2px;
+  }
+
+  .monthbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 12px;
+  }
+  .month {
+    font-size: 13px;
+    font-weight: 600;
+    color: #44403c;
+  }
+  .navs { display: flex; gap: 6px; }
+  .nav {
+    width: 26px;
+    height: 26px;
+    border-radius: 9px;
+    border: 1px solid #e7e5e4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #57534e;
+  }
+
+  .days {
+    display: flex;
+    gap: 4px;
+    margin-top: 10px;
+  }
+  .day {
+    flex: 1 1 0;
+    min-width: 0;
+    border-radius: 9px;
+    border: 1px solid #eae8e6;
+    padding: 6px 0 7px;
+    text-align: center;
+  }
+  .dow {
+    font-size: 10.5px;
+    line-height: 13px;
+    color: #8a8480;
+    font-weight: 500;
+  }
+  .dnum {
+    font-size: 15px;
+    line-height: 18px;
+    font-weight: 600;
+    color: #292524;
+    margin-top: 2px;
+  }
+  .dopen {
+    font-size: 9px;
+    line-height: 12px;
+    margin-top: 2px;
+    font-weight: 600;
+    color: #0f766e;
+    white-space: nowrap;
+  }
+  .day.on {
+    background: #f59e0b;
+    border-color: #f59e0b;
+  }
+  .day.on .dow { color: #6b3f04; }
+  .day.on .dnum { color: #1c1917; font-weight: 700; }
+  .day.on .dopen { color: #6b3f04; }
+  .day.off { border-color: #f1efed; background: #faf9f8; }
+  .day.off .dow, .day.off .dnum, .day.off .dopen { color: #c3bfbb; }
+
+  .phead {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px;
+    margin-top: 14px;
+  }
+  .pt {
+    font-size: 11px;
+    line-height: 15px;
+    font-weight: 700;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    color: #44403c;
+  }
+  .pc {
+    font-size: 10.5px;
+    line-height: 15px;
+    color: #8a8480;
+    white-space: nowrap;
+  }
+  .slots {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-top: 8px;
+  }
+  .slot {
+    border: 1px solid #e7e5e4;
+    border-radius: 9px;
+    text-align: center;
+    padding: 10px 0;
+    font-size: 13.5px;
+    line-height: 17px;
+    font-weight: 500;
+    color: #292524;
+  }
+  .slot.on {
+    background: #f59e0b;
+    border-color: #f59e0b;
+    color: #1c1917;
+    font-weight: 700;
+  }
+  .slot.taken {
+    color: #c3bfbb;
+    background: #faf9f8;
+    border-color: #f1efed;
+  }
+
+  .legend { margin-top: 12px; }
+  .lg {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 10.5px;
+    line-height: 14px;
+    color: #8a8480;
+  }
+  .sw {
+    width: 9px;
+    height: 9px;
+    border-radius: 3px;
+    background: #faf9f8;
+    border: 1px solid #e2dfdc;
+    flex: 0 0 auto;
+  }
+
+  .rule {
+    height: 1px;
+    background: #eeecea;
+    margin: 12px 0;
+  }
+  .summary {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  .sum-main {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: #1c1917;
+  }
+  .sum-side {
+    font-size: 12px;
+    color: #78716c;
+    white-space: nowrap;
+  }
+  .cta {
+    margin-top: 12px;
+    background: #f59e0b;
+    border-radius: 10px;
+    text-align: center;
+    padding: 13px 0;
+    font-size: 15px;
+    line-height: 19px;
+    font-weight: 700;
+    color: #1c1917;
+  }
+</style>
+</head>
+<body>
+  <div class="screen">
+    <div class="card">
+      <div class="lab">
+        <div class="mono">NL</div>
+        <div class="lab-text">
+          <div class="lab-name">Northline Diagnostics</div>
+          <div class="lab-meta">Blood draw · Fasting lipid panel</div>
+        </div>
+      </div>
+
+      <h1>Pick a blood draw time</h1>
+
+      <div class="monthbar">
+        <div class="month">March 2026</div>
+        <div class="navs">
+          <div class="nav" aria-label="Previous week">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+          </div>
+          <div class="nav" aria-label="Next week">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="days">
+        <div class="day off"><div class="dow">Mon</div><div class="dnum">9</div><div class="dopen">Closed</div></div>
+        <div class="day"><div class="dow">Tue</div><div class="dnum">10</div><div class="dopen">8 open</div></div>
+        <div class="day"><div class="dow">Wed</div><div class="dnum">11</div><div class="dopen">5 open</div></div>
+        <div class="day on"><div class="dow">Thu</div><div class="dnum">12</div><div class="dopen">4 open</div></div>
+        <div class="day"><div class="dow">Fri</div><div class="dnum">13</div><div class="dopen">6 open</div></div>
+        <div class="day off"><div class="dow">Sat</div><div class="dnum">14</div><div class="dopen">Full</div></div>
+        <div class="day off"><div class="dow">Sun</div><div class="dnum">15</div><div class="dopen">Closed</div></div>
+      </div>
+
+      <div class="phead">
+        <div class="pt">Morning · Thu, Mar 12</div>
+        <div class="pc">2 open</div>
+      </div>
+      <div class="slots">
+        <div class="slot">7:15 AM</div>
+        <div class="slot taken">8:00 AM</div>
+        <div class="slot on">9:30 AM</div>
+      </div>
+
+      <div class="phead">
+        <div class="pt">Afternoon</div>
+        <div class="pc">2 open</div>
+      </div>
+      <div class="slots">
+        <div class="slot">1:00 PM</div>
+        <div class="slot taken">2:45 PM</div>
+        <div class="slot">4:15 PM</div>
+      </div>
+
+      <div class="legend">
+        <div class="lg"><span class="sw"></span>Booked — held by another patient</div>
+        <div class="lg"><span class="sw"></span>Closed — Sun &amp; Mon; Sat 14 is fully booked</div>
+      </div>
+
+      <div class="rule"></div>
+
+      <div class="summary">
+        <div class="sum-main">Thu, Mar 12 at 9:30 AM</div>
+        <div class="sum-side">15 min · fast 12 hrs</div>
+      </div>
+
+      <div class="cta">Confirm 9:30 AM draw</div>
+    </div>
+  </div>
+</body>
+</html>

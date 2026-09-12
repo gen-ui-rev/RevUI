@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Money Tasks — Hearth Ledger</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 28px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #d9ddda;
+      color: #18211d;
+      font-family: 'Source Serif 4', Georgia, serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      width: 1024px;
+      height: 768px;
+      display: flex;
+      background: #f3f5f3;
+      border: 1px solid #cfd5d1;
+      box-shadow: 0 18px 45px rgba(26, 42, 34, 0.12);
+    }
+
+    .sidebar {
+      width: 220px;
+      flex: none;
+      display: flex;
+      flex-direction: column;
+      padding: 23px 18px 20px;
+      background: #ffffff;
+      border-right: 1px solid #dce1de;
+    }
+
+    .service-name {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 7px 24px;
+      font-size: 19px;
+      line-height: 1.2;
+      font-weight: 700;
+      letter-spacing: -0.15px;
+    }
+
+    .service-mark {
+      width: 22px;
+      height: 22px;
+      display: grid;
+      place-items: center;
+      flex: none;
+      border: 2px solid #087b59;
+      border-radius: 4px;
+      color: #087b59;
+    }
+
+    .nav-label {
+      margin: 2px 9px 8px;
+      color: #7a847f;
+      font-size: 11px;
+      line-height: 1.3;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+    }
+
+    .primary-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .nav-item {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      padding: 10px 11px;
+      border: 0;
+      border-radius: 4px;
+      background: transparent;
+      color: #58635d;
+      font-size: 15px;
+      line-height: 1.25;
+      text-align: left;
+    }
+
+    .nav-item svg {
+      width: 20px;
+      height: 20px;
+      flex: none;
+    }
+
+    .nav-item.active {
+      background: #e3f1eb;
+      color: #07684c;
+      font-weight: 700;
+    }
+
+    .sidebar-spacer {
+      flex: 1;
+    }
+
+    .profile {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 36px minmax(0, 1fr);
+      align-items: center;
+      gap: 10px;
+      padding: 12px 8px 0;
+      border: 0;
+      border-top: 1px solid #e4e8e5;
+      background: transparent;
+      color: #223029;
+      text-align: left;
+    }
+
+    .profile-mark {
+      width: 36px;
+      height: 36px;
+      display: grid;
+      place-items: center;
+      border-radius: 4px;
+      background: #dceee7;
+      color: #075f46;
+      font-size: 13px;
+      line-height: 1;
+      font-weight: 700;
+    }
+
+    .profile-copy {
+      min-width: 0;
+    }
+
+    .profile-name,
+    .profile-role {
+      display: block;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .profile-name {
+      font-size: 14px;
+      line-height: 1.25;
+      font-weight: 700;
+    }
+
+    .profile-role {
+      margin-top: 2px;
+      color: #6c7771;
+      font-size: 12px;
+      line-height: 1.25;
+    }
+
+    main {
+      min-width: 0;
+      flex: 1;
+      padding: 27px 30px 24px;
+    }
+
+    .page-heading {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 31px;
+      line-height: 1.12;
+      font-weight: 700;
+      letter-spacing: -0.55px;
+    }
+
+    .summary {
+      margin: 5px 0 0;
+      color: #5e6963;
+      font-size: 15px;
+      line-height: 1.4;
+    }
+
+    .add-button {
+      flex: none;
+      margin-top: 2px;
+      padding: 9px 15px;
+      border: 1px solid #087b59;
+      border-radius: 4px;
+      background: #087b59;
+      color: #ffffff;
+      font-size: 14px;
+      line-height: 1.25;
+      font-weight: 700;
+    }
+
+    .section {
+      margin-top: 24px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: 19px;
+      line-height: 1.3;
+      font-weight: 700;
+    }
+
+    .section-note {
+      color: #69736e;
+      font-size: 13px;
+      line-height: 1.3;
+    }
+
+    .account-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 13px;
+    }
+
+    .account-card {
+      min-width: 0;
+      background: #ffffff;
+      border: 1px solid #dde3df;
+      border-radius: 5px;
+      box-shadow: 0 3px 10px rgba(25, 47, 37, 0.06);
+    }
+
+    .account-header {
+      padding: 12px 14px 10px;
+      border-bottom: 1px solid #e7ebe8;
+      background: #fbfcfb;
+    }
+
+    .account-name {
+      margin: 0;
+      font-size: 15px;
+      line-height: 1.25;
+      font-weight: 700;
+    }
+
+    .account-type {
+      margin: 2px 0 0;
+      color: #747e79;
+      font-size: 12px;
+      line-height: 1.3;
+    }
+
+    .task {
+      padding: 14px;
+    }
+
+    .task-top {
+      display: grid;
+      grid-template-columns: 22px minmax(0, 1fr);
+      align-items: start;
+      gap: 10px;
+    }
+
+    .task-check {
+      width: 20px;
+      height: 20px;
+      margin-top: 1px;
+      padding: 0;
+      border: 1.5px solid #7e8a84;
+      border-radius: 4px;
+      background: #ffffff;
+    }
+
+    .task-title {
+      margin: 0;
+      color: #1b2520;
+      font-size: 15px;
+      line-height: 1.3;
+      font-weight: 700;
+    }
+
+    .task-data {
+      margin: 4px 0 0;
+      color: #616d66;
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
+    .review-box {
+      margin-top: 12px;
+      padding: 9px 10px;
+      border-left: 3px solid #d6a84f;
+      background: #faf6eb;
+    }
+
+    .review-label {
+      display: block;
+      margin-bottom: 2px;
+      color: #75602e;
+      font-size: 11px;
+      line-height: 1.25;
+      font-weight: 700;
+      letter-spacing: 0.55px;
+      text-transform: uppercase;
+    }
+
+    .review-reason {
+      margin: 0;
+      color: #4f4838;
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    .task-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-top: 12px;
+      padding-top: 9px;
+      border-top: 1px solid #edf0ee;
+      color: #68736d;
+      font-size: 12px;
+      line-height: 1.25;
+    }
+
+    .due {
+      color: #087b59;
+      font-weight: 700;
+    }
+
+    .completed-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 13px;
+    }
+
+    .completed-card {
+      display: grid;
+      grid-template-columns: 24px minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 11px;
+      padding: 13px 14px;
+      background: #ffffff;
+      border: 1px solid #dfe4e1;
+      border-radius: 4px;
+    }
+
+    .completed-check {
+      width: 21px;
+      height: 21px;
+      display: grid;
+      place-items: center;
+      border-radius: 4px;
+      background: #087b59;
+      color: #ffffff;
+    }
+
+    .completed-copy {
+      min-width: 0;
+    }
+
+    .completed-title {
+      margin: 0;
+      color: #4d5952;
+      font-size: 14px;
+      line-height: 1.3;
+      font-weight: 700;
+    }
+
+    .completed-meta {
+      margin: 2px 0 0;
+      color: #76807b;
+      font-size: 12px;
+      line-height: 1.3;
+    }
+
+    .completed-date {
+      color: #68736d;
+      font-size: 12px;
+      line-height: 1.3;
+      white-space: nowrap;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <aside class="sidebar">
+      <div class="service-name">
+        <span class="service-mark" aria-hidden="true">
+          <svg viewBox="0 0 20 20" width="14" height="14" fill="none">
+            <path d="M4 13.5L8 9.5L11 12.5L16 6.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="square" stroke-linejoin="miter"/>
+          </svg>
+        </span>
+        <span>Hearth Ledger</span>
+      </div>
+
+      <div class="nav-label">Workspace</div>
+      <nav class="primary-nav" aria-label="Primary navigation">
+        <button class="nav-item" type="button">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M4 10.5L12 4L20 10.5V20H14.5V14H9.5V20H4V10.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="miter"/>
+          </svg>
+          <span>Home</span>
+        </button>
+        <button class="nav-item" type="button">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <rect x="3.5" y="6" width="17" height="13" rx="1" stroke="currentColor" stroke-width="1.7"/>
+            <path d="M3.5 10H20.5M16.5 15H18" stroke="currentColor" stroke-width="1.7"/>
+          </svg>
+          <span>Accounts</span>
+        </button>
+        <button class="nav-item active" type="button" aria-current="page">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <rect x="5" y="4" width="14" height="16" rx="1" stroke="currentColor" stroke-width="1.8"/>
+            <path d="M8.5 9.5L10.5 11.5L15.5 7M8.5 15H15.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="square"/>
+          </svg>
+          <span>Money tasks</span>
+        </button>
+        <button class="nav-item" type="button">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="12" cy="8" r="3.5" stroke="currentColor" stroke-width="1.7"/>
+            <path d="M5.5 20C6.1 15.9 8.2 14 12 14C15.8 14 17.9 15.9 18.5 20" stroke="currentColor" stroke-width="1.7"/>
+          </svg>
+          <span>Profile</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-spacer"></div>
+
+      <button class="profile" type="button" aria-label="Open Morgan Vale's profile">
+        <span class="profile-mark">MV</span>
+        <span class="profile-copy">
+          <span class="profile-name">Morgan Vale</span>
+          <span class="profile-role">Personal workspace</span>
+        </span>
+      </button>
+    </aside>
+
+    <main>
+      <div class="page-heading">
+        <div>
+          <h1>Money tasks</h1>
+          <p class="summary">Review open tasks by financial account.</p>
+        </div>
+        <button class="add-button" type="button">Add task</button>
+      </div>
+
+      <section class="section" aria-labelledby="open-heading">
+        <div class="section-header">
+          <h2 id="open-heading">Needs review</h2>
+          <span class="section-note">3 open tasks across 3 accounts</span>
+        </div>
+
+        <div class="account-grid">
+          <article class="account-card">
+            <header class="account-header">
+              <p class="account-name">Harbor checking</p>
+              <p class="account-type">Everyday banking</p>
+            </header>
+            <div class="task">
+              <div class="task-top">
+                <button class="task-check" type="button" aria-label="Mark Confirm May rent payment as complete"></button>
+                <div>
+                  <p class="task-title">Confirm May rent payment</p>
+                  <p class="task-data">$1,840 payment</p>
+                </div>
+              </div>
+              <div class="review-box">
+                <span class="review-label">Review reason</span>
+                <p class="review-reason">The amount is $90 higher than your usual rent payment.</p>
+              </div>
+              <div class="task-footer">
+                <span>Payment review</span>
+                <span class="due">Due today</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="account-card">
+            <header class="account-header">
+              <p class="account-name">Rainy Day fund</p>
+              <p class="account-type">Savings account</p>
+            </header>
+            <div class="task">
+              <div class="task-top">
+                <button class="task-check" type="button" aria-label="Mark Increase weekly savings as complete"></button>
+                <div>
+                  <p class="task-title">Increase weekly savings</p>
+                  <p class="task-data">Suggested amount: $125</p>
+                </div>
+              </div>
+              <div class="review-box">
+                <span class="review-label">Review reason</span>
+                <p class="review-reason">You are behind the monthly savings target by $210.</p>
+              </div>
+              <div class="task-footer">
+                <span>Goal adjustment</span>
+                <span>Due May 17</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="account-card">
+            <header class="account-header">
+              <p class="account-name">Northline card</p>
+              <p class="account-type">Credit card</p>
+            </header>
+            <div class="task">
+              <div class="task-top">
+                <button class="task-check" type="button" aria-label="Mark Review card subscription as complete"></button>
+                <div>
+                  <p class="task-title">Review card subscription</p>
+                  <p class="task-data">$24.99 recurring charge</p>
+                </div>
+              </div>
+              <div class="review-box">
+                <span class="review-label">Review reason</span>
+                <p class="review-reason">This subscription increased by $5 since the last charge.</p>
+              </div>
+              <div class="task-footer">
+                <span>Recurring charge</span>
+                <span>Due May 20</span>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" aria-labelledby="completed-heading">
+        <div class="section-header">
+          <h2 id="completed-heading">Completed recently</h2>
+          <span class="section-note">Grouped by account · This month</span>
+        </div>
+
+        <div class="completed-grid">
+          <article class="completed-card">
+            <span class="completed-check" aria-hidden="true">
+              <svg viewBox="0 0 20 20" width="14" height="14" fill="none">
+                <path d="M4.5 10.5L8.2 14L15.5 6.5" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter"/>
+              </svg>
+            </span>
+            <div class="completed-copy">
+              <p class="completed-title">Set travel spending cap</p>
+              <p class="completed-meta">Voyager travel card</p>
+            </div>
+            <span class="completed-date">May 12</span>
+          </article>
+
+          <article class="completed-card">
+            <span class="completed-check" aria-hidden="true">
+              <svg viewBox="0 0 20 20" width="14" height="14" fill="none">
+                <path d="M4.5 10.5L8.2 14L15.5 6.5" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter"/>
+              </svg>
+            </span>
+            <div class="completed-copy">
+              <p class="completed-title">Verify dividend settings</p>
+              <p class="completed-meta">Cedar brokerage</p>
+            </div>
+            <span class="completed-date">May 9</span>
+          </article>
+        </div>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

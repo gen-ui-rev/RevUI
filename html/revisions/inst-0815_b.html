@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Connections</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 32px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #e9eeed;
+      color: #172321;
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      color: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #ffffff;
+      border: 1px solid #d9e1df;
+    }
+
+    .top-bar {
+      display: grid;
+      grid-template-columns: 44px 1fr 44px;
+      align-items: center;
+      padding: 10px 12px;
+      border-bottom: 1px solid #e2e8e6;
+    }
+
+    .icon-button {
+      width: 40px;
+      height: 40px;
+      padding: 0;
+      display: grid;
+      place-items: center;
+      background: transparent;
+      border: 0;
+      border-radius: 6px;
+    }
+
+    .top-bar h1 {
+      margin: 0;
+      text-align: center;
+      font-size: 18px;
+      line-height: 24px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .profile-button {
+      width: 34px;
+      height: 34px;
+      justify-self: end;
+      display: grid;
+      place-items: center;
+      border: 1px solid #bad4cf;
+      border-radius: 6px;
+      background: #e7f3f1;
+      color: #116f66;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .connection-tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      padding: 0 18px;
+      border-bottom: 1px solid #e2e8e6;
+    }
+
+    .connection-tab {
+      position: relative;
+      padding: 16px 8px 14px;
+      border: 0;
+      background: transparent;
+      color: #687572;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    .connection-tab.active {
+      color: #0d776d;
+    }
+
+    .connection-tab.active::after {
+      content: "";
+      position: absolute;
+      right: 25px;
+      bottom: -1px;
+      left: 25px;
+      height: 2px;
+      background: #13877c;
+    }
+
+    main {
+      padding: 16px 18px 0;
+    }
+
+    .search {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 12px;
+      border: 1px solid #ccd7d4;
+      border-radius: 6px;
+      background: #fbfcfc;
+      color: #75817f;
+    }
+
+    .search svg {
+      flex: 0 0 auto;
+    }
+
+    .search input {
+      width: 100%;
+      padding: 11px 0;
+      border: 0;
+      outline: none;
+      background: transparent;
+      color: #24312f;
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .search input::placeholder {
+      color: #7a8583;
+      opacity: 1;
+    }
+
+    .list-section {
+      margin-top: 20px;
+    }
+
+    .section-heading {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 4px;
+    }
+
+    .section-heading h2 {
+      margin: 0;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 700;
+    }
+
+    .section-heading span {
+      color: #7a8583;
+      font-size: 12px;
+      line-height: 18px;
+      font-weight: 500;
+    }
+
+    .people-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .person-row {
+      display: grid;
+      grid-template-columns: 48px minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 12px;
+      min-height: 72px;
+      border-bottom: 1px solid #e7eceb;
+    }
+
+    /* Illustrated portrait avatars, one drawing per person */
+    .avatar {
+      position: relative;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      overflow: hidden;
+      box-shadow: inset 0 0 0 1px rgba(23, 35, 33, 0.08);
+    }
+
+    .avatar svg {
+      width: 48px;
+      height: 48px;
+    }
+
+    .person-info {
+      min-width: 0;
+    }
+
+    .person-name {
+      margin: 0;
+      overflow: hidden;
+      color: #172321;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 700;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .person-detail {
+      margin: 2px 0 0;
+      overflow: hidden;
+      color: #73807d;
+      font-size: 12px;
+      line-height: 18px;
+      font-weight: 400;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .follow-button {
+      min-width: 88px;
+      padding: 8px 10px;
+      border: 1px solid #13877c;
+      border-radius: 6px;
+      background: #13877c;
+      color: #ffffff;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .follow-button.secondary {
+      border-color: #bdcac7;
+      background: #ffffff;
+      color: #3e4c49;
+    }
+
+    .bottom-tabs {
+      margin-top: auto;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border-top: 1px solid #dfe6e4;
+      background: #ffffff;
+    }
+
+    .bottom-tab {
+      min-height: 68px;
+      padding: 9px 4px 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      border: 0;
+      background: transparent;
+      color: #73807d;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 500;
+    }
+
+    .bottom-tab.active {
+      color: #0f7f74;
+      font-weight: 700;
+    }
+
+    svg {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="top-bar">
+      <button class="icon-button" type="button" aria-label="Go back">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <h1>Connections</h1>
+      <div class="profile-button" aria-label="Your profile">AR</div>
+    </header>
+
+    <nav class="connection-tabs" aria-label="Connection lists">
+      <button class="connection-tab active" type="button">Followers 248</button>
+      <button class="connection-tab" type="button">Following 181</button>
+    </nav>
+
+    <main>
+      <label class="search">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="1.7"/>
+          <path d="M16 16L20 20" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+        </svg>
+        <input type="text" placeholder="Search followers" aria-label="Search followers">
+      </label>
+
+      <section class="list-section" aria-labelledby="new-followers">
+        <div class="section-heading">
+          <h2 id="new-followers">New followers</h2>
+          <span>Past 7 days</span>
+        </div>
+        <ul class="people-list">
+          <li class="person-row">
+            <div class="avatar" aria-hidden="true">
+              <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+                <rect width="48" height="48" fill="#d9ecea"/>
+                <path d="M8 48c1.5-9 8-13.5 16-13.5S38.5 39 40 48H8Z" fill="#17706a"/>
+                <circle cx="24" cy="20" r="8" fill="#2f8b84"/>
+                <path d="M16 19a8 8 0 0 1 16 0c-3-2-5.5-3-8-3s-5 1-8 3Z" fill="#0e4f4a"/>
+                <circle cx="24" cy="9.5" r="3.6" fill="#0e4f4a"/>
+              </svg>
+            </div>
+            <div class="person-info">
+              <p class="person-name">Mara Pierce</p>
+              <p class="person-detail">@marapierce · 4 mutuals</p>
+            </div>
+            <button class="follow-button" type="button">Follow back</button>
+          </li>
+          <li class="person-row">
+            <div class="avatar" aria-hidden="true">
+              <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+                <rect width="48" height="48" fill="#e4e6f7"/>
+                <path d="M8 48c1.5-9 8-13.5 16-13.5S38.5 39 40 48H8Z" fill="#43478f"/>
+                <circle cx="24" cy="20" r="8" fill="#6d72c4"/>
+                <path d="M15.8 17.5c1.4-4.2 4.4-6.3 8.2-6.3s6.8 2.1 8.2 6.3c-2.6-1.6-5.3-2.4-8.2-2.4s-5.6.8-8.2 2.4Z" fill="#2c2f6b"/>
+                <path d="M20 34.5h8l-4 5.5-4-5.5Z" fill="#eef0fb"/>
+              </svg>
+            </div>
+            <div class="person-info">
+              <p class="person-name">Jonah Lane</p>
+              <p class="person-detail">@jonahlane · 2 mutuals</p>
+            </div>
+            <button class="follow-button" type="button">Follow back</button>
+          </li>
+        </ul>
+      </section>
+
+      <section class="list-section" aria-labelledby="all-followers">
+        <div class="section-heading">
+          <h2 id="all-followers">All followers</h2>
+          <span>Sorted by recent</span>
+        </div>
+        <ul class="people-list">
+          <li class="person-row">
+            <div class="avatar" aria-hidden="true">
+              <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+                <rect width="48" height="48" fill="#fbe7dc"/>
+                <path d="M8 48c1.5-9 8-13.5 16-13.5S38.5 39 40 48H8Z" fill="#a85a2f"/>
+                <path d="M14 20c0-6 4.5-10 10-10s10 4 10 10v12h-4V19H18v13h-4V20Z" fill="#6f3418"/>
+                <circle cx="24" cy="20.5" r="7.5" fill="#d68a56"/>
+              </svg>
+            </div>
+            <div class="person-info">
+              <p class="person-name">Nora Sutton</p>
+              <p class="person-detail">@norasutton · 8 mutuals</p>
+            </div>
+            <button class="follow-button secondary" type="button">Following</button>
+          </li>
+          <li class="person-row">
+            <div class="avatar" aria-hidden="true">
+              <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+                <rect width="48" height="48" fill="#dfeaf9"/>
+                <path d="M8 48c1.5-9 8-13.5 16-13.5S38.5 39 40 48H8Z" fill="#2c5d94"/>
+                <circle cx="24" cy="21" r="8" fill="#5f92c6"/>
+                <path d="M13 16.5h22v2.2H13z" fill="#1d3f66"/>
+                <path d="M17 16.5c0-4 3.1-6.5 7-6.5s7 2.5 7 6.5H17Z" fill="#1d3f66"/>
+              </svg>
+            </div>
+            <div class="person-info">
+              <p class="person-name">Ellis Cole</p>
+              <p class="person-detail">@elliscole · 1 mutual</p>
+            </div>
+            <button class="follow-button" type="button">Follow back</button>
+          </li>
+          <li class="person-row">
+            <div class="avatar" aria-hidden="true">
+              <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+                <rect width="48" height="48" fill="#f9e3ec"/>
+                <path d="M8 48c1.5-9 8-13.5 16-13.5S38.5 39 40 48H8Z" fill="#97406a"/>
+                <circle cx="24" cy="20" r="8" fill="#cd7ba0"/>
+                <path d="M16 18.6c1-4.6 4-7 8-7s7 2.4 8 7c-2.4-2.4-5.1-3.6-8-3.6s-5.6 1.2-8 3.6Z" fill="#6b2547"/>
+                <circle cx="20.6" cy="20.4" r="2.6" stroke="#6b2547" stroke-width="1.2"/>
+                <circle cx="27.4" cy="20.4" r="2.6" stroke="#6b2547" stroke-width="1.2"/>
+                <path d="M23.2 20.4h1.6" stroke="#6b2547" stroke-width="1.2"/>
+              </svg>
+            </div>
+            <div class="person-info">
+              <p class="person-name">Tessa Ward</p>
+              <p class="person-detail">@tessaward · 6 mutuals</p>
+            </div>
+            <button class="follow-button secondary" type="button">Following</button>
+          </li>
+          <li class="person-row">
+            <div class="avatar" aria-hidden="true">
+              <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+                <rect width="48" height="48" fill="#e4efd8"/>
+                <path d="M8 48c1.5-9 8-13.5 16-13.5S38.5 39 40 48H8Z" fill="#4c6b2c"/>
+                <circle cx="24" cy="20" r="8" fill="#7d9e59"/>
+                <path d="M16.4 17.8C17.6 13.6 20.4 11 24 11s6.4 2.6 7.6 6.8c-2.4-2-5-3-7.6-3s-5.2 1-7.6 3Z" fill="#33471c"/>
+                <path d="M18 24.8c1.8 2.6 3.8 3.9 6 3.9s4.2-1.3 6-3.9c-.4 3.9-2.4 5.9-6 5.9s-5.6-2-6-5.9Z" fill="#33471c"/>
+              </svg>
+            </div>
+            <div class="person-info">
+              <p class="person-name">Devin Kohl</p>
+              <p class="person-detail">@devinkohl · 3 mutuals</p>
+            </div>
+            <button class="follow-button" type="button">Follow back</button>
+          </li>
+        </ul>
+      </section>
+    </main>
+
+    <nav class="bottom-tabs" aria-label="Main navigation">
+      <button class="bottom-tab" type="button">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M4 10.5L12 4L20 10.5V20H14.5V14.5H9.5V20H4V10.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+        </svg>
+        <span>Feed</span>
+      </button>
+      <button class="bottom-tab" type="button">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="1.7"/>
+          <path d="M16 16L20 20" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+        </svg>
+        <span>Explore</span>
+      </button>
+      <button class="bottom-tab" type="button">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M5 5H19V16H10L6 19V16H5V5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+        </svg>
+        <span>Messages</span>
+      </button>
+      <button class="bottom-tab active" type="button">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="12" cy="8" r="3.5" stroke="currentColor" stroke-width="1.7"/>
+          <path d="M5.5 20C5.8 15.9 8 14 12 14C16 14 18.2 15.9 18.5 20" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+        </svg>
+        <span>Profile</span>
+      </button>
+    </nav>
+  </div>
+</body>
+</html>

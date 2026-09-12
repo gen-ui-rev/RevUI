@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Threadwell Weekly Leaderboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #dfe1e4;
+      color: #202226;
+      font-family: 'Inter', system-ui, sans-serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      width: 1024px;
+      height: 768px;
+      padding: 34px 38px;
+      background: #eceef0;
+    }
+
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 32px;
+    }
+
+    .title-block {
+      min-width: 0;
+    }
+
+    .eyebrow {
+      margin: 0 0 7px;
+      color: #6d7279;
+      font-size: 12px;
+      line-height: 1.4;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    h1 {
+      margin: 0;
+      color: #202226;
+      font-size: 30px;
+      line-height: 1.2;
+      font-weight: 600;
+      letter-spacing: -0.03em;
+    }
+
+    .intro {
+      margin: 8px 0 0;
+      color: #666a70;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .period-control {
+      display: flex;
+      align-items: stretch;
+      flex-shrink: 0;
+      background: #ffffff;
+      border: 1px solid #d8dadd;
+      box-shadow: 0 3px 10px rgba(28, 31, 35, 0.04);
+    }
+
+    .period-button {
+      width: 44px;
+      min-height: 54px;
+      padding: 0;
+      border: 0;
+      background: #ffffff;
+      color: #34373c;
+      cursor: pointer;
+      font-size: 20px;
+      line-height: 1;
+    }
+
+    .period-button:hover {
+      background: #f4f5f6;
+    }
+
+    .period-button:focus-visible {
+      outline: 2px solid #202226;
+      outline-offset: -3px;
+    }
+
+    .period-value {
+      min-width: 190px;
+      padding: 9px 18px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      text-align: center;
+      border-right: 1px solid #e2e4e7;
+      border-left: 1px solid #e2e4e7;
+    }
+
+    .period-value span {
+      color: #787c82;
+      font-size: 11px;
+      line-height: 1.3;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+    }
+
+    .period-value strong {
+      margin-top: 3px;
+      color: #292c31;
+      font-size: 14px;
+      line-height: 1.4;
+      font-weight: 600;
+    }
+
+    .summary-grid {
+      margin-top: 28px;
+      display: grid;
+      grid-template-columns: 1.35fr 1fr 1fr;
+      gap: 16px;
+    }
+
+    .summary-card {
+      padding: 20px 22px;
+      background: #ffffff;
+      border: 1px solid #e1e3e5;
+      box-shadow: 0 5px 16px rgba(28, 31, 35, 0.05);
+    }
+
+    .summary-card.primary {
+      background: #282b2f;
+      border-color: #282b2f;
+      color: #ffffff;
+    }
+
+    .summary-label {
+      margin: 0;
+      color: #73777d;
+      font-size: 12px;
+      line-height: 1.4;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .primary .summary-label {
+      color: #c9ccd0;
+    }
+
+    .summary-value {
+      margin: 7px 0 0;
+      font-size: 29px;
+      line-height: 1.1;
+      font-weight: 600;
+      letter-spacing: -0.03em;
+    }
+
+    .summary-note {
+      margin: 7px 0 0;
+      color: #73777d;
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    .primary .summary-note {
+      color: #d7d9dc;
+    }
+
+    .comparison-card {
+      margin-top: 18px;
+      background: #ffffff;
+      border: 1px solid #e1e3e5;
+      box-shadow: 0 7px 20px rgba(28, 31, 35, 0.06);
+    }
+
+    .comparison-header {
+      padding: 18px 22px 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 24px;
+      border-bottom: 1px solid #e7e8ea;
+    }
+
+    .comparison-header h2 {
+      margin: 0;
+      font-size: 17px;
+      line-height: 1.4;
+      font-weight: 600;
+    }
+
+    .comparison-header p {
+      margin: 0;
+      color: #777b81;
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .table-head,
+    .member-row {
+      display: grid;
+      grid-template-columns: 52px minmax(180px, 1.2fr) minmax(280px, 2fr) 125px 110px;
+      align-items: center;
+      column-gap: 18px;
+    }
+
+    .table-head {
+      padding: 10px 22px;
+      background: #f5f6f7;
+      color: #757980;
+      font-size: 11px;
+      line-height: 1.4;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .table-head span:nth-child(4),
+    .table-head span:nth-child(5) {
+      text-align: right;
+    }
+
+    .ranking {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .member-row {
+      padding: 13px 22px;
+      border-top: 1px solid #eceef0;
+    }
+
+    .member-row:first-child {
+      border-top: 0;
+    }
+
+    .member-row.you {
+      background: #f0f1f2;
+      box-shadow: inset 3px 0 0 #282b2f;
+    }
+
+    .position {
+      color: #4c5056;
+      font-size: 15px;
+      line-height: 1;
+      font-weight: 700;
+    }
+
+    .member {
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      gap: 11px;
+    }
+
+    .monogram {
+      width: 36px;
+      height: 36px;
+      flex: 0 0 36px;
+      display: grid;
+      place-items: center;
+      background: #e2e4e7;
+      color: #34373c;
+      font-size: 12px;
+      line-height: 1;
+      font-weight: 700;
+    }
+
+    .you .monogram {
+      background: #282b2f;
+      color: #ffffff;
+    }
+
+    .member-copy {
+      min-width: 0;
+    }
+
+    .member-name {
+      margin: 0;
+      overflow: hidden;
+      color: #25282c;
+      font-size: 14px;
+      line-height: 1.35;
+      font-weight: 600;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .member-detail {
+      margin: 2px 0 0;
+      color: #777b81;
+      font-size: 11px;
+      line-height: 1.35;
+    }
+
+    .bar-track {
+      width: 100%;
+      height: 7px;
+      background: #e7e9eb;
+    }
+
+    .bar {
+      height: 7px;
+      background: #5c6168;
+    }
+
+    .you .bar {
+      background: #282b2f;
+    }
+
+    .contributions,
+    .points {
+      color: #4b4f55;
+      font-size: 13px;
+      line-height: 1.4;
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .points {
+      color: #282b2f;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .you-tag {
+      margin-left: 6px;
+      padding: 2px 5px;
+      background: #dfe1e4;
+      color: #4c5056;
+      font-size: 9px;
+      line-height: 1.2;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      vertical-align: 1px;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="page-header">
+      <div class="title-block">
+        <p class="eyebrow">Threadwell community</p>
+        <h1>Your weekly standing</h1>
+        <p class="intro">Compare posts and helpful replies across the community.</p>
+      </div>
+
+      <nav class="period-control" aria-label="Select weekly period">
+        <button class="period-button" type="button" aria-label="Previous week">‹</button>
+        <div class="period-value" aria-live="polite">
+          <span>Weekly period</span>
+          <strong>May 12–18, 2025</strong>
+        </div>
+        <button class="period-button" type="button" aria-label="Next week">›</button>
+      </nav>
+    </header>
+
+    <main>
+      <section class="summary-grid" aria-label="Weekly summary">
+        <article class="summary-card primary">
+          <p class="summary-label">Your rank</p>
+          <p class="summary-value">#7</p>
+          <p class="summary-note">42 points behind 6th place</p>
+        </article>
+
+        <article class="summary-card">
+          <p class="summary-label">Your points</p>
+          <p class="summary-value">1,840</p>
+          <p class="summary-note">Earned this week</p>
+        </article>
+
+        <article class="summary-card">
+          <p class="summary-label">Distance to leader</p>
+          <p class="summary-value">1,100</p>
+          <p class="summary-note">Points behind Mira Bell</p>
+        </article>
+      </section>
+
+      <section class="comparison-card" aria-labelledby="comparison-title">
+        <div class="comparison-header">
+          <h2 id="comparison-title">Member comparison</h2>
+          <p>Bars compare each member with this week’s leader.</p>
+        </div>
+
+        <div class="table-head" aria-hidden="true">
+          <span>Rank</span>
+          <span>Member</span>
+          <span>Relative score</span>
+          <span>Contributions</span>
+          <span>Points</span>
+        </div>
+
+        <ol class="ranking">
+          <li class="member-row">
+            <span class="position">1</span>
+            <div class="member">
+              <span class="monogram" aria-hidden="true">MB</span>
+              <div class="member-copy">
+                <p class="member-name">Mira Bell</p>
+                <p class="member-detail">Community leader</p>
+              </div>
+            </div>
+            <div class="bar-track" aria-label="100 percent of leading score">
+              <div class="bar" style="width: 100%;"></div>
+            </div>
+            <span class="contributions">86</span>
+            <span class="points">2,940</span>
+          </li>
+
+          <li class="member-row">
+            <span class="position">2</span>
+            <div class="member">
+              <span class="monogram" aria-hidden="true">JR</span>
+              <div class="member-copy">
+                <p class="member-name">Jonah Reed</p>
+                <p class="member-detail">79 contributions</p>
+              </div>
+            </div>
+            <div class="bar-track" aria-label="92 percent of leading score">
+              <div class="bar" style="width: 92%;"></div>
+            </div>
+            <span class="contributions">79</span>
+            <span class="points">2,715</span>
+          </li>
+
+          <li class="member-row">
+            <span class="position">3</span>
+            <div class="member">
+              <span class="monogram" aria-hidden="true">TL</span>
+              <div class="member-copy">
+                <p class="member-name">Tessa Lane</p>
+                <p class="member-detail">73 contributions</p>
+              </div>
+            </div>
+            <div class="bar-track" aria-label="85 percent of leading score">
+              <div class="bar" style="width: 85%;"></div>
+            </div>
+            <span class="contributions">73</span>
+            <span class="points">2,490</span>
+          </li>
+
+          <li class="member-row you">
+            <span class="position">7</span>
+            <div class="member">
+              <span class="monogram" aria-hidden="true">YO</span>
+              <div class="member-copy">
+                <p class="member-name">Your standing <span class="you-tag">You</span></p>
+                <p class="member-detail">Current weekly position</p>
+              </div>
+            </div>
+            <div class="bar-track" aria-label="63 percent of leading score">
+              <div class="bar" style="width: 63%;"></div>
+            </div>
+            <span class="contributions">—</span>
+            <span class="points">1,840</span>
+          </li>
+        </ol>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rill Finance Activity</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 32px 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #e8e6e7;
+      color: #252124;
+      font-family: 'Manrope', system-ui, sans-serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      width: 768px;
+      height: 1024px;
+      display: flex;
+      flex-direction: column;
+      background: #f8f6f7;
+      border: 1px solid #d9d5d7;
+      box-shadow: 0 18px 50px rgba(56, 47, 52, 0.08);
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 25px 34px 21px;
+      border-bottom: 1px solid #e6e1e4;
+      background: #ffffff;
+    }
+
+    .title-group {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .brand-mark {
+      display: grid;
+      width: 43px;
+      height: 43px;
+      place-items: center;
+      border-radius: 12px;
+      background: #b82f5c;
+      color: #ffffff;
+      font-size: 21px;
+      font-weight: 700;
+      letter-spacing: -0.04em;
+    }
+
+    .service-name {
+      margin: 0 0 3px;
+      color: #887f84;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 29px;
+      line-height: 1.2;
+      font-weight: 700;
+      letter-spacing: -0.035em;
+    }
+
+    .mark-read {
+      padding: 12px 17px;
+      border: 0;
+      border-radius: 9px;
+      background: #f4e5eb;
+      color: #a42751;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: default;
+    }
+
+    .toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 17px 34px;
+      border-bottom: 1px solid #e6e1e4;
+      background: #ffffff;
+    }
+
+    .filters {
+      display: inline-flex;
+      padding: 4px;
+      border: 1px solid #ddd7da;
+      border-radius: 11px;
+      background: #f7f4f5;
+    }
+
+    .filter {
+      padding: 9px 17px;
+      border: 0;
+      border-radius: 8px;
+      background: transparent;
+      color: #756c71;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .filter.active {
+      background: #ffffff;
+      color: #252124;
+      font-weight: 700;
+      box-shadow: 0 1px 4px rgba(65, 53, 59, 0.1);
+    }
+
+    .count {
+      margin-left: 5px;
+      color: #b82f5c;
+      font-weight: 700;
+    }
+
+    .summary {
+      margin: 0;
+      color: #81787d;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    main {
+      flex: 1;
+      min-width: 0;
+      padding: 27px 34px 24px;
+    }
+
+    .activity-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 22px;
+      align-items: start;
+    }
+
+    .activity-section {
+      min-width: 0;
+    }
+
+    .section-heading-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 11px;
+    }
+
+    .section-heading {
+      margin: 0;
+      color: #554e52;
+      font-size: 15px;
+      line-height: 1.3;
+      font-weight: 700;
+    }
+
+    .section-count {
+      display: grid;
+      min-width: 25px;
+      padding: 3px 7px;
+      place-items: center;
+      border-radius: 999px;
+      background: #eae5e8;
+      color: #736b6f;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .notification-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .notification {
+      position: relative;
+      padding: 18px 18px 17px;
+      border: 1px solid #e3dee1;
+      border-radius: 13px;
+      background: #ffffff;
+      box-shadow: 0 2px 8px rgba(67, 55, 61, 0.035);
+    }
+
+    .notification.unread {
+      border-color: #e3b6c5;
+      box-shadow: inset 4px 0 0 #c93667, 0 2px 8px rgba(67, 55, 61, 0.035);
+    }
+
+    .notification-topline {
+      display: flex;
+      align-items: flex-start;
+      gap: 9px;
+    }
+
+    .marker {
+      width: 8px;
+      height: 8px;
+      flex: 0 0 auto;
+      margin-top: 6px;
+      border-radius: 50%;
+      background: transparent;
+    }
+
+    .notification.unread .marker {
+      background: #c93667;
+    }
+
+    .notification-title {
+      min-width: 0;
+      margin: 0;
+      color: #2d292b;
+      font-size: 15px;
+      line-height: 1.4;
+      font-weight: 500;
+    }
+
+    .notification.unread .notification-title {
+      font-weight: 700;
+    }
+
+    .notification-message {
+      margin: 7px 0 0 17px;
+      color: #5f575b;
+      font-size: 14px;
+      line-height: 1.45;
+      font-weight: 400;
+    }
+
+    .notification-meta {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin: 10px 0 0 17px;
+      color: #91888d;
+      font-size: 12px;
+      line-height: 1.3;
+      font-weight: 500;
+    }
+
+    .unread-label {
+      color: #b82f5c;
+      font-weight: 700;
+    }
+
+    .meta-divider {
+      color: #c4bdc0;
+    }
+
+    .tabbar {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      padding: 11px 24px 13px;
+      border-top: 1px solid #ded9dc;
+      background: #ffffff;
+    }
+
+    .tab {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      padding: 10px 8px;
+      border: 0;
+      border-radius: 10px;
+      background: transparent;
+      color: #8c8388;
+      font-size: 13px;
+      line-height: 1.2;
+      font-weight: 500;
+    }
+
+    .tab.active {
+      background: #f6e9ee;
+      color: #a42751;
+      font-weight: 700;
+    }
+
+    .tab svg {
+      width: 23px;
+      height: 23px;
+      flex: 0 0 auto;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <div class="title-group">
+        <div class="brand-mark" aria-hidden="true">R</div>
+        <div>
+          <p class="service-name">Rill Finance</p>
+          <h1>Activity</h1>
+        </div>
+      </div>
+      <button class="mark-read" type="button">Mark all read</button>
+    </header>
+
+    <div class="toolbar">
+      <nav class="filters" aria-label="Activity filters">
+        <button class="filter active" type="button">All <span class="count">6</span></button>
+        <button class="filter" type="button">Unread <span class="count">2</span></button>
+      </nav>
+      <p class="summary">6 recent updates</p>
+    </div>
+
+    <main>
+      <div class="activity-grid">
+        <section class="activity-section" aria-labelledby="today-heading-b">
+          <div class="section-heading-row">
+            <h2 class="section-heading" id="today-heading-b">Today</h2>
+            <span class="section-count">3</span>
+          </div>
+
+          <div class="notification-list">
+            <article class="notification unread">
+              <div class="notification-topline">
+                <span class="marker" aria-hidden="true"></span>
+                <p class="notification-title">Deposit received</p>
+              </div>
+              <p class="notification-message">$3,240.18 from Northline Studio</p>
+              <p class="notification-meta">
+                <span class="unread-label">Unread</span>
+                <span class="meta-divider">•</span>
+                <span>Today, 9:42 AM</span>
+              </p>
+            </article>
+
+            <article class="notification unread">
+              <div class="notification-topline">
+                <span class="marker" aria-hidden="true"></span>
+                <p class="notification-title">Transfer completed</p>
+              </div>
+              <p class="notification-message">$450.00 moved to Harbor Savings</p>
+              <p class="notification-meta">
+                <span class="unread-label">Unread</span>
+                <span class="meta-divider">•</span>
+                <span>Today, 8:16 AM</span>
+              </p>
+            </article>
+
+            <article class="notification">
+              <div class="notification-topline">
+                <span class="marker" aria-hidden="true"></span>
+                <p class="notification-title">Card purchase posted</p>
+              </div>
+              <p class="notification-message">$68.42 at Moss &amp; Vale Market</p>
+              <p class="notification-meta">
+                <span>Today, 7:05 AM</span>
+              </p>
+            </article>
+          </div>
+        </section>
+
+        <section class="activity-section" aria-labelledby="earlier-heading-b">
+          <div class="section-heading-row">
+            <h2 class="section-heading" id="earlier-heading-b">Earlier</h2>
+            <span class="section-count">3</span>
+          </div>
+
+          <div class="notification-list">
+            <article class="notification">
+              <div class="notification-topline">
+                <span class="marker" aria-hidden="true"></span>
+                <p class="notification-title">Dividend payment received</p>
+              </div>
+              <p class="notification-message">$24.16 added to your investing account</p>
+              <p class="notification-meta">
+                <span>Mar 11, 4:18 PM</span>
+              </p>
+            </article>
+
+            <article class="notification">
+              <div class="notification-topline">
+                <span class="marker" aria-hidden="true"></span>
+                <p class="notification-title">Monthly statement available</p>
+              </div>
+              <p class="notification-message">Your February cash account statement is ready</p>
+              <p class="notification-meta">
+                <span>Mar 10, 11:30 AM</span>
+              </p>
+            </article>
+
+            <article class="notification">
+              <div class="notification-topline">
+                <span class="marker" aria-hidden="true"></span>
+                <p class="notification-title">Sign-in from a new device</p>
+              </div>
+              <p class="notification-message">Web browser on a computer in Portland, OR</p>
+              <p class="notification-meta">
+                <span>Mar 9, 6:54 PM</span>
+              </p>
+            </article>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <nav class="tabbar" aria-label="Primary navigation">
+      <button class="tab" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M3.5 10.5 12 3.8l8.5 6.7"></path>
+          <path d="M5.5 9.5v10h13v-10"></path>
+          <path d="M9.5 19.5v-6h5v6"></path>
+        </svg>
+        <span>Home</span>
+      </button>
+
+      <button class="tab" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M4 7.5h16v11H4z"></path>
+          <path d="M4 10.5h16"></path>
+          <path d="M7 15h3"></path>
+          <path d="M6 7.5V5.8h12v1.7"></path>
+        </svg>
+        <span>Money</span>
+      </button>
+
+      <button class="tab active" type="button" aria-current="page">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 8.5h18C21 16 18 16 18 9Z"></path>
+          <path d="M9.5 20h5"></path>
+        </svg>
+        <span>Activity</span>
+      </button>
+
+      <button class="tab" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="8" r="3.5"></circle>
+          <path d="M5.5 20c.6-4 2.8-6 6.5-6s5.9 2 6.5 6"></path>
+        </svg>
+        <span>Profile</span>
+      </button>
+    </nav>
+  </div>
+</body>
+</html>

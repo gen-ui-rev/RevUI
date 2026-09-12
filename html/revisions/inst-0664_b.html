@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Search Results — Morrow Market</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+
+  body {
+    min-height: 100vh;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #e8e9e4;
+    color: #1d2118;
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+
+  button {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    color: inherit;
+    font: inherit;
+    background: none;
+    cursor: pointer;
+  }
+
+  .screen {
+    width: 1024px;
+    height: 768px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: #ffffff;
+    box-shadow: 0 18px 48px rgba(29, 33, 24, 0.16);
+  }
+
+  /* ---------- top bar ---------- */
+  .topbar {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    height: 60px;
+    flex: 0 0 auto;
+    padding: 0 28px;
+    background: rgba(184, 230, 46, 0.12);
+  }
+
+  .brand {
+    color: #1d2118;
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    flex: 0 0 auto;
+  }
+
+  .query-field {
+    min-width: 0;
+    height: 38px;
+    flex: 1;
+    max-width: 400px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 12px;
+    border-radius: 4px;
+    background: #ffffff;
+  }
+
+  .query-field svg {
+    width: 18px;
+    height: 18px;
+    flex: 0 0 auto;
+    color: #596329;
+  }
+
+  .query {
+    min-width: 0;
+    flex: 1;
+    overflow: hidden;
+    color: #171b13;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 19px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .clear-button {
+    width: 22px;
+    height: 22px;
+    display: grid;
+    flex: 0 0 auto;
+    place-items: center;
+    border-radius: 4px;
+    background: rgba(184, 230, 46, 0.34);
+    color: #424a20;
+  }
+
+  .clear-button svg { width: 13px; height: 13px; }
+
+  .nav {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-left: auto;
+  }
+
+  .nav-link {
+    color: #5c6253;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 18px;
+  }
+
+  .nav-link.active {
+    color: #2f3813;
+    font-weight: 700;
+    border-bottom: 2px solid #b8e62e;
+    padding-bottom: 2px;
+  }
+
+  .bag-button {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    height: 34px;
+    padding: 0 12px;
+    border-radius: 4px;
+    background: #2f3813;
+    color: #eef7cf;
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  .bag-button svg { width: 17px; height: 17px; }
+
+  /* ---------- filter bar ---------- */
+  .filter-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 28px;
+    flex: 0 0 auto;
+    border-bottom: 1px solid #e6e8e0;
+  }
+
+  .filter-chip {
+    height: 32px;
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    border-radius: 4px;
+    background: rgba(184, 230, 46, 0.13);
+    color: #444a3c;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 18px;
+    white-space: nowrap;
+  }
+
+  .filter-chip.selected {
+    background: rgba(184, 230, 46, 0.44);
+    color: #252b12;
+    font-weight: 600;
+  }
+
+  .filter-control {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    height: 32px;
+    padding: 0 12px;
+    border: 1px solid #dfe2d7;
+    border-radius: 4px;
+    color: #3f4630;
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  .filter-control svg { width: 16px; height: 16px; }
+
+  .sort {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-left: auto;
+    height: 32px;
+    padding: 0 10px;
+    border-radius: 4px;
+    color: #39401f;
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  .sort .muted { color: #868c78; font-weight: 500; }
+  .sort svg { width: 15px; height: 15px; }
+
+  /* ---------- summary ---------- */
+  .summary {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding: 14px 28px 0;
+    flex: 0 0 auto;
+    color: #5b6054;
+    font-size: 13px;
+    line-height: 20px;
+  }
+
+  .summary strong { color: #24291e; font-weight: 600; }
+  .summary .hint { color: #7b8172; font-size: 12px; }
+
+  /* ---------- price lanes ---------- */
+  .lanes {
+    min-height: 0;
+    flex: 1;
+    display: flex
+    ;align-items: stretch;
+    gap: 18px;
+    padding: 14px 28px 24px;
+  }
+
+  .lane {
+    min-width: 0;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 14px;
+    border-radius: 8px;
+    background: rgba(184, 230, 46, 0.07);
+  }
+
+  .lane.premium { background: rgba(47, 56, 19, 0.06); }
+
+  .lane-head { margin-bottom: 12px; }
+
+  .lane-title {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    color: #232916;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 19px;
+  }
+
+  .lane-range {
+    padding: 2px 7px;
+    border-radius: 3px;
+    background: rgba(184, 230, 46, 0.4);
+    color: #384014;
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 15px;
+  }
+
+  .lane-meta {
+    margin-top: 3px;
+    color: #7b8172;
+    font-size: 12px;
+    line-height: 16px;
+  }
+
+  .lane-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .card {
+    overflow: hidden;
+    border-radius: 6px;
+    background: #ffffff;
+    border: 1px solid #e9ebe3;
+  }
+
+  .card img {
+    width: 280px;
+    height: 120px;
+    display: block;
+    max-width: 100%;
+    object-fit: cover;
+    background: #e6e8df;
+  }
+
+  .card-body { padding: 10px 10px 12px; }
+
+  .product-name {
+    overflow: hidden;
+    color: #20251b;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 19px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .product-detail {
+    margin-top: 2px;
+    overflow: hidden;
+    color: #6a7063;
+    font-size: 12px;
+    line-height: 16px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .product-meta {
+    overflow: hidden;
+    color: #7c8274;
+    font-size: 12px;
+    line-height: 16px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .product-meta .rating { color: #4d5530; font-weight: 600; }
+
+  .price-line {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-top: 6px;
+  }
+
+  .product-price {
+    color: #242a17;
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 20px;
+  }
+
+  .was {
+    color: #9aa08e;
+    font-size: 12px;
+    font-weight: 500;
+    text-decoration: line-through;
+  }
+
+  .stock {
+    margin-left: auto;
+    color: #5f6a35;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 15px;
+  }
+
+  .lane-foot {
+    margin-top: auto;
+    padding-top: 10px;
+    color: #4a5326;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 18px;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <span class="brand">Morrow Market</span>
+
+      <div class="query-field" role="search">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="1.8"/>
+          <path d="M16 16L20 20" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+        <span class="query">white sneakers</span>
+        <button class="clear-button" type="button" aria-label="Clear search">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M8 8L16 16M16 8L8 16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+
+      <nav class="nav" aria-label="Primary navigation">
+        <button class="nav-link" type="button">Home</button>
+        <button class="nav-link active" type="button">Search</button>
+        <button class="nav-link" type="button">Sell</button>
+        <button class="nav-link" type="button">Saved</button>
+        <button class="nav-link" type="button">Account</button>
+        <button class="bag-button" type="button">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M5 8.5H19L18 20H6L5 8.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+            <path d="M9 9V6.5C9 4.8 10.3 3.5 12 3.5C13.7 3.5 15 4.8 15 6.5V9" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+          </svg>
+          Bag · 2
+        </button>
+      </nav>
+    </header>
+
+    <div class="filter-bar" aria-label="Search filters">
+      <button class="filter-chip selected" type="button">All</button>
+      <button class="filter-chip" type="button">Men</button>
+      <button class="filter-chip" type="button">Women</button>
+      <button class="filter-chip" type="button">Kids</button>
+      <button class="filter-chip selected" type="button">Free shipping</button>
+      <button class="filter-chip" type="button">Size 9</button>
+      <button class="filter-control" type="button">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M4 7H14M18 7H20M4 17H8M12 17H20" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+          <circle cx="16" cy="7" r="2" stroke="currentColor" stroke-width="1.7"/>
+          <circle cx="10" cy="17" r="2" stroke="currentColor" stroke-width="1.7"/>
+        </svg>
+        More filters
+      </button>
+      <button class="sort" type="button">
+        <span class="muted">Sort</span> Best match
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M8 10L12 14L16 10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="summary">
+      <span><strong>126 results</strong> for white sneakers, split across three price tiers</span>
+      <span class="hint">Top picks shown per tier</span>
+    </div>
+
+    <main class="lanes">
+      <section class="lane">
+        <div class="lane-head">
+          <div class="lane-title">Value picks <span class="lane-range">Under $70</span></div>
+          <div class="lane-meta">38 items · average $57 · 24 ship free</div>
+        </div>
+
+        <div class="lane-list">
+          <article class="card">
+            <img src="https://loremflickr.com/280/120/sneakers?lock=8814" width="280" height="120" alt="White knit training sneakers">
+            <div class="card-body">
+              <div class="product-name">Harbor Knit Trainer</div>
+              <div class="product-detail">Women's 5–12 · Washable knit upper</div>
+              <div class="product-meta"><span class="rating">★ 4.7</span> (312) · Free 2-day shipping</div>
+              <div class="price-line"><span class="product-price">$49.00</span><span class="was">$65.00</span><span class="stock">4 colors</span></div>
+            </div>
+          </article>
+
+          <article class="card">
+            <img src="https://loremflickr.com/280/120/sneakers?lock=8811" width="280" height="120" alt="White canvas running sneakers">
+            <div class="card-body">
+              <div class="product-name">Alder Canvas Runner</div>
+              <div class="product-detail">Women's 5–11 · Natural white canvas</div>
+              <div class="product-meta"><span class="rating">★ 4.5</span> (188) · Free returns</div>
+              <div class="price-line"><span class="product-price">$58.00</span><span class="stock">Low stock</span></div>
+            </div>
+          </article>
+        </div>
+
+        <button class="lane-foot" type="button">View 36 more under $70 →</button>
+      </section>
+
+      <section class="lane">
+        <div class="lane-head">
+          <div class="lane-title">Everyday range <span class="lane-range">$70 – $84</span></div>
+          <div class="lane-meta">54 items · average $76 · 41 in stock today</div>
+        </div>
+
+        <div class="lane-list">
+          <article class="card">
+            <img src="https://loremflickr.com/280/120/sneakers?lock=8810" width="280" height="120" alt="White low-top court sneakers">
+            <div class="card-body">
+              <div class="product-name">Northline Court Low</div>
+              <div class="product-detail">Men's 7–13 · Full-grain white leather</div>
+              <div class="product-meta"><span class="rating">★ 4.8</span> (508) · Free returns</div>
+              <div class="price-line"><span class="product-price">$74.00</span><span class="was">$88.00</span><span class="stock">Top rated</span></div>
+            </div>
+          </article>
+
+          <article class="card">
+            <img src="https://loremflickr.com/280/120/sneakers?lock=8816" width="280" height="120" alt="Off-white suede low-top sneakers">
+            <div class="card-body">
+              <div class="product-name">Drift Suede Low</div>
+              <div class="product-detail">Men's 7–13 · Off-white brushed suede</div>
+              <div class="product-meta"><span class="rating">★ 4.6</span> (241) · Ships in 2 days</div>
+              <div class="price-line"><span class="product-price">$71.00</span><span class="stock">3 colors</span></div>
+            </div>
+          </article>
+        </div>
+
+        <button class="lane-foot" type="button">View 52 more from $70 →</button>
+      </section>
+
+      <section class="lane premium">
+        <div class="lane-head">
+          <div class="lane-title">Premium <span class="lane-range">$85 and up</span></div>
+          <div class="lane-meta">34 items · average $101 · leather-first</div>
+        </div>
+
+        <div class="lane-list">
+          <article class="card">
+            <img src="https://loremflickr.com/280/120/sneakers?lock=8812" width="280" height="120" alt="White leather everyday sneakers">
+            <div class="card-body">
+              <div class="product-name">Fieldday Leather Low</div>
+              <div class="product-detail">Unisex 4–13 · Soft nappa leather</div>
+              <div class="product-meta"><span class="rating">★ 4.9</span> (411) · Free 2-day shipping</div>
+              <div class="price-line"><span class="product-price">$92.00</span><span class="stock">Resoleable</span></div>
+            </div>
+          </article>
+
+          <article class="card">
+            <img src="https://loremflickr.com/280/120/sneakers?lock=8817" width="280" height="120" alt="White calfskin premium court sneakers">
+            <div class="card-body">
+              <div class="product-name">Ridgeway Premium Court</div>
+              <div class="product-detail">Men's 7–14 · Hand-stitched calfskin</div>
+              <div class="product-meta"><span class="rating">★ 4.8</span> (129) · Free returns</div>
+              <div class="price-line"><span class="product-price">$105.00</span><span class="stock">Made in Maine</span></div>
+            </div>
+          </article>
+        </div>
+
+        <button class="lane-foot" type="button">View 32 more from $85 →</button>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

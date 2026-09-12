@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Circuit Order — Pacewell</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;}
+  body{
+    min-height:100vh;
+    margin:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#dfe0dc;
+    font-family:'Source Serif 4', Georgia, serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .screen{
+    width:1024px;
+    height:768px;
+    padding:58px 54px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#eeeeeb;
+  }
+  .card{
+    width:100%;
+    display:grid;
+    grid-template-columns:326px minmax(0,1fr);
+    border:1px solid #ddded8;
+    border-radius:22px;
+    background:#fff;
+    box-shadow:0 20px 46px rgba(34,37,29,.11);
+  }
+  .intro{
+    align-self:stretch;
+    padding:46px 40px;
+    border-radius:21px 0 0 21px;
+    background:#252b23;
+    color:#fff;
+  }
+  .eyebrow{
+    margin:0 0 14px;
+    color:#cdf03c;
+    font-size:12px;
+    letter-spacing:.11em;
+    text-transform:uppercase;
+  }
+  h1{
+    margin:0 0 17px;
+    color:#fff;
+    font-size:38px;
+    font-weight:700;
+    line-height:1.08;
+  }
+  .lede{
+    margin:0;
+    color:#d5d8d1;
+    font-size:15px;
+    line-height:1.58;
+  }
+  .guide{
+    margin-top:42px;
+    padding-top:22px;
+    border-top:1px solid rgba(255,255,255,.17);
+  }
+  .guide-title{
+    margin:0 0 7px;
+    color:#fff;
+    font-size:14px;
+    font-weight:600;
+  }
+  .guide-copy{
+    margin:0;
+    color:#b8bdb4;
+    font-size:13px;
+    line-height:1.5;
+  }
+  .editor{
+    min-width:0;
+    padding:34px 38px 36px;
+  }
+  .topbar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:20px;
+    padding-bottom:22px;
+    margin-bottom:25px;
+    border-bottom:1px solid #e6e7e2;
+  }
+  .top-copy{
+    min-width:0;
+  }
+  .top-title{
+    margin:0;
+    color:#22251e;
+    font-size:17px;
+    font-weight:700;
+  }
+  .top-sub{
+    margin:3px 0 0;
+    color:#777b70;
+    font-size:12px;
+  }
+  .save{
+    flex:none;
+    min-width:124px;
+    padding:12px 20px;
+    border:0;
+    border-radius:10px;
+    background:#cdf03c;
+    color:#1c1e18;
+    font-family:inherit;
+    font-size:15px;
+    font-weight:700;
+    box-shadow:inset 0 0 0 1px #b6d82f;
+  }
+  .block + .block{margin-top:24px;}
+  .block-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:16px;
+    margin-bottom:9px;
+  }
+  .block-title-wrap{
+    display:flex;
+    align-items:center;
+    gap:9px;
+  }
+  .block-mark{
+    width:8px;
+    height:8px;
+    flex:none;
+    border-radius:50%;
+    background:#8aa320;
+  }
+  .block.conditioning .block-mark{background:#596d5b;}
+  .block-title{
+    margin:0;
+    color:#34372f;
+    font-size:14px;
+    font-weight:700;
+  }
+  .block-hint{
+    color:#8a8e83;
+    font-size:12px;
+  }
+  .list{
+    margin:0;
+    padding:0;
+    list-style:none;
+  }
+  .row{
+    display:grid;
+    grid-template-columns:30px 52px minmax(0,1fr) 34px;
+    align-items:center;
+    gap:13px;
+    padding:10px 12px;
+    border:1px solid #e3e5df;
+    background:#fafbf8;
+  }
+  .row:first-child{border-radius:13px 13px 0 0;}
+  .row:last-child{border-radius:0 0 13px 13px;}
+  .row:only-child{border-radius:13px;}
+  .row + .row{border-top:0;}
+  .ord{
+    width:30px;
+    height:30px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#4e5348;
+    font-size:13px;
+    font-weight:700;
+    border-radius:50%;
+    background:#eceee8;
+  }
+  .thumb{
+    width:52px;
+    height:52px;
+    display:block;
+    object-fit:cover;
+    border-radius:10px;
+    background:#d8d9d3;
+  }
+  .meta{min-width:0;}
+  .name{
+    overflow:hidden;
+    color:#1c1e18;
+    font-size:16px;
+    font-weight:600;
+    line-height:1.25;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+  .sub{
+    margin-top:3px;
+    color:#707469;
+    font-size:13px;
+  }
+  .handle{
+    width:34px;
+    height:34px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#858a7f;
+    cursor:grab;
+  }
+  .note{
+    display:flex;
+    align-items:center;
+    gap:9px;
+    margin:23px 0 0;
+    color:#73776d;
+    font-size:12px;
+    line-height:1.4;
+  }
+  .lock{
+    width:20px;
+    height:20px;
+    flex:none;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#555a50;
+    border-radius:50%;
+    background:#eceee8;
+    font-size:11px;
+    font-weight:700;
+  }
+</style>
+</head>
+<body>
+  <div class="screen">
+    <main class="card">
+      <section class="intro">
+        <p class="eyebrow">Thursday · Lower body</p>
+        <h1>Circuit order</h1>
+        <p class="lede">Set the flow of your lifting and conditioning work before the next session begins.</p>
+
+        <div class="guide">
+          <p class="guide-title">Two independent blocks</p>
+          <p class="guide-copy">Each block starts at station one. Use the handles to reorder stations within the same block.</p>
+        </div>
+      </section>
+
+      <section class="editor">
+        <div class="topbar">
+          <div class="top-copy">
+            <p class="top-title">Arrange stations</p>
+            <p class="top-sub">Changes apply to your next circuit.</p>
+          </div>
+          <button class="save" type="button">Save order</button>
+        </div>
+
+        <section class="block">
+          <div class="block-head">
+            <div class="block-title-wrap">
+              <span class="block-mark" aria-hidden="true"></span>
+              <h2 class="block-title">Lifting</h2>
+            </div>
+            <span class="block-hint">2 stations</span>
+          </div>
+          <ol class="list">
+            <li class="row">
+              <span class="ord">1</span>
+              <img class="thumb" src="https://loremflickr.com/52/52/gym?lock=9900" width="52" height="52" alt="Kettlebell rack in a gym">
+              <span class="meta">
+                <div class="name">Goblet squat</div>
+                <div class="sub">3 sets · 12 reps</div>
+              </span>
+              <span class="handle" aria-hidden="true">
+                <svg width="16" height="12" viewBox="0 0 16 12" fill="currentColor"><rect y="0" width="16" height="1.8" rx="0.9"/><rect y="5.1" width="16" height="1.8" rx="0.9"/><rect y="10.2" width="16" height="1.8" rx="0.9"/></svg>
+              </span>
+            </li>
+            <li class="row">
+              <span class="ord">2</span>
+              <img class="thumb" src="https://loremflickr.com/52/52/gym?lock=9902" width="52" height="52" alt="Weight bench under gym lights">
+              <span class="meta">
+                <div class="name">Romanian deadlift</div>
+                <div class="sub">3 sets · 8 reps</div>
+              </span>
+              <span class="handle" aria-hidden="true">
+                <svg width="16" height="12" viewBox="0 0 16 12" fill="currentColor"><rect y="0" width="16" height="1.8" rx="0.9"/><rect y="5.1" width="16" height="1.8" rx="0.9"/><rect y="10.2" width="16" height="1.8" rx="0.9"/></svg>
+              </span>
+            </li>
+          </ol>
+        </section>
+
+        <section class="block conditioning">
+          <div class="block-head">
+            <div class="block-title-wrap">
+              <span class="block-mark" aria-hidden="true"></span>
+              <h2 class="block-title">Conditioning</h2>
+            </div>
+            <span class="block-hint">1 station</span>
+          </div>
+          <ol class="list">
+            <li class="row">
+              <span class="ord">1</span>
+              <img class="thumb" src="https://loremflickr.com/52/52/running?lock=9901" width="52" height="52" alt="Runner on a treadmill track">
+              <span class="meta">
+                <div class="name">Tempo intervals</div>
+                <div class="sub">6 min · 4:40 pace</div>
+              </span>
+              <span class="handle" aria-hidden="true">
+                <svg width="16" height="12" viewBox="0 0 16 12" fill="currentColor"><rect y="0" width="16" height="1.8" rx="0.9"/><rect y="5.1" width="16" height="1.8" rx="0.9"/><rect y="10.2" width="16" height="1.8" rx="0.9"/></svg>
+              </span>
+            </li>
+          </ol>
+        </section>
+
+        <p class="note"><span class="lock" aria-hidden="true">✓</span>Warm-up stays first and is not reorderable.</p>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

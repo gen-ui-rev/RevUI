@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Planwell Request Queue</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 36px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #dfe2e8;
+      color: #242632;
+      font-family: 'Source Serif 4', Georgia, serif;
+    }
+
+    button {
+      margin: 0;
+      border: 0;
+      font: inherit;
+      color: inherit;
+      cursor: default;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      background: #f3f4f7;
+      border: 1px solid #cfd2da;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 16px;
+      background: #4f46a5;
+      color: #ffffff;
+    }
+
+    .menu-button {
+      width: 32px;
+      height: 32px;
+      display: grid;
+      place-items: center;
+      padding: 0;
+      background: transparent;
+    }
+
+    .menu-button svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .brand {
+      margin: 0;
+      font-size: 20px;
+      line-height: 28px;
+      font-weight: 600;
+      letter-spacing: -0.2px;
+    }
+
+    .top-spacer {
+      flex: 1;
+    }
+
+    .inbox-button {
+      padding: 5px 11px 6px;
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      border-radius: 4px;
+      background: transparent;
+      color: #ffffff;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 600;
+    }
+
+    .queue-heading {
+      padding: 14px 16px 11px;
+      background: #ffffff;
+      border-bottom: 1px solid #d9dbe2;
+    }
+
+    .heading-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .heading-copy {
+      min-width: 0;
+    }
+
+    .heading-copy h1 {
+      margin: 0;
+      color: #20222c;
+      font-size: 24px;
+      line-height: 31px;
+      font-weight: 600;
+    }
+
+    .heading-copy p {
+      margin: 1px 0 0;
+      color: #686c79;
+      font-size: 13px;
+      line-height: 19px;
+    }
+
+    .filter-button {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 6px 9px;
+      border: 1px solid #d4d6de;
+      border-radius: 4px;
+      background: #ffffff;
+      color: #505462;
+      font-size: 13px;
+      line-height: 19px;
+      font-weight: 600;
+    }
+
+    .filter-button svg {
+      width: 15px;
+      height: 15px;
+    }
+
+    .summary-strip {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: #dedfe5;
+      border-bottom: 1px solid #d9dbe2;
+    }
+
+    .summary-item {
+      padding: 9px 10px 8px;
+      background: #f8f8fa;
+      text-align: center;
+    }
+
+    .summary-number {
+      display: block;
+      color: #2b2d38;
+      font-size: 20px;
+      line-height: 24px;
+      font-weight: 600;
+    }
+
+    .summary-item:first-child .summary-number {
+      color: #a33e39;
+    }
+
+    .summary-label {
+      display: block;
+      color: #717582;
+      font-size: 11px;
+      line-height: 16px;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+
+    .type-filters {
+      display: flex;
+      gap: 7px;
+      padding: 10px 12px;
+      background: #f3f4f7;
+    }
+
+    .chip {
+      padding: 5px 10px;
+      border: 1px solid #d6d8df;
+      border-radius: 14px;
+      background: #ffffff;
+      color: #626673;
+      font-size: 12px;
+      line-height: 17px;
+      white-space: nowrap;
+    }
+
+    .chip.active {
+      border-color: #4f46a5;
+      background: #e9e7f7;
+      color: #4f46a5;
+      font-weight: 600;
+    }
+
+    .queue {
+      padding: 0 12px;
+    }
+
+    .section-heading {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin: 0 2px 6px;
+    }
+
+    .section-heading h2 {
+      margin: 0;
+      color: #30323d;
+      font-size: 15px;
+      line-height: 21px;
+      font-weight: 600;
+    }
+
+    .section-heading span {
+      color: #777b87;
+      font-size: 12px;
+      line-height: 18px;
+    }
+
+    .request-card {
+      display: block;
+      margin-bottom: 8px;
+      padding: 10px 11px;
+      border: 1px solid #dedfe5;
+      border-left: 4px solid #4f46a5;
+      border-radius: 4px;
+      background: #ffffff;
+      color: #30323d;
+      text-decoration: none;
+      box-shadow: 0 1px 4px rgba(35, 38, 55, 0.07);
+    }
+
+    .request-card.urgent {
+      border-left-color: #b64a45;
+    }
+
+    .card-top {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 12px;
+      line-height: 18px;
+    }
+
+    .request-kind {
+      padding: 1px 6px;
+      border-radius: 3px;
+      background: #efeff4;
+      color: #555966;
+      font-weight: 600;
+    }
+
+    .urgent .request-kind {
+      background: #f7e9e7;
+      color: #973c38;
+    }
+
+    .card-deadline {
+      margin-left: auto;
+      color: #6e7280;
+      white-space: nowrap;
+    }
+
+    .urgent .card-deadline {
+      color: #a33e39;
+      font-weight: 600;
+    }
+
+    .request-card h3 {
+      margin: 5px 0 1px;
+      overflow: hidden;
+      color: #252733;
+      font-size: 15px;
+      line-height: 20px;
+      font-weight: 600;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .card-context {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      min-width: 0;
+      color: #727683;
+      font-size: 13px;
+      line-height: 18px;
+    }
+
+    .requester {
+      color: #4b4f5c;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .context-text {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .later-heading {
+      margin-top: 10px;
+    }
+
+    .compact-list {
+      border: 1px solid #dedfe5;
+      border-radius: 4px;
+      background: #ffffff;
+    }
+
+    .compact-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 10px;
+      padding: 9px 11px;
+      border-bottom: 1px solid #e5e6ea;
+      color: #30323d;
+      text-decoration: none;
+    }
+
+    .compact-row:last-child {
+      border-bottom: 0;
+    }
+
+    .compact-copy {
+      min-width: 0;
+    }
+
+    .compact-title {
+      display: block;
+      overflow: hidden;
+      color: #343641;
+      font-size: 14px;
+      line-height: 19px;
+      font-weight: 600;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .compact-meta {
+      display: block;
+      overflow: hidden;
+      color: #777b87;
+      font-size: 12px;
+      line-height: 17px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .compact-due {
+      align-self: center;
+      color: #666a77;
+      font-size: 12px;
+      line-height: 18px;
+      white-space: nowrap;
+    }
+
+    .bottom-nav {
+      margin-top: auto;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border-top: 1px solid #d9dbe2;
+      background: #ffffff;
+    }
+
+    .nav-item {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      padding: 7px 4px 8px;
+      background: transparent;
+      color: #707481;
+      font-size: 12px;
+      line-height: 17px;
+    }
+
+    .nav-item svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .nav-item.active {
+      color: #4f46a5;
+      font-weight: 600;
+    }
+
+    .nav-item.active::before {
+      content: "";
+      position: absolute;
+      top: -1px;
+      right: 26px;
+      left: 26px;
+      height: 3px;
+      background: #4f46a5;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <button class="menu-button" aria-label="Open navigation">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+          <path d="M4 7h16M4 12h16M4 17h16"></path>
+        </svg>
+      </button>
+      <p class="brand">Planwell</p>
+      <div class="top-spacer"></div>
+      <button class="inbox-button">Inbox</button>
+    </header>
+
+    <section class="queue-heading" aria-labelledby="queue-title">
+      <div class="heading-row">
+        <div class="heading-copy">
+          <h1 id="queue-title">Request queue</h1>
+          <p>Review what others need from you</p>
+        </div>
+        <button class="filter-button" aria-label="Filter requests">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+            <path d="M4 6h16M7 12h10M10 18h4"></path>
+          </svg>
+          <span>Filter</span>
+        </button>
+      </div>
+    </section>
+
+    <section class="summary-strip" aria-label="Request summary">
+      <div class="summary-item">
+        <span class="summary-number">2</span>
+        <span class="summary-label">Due today</span>
+      </div>
+      <div class="summary-item">
+        <span class="summary-number">3</span>
+        <span class="summary-label">This week</span>
+      </div>
+      <div class="summary-item">
+        <span class="summary-number">1</span>
+        <span class="summary-label">Waiting</span>
+      </div>
+    </section>
+
+    <nav class="type-filters" aria-label="Request types">
+      <button class="chip active">All requests</button>
+      <button class="chip">Approvals</button>
+      <button class="chip">Reviews</button>
+      <button class="chip">Access</button>
+    </nav>
+
+    <main class="queue">
+      <div class="section-heading">
+        <h2>Due today</h2>
+        <span>Highest priority first</span>
+      </div>
+
+      <a class="request-card urgent" href="#" aria-label="Approval request from Mara Vell due at 2 PM">
+        <span class="card-top">
+          <span class="request-kind">Approval</span>
+          <span class="card-deadline">Due 2:00 PM</span>
+        </span>
+        <h3>Approve the launch review agenda</h3>
+        <span class="card-context">
+          <span class="requester">Mara Vell</span>
+          <span>·</span>
+          <span class="context-text">Final owners and timing are ready</span>
+        </span>
+      </a>
+
+      <a class="request-card urgent" href="#" aria-label="Decision request from Owen Pryce due at 5 PM">
+        <span class="card-top">
+          <span class="request-kind">Decision</span>
+          <span class="card-deadline">Due 5:00 PM</span>
+        </span>
+        <h3>Choose the roadmap milestone date</h3>
+        <span class="card-context">
+          <span class="requester">Owen Pryce</span>
+          <span>·</span>
+          <span class="context-text">Two dates affect the research handoff</span>
+        </span>
+      </a>
+
+      <div class="section-heading later-heading">
+        <h2>Coming up</h2>
+        <span>3 requests</span>
+      </div>
+
+      <div class="compact-list" aria-label="Upcoming requests">
+        <a class="compact-row" href="#" aria-label="Review workspace planning notes by tomorrow">
+          <span class="compact-copy">
+            <span class="compact-title">Review workspace planning notes</span>
+            <span class="compact-meta">Elsie Ward · Review</span>
+          </span>
+          <span class="compact-due">Tomorrow</span>
+        </a>
+
+        <a class="compact-row" href="#" aria-label="Grant vendor access by Friday">
+          <span class="compact-copy">
+            <span class="compact-title">Grant vendor access</span>
+            <span class="compact-meta">Jonah Reed · Access</span>
+          </span>
+          <span class="compact-due">Friday</span>
+        </a>
+
+        <a class="compact-row" href="#" aria-label="Comment on interview schedule by Monday">
+          <span class="compact-copy">
+            <span class="compact-title">Comment on interview schedule</span>
+            <span class="compact-meta">Tessa Cole · Feedback</span>
+          </span>
+          <span class="compact-due">Monday</span>
+        </a>
+      </div>
+    </main>
+
+    <nav class="bottom-nav" aria-label="Primary navigation">
+      <button class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true">
+          <path d="M4 5.5h16v13H4z"></path>
+          <path d="m4 7 8 6 8-6"></path>
+        </svg>
+        <span>Work</span>
+      </button>
+      <button class="nav-item active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true">
+          <rect x="3.5" y="5" width="17" height="14"></rect>
+          <path d="m4 7 8 6 8-6"></path>
+        </svg>
+        <span>Requests</span>
+      </button>
+      <button class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true">
+          <path d="M5 4.5h14v15H5z"></path>
+          <path d="M8 8h8M8 12h8M8 16h5"></path>
+        </svg>
+        <span>Notes</span>
+      </button>
+      <button class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="3.5" y="5.5" width="17" height="15"></rect>
+          <path d="M7 3.5v4M17 3.5v4M3.5 10h17"></path>
+        </svg>
+        <span>Calendar</span>
+      </button>
+    </nav>
+  </div>
+</body>
+</html>

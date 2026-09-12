@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Choose Your Lesson Time</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #deddd9;
+      color: #292c2e;
+      font-family: 'Source Serif 4', Georgia, serif;
+    }
+
+    button { font: inherit; }
+
+    .screen {
+      width: 768px;
+      height: 1024px;
+      padding: 32px;
+      background: #f4f3f0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .page-head {
+      margin-bottom: 22px;
+    }
+
+    .eyebrow {
+      margin: 0;
+      color: #7c8285;
+      font-size: 13px;
+      font-weight: 600;
+      line-height: 1.3;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+
+    .page-head h1 {
+      margin: 6px 0 0;
+      color: #525b60;
+      font-size: 30px;
+      font-weight: 600;
+      line-height: 1.15;
+      letter-spacing: -0.4px;
+    }
+
+    .lede {
+      margin: 6px 0 0;
+      color: #686d70;
+      font-size: 15px;
+      line-height: 1.45;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 1fr 264px;
+      gap: 24px;
+      align-items: start;
+    }
+
+    .panel {
+      background: #ffffff;
+      border-radius: 8px;
+      padding: 24px;
+    }
+
+    fieldset {
+      margin: 0;
+      padding: 0;
+      border: 0;
+    }
+
+    legend {
+      width: 100%;
+      margin: 0 0 12px;
+      padding: 0;
+      color: #353a3d;
+      font-size: 18px;
+      font-weight: 600;
+      line-height: 1.25;
+    }
+
+    .block + .block {
+      margin-top: 22px;
+      padding-top: 22px;
+      border-top: 1px solid #e4e2dd;
+    }
+
+    .week-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .nav-btn {
+      width: 44px;
+      height: 44px;
+      border: 1px solid #d5d3ce;
+      border-radius: 6px;
+      background: #ffffff;
+      color: #525b60;
+      font-size: 20px;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    .week-label {
+      flex: 1;
+      text-align: center;
+      color: #444a4e;
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 1.3;
+    }
+
+    .date-options {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 6px;
+    }
+
+    .date-option {
+      padding: 11px 2px 10px;
+      border: 0;
+      border-radius: 6px;
+      background: rgba(82, 91, 96, 0.09);
+      color: #444a4e;
+      text-align: center;
+      cursor: pointer;
+    }
+
+    .date-option span {
+      display: block;
+      font-size: 12px;
+      line-height: 1.2;
+    }
+
+    .date-option strong {
+      display: block;
+      margin-top: 3px;
+      font-size: 19px;
+      font-weight: 600;
+      line-height: 1.15;
+    }
+
+    .date-option em {
+      display: block;
+      margin-top: 4px;
+      color: #7c8285;
+      font-size: 10.5px;
+      font-style: normal;
+      line-height: 1.2;
+    }
+
+    .date-option[aria-pressed="true"] {
+      background: #596267;
+      color: #ffffff;
+    }
+
+    .date-option[aria-pressed="true"] em { color: #d7dcde; }
+
+    .date-option[aria-disabled="true"] {
+      background: transparent;
+      border: 1px dashed #dcdad5;
+      color: #a4a8aa;
+    }
+
+    .date-option[aria-disabled="true"] em { color: #b3b6b8; }
+
+    .jump {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 14px;
+      padding: 0;
+    }
+
+    .jump-label {
+      color: #6c7275;
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
+    .jump-field {
+      flex: 1;
+      padding: 11px 12px;
+      border: 1px solid #d5d3ce;
+      border-radius: 6px;
+      color: #444a4e;
+      font-size: 14px;
+      line-height: 1.2;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .jump-btn {
+      padding: 11px 14px;
+      border: 1px solid #596267;
+      border-radius: 6px;
+      background: #ffffff;
+      color: #4b5459;
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 1.2;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+
+    .time-note {
+      margin: 0 0 14px;
+      color: #777c7f;
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    .time-group + .time-group { margin-top: 14px; }
+
+    .group-label {
+      display: block;
+      margin-bottom: 8px;
+      color: #6c7275;
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1.3;
+      text-transform: uppercase;
+      letter-spacing: 0.7px;
+    }
+
+    .time-options {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .time-option {
+      padding: 15px 6px;
+      border: 0;
+      border-radius: 6px;
+      background: rgba(82, 91, 96, 0.09);
+      color: #444a4e;
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 1.25;
+      text-align: center;
+      cursor: pointer;
+    }
+
+    .time-option[aria-pressed="true"] {
+      background: #596267;
+      color: #ffffff;
+    }
+
+    .time-option[aria-disabled="true"] {
+      background: transparent;
+      border: 1px dashed #dcdad5;
+      color: #a4a8aa;
+      font-weight: 400;
+    }
+
+    .summary-label {
+      display: block;
+      color: #6c7275;
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1.3;
+      text-transform: uppercase;
+      letter-spacing: 0.7px;
+    }
+
+    .summary-value {
+      display: block;
+      margin-top: 5px;
+      color: #394044;
+      font-size: 21px;
+      font-weight: 600;
+      line-height: 1.25;
+    }
+
+    .summary-time {
+      display: block;
+      margin-top: 3px;
+      color: #686d70;
+      font-size: 15px;
+      line-height: 1.4;
+    }
+
+    .summary-list {
+      margin: 16px 0 0;
+      padding: 16px 0 0;
+      border-top: 1px solid #e4e2dd;
+    }
+
+    .summary-list .row {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .summary-list .row + .row { margin-top: 9px; }
+
+    .summary-list dt {
+      color: #7c8285;
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    .summary-list dd {
+      margin: 0;
+      color: #3f4548;
+      font-size: 13px;
+      font-weight: 600;
+      line-height: 1.4;
+      text-align: right;
+    }
+
+    .total {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-top: 16px;
+      padding-top: 14px;
+      border-top: 1px solid #e4e2dd;
+      color: #4b5155;
+      font-size: 14px;
+    }
+
+    .total strong {
+      color: #353a3d;
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .confirm {
+      width: 100%;
+      margin-top: 18px;
+      padding: 15px 16px;
+      border: 0;
+      border-radius: 6px;
+      background: #596267;
+      color: #ffffff;
+      font-size: 17px;
+      font-weight: 600;
+      line-height: 1.3;
+      text-align: center;
+      cursor: pointer;
+    }
+
+    .secondary {
+      width: 100%;
+      margin-top: 9px;
+      padding: 13px 16px;
+      border: 1px solid #cfcdc8;
+      border-radius: 6px;
+      background: #ffffff;
+      color: #4b5459;
+      font-size: 15px;
+      font-weight: 600;
+      line-height: 1.3;
+      cursor: pointer;
+    }
+
+    .policy {
+      margin: 12px 0 0;
+      color: #7c8285;
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .more-options {
+      margin-top: auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 18px 22px;
+      background: #ffffff;
+      border-radius: 8px;
+    }
+
+    .more-title {
+      display: block;
+      color: #3f4548;
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 1.3;
+    }
+
+    .more-text {
+      display: block;
+      margin-top: 3px;
+      color: #777c7f;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .ghost-btn {
+      padding: 13px 18px;
+      border: 1px solid #596267;
+      border-radius: 6px;
+      background: #ffffff;
+      color: #4b5459;
+      font-size: 15px;
+      font-weight: 600;
+      line-height: 1.2;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="page-head">
+      <p class="eyebrow">Step 2 of 3 · Booking</p>
+      <h1>Choose your lesson time</h1>
+      <p class="lede">Schedule a 45-minute French conversation lesson with Rowan Hale.</p>
+    </header>
+
+    <div class="layout">
+      <main class="panel choices">
+        <form>
+          <fieldset class="block">
+            <legend>Select a date</legend>
+            <div class="week-nav">
+              <button class="nav-btn" type="button" aria-label="Show the previous week">‹</button>
+              <span class="week-label">April 21 – 27, 2025</span>
+              <button class="nav-btn" type="button" aria-label="Show the next week">›</button>
+            </div>
+            <div class="date-options">
+              <button class="date-option" type="button" aria-pressed="false">
+                <span>Mon</span><strong>21</strong><em>5 slots</em>
+              </button>
+              <button class="date-option" type="button" aria-pressed="true">
+                <span>Tue</span><strong>22</strong><em>9 slots</em>
+              </button>
+              <button class="date-option" type="button" aria-pressed="false">
+                <span>Wed</span><strong>23</strong><em>6 slots</em>
+              </button>
+              <button class="date-option" type="button" aria-pressed="false">
+                <span>Thu</span><strong>24</strong><em>4 slots</em>
+              </button>
+              <button class="date-option" type="button" aria-pressed="false">
+                <span>Fri</span><strong>25</strong><em>7 slots</em>
+              </button>
+              <button class="date-option" type="button" aria-pressed="false">
+                <span>Sat</span><strong>26</strong><em>2 slots</em>
+              </button>
+              <button class="date-option" type="button" aria-disabled="true">
+                <span>Sun</span><strong>27</strong><em>Full</em>
+              </button>
+            </div>
+            <div class="jump">
+              <span class="jump-label">Another week?</span>
+              <span class="jump-field">Apr 22, 2025</span>
+              <button class="jump-btn" type="button">Open full calendar</button>
+            </div>
+          </fieldset>
+
+          <fieldset class="block">
+            <legend>Select a start time</legend>
+            <p class="time-note">Tuesday, April 22 · all times shown in Eastern Time (ET).</p>
+
+            <div class="time-group">
+              <span class="group-label">Morning</span>
+              <div class="time-options">
+                <button class="time-option" type="button" aria-pressed="false">9:00 AM</button>
+                <button class="time-option" type="button" aria-pressed="false">10:15 AM</button>
+                <button class="time-option" type="button" aria-disabled="true">11:30 AM</button>
+              </div>
+            </div>
+
+            <div class="time-group">
+              <span class="group-label">Afternoon</span>
+              <div class="time-options">
+                <button class="time-option" type="button" aria-pressed="false">1:00 PM</button>
+                <button class="time-option" type="button" aria-pressed="false">2:15 PM</button>
+                <button class="time-option" type="button" aria-pressed="false">3:30 PM</button>
+              </div>
+            </div>
+
+            <div class="time-group">
+              <span class="group-label">Evening</span>
+              <div class="time-options">
+                <button class="time-option" type="button" aria-pressed="false">5:15 PM</button>
+                <button class="time-option" type="button" aria-pressed="true">6:30 PM</button>
+                <button class="time-option" type="button" aria-pressed="false">8:00 PM</button>
+              </div>
+            </div>
+          </fieldset>
+        </form>
+      </main>
+
+      <aside class="panel summary" aria-label="Booking summary">
+        <span class="summary-label">Your selection</span>
+        <span class="summary-value">Tuesday, April 22</span>
+        <span class="summary-time">6:30 – 7:15 PM ET</span>
+
+        <dl class="summary-list">
+          <div class="row"><dt>Tutor</dt><dd>Rowan Hale</dd></div>
+          <div class="row"><dt>Lesson</dt><dd>French conversation</dd></div>
+          <div class="row"><dt>Duration</dt><dd>45 minutes</dd></div>
+          <div class="row"><dt>Format</dt><dd>Online classroom</dd></div>
+        </dl>
+
+        <div class="total"><span>Total</span><strong>$28.00</strong></div>
+
+        <button class="confirm" type="button">Confirm lesson time</button>
+        <button class="secondary" type="button">Save this slot for later</button>
+        <p class="policy">Free cancellation up to 12 hours before the lesson starts.</p>
+      </aside>
+    </div>
+
+    <section class="more-options" aria-label="Other options">
+      <div>
+        <span class="more-title">Can't find a time that works?</span>
+        <span class="more-text">Join the waitlist and we'll email you when Rowan opens new evening slots.</span>
+      </div>
+      <button class="ghost-btn" type="button">Join waitlist</button>
+    </section>
+  </div>
+</body>
+</html>

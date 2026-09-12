@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Save lesson to a list</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 24px 0;
+      background: #d9d6d3;
+      color: #292524;
+      font-family: 'Nunito Sans', system-ui, sans-serif;
+    }
+
+    .screen {
+      width: 1024px;
+      height: 768px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background:
+        radial-gradient(circle at 20% 15%, #efedea 0%, #e7e5e4 55%, #ddd9d6 100%);
+    }
+
+    .dialog {
+      width: 812px;
+      display: flex;
+      border-radius: 16px;
+      background: #fafaf9;
+      box-shadow: 0 24px 60px rgba(41, 37, 36, 0.18);
+      overflow: hidden;
+    }
+
+    /* ---------- left: lesson summary ---------- */
+    .summary {
+      width: 300px;
+      flex: 0 0 300px;
+      padding: 34px 30px;
+      background: #f0efed;
+      border-right: 1px solid #ddd9d6;
+    }
+
+    .accent-line {
+      width: 36px;
+      height: 4px;
+      margin-bottom: 18px;
+      border-radius: 10px;
+      background: #78716c;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 24px;
+      line-height: 1.2;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+    }
+
+    .intro {
+      margin: 8px 0 22px;
+      color: #57534e;
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .lesson {
+      padding: 16px 0 4px;
+      border-top: 1px solid #d6d3d1;
+    }
+
+    .eyebrow {
+      display: block;
+      margin-bottom: 5px;
+      color: #78716c;
+      font-size: 11px;
+      line-height: 1.4;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+
+    .lesson-title {
+      display: block;
+      margin-bottom: 16px;
+      font-size: 17px;
+      line-height: 1.35;
+      font-weight: 700;
+    }
+
+    .meta-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 7px 0;
+      border-top: 1px dashed #ddd9d6;
+      font-size: 12.5px;
+      line-height: 1.4;
+    }
+
+    .meta-row dt {
+      margin: 0;
+      color: #78716c;
+    }
+
+    .meta-row dd {
+      margin: 0;
+      font-weight: 600;
+    }
+
+    dl {
+      margin: 0;
+    }
+
+    /* ---------- right: chooser ---------- */
+    .chooser {
+      flex: 1;
+      min-width: 0;
+      padding: 34px 32px 28px;
+    }
+
+    fieldset {
+      min-width: 0;
+      margin: 0;
+      padding: 0;
+      border: 0;
+    }
+
+    legend {
+      width: 100%;
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+      padding: 0;
+    }
+
+    .legend-text {
+      font-size: 15px;
+      line-height: 1.4;
+      font-weight: 700;
+    }
+
+    .manage-link {
+      padding: 4px 2px;
+      border: 0;
+      background: none;
+      color: #57534e;
+      font: inherit;
+      font-size: 12.5px;
+      font-weight: 700;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      cursor: pointer;
+    }
+
+    .location {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 8px;
+      padding: 11px 14px;
+      border: 1px solid #e7e5e4;
+      border-radius: 10px;
+      background: #ffffff;
+      cursor: pointer;
+    }
+
+    .location input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .radio {
+      width: 18px;
+      height: 18px;
+      flex: 0 0 18px;
+      display: grid;
+      place-items: center;
+      border: 1.5px solid #a8a29e;
+      border-radius: 50%;
+      background: #fafaf9;
+    }
+
+    .radio::after {
+      content: "";
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: transparent;
+    }
+
+    .location input:checked + .radio {
+      border-color: #78716c;
+    }
+
+    .location input:checked + .radio::after {
+      background: #78716c;
+    }
+
+    .location input:checked ~ .location-name {
+      color: #292524;
+    }
+
+    .location:has(input:checked) {
+      border-color: #a8a29e;
+      background: #f5f5f4;
+    }
+
+    .location-text {
+      min-width: 0;
+    }
+
+    .location-name {
+      display: block;
+      font-size: 14px;
+      line-height: 1.35;
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .location-sub {
+      display: block;
+      color: #78716c;
+      font-size: 11.5px;
+      line-height: 1.4;
+    }
+
+    .count {
+      margin-left: auto;
+      color: #57534e;
+      font-size: 12px;
+      line-height: 1.4;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .create-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+      margin-top: 12px;
+      padding: 11px 14px;
+      border: 1.5px dashed #c8c4c0;
+      border-radius: 10px;
+      background: #fafaf9;
+      color: #292524;
+      font: inherit;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .plus {
+      width: 22px;
+      height: 22px;
+      flex: 0 0 22px;
+      display: grid;
+      place-items: center;
+      border-radius: 6px;
+      background: #78716c;
+      color: #ffffff;
+      font-size: 15px;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .create-name {
+      display: block;
+      font-size: 14px;
+      line-height: 1.35;
+      font-weight: 700;
+    }
+
+    .create-sub {
+      display: block;
+      color: #78716c;
+      font-size: 11.5px;
+      line-height: 1.4;
+    }
+
+    .dialog-footer {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 22px;
+      padding-top: 18px;
+      border-top: 1px solid #e7e5e4;
+    }
+
+    .ghost-button {
+      padding: 10px 18px;
+      border: 1px solid #d6d3d1;
+      border-radius: 9px;
+      background: #ffffff;
+      color: #57534e;
+      font: inherit;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .save-button {
+      padding: 10px 22px;
+      border: 0;
+      border-radius: 9px;
+      background: #78716c;
+      color: #ffffff;
+      font: inherit;
+      font-size: 14px;
+      line-height: 1.4;
+      font-weight: 700;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <div class="dialog" role="dialog" aria-labelledby="save-title">
+      <aside class="summary">
+        <div class="accent-line" aria-hidden="true"></div>
+        <h1 id="save-title">Save this lesson</h1>
+        <p class="intro">Add it to a saved list so you can return to it later from any device.</p>
+
+        <div class="lesson">
+          <span class="eyebrow">Current lesson</span>
+          <span class="lesson-title">Talking About Weekend Plans</span>
+          <dl>
+            <div class="meta-row"><dt>Language</dt><dd>Spanish</dd></div>
+            <div class="meta-row"><dt>Level</dt><dd>B1 Intermediate</dd></div>
+            <div class="meta-row"><dt>Length</dt><dd>18 min</dd></div>
+            <div class="meta-row"><dt>Tutor</dt><dd>Elena Rivas</dd></div>
+          </dl>
+        </div>
+      </aside>
+
+      <section class="chooser">
+        <form>
+          <fieldset>
+            <legend>
+              <span class="legend-text">Choose a saved list</span>
+              <button class="manage-link" type="button">Manage lists</button>
+            </legend>
+
+            <label class="location">
+              <input type="radio" name="save-location" checked>
+              <span class="radio" aria-hidden="true"></span>
+              <span class="location-text">
+                <span class="location-name">Spanish practice</span>
+                <span class="location-sub">Updated 2 days ago</span>
+              </span>
+              <span class="count">12 lessons</span>
+            </label>
+
+            <label class="location">
+              <input type="radio" name="save-location">
+              <span class="radio" aria-hidden="true"></span>
+              <span class="location-text">
+                <span class="location-name">Review this week</span>
+                <span class="location-sub">Updated yesterday</span>
+              </span>
+              <span class="count">5 lessons</span>
+            </label>
+
+            <label class="location">
+              <input type="radio" name="save-location">
+              <span class="radio" aria-hidden="true"></span>
+              <span class="location-text">
+                <span class="location-name">Conversation skills</span>
+                <span class="location-sub">Updated last week</span>
+              </span>
+              <span class="count">8 lessons</span>
+            </label>
+
+            <label class="location">
+              <input type="radio" name="save-location">
+              <span class="radio" aria-hidden="true"></span>
+              <span class="location-text">
+                <span class="location-name">Listening warm-ups</span>
+                <span class="location-sub">Updated 3 weeks ago</span>
+              </span>
+              <span class="count">4 lessons</span>
+            </label>
+
+            <button class="create-row" type="button">
+              <span class="plus" aria-hidden="true">+</span>
+              <span>
+                <span class="create-name">Create a new list</span>
+                <span class="create-sub">Name it, then save this lesson into it</span>
+              </span>
+            </button>
+          </fieldset>
+
+          <div class="dialog-footer">
+            <button class="ghost-button" type="button">Cancel</button>
+            <button class="save-button" type="button">Save to Spanish practice</button>
+          </div>
+        </form>
+      </section>
+    </div>
+  </div>
+</body>
+</html>

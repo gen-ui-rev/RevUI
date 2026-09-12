@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Event Details — Verba Path</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 32px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #e4e1dc;
+      color: #26231f;
+      font-family: 'Source Sans 3', system-ui, sans-serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #fcfbf8;
+      border: 1px solid #d7d2ca;
+    }
+
+    .topbar {
+      flex: 0 0 56px;
+      display: grid;
+      grid-template-columns: 48px 1fr 48px;
+      align-items: center;
+      padding: 0 8px;
+      border-bottom: 1px solid #ddd8d0;
+    }
+
+    .topbar-title {
+      text-align: center;
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .icon-button {
+      width: 40px;
+      height: 40px;
+      padding: 0;
+      display: grid;
+      place-items: center;
+      color: #4f4a43;
+      background: transparent;
+      border: 0;
+    }
+
+    .icon-button:last-child {
+      justify-self: end;
+    }
+
+    .icon-button svg,
+    .detail-icon svg,
+    .tab svg {
+      display: block;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.7;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    main {
+      flex: 1 1 auto;
+      padding: 0 20px;
+    }
+
+    .hero {
+      padding: 12px 0 8px;
+      border-bottom: 1px solid #ddd8d0;
+    }
+
+    .eyebrow {
+      margin: 0 0 5px;
+      color: #726b61;
+      font-size: 12px;
+      line-height: 15px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    h1,
+    h2 {
+      margin: 0;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 600;
+    }
+
+    h1 {
+      max-width: 330px;
+      font-size: 30px;
+      line-height: 1.08;
+      letter-spacing: -0.02em;
+    }
+
+    .host {
+      margin: 5px 0 0;
+      color: #69635b;
+      font-size: 14px;
+      line-height: 18px;
+    }
+
+    .event-art {
+      width: 100%;
+      height: 66px;
+      margin-top: 8px;
+      display: block;
+      color: #726b61;
+    }
+
+    .event-art .soft {
+      fill: #efede8;
+      stroke: none;
+    }
+
+    .event-art .line {
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.7;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .details {
+      padding-bottom: 6px;
+      border-bottom: 1px solid #ddd8d0;
+    }
+
+    .detail-group {
+      padding: 7px 0;
+    }
+
+    .detail-group + .detail-group {
+      border-top: 1px solid #e8e4dd;
+    }
+
+    .group-label {
+      margin: 0 0 5px;
+      color: #7a746c;
+      font-size: 11px;
+      line-height: 14px;
+      font-weight: 600;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+    }
+
+    .detail-row {
+      display: grid;
+      grid-template-columns: 26px 1fr;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 0;
+    }
+
+    .detail-icon {
+      color: #726b61;
+    }
+
+    .detail-icon svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .detail-value {
+      font-size: 14px;
+      line-height: 18px;
+      font-weight: 600;
+    }
+
+    .detail-value span {
+      color: #6b6view;
+    }
+
+    .about {
+      padding: 10px 0 9px;
+      border-bottom: 1px solid #ddd8d0;
+    }
+
+    h2 {
+      font-size: 20px;
+      line-height: 24px;
+    }
+
+    .about p {
+      margin: 5px 0 0;
+      color: #5f5a53;
+      font-size: 14px;
+      line-height: 19px;
+    }
+
+    .agenda {
+      padding-top: 10px;
+      border-bottom: 1px solid #ddd8d0;
+    }
+
+    .agenda h2 {
+      margin-bottom: 5px;
+    }
+
+    .agenda-row {
+      min-height: 34px;
+      display: grid;
+      grid-template-columns: 74px 1fr;
+      align-items: center;
+      border-top: 1px solid #e8e4dd;
+      font-size: 14px;
+      line-height: 18px;
+    }
+
+    .agenda-time {
+      color: #726b61;
+      font-weight: 600;
+    }
+
+    .agenda-title {
+      color: #3c3833;
+    }
+
+    .attendance {
+      min-height: 42px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 1px solid #ddd8d0;
+    }
+
+    .people {
+      display: flex;
+      width: 63px;
+      flex: 0 0 63px;
+    }
+
+    .person {
+      width: 25px;
+      height: 25px;
+      margin-right: -6px;
+      display: grid;
+      place-items: center;
+      color: #726b61;
+      background: #f1efea;
+      border: 1px solid #fcfbf8;
+      border-radius: 50%;
+    }
+
+    .person svg {
+      width: 15px;
+      height: 15px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .attendance-text {
+      font-size: 14px;
+      line-height: 18px;
+      color: #5f5a53;
+    }
+
+    .attendance-text strong {
+      color: #302d29;
+      font-weight: 600;
+    }
+
+    .action {
+      padding-top: 10px;
+      text-align: center;
+    }
+
+    .primary-button {
+      width: 100%;
+      height: 44px;
+      border: 1px solid #726b61;
+      border-radius: 4px;
+      background: #726b61;
+      color: #ffffff;
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .seat-note {
+      margin: 4px 0 0;
+      color: #6e685f;
+      font-size: 12px;
+      line-height: 15px;
+    }
+
+    .tabbar {
+      flex: 0 0 68px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border-top: 1px solid #d7d2ca;
+      background: #fcfbf8;
+    }
+
+    .tab {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      color: #777168;
+      font-size: 12px;
+      line-height: 14px;
+    }
+
+    .tab svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .tab.active {
+      color: #625b52;
+      font-weight: 600;
+    }
+
+    .tab.active::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 31px;
+      right: 31px;
+      height: 3px;
+      background: #726b61;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <button class="icon-button" type="button" aria-label="Go back">
+        <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M15 5 8 12l7 7"></path>
+        </svg>
+      </button>
+      <div class="topbar-title">Event details</div>
+      <button class="icon-button" type="button" aria-label="Share event">
+        <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="18" cy="5" r="2.5"></circle>
+          <circle cx="6" cy="12" r="2.5"></circle>
+          <circle cx="18" cy="19" r="2.5"></circle>
+          <path d="m8.2 10.8 7.6-4.5M8.2 13.2l7.6 4.5"></path>
+        </svg>
+      </button>
+    </header>
+
+    <main>
+      <section class="hero" aria-labelledby="event-title">
+        <p class="eyebrow">Live speaking workshop</p>
+        <h1 id="event-title">Speaking with Confidence: Travel Edition</h1>
+        <p class="host">Hosted by Nora Vale · Intermediate level</p>
+
+        <svg class="event-art" viewBox="0 0 350 70" role="img" aria-label="Line illustration of an online language discussion">
+          <path class="soft" d="M17 54c20-23 45-30 70-20 18 7 29 1 45-10 21-14 50-11 67 3 18 15 34 14 53 4 25-13 55-5 80 23H17Z"></path>
+          <path class="line" d="M106 54V30c0-5 4-9 9-9h120c5 0 9 4 9 9v24"></path>
+          <path class="line" d="M96 54h158"></path>
+          <circle class="line" cx="151" cy="37" r="7"></circle>
+          <path class="line" d="M139 52c1-7 6-11 12-11s11 4 12 11"></path>
+          <circle class="line" cx="202" cy="37" r="7"></circle>
+          <path class="line" d="M190 52c1-7 6-11 12-11s11 4 12 11"></path>
+          <path class="line" d="M55 49V35m0 0-8 6m8-6 8 6"></path>
+          <path class="line" d="M294 49V35m0 0-8 6m8-6 8 6"></path>
+          <path class="line" d="M169 28c4-4 9-4 13 0"></path>
+        </svg>
+      </section>
+
+      <section class="details" aria-label="Event information">
+        <div class="detail-group" aria-labelledby="group-when">
+          <p class="group-label" id="group-when">When</p>
+          <div class="detail-row">
+            <div class="detail-icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <rect x="3.5" y="5.5" width="17" height="15" rx="1"></rect>
+                <path d="M7.5 3.5v4M16.5 3.5v4M3.5 9.5h17"></path>
+              </svg>
+            </div>
+            <div class="detail-value">Thursday, October 16 · 6:30–7:45 PM</div>
+          </div>
+        </div>
+
+        <div class="detail-group" aria-labelledby="group-where">
+          <p class="group-label" id="group-where">Where and how</p>
+          <div class="detail-row">
+            <div class="detail-icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 21s6-5.6 6-11a6 6 0 1 0-12 0c0 5.4 6 11 6 11Z"></path>
+                <circle cx="12" cy="10" r="2.2"></circle>
+              </svg>
+            </div>
+            <div class="detail-value">Live online · join link opens 6:20 PM</div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M7 4.5h10a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-5l-4.5 3v-3H7a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2Z"></path>
+                <path d="M8.5 9h7M8.5 12h5"></path>
+              </svg>
+            </div>
+            <div class="detail-value">Guided practice in groups of four</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="about" aria-labelledby="about-title">
+        <h2 id="about-title">What you will practice</h2>
+        <p>Use clear, natural phrases for checking in, asking for help, and handling common travel mix-ups.</p>
+      </section>
+
+      <section class="agenda" aria-labelledby="agenda-title">
+        <h2 id="agenda-title">Session plan</h2>
+        <div class="agenda-row">
+          <div class="agenda-time">6:30 PM</div>
+          <div class="agenda-title">Warm-up and useful phrases</div>
+        </div>
+        <div class="agenda-row">
+          <div class="agenda-time">6:45 PM</div>
+          <div class="agenda-title">Partner role-play rounds</div>
+        </div>
+        <div class="agenda-row">
+          <div class="agenda-time">7:20 PM</div>
+          <div class="agenda-title">Feedback and open questions</div>
+        </div>
+      </section>
+
+      <section class="attendance" aria-label="Attendance">
+        <div class="people" aria-hidden="true">
+          <span class="person">
+            <svg viewBox="0 0 16 16">
+              <circle cx="8" cy="5" r="2.4"></circle>
+              <path d="M3.7 13c.3-3 2-4.5 4.3-4.5s4 1.5 4.3 4.5"></path>
+            </svg>
+          </span>
+          <span class="person">
+            <svg viewBox="0 0 16 16">
+              <circle cx="8" cy="5" r="2.4"></circle>
+              <path d="M3.7 13c.3-3 2-4.5 4.3-4.5s4 1.5 4.3 4.5"></path>
+            </svg>
+          </span>
+          <span class="person">
+            <svg viewBox="0 0 16 16">
+              <circle cx="8" cy="5" r="2.4"></circle>
+              <path d="M3.7 13c.3-3 2-4.5 4.3-4.5s4 1.5 4.3 4.5"></path>
+            </svg>
+          </span>
+        </div>
+        <div class="attendance-text"><strong>Mara Bell, Owen Reed</strong>, and 40 others are attending</div>
+      </section>
+
+      <section class="action" aria-label="Reservation">
+        <button class="primary-button" type="button">Reserve my spot</button>
+        <p class="seat-note">Free · 12 seats remaining</p>
+      </section>
+    </main>
+
+    <nav class="tabbar" aria-label="Primary navigation">
+      <div class="tab">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M4 5.5c3.5-.8 6.2-.1 8 2v11c-1.8-2.1-4.5-2.8-8-2V5.5Z"></path>
+          <path d="M20 5.5c-3.5-.8-6.2-.1-8 2v11c1.8-2.1 4.5-2.8 8-2V5.5Z"></path>
+        </svg>
+        <span>Learn</span>
+      </div>
+      <div class="tab">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M6 5h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-6l-4 3v-3H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Z"></path>
+          <path d="M8 9h8M8 12h5"></path>
+        </svg>
+        <span>Practice</span>
+      </div>
+      <div class="tab active" aria-current="page">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <rect x="3.5" y="5.5" width="17" height="15" rx="1"></rect>
+          <path d="M7.5 3.5v4M16.5 3.5v4M3.5 9.5h17M8 13h3M13 13h3M8 17h3"></path>
+        </svg>
+        <span>Events</span>
+      </div>
+      <div class="tab">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="8" r="3.5"></circle>
+          <path d="M5.5 20c.5-4.5 2.9-6.8 6.5-6.8s6 2.3 6.5 6.8"></path>
+        </svg>
+        <span>Profile</span>
+      </div>
+    </nav>
+  </div>
+</body>
+</html>

@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Curbly — Pickup Map</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body {
+    min-height: 100vh; display: flex; justify-content: center; align-items: flex-start;
+    padding: 40px 0; margin: 0; background: #4a4f57;
+    font-family: 'Inter', system-ui, sans-serif; -webkit-font-smoothing: antialiased;
+  }
+  .screen {
+    width: 1024px; height: 768px; position: relative; overflow: hidden;
+    background: #f1f2f4; color: #14181f; display: flex; flex-direction: column;
+    box-shadow: 0 18px 48px rgba(8,12,20,.35);
+  }
+
+  /* ---------- top bar ---------- */
+  .topbar { background: #ffffff; border-bottom: 1px solid #e4e6ea; padding: 14px 24px 12px; }
+  .trow { display: flex; align-items: center; gap: 16px; }
+  .brand { font-size: 17px; font-weight: 700; letter-spacing: -.01em; }
+  .brand em { font-style: normal; color: #1f6feb; }
+  .searchbox {
+    width: 340px; height: 38px; background: #f1f2f4; border-radius: 10px;
+    display: flex; align-items: center; gap: 8px; padding: 0 12px;
+  }
+  .searchbox span { font-size: 13.5px; color: #3d434c; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .filterbtn {
+    height: 38px; padding: 0 14px; border: 1px solid #d8dbe1; border-radius: 10px;
+    display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: #14181f;
+    position: relative; cursor: pointer;
+  }
+  .fdot { position: absolute; top: 6px; right: 6px; width: 6px; height: 6px; border-radius: 50%; background: #1f6feb; }
+  .grow { flex: 1 1 auto; }
+  .user { display: flex; align-items: center; gap: 9px; font-size: 13px; font-weight: 600; color: #3d434c; }
+  .avatar {
+    width: 30px; height: 30px; border-radius: 50%; background: #eaf1fe; color: #1f6feb;
+    display: flex; align-items: center; justify-content: center; font-size: 11.5px; font-weight: 700;
+  }
+  .chips { display: flex; gap: 8px; margin-top: 11px; align-items: center; }
+  .chip {
+    height: 28px; padding: 0 12px; border-radius: 999px; border: 1px solid #d8dbe1;
+    display: flex; align-items: center; font-size: 12.5px; font-weight: 500; color: #3d434c; cursor: pointer;
+  }
+  .chip.on { background: #eaf1fe; border-color: #bfd6fb; color: #1f6feb; }
+  .clear { margin-left: auto; font-size: 12.5px; font-weight: 600; color: #1f6feb; cursor: pointer; }
+
+  /* ---------- body ---------- */
+  .body { flex: 1 1 auto; display: flex; min-height: 0; }
+
+  /* sidebar */
+  .sidebar {
+    flex: 0 0 204px; width: 204px; background: #ffffff; border-right: 1px solid #e4e6ea;
+    padding: 16px 12px;
+  }
+  .navitem {
+    display: flex; align-items: center; gap: 10px; height: 40px; padding: 0 12px;
+    border-radius: 10px; font-size: 14px; font-weight: 500; color: #3d434c; cursor: pointer;
+  }
+  .navitem.active { background: #eaf1fe; color: #1f6feb; font-weight: 600; }
+  .badge {
+    margin-left: auto; background: #1f6feb; color: #fff; font-size: 11px; font-weight: 700;
+    border-radius: 999px; padding: 1px 7px;
+  }
+  .sectitle {
+    font-size: 10.5px; font-weight: 700; letter-spacing: .09em; text-transform: uppercase;
+    color: #9aa1ac; margin: 22px 12px 8px;
+  }
+  .savedrow { padding: 7px 12px; cursor: pointer; }
+  .savedrow b { display: block; font-size: 13px; font-weight: 600; color: #14181f; }
+  .savedrow small { font-size: 11.5px; color: #8a919c; }
+
+  /* map */
+  .map { flex: 1 1 auto; position: relative; background: #e6e8ec; overflow: hidden; }
+  .road { position: absolute; background: #fbfbfc; }
+  .h1r { left: 0; right: 0; height: 16px; }
+  .v1r { top: 0; bottom: 0; width: 16px; }
+  .block { position: absolute; background: #dfe2e7; border-radius: 10px; }
+  .roadlabel { position: absolute; font-size: 12px; font-weight: 500; color: #9aa1ac; letter-spacing: .02em; }
+
+  .pin {
+    position: absolute; background: #ffffff; border: 1px solid #e0e3e8; border-radius: 10px;
+    padding: 4px 9px; font-size: 12px; font-weight: 600; color: #14181f;
+    box-shadow: 0 2px 8px rgba(16,24,40,.10); white-space: nowrap; cursor: pointer;
+  }
+  .pin.sel {
+    background: #1f6feb; border-color: #1f6feb; color: #ffffff;
+    padding: 6px 12px; font-size: 14px; font-weight: 700;
+  }
+  .pin.sel::after {
+    content: ""; position: absolute; left: 50%; bottom: -4px; width: 10px; height: 10px;
+    background: #1f6feb; transform: translateX(-50%) rotate(45deg); border-radius: 2px;
+  }
+  .me { position: absolute; width: 14px; height: 14px; border-radius: 50%; background: #1f6feb; border: 3px solid #fff; box-shadow: 0 0 0 6px rgba(31,111,235,.16); }
+
+  .countpill {
+    position: absolute; top: 16px; left: 16px; background: #ffffff; border-radius: 10px;
+    padding: 8px 12px; font-size: 12.5px; font-weight: 600; color: #14181f;
+    box-shadow: 0 2px 8px rgba(16,24,40,.10);
+  }
+  .countpill em { font-style: normal; color: #1f6feb; }
+  .ctrl {
+    position: absolute; right: 16px; background: #ffffff; border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(16,24,40,.10); overflow: hidden;
+  }
+  .ctrl.zoom { top: 16px; width: 36px; }
+  .ctrl.loc { top: 108px; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; }
+  .ctrlbtn {
+    width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;
+    font-size: 17px; font-weight: 600; color: #3d434c; cursor: pointer;
+  }
+  .ctrlbtn + .ctrlbtn { border-top: 1px solid #eceef1; }
+  .scale {
+    position: absolute; left: 16px; bottom: 14px; font-size: 11px; color: #8a919c; font-weight: 500;
+  }
+
+  /* detail panel */
+  .panel {
+    flex: 0 0 336px; width: 336px; background: #ffffff; border-left: 1px solid #e4e6ea;
+    padding: 20px; overflow: hidden;
+  }
+  .plabel { font-size: 10.5px; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; color: #9aa1ac; }
+  .cardhead { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-top: 10px; }
+  .item { font-size: 17px; font-weight: 600; line-height: 1.3; }
+  .price { font-size: 20px; font-weight: 700; white-space: nowrap; }
+  .seller { margin-top: 7px; font-size: 13px; color: #6b727d; }
+  .meta {
+    margin-top: 14px; padding-top: 14px; border-top: 1px solid #eceef1;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 14px 18px;
+  }
+  .k { font-size: 11.5px; color: #8a919c; }
+  .v { font-size: 13.5px; font-weight: 600; margin-top: 3px; }
+  .v.blue { color: #1f6feb; }
+  .actions { display: flex; gap: 8px; margin-top: 18px; }
+  .btn {
+    height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center;
+    font-size: 13.5px; font-weight: 600; cursor: pointer;
+  }
+  .primary { flex: 1 1 auto; background: #1f6feb; color: #ffffff; }
+  .ghost { flex: 0 0 104px; border: 1px solid #d8dbe1; color: #14181f; }
+  .iconbtn { flex: 0 0 40px; border: 1px solid #d8dbe1; }
+  .nearby { margin-top: 20px; padding-top: 16px; border-top: 1px solid #eceef1; }
+  .nrow { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding: 8px 0; cursor: pointer; }
+  .nrow b { font-size: 13px; font-weight: 600; }
+  .nrow small { display: block; font-size: 11.5px; color: #8a919c; margin-top: 2px; }
+  .nrow i { font-style: normal; font-size: 13.5px; font-weight: 700; }
+  .foot { margin-top: 14px; font-size: 11.5px; color: #9aa1ac; }
+</style>
+</head>
+<body>
+<div class="screen">
+
+  <!-- top bar -->
+  <div class="topbar">
+    <div class="trow">
+      <div class="brand">Curb<em>ly</em></div>
+      <div class="searchbox">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8a919c" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+        <span>Aeron office chair, used</span>
+      </div>
+      <div class="filterbtn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#14181f" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M7 12h10M10 17h4"/></svg>
+        Filters
+        <i class="fdot"></i>
+      </div>
+      <div class="grow"></div>
+      <div class="user">
+        <div class="avatar">JR</div>
+        Jamie Reyes
+      </div>
+    </div>
+    <div class="chips">
+      <div class="chip on">Local pickup</div>
+      <div class="chip">Under $500</div>
+      <div class="chip">Within 5 mi</div>
+      <div class="chip">Rated 4.5+</div>
+      <div class="clear">Clear all</div>
+    </div>
+  </div>
+
+  <div class="body">
+
+    <!-- sidebar -->
+    <div class="sidebar">
+      <div class="navitem">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5L12 4l8 6.5V20H4z"/></svg>
+        Browse
+      </div>
+      <div class="navitem active">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4l6 2 5-2v14l-5 2-6-2-5 2V6z"/><path d="M9 4v14M15 6v14"/></svg>
+        Pickup map
+      </div>
+      <div class="navitem">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7-4.4-7-9.4A4.1 4.1 0 0112 8a4.1 4.1 0 017 2.6c0 5-7 9.4-7 9.4z"/></svg>
+        Saved
+      </div>
+      <div class="navitem">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16v11H9l-5 3z"/></svg>
+        Messages
+        <span class="badge">2</span>
+      </div>
+      <div class="navitem">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8.5" r="3.5"/><path d="M5 20c1.5-3.4 4-5 7-5s5.5 1.6 7 5"/></svg>
+        Account
+      </div>
+
+      <div class="sectitle">Saved searches</div>
+      <div class="savedrow"><b>Aeron chairs</b><small>Cedar Heights · 24 offers</small></div>
+      <div class="savedrow"><b>Standing desks</b><small>Within 10 mi · 9 offers</small></div>
+      <div class="savedrow"><b>Filing cabinets</b><small>Within 5 mi · 3 offers</small></div>
+    </div>
+
+    <!-- map -->
+    <div class="map">
+      <div class="block" style="left:30px; top:72px; width:150px; height:150px;"></div>
+      <div class="block" style="left:250px; top:56px; width:190px; height:126px;"></div>
+      <div class="block" style="left:44px; top:336px; width:130px; height:180px;"></div>
+      <div class="block" style="left:266px; top:356px; width:174px; height:206px;"></div>
+
+      <div class="road h1r" style="top:44px;"></div>
+      <div class="road h1r" style="top:250px; height:22px;"></div>
+      <div class="road h1r" style="top:568px;"></div>
+      <div class="road v1r" style="left:194px;"></div>
+      <div class="road v1r" style="left:30px; width:12px;"></div>
+      <div class="road v1r" style="left:444px; width:20px;"></div>
+
+      <div class="roadlabel" style="left:64px; top:254px;">Marlow Ave</div>
+      <div class="roadlabel" style="left:230px; top:574px;">9th St</div>
+
+      <div class="countpill"><em>24 offers</em> within 5 mi</div>
+
+      <div class="ctrl zoom">
+        <div class="ctrlbtn">+</div>
+        <div class="ctrlbtn">−</div>
+      </div>
+      <div class="ctrl loc">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1f6feb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.5"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/></svg>
+      </div>
+
+      <div class="pin" style="left:44px; top:112px;">$355</div>
+      <div class="pin" style="left:296px; top:88px;">$470</div>
+      <div class="pin" style="left:212px; top:204px;">$240</div>
+      <div class="pin" style="left:58px; top:404px;">$499</div>
+      <div class="pin" style="left:352px; top:452px;">$340</div>
+      <div class="pin sel" style="left:170px; top:302px;">$420</div>
+      <div class="me" style="left:302px; top:258px;"></div>
+
+      <div class="scale">1,000 ft — Cedar Heights, pins show asking price</div>
+    </div>
+
+    <!-- detail panel -->
+    <div class="panel">
+      <div class="plabel">Selected pin</div>
+      <div class="cardhead">
+        <div class="item">Aeron Remastered, size B</div>
+        <div class="price">$420</div>
+      </div>
+      <div class="seller">Dana Whitfield · 4.9 rating · 132 pickups</div>
+      <div class="meta">
+        <div>
+          <div class="k">Distance</div>
+          <div class="v">0.8 mi · Cedar Heights</div>
+        </div>
+        <div>
+          <div class="k">Pickup window</div>
+          <div class="v blue">Today, 5–8 PM</div>
+        </div>
+        <div>
+          <div class="k">Condition</div>
+          <div class="v">Excellent</div>
+        </div>
+        <div>
+          <div class="k">Listed</div>
+          <div class="v">2 days ago</div>
+        </div>
+      </div>
+      <div class="actions">
+        <div class="btn primary">Reserve pickup</div>
+        <div class="btn ghost">Message</div>
+        <div class="btn iconbtn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3d434c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7-4.4-7-9.4A4.1 4.1 0 0112 8a4.1 4.1 0 017 2.6c0 5-7 9.4-7 9.4z"/></svg>
+        </div>
+      </div>
+      <div class="nearby">
+        <div class="plabel">Other offers nearby</div>
+        <div class="nrow"><span><b>Aeron Classic, size C</b><small>Marco Vela · 1.4 mi</small></span><i>$355</i></div>
+        <div class="nrow"><span><b>Steelcase Leap V2</b><small>Priya Raman · 2.1 mi</small></span><i>$470</i></div>
+        <div class="nrow"><span><b>Herman Miller Sayl</b><small>Owen Brooks · 3.6 mi</small></span><i>$240</i></div>
+      </div>
+      <div class="foot">Showing pin 1 of 24 — pan the map to see more</div>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>

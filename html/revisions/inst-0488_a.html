@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lattice Cart Assistant</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #e8e5e7;
+      color: #29252a;
+      font-family: 'Roboto', system-ui, sans-serif;
+    }
+
+    button, input { font: inherit; }
+    button { color: inherit; }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #fcfafb;
+    }
+
+    .top-bar {
+      flex: none;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 14px;
+      background: #795570;
+    }
+
+    .icon-button {
+      width: 36px;
+      height: 36px;
+      flex: none;
+      display: grid;
+      place-items: center;
+      padding: 0;
+      border: 0;
+      border-radius: 4px;
+      background: #eadde7;
+      color: #694961;
+    }
+
+    .icon-button svg {
+      width: 21px;
+      height: 21px;
+      stroke: currentColor;
+    }
+
+    .assistant-mark {
+      width: 36px;
+      height: 36px;
+      flex: none;
+      display: grid;
+      place-items: center;
+      border-radius: 4px;
+      background: rgba(255,255,255,.18);
+      color: #ffffff;
+    }
+
+    .assistant-mark svg {
+      width: 20px;
+      height: 20px;
+      stroke: currentColor;
+    }
+
+    .top-copy {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .top-title {
+      margin: 0;
+      overflow: hidden;
+      color: #ffffff;
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 19px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .top-subtitle {
+      margin: 2px 0 0;
+      color: #eadde7;
+      font-size: 12px;
+      line-height: 14px;
+    }
+
+    .conversation {
+      flex: 1;
+      min-height: 0;
+      padding: 10px 14px 8px;
+      background: #fcfafb;
+    }
+
+    .date-label {
+      margin: 0 0 8px;
+      color: #8a8187;
+      font-size: 12px;
+      line-height: 14px;
+      text-align: center;
+    }
+
+    .assistant-identity {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .mini-mark {
+      width: 30px;
+      height: 30px;
+      flex: none;
+      display: grid;
+      place-items: center;
+      border-radius: 4px;
+      background: rgba(143,102,136,.14);
+      color: #795570;
+    }
+
+    .mini-mark svg {
+      width: 17px;
+      height: 17px;
+      stroke: currentColor;
+    }
+
+    .identity-name {
+      margin: 0;
+      color: #3c343a;
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 17px;
+    }
+
+    .identity-detail {
+      margin: 1px 0 0;
+      color: #81777e;
+      font-size: 12px;
+      line-height: 14px;
+    }
+
+    .user-row {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 8px;
+    }
+
+    .user-message {
+      max-width: 292px;
+      margin: 0;
+      padding: 8px 10px;
+      border-radius: 4px;
+      background: #8f6688;
+      color: #ffffff;
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .assistant-message {
+      margin: 0 0 10px 38px;
+      color: #423b40;
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .results-heading {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0 0 8px 38px;
+    }
+
+    .results-heading h2 {
+      margin: 0;
+      color: #5b4c56;
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 18px;
+    }
+
+    .heading-rule {
+      height: 1px;
+      flex: 1;
+      background: #ded3db;
+    }
+
+    .result-count {
+      flex: none;
+      padding: 2px 6px;
+      border-radius: 10px;
+      background: #eee5ec;
+      color: #795570;
+      font-size: 11px;
+      font-weight: 700;
+      line-height: 14px;
+    }
+
+    .product-list {
+      display: grid;
+      gap: 6px;
+      margin-left: 38px;
+    }
+
+    .product-row {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 6px;
+      border-radius: 4px;
+      background: rgba(143,102,136,.10);
+    }
+
+    .product-row img {
+      width: 58px;
+      height: 58px;
+      flex: none;
+      display: block;
+      object-fit: cover;
+      border-radius: 4px;
+      background: #d9d2d7;
+    }
+
+    .product-info {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .product-name {
+      margin: 0;
+      overflow: hidden;
+      color: #302a2e;
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 18px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .product-detail {
+      margin: 1px 0 0;
+      overflow: hidden;
+      color: #766c73;
+      font-size: 12px;
+      line-height: 15px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .product-price {
+      margin: 3px 0 0;
+      color: #6f4c68;
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 17px;
+    }
+
+    .product-chevron {
+      width: 18px;
+      height: 18px;
+      flex: none;
+      stroke: #8a7b84;
+    }
+
+    .assistant-note {
+      margin: 8px 0 8px 38px;
+      padding: 7px 9px;
+      border-radius: 4px;
+      background: rgba(143,102,136,.10);
+      color: #4d444a;
+      font-size: 13px;
+      line-height: 18px;
+    }
+
+    .suggestion-heading {
+      margin: 0 0 6px 38px;
+      color: #71666d;
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 15px;
+    }
+
+    .suggestions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      margin-left: 38px;
+    }
+
+    .suggestion {
+      min-width: 0;
+      padding: 6px 8px;
+      border: 0;
+      border-radius: 4px;
+      background: rgba(143,102,136,.14);
+      color: #5f4058;
+      font-size: 13px;
+      font-weight: 500;
+      line-height: 16px;
+      text-align: left;
+    }
+
+    .composer {
+      flex: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      background: #ffffff;
+    }
+
+    .message-field {
+      min-width: 0;
+      height: 42px;
+      flex: 1;
+      padding: 0 12px;
+      border: 0;
+      border-radius: 4px;
+      background: #f2edf1;
+      color: #393238;
+      font-size: 14px;
+    }
+
+    .message-field::placeholder {
+      color: #827880;
+      opacity: 1;
+    }
+
+    .send-button {
+      width: 42px;
+      height: 42px;
+      flex: none;
+      display: grid;
+      place-items: center;
+      padding: 0;
+      border: 0;
+      border-radius: 4px;
+      background: #8f6688;
+      color: #ffffff;
+    }
+
+    .send-button svg {
+      width: 20px;
+      height: 20px;
+      stroke: currentColor;
+    }
+
+    .tab-bar {
+      flex: none;
+      display: grid;
+      grid-template-columns: repeat(5,1fr);
+      padding: 7px 4px 8px;
+      background: #f4f0f3;
+    }
+
+    .tab {
+      display: flex;
+      min-width: 0;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      padding: 3px 1px;
+      border: 0;
+      background: transparent;
+      color: #766d73;
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 14px;
+    }
+
+    .tab svg {
+      width: 21px;
+      height: 21px;
+      stroke: currentColor;
+    }
+
+    .tab.active { color: #795570; }
+    .tab.active svg { fill: rgba(143,102,136,.16); }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="top-bar">
+      <button class="icon-button" type="button" aria-label="Go back">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M15 18l-6-6 6-6"></path>
+        </svg>
+      </button>
+
+      <div class="assistant-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 3l1.5 4.2L18 9l-4.5 1.8L12 15l-1.5-4.2L6 9l4.5-1.8L12 3z"></path>
+          <path d="M18.5 15l.8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8.8-2.2z"></path>
+        </svg>
+      </div>
+
+      <div class="top-copy">
+        <h1 class="top-title">Lattice Cart Assistant</h1>
+        <p class="top-subtitle">AI product guide</p>
+      </div>
+
+      <button class="icon-button" type="button" aria-label="Conversation options">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+          <circle cx="5" cy="12" r="1"></circle>
+          <circle cx="12" cy="12" r="1"></circle>
+          <circle cx="19" cy="12" r="1"></circle>
+        </svg>
+      </button>
+    </header>
+
+    <main class="conversation">
+      <p class="date-label">Today</p>
+
+      <div class="assistant-identity">
+        <div class="mini-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 3l1.5 4.2L18 9l-4.5 1.8L12 15l-1.5-4.2L6 9l4.5-1.8L12 3z"></path>
+          </svg>
+        </div>
+        <div>
+          <p class="identity-name">Shopping Assistant</p>
+          <p class="identity-detail">Recommendations use current catalog data</p>
+        </div>
+      </div>
+
+      <div class="user-row">
+        <p class="user-message">Find a compact desk chair under $300 with strong lower-back support.</p>
+      </div>
+
+      <p class="assistant-message">I found four compact chairs under budget, each with adjustable lumbar support.</p>
+
+      <section aria-labelledby="best-matches-a">
+        <div class="results-heading">
+          <h2 id="best-matches-a">Best matches</h2>
+          <span class="heading-rule" aria-hidden="true"></span>
+          <span class="result-count">4 results</span>
+        </div>
+
+        <div class="product-list">
+          <article class="product-row">
+            <img src="https://loremflickr.com/58/58/furniture?lock=6650" width="58" height="58" alt="Compact gray ergonomic desk chair">
+            <div class="product-info">
+              <h3 class="product-name">Cove Adjustable Task Chair</h3>
+              <p class="product-detail">24 in wide · Mesh back · 4.7 rating</p>
+              <p class="product-price">$249.00</p>
+            </div>
+            <svg class="product-chevron" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M9 6l6 6-6 6"></path>
+            </svg>
+          </article>
+
+          <article class="product-row">
+            <img src="https://loremflickr.com/58/58/furniture?lock=6651" width="58" height="58" alt="Black mesh office chair with lumbar support">
+            <div class="product-info">
+              <h3 class="product-name">Marlow Mesh Work Chair</h3>
+              <p class="product-detail">25 in wide · Tilt lock · 4.6 rating</p>
+              <p class="product-price">$219.50</p>
+            </div>
+            <svg class="product-chevron" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M9 6l6 6-6 6"></path>
+            </svg>
+          </article>
+
+          <article class="product-row">
+            <img src="https://loremflickr.com/58/58/furniture?lock=6652" width="58" height="58" alt="Upholstered compact office chair">
+            <div class="product-info">
+              <h3 class="product-name">Alder Support Desk Chair</h3>
+              <p class="product-detail">23 in wide · Firm cushion · 4.5 rating</p>
+              <p class="product-price">$279.00</p>
+            </div>
+            <svg class="product-chevron" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M9 6l6 6-6 6"></path>
+            </svg>
+          </article>
+
+          <article class="product-row">
+            <img src="https://loremflickr.com/58/58/furniture?lock=6653" width="58" height="58" alt="Minimal white and gray task chair">
+            <div class="product-info">
+              <h3 class="product-name">Northline Slim Task Chair</h3>
+              <p class="product-detail">22 in wide · Adjustable arms · 4.4 rating</p>
+              <p class="product-price">$198.00</p>
+            </div>
+            <svg class="product-chevron" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M9 6l6 6-6 6"></path>
+            </svg>
+          </article>
+        </div>
+      </section>
+
+      <p class="assistant-note"><strong>Best overall:</strong> Cove has the strongest adjustment. Northline is the narrowest choice.</p>
+
+      <p class="suggestion-heading">Continue with a suggestion</p>
+      <div class="suggestions">
+        <button class="suggestion" type="button">Compare the top two</button>
+        <button class="suggestion" type="button">Show lighter colors</button>
+      </div>
+    </main>
+
+    <form class="composer">
+      <input class="message-field" type="text" aria-label="Message the shopping assistant" placeholder="Ask about fit, delivery, or returns">
+      <button class="send-button" type="button" aria-label="Send message">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M21 3L10 14"></path>
+          <path d="M21 3l-7 18-4-7-7-4 18-7z"></path>
+        </svg>
+      </button>
+    </form>
+
+    <nav class="tab-bar" aria-label="Primary navigation">
+      <button class="tab" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M3 11l9-8 9 8"></path>
+          <path d="M5 10v10h14V10"></path>
+          <path d="M9 20v-6h6v6"></path>
+        </svg>
+        <span>Home</span>
+      </button>
+
+      <button class="tab" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="11" cy="11" r="7"></circle>
+          <path d="M20 20l-4-4"></path>
+        </svg>
+        <span>Browse</span>
+      </button>
+
+      <button class="tab active" type="button" aria-current="page">
+        <svg viewBox="0 0 24 24" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M5 5h14v11H9l-4 4V5z"></path>
+          <path d="M9 10h.01M12 10h.01M15 10h.01"></path>
+        </svg>
+        <span>Assistant</span>
+      </button>
+
+      <button class="tab" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M5 7h14l-1 13H6L5 7z"></path>
+          <path d="M8 7a4 4 0 018 0"></path>
+        </svg>
+        <span>Orders</span>
+      </button>
+
+      <button class="tab" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="8" r="4"></circle>
+          <path d="M4 21a8 8 0 0116 0"></path>
+        </svg>
+        <span>Account</span>
+      </button>
+    </nav>
+  </div>
+</body>
+</html>

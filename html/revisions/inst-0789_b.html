@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Northgate — Payment methods</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 40px 0;
+    margin: 0;
+    background: #56585a;
+    font-family: 'Source Serif 4', Georgia, serif;
+  }
+  .screen {
+    width: 390px;
+    height: 844px;
+    position: relative;
+    background: #f1f1ef;
+    color: #1a1a1a;
+  }
+
+  /* top bar */
+  .topbar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 18px 16px 14px;
+    background: #ffffff;
+    border-bottom: 1px solid #e4e4e0;
+  }
+  .topbar h1 {
+    margin: 0;
+    font-size: 19px;
+    font-weight: 700;
+    letter-spacing: .1px;
+  }
+  .back { display: block; color: #1a1a1a; }
+
+  main { padding: 16px 16px 0; }
+
+  .eyebrow {
+    margin: 0 0 8px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .5px;
+    text-transform: uppercase;
+    color: #6c6c68;
+  }
+
+  /* default card */
+  .paycard {
+    background: #0f7a70;
+    color: #ffffff;
+    border-radius: 4px;
+    padding: 16px;
+    box-shadow: 0 1px 3px rgba(0,0,0,.12);
+  }
+  .paycard .brandrow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .paycard .bank { font-size: 15px; font-weight: 600; }
+  .paycard .number {
+    margin-top: 20px;
+    font-size: 21px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+  }
+  .paycard .footrow {
+    margin-top: 18px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+  }
+  .paycard .lbl {
+    font-size: 12px;
+    color: #bde0dc;
+    margin-bottom: 3px;
+  }
+  .paycard .val { font-size: 14px; font-weight: 600; }
+
+  h2.sec {
+    margin: 24px 0 8px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .5px;
+    text-transform: uppercase;
+    color: #6c6c68;
+  }
+
+  /* ledger-style heading: label, leader rule, total */
+  h2.sec.ledger {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-top: 22px;
+  }
+  h2.sec.ledger .leader {
+    flex: 1 1 auto;
+    height: 1px;
+    background: #d9d9d3;
+    transform: translateY(-4px);
+  }
+  h2.sec.ledger .tlabel {
+    flex: 0 0 auto;
+    font-size: 11px;
+    font-weight: 600;
+    color: #6c6c68;
+  }
+  h2.sec.ledger .sectotal {
+    flex: 0 0 auto;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0;
+    text-transform: none;
+    color: #1a1a1a;
+  }
+
+  .panel {
+    background: #ffffff;
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0,0,0,.08);
+  }
+  .row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    border-bottom: 1px solid #eeeeea;
+  }
+  .row:last-child { border-bottom: 0; }
+
+  .mono {
+    width: 38px;
+    height: 38px;
+    flex: 0 0 38px;
+    border-radius: 4px;
+    background: #eceeed;
+    color: #3d4443;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: .5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .rowtext { min-width: 0; flex: 1; }
+  .rowtext .t {
+    font-size: 15px;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .rowtext .s {
+    font-size: 13px;
+    color: #6c6c68;
+    margin-top: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .badge {
+    flex: 0 0 auto;
+    font-size: 12px;
+    font-weight: 600;
+    color: #0f7a70;
+    background: #e2f0ee;
+    border-radius: 4px;
+    padding: 3px 7px;
+  }
+  .chev { flex: 0 0 auto; color: #b3b3ae; display: block; }
+
+  .add {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 16px;
+    padding: 13px 0;
+    background: #ffffff;
+    border: 1px solid #0f7a70;
+    border-radius: 4px;
+    color: #0f7a70;
+    font-size: 15px;
+    font-weight: 600;
+  }
+
+  .thumb {
+    width: 44px;
+    height: 44px;
+    flex: 0 0 44px;
+    display: block;
+    object-fit: cover;
+    border-radius: 4px;
+    background: #dcdcd8;
+  }
+  .amt {
+    flex: 0 0 auto;
+    font-size: 15px;
+    font-weight: 600;
+  }
+
+  /* tab bar */
+  .tabbar {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    display: flex;
+    background: #ffffff;
+    border-top: 1px solid #e4e4e0;
+    padding: 8px 0 10px;
+  }
+  .tab {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    color: #787874;
+  }
+  .tab.on { color: #0f7a70; font-weight: 600; }
+</style>
+</head>
+<body>
+  <div class="screen">
+
+    <header class="topbar">
+      <svg class="back" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 19l-7-7 7-7"/></svg>
+      <h1>Payment methods</h1>
+    </header>
+
+    <main>
+      <p class="eyebrow">Default for purchases</p>
+
+      <div class="paycard">
+        <div class="brandrow">
+          <span class="bank">Meridian Bank credit</span>
+          <svg width="34" height="20" viewBox="0 0 34 20" fill="none" stroke="#ffffff" stroke-width="1.4" aria-hidden="true">
+            <circle cx="12" cy="10" r="7"/><circle cx="22" cy="10" r="7"/>
+          </svg>
+        </div>
+        <div class="number">•••• •••• •••• 4412</div>
+        <div class="footrow">
+          <div>
+            <div class="lbl">Cardholder</div>
+            <div class="val">Dana Whitlock</div>
+          </div>
+          <div>
+            <div class="lbl">Expires</div>
+            <div class="val">09/27</div>
+          </div>
+          <div>
+            <div class="lbl">Billing ZIP</div>
+            <div class="val">02139</div>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="sec">Other methods</h2>
+      <div class="panel">
+        <div class="row">
+          <div class="mono">HF</div>
+          <div class="rowtext">
+            <div class="t">Harbor Federal debit</div>
+            <div class="s">•••• 2087</div>
+          </div>
+          <span class="badge">Expires 11/25</span>
+        </div>
+        <div class="row">
+          <div class="mono">NB</div>
+          <div class="rowtext">
+            <div class="t">Northgate Bank account</div>
+            <div class="s">Checking •••• 5530</div>
+          </div>
+          <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
+        </div>
+        <div class="row">
+          <div class="mono">GC</div>
+          <div class="rowtext">
+            <div class="t">Store credit</div>
+            <div class="s">$62.40 available</div>
+          </div>
+          <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
+        </div>
+      </div>
+
+      <div class="add">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+        Add payment method
+      </div>
+
+      <h2 class="sec ledger">
+        <span>Recent charges</span>
+        <span class="leader"></span>
+        <span class="tlabel">Total</span>
+        <span class="sectotal">$255.25</span>
+      </h2>
+      <div class="panel">
+        <div class="row">
+          <img class="thumb" src="https://loremflickr.com/44/44/furniture?lock=10520" width="44" height="44" alt="Oak side table from a recent order">
+          <div class="rowtext">
+            <div class="t">Oak side table</div>
+            <div class="s">Meridian •••• 4412 · Mar 14</div>
+          </div>
+          <div class="amt">$148.00</div>
+        </div>
+        <div class="row">
+          <img class="thumb" src="https://loremflickr.com/44/44/sneakers?lock=10521" width="44" height="44" alt="Canvas low-top sneakers from a recent order">
+          <div class="rowtext">
+            <div class="t">Canvas low-tops, size 9</div>
+            <div class="s">Harbor Federal •••• 2087 · Mar 9</div>
+          </div>
+          <div class="amt">$72.35</div>
+        </div>
+        <div class="row">
+          <img class="thumb" src="https://loremflickr.com/44/44/fashion?lock=10522" width="44" height="44" alt="Wool scarf from a recent order">
+          <div class="rowtext">
+            <div class="t">Ribbed wool scarf</div>
+            <div class="s">Store credit · Mar 2</div>
+          </div>
+          <div class="amt">$34.90</div>
+        </div>
+      </div>
+    </main>
+
+    <nav class="tabbar">
+      <div class="tab">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5L12 4l9 6.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>
+        Home
+      </div>
+      <div class="tab">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg>
+        Browse
+      </div>
+      <div class="tab">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16v13H4z"/><path d="M8.5 7V5.5a3.5 3.5 0 0 1 7 0V7"/></svg>
+        Orders
+      </div>
+      <div class="tab on">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8.5" r="3.8"/><path d="M4.5 20c1.4-3.6 4.1-5.4 7.5-5.4s6.1 1.8 7.5 5.4"/></svg>
+        Account
+      </div>
+    </nav>
+
+  </div>
+</body>
+</html>

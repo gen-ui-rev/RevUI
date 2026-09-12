@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Arcloop Following Feed</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 32px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #e9e7e7;
+      color: #201d1f;
+      font-family: 'Inter', system-ui, sans-serif;
+    }
+
+    button {
+      font: inherit;
+      cursor: pointer;
+    }
+
+    .screen {
+      width: 1024px;
+      height: 768px;
+      display: flex;
+      flex-direction: column;
+      background: #ffffff;
+      border: 1px solid #d8d4d6;
+    }
+
+    /* ---------- utility bar ---------- */
+    .topbar {
+      height: 56px;
+      flex: 0 0 56px;
+      display: flex;
+      align-items: center;
+      gap: 26px;
+      padding: 0 24px;
+      border-bottom: 1px solid #ebe7e9;
+    }
+
+    .brand-word {
+      margin: 0;
+      color: #4b4448;
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 16px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .top-nav {
+      display: flex;
+      gap: 4px;
+    }
+
+    .top-nav button {
+      padding: 7px 12px;
+      border: 0;
+      border-radius: 8px;
+      background: transparent;
+      color: #777074;
+      font-size: 13px;
+      font-weight: 500;
+      line-height: 17px;
+    }
+
+    .top-nav button.active {
+      background: #f6e4ec;
+      color: #b52f61;
+      font-weight: 700;
+    }
+
+    .top-right {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .icon-button {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      border: 1px solid #e2dcdf;
+      border-radius: 9px;
+      background: #ffffff;
+      color: #3f393c;
+    }
+
+    .user-chip {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 3px 12px 3px 3px;
+      border: 1px solid #e2dcdf;
+      border-radius: 999px;
+      background: #ffffff;
+      color: #3a3437;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .icon-button svg,
+    .action svg {
+      width: 18px;
+      height: 18px;
+      display: block;
+      flex: 0 0 18px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    /* ---------- masthead: activity summary leads ---------- */
+    .masthead {
+      display: flex;
+      align-items: flex-end;
+      gap: 24px;
+      padding: 18px 24px;
+      border-bottom: 1px solid #ded9dc;
+      background: #fdfbfc;
+    }
+
+    .masthead .eyebrow {
+      margin: 0 0 3px;
+      color: #b52f61;
+      font-size: 11px;
+      font-weight: 700;
+      line-height: 14px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .masthead h1 {
+      margin: 0;
+      font-size: 27px;
+      font-weight: 700;
+      line-height: 33px;
+      letter-spacing: -0.01em;
+    }
+
+    .masthead .sub {
+      margin: 4px 0 0;
+      color: #7f767b;
+      font-size: 13px;
+      font-weight: 400;
+      line-height: 17px;
+    }
+
+    .head-copy {
+      min-width: 0;
+    }
+
+    .seg {
+      margin-left: auto;
+      display: flex;
+      gap: 6px;
+      padding: 4px;
+      border: 1px solid #ded9dc;
+      border-radius: 999px;
+      background: #ffffff;
+    }
+
+    .seg button {
+      padding: 7px 14px;
+      border: 0;
+      border-radius: 999px;
+      background: transparent;
+      color: #6f676b;
+      font-size: 13px;
+      font-weight: 500;
+      line-height: 17px;
+      white-space: nowrap;
+    }
+
+    .seg button.active {
+      background: #2f292c;
+      color: #ffffff;
+      font-weight: 600;
+    }
+
+    /* ---------- grouped columns ---------- */
+    .columns {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      align-items: flex-start;
+      gap: 20px;
+      padding: 18px 24px 24px;
+      background: #ffffff;
+    }
+
+    .column {
+      flex: 1;
+      min-width: 0;
+      padding: 14px;
+      border: 1px solid #e7e2e4;
+      border-radius: 14px;
+      background: #faf8f9;
+    }
+
+    .column-head {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .column-title {
+      margin: 0;
+      color: #2c2629;
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 17px;
+    }
+
+    .column-count {
+      margin-left: auto;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: #f0dfe6;
+      color: #9c2b58;
+      font-size: 11px;
+      font-weight: 700;
+      line-height: 15px;
+    }
+
+    .post {
+      padding: 14px;
+      border: 1px solid #e7e2e4;
+      border-radius: 11px;
+      background: #ffffff;
+    }
+
+    .post + .post {
+      margin-top: 12px;
+    }
+
+    .post-head {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+
+    .avatar {
+      width: 32px;
+      height: 32px;
+      flex: 0 0 32px;
+      display: grid;
+      place-items: center;
+      border-radius: 9px;
+      background: #f3dce5;
+      color: #8f244c;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .avatar.gray {
+      background: #e9e6e7;
+      color: #595155;
+    }
+
+    .avatar.dark {
+      background: #3d3639;
+      color: #ffffff;
+    }
+
+    .post-identity {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .post-name {
+      margin: 0;
+      overflow: hidden;
+      color: #262124;
+      font-size: 13px;
+      font-weight: 600;
+      line-height: 17px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .post-meta {
+      margin: 0;
+      overflow: hidden;
+      color: #81787d;
+      font-size: 11px;
+      font-weight: 400;
+      line-height: 15px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .more-button {
+      width: 26px;
+      height: 26px;
+      display: grid;
+      place-items: center;
+      border: 0;
+      border-radius: 8px;
+      background: transparent;
+      color: #756d71;
+    }
+
+    .more-button svg {
+      width: 17px;
+      height: 17px;
+      display: block;
+      fill: currentColor;
+    }
+
+    .post-copy {
+      margin: 8px 0 0;
+      color: #383235;
+      font-size: 13px;
+      font-weight: 400;
+      line-height: 19px;
+    }
+
+    .post-photo {
+      width: 256px;
+      display: block;
+      margin-top: 10px;
+      border-radius: 9px;
+      object-fit: cover;
+      background: #d8d2d5;
+    }
+
+    .post-actions {
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .action {
+      height: 26px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: #6f676b;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .action.liked {
+      color: #bc3264;
+    }
+
+    .action.liked svg {
+      fill: #bc3264;
+      stroke: #bc3264;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <p class="brand-word">Arcloop</p>
+      <nav class="top-nav" aria-label="Primary navigation">
+        <button class="active" type="button">Feed</button>
+        <button type="button">Discover</button>
+        <button type="button">Library</button>
+        <button type="button">Messages</button>
+      </nav>
+      <div class="top-right">
+        <button class="icon-button" type="button" aria-label="Search posts">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="11" cy="11" r="6.5"></circle>
+            <path d="m16 16 4 4"></path>
+          </svg>
+        </button>
+        <button class="icon-button" type="button" aria-label="Open messages">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 5.5h16v11H9l-5 3v-14Z"></path>
+          </svg>
+        </button>
+        <button class="user-chip" type="button">
+          <span class="avatar gray" aria-hidden="true">RW</span>
+          <span>Rae Whitlock</span>
+        </button>
+      </div>
+    </header>
+
+    <section class="masthead">
+      <div class="head-copy">
+        <p class="eyebrow">Following</p>
+        <h1>10 new updates from your circle</h1>
+        <p class="sub">Grouped by update type · 128 people followed · Synced 4 minutes ago</p>
+      </div>
+      <div class="seg" role="group" aria-label="Feed filters">
+        <button class="active" type="button">All posts</button>
+        <button type="button">Music</button>
+        <button type="button">Clips</button>
+      </div>
+    </section>
+
+    <main class="columns">
+      <section class="column" aria-label="Live clips">
+        <div class="column-head">
+          <h2 class="column-title">Live clips</h2>
+          <span class="column-count">3 new</span>
+        </div>
+        <article class="post">
+          <div class="post-head">
+            <div class="avatar" aria-hidden="true">MV</div>
+            <div class="post-identity">
+              <p class="post-name">Mara Voss</p>
+              <p class="post-meta">18 minutes ago · Portland, OR</p>
+            </div>
+            <button class="more-button" type="button" aria-label="More options for Mara Voss's post">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="5" cy="12" r="1.5"></circle>
+                <circle cx="12" cy="12" r="1.5"></circle>
+                <circle cx="19" cy="12" r="1.5"></circle>
+              </svg>
+            </button>
+          </div>
+          <p class="post-copy">Pulled this live take from last night. The bridge finally landed.</p>
+          <img class="post-photo" src="https://loremflickr.com/256/135/concert?lock=4350" width="256" height="135" alt="Musicians performing under stage lights at a small concert">
+          <div class="post-actions" aria-label="Post engagement">
+            <button class="action liked" type="button" aria-label="Unlike, 184 likes">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M20.8 5.8c-2-2.1-5.4-2.1-7.4 0L12 7.2l-1.4-1.4c-2-2.1-5.4-2.1-7.4 0s-2 5.4 0 7.5L12 22l8.8-8.7c2-2.1 2-5.4 0-7.5Z"></path>
+              </svg>
+              <span>184</span>
+            </button>
+            <button class="action" type="button" aria-label="View 26 comments">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M4 5h16v11H9l-5 3V5Z"></path>
+              </svg>
+              <span>26</span>
+            </button>
+            <button class="action" type="button" aria-label="Share post">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 16V4"></path>
+                <path d="m7 9 5-5 5 5"></path>
+                <path d="M5 13v7h14v-7"></path>
+              </svg>
+              <span>Share</span>
+            </button>
+          </div>
+        </article>
+        <article class="post">
+          <div class="post-head">
+            <div class="avatar gray" aria-hidden="true">DK</div>
+            <div class="post-identity">
+              <p class="post-name">Dario Kemp</p>
+              <p class="post-meta">52 minutes ago · Rehearsal room</p>
+            </div>
+            <button class="more-button" type="button" aria-label="More options for Dario Kemp's post">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="5" cy="12" r="1.5"></circle>
+                <circle cx="12" cy="12" r="1.5"></circle>
+                <circle cx="19" cy="12" r="1.5"></circle>
+              </svg>
+            </button>
+          </div>
+          <p class="post-copy">Two takes of the new opener, drums only. Second one wins.</p>
+          <div class="post-actions" aria-label="Post engagement">
+            <button class="action" type="button" aria-label="Like, 63 likes">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M20.8 5.8c-2-2.1-5.4-2.1-7.4 0L12 7.2l-1.4-1.4c-2-2.1-5.4-2.1-7.4 0s-2 5.4 0 7.5L12 22l8.8-8.7c2-2.1 2-5.4 0-7.5Z"></path>
+              </svg>
+              <span>63</span>
+            </button>
+            <button class="action" type="button" aria-label="View 8 comments">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M4 5h16v11H9l-5 3V5Z"></path>
+              </svg>
+              <span>8</span>
+            </button>
+            <button class="action" type="button" aria-label="Share post">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 16V4"></path>
+                <path d="m7 9 5-5 5 5"></path>
+                <path d="M5 13v7h14v-7"></path>
+              </svg>
+              <span>Share</span>
+            </button>
+          </div>
+        </article>
+      </section>
+
+      <section class="column" aria-label="Listening notes">
+        <div class="column-head">
+          <h2 class="column-title">Listening notes</h2>
+          <span class="column-count">5 new</span>
+        </div>
+        <article class="post">
+          <div class="post-head">
+            <div class="avatar gray" aria-hidden="true">TL</div>
+            <div class="post-identity">
+              <p class="post-name">Theo Lane</p>
+              <p class="post-meta">1 hour ago · Listening note</p>
+            </div>
+            <button class="more-button" type="button" aria-label="More options for Theo Lane's post">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="5" cy="12" r="1.5"></circle>
+                <circle cx="12" cy="12" r="1.5"></circle>
+                <circle cx="19" cy="12" r="1.5"></circle>
+              </svg>
+            </button>
+          </div>
+          <p class="post-copy">Sunday rotation: warm strings, brushed drums, no skips.</p>
+          <img class="post-photo" src="https://loremflickr.com/256/120/vinyl?lock=4351" width="256" height="120" alt="Vinyl record playing on a turntable">
+          <div class="post-actions" aria-label="Post engagement">
+            <button class="action" type="button" aria-label="Like, 92 likes">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M20.8 5.8c-2-2.1-5.4-2.1-7.4 0L12 7.2l-1.4-1.4c-2-2.1-5.4-2.1-7.4 0s-2 5.4 0 7.5L12 22l8.8-8.7c2-2.1 2-5.4 0-7.5Z"></path>
+              </svg>
+              <span>92</span>
+            </button>
+            <button class="action" type="button" aria-label="View 11 comments">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M4 5h16v11H9l-5 3V5Z"></path>
+              </svg>
+              <span>11</span>
+            </button>
+            <button class="action" type="button" aria-label="Share post">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 16V4"></path>
+                <path d="m7 9 5-5 5 5"></path>
+                <path d="M5 13v7h14v-7"></path>
+              </svg>
+              <span>Share</span>
+            </button>
+          </div>
+        </article>
+        <article class="post">
+          <div class="post-head">
+            <div class="avatar" aria-hidden="true">IM</div>
+            <div class="post-identity">
+              <p class="post-name">Ines Marchetti</p>
+              <p class="post-meta">2 hours ago · Album note</p>
+            </div>
+            <button class="more-button" type="button" aria-label="More options for Ines Marchetti's post">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="5" cy="12" r="1.5"></circle>
+                <circle cx="12" cy="12" r="1.5"></circle>
+                <circle cx="19" cy="12" r="1.5"></circle>
+              </svg>
+            </button>
+          </div>
+          <p class="post-copy">Third listen and the horn line still surprises me at 2:40.</p>
+          <div class="post-actions" aria-label="Post engagement">
+            <button class="action" type="button" aria-label="Like, 58 likes">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M20.8 5.8c-2-2.1-5.4-2.1-7.4 0L12 7.2l-1.4-1.4c-2-2.1-5.4-2.1-7.4 0s-2 5.4 0 7.5L12 22l8.8-8.7c2-2.1 2-5.4 0-7.5Z"></path>
+              </svg>
+              <span>58</span>
+            </button>
+            <button class="action" type="button" aria-label="View 14 comments">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M4 5h16v11H9l-5 3V5Z"></path>
+              </svg>
+              <span>14</span>
+            </button>
+            <button class="action" type="button" aria-label="Share post">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 16V4"></path>
+                <path d="m7 9 5-5 5 5"></path>
+                <path d="M5 13v7h14v-7"></path>
+              </svg>
+              <span>Share</span>
+            </button>
+          </div>
+        </article>
+      </section>
+
+      <section class="column" aria-label="Playlists and mixes">
+        <div class="column-head">
+          <h2 class="column-title">Playlists &amp; mixes</h2>
+          <span class="column-count">2 new</span>
+        </div>
+        <article class="post">
+          <div class="post-head">
+            <div class="avatar dark" aria-hidden="true">JC</div>
+            <div class="post-identity">
+              <p class="post-name">June Calder</p>
+              <p class="post-meta">3 hours ago · Chicago, IL</p>
+            </div>
+            <button class="more-button" type="button" aria-label="More options for June Calder's post">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="5" cy="12" r="1.5"></circle>
+                <circle cx="12" cy="12" r="1.5"></circle>
+                <circle cx="19" cy="12" r="1.5"></circle>
+              </svg>
+            </button>
+          </div>
+          <p class="post-copy">Added five late-night tracks to “After the Last Train.”</p>
+          <div class="post-actions" aria-label="Post engagement">
+            <button class="action" type="button" aria-label="Like, 47 likes">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M20.8 5.8c-2-2.1-5.4-2.1-7.4 0L12 7.2l-1.4-1.4c-2-2.1-5.4-2.1-7.4 0s-2 5.4 0 7.5L12 22l8.8-8.7c2-2.1 2-5.4 0-7.5Z"></path>
+              </svg>
+              <span>47</span>
+            </button>
+            <button class="action" type="button" aria-label="View 19 comments">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M4 5h16v11H9l-5 3V5Z"></path>
+              </svg>
+              <span>19</span>
+            </button>
+            <button class="action" type="button" aria-label="Share post">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 16V4"></path>
+                <path d="m7 9 5-5 5 5"></path>
+                <path d="M5 13v7h14v-7"></path>
+              </svg>
+              <span>Share</span>
+            </button>
+          </div>
+        </article>
+        <article class="post">
+          <div class="post-head">
+            <div class="avatar gray" aria-hidden="true">OB</div>
+            <div class="post-identity">
+              <p class="post-name">Owen Brace</p>
+              <p class="post-meta">5 hours ago · Shared mix</p>
+            </div>
+            <button class="more-button" type="button" aria-label="More options for Owen Brace's post">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="5" cy="12" r="1.5"></circle>
+                <circle cx="12" cy="12" r="1.5"></circle>
+                <circle cx="19" cy="12" r="1.5"></circle>
+              </svg>
+            </button>
+          </div>
+          <p class="post-copy">Forty minutes of dub for the commute home. Headphones only.</p>
+          <div class="post-actions" aria-label="Post engagement">
+            <button class="action" type="button" aria-label="Like, 31 likes">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M20.8 5.8c-2-2.1-5.4-2.1-7.4 0L12 7.2l-1.4-1.4c-2-2.1-5.4-2.1-7.4 0s-2 5.4 0 7.5L12 22l8.8-8.7c2-2.1 2-5.4 0-7.5Z"></path>
+              </svg>
+              <span>31</span>
+            </button>
+            <button class="action" type="button" aria-label="View 6 comments">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M4 5h16v11H9l-5 3V5Z"></path>
+              </svg>
+              <span>6</span>
+            </button>
+            <button class="action" type="button" aria-label="Share post">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 16V4"></path>
+                <path d="m7 9 5-5 5 5"></path>
+                <path d="M5 13v7h14v-7"></path>
+              </svg>
+              <span>Share</span>
+            </button>
+          </div>
+        </article>
+        <article class="post">
+          <div class="post-head">
+            <div class="avatar" aria-hidden="true">SN</div>
+            <div class="post-identity">
+              <p class="post-name">Sela Nwosu</p>
+              <p class="post-meta">Yesterday · Collab playlist</p>
+            </div>
+            <button class="more-button" type="button" aria-label="More options for Sela Nwosu's post">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="5" cy="12" r="1.5"></circle>
+                <circle cx="12" cy="12" r="1.5"></circle>
+                <circle cx="19" cy="12" r="1.5"></circle>
+              </svg>
+            </button>
+          </div>
+          <p class="post-copy">Opened “Basement Tapes 04” for edits — three slots left.</p>
+          <div class="post-actions" aria-label="Post engagement">
+            <button class="action" type="button" aria-label="Like, 24 likes">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M20.8 5.8c-2-2.1-5.4-2.1-7.4 0L12 7.2l-1.4-1.4c-2-2.1-5.4-2.1-7.4 0s-2 5.4 0 7.5L12 22l8.8-8.7c2-2.1 2-5.4 0-7.5Z"></path>
+              </svg>
+              <span>24</span>
+            </button>
+            <button class="action" type="button" aria-label="View 9 comments">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M4 5h16v11H9l-5 3V5Z"></path>
+              </svg>
+              <span>9</span>
+            </button>
+            <button class="action" type="button" aria-label="Share post">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 16V4"></path>
+                <path d="m7 9 5-5 5 5"></path>
+                <path d="M5 13v7h14v-7"></path>
+              </svg>
+              <span>Share</span>
+            </button>
+          </div>
+        </article>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

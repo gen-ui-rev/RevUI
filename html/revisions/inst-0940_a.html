@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Driftline Profile Setup</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 32px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #dcd8d3;
+      color: #282624;
+      font-family: 'Nunito Sans', system-ui, sans-serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      width: 768px;
+      height: 1024px;
+      display: flex;
+      flex-direction: column;
+      background: #f3f2f0;
+      border: 1px solid #ccc7c1;
+    }
+
+    .topbar {
+      display: grid;
+      grid-template-columns: 150px 1fr 150px;
+      align-items: center;
+      padding: 16px 26px;
+      background: #ffffff;
+      border-bottom: 1px solid #e2dfdb;
+    }
+
+    .back-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px 8px 8px;
+      border: 1px solid #ddd8d2;
+      border-radius: 8px;
+      background: #ffffff;
+      color: #403d39;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 700;
+    }
+
+    .back-button svg {
+      width: 20px;
+      height: 20px;
+      display: block;
+    }
+
+    .service-name {
+      margin: 0;
+      font-size: 20px;
+      line-height: 28px;
+      font-weight: 700;
+      text-align: center;
+      letter-spacing: 0.1px;
+    }
+
+    .step-count {
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 700;
+      color: #7e6856;
+      text-align: right;
+    }
+
+    .stepper {
+      padding: 18px 26px 16px;
+      background: #ffffff;
+      border-bottom: 1px solid #e2dfdb;
+    }
+
+    .steps {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .step {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .bullet {
+      width: 34px;
+      height: 34px;
+      flex: 0 0 34px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      border: 2px solid #d6cfc8;
+      background: #ffffff;
+      color: #857e77;
+      font-size: 14px;
+      line-height: 18px;
+      font-weight: 700;
+    }
+
+    .bullet svg {
+      width: 16px;
+      height: 16px;
+      display: block;
+    }
+
+    .step.done .bullet {
+      border-color: #8f7966;
+      background: #efe8e1;
+      color: #7e6856;
+    }
+
+    .step.current .bullet {
+      border-color: #8f7966;
+      background: #8f7966;
+      color: #ffffff;
+    }
+
+    .step-title {
+      font-size: 14px;
+      line-height: 19px;
+      font-weight: 700;
+      color: #6a645e;
+    }
+
+    .step.current .step-title {
+      color: #282624;
+    }
+
+    .step-sub {
+      margin-top: 1px;
+      color: #8b847d;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 600;
+    }
+
+    .step.current .step-sub {
+      color: #7e6856;
+    }
+
+    .connector {
+      flex: 1;
+      height: 2px;
+      background: #e4dfda;
+      border-radius: 2px;
+    }
+
+    .connector.filled {
+      background: #b8a294;
+    }
+
+    .progress-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-top: 16px;
+    }
+
+    .progress-track {
+      flex: 1;
+      height: 6px;
+      border-radius: 6px;
+      background: #ece8e4;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      width: 66%;
+      height: 100%;
+      background: #8f7966;
+      border-radius: 6px;
+    }
+
+    .progress-label {
+      color: #6d6660;
+      font-size: 12px;
+      line-height: 17px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    main {
+      flex: 1;
+      padding: 22px 26px 14px;
+    }
+
+    .columns {
+      display: grid;
+      grid-template-columns: 1fr 288px;
+      gap: 22px;
+      align-items: start;
+    }
+
+    .intro h1 {
+      margin: 0;
+      font-size: 28px;
+      line-height: 34px;
+      font-weight: 700;
+      letter-spacing: -0.2px;
+    }
+
+    .intro p {
+      margin: 5px 0 0;
+      color: #68635e;
+      font-size: 15px;
+      line-height: 21px;
+    }
+
+    .card {
+      background: #ffffff;
+      border: 1px solid #e4e0dc;
+      border-radius: 8px;
+      box-shadow: 0 3px 12px rgba(56, 49, 43, 0.07);
+    }
+
+    .profile-card {
+      margin-top: 16px;
+      padding: 14px 16px;
+      display: grid;
+      grid-template-columns: 66px 1fr auto;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .monogram {
+      width: 66px;
+      height: 66px;
+      display: grid;
+      place-items: center;
+      border-radius: 8px;
+      background: #9a8674;
+      color: #ffffff;
+      font-size: 22px;
+      line-height: 26px;
+      font-weight: 700;
+    }
+
+    .field-label {
+      display: block;
+      margin-bottom: 2px;
+      color: #77716b;
+      font-size: 12px;
+      line-height: 17px;
+      font-weight: 600;
+    }
+
+    .field-value {
+      font-size: 18px;
+      line-height: 24px;
+      font-weight: 700;
+    }
+
+    .field-note {
+      margin-top: 2px;
+      color: #77716b;
+      font-size: 13px;
+      line-height: 18px;
+    }
+
+    .edit-button {
+      padding: 10px 18px;
+      border: 1px solid #c8c1ba;
+      border-radius: 8px;
+      background: #ffffff;
+      color: #554e48;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 700;
+    }
+
+    .section-heading {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin: 20px 2px 9px;
+      gap: 14px;
+    }
+
+    .section-heading h2 {
+      margin: 0;
+      font-size: 17px;
+      line-height: 23px;
+      font-weight: 700;
+    }
+
+    .section-heading span {
+      color: #77716b;
+      font-size: 13px;
+      line-height: 18px;
+      white-space: nowrap;
+    }
+
+    .preference-list {
+      padding: 4px 16px;
+    }
+
+    .preference-row {
+      display: grid;
+      grid-template-columns: 64px 1fr 30px;
+      align-items: center;
+      gap: 16px;
+      padding: 12px 0;
+      border-bottom: 1px solid #ece9e6;
+    }
+
+    .preference-row:last-child {
+      border-bottom: 0;
+    }
+
+    .preference-row img {
+      width: 64px;
+      height: 64px;
+      display: block;
+      object-fit: cover;
+      border-radius: 8px;
+      background: #d4d0cb;
+    }
+
+    .preference-name {
+      font-size: 16px;
+      line-height: 22px;
+      font-weight: 700;
+    }
+
+    .preference-detail {
+      margin-top: 2px;
+      color: #77716b;
+      font-size: 13px;
+      line-height: 18px;
+    }
+
+    .check {
+      width: 30px;
+      height: 30px;
+      display: grid;
+      place-items: center;
+      border: 1px solid #bcb5ae;
+      border-radius: 8px;
+      color: transparent;
+      background: #ffffff;
+    }
+
+    .check.selected {
+      border-color: #8f7966;
+      background: #8f7966;
+      color: #ffffff;
+    }
+
+    .check svg {
+      width: 17px;
+      height: 17px;
+      display: block;
+    }
+
+    .settings-card {
+      padding: 2px 16px;
+    }
+
+    .setting-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 12px;
+      padding: 13px 0;
+      border-bottom: 1px solid #ece9e6;
+    }
+
+    .setting-row:last-child {
+      border-bottom: 0;
+    }
+
+    .setting-label {
+      font-size: 15px;
+      line-height: 20px;
+      font-weight: 700;
+    }
+
+    .setting-caption {
+      margin-top: 2px;
+      color: #77716b;
+      font-size: 12px;
+      line-height: 17px;
+    }
+
+    .setting-value {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: #625a53;
+      font-size: 14px;
+      line-height: 19px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .setting-value svg {
+      width: 17px;
+      height: 17px;
+      display: block;
+    }
+
+    .upnext-card {
+      margin-top: 20px;
+      padding: 14px 16px 16px;
+    }
+
+    .upnext-card h3 {
+      margin: 0;
+      font-size: 14px;
+      line-height: 19px;
+      font-weight: 700;
+      color: #7e6856;
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+    }
+
+    .upnext-card p {
+      margin: 6px 0 10px;
+      color: #68635e;
+      font-size: 13px;
+      line-height: 19px;
+    }
+
+    .upnext-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .upnext-list li {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 5px 0;
+      color: #46423e;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 600;
+    }
+
+    .dot {
+      width: 7px;
+      height: 7px;
+      flex: 0 0 7px;
+      border-radius: 50%;
+      background: #c2ab99;
+    }
+
+    .action-area {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      padding: 16px 26px;
+      background: #ffffff;
+      border-top: 1px solid #e1ddd9;
+    }
+
+    .action-note {
+      color: #6d6660;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 600;
+    }
+
+    .action-note strong {
+      display: block;
+      color: #282624;
+      font-size: 14px;
+      line-height: 19px;
+    }
+
+    .action-buttons {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .ghost-button {
+      padding: 13px 22px;
+      border: 1px solid #c8c1ba;
+      border-radius: 8px;
+      background: #ffffff;
+      color: #554e48;
+      font-size: 15px;
+      line-height: 21px;
+      font-weight: 700;
+    }
+
+    .continue-button {
+      padding: 13px 26px;
+      border: 1px solid #8f7966;
+      border-radius: 8px;
+      background: #8f7966;
+      color: #ffffff;
+      font-size: 15px;
+      line-height: 21px;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .tabbar {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      background: #ffffff;
+      border-top: 1px solid #e1ddd9;
+    }
+
+    .tab {
+      position: relative;
+      padding: 15px 4px 17px;
+      color: #7b756f;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    .tab.active {
+      color: #7e6856;
+      font-weight: 700;
+    }
+
+    .tab.active::before {
+      content: "";
+      position: absolute;
+      top: -1px;
+      left: 62px;
+      right: 62px;
+      height: 3px;
+      background: #8f7966;
+      border-radius: 0 0 6px 6px;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <button class="back-button" type="button">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M15 5L8 12L15 19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Back
+      </button>
+      <p class="service-name">Driftline</p>
+      <span class="step-count">Step 2 of 3</span>
+    </header>
+
+    <nav class="stepper" aria-label="Setup progress">
+      <ol class="steps">
+        <li class="step done">
+          <span class="bullet" aria-hidden="true">
+            <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M3 8.3L6.3 11.5L13 4.8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          <div>
+            <div class="step-title">Account basics</div>
+            <div class="step-sub">Completed</div>
+          </div>
+        </li>
+        <li class="connector filled" aria-hidden="true"></li>
+        <li class="step current" aria-current="step">
+          <span class="bullet">2</span>
+          <div>
+            <div class="step-title">Personalize</div>
+            <div class="step-sub">In progress now</div>
+          </div>
+        </li>
+        <li class="connector" aria-hidden="true"></li>
+        <li class="step">
+          <span class="bullet">3</span>
+          <div>
+            <div class="step-title">Playback setup</div>
+            <div class="step-sub">Up next</div>
+          </div>
+        </li>
+      </ol>
+      <div class="progress-row">
+        <div class="progress-track"><div class="progress-fill"></div></div>
+        <span class="progress-label">Step 2 of 3 &middot; About 2 minutes left</span>
+      </div>
+    </nav>
+
+    <main>
+      <div class="columns">
+        <div>
+          <section class="intro" aria-labelledby="setup-title">
+            <h1 id="setup-title">Personalize your listening</h1>
+            <p>Set your profile and choose what should shape your recommendations.</p>
+          </section>
+
+          <section class="card profile-card" aria-label="Profile identity">
+            <div class="monogram" aria-label="Avery Rowen initials">AR</div>
+            <div>
+              <span class="field-label">Display name</span>
+              <div class="field-value">Avery Rowen</div>
+              <div class="field-note">Photo is optional</div>
+            </div>
+            <button class="edit-button" type="button">Edit</button>
+          </section>
+
+          <div class="section-heading">
+            <h2 id="interests-title">Listening interests</h2>
+            <span>3 of 3 chosen</span>
+          </div>
+
+          <section class="card preference-list" aria-labelledby="interests-title">
+            <div class="preference-row">
+              <img src="https://loremflickr.com/64/64/concert?lock=12430" width="64" height="64" alt="Crowd watching a live concert">
+              <div>
+                <div class="preference-name">Live recordings</div>
+                <div class="preference-detail">Concerts and festival sets</div>
+              </div>
+              <div class="check selected" aria-label="Selected">
+                <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <path d="M3 8.3L6.3 11.5L13 4.8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+            </div>
+
+            <div class="preference-row">
+              <img src="https://loremflickr.com/64/64/vinyl?lock=12431" width="64" height="64" alt="Vinyl record on a turntable">
+              <div>
+                <div class="preference-name">Vinyl deep cuts</div>
+                <div class="preference-detail">Albums, B-sides, and reissues</div>
+              </div>
+              <div class="check selected" aria-label="Selected">
+                <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <path d="M3 8.3L6.3 11.5L13 4.8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+            </div>
+
+            <div class="preference-row">
+              <img src="https://loremflickr.com/64/64/studio?lock=12432" width="64" height="64" alt="Recording equipment inside a music studio">
+              <div>
+                <div class="preference-name">Studio sessions</div>
+                <div class="preference-detail">Interviews and recording stories</div>
+              </div>
+              <div class="check selected" aria-label="Selected">
+                <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <path d="M3 8.3L6.3 11.5L13 4.8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+            </div>
+
+            <div class="preference-row">
+              <img src="https://loremflickr.com/64/64/guitar?lock=12433" width="64" height="64" alt="Acoustic guitar ready to be played">
+              <div>
+                <div class="preference-name">Acoustic sets</div>
+                <div class="preference-detail">Unplugged and stripped-back tracks</div>
+              </div>
+              <div class="check" aria-label="Not selected">
+                <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <path d="M3 8.3L6.3 11.5L13 4.8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <aside>
+          <div class="section-heading" style="margin-top:0">
+            <h2 id="defaults-title">Listening defaults</h2>
+            <span>Change anytime</span>
+          </div>
+
+          <section class="card settings-card" aria-labelledby="defaults-title">
+            <div class="setting-row">
+              <div>
+                <div class="setting-label">Audio language</div>
+                <div class="setting-caption">Used for spoken content</div>
+              </div>
+              <div class="setting-value">
+                English (US)
+                <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <path d="M6 3.5L10.5 8L6 12.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+            </div>
+            <div class="setting-row">
+              <div>
+                <div class="setting-label">Content filter</div>
+                <div class="setting-caption">Controls explicit tracks</div>
+              </div>
+              <div class="setting-value">
+                Allow
+                <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <path d="M6 3.5L10.5 8L6 12.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+            </div>
+            <div class="setting-row">
+              <div>
+                <div class="setting-label">Download quality</div>
+                <div class="setting-caption">Applies on Wi-Fi</div>
+              </div>
+              <div class="setting-value">
+                High
+                <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <path d="M6 3.5L10.5 8L6 12.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+            </div>
+          </section>
+
+          <section class="card upnext-card" aria-label="Coming up in step 3">
+            <h3>Step 3 &middot; Playback setup</h3>
+            <p>Once this step is saved, you will finish with:</p>
+            <ul class="upnext-list">
+              <li><span class="dot" aria-hidden="true"></span>Output device pairing</li>
+              <li><span class="dot" aria-hidden="true"></span>Crossfade and gapless play</li>
+              <li><span class="dot" aria-hidden="true"></span>Offline download folder</li>
+            </ul>
+          </section>
+        </aside>
+      </div>
+    </main>
+
+    <div class="action-area">
+      <div class="action-note">
+        <strong>Step 2 of 3 &middot; Personalize</strong>
+        Your choices save as you go.
+      </div>
+      <div class="action-buttons">
+        <button class="ghost-button" type="button">Back to account basics</button>
+        <button class="continue-button" type="button">Continue to playback setup</button>
+      </div>
+    </div>
+
+    <nav class="tabbar" aria-label="Primary navigation">
+      <div class="tab">Listen</div>
+      <div class="tab">Browse</div>
+      <div class="tab">Library</div>
+      <div class="tab active" aria-current="page">Account</div>
+    </nav>
+  </div>
+</body>
+</html>

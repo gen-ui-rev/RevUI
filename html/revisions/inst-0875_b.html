@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Filter lessons</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box}
+  body{
+    font-family:'Inter', system-ui, sans-serif;
+    background:#e7e9ec;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    margin:0;
+    -webkit-font-smoothing:antialiased;
+  }
+  .screen{
+    width:390px;
+    height:560px;
+    padding:20px;
+    background:#eceef0;
+  }
+  .card{
+    background:#fff;
+    border:1px solid #dfe2e6;
+    border-radius:10px;
+    padding:18px;
+  }
+  .head{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    gap:12px;
+  }
+  .head h1{
+    margin:0;
+    font-size:18px;
+    font-weight:600;
+    color:#12161c;
+    letter-spacing:-.01em;
+  }
+  .head .sub{
+    margin:4px 0 0;
+    font-size:13px;
+    color:#7c838d;
+  }
+  .applied{
+    font-size:13px;
+    font-weight:600;
+    color:#047857;
+    white-space:nowrap;
+  }
+  .rule{
+    height:1px;
+    margin:14px 0;
+    background:#e7e9ec;
+  }
+  .label{
+    margin:0 0 9px;
+    color:#8a9099;
+    font-size:12px;
+    font-weight:600;
+    letter-spacing:.05em;
+    text-transform:uppercase;
+  }
+  .chips{
+    display:flex;
+    gap:8px;
+  }
+  .chip{
+    flex:0 0 auto;
+    border:1px solid #dfe2e6;
+    border-radius:10px;
+    padding:7px 12px;
+    background:#fff;
+    color:#3d4450;
+    font-size:13px;
+    font-weight:500;
+    line-height:18px;
+    white-space:nowrap;
+  }
+  .chip.on{
+    border-color:#059669;
+    background:#059669;
+    color:#fff;
+    font-weight:600;
+  }
+  .block{margin-top:16px}
+  .section-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:9px;
+  }
+  .section-head .label{margin:0}
+  .selected-count{
+    font-size:11px;
+    font-weight:600;
+    color:#047857;
+  }
+  .selected-instructors{
+    display:flex;
+    gap:7px;
+  }
+  .selected-pill{
+    min-width:0;
+    display:flex;
+    align-items:center;
+    gap:7px;
+    padding:6px 8px 6px 6px;
+    border:1px solid #a9ddc9;
+    border-radius:999px;
+    background:#effaf6;
+    color:#245d4b;
+  }
+  .selected-pill:first-child{flex:1.12}
+  .selected-pill:last-child{flex:1}
+  .mini-avatar{
+    width:24px;
+    height:24px;
+    flex:0 0 auto;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#d7f1e6;
+    color:#047857;
+    font-size:9px;
+    font-weight:700;
+  }
+  .selected-name{
+    min-width:0;
+    flex:1;
+    font-size:12px;
+    font-weight:600;
+    line-height:16px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .remove{
+    flex:0 0 auto;
+    color:#43806d;
+    font-size:15px;
+    line-height:15px;
+  }
+  .available-title{
+    margin:11px 0 6px;
+    color:#8a9099;
+    font-size:11px;
+    font-weight:600;
+  }
+  .available-list{
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+  }
+  .available-row{
+    display:flex;
+    align-items:center;
+    gap:9px;
+    padding:7px 9px;
+    border:1px solid #e4e7ea;
+    border-radius:10px;
+    background:#fff;
+  }
+  .avatar{
+    width:30px;
+    height:30px;
+    flex:0 0 auto;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#eef0f2;
+    color:#525a66;
+    font-size:10px;
+    font-weight:700;
+  }
+  .who{
+    min-width:0;
+    flex:1;
+  }
+  .name-line{
+    display:flex;
+    align-items:baseline;
+    gap:6px;
+    min-width:0;
+  }
+  .name{
+    min-width:0;
+    color:#1b2028;
+    font-size:13px;
+    font-weight:600;
+    line-height:17px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .count{
+    flex:0 0 auto;
+    color:#8a9099;
+    font-size:11px;
+    white-space:nowrap;
+  }
+  .meta{
+    color:#8a9099;
+    font-size:11px;
+    line-height:15px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .add{
+    width:24px;
+    height:24px;
+    flex:0 0 auto;
+    border:1px solid #d8dce1;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#59616c;
+    font-size:17px;
+    font-weight:400;
+  }
+  .foot{
+    display:flex;
+    gap:10px;
+    margin-top:18px;
+  }
+  .btn-reset,
+  .btn-apply{
+    border-radius:999px;
+    padding:12px 18px;
+    font-family:inherit;
+    font-size:14px;
+    font-weight:600;
+  }
+  .btn-reset{
+    border:1px solid #dfe2e6;
+    background:#fff;
+    color:#3d4450;
+  }
+  .btn-apply{
+    flex:1 1 auto;
+    border:1px solid #025e49;
+    background:#025e49;
+    color:#fff;
+    text-align:center;
+  }
+</style>
+</head>
+<body>
+  <div class="screen">
+    <div class="card">
+      <div class="head">
+        <div>
+          <h1>Filter lessons</h1>
+          <p class="sub">Spanish catalog · 1,284 lessons</p>
+        </div>
+        <span class="applied">4 applied</span>
+      </div>
+
+      <div class="rule"></div>
+
+      <p class="label">Sort by</p>
+      <div class="chips">
+        <span class="chip on">Most popular</span>
+        <span class="chip">Newest</span>
+        <span class="chip">Top rated</span>
+      </div>
+
+      <div class="block">
+        <p class="label">Level</p>
+        <div class="chips">
+          <span class="chip">Beginner</span>
+          <span class="chip on">Intermediate</span>
+          <span class="chip">Advanced</span>
+        </div>
+      </div>
+
+      <div class="block">
+        <div class="section-head">
+          <p class="label">Instructor</p>
+          <span class="selected-count">2 selected</span>
+        </div>
+
+        <div class="selected-instructors">
+          <div class="selected-pill">
+            <span class="mini-avatar">NA</span>
+            <span class="selected-name">Nadia Alvarez</span>
+            <span class="remove">×</span>
+          </div>
+          <div class="selected-pill">
+            <span class="mini-avatar">TF</span>
+            <span class="selected-name">Tomas Ferrer</span>
+            <span class="remove">×</span>
+          </div>
+        </div>
+
+        <p class="available-title">More instructors</p>
+        <div class="available-list">
+          <div class="available-row">
+            <div class="avatar">CB</div>
+            <div class="who">
+              <div class="name-line">
+                <span class="name">Claire Boyd</span>
+                <span class="count">74 lessons</span>
+              </div>
+              <div class="meta">Business Spanish · Austin</div>
+            </div>
+            <span class="add">+</span>
+          </div>
+
+          <div class="available-row">
+            <div class="avatar">RM</div>
+            <div class="who">
+              <div class="name-line">
+                <span class="name">Ravi Menon</span>
+                <span class="count">58 lessons</span>
+              </div>
+              <div class="meta">Pronunciation · Toronto</div>
+            </div>
+            <span class="add">+</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="foot">
+        <button class="btn-reset" type="button">Reset</button>
+        <button class="btn-apply" type="button">Show 148 lessons</button>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

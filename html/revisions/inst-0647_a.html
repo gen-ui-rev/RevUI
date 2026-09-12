@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Order Basket — Meridian Invest</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#16202A;
+    --muted:#6B7A85;
+    --line:#E5E8EB;
+    --accent:#6E8898;
+    --accent-soft:#E7EDF1;
+    --ground:#F1F2F4;
+    --navy:#102A43;
+  }
+  *{box-sizing:border-box;}
+  body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    padding:40px 0;
+    margin:0;
+    background:#D9DCE0;
+    font-family:'Inter',system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .screen{
+    width:390px;
+    height:844px;
+    background:var(--ground);
+    display:flex;
+    flex-direction:column;
+    position:relative;
+    color:var(--ink);
+  }
+  .topbar{
+    background:#fff;
+    border-bottom:1px solid var(--line);
+    padding:16px;
+    display:flex;
+    align-items:center;
+    gap:12px;
+  }
+  .topbar h1{
+    font-size:17px;
+    font-weight:600;
+    margin:0;
+    flex:1;
+    line-height:24px;
+  }
+  .iconbtn{
+    width:24px;
+    height:24px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:var(--ink);
+  }
+  .topbar .count{
+    font-size:13px;
+    font-weight:500;
+    color:var(--accent);
+    line-height:24px;
+  }
+  .content{
+    flex:1;
+    padding:16px 16px 0;
+  }
+  .label{
+    font-size:12px;
+    font-weight:600;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    color:var(--muted);
+    margin:0 0 8px;
+  }
+  .card{
+    background:#fff;
+    border-radius:4px;
+    box-shadow:0 1px 3px rgba(16,24,32,.08);
+  }
+  .row{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:13px 14px;
+    border-bottom:1px solid var(--line);
+  }
+  .row:last-child{border-bottom:none;}
+  .row img{
+    width:52px;
+    height:52px;
+    border-radius:4px;
+    object-fit:cover;
+    display:block;
+    background:#DCE0E4;
+    flex:none;
+  }
+  .info{flex:1;min-width:0;}
+  .name{
+    font-size:15px;
+    font-weight:600;
+    line-height:20px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .meta{
+    font-size:12px;
+    color:var(--muted);
+    line-height:16px;
+    margin-top:3px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .right{
+    width:96px;
+    flex:none;
+    text-align:right;
+  }
+  .amount{
+    font-size:15px;
+    font-weight:600;
+    line-height:18px;
+  }
+  .stepper{
+    margin-top:6px;
+    display:flex;
+    justify-content:flex-end;
+  }
+  .stepper button,
+  .stepper span{
+    width:28px;
+    height:28px;
+    line-height:26px;
+    text-align:center;
+    font-family:inherit;
+    font-size:14px;
+    background:#fff;
+    border:1px solid var(--line);
+    color:var(--accent);
+    padding:0;
+  }
+  .stepper .qty{
+    color:var(--ink);
+    font-weight:600;
+    border-left:none;
+    border-right:none;
+    display:block;
+  }
+  .stepper .minus{border-radius:4px 0 0 4px;}
+  .stepper .plus{border-radius:0 4px 4px 0;}
+  .fund{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:14px;
+  }
+  .mono{
+    width:40px;
+    height:40px;
+    border-radius:4px;
+    background:var(--accent-soft);
+    color:var(--accent);
+    font-size:14px;
+    font-weight:600;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex:none;
+  }
+  .fund .swap{
+    font-size:13px;
+    font-weight:500;
+    color:var(--accent);
+    flex:none;
+  }
+  .sum{padding:14px;}
+  .sline{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    font-size:14px;
+    line-height:20px;
+    padding:5px 0;
+  }
+  .sline .k{color:var(--muted);}
+  .sline .v{font-weight:500;}
+  .sum hr{
+    border:none;
+    border-top:1px solid var(--line);
+    margin:9px 0;
+  }
+  .total{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+  }
+  .total .k{font-size:14px;font-weight:600;}
+  .total .v{font-size:20px;font-weight:700;letter-spacing:-.01em;}
+  .note{
+    font-size:12px;
+    color:var(--muted);
+    line-height:16px;
+    margin:8px 2px 0;
+  }
+  .cta{
+    padding:12px 16px 14px;
+    background:#fff;
+    border-top:1px solid var(--line);
+  }
+  .cta .btn{
+    display:block;
+    width:100%;
+    background:var(--navy);
+    color:#fff;
+    border:1px solid var(--navy);
+    border-radius:4px;
+    padding:14px 0;
+    font-family:inherit;
+    font-size:15px;
+    font-weight:600;
+    line-height:18px;
+    text-align:center;
+    box-shadow:0 1px 2px rgba(5,25,45,.18);
+  }
+  .tabs{
+    background:#fff;
+    border-top:1px solid var(--line);
+    display:flex;
+    padding:8px 0 12px;
+  }
+  .tab{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:4px;
+    font-size:12px;
+    line-height:14px;
+    color:var(--muted);
+    font-weight:500;
+  }
+  .tab.on{color:var(--accent);font-weight:600;}
+</style>
+</head>
+<body>
+<div class="screen">
+  <header class="topbar">
+    <span class="iconbtn" aria-hidden="true">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
+    </span>
+    <h1>Order Basket</h1>
+    <span class="count">4 orders</span>
+  </header>
+
+  <div class="content">
+    <p class="label">Buy orders · Market open</p>
+    <section class="card">
+      <div class="row">
+        <img src="https://loremflickr.com/52/52/chart?lock=8620" width="52" height="52" alt="Trading chart artwork for Northline Growth ETF">
+        <div class="info">
+          <div class="name">Northline Growth ETF</div>
+          <div class="meta">NLGX · $412.80 / share</div>
+        </div>
+        <div class="right">
+          <div class="amount">$1,238.40</div>
+          <div class="stepper">
+            <button class="minus" type="button" aria-label="Decrease NLGX shares">−</button>
+            <span class="qty">3</span>
+            <button class="plus" type="button" aria-label="Increase NLGX shares">+</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <img src="https://loremflickr.com/52/52/architecture?lock=8621" width="52" height="52" alt="Building facade artwork for Harbor Realty Trust">
+        <div class="info">
+          <div class="name">Harbor Realty Trust</div>
+          <div class="meta">HRTR · $96.15 / share</div>
+        </div>
+        <div class="right">
+          <div class="amount">$769.20</div>
+          <div class="stepper">
+            <button class="minus" type="button" aria-label="Decrease HRTR shares">−</button>
+            <span class="qty">8</span>
+            <button class="plus" type="button" aria-label="Increase HRTR shares">+</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <img src="https://loremflickr.com/52/52/city?lock=8622" width="52" height="52" alt="City skyline artwork for Vantage Index 500">
+        <div class="info">
+          <div class="name">Vantage Index 500</div>
+          <div class="meta">VTX5 · $174.05 / share</div>
+        </div>
+        <div class="right">
+          <div class="amount">$348.10</div>
+          <div class="stepper">
+            <button class="minus" type="button" aria-label="Decrease VTX5 shares">−</button>
+            <span class="qty">2</span>
+            <button class="plus" type="button" aria-label="Increase VTX5 shares">+</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <img src="https://loremflickr.com/52/52/office?lock=8623" width="52" height="52" alt="Office interior artwork for Cedar Bay Bond Fund">
+        <div class="info">
+          <div class="name">Cedar Bay Bond Fund</div>
+          <div class="meta">CBBF · $24.32 / share</div>
+        </div>
+        <div class="right">
+          <div class="amount">$121.60</div>
+          <div class="stepper">
+            <button class="minus" type="button" aria-label="Decrease CBBF shares">−</button>
+            <span class="qty">5</span>
+            <button class="plus" type="button" aria-label="Increase CBBF shares">+</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <p class="label" style="margin-top:14px">Paying from</p>
+    <section class="card">
+      <div class="fund">
+        <div class="mono">CA</div>
+        <div class="info">
+          <div class="name">Cash Account ···4821</div>
+          <div class="meta">Available $6,240.18</div>
+        </div>
+        <span class="swap">Change</span>
+      </div>
+    </section>
+
+    <p class="label" style="margin-top:14px">Order summary</p>
+    <section class="card sum">
+      <div class="sline"><span class="k">Subtotal, 18 shares</span><span class="v">$2,477.30</span></div>
+      <div class="sline"><span class="k">Estimated fees</span><span class="v">$1.42</span></div>
+      <hr>
+      <div class="total"><span class="k">Order total</span><span class="v">$2,478.72</span></div>
+    </section>
+    <p class="note">Prices are estimates. Final amounts are set when orders fill at market open on Tuesday, March 12.</p>
+  </div>
+
+  <div class="cta">
+    <button class="btn" type="button">Continue to review</button>
+  </div>
+
+  <nav class="tabs">
+    <div class="tab">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5L12 4l8 6.5V20H4z"/></svg>
+      Home
+    </div>
+    <div class="tab">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17l5-6 4 3 6-8"/><path d="M4 20h16"/></svg>
+      Markets
+    </div>
+    <div class="tab on">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8h14l-1.2 11H6.2z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>
+      Basket
+    </div>
+    <div class="tab">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8.5" r="3.5"/><path d="M5 20c1.6-3.4 4-5 7-5s5.4 1.6 7 5"/></svg>
+      Account
+    </div>
+  </nav>
+</div>
+</body>
+</html>

@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Buyer Book — Kestrel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#16161a;
+    --muted:#6f7076;
+    --rule:#e7e7ea;
+    --accent:#d92b2b;
+    --soft:#f6f6f8;
+  }
+  *{box-sizing:border-box;}
+  body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    padding:40px 0;
+    margin:0;
+    background:#ececee;
+    font-family:'Nunito Sans',system-ui,sans-serif;
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+  }
+  .screen{
+    width:390px;
+    height:844px;
+    background:#fff;
+    display:flex;
+    flex-direction:column;
+    position:relative;
+  }
+  .topbar{
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    padding:18px 20px 14px;
+  }
+  .topbar h1{
+    margin:0;
+    font-size:26px;
+    font-weight:700;
+    line-height:32px;
+    letter-spacing:-.4px;
+  }
+  .sub{
+    margin:2px 0 0;
+    color:var(--muted);
+    font-size:13px;
+    line-height:18px;
+  }
+  .acts{display:flex;gap:6px;margin-top:4px;}
+  .iconbtn{
+    width:36px;
+    height:36px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border:1px solid var(--rule);
+    border-radius:50%;
+    color:var(--ink);
+  }
+  .iconbtn.primary{
+    border-color:var(--accent);
+    background:var(--accent);
+    color:#fff;
+  }
+  .segs{
+    display:flex;
+    align-items:center;
+    gap:20px;
+    padding:0 20px;
+    border-bottom:1px solid var(--rule);
+  }
+  .seg{
+    padding:0 0 10px;
+    margin-bottom:-1px;
+    border-bottom:2px solid transparent;
+    color:var(--muted);
+    font-size:14px;
+    font-weight:600;
+  }
+  .seg.on{
+    border-bottom-color:var(--accent);
+    color:var(--accent);
+    font-weight:700;
+  }
+  .segs .count{
+    margin-left:auto;
+    padding-bottom:10px;
+    color:var(--ink);
+    font-size:13px;
+    font-weight:700;
+  }
+  .pinned{padding:12px 20px 14px;}
+  .plabel{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:7px;
+  }
+  .plabel strong{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    color:var(--accent);
+    font-size:12px;
+    letter-spacing:.09em;
+    text-transform:uppercase;
+  }
+  .plabel span{
+    color:var(--muted);
+    font-size:12px;
+  }
+  .visual{position:relative;}
+  .visual img{
+    width:350px;
+    height:120px;
+    display:block;
+    object-fit:cover;
+    background:#d9d9dd;
+    border-radius:12px;
+  }
+  .visual:after{
+    content:"";
+    position:absolute;
+    inset:0;
+    border-radius:12px;
+    background:linear-gradient(90deg,rgba(0,0,0,.58),rgba(0,0,0,.08) 76%);
+  }
+  .overlay{
+    position:absolute;
+    z-index:1;
+    left:14px;
+    bottom:12px;
+    color:#fff;
+  }
+  .overlay h2{
+    margin:0;
+    font-size:19px;
+    line-height:23px;
+  }
+  .overlay p{
+    margin:2px 0 0;
+    font-size:12px;
+    line-height:16px;
+  }
+  .buyerboard{
+    display:grid;
+    grid-template-columns:1fr 1fr 1fr;
+    gap:7px;
+    margin-top:9px;
+  }
+  .stat{
+    padding:7px 8px;
+    border-radius:9px;
+    background:var(--soft);
+  }
+  .stat small{
+    display:block;
+    color:var(--muted);
+    font-size:10px;
+    font-weight:700;
+    line-height:13px;
+    text-transform:uppercase;
+  }
+  .stat strong{
+    display:block;
+    overflow:hidden;
+    margin-top:1px;
+    font-size:12px;
+    line-height:16px;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+  .heroactions{
+    display:flex;
+    gap:8px;
+    margin-top:8px;
+  }
+  .heroactions span{
+    flex:1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:5px;
+    padding:6px;
+    border:1px solid var(--rule);
+    border-radius:9px;
+    font-size:12px;
+    font-weight:700;
+  }
+  .heroactions .book{
+    border-color:var(--accent);
+    background:var(--accent);
+    color:#fff;
+  }
+  .sechead{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    padding:12px 20px 8px;
+    border-top:1px solid var(--rule);
+  }
+  .sechead h3{
+    margin:0;
+    color:var(--muted);
+    font-size:12px;
+    font-weight:700;
+    letter-spacing:.09em;
+    text-transform:uppercase;
+  }
+  .sechead span{color:var(--muted);font-size:12px;}
+  .list{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+    margin:0;
+    padding:0 20px 10px;
+    list-style:none;
+  }
+  .list li{
+    min-width:0;
+    padding:9px;
+    border:1px solid var(--rule);
+    border-radius:11px;
+    background:#fff;
+  }
+  .cardtop{
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .list img{
+    width:44px;
+    height:44px;
+    display:block;
+    flex:none;
+    object-fit:cover;
+    background:#d9d9dd;
+    border-radius:10px;
+  }
+  .identity{min-width:0;}
+  .name{
+    overflow:hidden;
+    font-size:13px;
+    font-weight:700;
+    line-height:17px;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+  .area{
+    overflow:hidden;
+    color:var(--muted);
+    font-size:11px;
+    line-height:15px;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+  .last{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:4px;
+    margin-top:7px;
+    padding-top:6px;
+    border-top:1px solid var(--rule);
+    color:var(--muted);
+    font-size:10px;
+    line-height:14px;
+  }
+  .last strong{
+    color:var(--ink);
+    font-size:11px;
+  }
+  .tabbar{
+    margin-top:auto;
+    display:flex;
+    padding:10px 8px 14px;
+    border-top:1px solid var(--rule);
+  }
+  .tab{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:4px;
+    color:var(--muted);
+    font-size:12px;
+  }
+  .tab.on{color:var(--accent);font-weight:700;}
+</style>
+</head>
+<body>
+<div class="screen">
+  <header class="topbar">
+    <div>
+      <h1>Buyer book</h1>
+      <p class="sub">Keep every home search moving</p>
+    </div>
+    <div class="acts">
+      <span class="iconbtn" aria-label="Search buyers">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg>
+      </span>
+      <span class="iconbtn primary" aria-label="Add buyer">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      </span>
+    </div>
+  </header>
+
+  <nav class="segs">
+    <div class="seg on">Active</div>
+    <div class="seg">Watching</div>
+    <div class="seg">Closed</div>
+    <div class="count">7 buyers</div>
+  </nav>
+
+  <section class="pinned">
+    <div class="plabel">
+      <strong>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M14 2l8 8-3.2.6-4.2 4.2.6 4.4-2 2-4.1-4.1L4 22l-1-1 4.9-5.1L3.8 11.8l2-2 4.4.6L14.4 6.2 14 2z"/></svg>
+        Focus today
+      </strong>
+      <span>High intent</span>
+    </div>
+    <div class="visual">
+      <img src="https://loremflickr.com/350/120/street?lock=8300" width="350" height="120" alt="Cover photo of a tiled Lisbon side street saved to this collection">
+      <div class="overlay">
+        <h2>Maya Chen</h2>
+        <p>Silver Lake · Last showing Mar 12</p>
+      </div>
+    </div>
+    <div class="buyerboard">
+      <div class="stat"><small>Budget</small><strong>$1.2M</strong></div>
+      <div class="stat"><small>Saved</small><strong>14 homes</strong></div>
+      <div class="stat"><small>Next step</small><strong>Shortlist</strong></div>
+    </div>
+    <div class="heroactions">
+      <span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6.6 3.5l3 4-2.1 2.1a15 15 0 0 0 6.9 6.9l2.1-2.1 4 3c.3.2.4.6.2 1-1 1.8-2.7 2.6-4.8 2.2C9.6 19.3 4.7 14.4 3.4 8.1 3 6 3.8 4.3 5.6 3.3c.4-.2.8-.1 1 .2z"/></svg>
+        Call Maya
+      </span>
+      <span class="book">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="5" width="16" height="15" rx="2"/><line x1="8" y1="3" x2="8" y2="7"/><line x1="16" y1="3" x2="16" y2="7"/></svg>
+        Book showing
+      </span>
+    </div>
+  </section>
+
+  <div class="sechead">
+    <h3>All buyers</h3>
+    <span>Most recent first</span>
+  </div>
+
+  <ul class="list">
+    <li>
+      <div class="cardtop">
+        <img src="https://loremflickr.com/44/44/cafe?lock=8301" width="44" height="44" alt="Cover thumbnail of a coffee bar">
+        <div class="identity">
+          <div class="name">Marcus Lee</div>
+          <div class="area">Los Feliz</div>
+        </div>
+      </div>
+      <div class="last"><span>Last showing</span><strong>Mar 11</strong></div>
+    </li>
+    <li>
+      <div class="cardtop">
+        <img src="https://loremflickr.com/44/44/friends?lock=8302" width="44" height="44" alt="Cover thumbnail of a group hanging out">
+        <div class="identity">
+          <div class="name">Priya Shah</div>
+          <div class="area">Echo Park</div>
+        </div>
+      </div>
+      <div class="last"><span>Last showing</span><strong>Mar 9</strong></div>
+    </li>
+    <li>
+      <div class="cardtop">
+        <img src="https://loremflickr.com/44/44/party?lock=8303" width="44" height="44" alt="Cover thumbnail of a crowded night market party">
+        <div class="identity">
+          <div class="name">Jordan Kim</div>
+          <div class="area">Highland Park</div>
+        </div>
+      </div>
+      <div class="last"><span>Last showing</span><strong>Mar 6</strong></div>
+    </li>
+    <li>
+      <div class="cardtop">
+        <img src="https://loremflickr.com/44/44/street?lock=8304" width="44" height="44" alt="Cover thumbnail of a street style outfit">
+        <div class="identity">
+          <div class="name">Sofia Bennett</div>
+          <div class="area">Atwater Village</div>
+        </div>
+      </div>
+      <div class="last"><span>Last showing</span><strong>Mar 2</strong></div>
+    </li>
+    <li>
+      <div class="cardtop">
+        <img src="https://loremflickr.com/44/44/cafe?lock=8305" width="44" height="44" alt="Cover thumbnail of a table with books and coffee">
+        <div class="identity">
+          <div class="name">Nora Vance</div>
+          <div class="area">Pasadena</div>
+        </div>
+      </div>
+      <div class="last"><span>Last showing</span><strong>Feb 27</strong></div>
+    </li>
+    <li>
+      <div class="cardtop">
+        <img src="https://loremflickr.com/44/44/friends?lock=8306" width="44" height="44" alt="Cover thumbnail of cyclists on a morning ride">
+        <div class="identity">
+          <div class="name">Owen Brooks</div>
+          <div class="area">Eagle Rock</div>
+        </div>
+      </div>
+      <div class="last"><span>Last showing</span><strong>Feb 21</strong></div>
+    </li>
+  </ul>
+
+  <nav class="tabbar">
+    <div class="tab">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5L12 4l8 6.5V20a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1z"/></svg>
+      Home
+    </div>
+    <div class="tab">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><polygon points="15.5 8.5 10.5 10.5 8.5 15.5 13.5 13.5"/></svg>
+      Explore
+    </div>
+    <div class="tab">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12.5c0 3.9-3.6 7-8 7a9.5 9.5 0 0 1-2.6-.35L5 21l1.2-3.3A6.7 6.7 0 0 1 4 12.5c0-3.9 3.6-7 8-7s8 3.1 8 7z"/></svg>
+      Messages
+    </div>
+    <div class="tab on">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M7 3h10a2 2 0 0 1 2 2v16l-7-4.2L5 21V5a2 2 0 0 1 2-2z"/></svg>
+      Saved
+    </div>
+    <div class="tab">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8.5" r="3.8"/><path d="M4.8 20c1-3.4 3.8-5.2 7.2-5.2s6.2 1.8 7.2 5.2"/></svg>
+      Profile
+    </div>
+  </nav>
+</div>
+</body>
+</html>

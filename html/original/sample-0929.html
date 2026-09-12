@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Commonry Comments</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #d8d4d5;
+      color: #272326;
+      font-family: 'Source Serif 4', Georgia, serif;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      color: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #f3f1f2;
+    }
+
+    .topbar {
+      flex: none;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      background: #ffffff;
+      border-bottom: 1px solid #ded9db;
+    }
+
+    .icon-button {
+      width: 32px;
+      height: 32px;
+      padding: 5px;
+      display: grid;
+      place-items: center;
+      border: 0;
+      background: transparent;
+      cursor: pointer;
+    }
+
+    .topbar-copy {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .topbar h1 {
+      margin: 0;
+      font-size: 20px;
+      line-height: 24px;
+      font-weight: 600;
+    }
+
+    .topbar p {
+      margin: 1px 0 0;
+      color: #766d72;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .main {
+      min-height: 0;
+      flex: 1;
+      padding: 12px;
+    }
+
+    .post-card,
+    .comments-card {
+      background: #ffffff;
+      border-radius: 4px;
+    }
+
+    .post-card {
+      padding: 12px;
+      box-shadow: 0 2px 8px rgba(46, 35, 40, 0.09);
+    }
+
+    .author-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .monogram {
+      flex: none;
+      display: grid;
+      place-items: center;
+      border-radius: 4px;
+      background: #ead8de;
+      color: #914b63;
+      font-size: 14px;
+      line-height: 1;
+      font-weight: 600;
+    }
+
+    .author-avatar {
+      width: 36px;
+      height: 36px;
+    }
+
+    .comment-avatar {
+      width: 32px;
+      height: 32px;
+      background: #e6e2e3;
+      color: #5f565a;
+    }
+
+    .author-meta {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .author-name,
+    .comment-name {
+      margin: 0;
+      font-size: 14px;
+      line-height: 19px;
+      font-weight: 600;
+    }
+
+    .post-time,
+    .comment-time {
+      color: #81777c;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .post-text {
+      margin: 9px 0 10px;
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .post-photo {
+      width: 342px;
+      height: 112px;
+      display: block;
+      object-fit: cover;
+      border-radius: 4px;
+      background: #d4ced0;
+    }
+
+    .post-actions {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      margin-top: 9px;
+      color: #655c60;
+      font-size: 13px;
+      line-height: 20px;
+    }
+
+    .text-action {
+      padding: 0;
+      border: 0;
+      background: transparent;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .text-action.active {
+      color: #a84f6d;
+    }
+
+    .comments-heading {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin: 13px 2px 7px;
+    }
+
+    .comments-heading h2 {
+      margin: 0;
+      font-size: 16px;
+      line-height: 22px;
+      font-weight: 600;
+    }
+
+    .comments-heading span {
+      color: #81777c;
+      font-size: 12px;
+      line-height: 18px;
+    }
+
+    .comments-card {
+      border: 1px solid #e1dcde;
+    }
+
+    .comment {
+      display: grid;
+      grid-template-columns: 32px minmax(0, 1fr);
+      gap: 10px;
+      padding: 10px 12px;
+    }
+
+    .comment + .comment {
+      border-top: 1px solid #ece8e9;
+    }
+
+    .comment-body {
+      min-width: 0;
+    }
+
+    .comment-head {
+      display: flex;
+      align-items: baseline;
+      gap: 7px;
+    }
+
+    .comment-text {
+      margin: 2px 0 4px;
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .comment-actions {
+      display: flex;
+      gap: 14px;
+      color: #766d72;
+      font-size: 12px;
+      line-height: 17px;
+    }
+
+    .reply-marker {
+      color: #a84f6d;
+      font-weight: 600;
+    }
+
+    .composer {
+      flex: none;
+      padding: 11px 12px;
+      background: #ffffff;
+      border-top: 1px solid #ded9db;
+    }
+
+    .composer-form {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .composer input {
+      min-width: 0;
+      flex: 1;
+      height: 42px;
+      padding: 9px 11px;
+      border: 1px solid #d7d0d3;
+      border-radius: 4px;
+      outline: none;
+      background: #faf9f9;
+      color: #272326;
+      font-size: 14px;
+    }
+
+    .composer input::placeholder {
+      color: #8c8287;
+      opacity: 1;
+    }
+
+    .send-button {
+      height: 42px;
+      padding: 0 16px;
+      border: 1px solid #a84f6d;
+      border-radius: 4px;
+      background: #a84f6d;
+      color: #ffffff;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .tabbar {
+      flex: none;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      background: #ffffff;
+      border-top: 1px solid #ded9db;
+    }
+
+    .tab {
+      position: relative;
+      padding: 13px 4px 15px;
+      border: 0;
+      background: transparent;
+      color: #766d72;
+      font-size: 14px;
+      line-height: 18px;
+      cursor: pointer;
+    }
+
+    .tab.active {
+      color: #a84f6d;
+      font-weight: 600;
+    }
+
+    .tab.active::before {
+      content: "";
+      position: absolute;
+      top: -1px;
+      left: 24px;
+      right: 24px;
+      height: 3px;
+      background: #a84f6d;
+    }
+
+    svg {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <button class="icon-button" type="button" aria-label="Back to feed">
+        <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M15 5L8 12L15 19" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square" stroke-linejoin="miter"/>
+        </svg>
+      </button>
+      <div class="topbar-copy">
+        <h1>Comments</h1>
+        <p>Commonry neighborhood feed</p>
+      </div>
+      <button class="icon-button" type="button" aria-label="More options">
+        <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="5" cy="12" r="1.5" fill="currentColor"/>
+          <circle cx="12" cy="12" r="1.5" fill="currentColor"/>
+          <circle cx="19" cy="12" r="1.5" fill="currentColor"/>
+        </svg>
+      </button>
+    </header>
+
+    <main class="main">
+      <article class="post-card">
+        <div class="author-row">
+          <div class="monogram author-avatar" aria-hidden="true">JM</div>
+          <div class="author-meta">
+            <p class="author-name">June Mercer</p>
+            <div class="post-time">Today at 10:24 AM</div>
+          </div>
+        </div>
+
+        <p class="post-text">The corner café added a long community table. It made our Sunday meetup much easier.</p>
+
+        <img
+          class="post-photo"
+          src="https://loremflickr.com/342/112/cafe?lock=12290"
+          width="342"
+          height="112"
+          alt="A welcoming café interior with a shared table"
+        >
+
+        <div class="post-actions" aria-label="Post activity">
+          <button class="text-action active" type="button">12 likes</button>
+          <button class="text-action" type="button">Reply</button>
+          <span>3 comments</span>
+        </div>
+      </article>
+
+      <div class="comments-heading">
+        <h2>Conversation</h2>
+        <span>Newest last</span>
+      </div>
+
+      <section class="comments-card" aria-label="Comment thread">
+        <article class="comment">
+          <div class="monogram comment-avatar" aria-hidden="true">AS</div>
+          <div class="comment-body">
+            <div class="comment-head">
+              <p class="comment-name">Avery Stone</p>
+              <span class="comment-time">11:02 AM</span>
+            </div>
+            <p class="comment-text">Was it quiet enough for everyone to hear? Our book circle needs a new spot.</p>
+            <div class="comment-actions">
+              <button class="text-action" type="button">Like</button>
+              <button class="text-action" type="button">Reply</button>
+            </div>
+          </div>
+        </article>
+
+        <article class="comment">
+          <div class="monogram comment-avatar" aria-hidden="true">JM</div>
+          <div class="comment-body">
+            <div class="comment-head">
+              <p class="comment-name">June Mercer</p>
+              <span class="comment-time">11:16 AM</span>
+            </div>
+            <p class="comment-text"><span class="reply-marker">Avery,</span> yes. The back half stayed calm until noon.</p>
+            <div class="comment-actions">
+              <button class="text-action active" type="button">1 like</button>
+              <button class="text-action" type="button">Reply</button>
+            </div>
+          </div>
+        </article>
+
+        <article class="comment">
+          <div class="monogram comment-avatar" aria-hidden="true">CT</div>
+          <div class="comment-body">
+            <div class="comment-head">
+              <p class="comment-name">Caleb Turner</p>
+              <span class="comment-time">12:08 PM</span>
+            </div>
+            <p class="comment-text">I can reserve it for next Saturday if the group agrees.</p>
+            <div class="comment-actions">
+              <button class="text-action" type="button">Like</button>
+              <button class="text-action" type="button">Reply</button>
+            </div>
+          </div>
+        </article>
+      </section>
+    </main>
+
+    <div class="composer">
+      <form class="composer-form">
+        <input type="text" aria-label="Write a comment" placeholder="Add to the conversation">
+        <button class="send-button" type="submit">Post</button>
+      </form>
+    </div>
+
+    <nav class="tabbar" aria-label="Primary navigation">
+      <button class="tab active" type="button">Feed</button>
+      <button class="tab" type="button">Circles</button>
+      <button class="tab" type="button">Inbox</button>
+      <button class="tab" type="button">You</button>
+    </nav>
+  </div>
+</body>
+</html>

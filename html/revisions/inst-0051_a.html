@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Roamstead Booking Hold Timer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #dedbd6;
+      color: #332f2b;
+      font-family: 'Source Serif 4', Georgia, serif;
+    }
+
+    button {
+      font-family: inherit;
+    }
+
+    .screen {
+      width: 1024px;
+      height: 768px;
+      padding: 38px 52px 42px;
+      background: #f6f3ee;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 22px;
+      border-bottom: 1px solid #d9d1c8;
+    }
+
+    .brand {
+      margin: 0;
+      color: #5d493b;
+      font-size: 23px;
+      line-height: 28px;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+    }
+
+    .step {
+      margin: 0;
+      color: #776b61;
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .booking-hold {
+      margin-top: 30px;
+      display: grid;
+      grid-template-columns: 326px minmax(0, 1fr);
+      background: #fffdf9;
+      border: 1px solid #e1dbd3;
+      border-radius: 10px;
+      box-shadow: 0 16px 40px rgba(75, 61, 49, 0.08);
+    }
+
+    .lodging-panel {
+      background: #f0ebe4;
+      border-radius: 10px 0 0 10px;
+    }
+
+    .hotel-photo {
+      width: 326px;
+      height: 96px;
+      display: block;
+      object-fit: cover;
+      background: #d7d0c7;
+      border-radius: 9px 0 0 0;
+    }
+
+    .lodging-content {
+      padding: 25px 28px 28px;
+    }
+
+    .eyebrow {
+      margin: 0;
+      color: #806b59;
+      font-size: 12px;
+      line-height: 18px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .hotel-name {
+      margin: 6px 0 0;
+      color: #594638;
+      font-size: 25px;
+      line-height: 31px;
+      font-weight: 600;
+    }
+
+    .location {
+      margin: 4px 0 0;
+      color: #74675d;
+      font-size: 14px;
+      line-height: 21px;
+    }
+
+    .detail-list {
+      margin: 24px 0 0;
+      padding: 0;
+      list-style: none;
+      border-top: 1px solid #d8cfc5;
+    }
+
+    .detail-list li {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 11px 0;
+      border-bottom: 1px solid #d8cfc5;
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .detail-list span {
+      color: #776a60;
+    }
+
+    .detail-list strong {
+      color: #44382f;
+      font-weight: 600;
+      text-align: right;
+    }
+
+    .task-panel {
+      padding: 34px 40px 36px;
+    }
+
+    .service-label {
+      margin: 0;
+      color: #7c6958;
+      font-size: 12px;
+      line-height: 18px;
+      font-weight: 700;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 5px 0 0;
+      color: #5a4739;
+      font-size: 34px;
+      line-height: 41px;
+      font-weight: 600;
+    }
+
+    .intro {
+      margin: 8px 0 0;
+      color: #554d46;
+      font-size: 16px;
+      line-height: 24px;
+    }
+
+    .timer {
+      margin-top: 24px;
+      padding: 18px 22px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      background: #eee5dc;
+      border: 1px solid #dfd1c3;
+      border-radius: 8px;
+    }
+
+    .timer-copy {
+      min-width: 0;
+    }
+
+    .timer-label {
+      margin: 0;
+      color: #665b51;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 600;
+    }
+
+    .timer-note {
+      margin: 4px 0 0;
+      color: #76695e;
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .timer-value {
+      margin: 0;
+      color: #59483b;
+      font-size: 54px;
+      line-height: 62px;
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: 0.02em;
+      white-space: nowrap;
+    }
+
+    .stay-details {
+      margin: 20px 0 0;
+      color: #554c44;
+      font-size: 15px;
+      line-height: 22px;
+    }
+
+    .actions {
+      margin-top: 25px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .primary-action,
+    .secondary-action {
+      min-height: 50px;
+      border-radius: 7px;
+      cursor: pointer;
+      font-size: 16px;
+      line-height: 20px;
+    }
+
+    .primary-action {
+      flex: 1;
+      padding: 14px 24px;
+      border: 1px solid #604b3c;
+      background: #604b3c;
+      color: #fffdf9;
+      font-weight: 600;
+    }
+
+    .secondary-action {
+      padding: 14px 20px;
+      border: 1px solid #cabfb4;
+      background: transparent;
+      color: #68594d;
+      font-weight: 400;
+    }
+
+    .support {
+      margin: 18px 0 0;
+      color: #7a6f66;
+      font-size: 13px;
+      line-height: 19px;
+      text-align: center;
+    }
+
+    .page-note {
+      margin: 24px 0 0;
+      color: #71665d;
+      font-size: 14px;
+      line-height: 21px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <p class="brand">Roamstead</p>
+      <p class="step">Secure booking · Final step</p>
+    </header>
+
+    <article class="booking-hold" aria-labelledby="hold-title">
+      <section class="lodging-panel" aria-labelledby="hotel-title">
+        <img
+          class="hotel-photo"
+          src="https://loremflickr.com/326/96/hotel?lock=1670"
+          width="326"
+          height="96"
+          alt="Sunlit terrace at the Tidecourt Hotel in Lisbon"
+        >
+        <div class="lodging-content">
+          <p class="eyebrow">Your Lisbon stay</p>
+          <h2 class="hotel-name" id="hotel-title">Tidecourt Hotel</h2>
+          <p class="location">Lisbon, Portugal</p>
+
+          <ul class="detail-list" aria-label="Stay details">
+            <li><span>Dates</span><strong>May 18–21, 2026</strong></li>
+            <li><span>Guests</span><strong>2 guests</strong></li>
+            <li><span>Stay</span><strong>3 nights</strong></li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="task-panel">
+        <p class="service-label">Roamstead booking hold</p>
+        <h1 id="hold-title">Keep your Lisbon room</h1>
+        <p class="intro">Your selected room is held while you finish booking.</p>
+
+        <div class="timer" role="timer" aria-label="18 minutes and 42 seconds remaining">
+          <div class="timer-copy">
+            <p class="timer-label">Time remaining</p>
+            <p class="timer-note">Hold expires at 4:30 PM</p>
+          </div>
+          <p class="timer-value">18:42</p>
+        </div>
+
+        <p class="stay-details">Tidecourt Hotel · May 18–21, 2026 · 2 guests</p>
+
+        <div class="actions">
+          <button class="primary-action" type="button">Continue booking</button>
+          <button class="secondary-action" type="button">Release this room</button>
+        </div>
+
+        <p class="support">Your room remains unavailable to other travelers until the timer ends.</p>
+      </section>
+    </article>
+
+    <p class="page-note">Need help? Roamstead booking support is available during checkout.</p>
+  </div>
+</body>
+</html>

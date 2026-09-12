@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Billing — NurturePath</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #ececef;
+      color: #202024;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      position: relative;
+      width: 390px;
+      height: 844px;
+      background: #ffffff;
+      border: 1px solid #dedee3;
+    }
+
+    .topbar {
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1px solid #ececf0;
+    }
+
+    .back-button,
+    .help-button {
+      flex: 0 0 auto;
+      width: 38px;
+      height: 38px;
+      padding: 0;
+      display: grid;
+      place-items: center;
+      border: 0;
+      border-radius: 10px;
+      background: #f4f4f6;
+      color: #5c5c64;
+    }
+
+    .back-button svg,
+    .help-button svg {
+      width: 21px;
+      height: 21px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .topbar-title {
+      min-width: 0;
+      flex: 1;
+      margin: 0;
+      font-size: 19px;
+      line-height: 1.25;
+      font-weight: 680;
+      text-align: center;
+      letter-spacing: -0.2px;
+    }
+
+    main {
+      padding: 18px 18px 92px;
+    }
+
+    .plan-summary {
+      padding-bottom: 18px;
+      border-bottom: 1px solid #e7e7eb;
+    }
+
+    .plan-line {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    .plan-name {
+      margin: 0;
+      font-size: 18px;
+      line-height: 1.3;
+      font-weight: 680;
+    }
+
+    .status {
+      padding: 5px 9px;
+      border-radius: 999px;
+      background: #eaf7ef;
+      color: #32724f;
+      font-size: 11px;
+      line-height: 1.2;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.45px;
+    }
+
+    .plan-description {
+      margin: 5px 0 15px;
+      color: #717179;
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    .renewal-panel {
+      padding: 13px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      border-radius: 13px;
+      background: #f8edf2;
+    }
+
+    .renewal-label {
+      margin: 0 0 3px;
+      color: #75505f;
+      font-size: 11px;
+      line-height: 1.3;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+
+    .renewal-date {
+      margin: 0;
+      color: #473b40;
+      font-size: 13px;
+      line-height: 1.35;
+      font-weight: 550;
+    }
+
+    .renewal-amount {
+      flex: 0 0 auto;
+      margin: 0;
+      color: #d13270;
+      font-size: 26px;
+      line-height: 1;
+      font-weight: 700;
+      letter-spacing: -0.6px;
+    }
+
+    .settings-strip {
+      margin: 14px 0 0;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      border: 1px solid #e5e5e9;
+      border-radius: 12px;
+    }
+
+    .setting {
+      min-width: 0;
+      padding: 10px 8px;
+      text-align: center;
+      border-right: 1px solid #e8e8ec;
+    }
+
+    .setting:last-child {
+      border-right: 0;
+    }
+
+    .setting-label {
+      display: block;
+      color: #818189;
+      font-size: 10px;
+      line-height: 1.3;
+      text-transform: uppercase;
+      letter-spacing: 0.35px;
+    }
+
+    .setting-value {
+      display: block;
+      margin-top: 3px;
+      color: #2f2f34;
+      font-size: 12px;
+      line-height: 1.3;
+      font-weight: 650;
+      white-space: nowrap;
+    }
+
+    .section {
+      margin-top: 20px;
+    }
+
+    .section-top {
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .section-heading {
+      margin: 0;
+      font-size: 16px;
+      line-height: 1.35;
+      font-weight: 680;
+    }
+
+    .section-action {
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: #c8326b;
+      font-size: 12px;
+      line-height: 1.35;
+      font-weight: 650;
+    }
+
+    .invoice-timeline {
+      position: relative;
+    }
+
+    .invoice-timeline::before {
+      content: "";
+      position: absolute;
+      top: 18px;
+      bottom: 18px;
+      left: 16px;
+      width: 1px;
+      background: #e2c5d0;
+    }
+
+    .invoice-row {
+      position: relative;
+      padding: 0 0 14px 44px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .invoice-row:last-child {
+      padding-bottom: 0;
+    }
+
+    .timeline-marker {
+      position: absolute;
+      top: 4px;
+      left: 10px;
+      width: 13px;
+      height: 13px;
+      border: 3px solid #ffffff;
+      border-radius: 50%;
+      background: #d93876;
+      box-shadow: 0 0 0 1px #d93876;
+    }
+
+    .invoice-copy {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .invoice-date {
+      margin: 0;
+      color: #29292e;
+      font-size: 14px;
+      line-height: 1.35;
+      font-weight: 650;
+    }
+
+    .invoice-period {
+      margin: 3px 0 0;
+      color: #777780;
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    .invoice-period strong {
+      color: #5d5d65;
+      font-weight: 550;
+    }
+
+    .invoice-side {
+      flex: 0 0 auto;
+      text-align: right;
+    }
+
+    .invoice-amount {
+      display: block;
+      color: #29292e;
+      font-size: 14px;
+      line-height: 1.35;
+      font-weight: 650;
+    }
+
+    .invoice-status {
+      display: inline-block;
+      margin-top: 3px;
+      color: #3b7b57;
+      font-size: 11px;
+      line-height: 1.3;
+      font-weight: 650;
+    }
+
+    .manage-card {
+      margin-top: 20px;
+      padding: 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border: 1px solid #e4e4e8;
+      border-radius: 13px;
+      background: #fafafa;
+    }
+
+    .card-symbol {
+      flex: 0 0 auto;
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      border-radius: 10px;
+      background: #fff0f5;
+      color: #d03670;
+    }
+
+    .card-symbol svg {
+      width: 21px;
+      height: 21px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.7;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .manage-copy {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .manage-title {
+      margin: 0;
+      font-size: 13px;
+      line-height: 1.35;
+      font-weight: 650;
+    }
+
+    .manage-detail {
+      margin: 2px 0 0;
+      color: #74747c;
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    .manage-button {
+      flex: 0 0 auto;
+      padding: 7px 10px;
+      border: 0;
+      border-radius: 8px;
+      background: #d93876;
+      color: #ffffff;
+      font-size: 12px;
+      line-height: 1.3;
+      font-weight: 650;
+    }
+
+    .tabbar {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      padding: 8px 10px 10px;
+      display: flex;
+      align-items: stretch;
+      justify-content: space-around;
+      background: #ffffff;
+      border-top: 1px solid #dedee3;
+    }
+
+    .tab {
+      width: 80px;
+      padding: 5px 2px 3px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      border: 0;
+      border-radius: 10px;
+      background: transparent;
+      color: #76767e;
+      font-size: 12px;
+      line-height: 1.2;
+      font-weight: 500;
+    }
+
+    .tab.active {
+      color: #d93876;
+      background: #fff1f6;
+    }
+
+    .tab svg {
+      width: 21px;
+      height: 21px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.7;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <button class="back-button" type="button" aria-label="Go back">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="m15 18-6-6 6-6"></path>
+        </svg>
+      </button>
+      <h1 class="topbar-title">Subscription</h1>
+      <button class="help-button" type="button" aria-label="Billing help">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="12" r="9"></circle>
+          <path d="M9.7 9.1a2.5 2.5 0 0 1 4.8 1c0 1.9-2.5 2.1-2.5 3.8"></path>
+          <path d="M12 17.4h.01"></path>
+        </svg>
+      </button>
+    </header>
+
+    <main>
+      <section class="plan-summary" aria-labelledby="plan-heading-b">
+        <div class="plan-line">
+          <h2 class="plan-name" id="plan-heading-b">Recovery Plus</h2>
+          <span class="status">Active</span>
+        </div>
+        <p class="plan-description">Monthly support plan with automatic renewal.</p>
+
+        <div class="renewal-panel">
+          <div>
+            <p class="renewal-label">Next renewal</p>
+            <p class="renewal-date">April 18, 2025</p>
+          </div>
+          <p class="renewal-amount">$24.00</p>
+        </div>
+
+        <div class="settings-strip" aria-label="Subscription settings">
+          <div class="setting">
+            <span class="setting-label">Cycle</span>
+            <span class="setting-value">Monthly</span>
+          </div>
+          <div class="setting">
+            <span class="setting-label">Payment</span>
+            <span class="setting-value">•••• 4821</span>
+          </div>
+          <div class="setting">
+            <span class="setting-label">Renewal</span>
+            <span class="setting-value">Automatic</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" aria-labelledby="invoices-heading-b">
+        <div class="section-top">
+          <h2 class="section-heading" id="invoices-heading-b">Payment timeline</h2>
+          <button class="section-action" type="button">View all</button>
+        </div>
+
+        <div class="invoice-timeline">
+          <div class="invoice-row">
+            <span class="timeline-marker" aria-hidden="true"></span>
+            <div class="invoice-copy">
+              <p class="invoice-date">March 18, 2025</p>
+              <p class="invoice-period"><strong>Service:</strong> Mar 18 – Apr 17</p>
+            </div>
+            <div class="invoice-side">
+              <span class="invoice-amount">$24.00</span>
+              <span class="invoice-status">Paid</span>
+            </div>
+          </div>
+
+          <div class="invoice-row">
+            <span class="timeline-marker" aria-hidden="true"></span>
+            <div class="invoice-copy">
+              <p class="invoice-date">February 18, 2025</p>
+              <p class="invoice-period"><strong>Service:</strong> Feb 18 – Mar 17</p>
+            </div>
+            <div class="invoice-side">
+              <span class="invoice-amount">$24.00</span>
+              <span class="invoice-status">Paid</span>
+            </div>
+          </div>
+
+          <div class="invoice-row">
+            <span class="timeline-marker" aria-hidden="true"></span>
+            <div class="invoice-copy">
+              <p class="invoice-date">January 18, 2025</p>
+              <p class="invoice-period"><strong>Service:</strong> Jan 18 – Feb 17</p>
+            </div>
+            <div class="invoice-side">
+              <span class="invoice-amount">$24.00</span>
+              <span class="invoice-status">Paid</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="manage-card" aria-label="Manage payment method">
+        <span class="card-symbol" aria-hidden="true">
+          <svg viewBox="0 0 24 18">
+            <rect x="1.5" y="2" width="21" height="14" rx="2"></rect>
+            <path d="M1.5 6.5h21"></path>
+            <path d="M5 12h4"></path>
+          </svg>
+        </span>
+        <div class="manage-copy">
+          <p class="manage-title">Payment method</p>
+          <p class="manage-detail">Card ending in 4821</p>
+        </div>
+        <button class="manage-button" type="button">Manage</button>
+      </section>
+    </main>
+
+    <nav class="tabbar" aria-label="Primary navigation">
+      <button class="tab" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M4 11.5 12 5l8 6.5"></path>
+          <path d="M6.5 10.5V20h11v-9.5"></path>
+          <path d="M10 20v-5h4v5"></path>
+        </svg>
+        <span>Today</span>
+      </button>
+
+      <button class="tab" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M4 17V9"></path>
+          <path d="M9.3 17V5"></path>
+          <path d="M14.7 17v-4"></path>
+          <path d="M20 17V7"></path>
+          <path d="M3 20h18"></path>
+        </svg>
+        <span>Trends</span>
+      </button>
+
+      <button class="tab active" type="button" aria-current="page">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <rect x="3" y="5" width="18" height="14" rx="2"></rect>
+          <path d="M3 9h18"></path>
+          <path d="M7 15h4"></path>
+        </svg>
+        <span>Billing</span>
+      </button>
+
+      <button class="tab" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="8" r="3.5"></circle>
+          <path d="M5.5 20c.6-3.5 3-5.5 6.5-5.5s5.9 2 6.5 5.5"></path>
+        </svg>
+        <span>Profile</span>
+      </button>
+    </nav>
+  </div>
+</body>
+</html>

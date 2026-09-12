@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fernrow Seller Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #dde3df;
+      color: #1b2d23;
+      font-family: 'Source Sans 3', system-ui, sans-serif;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #fbfcfa;
+    }
+
+    .topbar {
+      flex: 0 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 16px 12px;
+    }
+
+    .brand-context,
+    .caption,
+    .metric-label,
+    .order-detail,
+    .tab {
+      font-size: 12px;
+      line-height: 1.3;
+    }
+
+    .brand-context {
+      margin: 0 0 2px;
+      color: #6d7c73;
+    }
+
+    h1,
+    h2,
+    h3 {
+      font-family: 'Playfair Display', Georgia, serif;
+    }
+
+    h1 {
+      margin: 0;
+      color: #183d29;
+      font-size: 21px;
+      line-height: 1.1;
+      font-weight: 700;
+    }
+
+    .date {
+      padding: 7px 10px;
+      border-radius: 14px;
+      background: rgba(36, 126, 76, 0.1);
+      color: #286445;
+      font-size: 12px;
+      line-height: 1.3;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    main {
+      flex: 1 1 auto;
+      min-height: 0;
+      padding: 2px 16px 10px;
+    }
+
+    .hero {
+      padding: 17px 18px 16px;
+      border-radius: 14px;
+      background: #22764a;
+      color: #ffffff;
+    }
+
+    .hero-label {
+      margin: 0 0 5px;
+      color: #d8ecdf;
+      font-size: 12px;
+      line-height: 1.3;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .hero-value {
+      margin: 0;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 34px;
+      line-height: 1.08;
+      font-weight: 700;
+    }
+
+    .hero-summary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-top: 13px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255, 255, 255, 0.22);
+    }
+
+    .hero-summary span {
+      font-size: 14px;
+      line-height: 1.3;
+    }
+
+    .hero-summary strong {
+      font-weight: 600;
+    }
+
+    .section-heading {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin: 17px 1px 9px;
+    }
+
+    .section-heading h2 {
+      margin: 0;
+      color: #193a29;
+      font-size: 17px;
+      line-height: 1.2;
+      font-weight: 700;
+    }
+
+    .section-heading span {
+      color: #758179;
+      font-size: 12px;
+      line-height: 1.3;
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .metric {
+      padding: 12px 13px;
+      border-radius: 14px;
+      background: rgba(36, 126, 76, 0.09);
+    }
+
+    .metric-label {
+      display: block;
+      margin-bottom: 4px;
+      color: #5d7165;
+    }
+
+    .metric-value {
+      display: block;
+      color: #173d28;
+      font-size: 21px;
+      line-height: 1.15;
+      font-weight: 600;
+    }
+
+    .metric-note {
+      display: block;
+      margin-top: 3px;
+      color: #607269;
+      font-size: 12px;
+      line-height: 1.3;
+    }
+
+    .orders {
+      overflow: hidden;
+      border-radius: 14px;
+      background: rgba(36, 126, 76, 0.07);
+    }
+
+    .order-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 12px;
+      padding: 11px 13px;
+    }
+
+    .order-row + .order-row {
+      border-top: 1px solid rgba(36, 126, 76, 0.12);
+    }
+
+    .order-name {
+      margin: 0 0 2px;
+      overflow: hidden;
+      color: #20362a;
+      font-size: 14px;
+      line-height: 1.3;
+      font-weight: 600;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .order-detail {
+      margin: 0;
+      color: #718077;
+    }
+
+    .order-value {
+      color: #1c492f;
+      font-size: 14px;
+      line-height: 1.3;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .orders-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 13px 14px;
+      border-top: 1px solid rgba(36, 126, 76, 0.16);
+      background: #22764a;
+      color: #ffffff;
+      font-size: 14px;
+      line-height: 1.3;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .orders-footer .count {
+      color: #d8ecdf;
+      font-size: 12px;
+      line-height: 1.3;
+      font-weight: 400;
+      white-space: nowrap;
+    }
+
+    .tabbar {
+      flex: 0 0 auto;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      padding: 8px 10px 10px;
+      background: #f1f5f2;
+    }
+
+    .tab {
+      position: relative;
+      padding: 10px 2px 8px;
+      color: #718078;
+      text-align: center;
+      font-weight: 600;
+    }
+
+    .tab.active {
+      color: #216e47;
+    }
+
+    .tab.active::before {
+      position: absolute;
+      top: 3px;
+      left: 50%;
+      width: 20px;
+      height: 3px;
+      border-radius: 14px;
+      background: #267a4e;
+      content: "";
+      transform: translateX(-50%);
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <div>
+        <p class="brand-context">Seller workspace</p>
+        <h1>Fernrow Market</h1>
+      </div>
+      <div class="date">May 18, 2025</div>
+    </header>
+
+    <main>
+      <section class="hero" aria-labelledby="sales-title">
+        <p class="hero-label" id="sales-title">Sales today</p>
+        <p class="hero-value">$8,462.70</p>
+        <div class="hero-summary">
+          <span><strong>126</strong> orders</span>
+          <span><strong>$67.16</strong> average order</span>
+        </div>
+      </section>
+
+      <section aria-labelledby="performance-title">
+        <div class="section-heading">
+          <h2 id="performance-title">Store performance</h2>
+          <span>Updated 2:40 PM</span>
+        </div>
+        <div class="metrics">
+          <article class="metric">
+            <span class="metric-label">Pending fulfillment</span>
+            <span class="metric-value">38</span>
+            <span class="metric-note">12 due today</span>
+          </article>
+          <article class="metric">
+            <span class="metric-label">Visitors</span>
+            <span class="metric-value">3,284</span>
+            <span class="metric-note">4.2% converted</span>
+          </article>
+          <article class="metric">
+            <span class="metric-label">Items sold</span>
+            <span class="metric-value">184</span>
+            <span class="metric-note">1.46 per order</span>
+          </article>
+          <article class="metric">
+            <span class="metric-label">Returns</span>
+            <span class="metric-value">6</span>
+            <span class="metric-note">$214.80 in value</span>
+          </article>
+        </div>
+      </section>
+
+      <section aria-labelledby="orders-title">
+        <div class="section-heading">
+          <h2 id="orders-title">Recent orders</h2>
+          <span>Newest first</span>
+        </div>
+        <div class="orders">
+          <article class="order-row">
+            <div>
+              <p class="order-name">Avery Collins</p>
+              <p class="order-detail">Order FM-2841 · 3 items</p>
+            </div>
+            <div class="order-value">$148.50</div>
+          </article>
+          <article class="order-row">
+            <div>
+              <p class="order-name">Morgan Hayes</p>
+              <p class="order-detail">Order FM-2840 · 1 item</p>
+            </div>
+            <div class="order-value">$72.00</div>
+          </article>
+          <article class="order-row">
+            <div>
+              <p class="order-name">Jordan Reed</p>
+              <p class="order-detail">Order FM-2839 · 2 items</p>
+            </div>
+            <div class="order-value">$96.40</div>
+          </article>
+          <article class="order-row">
+            <div>
+              <p class="order-name">Taylor Bennett</p>
+              <p class="order-detail">Order FM-2838 · 4 items</p>
+            </div>
+            <div class="order-value">$221.75</div>
+          </article>
+          <a class="orders-footer" href="#all-orders">
+            <span>View all orders</span>
+            <span class="count">126 today</span>
+          </a>
+        </div>
+      </section>
+    </main>
+
+    <nav class="tabbar" aria-label="Primary navigation">
+      <div class="tab active">Overview</div>
+      <div class="tab">Orders</div>
+      <div class="tab">Reports</div>
+      <div class="tab">Settings</div>
+    </nav>
+  </div>
+</body>
+</html>

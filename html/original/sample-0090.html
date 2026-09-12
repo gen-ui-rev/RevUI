@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Rowan Street Club — Chat</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body {
+    min-height: 100vh; display: flex; justify-content: center; align-items: flex-start;
+    padding: 40px 0; margin: 0; background: #55524e;
+    font-family: 'Source Sans 3', system-ui, sans-serif;
+  }
+  .screen {
+    width: 390px; height: 844px; background: #f1f0ee; display: flex; flex-direction: column;
+    color: #26231f;
+  }
+
+  /* top bar */
+  .topbar {
+    background: #ffffff; border-bottom: 1px solid #e3e0dc;
+    padding: 10px 14px; display: flex; align-items: center; gap: 10px;
+  }
+  .iconbtn { display: flex; align-items: center; justify-content: center; color: #4a4642; }
+  .mono {
+    width: 34px; height: 34px; border-radius: 4px; background: #2f2c29; color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 600; letter-spacing: .04em; flex-shrink: 0;
+  }
+  .titlewrap { flex: 1; min-width: 0; }
+  .titlewrap h1 {
+    font-family: 'Playfair Display', Georgia, serif; font-weight: 600; font-size: 17px;
+    margin: 0; line-height: 21px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .titlewrap p {
+    margin: 0; font-size: 12px; line-height: 15px; color: #827c75;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+
+  /* pinned */
+  .pinned {
+    background: #ffffff; border-bottom: 1px solid #e3e0dc;
+    padding: 9px 14px 9px 11px; display: flex; align-items: center; gap: 9px;
+    border-left: 3px solid #e2660f;
+  }
+  .pinned span.k { font-size: 12px; font-weight: 600; color: #e2660f; flex-shrink: 0; }
+  .pinned span.t {
+    font-size: 13px; line-height: 18px; color: #4a4642; min-width: 0;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+
+  /* thread */
+  .thread {
+    flex: 1; display: flex; flex-direction: column; justify-content: flex-end;
+    padding: 12px 14px 10px;
+  }
+  .divider {
+    text-align: center; font-size: 12px; line-height: 16px; letter-spacing: .1em;
+    text-transform: uppercase; color: #8f8981; margin-bottom: 12px;
+  }
+  .msg { display: flex; gap: 8px; margin-bottom: 12px; }
+  .msg .av {
+    width: 30px; height: 30px; border-radius: 4px; background: #6d6862; color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 600; flex-shrink: 0; margin-top: 18px;
+  }
+  .meta { font-size: 12px; line-height: 16px; color: #8f8981; margin-bottom: 4px; }
+  .meta b { font-weight: 600; color: #4a4642; }
+  .bubble {
+    background: #fff; border-radius: 4px; padding: 10px 12px; max-width: 250px;
+    font-size: 15px; line-height: 20px; box-shadow: 0 1px 2px rgba(0,0,0,.07);
+  }
+  .out { justify-content: flex-end; }
+  .out .bubble { background: #e2660f; color: #fff; }
+
+  /* link card */
+  .card-link { padding: 6px; display: flex; gap: 10px; align-items: center; width: 250px; }
+  .card-link img { width: 56px; height: 56px; border-radius: 4px; object-fit: cover; display: block; background: #ded9d3; }
+  .card-link .lt { min-width: 0; }
+  .card-link .lt strong { display: block; font-size: 14px; line-height: 18px; font-weight: 600; }
+  .card-link .lt span {
+    display: block; font-size: 12px; line-height: 16px; color: #8f8981; margin-top: 3px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+
+  /* photo message */
+  .card-photo { padding: 6px; width: 212px; }
+  .card-photo img { width: 200px; height: 100px; border-radius: 4px; object-fit: cover; display: block; background: #ded9d3; }
+  .card-photo p { margin: 6px 2px 2px; font-size: 14px; line-height: 20px; }
+
+  /* payment request */
+  .card-pay { padding: 12px; width: 250px; }
+  .card-pay .lbl { font-size: 12px; line-height: 16px; font-weight: 600; color: #e2660f; }
+  .card-pay .row { display: flex; align-items: center; justify-content: space-between; margin-top: 6px; }
+  .card-pay .amt { font-family: 'Playfair Display', Georgia, serif; font-weight: 700; font-size: 24px; line-height: 30px; }
+  .card-pay .btn {
+    background: #e2660f; color: #fff; font-size: 14px; font-weight: 600;
+    padding: 7px 16px; border-radius: 4px; line-height: 18px;
+  }
+  .card-pay .sub { margin-top: 4px; font-size: 12px; line-height: 16px; color: #8f8981; }
+
+  .receipt { text-align: right; font-size: 12px; line-height: 16px; color: #8f8981; }
+
+  /* composer */
+  .composer {
+    background: #fff; border-top: 1px solid #e3e0dc; padding: 9px 12px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .attach {
+    width: 34px; height: 34px; border-radius: 4px; background: #f1f0ee; color: #55514c;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .field {
+    flex: 1; background: #f1f0ee; border-radius: 4px; padding: 8px 12px;
+    font-size: 15px; line-height: 20px; color: #9a948e;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .send {
+    width: 36px; height: 36px; border-radius: 4px; background: #e2660f; color: #fff;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+
+  /* tabs */
+  .tabs {
+    background: #fff; border-top: 1px solid #e3e0dc; padding: 7px 0 9px;
+    display: flex; justify-content: space-around; align-items: flex-start;
+  }
+  .tab { display: flex; flex-direction: column; align-items: center; gap: 3px; color: #8f8981; }
+  .tab span { font-size: 12px; line-height: 15px; }
+  .tab.on { color: #e2660f; }
+  .tab.on span { font-weight: 600; }
+</style>
+</head>
+<body>
+  <div class="screen">
+
+    <header class="topbar">
+      <div class="iconbtn" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
+      </div>
+      <div class="mono">RS</div>
+      <div class="titlewrap">
+        <h1>Rowan Street Club</h1>
+        <p>Dana, Maren, Priya and you</p>
+      </div>
+      <div class="iconbtn" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5"/><path d="M12 8h.01"/></svg>
+      </div>
+    </header>
+
+    <div class="pinned">
+      <span class="k">Pinned</span>
+      <span class="t">Vote on adding 40 NGT shares closes Friday</span>
+    </div>
+
+    <main class="thread">
+      <div class="divider">Today</div>
+
+      <div class="msg">
+        <div class="av">DW</div>
+        <div>
+          <div class="meta"><b>Dana Whitfield</b> · 2:14 PM</div>
+          <div class="bubble">Northgate filed early. Occupancy is up to 94% and they held the dividend.</div>
+        </div>
+      </div>
+
+      <div class="msg">
+        <div class="av">PR</div>
+        <div>
+          <div class="meta"><b>Priya Raval</b> · 2:18 PM</div>
+          <div class="bubble card-link">
+            <img src="https://loremflickr.com/56/56/architecture?lock=2124" width="56" height="56" alt="Exterior of the Northgate office tower held by the trust">
+            <div class="lt">
+              <strong>Northgate REIT: Q3 filing</strong>
+              <span>northgateinvestor.com</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="msg">
+        <div class="av">MC</div>
+        <div>
+          <div class="meta"><b>Maren Cho</b> · 2:26 PM</div>
+          <div class="bubble card-photo">
+            <img src="https://loremflickr.com/200/100/chart?lock=2121" width="200" height="100" alt="Chart comparing the club's cost basis with the sector since June">
+            <p>Our basis against the sector since June.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="msg out">
+        <div class="bubble">Fine adding 40 shares if cash stays above $2,000.</div>
+      </div>
+
+      <div class="msg">
+        <div class="av">DW</div>
+        <div>
+          <div class="meta"><b>Dana Whitfield</b> · 2:41 PM</div>
+          <div class="bubble card-pay">
+            <div class="lbl">Payment request</div>
+            <div class="row">
+              <div class="amt">$250.00</div>
+              <div class="btn">Pay</div>
+            </div>
+            <div class="sub">October contribution · due Oct 1</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="receipt">Read by 3 · 2:43 PM</div>
+    </main>
+
+    <div class="composer">
+      <div class="attach" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
+      </div>
+      <div class="field">Message Rowan Street</div>
+      <div class="send" aria-hidden="true">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"/><path d="M13 6l6 6-6 6"/></svg>
+      </div>
+    </div>
+
+    <nav class="tabs">
+      <div class="tab">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11l8-6 8 6v8a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1z"/></svg>
+        <span>Home</span>
+      </div>
+      <div class="tab">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 19V10"/><path d="M12 19V5"/><path d="M19 19v-6"/></svg>
+        <span>Holdings</span>
+      </div>
+      <div class="tab on">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 15a2 2 0 0 1-2 2H8l-4 3V6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2z"/></svg>
+        <span>Chats</span>
+      </div>
+      <div class="tab">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c1.2-3.6 4-5.2 7-5.2s5.8 1.6 7 5.2"/></svg>
+        <span>Account</span>
+      </div>
+    </nav>
+
+  </div>
+</body>
+</html>

@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Comments</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      min-height: 100%;
+    }
+
+    body {
+      min-height: 100vh;
+      padding: 32px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #e8e5e1;
+      color: #272522;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      color: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #fbfaf8;
+      border: 1px solid #d7d2cc;
+    }
+
+    .topbar {
+      flex: 0 0 auto;
+      min-height: 58px;
+      display: grid;
+      grid-template-columns: 44px 1fr 44px;
+      align-items: center;
+      padding: 0 10px;
+      border-bottom: 1px solid #e1ddd8;
+      background: #fbfaf8;
+    }
+
+    .topbar h1 {
+      margin: 0;
+      text-align: center;
+      font-size: 18px;
+      line-height: 24px;
+      font-weight: 650;
+      letter-spacing: -0.2px;
+    }
+
+    .icon-button {
+      width: 40px;
+      height: 40px;
+      padding: 0;
+      display: grid;
+      place-items: center;
+      border: 0;
+      background: transparent;
+    }
+
+    .icon-button svg {
+      width: 22px;
+      height: 22px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .content {
+      flex: 1 1 auto;
+      min-height: 0;
+      padding: 0 18px;
+    }
+
+    .post-context {
+      padding: 17px 0 16px;
+      border-bottom: 1px solid #ddd8d2;
+    }
+
+    .author-line,
+    .comment-head {
+      display: flex;
+      align-items: center;
+      min-width: 0;
+    }
+
+    .avatar {
+      flex: 0 0 auto;
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: #c9beb2;
+    }
+
+    .avatar.clay {
+      background: #bda99c;
+    }
+
+    .avatar.sand {
+      background: #d5c8b8;
+    }
+
+    .avatar.stone {
+      background: #b9b7ae;
+    }
+
+    .avatar.rose {
+      background: #c9b2ab;
+    }
+
+    .author-copy {
+      min-width: 0;
+      margin-left: 11px;
+    }
+
+    .author-name,
+    .comment-name {
+      margin: 0;
+      font-size: 14px;
+      line-height: 19px;
+      font-weight: 650;
+    }
+
+    .post-time,
+    .comment-time {
+      margin: 1px 0 0;
+      color: #7a746e;
+      font-size: 12px;
+      line-height: 17px;
+      font-weight: 400;
+    }
+
+    .post-text {
+      margin: 13px 0 0;
+      font-size: 15px;
+      line-height: 22px;
+      font-weight: 400;
+    }
+
+    .post-meta {
+      margin-top: 11px;
+      display: flex;
+      align-items: center;
+      gap: 17px;
+      color: #706a64;
+      font-size: 13px;
+      line-height: 18px;
+    }
+
+    .post-meta span {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .post-meta svg {
+      width: 17px;
+      height: 17px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.7;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .section-heading {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      padding: 14px 0 10px;
+    }
+
+    .section-heading h2 {
+      margin: 0;
+      font-size: 16px;
+      line-height: 22px;
+      font-weight: 650;
+    }
+
+    .section-heading span {
+      color: #8b7566;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 650;
+    }
+
+    .comment {
+      padding: 12px 0;
+      border-top: 1px solid #e5e1dc;
+    }
+
+    .comment:first-of-type {
+      border-top: 0;
+    }
+
+    .comment-body {
+      min-width: 0;
+      margin-left: 11px;
+      flex: 1 1 auto;
+    }
+
+    .comment-top {
+      display: flex;
+      align-items: baseline;
+      gap: 7px;
+    }
+
+    .comment-text {
+      margin: 4px 0 0;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 400;
+    }
+
+    .comment-actions {
+      margin-top: 6px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      color: #716b65;
+      font-size: 12px;
+      line-height: 17px;
+      font-weight: 650;
+    }
+
+    .comment-actions button {
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: inherit;
+      font-size: inherit;
+      font-weight: inherit;
+    }
+
+    .comment-actions .liked {
+      color: #8b7566;
+    }
+
+    .reply {
+      margin: 2px 0 0 47px;
+      padding: 10px 0 2px 13px;
+      border-left: 2px solid #c2b4a8;
+    }
+
+    .reply .avatar {
+      width: 30px;
+      height: 30px;
+      border-radius: 9px;
+    }
+
+    .reply .comment-body {
+      margin-left: 10px;
+    }
+
+    .reply .comment-text {
+      margin-top: 3px;
+    }
+
+    .composer {
+      flex: 0 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      border-top: 1px solid #ddd8d2;
+      background: #fbfaf8;
+    }
+
+    .composer .avatar {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      background: #afa69c;
+    }
+
+    .input-shell {
+      min-width: 0;
+      flex: 1 1 auto;
+      display: flex;
+      align-items: center;
+      padding: 5px 5px 5px 13px;
+      border: 1px solid #cfc8c1;
+      border-radius: 14px;
+      background: #fff;
+    }
+
+    .input-shell input {
+      min-width: 0;
+      flex: 1 1 auto;
+      height: 30px;
+      padding: 0;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      color: #272522;
+      font-size: 14px;
+    }
+
+    .input-shell input::placeholder {
+      color: #8b8580;
+      opacity: 1;
+    }
+
+    .send-button {
+      flex: 0 0 auto;
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      padding: 0;
+      border: 0;
+      border-radius: 14px;
+      background: #8b7566;
+      color: #fff;
+    }
+
+    .send-button svg {
+      width: 17px;
+      height: 17px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.9;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .tabbar {
+      flex: 0 0 auto;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      padding: 7px 8px 9px;
+      border-top: 1px solid #ddd8d2;
+      background: #f7f5f2;
+    }
+
+    .tab {
+      min-width: 0;
+      padding: 2px 0 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      border: 0;
+      background: transparent;
+      color: #77716b;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 400;
+    }
+
+    .tab svg {
+      width: 21px;
+      height: 21px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.7;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .tab.active {
+      color: #806b5d;
+      font-weight: 650;
+    }
+
+    .tab.active svg {
+      fill: #d8ccc1;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <button class="icon-button" type="button" aria-label="Go back">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M15 18l-6-6 6-6"></path>
+        </svg>
+      </button>
+      <h1>Comments</h1>
+      <button class="icon-button" type="button" aria-label="More options">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="5" cy="12" r="1"></circle>
+          <circle cx="12" cy="12" r="1"></circle>
+          <circle cx="19" cy="12" r="1"></circle>
+        </svg>
+      </button>
+    </header>
+
+    <main class="content">
+      <section class="post-context" aria-label="Post">
+        <div class="author-line">
+          <div class="avatar clay" aria-hidden="true"></div>
+          <div class="author-copy">
+            <p class="author-name">Mara Bell</p>
+            <p class="post-time">Today at 9:42 AM · Oak Street Circle</p>
+          </div>
+        </div>
+        <p class="post-text">Does anyone know a quiet place nearby to work for a few hours? The library meeting rooms are booked this afternoon.</p>
+        <div class="post-meta">
+          <span>
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M20.8 4.6a5.4 5.4 0 0 0-7.6 0L12 5.8l-1.2-1.2a5.4 5.4 0 0 0-7.6 7.6L12 21l8.8-8.8a5.4 5.4 0 0 0 0-7.6z"></path>
+            </svg>
+            18 likes
+          </span>
+          <span>
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z"></path>
+            </svg>
+            24 comments
+          </span>
+        </div>
+      </section>
+
+      <section aria-labelledby="comment-heading">
+        <div class="section-heading">
+          <h2 id="comment-heading">Conversation</h2>
+          <span>Newest first</span>
+        </div>
+
+        <article class="comment">
+          <div class="comment-head">
+            <div class="avatar sand" aria-hidden="true"></div>
+            <div class="comment-body">
+              <div class="comment-top">
+                <p class="comment-name">Nolan Price</p>
+                <p class="comment-time">10 min ago</p>
+              </div>
+              <p class="comment-text">Juniper Café keeps the back room quiet until 4 PM. Outlets are along the window wall.</p>
+              <div class="comment-actions">
+                <button type="button">Reply</button>
+                <button class="liked" type="button">Like · 6</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="reply">
+            <div class="comment-head">
+              <div class="avatar rose" aria-hidden="true"></div>
+              <div class="comment-body">
+                <div class="comment-top">
+                  <p class="comment-name">Mara Bell</p>
+                  <p class="comment-time">6 min ago</p>
+                </div>
+                <p class="comment-text">That sounds perfect. Thank you.</p>
+                <div class="comment-actions">
+                  <button type="button">Reply</button>
+                  <button type="button">Like</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="comment">
+          <div class="comment-head">
+            <div class="avatar stone" aria-hidden="true"></div>
+            <div class="comment-body">
+              <div class="comment-top">
+                <p class="comment-name">Elise Warren</p>
+                <p class="comment-time">22 min ago</p>
+              </div>
+              <p class="comment-text">The community center has open tables upstairs. I worked there yesterday and it was calm.</p>
+              <div class="comment-actions">
+                <button type="button">Reply</button>
+                <button type="button">Like · 3</button>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="comment">
+          <div class="comment-head">
+            <div class="avatar clay" aria-hidden="true"></div>
+            <div class="comment-body">
+              <div class="comment-top">
+                <p class="comment-name">Caleb North</p>
+                <p class="comment-time">31 min ago</p>
+              </div>
+              <p class="comment-text">The garden room at Birch Market is another option before the lunch crowd arrives.</p>
+              <div class="comment-actions">
+                <button type="button">Reply</button>
+                <button type="button">Like · 1</button>
+              </div>
+            </div>
+          </div>
+        </article>
+      </section>
+    </main>
+
+    <form class="composer">
+      <div class="avatar" aria-hidden="true"></div>
+      <div class="input-shell">
+        <input type="text" aria-label="Add a comment" placeholder="Add a comment…">
+        <button class="send-button" type="submit" aria-label="Post comment">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 19V5"></path>
+            <path d="M6.5 10.5L12 5l5.5 5.5"></path>
+          </svg>
+        </button>
+      </div>
+    </form>
+
+    <nav class="tabbar" aria-label="Primary navigation">
+      <button class="tab" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M3 11.5L12 4l9 7.5"></path>
+          <path d="M5.5 10v10h13V10"></path>
+        </svg>
+        <span>Home</span>
+      </button>
+      <button class="tab active" type="button" aria-current="page">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z"></path>
+        </svg>
+        <span>Circles</span>
+      </button>
+      <button class="tab" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="11" cy="11" r="7"></circle>
+          <path d="M20 20l-4-4"></path>
+        </svg>
+        <span>Explore</span>
+      </button>
+      <button class="tab" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="8" r="4"></circle>
+          <path d="M4.5 21a7.5 7.5 0 0 1 15 0"></path>
+        </svg>
+        <span>Profile</span>
+      </button>
+    </nav>
+  </div>
+</body>
+</html>

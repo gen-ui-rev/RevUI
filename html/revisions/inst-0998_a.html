@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Halo — Share feedback</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    min-height: 100vh;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #d7dbe0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    color: #16202b;
+  }
+  .screen {
+    width: 1024px;
+    height: 768px;
+    display: flex;
+    position: relative;
+    background: #f4f6f8;
+    border: 1px solid #cdd3da;
+    box-shadow: 0 18px 50px rgba(29, 41, 57, 0.16);
+  }
+
+  .sidebar {
+    width: 224px;
+    flex: none;
+    display: flex;
+    flex-direction: column;
+    background: #ffffff;
+    border-right: 1px solid #e1e6eb;
+    padding: 24px 16px 18px;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding: 0 10px 25px;
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+  }
+  .brand-mark {
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #0284c7;
+    color: #ffffff;
+    font-size: 17px;
+  }
+  .nav-label {
+    margin: 0 10px 9px;
+    color: #919aa4;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .nav {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-radius: 8px;
+    padding: 10px 12px;
+    color: #66717d;
+    font-size: 14px;
+    font-weight: 500;
+  }
+  .nav-item svg { flex: none; }
+  .nav-item.on {
+    background: #e8f4fa;
+    color: #0278b5;
+    font-weight: 650;
+  }
+  .account {
+    margin-top: auto;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-top: 1px solid #edf0f3;
+    padding: 17px 8px 0;
+  }
+  .avatar {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    flex: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #dcecf4;
+    color: #036a9c;
+    font-size: 12px;
+    font-weight: 700;
+  }
+  .account-name {
+    margin: 0;
+    font-size: 13px;
+    font-weight: 650;
+  }
+  .account-meta {
+    margin: 2px 0 0;
+    font-size: 11px;
+    color: #8a949f;
+  }
+
+  .workspace {
+    min-width: 0;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  .topbar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 18px 28px;
+    background: #ffffff;
+    border-bottom: 1px solid #e1e6eb;
+  }
+  .back {
+    width: 34px;
+    height: 34px;
+    flex: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #dde3e8;
+    border-radius: 8px;
+    color: #46525f;
+  }
+  .topbar h1 {
+    margin: 0;
+    font-size: 19px;
+    line-height: 24px;
+    font-weight: 650;
+  }
+  .topbar p {
+    margin: 3px 0 0;
+    font-size: 12px;
+    color: #84909b;
+  }
+
+  .content {
+    flex: 1;
+    padding: 25px 34px 27px;
+  }
+  .form {
+    width: 100%;
+    max-width: 690px;
+    margin: 0 auto;
+  }
+  .card {
+    margin-bottom: 14px;
+    padding: 19px 20px;
+    background: #ffffff;
+    border: 1px solid #e4e8ec;
+    border-radius: 11px;
+    box-shadow: 0 1px 3px rgba(16, 24, 40, 0.05);
+  }
+  .q {
+    margin: 0;
+    font-size: 15px;
+    line-height: 21px;
+    font-weight: 650;
+  }
+  .hint {
+    margin: 5px 0 0;
+    color: #7c8792;
+    font-size: 12px;
+    line-height: 17px;
+  }
+  .scale {
+    display: flex;
+    gap: 9px;
+    margin-top: 15px;
+  }
+  .scale span {
+    flex: 1;
+    padding: 10px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #dce2e7;
+    border-radius: 8px;
+    color: #52606d;
+    background: #ffffff;
+    font-size: 14px;
+  }
+  .scale span.on {
+    border-color: #0284c7;
+    background: #0284c7;
+    color: #ffffff;
+    font-weight: 650;
+  }
+  .scale-ends {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 7px;
+    color: #8b949f;
+    font-size: 11px;
+  }
+  .note {
+    margin-top: 13px;
+    padding: 11px 12px;
+    border: 1px solid #dce2e7;
+    border-radius: 8px;
+    background: #fbfcfd;
+    color: #38434f;
+    font-size: 13px;
+    line-height: 19px;
+  }
+  .count {
+    margin: 7px 0 0;
+    color: #8b949f;
+    font-size: 11px;
+    text-align: right;
+  }
+  .form-footer {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    margin-top: 17px;
+  }
+  .privacy {
+    min-width: 0;
+    flex: 1;
+    display: flex;
+    align-items: flex-start;
+    gap: 9px;
+  }
+  .privacy svg {
+    flex: none;
+    margin-top: 1px;
+    color: #0284c7;
+  }
+  .privacy p {
+    margin: 0;
+    color: #697581;
+    font-size: 11px;
+    line-height: 16px;
+  }
+  .submit {
+    flex: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    background: #0284c7;
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 650;
+    text-align: center;
+    box-shadow: 0 1px 2px rgba(2, 132, 199, 0.2);
+  }
+</style>
+</head>
+<body>
+  <div class="screen">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark">H</div>
+        <span>Halo</span>
+      </div>
+
+      <p class="nav-label">Workspace</p>
+      <nav class="nav">
+        <div class="nav-item">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 4l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/></svg>
+          Home
+        </div>
+        <div class="nav-item">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 9.6 9.6 0 0 1-3.1-.5L4 21l1.6-4.1A8.2 8.2 0 0 1 3.6 11.5C3.6 6.9 7.6 3.5 12 3.5s9 3.4 9 8z"/></svg>
+          Chats
+        </div>
+        <div class="nav-item">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M2.8 20a6.2 6.2 0 0 1 12.4 0"/><path d="M17 11.2A2.8 2.8 0 1 0 17 5.6"/></svg>
+          Circles
+        </div>
+        <div class="nav-item on">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 16v-4"/><path d="M12 8.5h.01"/></svg>
+          Support
+        </div>
+      </nav>
+
+      <div class="account">
+        <div class="avatar">DW</div>
+        <div>
+          <p class="account-name">Dana Whitfield</p>
+          <p class="account-meta">Halo member</p>
+        </div>
+      </div>
+    </aside>
+
+    <main class="workspace">
+      <header class="topbar">
+        <div class="back">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </div>
+        <div>
+          <h1>Tell us about Halo</h1>
+          <p>Your feedback helps us improve the experience.</p>
+        </div>
+      </header>
+
+      <div class="content">
+        <div class="form">
+          <section class="card">
+            <p class="q">How likely are you to keep using Halo next month?</p>
+            <div class="scale">
+              <span>1</span><span>2</span><span>3</span><span class="on">4</span><span>5</span>
+            </div>
+            <div class="scale-ends"><span>Not likely</span><span>Very likely</span></div>
+          </section>
+
+          <section class="card">
+            <p class="q">What would make Halo better for you?</p>
+            <p class="hint">Group invites, notifications, anything else.</p>
+            <div class="note">Group threads get buried once a chat goes quiet for a few days. I would like to pin two or three of them to the top of the list.</div>
+            <p class="count">168 / 600</p>
+          </section>
+
+          <div class="form-footer">
+            <div class="privacy">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+              <p>Sent privately to the Halo product team as Dana Whitfield. It is never posted to your profile or shown to other members.</p>
+            </div>
+            <div class="submit">Send feedback</div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

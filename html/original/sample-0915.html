@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tandem — Notifications</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --sky:#0a84c8;
+    --sky-soft:#e6f3fb;
+    --ink:#161c22;
+    --mid:#5a6672;
+    --line:#e7eaee;
+    --ground:#f2f4f7;
+  }
+  *{box-sizing:border-box;}
+  body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    padding:40px 0;
+    margin:0;
+    background:#d8dbe0;
+    font-family:'Roboto', system-ui, sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .screen{
+    width:390px;
+    height:844px;
+    background:var(--ground);
+    position:relative;
+    display:flex;
+    flex-direction:column;
+  }
+
+  /* Top bar */
+  .topbar{
+    background:#ffffff;
+    border-bottom:1px solid var(--line);
+    padding:18px 16px 14px;
+  }
+  .topbar-row{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    gap:12px;
+  }
+  .title{
+    font-size:24px;
+    font-weight:700;
+    color:var(--ink);
+    letter-spacing:-0.2px;
+    margin:0;
+  }
+  .mark{
+    font-size:14px;
+    font-weight:500;
+    color:var(--sky);
+  }
+  .subline{
+    margin-top:6px;
+    font-size:13px;
+    color:var(--mid);
+  }
+  .count{
+    display:inline-block;
+    background:var(--sky);
+    color:#fff;
+    font-size:12px;
+    font-weight:500;
+    line-height:18px;
+    padding:0 8px;
+    border-radius:6px;
+    margin-right:8px;
+  }
+
+  /* Filters */
+  .filters{
+    display:flex;
+    gap:8px;
+    padding:12px 16px 4px;
+  }
+  .chip{
+    font-size:13px;
+    font-weight:500;
+    color:var(--mid);
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:6px;
+    padding:7px 13px;
+    line-height:16px;
+  }
+  .chip.on{
+    background:var(--sky);
+    border-color:var(--sky);
+    color:#fff;
+  }
+
+  /* Body */
+  .list{
+    flex:1;
+    padding:10px 16px 0;
+  }
+  .section-label{
+    font-size:12px;
+    font-weight:500;
+    letter-spacing:0.6px;
+    text-transform:uppercase;
+    color:#7b8794;
+    margin:12px 2px 8px;
+  }
+  .card{
+    background:#fff;
+    border-radius:6px;
+    box-shadow:0 1px 3px rgba(22,28,34,0.10);
+    overflow:hidden;
+  }
+  .row{
+    display:flex;
+    align-items:flex-start;
+    gap:12px;
+    padding:14px;
+    border-bottom:1px solid var(--line);
+  }
+  .row:last-child{border-bottom:none;}
+  .mono{
+    width:40px;
+    height:40px;
+    flex:0 0 40px;
+    border-radius:6px;
+    background:#eaeef2;
+    color:#54606c;
+    font-size:14px;
+    font-weight:500;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    letter-spacing:0.3px;
+  }
+  .row.unread .mono{
+    background:var(--sky-soft);
+    color:var(--sky);
+  }
+  .body{flex:1;min-width:0;}
+  .text{
+    font-size:14px;
+    line-height:19px;
+    color:#3d4852;
+    margin:0;
+  }
+  .row.unread .text{color:var(--ink);}
+  .who{font-weight:500;color:var(--ink);}
+  .item{color:#3d4852;}
+  .meta{
+    margin-top:5px;
+    font-size:12px;
+    color:#7b8794;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .dot{
+    width:8px;
+    height:8px;
+    flex:0 0 8px;
+    border-radius:50%;
+    background:var(--sky);
+    margin-top:7px;
+  }
+  .dot.hide{background:transparent;}
+
+  /* Tab bar */
+  .tabbar{
+    display:flex;
+    background:#fff;
+    border-top:1px solid var(--line);
+    padding:8px 8px 14px;
+  }
+  .tab{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:4px;
+    font-size:11px;
+    color:#8a949e;
+  }
+  .tab.active{color:var(--sky);font-weight:500;}
+  .tab svg{display:block;}
+</style>
+</head>
+<body>
+  <div class="screen">
+
+    <header class="topbar">
+      <div class="topbar-row">
+        <h1 class="title">Notifications</h1>
+        <span class="mark">Mark all read</span>
+      </div>
+      <div class="subline"><span class="count">3 unread</span>Activity from your 4 shared spaces</div>
+    </header>
+
+    <div class="filters">
+      <span class="chip on">All</span>
+      <span class="chip">Unread</span>
+      <span class="chip">Mentions</span>
+      <span class="chip">Assigned</span>
+    </div>
+
+    <main class="list">
+      <div class="section-label">Today</div>
+      <div class="card">
+
+        <div class="row unread">
+          <div class="mono">ME</div>
+          <div class="body">
+            <p class="text"><span class="who">Maya Ellsworth</span> assigned you <span class="item">Q3 pricing review</span></p>
+            <div class="meta">Roadmap · 9:42 AM</div>
+          </div>
+          <div class="dot"></div>
+        </div>
+
+        <div class="row unread">
+          <div class="mono">DP</div>
+          <div class="body">
+            <p class="text"><span class="who">Dev Patel</span> left 2 comments on <span class="item">Onboarding copy v4</span></p>
+            <div class="meta">Design Sprint · 8:15 AM</div>
+          </div>
+          <div class="dot"></div>
+        </div>
+
+        <div class="row">
+          <div class="mono">CV</div>
+          <div class="body">
+            <p class="text"><span class="who">Colin Vega</span> shared the folder <span class="item">Client Handoff</span> with you</p>
+            <div class="meta">Files · 7:50 AM</div>
+          </div>
+          <div class="dot hide"></div>
+        </div>
+
+      </div>
+
+      <div class="section-label">Earlier</div>
+      <div class="card">
+
+        <div class="row unread">
+          <div class="mono">RF</div>
+          <div class="body">
+            <p class="text"><span class="who">Renee Fischer</span> mentioned you in <span class="item">Weekly Notes — Aug 12</span></p>
+            <div class="meta">Team Notes · Yesterday, 4:12 PM</div>
+          </div>
+          <div class="dot"></div>
+        </div>
+
+        <div class="row">
+          <div class="mono">PN</div>
+          <div class="body">
+            <p class="text"><span class="who">Priya Nandakumar</span> approved your changes to <span class="item">Sprint 14 scope</span></p>
+            <div class="meta">Roadmap · Yesterday, 11:03 AM</div>
+          </div>
+          <div class="dot hide"></div>
+        </div>
+
+        <div class="row">
+          <div class="mono">TB</div>
+          <div class="body">
+            <p class="text"><span class="who">Tomas Bright</span> added 3 tasks to <span class="item">Launch checklist</span></p>
+            <div class="meta">Launch · Mon, 5:26 PM</div>
+          </div>
+          <div class="dot hide"></div>
+        </div>
+
+      </div>
+    </main>
+
+    <nav class="tabbar">
+      <div class="tab">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5 12 4l8 6.5V20a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1z"/></svg>
+        Home
+      </div>
+      <div class="tab">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6h11M9 12h11M9 18h11"/><path d="m3.5 5.8 1.3 1.4L7.2 4.6"/><path d="m3.5 11.8 1.3 1.4 2.4-2.6"/><path d="m3.5 17.8 1.3 1.4 2.4-2.6"/></svg>
+        Tasks
+      </div>
+      <div class="tab active">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8.5a6 6 0 1 0-12 0c0 5-2 6.5-2 6.5h16s-2-1.5-2-6.5z"/><path d="M10.5 19a2 2 0 0 0 3 0"/></svg>
+        Inbox
+      </div>
+      <div class="tab">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8.5" r="3.7"/><path d="M4.8 20c.9-3.4 3.7-5.2 7.2-5.2s6.3 1.8 7.2 5.2"/></svg>
+        You
+      </div>
+    </nav>
+
+  </div>
+</body>
+</html>

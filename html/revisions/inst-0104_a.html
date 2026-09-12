@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Nutriscope — Scan Meal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;}
+  body{
+    min-height:100vh;display:flex;justify-content:center;align-items:flex-start;
+    padding:32px 0;margin:0;background:#d8dadd;
+    font-family:'Poppins',system-ui,sans-serif;color:#1c1e21;
+  }
+  .screen{
+    position:relative;width:768px;height:1024px;background:#f1f2f4;
+  }
+
+  .rail{
+    position:absolute;left:0;top:0;bottom:0;width:88px;
+    background:#ffffff;border-right:1px solid #e1e3e6;
+    display:flex;flex-direction:column;align-items:center;
+    padding:22px 10px 18px;
+  }
+  .brand{
+    width:44px;height:44px;border-radius:12px;background:#4b5058;color:#ffffff;
+    display:flex;align-items:center;justify-content:center;
+    font-size:18px;font-weight:600;
+  }
+  .tabs{
+    flex:1;width:100%;display:flex;flex-direction:column;
+    justify-content:center;gap:14px;
+  }
+  .tab{
+    width:100%;padding:11px 4px;border-radius:12px;
+    display:flex;flex-direction:column;align-items:center;gap:5px;
+    color:#8d9298;
+  }
+  .tab span{font-size:11px;font-weight:500;}
+  .tab.on{background:#eef0f2;color:#4b5058;}
+  .tab.on span{font-weight:600;}
+  .profile{
+    width:42px;height:42px;border-radius:12px;background:#e6e8eb;
+    display:flex;align-items:center;justify-content:center;
+    color:#62676d;font-size:13px;font-weight:600;
+  }
+
+  .main{margin-left:88px;padding:0 24px 24px;}
+  .topbar{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:20px 0;
+  }
+  .titleblock h1{font-size:22px;font-weight:600;margin:0 0 2px;}
+  .titleblock p{font-size:12px;color:#747a80;margin:0;}
+  .topactions{display:flex;gap:10px;}
+  .iconbtn{
+    width:40px;height:40px;border-radius:11px;background:#ffffff;
+    box-shadow:0 1px 3px rgba(16,18,20,.10);
+    display:flex;align-items:center;justify-content:center;
+  }
+
+  .workspace{
+    display:grid;grid-template-columns:394px 214px;gap:18px;align-items:start;
+  }
+  .finder{
+    position:relative;height:924px;border-radius:14px;
+    background:#6d7278;overflow:hidden;
+  }
+  .finder:before{
+    content:"";position:absolute;left:34px;right:34px;top:190px;height:500px;
+    border-radius:50%;background:#767b81;
+  }
+  .hint{
+    position:absolute;top:18px;left:50%;transform:translateX(-50%);
+    background:#ffffff;border-radius:10px;padding:8px 13px;
+    font-size:12px;font-weight:500;white-space:nowrap;
+  }
+  .frame{position:absolute;left:35px;top:244px;width:324px;height:360px;}
+  .c{position:absolute;width:42px;height:42px;border:4px solid rgba(255,255,255,.94);}
+  .c.tl{left:0;top:0;border-right:0;border-bottom:0;border-radius:12px 0 0 0;}
+  .c.tr{right:0;top:0;border-left:0;border-bottom:0;border-radius:0 12px 0 0;}
+  .c.bl{left:0;bottom:0;border-right:0;border-top:0;border-radius:0 0 0 12px;}
+  .c.br{right:0;bottom:0;border-left:0;border-top:0;border-radius:0 0 12px 0;}
+  .plate{
+    position:absolute;left:70px;top:326px;width:254px;height:190px;
+    border-radius:50%;background:#858a90;
+    box-shadow:inset 0 0 0 16px rgba(255,255,255,.06);
+  }
+  .status{
+    position:absolute;left:18px;bottom:18px;display:flex;align-items:center;gap:8px;
+    background:rgba(28,30,33,.64);border-radius:10px;padding:8px 11px;
+  }
+  .status span{font-size:12px;font-weight:500;color:#ffffff;}
+  .dot{width:7px;height:7px;border-radius:50%;background:#ffffff;}
+
+  .sidecard{
+    background:#ffffff;border-radius:12px;padding:16px;
+    box-shadow:0 1px 3px rgba(16,18,20,.08);
+  }
+  .sidecard + .sidecard{margin-top:16px;}
+  .sectiontitle{margin:0 0 12px;font-size:14px;font-weight:600;}
+  .modes{display:flex;flex-direction:column;gap:8px;}
+  .chip{
+    width:100%;border-radius:10px;padding:10px 12px;
+    font-size:13px;font-weight:500;background:#f1f2f4;color:#656a70;
+  }
+  .chip.on{background:#4b5058;color:#ffffff;}
+  .capture-row{
+    display:flex;align-items:center;justify-content:space-between;
+  }
+  .thumb,.flip{
+    width:44px;height:44px;border-radius:11px;
+  }
+  .thumb{background:#c3c6ca;}
+  .flip{
+    background:#f1f2f4;display:flex;align-items:center;justify-content:center;
+  }
+  .shutter{
+    width:66px;height:66px;border-radius:50%;background:#ffffff;
+    border:3px solid #4b5058;display:flex;align-items:center;justify-content:center;
+  }
+  .shutter i{display:block;width:50px;height:50px;border-radius:50%;background:#4b5058;}
+
+  .cardtop{display:flex;align-items:baseline;justify-content:space-between;gap:8px;}
+  .cardtop p{margin:0;font-size:13px;font-weight:500;}
+  .cardtop b{font-size:13px;font-weight:600;color:#4b5058;white-space:nowrap;}
+  .bar{height:6px;border-radius:10px;background:#e6e7ea;margin:12px 0 14px;}
+  .bar i{display:block;width:50%;height:100%;border-radius:10px;background:#4b5058;}
+  .entry{padding:10px 0;border-top:1px solid #eceef0;}
+  .entry:first-of-type{border-top:0;padding-top:0;}
+  .entry strong{display:block;font-size:12px;font-weight:600;margin-bottom:2px;}
+  .entry span{display:block;font-size:11px;color:#7a7f85;line-height:1.5;}
+  .summary{
+    margin:12px 0 0;padding-top:11px;border-top:1px solid #eceef0;
+    font-size:11px;line-height:1.55;color:#6f747a;
+  }
+  .tip{
+    margin-top:16px;border:1px solid #dfe2e5;border-radius:12px;padding:14px;
+    color:#61666c;
+  }
+  .tip strong{display:block;font-size:12px;margin-bottom:5px;color:#363a3f;}
+  .tip p{margin:0;font-size:11px;line-height:1.55;}
+</style>
+</head>
+<body>
+  <div class="screen">
+    <aside class="rail">
+      <div class="brand" aria-label="Nutriscope">N</div>
+      <nav class="tabs" aria-label="Primary navigation">
+        <div class="tab">
+          <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5 12 4l8 6.5V20a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1z"/></svg>
+          <span>Today</span>
+        </div>
+        <div class="tab">
+          <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5h14M5 12h14M5 19h9"/></svg>
+          <span>Diary</span>
+        </div>
+        <div class="tab on">
+          <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8.5A1.5 1.5 0 0 1 5.5 7h2L9 5h6l1.5 2h2A1.5 1.5 0 0 1 20 8.5V17a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 17z"/><circle cx="12" cy="12.8" r="3"/></svg>
+          <span>Scan</span>
+        </div>
+        <div class="tab">
+          <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 19V11M12 19V6M19 19v-5"/></svg>
+          <span>Trends</span>
+        </div>
+      </nav>
+      <div class="profile">AM</div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div class="titleblock">
+          <h1>Scan Meal</h1>
+          <p>Capture your plate to estimate nutrition</p>
+        </div>
+        <div class="topactions">
+          <div class="iconbtn" aria-label="Close">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1c1e21" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+          </div>
+          <div class="iconbtn" aria-label="Flash off">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1c1e21" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L4 14h6l-1 8 9-12h-6l1-8z"/></svg>
+          </div>
+        </div>
+      </header>
+
+      <div class="workspace">
+        <section class="finder" aria-label="Camera viewfinder">
+          <div class="hint">Center the full plate in the frame</div>
+          <div class="plate"></div>
+          <div class="frame">
+            <div class="c tl"></div><div class="c tr"></div>
+            <div class="c bl"></div><div class="c br"></div>
+          </div>
+          <div class="status"><i class="dot"></i><span>Focus locked · auto detect on</span></div>
+        </section>
+
+        <aside>
+          <section class="sidecard">
+            <h2 class="sectiontitle">Scan mode</h2>
+            <div class="modes">
+              <div class="chip on">Meal</div>
+              <div class="chip">Nutrition label</div>
+              <div class="chip">Barcode</div>
+            </div>
+          </section>
+
+          <section class="sidecard">
+            <h2 class="sectiontitle">Capture</h2>
+            <div class="capture-row">
+              <div class="thumb" aria-label="Choose from library"></div>
+              <div class="shutter" aria-label="Capture"><i></i></div>
+              <div class="flip" aria-label="Switch camera">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4b5058" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8V6a2 2 0 0 1 2-2h3"/><path d="M20 16v2a2 2 0 0 1-2 2h-3"/><path d="M8 20H6a2 2 0 0 1-2-2v-2"/><path d="M16 4h2a2 2 0 0 1 2 2v2"/><circle cx="12" cy="12" r="3.2"/></svg>
+              </div>
+            </div>
+          </section>
+
+          <section class="sidecard">
+            <div class="cardtop">
+              <p>Meals logged today</p>
+              <b>2 of 4</b>
+            </div>
+            <div class="bar"><i></i></div>
+            <div class="entry">
+              <strong>Chicken bowl</strong>
+              <span>12:40 PM · 710 kcal</span>
+            </div>
+            <div class="entry">
+              <strong>Greek yogurt</strong>
+              <span>8:15 AM · 530 kcal</span>
+            </div>
+            <p class="summary">1,240 kcal so far today</p>
+          </section>
+
+          <div class="tip">
+            <strong>For a clearer scan</strong>
+            <p>Keep the entire plate visible and avoid strong shadows.</p>
+          </div>
+        </aside>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

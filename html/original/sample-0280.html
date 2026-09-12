@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Morrow Ledger Research Cart</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 32px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #e9e8ec;
+      color: #211f24;
+      font-family: 'Source Sans 3', system-ui, sans-serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #ffffff;
+      border: 1px solid #d8d5dc;
+    }
+
+    .topbar {
+      min-height: 56px;
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #dedbe2;
+      flex-shrink: 0;
+    }
+
+    .icon-button {
+      width: 34px;
+      height: 34px;
+      padding: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #343038;
+      background: transparent;
+      border: 0;
+    }
+
+    .icon-button svg {
+      width: 21px;
+      height: 21px;
+      stroke: currentColor;
+    }
+
+    .service-name {
+      font-size: 16px;
+      line-height: 22px;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+    }
+
+    main {
+      flex: 1;
+      padding: 14px 16px 12px;
+    }
+
+    h1,
+    h2 {
+      margin: 0;
+      font-family: 'Playfair Display', Georgia, serif;
+      color: #211f24;
+    }
+
+    h1 {
+      font-size: 29px;
+      line-height: 36px;
+      font-weight: 700;
+    }
+
+    h2 {
+      font-size: 21px;
+      line-height: 28px;
+      font-weight: 600;
+    }
+
+    .intro p {
+      margin: 2px 0 0;
+      color: #6c6670;
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .count {
+      color: #6f36a8;
+      font-weight: 600;
+    }
+
+    .list-tools {
+      margin-top: 10px;
+      padding-bottom: 7px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #dedbe2;
+      color: #65606a;
+      font-size: 13px;
+      line-height: 20px;
+    }
+
+    .clear-button,
+    .remove-button {
+      padding: 0;
+      color: #6f36a8;
+      background: transparent;
+      border: 0;
+      font-size: 13px;
+      line-height: 20px;
+      font-weight: 600;
+    }
+
+    .cart-list {
+      margin-top: 0;
+    }
+
+    .cart-item {
+      padding: 10px 0;
+      display: flex;
+      gap: 12px;
+      border-bottom: 1px solid #dedbe2;
+    }
+
+    .cart-item img {
+      width: 64px;
+      height: 72px;
+      flex: 0 0 auto;
+      display: block;
+      object-fit: cover;
+      background: #d9d5df;
+      border-radius: 4px;
+    }
+
+    .item-info {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .item-title {
+      margin: 0;
+      overflow: hidden;
+      color: #272329;
+      font-size: 15px;
+      line-height: 19px;
+      font-weight: 600;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .item-meta {
+      margin: 2px 0 6px;
+      color: #76707a;
+      font-size: 12px;
+      line-height: 17px;
+    }
+
+    .item-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .quantity {
+      display: inline-flex;
+      align-items: center;
+      border: 1px solid #cbc6cf;
+      border-radius: 4px;
+    }
+
+    .quantity button {
+      width: 27px;
+      height: 27px;
+      padding: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #413b45;
+      background: #ffffff;
+      border: 0;
+      font-size: 18px;
+      line-height: 1;
+    }
+
+    .quantity span {
+      width: 28px;
+      text-align: center;
+      color: #28242a;
+      font-size: 14px;
+      line-height: 27px;
+      font-weight: 600;
+      border-right: 1px solid #dedbe2;
+      border-left: 1px solid #dedbe2;
+    }
+
+    .item-price {
+      margin-left: auto;
+      color: #262228;
+      font-size: 15px;
+      line-height: 20px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .summary {
+      margin-top: 12px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #dedbe2;
+    }
+
+    .summary-row {
+      margin-bottom: 4px;
+      display: flex;
+      justify-content: space-between;
+      color: #625c66;
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .summary-row span:last-child {
+      color: #29252b;
+    }
+
+    .total-row {
+      margin-top: 9px;
+      padding-top: 9px;
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      border-top: 1px solid #dedbe2;
+    }
+
+    .total-price {
+      color: #6f36a8;
+      font-size: 20px;
+      line-height: 26px;
+      font-weight: 600;
+    }
+
+    .checkout-button {
+      width: 100%;
+      height: 48px;
+      margin-top: 12px;
+      padding: 0 16px;
+      color: #ffffff;
+      background: #6f36a8;
+      border: 1px solid #6f36a8;
+      border-radius: 4px;
+      font-size: 16px;
+      line-height: 22px;
+      font-weight: 600;
+    }
+
+    .tabbar {
+      min-height: 66px;
+      padding: 7px 11px 6px;
+      display: flex;
+      align-items: stretch;
+      justify-content: space-around;
+      border-top: 1px solid #dedbe2;
+      flex-shrink: 0;
+    }
+
+    .tab {
+      width: 68px;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      color: #76707a;
+      background: transparent;
+      border: 0;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .tab svg {
+      width: 21px;
+      height: 21px;
+      stroke: currentColor;
+    }
+
+    .tab.active {
+      color: #6f36a8;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <button class="icon-button" type="button" aria-label="Go back">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M15 18 9 12l6-6"></path>
+        </svg>
+      </button>
+      <div class="service-name">Morrow Ledger</div>
+      <button class="icon-button" type="button" aria-label="View secure purchases">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M12 3 5.5 5.7v5.5c0 4.1 2.7 7.8 6.5 9.8 3.8-2 6.5-5.7 6.5-9.8V5.7L12 3Z"></path>
+          <path d="m9.5 12 1.7 1.7 3.5-3.7"></path>
+        </svg>
+      </button>
+    </header>
+
+    <main>
+      <section class="intro">
+        <h1>Research cart</h1>
+        <p><span class="count">4 titles</span> · 5 licenses delivered to your library</p>
+      </section>
+
+      <div class="list-tools">
+        <span>Digital research licenses</span>
+        <button class="clear-button" type="button">Clear cart</button>
+      </div>
+
+      <section class="cart-list" aria-label="Cart items">
+        <article class="cart-item">
+          <img src="https://loremflickr.com/64/72/chart?lock=4290" width="64" height="72" alt="Market chart on the report cover">
+          <div class="item-info">
+            <p class="item-title">Market Cycle Field Guide</p>
+            <p class="item-meta">2025 PDF license · $28 each</p>
+            <div class="item-actions">
+              <div class="quantity" aria-label="Quantity one">
+                <button type="button" aria-label="Decrease quantity">−</button>
+                <span>1</span>
+                <button type="button" aria-label="Increase quantity">+</button>
+              </div>
+              <button class="remove-button" type="button">Remove</button>
+              <span class="item-price">$28</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="cart-item">
+          <img src="https://loremflickr.com/64/72/office?lock=4291" width="64" height="72" alt="Investment office on the portfolio report cover">
+          <div class="item-info">
+            <p class="item-title">Income Portfolio Review</p>
+            <p class="item-meta">2025 PDF license · $34 each</p>
+            <div class="item-actions">
+              <div class="quantity" aria-label="Quantity two">
+                <button type="button" aria-label="Decrease quantity">−</button>
+                <span>2</span>
+                <button type="button" aria-label="Increase quantity">+</button>
+              </div>
+              <button class="remove-button" type="button">Remove</button>
+              <span class="item-price">$68</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="cart-item">
+          <img src="https://loremflickr.com/64/72/city?lock=4292" width="64" height="72" alt="Downtown skyline on the city growth data book">
+          <div class="item-info">
+            <p class="item-title">City Growth Data Book</p>
+            <p class="item-meta">2025 PDF license · $22 each</p>
+            <div class="item-actions">
+              <div class="quantity" aria-label="Quantity one">
+                <button type="button" aria-label="Decrease quantity">−</button>
+                <span>1</span>
+                <button type="button" aria-label="Increase quantity">+</button>
+              </div>
+              <button class="remove-button" type="button">Remove</button>
+              <span class="item-price">$22</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="cart-item">
+          <img src="https://loremflickr.com/64/72/architecture?lock=4293" width="64" height="72" alt="Modern building on the cash flow guide cover">
+          <div class="item-info">
+            <p class="item-title">Cash Flow Scenario Guide</p>
+            <p class="item-meta">2025 PDF license · $18 each</p>
+            <div class="item-actions">
+              <div class="quantity" aria-label="Quantity one">
+                <button type="button" aria-label="Decrease quantity">−</button>
+                <span>1</span>
+                <button type="button" aria-label="Increase quantity">+</button>
+              </div>
+              <button class="remove-button" type="button">Remove</button>
+              <span class="item-price">$18</span>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <section class="summary" aria-labelledby="order-total-heading">
+        <div class="summary-row">
+          <span>Subtotal</span>
+          <span>$136.00</span>
+        </div>
+        <div class="summary-row">
+          <span>Estimated tax</span>
+          <span>$10.88</span>
+        </div>
+        <div class="summary-row">
+          <span>Library delivery</span>
+          <span>Included</span>
+        </div>
+        <div class="total-row">
+          <h2 id="order-total-heading">Order total</h2>
+          <span class="total-price">$146.88</span>
+        </div>
+      </section>
+
+      <button class="checkout-button" type="button">Continue to checkout</button>
+    </main>
+
+    <nav class="tabbar" aria-label="Primary navigation">
+      <button class="tab" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M3.5 10.5 12 3l8.5 7.5"></path>
+          <path d="M5.5 9.5V21h13V9.5"></path>
+          <path d="M9.5 21v-6h5v6"></path>
+        </svg>
+        <span>Home</span>
+      </button>
+      <button class="tab" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="11" cy="11" r="6.5"></circle>
+          <path d="m16 16 4 4"></path>
+        </svg>
+        <span>Explore</span>
+      </button>
+      <button class="tab" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M5 4.5h14v15H5z"></path>
+          <path d="M8.5 8h7"></path>
+          <path d="M8.5 12h7"></path>
+          <path d="M8.5 16h4"></path>
+        </svg>
+        <span>Library</span>
+      </button>
+      <button class="tab active" type="button" aria-current="page">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M4 5h2l1.5 9.5h9.8l2-6.5H7"></path>
+          <circle cx="10" cy="19" r="1.2"></circle>
+          <circle cx="17" cy="19" r="1.2"></circle>
+        </svg>
+        <span>Cart</span>
+      </button>
+    </nav>
+  </div>
+</body>
+</html>

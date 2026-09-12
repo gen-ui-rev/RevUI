@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dayfold Store Rankings</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #dfe3e2;
+      color: #24312f;
+      font-family: 'Source Serif 4', Georgia, serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #fbfcfb;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 11px 16px;
+    }
+
+    .brand {
+      color: #173f3b;
+      font-size: 20px;
+      line-height: 28px;
+      font-weight: 600;
+      letter-spacing: -0.2px;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .icon-button {
+      position: relative;
+      width: 32px;
+      height: 32px;
+      padding: 6px;
+      display: grid;
+      place-items: center;
+      border: 0;
+      border-radius: 6px;
+      background: #edf4f3;
+      color: #315b57;
+    }
+
+    .icon-button svg,
+    .bookmark-button svg {
+      display: block;
+      fill: none;
+      stroke: currentColor;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .icon-button svg {
+      width: 20px;
+      height: 20px;
+      stroke-width: 1.8;
+    }
+
+    .cart-count {
+      position: absolute;
+      top: -3px;
+      right: -3px;
+      min-width: 16px;
+      height: 16px;
+      padding: 0 4px;
+      display: grid;
+      place-items: center;
+      border-radius: 6px;
+      background: #315b57;
+      color: #ffffff;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 600;
+    }
+
+    main {
+      flex: 1;
+      padding: 0 16px 8px;
+    }
+
+    .hero {
+      display: flex;
+      gap: 12px;
+      padding: 12px;
+      border-radius: 6px;
+      background: #e3efed;
+    }
+
+    .hero-copy {
+      min-width: 0;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: center;
+    }
+
+    .eyebrow {
+      margin: 0 0 4px;
+      color: #52726e;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.7px;
+    }
+
+    h1 {
+      margin: 0;
+      color: #173f3b;
+      font-size: 26px;
+      line-height: 1.04;
+      font-weight: 600;
+      letter-spacing: -0.5px;
+    }
+
+    .hero-meta {
+      margin: 7px 0 10px;
+      color: #48615e;
+      font-size: 14px;
+      line-height: 19px;
+    }
+
+    .hero-button {
+      padding: 6px 11px;
+      border: 0;
+      border-radius: 6px;
+      background: #315b57;
+      color: #ffffff;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 600;
+    }
+
+    .hero img {
+      width: 126px;
+      height: 138px;
+      flex: 0 0 126px;
+      display: block;
+      border-radius: 6px;
+      object-fit: cover;
+      background: #cbd8d6;
+    }
+
+    .categories {
+      margin-top: 14px;
+    }
+
+    .section-heading {
+      margin: 0;
+      color: #283b38;
+      font-size: 16px;
+      line-height: 22px;
+      font-weight: 600;
+    }
+
+    .category-list {
+      display: flex;
+      gap: 7px;
+      margin-top: 8px;
+    }
+
+    .category {
+      padding: 6px 10px;
+      border-radius: 6px;
+      background: #edf4f3;
+      color: #3d5e59;
+      font-size: 14px;
+      line-height: 20px;
+      white-space: nowrap;
+    }
+
+    .products {
+      margin-top: 14px;
+    }
+
+    .products-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    .heading-copy {
+      min-width: 0;
+    }
+
+    .ranking-note {
+      margin: 1px 0 0;
+      color: #71807d;
+      font-size: 11px;
+      line-height: 15px;
+    }
+
+    .text-link {
+      color: #52726e;
+      font-size: 12px;
+      line-height: 18px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .product-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .product-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 6px;
+      border-radius: 6px;
+      background: #f0f5f4;
+    }
+
+    .product-row.leader {
+      padding: 8px;
+      border: 1px solid #bfcfcb;
+      background: #e3efed;
+    }
+
+    .image-wrap {
+      position: relative;
+      width: 72px;
+      height: 60px;
+      flex: 0 0 72px;
+    }
+
+    .product-row img {
+      width: 72px;
+      height: 60px;
+      display: block;
+      border-radius: 6px;
+      object-fit: cover;
+      background: #d3dddb;
+    }
+
+    .rank-badge {
+      position: absolute;
+      top: 4px;
+      left: 4px;
+      min-width: 25px;
+      height: 20px;
+      padding: 0 5px;
+      display: grid;
+      place-items: center;
+      border-radius: 5px;
+      background: rgba(251, 252, 251, 0.94);
+      color: #214e49;
+      font-size: 11px;
+      line-height: 20px;
+      font-weight: 700;
+      box-shadow: 0 1px 2px rgba(23, 63, 59, 0.15);
+    }
+
+    .leader .rank-badge {
+      background: #315b57;
+      color: #ffffff;
+    }
+
+    .product-info {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .top-pick {
+      margin: 0 0 1px;
+      color: #52726e;
+      font-size: 10px;
+      line-height: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+    }
+
+    .product-name {
+      margin: 0;
+      overflow: hidden;
+      color: #263a37;
+      font-size: 14px;
+      line-height: 18px;
+      font-weight: 600;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .product-detail {
+      margin: 2px 0 0;
+      color: #687976;
+      font-size: 11px;
+      line-height: 14px;
+    }
+
+    .rating {
+      color: #315b57;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .product-actions {
+      flex: 0 0 58px;
+      display: grid;
+      grid-template-columns: 27px 27px;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .product-price {
+      text-align: right;
+      color: #234e49;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 600;
+    }
+
+    .bookmark-button {
+      width: 27px;
+      height: 27px;
+      padding: 5px;
+      display: grid;
+      place-items: center;
+      border: 1px solid #d3e0de;
+      border-radius: 50%;
+      background: #fbfcfb;
+      color: #52726e;
+    }
+
+    .bookmark-button svg {
+      width: 15px;
+      height: 15px;
+      stroke-width: 1.8;
+    }
+
+    .tabbar {
+      display: flex;
+      justify-content: space-between;
+      padding: 7px 10px 8px;
+      background: #f5f8f7;
+    }
+
+    .tab {
+      width: 82px;
+      padding: 4px 3px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      border-radius: 6px;
+      color: #71807d;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .tab.active {
+      background: #dfedeb;
+      color: #214e49;
+      font-weight: 600;
+    }
+
+    .tab svg {
+      width: 20px;
+      height: 20px;
+      display: block;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.7;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <div class="brand">Dayfold Store</div>
+      <div class="top-actions">
+        <button class="icon-button" type="button" aria-label="Search store">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="11" cy="11" r="6.5"></circle>
+            <path d="M16 16l4 4"></path>
+          </svg>
+        </button>
+        <button class="icon-button" type="button" aria-label="Shopping cart with two items">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M3.5 5h2l1.8 9.2h9.9l2-6.4H6.1"></path>
+            <circle cx="9" cy="18.5" r="1.2"></circle>
+            <circle cx="17" cy="18.5" r="1.2"></circle>
+          </svg>
+          <span class="cart-count">2</span>
+        </button>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero" aria-labelledby="hero-title-b">
+        <div class="hero-copy">
+          <p class="eyebrow">Featured kit</p>
+          <h1 id="hero-title-b">Plan the week together</h1>
+          <p class="hero-meta">12 templates · $24</p>
+          <button class="hero-button" type="button">View kit</button>
+        </div>
+        <img src="https://loremflickr.com/126/138/workspace?lock=11390" width="126" height="138" alt="Weekly planner pages arranged on a workspace">
+      </section>
+
+      <section class="categories" aria-labelledby="categories-title-b">
+        <h2 class="section-heading" id="categories-title-b">Shop by use</h2>
+        <div class="category-list">
+          <div class="category">Planning</div>
+          <div class="category">Meetings</div>
+          <div class="category">Projects</div>
+          <div class="category">Notes</div>
+        </div>
+      </section>
+
+      <section class="products" aria-labelledby="products-title-b">
+        <div class="products-header">
+          <div class="heading-copy">
+            <h2 class="section-heading" id="products-title-b">Customer favorites</h2>
+            <p class="ranking-note">Ranked by recent ratings and reviews</p>
+          </div>
+          <span class="text-link">Top 5</span>
+        </div>
+
+        <div class="product-list">
+          <article class="product-row leader">
+            <div class="image-wrap">
+              <img src="https://loremflickr.com/72/60/notebook?lock=11391" width="72" height="60" alt="Open notebook showing a weekly team plan">
+              <span class="rank-badge">#1</span>
+            </div>
+            <div class="product-info">
+              <p class="top-pick">Top pick</p>
+              <h3 class="product-name">Team Weekbook</h3>
+              <p class="product-detail">8 pages · Digital template · <span class="rating">★ 4.9 · 128 reviews</span></p>
+            </div>
+            <div class="product-actions">
+              <div class="product-price">$12</div>
+              <button class="bookmark-button" type="button" aria-label="Save Team Weekbook">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M6 4.5h12v15l-6-3-6 3v-15z"></path>
+                </svg>
+              </button>
+            </div>
+          </article>
+
+          <article class="product-row">
+            <div class="image-wrap">
+              <img src="https://loremflickr.com/72/60/meeting?lock=11392" width="72" height="60" alt="Meeting table prepared with notes and stationery">
+              <span class="rank-badge">#2</span>
+            </div>
+            <div class="product-info">
+              <h3 class="product-name">Meeting Notes Set</h3>
+              <p class="product-detail">10 pages · Digital template · <span class="rating">★ 4.8 · 96 reviews</span></p>
+            </div>
+            <div class="product-actions">
+              <div class="product-price">$10</div>
+              <button class="bookmark-button" type="button" aria-label="Save Meeting Notes Set">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M6 4.5h12v15l-6-3-6 3v-15z"></path>
+                </svg>
+              </button>
+            </div>
+          </article>
+
+          <article class="product-row">
+            <div class="image-wrap">
+              <img src="https://loremflickr.com/72/60/desk?lock=11393" width="72" height="60" alt="Desk with project planning sheets and supplies">
+              <span class="rank-badge">#3</span>
+            </div>
+            <div class="product-info">
+              <h3 class="product-name">Project Map</h3>
+              <p class="product-detail">6 boards · Digital template · <span class="rating">★ 4.8 · 73 reviews</span></p>
+            </div>
+            <div class="product-actions">
+              <div class="product-price">$16</div>
+              <button class="bookmark-button" type="button" aria-label="Save Project Map">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M6 4.5h12v15l-6-3-6 3v-15z"></path>
+                </svg>
+              </button>
+            </div>
+          </article>
+
+          <article class="product-row">
+            <div class="image-wrap">
+              <img src="https://loremflickr.com/72/60/workspace?lock=11394" width="72" height="60" alt="Focused workspace with task cards beside a laptop">
+              <span class="rank-badge">#4</span>
+            </div>
+            <div class="product-info">
+              <h3 class="product-name">Focus Sprint Cards</h3>
+              <p class="product-detail">24 cards · Printable PDF · <span class="rating">★ 4.7 · 61 reviews</span></p>
+            </div>
+            <div class="product-actions">
+              <div class="product-price">$8</div>
+              <button class="bookmark-button" type="button" aria-label="Save Focus Sprint Cards">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M6 4.5h12v15l-6-3-6 3v-15z"></path>
+                </svg>
+              </button>
+            </div>
+          </article>
+
+          <article class="product-row">
+            <div class="image-wrap">
+              <img src="https://loremflickr.com/72/60/notebook?lock=11395" width="72" height="60" alt="Notebook opened to a monthly editorial calendar">
+              <span class="rank-badge">#5</span>
+            </div>
+            <div class="product-info">
+              <h3 class="product-name">Editorial Calendar</h3>
+              <p class="product-detail">12 months · Digital template · <span class="rating">★ 4.6 · 48 reviews</span></p>
+            </div>
+            <div class="product-actions">
+              <div class="product-price">$14</div>
+              <button class="bookmark-button" type="button" aria-label="Save Editorial Calendar">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M6 4.5h12v15l-6-3-6 3v-15z"></path>
+                </svg>
+              </button>
+            </div>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <nav class="tabbar" aria-label="Primary navigation">
+      <div class="tab active">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M4 9h16l-1-4H5L4 9z"></path>
+          <path d="M5 9v10h14V9"></path>
+          <path d="M9 19v-5h6v5"></path>
+        </svg>
+        <span>Store</span>
+      </div>
+      <div class="tab">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="11" cy="11" r="6.5"></circle>
+          <path d="M16 16l4 4"></path>
+        </svg>
+        <span>Browse</span>
+      </div>
+      <div class="tab">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M6 4.5h12v15l-6-3-6 3v-15z"></path>
+        </svg>
+        <span>Saved</span>
+      </div>
+      <div class="tab">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="8" r="3.5"></circle>
+          <path d="M5.5 20c.6-4 2.8-6 6.5-6s5.9 2 6.5 6"></path>
+        </svg>
+        <span>Account</span>
+      </div>
+    </nav>
+  </div>
+</body>
+</html>

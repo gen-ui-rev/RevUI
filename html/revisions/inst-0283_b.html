@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>New trip — Wayfarer Atlas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;}
+  body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#D9D5D0;font-family:'Poppins',system-ui,sans-serif;color:#1B1917;}
+  button{font-family:inherit;}
+  .screen{width:1024px;height:768px;background:#FFFFFF;display:flex;flex-direction:column;color:#1B1917;}
+
+  .topbar{display:flex;align-items:center;padding:14px 34px;border-bottom:1px solid #E7E3DE;}
+  .brand{display:flex;align-items:center;gap:9px;font-size:14px;font-weight:600;white-space:nowrap;}
+  .brandmark{width:28px;height:28px;background:#EA580C;color:#FFFFFF;display:flex;align-items:center;justify-content:center;}
+  .nav{display:flex;align-items:center;gap:28px;margin-left:52px;}
+  .navitem{font-size:12px;font-weight:500;color:#817A73;padding:7px 0;}
+  .navitem.on{color:#C2410C;border-bottom:2px solid #EA580C;}
+  .account{margin-left:auto;display:flex;align-items:center;gap:9px;font-size:12px;font-weight:500;}
+  .accountmark{width:30px;height:30px;background:#FDE4D3;color:#C2410C;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;}
+
+  .main{flex:1;padding:18px 42px 20px;background:#F8F6F3;}
+  .pagehead{display:flex;align-items:center;justify-content:space-between;gap:24px;margin-bottom:15px;}
+  .backtitle{display:flex;align-items:center;gap:13px;}
+  .back{width:32px;height:32px;border:1px solid #DCD7D1;background:#FFFFFF;color:#4A453F;display:flex;align-items:center;justify-content:center;}
+  .pagehead h1{margin:0;font-size:22px;font-weight:600;line-height:1.25;}
+  .pagehead p{margin:3px 0 0;font-size:11px;color:#8B857E;}
+  .steparea{display:flex;align-items:center;gap:15px;}
+  .stepcopy{text-align:right;}
+  .stepcopy b{display:block;font-size:11px;font-weight:600;}
+  .stepcopy span{display:block;margin-top:2px;font-size:10px;color:#8B857E;}
+  .steps{display:flex;gap:4px;width:150px;}
+  .steps i{display:block;flex:1;height:4px;background:#DED9D3;}
+  .steps i.on{background:#EA580C;}
+
+  .panel{background:#FFFFFF;border:1px solid #E2DDD7;}
+  .panelhead{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:13px 16px;border-bottom:1px solid #E7E3DE;}
+  .panelhead h2{margin:0;font-size:14px;font-weight:600;}
+  .panelhead p{margin:2px 0 0;font-size:10px;color:#8B857E;}
+  .save{border:0;background:transparent;color:#C2410C;font-size:11px;font-weight:500;padding:6px 8px;}
+
+  .details{display:grid;grid-template-columns:1.3fr 1.35fr 1fr;}
+  .field{min-width:0;padding:12px 15px;border-right:1px solid #EEEAE5;border-bottom:1px solid #EEEAE5;}
+  .field:nth-child(3n){border-right:0;}
+  .field.wide{grid-column:span 2;}
+  .field.end{border-right:0;}
+  .label{font-size:10px;color:#8B857E;line-height:1.3;}
+  .value{margin-top:3px;font-size:13px;font-weight:500;line-height:1.4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .subvalue{margin-top:2px;font-size:10px;color:#8B857E;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .location{display:flex;align-items:center;justify-content:space-between;gap:10px;}
+  .location > div{min-width:0;}
+  .chev{color:#B5AEA6;flex:0 0 auto;}
+
+  .stylebar{display:flex;align-items:center;gap:18px;padding:11px 15px;}
+  .stylebar .label{min-width:62px;}
+  .chips{display:flex;gap:7px;min-width:0;}
+  .chip{padding:5px 10px;border:1px solid #DCD7D1;color:#4A453F;font-size:10px;white-space:nowrap;}
+  .chip.sel{background:#EA580C;border-color:#EA580C;color:#FFFFFF;font-weight:500;}
+  .budgetnote{margin-left:auto;font-size:10px;color:#8B857E;white-space:nowrap;}
+  .budgetnote b{color:#4A453F;font-weight:600;}
+
+  .people{margin-top:15px;}
+  .people-actions{display:flex;align-items:center;gap:9px;}
+  .invitebtn{border:1px solid #E3A67E;background:#FFFFFF;color:#C2410C;font-size:11px;font-weight:500;padding:7px 11px;display:flex;align-items:center;gap:6px;}
+  .create{border:0;background:#EA580C;color:#FFFFFF;font-size:11px;font-weight:600;padding:8px 15px;}
+
+  .tablehead,.person{display:grid;grid-template-columns:42px 190px minmax(0,1fr) 104px 82px;align-items:center;column-gap:12px;}
+  .tablehead{padding:9px 16px;background:#FAF9F7;border-bottom:1px solid #E7E3DE;color:#8B857E;font-size:9px;text-transform:uppercase;letter-spacing:.05em;}
+  .tablehead span:first-child{grid-column:1 / 3;}
+  .person{padding:10px 16px;border-bottom:1px solid #EEEAE5;}
+  .person:last-child{border-bottom:0;}
+  .avatar{width:32px;height:32px;background:#FDE4D3;color:#C2410C;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;}
+  .name{font-size:12px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .role{margin-top:2px;font-size:9px;color:#A09992;}
+  .email{font-size:11px;color:#716B64;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .status{font-size:10px;color:#8B857E;}
+  .status:before{content:"";display:inline-block;width:6px;height:6px;margin-right:6px;background:#F59E0B;border-radius:50%;}
+  .permission{display:flex;align-items:center;justify-content:space-between;gap:4px;padding:5px 7px;border:1px solid #DCD7D1;font-size:9px;color:#5D5751;white-space:nowrap;}
+  .footerhint{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;border-top:1px solid #E7E3DE;background:#FFF8F3;font-size:10px;color:#7A6557;}
+  .footerhint b{font-weight:600;color:#9A3412;}
+</style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <div class="brand">
+        <span class="brandmark" aria-hidden="true">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M15 4l-2 6 5 2-10 8 2-7-5-2z"/></svg>
+        </span>
+        Wayfarer Atlas
+      </div>
+
+      <nav class="nav" aria-label="Primary">
+        <span class="navitem">Explore</span>
+        <span class="navitem on">Trips</span>
+        <span class="navitem">Saved</span>
+      </nav>
+
+      <div class="account">
+        <span>My account</span>
+        <span class="accountmark">AR</span>
+      </div>
+    </header>
+
+    <main class="main">
+      <div class="pagehead">
+        <div class="backtitle">
+          <button class="back" type="button" aria-label="Back to trips">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M15 5l-7 7 7 7"/></svg>
+          </button>
+          <div>
+            <h1>Trip details</h1>
+            <p>New trip · Coastal Loop, Northern Spain</p>
+          </div>
+        </div>
+
+        <div class="steparea">
+          <div class="stepcopy">
+            <b>Step 2 of 3</b>
+            <span>Day plans come next</span>
+          </div>
+          <div class="steps"><i class="on"></i><i class="on"></i><i></i></div>
+        </div>
+      </div>
+
+      <section class="panel">
+        <div class="panelhead">
+          <div>
+            <h2>Journey details</h2>
+            <p>Dates and times use the destination’s local time.</p>
+          </div>
+          <button class="save" type="button">Save draft</button>
+        </div>
+
+        <div class="details">
+          <div class="field">
+            <div class="label">Trip name</div>
+            <div class="value">Coastal Loop, Northern Spain</div>
+          </div>
+
+          <div class="field location">
+            <div>
+              <div class="label">Starting point</div>
+              <div class="value">San Sebastián, Basque Country</div>
+            </div>
+            <span class="chev" aria-hidden="true">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 5l7 7-7 7"/></svg>
+            </span>
+          </div>
+
+          <div class="field end">
+            <div class="label">Travelers</div>
+            <div class="value">4 adults, 1 child</div>
+          </div>
+
+          <div class="field">
+            <div class="label">Departs</div>
+            <div class="value">Wednesday, May 14, 2025</div>
+            <div class="subvalue">9:00 AM · San Sebastián</div>
+          </div>
+
+          <div class="field">
+            <div class="label">Returns</div>
+            <div class="value">Thursday, May 22, 2025</div>
+            <div class="subvalue">6:30 PM · 8 nights away</div>
+          </div>
+
+          <div class="field end">
+            <div class="label">Budget per person</div>
+            <div class="value">$1,850</div>
+            <div class="subvalue">$9,250 estimated total</div>
+          </div>
+        </div>
+
+        <div class="stylebar">
+          <div class="label">Trip style</div>
+          <div class="chips">
+            <span class="chip sel">Road trip</span>
+            <span class="chip">Coastal</span>
+            <span class="chip">City break</span>
+            <span class="chip">Hiking</span>
+          </div>
+          <div class="budgetnote"><b>9 days</b> on the northern coast</div>
+        </div>
+      </section>
+
+      <section class="panel people">
+        <div class="panelhead">
+          <div>
+            <h2>Traveling with</h2>
+            <p>Three invitations are awaiting a response.</p>
+          </div>
+          <div class="people-actions">
+            <button class="invitebtn" type="button">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 5v14M5 12h14"/></svg>
+              Invite by email
+            </button>
+            <button class="create" type="button">Create trip</button>
+          </div>
+        </div>
+
+        <div class="tablehead">
+          <span>Traveler</span>
+          <span>Email address</span>
+          <span>Invite status</span>
+          <span>Access</span>
+        </div>
+
+        <div class="person">
+          <div class="avatar">MV</div>
+          <div>
+            <div class="name">Marisol Vega</div>
+            <div class="role">Adult traveler</div>
+          </div>
+          <div class="email">marisol.vega@mailhaven.com</div>
+          <div class="status">Sent today</div>
+          <div class="permission">
+            Can edit
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+          </div>
+        </div>
+
+        <div class="person">
+          <div class="avatar">DW</div>
+          <div>
+            <div class="name">Dane Whitcomb</div>
+            <div class="role">Adult traveler</div>
+          </div>
+          <div class="email">d.whitcomb@mailhaven.com</div>
+          <div class="status">Sent today</div>
+          <div class="permission">
+            Can view
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+          </div>
+        </div>
+
+        <div class="person">
+          <div class="avatar">PR</div>
+          <div>
+            <div class="name">Priya Raghavan</div>
+            <div class="role">Adult traveler</div>
+          </div>
+          <div class="email">priya.r@northline.co</div>
+          <div class="status">Sent today</div>
+          <div class="permission">
+            Can view
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+          </div>
+        </div>
+
+        <div class="footerhint">
+          <span><b>Access reminder:</b> Editors can update trip details and future day plans.</span>
+          <span>3 invited · 5 total travelers</span>
+        </div>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

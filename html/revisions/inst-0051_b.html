@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Roamstead Booking Hold Timer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #ddd9d3;
+      color: #332f2b;
+      font-family: 'Source Serif 4', Georgia, serif;
+    }
+
+    button {
+      font-family: inherit;
+    }
+
+    .screen {
+      width: 1024px;
+      height: 768px;
+      padding: 36px 56px 40px;
+      background: #f7f4ef;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #d8d0c7;
+    }
+
+    .brand {
+      margin: 0;
+      color: #5b4739;
+      font-size: 23px;
+      line-height: 28px;
+      font-weight: 700;
+    }
+
+    .checkout-label {
+      margin: 0;
+      color: #776b61;
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .hotel-summary {
+      margin-top: 24px;
+      display: flex;
+      align-items: stretch;
+      background: #fffdf9;
+      border: 1px solid #e0d9d1;
+      border-radius: 9px;
+      box-shadow: 0 8px 24px rgba(76, 62, 50, 0.06);
+    }
+
+    .hotel-photo {
+      width: 326px;
+      height: 96px;
+      display: block;
+      flex: 0 0 auto;
+      object-fit: cover;
+      background: #d7d0c7;
+      border-radius: 8px 0 0 8px;
+    }
+
+    .hotel-copy {
+      min-width: 0;
+      flex: 1;
+      padding: 17px 24px;
+    }
+
+    .summary-label {
+      margin: 0;
+      color: #806c5a;
+      font-size: 11px;
+      line-height: 16px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .hotel-name {
+      margin: 2px 0 0;
+      color: #594638;
+      font-size: 23px;
+      line-height: 28px;
+      font-weight: 600;
+    }
+
+    .hotel-meta {
+      margin: 3px 0 0;
+      color: #6d6259;
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .stay-badge {
+      align-self: center;
+      margin-right: 24px;
+      padding: 8px 13px;
+      color: #5f5045;
+      background: #eee7df;
+      border-radius: 999px;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .workspace {
+      margin-top: 24px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 370px;
+      gap: 26px;
+      align-items: start;
+    }
+
+    .booking-context {
+      padding: 28px 30px;
+      background: #fffdf9;
+      border: 1px solid #e0d9d1;
+      border-radius: 9px;
+    }
+
+    .service-label {
+      margin: 0;
+      color: #7c6958;
+      font-size: 12px;
+      line-height: 18px;
+      font-weight: 700;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 5px 0 0;
+      color: #5c483a;
+      font-size: 32px;
+      line-height: 39px;
+      font-weight: 600;
+    }
+
+    .intro {
+      margin: 8px 0 0;
+      max-width: 440px;
+      color: #554d46;
+      font-size: 16px;
+      line-height: 24px;
+    }
+
+    .stay-details {
+      margin: 23px 0 0;
+      padding: 17px 0;
+      color: #4f463f;
+      font-size: 15px;
+      line-height: 22px;
+      border-top: 1px solid #ddd5cc;
+      border-bottom: 1px solid #ddd5cc;
+    }
+
+    .checklist-title {
+      margin: 22px 0 0;
+      color: #68574a;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 600;
+    }
+
+    .checklist {
+      margin: 10px 0 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 9px 20px;
+    }
+
+    .checklist li {
+      position: relative;
+      padding-left: 20px;
+      color: #696057;
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .checklist li::before {
+      content: "✓";
+      position: absolute;
+      left: 0;
+      top: 0;
+      color: #75614f;
+      font-weight: 700;
+    }
+
+    .urgent-card {
+      padding: 27px 28px 28px;
+      background: #665043;
+      color: #fffaf4;
+      border-radius: 9px;
+      box-shadow: 0 14px 32px rgba(72, 53, 42, 0.16);
+    }
+
+    .timer-label {
+      margin: 0;
+      color: #eadfd4;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    .timer-value {
+      margin: 5px 0 0;
+      color: #fffdf9;
+      font-size: 62px;
+      line-height: 70px;
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: 0.03em;
+      text-align: center;
+    }
+
+    .timer-note {
+      margin: 2px 0 0;
+      color: #eadfd4;
+      font-size: 14px;
+      line-height: 20px;
+      text-align: center;
+    }
+
+    .deadline-rule {
+      margin: 22px 0;
+      border: 0;
+      border-top: 1px solid rgba(255, 250, 244, 0.24);
+    }
+
+    .task-note {
+      margin: 0;
+      color: #f3e9df;
+      font-size: 14px;
+      line-height: 21px;
+    }
+
+    .primary-action,
+    .secondary-action {
+      width: 100%;
+      min-height: 50px;
+      border-radius: 7px;
+      cursor: pointer;
+      font-size: 16px;
+      line-height: 20px;
+    }
+
+    .primary-action {
+      margin-top: 20px;
+      padding: 14px 20px;
+      border: 1px solid #fffaf4;
+      background: #fffaf4;
+      color: #503e33;
+      font-weight: 700;
+    }
+
+    .secondary-action {
+      margin-top: 10px;
+      padding: 14px 20px;
+      border: 1px solid rgba(255, 250, 244, 0.45);
+      background: transparent;
+      color: #fffaf4;
+      font-weight: 400;
+    }
+
+    .footer-note {
+      margin: 22px 0 0;
+      color: #786d64;
+      font-size: 13px;
+      line-height: 19px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <p class="brand">Roamstead</p>
+      <p class="checkout-label">Review and complete your stay</p>
+    </header>
+
+    <section class="hotel-summary" aria-labelledby="hotel-title">
+      <img
+        class="hotel-photo"
+        src="https://loremflickr.com/326/96/hotel?lock=1670"
+        width="326"
+        height="96"
+        alt="Sunlit terrace at the Tidecourt Hotel in Lisbon"
+      >
+      <div class="hotel-copy">
+        <p class="summary-label">Selected lodging</p>
+        <h2 class="hotel-name" id="hotel-title">Tidecourt Hotel</h2>
+        <p class="hotel-meta">Lisbon, Portugal · May 18–21, 2026 · 2 guests</p>
+      </div>
+      <span class="stay-badge">3-night stay</span>
+    </section>
+
+    <main class="workspace">
+      <article class="booking-context" aria-labelledby="hold-title">
+        <p class="service-label">Roamstead booking hold</p>
+        <h1 id="hold-title">Keep your Lisbon room</h1>
+        <p class="intro">Your selected room is held while you finish booking.</p>
+
+        <p class="stay-details">Tidecourt Hotel · May 18–21, 2026 · 2 guests</p>
+
+        <p class="checklist-title">Ready for checkout</p>
+        <ul class="checklist">
+          <li>Room selected</li>
+          <li>Dates confirmed</li>
+          <li>Guest count set</li>
+          <li>Secure checkout</li>
+        </ul>
+      </article>
+
+      <aside class="urgent-card" aria-label="Booking deadline and actions">
+        <div role="timer" aria-label="18 minutes and 42 seconds remaining">
+          <p class="timer-label">Time remaining</p>
+          <p class="timer-value">18:42</p>
+          <p class="timer-note">Hold expires at 4:30 PM</p>
+        </div>
+
+        <hr class="deadline-rule">
+
+        <p class="task-note">Complete checkout before the timer ends to keep this room reserved.</p>
+
+        <button class="primary-action" type="button">Continue booking</button>
+        <button class="secondary-action" type="button">Release this room</button>
+      </aside>
+    </main>
+
+    <p class="footer-note">The room may become available to other travelers after the hold expires.</p>
+  </div>
+</body>
+</html>

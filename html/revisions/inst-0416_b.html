@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Release Calendar</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #e9e8ed;
+      color: #23212a;
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    }
+    button { font: inherit; }
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #fff;
+      border: 1px solid #d8d5de;
+    }
+    svg {
+      fill: none;
+      stroke: currentColor;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 16px;
+      border-bottom: 1px solid #e4e1e8;
+    }
+    .topbar-copy { min-width: 0; }
+    .service-name {
+      margin: 0 0 2px;
+      color: #716d79;
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 16px;
+    }
+    .topbar h1 {
+      margin: 0;
+      font-size: 21px;
+      font-weight: 700;
+      line-height: 28px;
+      letter-spacing: -.3px;
+    }
+    .icon-button {
+      width: 34px;
+      height: 34px;
+      padding: 0;
+      display: grid;
+      place-items: center;
+      color: #4f4b56;
+      background: #fff;
+      border: 1px solid #d8d5de;
+      border-radius: 6px;
+    }
+    .icon-button svg { width: 19px; height: 19px; stroke-width: 1.7; }
+    .month-tools {
+      padding: 10px 16px;
+      border-bottom: 1px solid #e4e1e8;
+    }
+    .quick-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 9px;
+    }
+    .today-button {
+      padding: 5px 12px;
+      color: #5d32b5;
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 18px;
+      background: #f7f2fc;
+      border: 1px solid #d6c8e9;
+      border-radius: 6px;
+    }
+    .view-switch {
+      display: flex;
+      width: 146px;
+      padding: 2px;
+      background: #f3f1f5;
+      border: 1px solid #e0dde5;
+      border-radius: 6px;
+    }
+    .view-switch button {
+      flex: 1;
+      padding: 3px 8px;
+      color: #6b6671;
+      font-size: 11px;
+      font-weight: 600;
+      line-height: 18px;
+      background: transparent;
+      border: 0;
+      border-radius: 5px;
+    }
+    .view-switch .active {
+      color: #5d32b5;
+      background: #fff;
+      box-shadow: 0 0 0 1px #cfc2e9;
+    }
+    .month-row {
+      display: grid;
+      grid-template-columns: 28px minmax(0, 1fr) 28px;
+      align-items: center;
+      gap: 8px;
+    }
+    .month-label {
+      margin: 0;
+      font-size: 17px;
+      font-weight: 700;
+      line-height: 24px;
+      text-align: center;
+      letter-spacing: -.2px;
+    }
+    .month-row button {
+      width: 28px;
+      height: 28px;
+      padding: 0;
+      display: grid;
+      place-items: center;
+      color: #5f5a66;
+      background: #fff;
+      border: 1px solid #dedbe3;
+      border-radius: 6px;
+    }
+    .month-row svg { width: 16px; height: 16px; stroke-width: 1.8; }
+    .weekday-row {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      border-bottom: 1px solid #dcd9e1;
+    }
+    .weekday-row span {
+      padding: 6px 0;
+      color: #77727d;
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 16px;
+      text-align: center;
+    }
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      grid-template-rows: repeat(5, 73px);
+      border-left: 1px solid #e4e1e8;
+    }
+    .day {
+      min-width: 0;
+      padding: 5px 4px;
+      background: #fff;
+      border-right: 1px solid #e4e1e8;
+      border-bottom: 1px solid #e4e1e8;
+    }
+    .day-number {
+      width: 23px;
+      padding: 2px 0;
+      color: #514d57;
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 17px;
+      text-align: center;
+      border-radius: 6px;
+    }
+    .weekend .day-number, .outside .day-number { color: #928d98; }
+    .outside { background: #faf9fb; }
+    .current { box-shadow: inset 0 0 0 2px #d9cbea; }
+    .current .day-number { color: #fff; background: #6f3cc3; }
+    .event {
+      min-width: 0;
+      margin-top: 4px;
+      padding: 2px 4px;
+      color: #57308d;
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 16px;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      background: #f1ebfa;
+      border-left: 2px solid #7541c8;
+      border-radius: 5px;
+    }
+    .event.neutral {
+      color: #5d5863;
+      background: #f2f1f3;
+      border-left-color: #9a949f;
+    }
+    .event.live {
+      color: #4f277d;
+      background: #e8ddf7;
+      border-left-color: #5e27ac;
+    }
+    .agenda-heading {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      padding: 8px 16px 7px;
+      border-bottom: 1px solid #e4e1e8;
+    }
+    .agenda-heading h2 {
+      margin: 0;
+      font-size: 15px;
+      font-weight: 700;
+      line-height: 22px;
+    }
+    .agenda-heading span {
+      color: #77727d;
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 18px;
+    }
+    .timeline {
+      margin: 0;
+      padding: 6px 16px 8px;
+      list-style: none;
+      border-bottom: 1px solid #e4e1e8;
+    }
+    .time-group {
+      display: grid;
+      grid-template-columns: 58px minmax(0, 1fr);
+      gap: 8px;
+      position: relative;
+      padding: 4px 0;
+    }
+    .time-group + .time-group { border-top: 1px solid #ebe8ee; }
+    .daypart {
+      padding-top: 3px;
+      color: #716d79;
+      font-size: 10px;
+      font-weight: 700;
+      line-height: 15px;
+      letter-spacing: .5px;
+      text-transform: uppercase;
+    }
+    .timeline-entry {
+      min-width: 0;
+      display: grid;
+      grid-template-columns: 29px minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 7px;
+      padding-left: 9px;
+      border-left: 2px solid #d9cbea;
+    }
+    .media-glyph {
+      width: 29px;
+      height: 29px;
+      display: grid;
+      place-items: center;
+      color: #6936b8;
+      background: #f4effb;
+      border: 1px solid #d9cbea;
+      border-radius: 50%;
+    }
+    .media-glyph svg { width: 16px; height: 16px; stroke-width: 1.6; }
+    .agenda-copy { min-width: 0; }
+    .agenda-title {
+      margin: 0;
+      color: #29262e;
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 17px;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+    .agenda-meta {
+      margin: 1px 0 0;
+      color: #77727d;
+      font-size: 10px;
+      font-weight: 500;
+      line-height: 15px;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+    .agenda-time {
+      color: #5d32b5;
+      font-size: 10px;
+      font-weight: 700;
+      line-height: 16px;
+      white-space: nowrap;
+    }
+    .tabbar {
+      margin-top: auto;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      background: #fff;
+      border-top: 1px solid #dcd9e1;
+    }
+    .tab {
+      padding: 8px 2px 9px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      color: #77727d;
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 16px;
+      text-decoration: none;
+    }
+    .tab svg { width: 21px; height: 21px; stroke-width: 1.7; }
+    .tab.active {
+      color: #6936b8;
+      background: #faf7fe;
+      box-shadow: inset 0 2px 0 #6936b8;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <div class="topbar-copy">
+        <p class="service-name">Soundwell</p>
+        <h1>Release calendar</h1>
+      </div>
+      <button class="icon-button" type="button" aria-label="Calendar options">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="5" r="1"></circle>
+          <circle cx="12" cy="12" r="1"></circle>
+          <circle cx="12" cy="19" r="1"></circle>
+        </svg>
+      </button>
+    </header>
+
+    <section class="month-tools" aria-label="Calendar controls">
+      <div class="quick-row">
+        <button class="today-button" type="button">Today</button>
+        <div class="view-switch" aria-label="Calendar view">
+          <button class="active" type="button">Month</button>
+          <button type="button">Week</button>
+        </div>
+      </div>
+      <div class="month-row">
+        <button type="button" aria-label="Previous month">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5 8 12l7 7"></path></svg>
+        </button>
+        <p class="month-label">June 2025</p>
+        <button type="button" aria-label="Next month">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"></path></svg>
+        </button>
+      </div>
+    </section>
+
+    <div class="weekday-row" aria-hidden="true">
+      <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+    </div>
+
+    <section class="calendar-grid" aria-label="June 2025 release calendar">
+      <div class="day weekend"><div class="day-number">1</div><div class="event neutral">Recap</div></div>
+      <div class="day"><div class="day-number">2</div><div class="event">Mix</div></div>
+      <div class="day"><div class="day-number">3</div><div class="event">Talk</div></div>
+      <div class="day"><div class="day-number">4</div></div>
+      <div class="day"><div class="day-number">5</div><div class="event live">Live</div></div>
+      <div class="day"><div class="day-number">6</div><div class="event">Drop</div></div>
+      <div class="day weekend"><div class="day-number">7</div></div>
+
+      <div class="day weekend"><div class="day-number">8</div><div class="event">Film</div></div>
+      <div class="day"><div class="day-number">9</div><div class="event">Mix</div></div>
+      <div class="day"><div class="day-number">10</div></div>
+      <div class="day"><div class="day-number">11</div><div class="event neutral">Replay</div></div>
+      <div class="day current"><div class="day-number">12</div><div class="event live">Live</div><div class="event">EP</div></div>
+      <div class="day"><div class="day-number">13</div><div class="event">Talk</div></div>
+      <div class="day weekend"><div class="day-number">14</div></div>
+
+      <div class="day weekend"><div class="day-number">15</div><div class="event neutral">Recap</div></div>
+      <div class="day"><div class="day-number">16</div></div>
+      <div class="day"><div class="day-number">17</div><div class="event">Drop</div></div>
+      <div class="day"><div class="day-number">18</div><div class="event">Mix</div></div>
+      <div class="day"><div class="day-number">19</div></div>
+      <div class="day"><div class="day-number">20</div><div class="event live">Live</div></div>
+      <div class="day weekend"><div class="day-number">21</div><div class="event">Film</div></div>
+
+      <div class="day weekend"><div class="day-number">22</div></div>
+      <div class="day"><div class="day-number">23</div><div class="event">Talk</div></div>
+      <div class="day"><div class="day-number">24</div><div class="event">EP</div></div>
+      <div class="day"><div class="day-number">25</div></div>
+      <div class="day"><div class="day-number">26</div><div class="event neutral">Replay</div></div>
+      <div class="day"><div class="day-number">27</div><div class="event">Drop</div></div>
+      <div class="day weekend"><div class="day-number">28</div></div>
+
+      <div class="day weekend"><div class="day-number">29</div><div class="event">Mix</div></div>
+      <div class="day"><div class="day-number">30</div><div class="event live">Live</div></div>
+      <div class="day outside"><div class="day-number">1</div></div>
+      <div class="day outside"><div class="day-number">2</div><div class="event">Talk</div></div>
+      <div class="day outside"><div class="day-number">3</div></div>
+      <div class="day outside"><div class="day-number">4</div><div class="event">Drop</div></div>
+      <div class="day outside weekend"><div class="day-number">5</div></div>
+    </section>
+
+    <section aria-labelledby="agenda-title-b">
+      <div class="agenda-heading">
+        <h2 id="agenda-title-b">Thursday, June 12</h2>
+        <span>By time of day</span>
+      </div>
+      <ol class="timeline">
+        <li class="time-group">
+          <span class="daypart">Morning</span>
+          <div class="timeline-entry">
+            <div class="media-glyph" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                <path d="M9 18V6l10-2v12"></path>
+                <ellipse cx="6.5" cy="18" rx="2.5" ry="2"></ellipse>
+                <ellipse cx="16.5" cy="16" rx="2.5" ry="2"></ellipse>
+              </svg>
+            </div>
+            <div class="agenda-copy">
+              <p class="agenda-title">Quiet Signals: Season Two</p>
+              <p class="agenda-meta">New episode · 42 min</p>
+            </div>
+            <time class="agenda-time">9:00 AM</time>
+          </div>
+        </li>
+        <li class="time-group">
+          <span class="daypart">Evening</span>
+          <div class="timeline-entry">
+            <div class="media-glyph" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                <rect x="4" y="5" width="16" height="14" rx="2"></rect>
+                <path d="m10 9 5 3-5 3V9Z"></path>
+              </svg>
+            </div>
+            <div class="agenda-copy">
+              <p class="agenda-title">Harbor Room Sessions</p>
+              <p class="agenda-meta">Live performance · 58 min</p>
+            </div>
+            <time class="agenda-time">7:30 PM</time>
+          </div>
+        </li>
+      </ol>
+    </section>
+
+    <nav class="tabbar" aria-label="Primary navigation">
+      <a class="tab" href="#" aria-label="Home">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="m3 11 9-7 9 7"></path><path d="M5 10v10h14V10"></path><path d="M9 20v-6h6v6"></path>
+        </svg>
+        <span>Home</span>
+      </a>
+      <a class="tab" href="#" aria-label="Browse">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6"></circle><path d="m16 16 4 4"></path></svg>
+        <span>Browse</span>
+      </a>
+      <a class="tab active" href="#" aria-current="page" aria-label="Calendar">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <rect x="3.5" y="5" width="17" height="16" rx="2"></rect><path d="M8 3v4M16 3v4M3.5 10h17"></path><path d="M8 14h2M14 14h2M8 17.5h2"></path>
+        </svg>
+        <span>Calendar</span>
+      </a>
+      <a class="tab" href="#" aria-label="Library">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h4v16H5zM10 4h4v16h-4z"></path><path d="m15.5 5.5 3.5-1 4 14-3.5 1z"></path></svg>
+        <span>Library</span>
+      </a>
+    </nav>
+  </div>
+</body>
+</html>

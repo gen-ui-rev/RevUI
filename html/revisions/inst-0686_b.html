@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Order Detail</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --accent:#7A6A5D;
+    --ground:#F1EFEC;
+    --ink:#26221F;
+    --muted:#857D76;
+    --line:#E6E2DE;
+  }
+  *{box-sizing:border-box;}
+  body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    padding:40px 0;
+    margin:0;
+    background:#D9D5D0;
+    font-family:'Nunito Sans', system-ui, sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .screen{
+    width:390px;
+    height:844px;
+    background:var(--ground);
+    display:flex;
+    flex-direction:column;
+    color:var(--ink);
+  }
+
+  /* top bar */
+  .topbar{
+    background:#fff;
+    border-bottom:1px solid var(--line);
+    display:flex;
+    align-items:center;
+    gap:6px;
+    padding:15px 16px 15px 10px;
+  }
+  .back{
+    width:26px;height:26px;
+    display:flex;align-items:center;justify-content:center;
+    color:var(--ink);
+  }
+  .topbar .titles{flex:1;min-width:0;}
+  .topbar h1{
+    margin:0;
+    font-size:16px;
+    font-weight:700;
+    line-height:20px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .topbar .sub{
+    font-size:12px;
+    line-height:14px;
+    color:var(--muted);
+    margin-top:1px;
+  }
+  .help{
+    font-size:13px;
+    font-weight:600;
+    color:var(--accent);
+    white-space:nowrap;
+  }
+
+  .content{
+    flex:1;
+    padding:14px 16px 0;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+
+  .card{
+    background:#fff;
+    border-radius:10px;
+    box-shadow:0 1px 3px rgba(38,34,31,0.09);
+  }
+
+  /* status */
+  .status{
+    background:var(--accent);
+    color:#fff;
+    padding:16px;
+  }
+  .status h2{
+    margin:0;
+    font-size:19px;
+    line-height:24px;
+    font-weight:700;
+  }
+  .status .eta{
+    font-size:13px;
+    line-height:18px;
+    margin-top:3px;
+    color:rgba(255,255,255,0.82);
+  }
+  .rail{
+    position:relative;
+    margin-top:18px;
+    display:flex;
+  }
+  .rail .track,
+  .rail .fill{
+    position:absolute;
+    top:5px;
+    height:2px;
+    border-radius:1px;
+  }
+  .rail .track{left:12.5%;right:12.5%;background:rgba(255,255,255,0.3);}
+  .rail .fill{left:12.5%;width:50%;background:#fff;}
+  .step{
+    flex:1;
+    position:relative;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+  }
+  .dot{
+    width:12px;height:12px;border-radius:50%;
+    background:#fff;
+    position:relative;
+    z-index:1;
+  }
+  .step.todo .dot{
+    background:var(--accent);
+    border:1.5px solid rgba(255,255,255,0.55);
+  }
+  .step span{
+    margin-top:7px;
+    font-size:12px;
+    line-height:14px;
+    color:rgba(255,255,255,0.78);
+  }
+  .step.now span{color:#fff;font-weight:700;}
+  .status .divider{
+    height:1px;
+    background:rgba(255,255,255,0.24);
+    margin-top:16px;
+  }
+
+  /* copyable tracking field */
+  .tracklabel{
+    margin-top:12px;
+    font-size:12px;
+    line-height:16px;
+    color:rgba(255,255,255,0.78);
+  }
+  .trackfield{
+    margin-top:8px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    padding:9px 12px;
+    border:1px dashed rgba(255,255,255,0.55);
+    border-radius:10px;
+    background:rgba(255,255,255,0.14);
+  }
+  .trackfield .num{
+    font-size:15px;
+    line-height:20px;
+    font-weight:700;
+    letter-spacing:0.7px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .trackfield .tap{
+    display:flex;
+    align-items:center;
+    gap:5px;
+    flex:none;
+    font-size:11px;
+    line-height:20px;
+    font-weight:700;
+    letter-spacing:0.5px;
+    text-transform:uppercase;
+    color:rgba(255,255,255,0.92);
+  }
+
+  /* items */
+  .block{padding:14px 16px;}
+  .blockhead{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    margin-bottom:6px;
+  }
+  .blockhead h3{
+    margin:0;
+    font-size:15px;
+    line-height:20px;
+    font-weight:700;
+  }
+  .blockhead .meta{
+    font-size:12px;
+    line-height:16px;
+    color:var(--muted);
+  }
+  .item{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    height:52px;
+    border-top:1px solid var(--line);
+  }
+  .item:first-of-type{border-top:none;}
+  .tile{
+    width:38px;height:38px;
+    flex:none;
+    border-radius:10px;
+    background:#F4F1EE;
+    display:flex;align-items:center;justify-content:center;
+    color:var(--accent);
+  }
+  .item .info{flex:1;min-width:0;}
+  .item .name{
+    font-size:14px;
+    line-height:19px;
+    font-weight:600;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .item .desc{
+    font-size:12px;
+    line-height:16px;
+    color:var(--muted);
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .item .right{
+    text-align:right;
+    flex:none;
+  }
+  .item .price{
+    font-size:14px;
+    line-height:19px;
+    font-weight:600;
+  }
+  .item .qty{
+    font-size:12px;
+    line-height:16px;
+    color:var(--muted);
+  }
+
+  /* payment */
+  .pline{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    height:24px;
+    font-size:14px;
+  }
+  .pline .k{color:var(--muted);}
+  .pline .v{font-weight:600;}
+  .pline .v.credit{color:var(--accent);}
+  .psplit{
+    height:1px;
+    background:var(--line);
+    margin:10px 0;
+  }
+  .total{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    height:24px;
+  }
+  .total .k{font-size:15px;font-weight:700;}
+  .total .v{font-size:18px;font-weight:700;}
+  .method{
+    margin-top:12px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    background:#F7F5F3;
+    border-radius:10px;
+    padding:7px 10px;
+  }
+  .method .mi{color:var(--accent);display:flex;flex:none;}
+  .method .mtxt{flex:1;min-width:0;}
+  .method .m1{font-size:13px;line-height:17px;font-weight:600;}
+  .method .m2{font-size:12px;line-height:16px;color:var(--muted);}
+
+  /* tab bar */
+  .tabbar{
+    background:#fff;
+    border-top:1px solid var(--line);
+    display:flex;
+    padding:8px 0 10px;
+  }
+  .tab{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:3px;
+    color:#9B948E;
+  }
+  .tab span{font-size:12px;line-height:14px;}
+  .tab.active{color:var(--accent);}
+  .tab.active span{font-weight:700;}
+</style>
+</head>
+<body>
+<div class="screen">
+
+  <div class="topbar">
+    <div class="back">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 5 8 12l6.5 7"/></svg>
+    </div>
+    <div class="titles">
+      <h1>Order NV-48213</h1>
+      <div class="sub">Placed March 11, 2024</div>
+    </div>
+    <div class="help">Get help</div>
+  </div>
+
+  <div class="content">
+
+    <div class="card status">
+      <h2>Out for delivery</h2>
+      <div class="eta">Arriving today by 8:00 PM — 214 Larkspur Ave, Apt 3B</div>
+      <div class="rail">
+        <div class="track"></div>
+        <div class="fill"></div>
+        <div class="step"><div class="dot"></div><span>Ordered</span></div>
+        <div class="step"><div class="dot"></div><span>Packed</span></div>
+        <div class="step now"><div class="dot"></div><span>In transit</span></div>
+        <div class="step todo"><div class="dot"></div><span>Delivered</span></div>
+      </div>
+      <div class="divider"></div>
+      <div class="tracklabel">Tracking number · Meridian Freight</div>
+      <div class="trackfield">
+        <div class="num">TR 8842 0916 4471</div>
+        <div class="tap">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M15 6.5V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h.5"/></svg>
+          <span>Tap to copy</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card block">
+      <div class="blockhead">
+        <h3>Items</h3>
+        <div class="meta">4 units · 3 products</div>
+      </div>
+
+      <div class="item">
+        <div class="tile">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="8" width="10" height="13" rx="2"/><path d="M10 8V5h4v3"/><path d="M7 12.5h10"/></svg>
+        </div>
+        <div class="info">
+          <div class="name">Iron + B12 Complex</div>
+          <div class="desc">60 capsules · Monthly refill</div>
+        </div>
+        <div class="right">
+          <div class="price">$34.00</div>
+          <div class="qty">Qty 1</div>
+        </div>
+      </div>
+
+      <div class="item">
+        <div class="tile">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="8.5" width="16" height="7" rx="3.5"/><path d="M12 8.5v7"/></svg>
+        </div>
+        <div class="info">
+          <div class="name">Magnesium Glycinate</div>
+          <div class="desc">90 capsules · Evening formula</div>
+        </div>
+        <div class="right">
+          <div class="price">$58.00</div>
+          <div class="qty">Qty 2</div>
+        </div>
+      </div>
+
+      <div class="item">
+        <div class="tile">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5c0 0 5 5.6 5 9a5 5 0 0 1-10 0c0-3.4 5-9 5-9z"/></svg>
+        </div>
+        <div class="info">
+          <div class="name">At-Home Vitamin D Test</div>
+          <div class="desc">Lab kit · Prepaid return label</div>
+        </div>
+        <div class="right">
+          <div class="price">$49.00</div>
+          <div class="qty">Qty 1</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card block">
+      <div class="blockhead">
+        <h3>Payment</h3>
+        <div class="meta">Charged Mar 11</div>
+      </div>
+      <div class="pline"><div class="k">Subtotal</div><div class="v">$141.00</div></div>
+      <div class="pline"><div class="k">Member discount (10%)</div><div class="v credit">−$14.10</div></div>
+      <div class="pline"><div class="k">Estimated tax</div><div class="v">$9.77</div></div>
+      <div class="psplit"></div>
+      <div class="total"><div class="k">Total</div><div class="v">$136.67</div></div>
+      <div class="method">
+        <div class="mi">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10h18"/></svg>
+        </div>
+        <div class="mtxt">
+          <div class="m1">Card ending 4412</div>
+          <div class="m2">Free shipping · HSA applied to $49.00</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="tabbar">
+    <div class="tab">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5 12 4l8 6.5V20a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1v-9.5z"/></svg>
+      <span>Home</span>
+    </div>
+    <div class="tab">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="16" rx="2"/><path d="M4 10h16M8 3v4M16 3v4M9.5 15l1.8 1.8 3.4-3.6"/></svg>
+      <span>Plan</span>
+    </div>
+    <div class="tab active">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8.5 12 4l8 4.5v7L12 20l-8-4.5v-7z"/><path d="M4 8.5 12 13l8-4.5M12 13v7"/></svg>
+      <span>Orders</span>
+    </div>
+    <div class="tab">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8.5" r="3.8"/><path d="M4.8 20c1-3.5 3.8-5.3 7.2-5.3s6.2 1.8 7.2 5.3"/></svg>
+      <span>Profile</span>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

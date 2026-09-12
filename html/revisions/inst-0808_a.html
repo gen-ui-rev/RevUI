@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Morrow Post Detail</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 32px 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #e9e6e8;
+      color: #29252a;
+      font-family: 'Inter', system-ui, sans-serif;
+    }
+
+    button {
+      font: inherit;
+      cursor: pointer;
+    }
+
+    .screen {
+      width: 1024px;
+      height: 768px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      border-radius: 10px;
+      background: #fcfbfc;
+      box-shadow: 0 6px 26px rgba(45, 36, 43, 0.18);
+    }
+
+    /* ---------- top bar ---------- */
+    .topbar {
+      flex: 0 0 56px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 18px;
+      background: #fcfbfc;
+      border-bottom: 1px solid #eee9ed;
+    }
+
+    .topbar h1 {
+      margin: 0 0 0 2px;
+      font-size: 15px;
+      line-height: 21px;
+      font-weight: 600;
+    }
+
+    .crumb {
+      color: #8b828a;
+      font-size: 13px;
+      line-height: 18px;
+    }
+
+    .topbar-tools {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .icon-button {
+      width: 32px;
+      height: 32px;
+      padding: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 0;
+      border-radius: 6px;
+      color: #393139;
+      background: transparent;
+    }
+
+    .icon-button:hover {
+      background: rgba(151, 100, 139, 0.12);
+    }
+
+    .icon-button svg,
+    .action svg,
+    .nav-item svg,
+    .play-button svg {
+      display: block;
+      width: 18px;
+      height: 18px;
+    }
+
+    .ghost-button {
+      padding: 6px 12px;
+      border: 1px solid #e0d7dd;
+      border-radius: 6px;
+      background: #fcfbfc;
+      color: #5a5158;
+      font-size: 13px;
+      line-height: 17px;
+      font-weight: 500;
+    }
+
+    .ghost-button:hover {
+      border-color: #cfbfc9;
+    }
+
+    /* ---------- three column workspace ---------- */
+    .workspace {
+      flex: 1 1 auto;
+      display: flex;
+      min-height: 0;
+    }
+
+    .rail {
+      flex: 0 0 216px;
+      display: flex;
+      flex-direction: column;
+      padding: 16px 12px;
+      background: #faf7f9;
+      border-right: 1px solid #eee9ed;
+    }
+
+    .brand {
+      margin: 4px 10px 14px;
+      color: #895878;
+      font-size: 15px;
+      line-height: 20px;
+      font-weight: 700;
+      letter-spacing: 0.2px;
+    }
+
+    .nav-item {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 11px;
+      margin-bottom: 2px;
+      border: 0;
+      border-radius: 6px;
+      color: #6a626a;
+      background: transparent;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 500;
+      text-align: left;
+    }
+
+    .nav-item:hover {
+      background: rgba(151, 100, 139, 0.09);
+      color: #4b434a;
+    }
+
+    .nav-item.active {
+      background: rgba(151, 100, 139, 0.16);
+      color: #895878;
+      font-weight: 600;
+    }
+
+    .rail-label {
+      margin: 14px 11px 6px;
+      color: #9a929a;
+      font-size: 11px;
+      line-height: 15px;
+      font-weight: 600;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+    }
+
+    .rail-user {
+      margin-top: auto;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 8px 10px;
+      border-radius: 6px;
+      background: rgba(151, 100, 139, 0.08);
+    }
+
+    .rail-user .reply-avatar {
+      width: 30px;
+      height: 30px;
+      flex: 0 0 30px;
+    }
+
+    .rail-user-name {
+      margin: 0;
+      font-size: 13px;
+      line-height: 17px;
+      font-weight: 600;
+    }
+
+    .rail-user-meta {
+      margin: 1px 0 0;
+      color: #7c737b;
+      font-size: 11px;
+      line-height: 15px;
+    }
+
+    /* ---------- centre: the post ---------- */
+    .content {
+      flex: 1 1 auto;
+      min-width: 0;
+      padding: 22px 24px;
+    }
+
+    .author-row {
+      display: flex;
+      align-items: center;
+      min-height: 44px;
+    }
+
+    .avatar {
+      flex: 0 0 auto;
+      width: 44px;
+      height: 44px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #a77b9d;
+      color: #ffffff;
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .author-copy {
+      min-width: 0;
+      margin-left: 11px;
+    }
+
+    .author-name {
+      margin: 0;
+      font-size: 14px;
+      line-height: 19px;
+      font-weight: 600;
+    }
+
+    .author-meta {
+      margin: 2px 0 0;
+      color: #746c73;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .follow {
+      margin-left: auto;
+      padding: 7px 14px;
+      border: 0;
+      border-radius: 6px;
+      background: rgba(151, 100, 139, 0.14);
+      color: #794c70;
+      font-size: 13px;
+      line-height: 17px;
+      font-weight: 600;
+    }
+
+    .follow:hover {
+      background: rgba(151, 100, 139, 0.22);
+    }
+
+    .post-copy {
+      margin: 10px 0 0;
+      font-size: 15px;
+      line-height: 21px;
+    }
+
+    .hero {
+      width: 416px;
+      height: 220px;
+      margin-top: 12px;
+      border-radius: 8px;
+      object-fit: cover;
+      display: block;
+      background: #d8d0d6;
+    }
+
+    .track-card {
+      margin-top: 10px;
+      padding: 9px 11px;
+      min-height: 60px;
+      display: flex;
+      align-items: center;
+      border-radius: 8px;
+      background: rgba(151, 100, 139, 0.12);
+    }
+
+    .play-button {
+      width: 38px;
+      height: 38px;
+      flex: 0 0 38px;
+      padding: 0;
+      border: 0;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      background: #936384;
+    }
+
+    .track-copy {
+      min-width: 0;
+      margin-left: 10px;
+    }
+
+    .track-title {
+      margin: 0;
+      font-size: 14px;
+      line-height: 18px;
+      font-weight: 600;
+    }
+
+    .track-meta {
+      margin: 2px 0 0;
+      color: #71666f;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .duration {
+      margin-left: auto;
+      padding-left: 10px;
+      color: #71666f;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 500;
+    }
+
+    .stats {
+      margin: 12px 0 0;
+      color: #7c737b;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .actions {
+      min-height: 42px;
+      margin-top: 8px;
+      padding: 0 6px;
+      display: flex;
+      align-items: center;
+      border-radius: 8px;
+      background: rgba(151, 100, 139, 0.08);
+    }
+
+    .action {
+      padding: 8px 10px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border: 0;
+      border-radius: 6px;
+      color: #625a60;
+      background: transparent;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 500;
+    }
+
+    .action:hover {
+      background: rgba(151, 100, 139, 0.12);
+    }
+
+    .action.liked {
+      color: #885579;
+    }
+
+    .action.share {
+      margin-left: auto;
+    }
+
+    /* ---------- right: comments panel ---------- */
+    .comments-panel {
+      flex: 0 0 336px;
+      display: flex;
+      flex-direction: column;
+      padding: 18px 18px 16px;
+      background: #faf8fa;
+      border-left: 1px solid #eee9ed;
+    }
+
+    .comments-heading {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+    }
+
+    .comments-heading h2 {
+      margin: 0;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 600;
+    }
+
+    .comments-heading a {
+      color: #855777;
+      text-decoration: none;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 600;
+    }
+
+    .sort-row {
+      margin: 10px 0 4px;
+      display: flex;
+      gap: 6px;
+    }
+
+    .chip {
+      padding: 4px 10px;
+      border: 1px solid #e5dce2;
+      border-radius: 999px;
+      background: #fcfbfc;
+      color: #6d646c;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 500;
+    }
+
+    .chip.on {
+      border-color: transparent;
+      background: rgba(151, 100, 139, 0.16);
+      color: #814f74;
+      font-weight: 600;
+    }
+
+    .comment {
+      display: flex;
+      align-items: flex-start;
+      padding: 9px 0;
+      border-bottom: 1px solid #f0eaee;
+    }
+
+    .comment-avatar {
+      width: 30px;
+      height: 30px;
+      flex: 0 0 30px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(151, 100, 139, 0.17);
+      color: #704a67;
+      font-size: 11px;
+      line-height: 15px;
+      font-weight: 700;
+    }
+
+    .comment-body {
+      min-width: 0;
+      margin-left: 9px;
+    }
+
+    .comment-name {
+      margin: 0;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 600;
+    }
+
+    .comment-text {
+      margin: 2px 0 0;
+      color: #403a3f;
+      font-size: 13px;
+      line-height: 18px;
+    }
+
+    .comment-meta {
+      margin: 3px 0 0;
+      color: #817981;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .reply-row {
+      margin-top: auto;
+      padding-top: 14px;
+      display: flex;
+      align-items: center;
+    }
+
+    .reply-avatar {
+      width: 32px;
+      height: 32px;
+      flex: 0 0 32px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #d9ced6;
+      color: #62525e;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .reply-entry {
+      min-height: 36px;
+      margin-left: 9px;
+      padding: 8px 12px;
+      flex: 1;
+      border: 1px solid #e3dae0;
+      border-radius: 6px;
+      background: #fcfbfc;
+      color: #8b828a;
+      font-size: 13px;
+      line-height: 20px;
+    }
+
+    .send {
+      margin-left: 8px;
+      padding: 8px 14px;
+      border: 0;
+      border-radius: 6px;
+      background: #936384;
+      color: #ffffff;
+      font-size: 13px;
+      line-height: 20px;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <button class="icon-button" type="button" aria-label="Go back">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M15 5 8 12l7 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <h1>Post</h1>
+      <span class="crumb">/ Explore / Fieldroom Stage</span>
+      <div class="topbar-tools">
+        <button class="ghost-button" type="button">Save to library</button>
+        <button class="icon-button" type="button" aria-label="More options">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <circle cx="5" cy="12" r="1.7"/>
+            <circle cx="12" cy="12" r="1.7"/>
+            <circle cx="19" cy="12" r="1.7"/>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <div class="workspace">
+      <nav class="rail" aria-label="Morrow navigation">
+        <p class="brand">Morrow</p>
+        <button class="nav-item" type="button">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="m4 10 8-6 8 6v9a1 1 0 0 1-1 1h-5v-6h-4v6H5a1 1 0 0 1-1-1v-9Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+          </svg>
+          <span>Home</span>
+        </button>
+        <button class="nav-item active" type="button">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="1.8"/>
+            <path d="m16 16 4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+          <span>Explore</span>
+        </button>
+        <button class="nav-item" type="button">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <rect x="4" y="5" width="16" height="14" rx="1" stroke="currentColor" stroke-width="1.7"/>
+            <path d="M9 9v6M15 7v10" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+          </svg>
+          <span>Library</span>
+        </button>
+        <button class="nav-item" type="button">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="12" cy="8" r="3.5" stroke="currentColor" stroke-width="1.7"/>
+            <path d="M5.5 20c.5-4 2.7-6 6.5-6s6 2 6.5 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+          </svg>
+          <span>Profile</span>
+        </button>
+
+        <p class="rail-label">Following</p>
+        <button class="nav-item" type="button"><span>Mara Vance</span></button>
+        <button class="nav-item" type="button"><span>Fieldroom Stage</span></button>
+        <button class="nav-item" type="button"><span>Late Night Sessions</span></button>
+
+        <div class="rail-user">
+          <div class="reply-avatar" aria-hidden="true">JL</div>
+          <div>
+            <p class="rail-user-name">Jules Larkin</p>
+            <p class="rail-user-meta">@juleslarkin</p>
+          </div>
+        </div>
+      </nav>
+
+      <main class="content">
+        <section aria-label="Post by Mara Vance">
+          <div class="author-row">
+            <div class="avatar" aria-hidden="true">MV</div>
+            <div class="author-copy">
+              <p class="author-name">Mara Vance</p>
+              <p class="author-meta">@maravance · May 18 at 9:24 PM</p>
+            </div>
+            <button class="follow" type="button">Follow</button>
+          </div>
+
+          <p class="post-copy">Still thinking about last night’s closing set. We saved the version of “Northbound” with the extended guitar outro—listen from 18:42.</p>
+
+          <img class="hero" src="https://loremflickr.com/416/220/concert?lock=10750" width="416" height="220" alt="Crowd watching a live concert under stage lights">
+
+          <div class="track-card" aria-label="Audio clip">
+            <button class="play-button" type="button" aria-label="Play Northbound live session">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M8.2 5.7c0-.9 1-1.4 1.8-.9l8.1 6.3c.6.4.6 1.3 0 1.8L10 19.2c-.8.6-1.8 0-1.8-.9V5.7Z"/>
+              </svg>
+            </button>
+            <div class="track-copy">
+              <p class="track-title">Northbound — Live Session</p>
+              <p class="track-meta">Mara Vance · Fieldroom Stage</p>
+            </div>
+            <span class="duration">24:16</span>
+          </div>
+
+          <p class="stats">4,102 plays · 1,284 likes · 28 comments</p>
+
+          <div class="actions" aria-label="Post reactions">
+            <button class="action liked" type="button">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M12 20.4 10.6 19C5.5 14.4 2.2 11.4 2.2 7.7A5.4 5.4 0 0 1 7.7 2.2c1.7 0 3.3.8 4.3 2 1-1.2 2.6-2 4.3-2a5.4 5.4 0 0 1 5.5 5.5c0 3.7-3.3 6.7-8.4 11.3L12 20.4Z"/>
+              </svg>
+              <span>1,284</span>
+            </button>
+            <button class="action" type="button">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M20 11.5a7.5 7.5 0 0 1-8 7.5 9.2 9.2 0 0 1-3.6-.8L4 19.5l1.4-4A7.4 7.4 0 0 1 4 11.5 7.5 7.5 0 0 1 12 4a7.5 7.5 0 0 1 8 7.5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+              </svg>
+              <span>28</span>
+            </button>
+            <button class="action share" type="button" aria-label="Share post">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="m14 5 5-1-1 5M19 4l-8 8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M18 13v5a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+              </svg>
+            </button>
+          </div>
+        </section>
+      </main>
+
+      <aside class="comments-panel" aria-labelledby="comments-title">
+        <div class="comments-heading">
+          <h2 id="comments-title">Comments · 28</h2>
+          <a href="#">View all</a>
+        </div>
+
+        <div class="sort-row">
+          <span class="chip on">Newest</span>
+          <span class="chip">Top</span>
+          <span class="chip">From artist</span>
+        </div>
+
+        <div class="comment">
+          <div class="comment-avatar" aria-hidden="true">TH</div>
+          <div class="comment-body">
+            <p class="comment-name">Theo Hart</p>
+            <p class="comment-text">That outro sounded huge in the room. Glad this version was saved.</p>
+            <p class="comment-meta">12 min · Reply</p>
+          </div>
+        </div>
+
+        <div class="comment">
+          <div class="comment-avatar" aria-hidden="true">NC</div>
+          <div class="comment-body">
+            <p class="comment-name">Nora Cole</p>
+            <p class="comment-text">The change at 19:08 is my favorite part.</p>
+            <p class="comment-meta">8 min · Reply</p>
+          </div>
+        </div>
+
+        <div class="comment">
+          <div class="comment-avatar" aria-hidden="true">EB</div>
+          <div class="comment-body">
+            <p class="comment-name">Elliot Brooks</p>
+            <p class="comment-text">Adding this session to my late-night queue.</p>
+            <p class="comment-meta">3 min · Reply</p>
+          </div>
+        </div>
+
+        <div class="comment">
+          <div class="comment-avatar" aria-hidden="true">SR</div>
+          <div class="comment-body">
+            <p class="comment-name">Sana Ruiz</p>
+            <p class="comment-text">Any chance the full set gets posted this week?</p>
+            <p class="comment-meta">1 min · Reply</p>
+          </div>
+        </div>
+
+        <div class="reply-row">
+          <div class="reply-avatar" aria-hidden="true">JL</div>
+          <div class="reply-entry">Add a comment</div>
+          <button class="send" type="button">Post</button>
+        </div>
+      </aside>
+    </div>
+  </div>
+</body>
+</html>

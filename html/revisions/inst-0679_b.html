@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fluently Live Lesson</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #e8e8eb;
+      color: #202536;
+      font-family: 'Inter', system-ui, sans-serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #fcfcfe;
+      border: 1px solid #d9d9e2;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 18px;
+      background: #ffffff;
+      border-bottom: 1px solid #e0e0e8;
+    }
+
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      min-width: 0;
+    }
+
+    .back-button,
+    .notes-button {
+      border: 0;
+      background: transparent;
+      color: #2d3142;
+    }
+
+    .back-button {
+      width: 30px;
+      height: 30px;
+      padding: 0;
+      display: grid;
+      place-items: center;
+    }
+
+    .brand {
+      min-width: 0;
+    }
+
+    .brand-name {
+      margin: 0;
+      font-size: 16px;
+      line-height: 20px;
+      font-weight: 700;
+    }
+
+    .brand-context {
+      margin: 2px 0 0;
+      color: #737487;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .notes-button {
+      padding: 6px 10px;
+      border: 1px solid #d5d5e1;
+      border-radius: 6px;
+      background: #fafafe;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 600;
+    }
+
+    .lesson-stage {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 25px 22px 27px;
+      background: #edeaff;
+    }
+
+    .lesson-status {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+    }
+
+    .live-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      color: #5c4b9a;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 700;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+    }
+
+    .live-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 2px;
+      background: #745bc1;
+    }
+
+    .timer {
+      color: #504c67;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .tutor-card {
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      border: 1px solid #d4cef0;
+      border-radius: 12px;
+      background: #ffffff;
+      box-shadow: 0 5px 16px rgba(57, 45, 99, 0.07);
+    }
+
+    .tutor-avatar {
+      width: 78px;
+      height: 78px;
+      flex: 0 0 auto;
+      display: grid;
+      place-items: center;
+      border-radius: 10px;
+      background: #ded8f7;
+      color: #594692;
+      font-size: 24px;
+      line-height: 30px;
+      font-weight: 700;
+    }
+
+    .tutor-copy {
+      min-width: 0;
+      text-align: left;
+    }
+
+    .tutor-copy h1 {
+      margin: 0;
+      color: #25243a;
+      font-size: 23px;
+      line-height: 28px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .tutor-role {
+      margin: 5px 0 0;
+      color: #68667b;
+      font-size: 13px;
+      line-height: 18px;
+    }
+
+    .connected-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin: 10px 0 0;
+      color: #47705d;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 600;
+    }
+
+    .connected-label::before {
+      width: 7px;
+      height: 7px;
+      content: "";
+      border-radius: 50%;
+      background: #5c9277;
+    }
+
+    .lesson-prompt {
+      margin-top: 16px;
+      padding: 13px 15px;
+      border-left: 3px solid #7d68bd;
+      background: rgba(255, 255, 255, 0.68);
+    }
+
+    .prompt-label {
+      margin: 0 0 3px;
+      color: #77718e;
+      font-size: 11px;
+      line-height: 15px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .prompt-text {
+      margin: 0;
+      color: #39344f;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 500;
+    }
+
+    .class-details {
+      padding: 15px 20px 13px;
+      background: #fcfcfe;
+      border-top: 1px solid #dddce7;
+    }
+
+    .details-heading {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 7px;
+    }
+
+    .section-title {
+      margin: 0;
+      color: #2b2c3e;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 700;
+    }
+
+    .course-code {
+      color: #858497;
+      font-size: 11px;
+      line-height: 16px;
+      font-weight: 600;
+    }
+
+    .detail-row {
+      display: grid;
+      grid-template-columns: 90px 1fr;
+      gap: 14px;
+      padding: 8px 0;
+      border-top: 1px solid #e5e4ec;
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .detail-label {
+      color: #767587;
+    }
+
+    .detail-value {
+      min-width: 0;
+      color: #303142;
+      font-weight: 500;
+      text-align: left;
+    }
+
+    .lesson-controls {
+      padding: 14px 17px 18px;
+      background: #f7f7fb;
+      border-top: 1px solid #dddde6;
+    }
+
+    .control-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 9px;
+    }
+
+    .control {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 7px;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: #3d3d50;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 500;
+    }
+
+    .control-icon {
+      width: 54px;
+      height: 54px;
+      display: grid;
+      place-items: center;
+      border: 1px solid #d1d0dd;
+      border-radius: 9px;
+      background: #ffffff;
+      color: #45435b;
+    }
+
+    .control.active .control-icon {
+      border-color: #8b79c4;
+      background: #e9e4fb;
+      color: #594692;
+    }
+
+    .control.leave {
+      color: #934346;
+    }
+
+    .control.leave .control-icon {
+      border-color: #a84d51;
+      background: #fff5f5;
+      color: #a84d51;
+    }
+
+    svg {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="back-button" type="button" aria-label="Leave lesson screen">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M15.5 5L8.5 12L15.5 19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <div class="brand">
+          <p class="brand-name">Fluently</p>
+          <p class="brand-context">Live Spanish class</p>
+        </div>
+      </div>
+      <button class="notes-button" type="button">Notes</button>
+    </header>
+
+    <main class="lesson-stage">
+      <div class="lesson-status">
+        <span class="live-label">
+          <span class="live-dot" aria-hidden="true"></span>
+          Lesson live
+        </span>
+        <span class="timer">22:16</span>
+      </div>
+
+      <section class="tutor-card" aria-label="Current tutor">
+        <div class="tutor-avatar" role="img" aria-label="Tutor Sofia Reyes profile">SR</div>
+        <div class="tutor-copy">
+          <h1>Sofia Reyes</h1>
+          <p class="tutor-role">Spanish conversation tutor</p>
+          <p class="connected-label">Voice connected</p>
+        </div>
+      </section>
+
+      <section class="lesson-prompt" aria-label="Current lesson activity">
+        <p class="prompt-label">Now practicing</p>
+        <p class="prompt-text">Ordering confidently at a neighborhood café</p>
+      </section>
+    </main>
+
+    <section class="class-details" aria-labelledby="class-details-title">
+      <div class="details-heading">
+        <h2 class="section-title" id="class-details-title">Class details</h2>
+        <span class="course-code">SPN 204</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Level</span>
+        <span class="detail-value">Intermediate B1</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Focus</span>
+        <span class="detail-value">Café conversation</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Scheduled</span>
+        <span class="detail-value">Today, 4:00–4:30 PM</span>
+      </div>
+    </section>
+
+    <nav class="lesson-controls" aria-label="Lesson controls">
+      <div class="control-grid">
+        <button class="control" type="button">
+          <span class="control-icon">
+            <svg width="23" height="23" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <rect x="8.5" y="3.5" width="7" height="11" rx="3.5" stroke="currentColor" stroke-width="1.7"/>
+              <path d="M5.5 11.5C5.5 15.09 8.41 18 12 18C15.59 18 18.5 15.09 18.5 11.5M12 18V21M9 21H15" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+            </svg>
+          </span>
+          <span>Mute</span>
+        </button>
+
+        <button class="control active" type="button">
+          <span class="control-icon">
+            <svg width="23" height="23" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M5 14.5H8.2L13 18.5V5.5L8.2 9.5H5V14.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+              <path d="M16 9C17.33 10.67 17.33 13.33 16 15M18.5 6.5C21.2 9.7 21.2 14.3 18.5 17.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+            </svg>
+          </span>
+          <span>Speaker</span>
+        </button>
+
+        <button class="control" type="button">
+          <span class="control-icon">
+            <svg width="24" height="23" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <rect x="3.5" y="5.5" width="17" height="13" rx="2" stroke="currentColor" stroke-width="1.7"/>
+              <path d="M7 10H10M7 14H12M14 10H17M14 14H17" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+            </svg>
+          </span>
+          <span>Captions</span>
+        </button>
+
+        <button class="control leave" type="button">
+          <span class="control-icon">
+            <svg width="25" height="25" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M5 15.5C8.9 12.17 15.1 12.17 19 15.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M7.5 13.9L6 17M16.5 13.9L18 17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </span>
+          <span>Leave</span>
+        </button>
+      </div>
+    </nav>
+  </div>
+</body>
+</html>

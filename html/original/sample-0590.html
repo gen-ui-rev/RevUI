@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Morrowlane Secure Inbox</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #e9e7ea;
+      color: #211e23;
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #ffffff;
+      border: 1px solid #d8d4d9;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 14px 18px 12px;
+      border-bottom: 1px solid #eee9ed;
+    }
+
+    .title-group {
+      min-width: 0;
+    }
+
+    .title-group h1 {
+      margin: 0;
+      font-size: 22px;
+      line-height: 1.2;
+      font-weight: 600;
+      letter-spacing: -0.35px;
+    }
+
+    .title-group p {
+      margin: 3px 0 0;
+      color: #777077;
+      font-size: 13px;
+      line-height: 1.4;
+      font-weight: 400;
+    }
+
+    .icon-button {
+      width: 38px;
+      height: 38px;
+      flex: 0 0 38px;
+      display: grid;
+      place-items: center;
+      padding: 0;
+      color: #c92f70;
+      background: #fff3f7;
+      border: 1px solid #f0c6d7;
+      border-radius: 6px;
+    }
+
+    .icon-button svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .folder-tabs {
+      display: flex;
+      gap: 25px;
+      padding: 0 18px;
+      border-bottom: 1px solid #e9e5e8;
+    }
+
+    .folder-tab {
+      position: relative;
+      padding: 12px 0 11px;
+      color: #777077;
+      font-size: 13px;
+      line-height: 1.3;
+      font-weight: 400;
+      white-space: nowrap;
+    }
+
+    .folder-tab.active {
+      color: #c92f70;
+      font-weight: 600;
+    }
+
+    .folder-tab.active::after {
+      position: absolute;
+      right: 0;
+      bottom: -1px;
+      left: 0;
+      height: 2px;
+      background: #c92f70;
+      content: "";
+    }
+
+    .list-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 18px 9px;
+      border-bottom: 1px solid #e9e5e8;
+    }
+
+    .list-heading span {
+      color: #777077;
+      font-size: 12px;
+      line-height: 1.4;
+      font-weight: 400;
+    }
+
+    .text-action {
+      padding: 0;
+      color: #c92f70;
+      background: transparent;
+      border: 0;
+      font-size: 12px;
+      line-height: 1.4;
+      font-weight: 600;
+    }
+
+    .message-list {
+      width: 100%;
+    }
+
+    .message-row {
+      display: grid;
+      grid-template-columns: 7px minmax(0, 1fr);
+      column-gap: 10px;
+      padding: 10px 18px 9px;
+      border-bottom: 1px solid #eee9ed;
+    }
+
+    .unread-dot {
+      width: 7px;
+      height: 7px;
+      margin-top: 5px;
+      background: #d72e74;
+      border-radius: 50%;
+    }
+
+    .message-row.read .unread-dot {
+      visibility: hidden;
+    }
+
+    .message-content {
+      min-width: 0;
+    }
+
+    .message-topline {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .sender {
+      min-width: 0;
+      overflow: hidden;
+      color: #312d32;
+      font-size: 13px;
+      line-height: 1.35;
+      font-weight: 400;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .message-row.unread .sender,
+    .message-row.unread .subject {
+      color: #211e23;
+      font-weight: 600;
+    }
+
+    .message-time {
+      flex: 0 0 auto;
+      color: #8a8389;
+      font-size: 12px;
+      line-height: 1.35;
+      font-weight: 400;
+      white-space: nowrap;
+    }
+
+    .subject {
+      margin-top: 2px;
+      overflow: hidden;
+      color: #3d383e;
+      font-size: 14px;
+      line-height: 1.35;
+      font-weight: 400;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .preview {
+      margin-top: 2px;
+      overflow: hidden;
+      color: #817980;
+      font-size: 12px;
+      line-height: 1.4;
+      font-weight: 400;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .tabbar {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      margin-top: auto;
+      padding: 8px 8px 9px;
+      background: #ffffff;
+      border-top: 1px solid #ddd8dc;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      color: #817a80;
+      font-size: 12px;
+      line-height: 1.25;
+      font-weight: 400;
+    }
+
+    .nav-item.active {
+      color: #c92f70;
+      font-weight: 600;
+    }
+
+    .nav-item svg {
+      width: 21px;
+      height: 21px;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <div class="title-group">
+        <h1>Secure inbox</h1>
+        <p>Morrowlane notices and documents</p>
+      </div>
+      <button class="icon-button" type="button" aria-label="Search messages">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="10.8" cy="10.8" r="6.3" stroke="currentColor" stroke-width="1.8"/>
+          <path d="M15.5 15.5L20 20" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </header>
+
+    <nav class="folder-tabs" aria-label="Message filters">
+      <div class="folder-tab active">All 8</div>
+      <div class="folder-tab">Unread 3</div>
+      <div class="folder-tab">Documents</div>
+    </nav>
+
+    <div class="list-heading">
+      <span>Latest messages</span>
+      <button class="text-action" type="button">Mark all read</button>
+    </div>
+
+    <main class="message-list" aria-label="Secure messages">
+      <article class="message-row unread">
+        <span class="unread-dot" aria-hidden="true"></span>
+        <div class="message-content">
+          <div class="message-topline">
+            <span class="sender">Card Security</span>
+            <span class="message-time">10:42 AM</span>
+          </div>
+          <div class="subject">Confirm your recent card purchase</div>
+          <div class="preview">$184.20 at North Harbor Market needs review.</div>
+        </div>
+      </article>
+
+      <article class="message-row unread">
+        <span class="unread-dot" aria-hidden="true"></span>
+        <div class="message-content">
+          <div class="message-topline">
+            <span class="sender">Portfolio Services</span>
+            <span class="message-time">9:18 AM</span>
+          </div>
+          <div class="subject">Trade confirmation is available</div>
+          <div class="preview">Your order for two shares was completed.</div>
+        </div>
+      </article>
+
+      <article class="message-row unread">
+        <span class="unread-dot" aria-hidden="true"></span>
+        <div class="message-content">
+          <div class="message-topline">
+            <span class="sender">Morrowlane Banking</span>
+            <span class="message-time">Yesterday</span>
+          </div>
+          <div class="subject">Your January statement is ready</div>
+          <div class="preview">View or download the statement for account 4826.</div>
+        </div>
+      </article>
+
+      <article class="message-row read">
+        <span class="unread-dot" aria-hidden="true"></span>
+        <div class="message-content">
+          <div class="message-topline">
+            <span class="sender">Transfer Desk</span>
+            <span class="message-time">Feb 6</span>
+          </div>
+          <div class="subject">Scheduled transfer completed</div>
+          <div class="preview">$500.00 was delivered to your savings account.</div>
+        </div>
+      </article>
+
+      <article class="message-row read">
+        <span class="unread-dot" aria-hidden="true"></span>
+        <div class="message-content">
+          <div class="message-topline">
+            <span class="sender">Tax Documents</span>
+            <span class="message-time">Feb 3</span>
+          </div>
+          <div class="subject">Your 2025 tax form is available</div>
+          <div class="preview">The consolidated investment form is ready to view.</div>
+        </div>
+      </article>
+
+      <article class="message-row read">
+        <span class="unread-dot" aria-hidden="true"></span>
+        <div class="message-content">
+          <div class="message-topline">
+            <span class="sender">Savings Team</span>
+            <span class="message-time">Jan 29</span>
+          </div>
+          <div class="subject">Savings rate update</div>
+          <div class="preview">Your annual percentage yield changes on February 12.</div>
+        </div>
+      </article>
+
+      <article class="message-row read">
+        <span class="unread-dot" aria-hidden="true"></span>
+        <div class="message-content">
+          <div class="message-topline">
+            <span class="sender">Account Services</span>
+            <span class="message-time">Jan 24</span>
+          </div>
+          <div class="subject">Beneficiary details updated</div>
+          <div class="preview">The requested account change has been completed.</div>
+        </div>
+      </article>
+
+      <article class="message-row read">
+        <span class="unread-dot" aria-hidden="true"></span>
+        <div class="message-content">
+          <div class="message-topline">
+            <span class="sender">Support Desk</span>
+            <span class="message-time">Jan 20</span>
+          </div>
+          <div class="subject">Case 48291 has been closed</div>
+          <div class="preview">Your mobile deposit question has been resolved.</div>
+        </div>
+      </article>
+    </main>
+
+    <nav class="tabbar" aria-label="Primary navigation">
+      <div class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M3.5 10.5L12 3.8L20.5 10.5V20H14.8V14H9.2V20H3.5V10.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+        </svg>
+        <span>Home</span>
+      </div>
+      <div class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M4 7H18M15 4L18 7L15 10M20 17H6M9 14L6 17L9 20" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span>Activity</span>
+      </div>
+      <div class="nav-item active">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <rect x="3.5" y="5" width="17" height="14" rx="1.5" stroke="currentColor" stroke-width="1.7"/>
+          <path d="M4.5 7L12 13L19.5 7" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+        </svg>
+        <span>Inbox</span>
+      </div>
+      <div class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="12" cy="8" r="3.5" stroke="currentColor" stroke-width="1.7"/>
+          <path d="M5 20C5.6 16.2 8.1 14.3 12 14.3C15.9 14.3 18.4 16.2 19 20" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+        </svg>
+        <span>Profile</span>
+      </div>
+    </nav>
+  </div>
+</body>
+</html>

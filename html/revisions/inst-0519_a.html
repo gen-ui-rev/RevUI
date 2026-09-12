@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Sleep Lab — Guide</title>
+<style>
+  :root{
+    --ink:#1e1a16;
+    --muted:#6f665d;
+    --taupe:#8a7a68;
+    --taupe-soft:rgba(138,122,104,0.13);
+    --taupe-softer:rgba(138,122,104,0.07);
+    --line:rgba(30,26,22,0.10);
+    --chrome:#f7f5f2;
+  }
+  *{box-sizing:border-box;}
+  body{
+    min-height:100vh;
+    margin:0;
+    padding:28px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#d9d5cf;
+    color:var(--ink);
+    font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .screen{
+    width:1024px;
+    height:768px;
+    position:relative;
+    display:flex;
+    flex-direction:column;
+    background:#fff;
+    border:1px solid rgba(30,26,22,0.13);
+    border-radius:10px;
+    box-shadow:0 18px 50px rgba(40,34,28,0.16);
+  }
+
+  .tabstrip{
+    display:flex;
+    align-items:flex-end;
+    gap:8px;
+    padding:7px 12px 0;
+    background:#ece8e3;
+    border-radius:9px 9px 0 0;
+    border-bottom:1px solid var(--line);
+  }
+  .window-controls{
+    display:flex;
+    align-items:center;
+    gap:7px;
+    height:30px;
+    padding:0 7px 7px 2px;
+  }
+  .window-controls span{
+    width:10px;
+    height:10px;
+    border-radius:50%;
+    background:#c4bdb5;
+  }
+  .browser-tab{
+    width:236px;
+    height:31px;
+    padding:0 12px;
+    display:flex;
+    align-items:center;
+    gap:9px;
+    background:#fff;
+    border:1px solid var(--line);
+    border-bottom-color:#fff;
+    border-radius:7px 7px 0 0;
+  }
+  .tab-mark{
+    width:16px;
+    height:16px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:4px;
+    background:var(--taupe-soft);
+    color:var(--taupe);
+    font-size:9px;
+    font-weight:700;
+  }
+  .browser-tab .title{
+    min-width:0;
+    flex:1;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+    font-size:12px;
+  }
+  .browser-tab .close{
+    color:var(--muted);
+    font-size:15px;
+  }
+  .new-tab{
+    align-self:center;
+    padding-bottom:6px;
+    color:var(--muted);
+    font-size:20px;
+    line-height:1;
+  }
+
+  .navbar{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding:9px 14px;
+    background:var(--chrome);
+    border-bottom:1px solid var(--line);
+  }
+  .iconbtn{
+    width:30px;
+    height:30px;
+    border-radius:5px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex:0 0 auto;
+  }
+  .iconbtn.muted{opacity:.28;}
+  .urlbar{
+    height:34px;
+    flex:1;
+    min-width:0;
+    display:flex;
+    align-items:center;
+    gap:9px;
+    padding:0 13px;
+    background:#fff;
+    border:1px solid rgba(30,26,22,0.11);
+    border-radius:7px;
+    box-shadow:inset 0 1px 2px rgba(30,26,22,0.03);
+  }
+  .url{
+    min-width:0;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+    font-size:13px;
+  }
+  .url .dim{color:var(--muted);}
+  .menu{
+    width:30px;
+    text-align:center;
+    color:var(--muted);
+    letter-spacing:2px;
+    font-weight:700;
+  }
+
+  .workspace{
+    flex:1;
+    min-height:0;
+    display:flex;
+  }
+  .rail{
+    width:238px;
+    flex:0 0 238px;
+    padding:31px 24px;
+    background:var(--taupe-softer);
+    border-right:1px solid var(--line);
+  }
+  .rail-label{
+    margin:0 0 14px;
+    color:var(--taupe);
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:.09em;
+    text-transform:uppercase;
+  }
+  .rail h2{
+    margin:0 0 24px;
+    font-size:18px;
+    line-height:25px;
+    font-weight:600;
+  }
+  .rail-row{
+    display:grid;
+    grid-template-columns:25px 1fr;
+    gap:8px;
+    padding:13px 0;
+    border-top:1px solid var(--line);
+  }
+  .rail-row .num{
+    color:var(--taupe);
+    font-size:12px;
+    font-weight:700;
+  }
+  .rail-row .label{
+    font-size:13px;
+    line-height:18px;
+  }
+  .rail-row .len{
+    grid-column:2;
+    margin-top:2px;
+    color:var(--muted);
+    font-size:11px;
+  }
+  .rail-note{
+    margin:28px 0 0;
+    padding-top:18px;
+    border-top:1px solid var(--line);
+    color:var(--muted);
+    font-size:12px;
+    line-height:18px;
+  }
+
+  .article{
+    flex:1;
+    min-width:0;
+    padding:30px 44px 26px;
+  }
+  .article-inner{
+    max-width:690px;
+    margin:0 auto;
+  }
+  .eyebrow{
+    margin:0 0 9px;
+    color:var(--taupe);
+    font-size:12px;
+    font-weight:700;
+    letter-spacing:.09em;
+    text-transform:uppercase;
+  }
+  h1{
+    margin:0 0 18px;
+    max-width:680px;
+    font-size:36px;
+    line-height:43px;
+    letter-spacing:-.025em;
+    font-weight:600;
+  }
+  .byline{
+    display:flex;
+    align-items:center;
+    gap:11px;
+    padding-bottom:18px;
+    border-bottom:1px solid var(--line);
+  }
+  .monogram{
+    width:38px;
+    height:38px;
+    flex:0 0 auto;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:6px;
+    background:var(--taupe-soft);
+    color:var(--taupe);
+    font-size:13px;
+    font-weight:700;
+  }
+  .who{
+    font-size:14px;
+    line-height:19px;
+    font-weight:600;
+  }
+  .when{
+    color:var(--muted);
+    font-size:12px;
+    line-height:17px;
+  }
+  .summary{
+    margin:18px 0;
+    padding:15px 17px;
+    border-left:3px solid var(--taupe);
+    background:var(--taupe-soft);
+    border-radius:0 6px 6px 0;
+  }
+  .summary h2{
+    margin:0 0 7px;
+    color:var(--taupe);
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:.09em;
+    text-transform:uppercase;
+  }
+  .summary p{
+    margin:0;
+    font-size:15px;
+    line-height:22px;
+  }
+  .body{
+    columns:2;
+    column-gap:34px;
+    column-rule:1px solid var(--line);
+  }
+  .body p{
+    break-inside:avoid;
+    margin:0;
+    color:#38322c;
+    font-size:14px;
+    line-height:23px;
+  }
+  .body p + p{margin-top:14px;}
+</style>
+</head>
+<body>
+<div class="screen">
+  <div class="tabstrip">
+    <div class="window-controls" aria-hidden="true"><span></span><span></span><span></span></div>
+    <div class="browser-tab">
+      <span class="tab-mark">SL</span>
+      <span class="title">How sleep debt builds up over a single week</span>
+      <span class="close">×</span>
+    </div>
+    <div class="new-tab" aria-label="New tab">+</div>
+  </div>
+
+  <div class="navbar">
+    <div class="iconbtn" aria-label="Back">
+      <svg width="17" height="17" viewBox="0 0 20 20" fill="none" stroke="#1e1a16" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12.5 4.5L7 10l5.5 5.5"/>
+      </svg>
+    </div>
+    <div class="iconbtn muted" aria-label="Forward, unavailable">
+      <svg width="17" height="17" viewBox="0 0 20 20" fill="none" stroke="#1e1a16" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M7.5 4.5L13 10l-5.5 5.5"/>
+      </svg>
+    </div>
+    <div class="iconbtn" aria-label="Reload">
+      <svg width="17" height="17" viewBox="0 0 20 20" fill="none" stroke="#1e1a16" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M16.2 8.4A6.4 6.4 0 1 0 15.6 13.6"/>
+        <path d="M16.6 4.2v4.4h-4.4"/>
+      </svg>
+    </div>
+    <div class="urlbar">
+      <svg width="12" height="14" viewBox="0 0 12 14" fill="none" stroke="#6f665d" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="1.4" y="6" width="9.2" height="7" rx="1.6"/>
+        <path d="M3.7 6V4.2a2.3 2.3 0 0 1 4.6 0V6"/>
+      </svg>
+      <span class="url">sleeplab.health<span class="dim">/guides/sleep-debt</span></span>
+    </div>
+    <div class="iconbtn" aria-label="Save to reading list">
+      <svg width="17" height="17" viewBox="0 0 22 22" fill="none" stroke="#1e1a16" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M6 3.8h10v14.4L11 14.6l-5 3.6z"/>
+      </svg>
+    </div>
+    <div class="menu" aria-label="Browser menu">•••</div>
+  </div>
+
+  <div class="workspace">
+    <aside class="rail">
+      <p class="rail-label">In this guide</p>
+      <h2>A practical guide to weekly sleep debt</h2>
+
+      <div class="rail-row">
+        <span class="num">01</span>
+        <span class="label">What counts as a sleep deficit</span>
+        <span class="len">2 min</span>
+      </div>
+      <div class="rail-row">
+        <span class="num">02</span>
+        <span class="label">Why weekend recovery falls short</span>
+        <span class="len">2 min</span>
+      </div>
+      <div class="rail-row">
+        <span class="num">03</span>
+        <span class="label">Paying it back over ten days</span>
+        <span class="len">2 min</span>
+      </div>
+
+      <p class="rail-note">Evidence-reviewed guidance for building healthier, more consistent sleep habits.</p>
+    </aside>
+
+    <main class="article">
+      <div class="article-inner">
+        <p class="eyebrow">Sleep science</p>
+        <h1>How sleep debt builds up over a single week</h1>
+
+        <div class="byline">
+          <div class="monogram">NR</div>
+          <div>
+            <div class="who">Dr. Naomi Reyes</div>
+            <div class="when">Reviewed February 12, 2026 · 6 min read</div>
+          </div>
+        </div>
+
+        <section class="summary">
+          <h2>The short version</h2>
+          <p>Losing 45 minutes a night sounds minor, but by Friday it adds up to a full night of missed sleep — and one long weekend morning does not clear it.</p>
+        </section>
+
+        <div class="body">
+          <p>Sleep debt is the running difference between the sleep your body needs and the sleep it actually gets. For most adults that need sits between seven and nine hours, and it stays roughly constant from night to night.</p>
+          <p>The debt accumulates quietly. Reaction time and mood slip first, usually before people notice feeling tired, which is why self-reported alertness is a poor guide to how rested you are.</p>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+</body>
+</html>

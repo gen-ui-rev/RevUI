@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Halden — Send Money</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --purple:#5c2ea8;
+    --purple-soft:#ece6f6;
+    --ink:#181819;
+    --muted:#6d6d75;
+    --line:#e4e4e7;
+    --ground:#ededef;
+  }
+  *{box-sizing:border-box;}
+  body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    padding:40px 0;
+    margin:0;
+    background:#c9c9cd;
+    font-family:'Source Serif 4', Georgia, serif;
+    color:var(--ink);
+  }
+  .screen{
+    width:390px;
+    height:844px;
+    background:var(--ground);
+    position:relative;
+    display:flex;
+    flex-direction:column;
+  }
+  .topbar{
+    background:#ffffff;
+    border-bottom:1px solid var(--line);
+    padding:16px;
+    display:flex;
+    align-items:center;
+    gap:12px;
+  }
+  .topbar h1{
+    font-size:17px;
+    font-weight:600;
+    margin:0;
+    flex:1;
+    line-height:22px;
+  }
+  .topbar .limit{
+    font-size:13px;
+    color:var(--purple);
+    font-weight:600;
+  }
+  .iconbtn{
+    display:flex;
+    align-items:center;
+    color:var(--ink);
+  }
+  .content{
+    flex:1;
+    padding:12px 16px 0;
+  }
+  .card{
+    background:#fff;
+    box-shadow:0 1px 3px rgba(24,24,25,.10);
+  }
+  .amount{
+    padding:14px 16px;
+    margin-bottom:10px;
+  }
+  .amount .lbl{
+    font-size:12px;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    color:var(--muted);
+  }
+  .figure{
+    display:flex;
+    align-items:baseline;
+    margin-top:6px;
+  }
+  .figure .cur{
+    font-size:26px;
+    font-weight:600;
+    color:var(--purple);
+    margin-right:4px;
+  }
+  .figure .val{
+    font-size:44px;
+    font-weight:700;
+    line-height:52px;
+    color:var(--purple);
+    letter-spacing:-.01em;
+  }
+  .caret{
+    width:2px;
+    height:34px;
+    background:var(--purple);
+    margin-left:3px;
+    align-self:center;
+  }
+  .avail{
+    font-size:13px;
+    color:var(--muted);
+    margin-top:4px;
+  }
+  .chips{
+    display:flex;
+    gap:8px;
+    margin-top:12px;
+  }
+  .chip{
+    flex:1;
+    border:1px solid var(--line);
+    text-align:center;
+    padding:8px 0;
+    font-size:13px;
+    color:var(--ink);
+  }
+  .chip.on{
+    border-color:var(--purple);
+    color:var(--purple);
+    font-weight:600;
+    background:var(--purple-soft);
+  }
+  .sechead{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    padding:0 1px 6px;
+  }
+  .sechead .t{
+    font-size:12px;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    color:var(--muted);
+  }
+  .sechead .a{
+    font-size:12px;
+    color:var(--muted);
+  }
+  .row{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:10px 14px;
+  }
+  .row + .row{border-top:1px solid var(--line);}
+  .mono{
+    width:40px;
+    height:40px;
+    flex:0 0 40px;
+    background:var(--purple-soft);
+    color:var(--purple);
+    font-size:15px;
+    font-weight:600;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .mono.solid{background:var(--purple);color:#fff;}
+  .who{flex:1;min-width:0;}
+  .who .n{
+    font-size:15px;
+    font-weight:600;
+    line-height:20px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .who .d{
+    font-size:13px;
+    color:var(--muted);
+    line-height:18px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .side{text-align:right;}
+  .side .amt{font-size:14px;line-height:19px;}
+  .side .dt{font-size:12px;color:var(--muted);line-height:17px;}
+  .change{
+    font-size:13px;
+    font-weight:600;
+    color:var(--purple);
+  }
+  .selected{margin-bottom:10px;}
+  .list{margin-bottom:10px;}
+  .detail{
+    padding:4px 14px;
+    margin-bottom:10px;
+  }
+  .drow{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:8px 0;
+    font-size:14px;
+  }
+  .drow + .drow{border-top:1px solid var(--line);}
+  .drow .k{color:var(--muted);}
+  .drow .v{font-weight:600;}
+  .drow.total{
+    margin-top:8px;
+    padding:14px 0 11px;
+  }
+  .drow.total .k{
+    color:var(--ink);
+    font-size:16px;
+    font-weight:600;
+  }
+  .drow.total .v{
+    color:var(--purple);
+    font-size:22px;
+    font-weight:700;
+    line-height:28px;
+  }
+  .footer{
+    padding:0 16px 12px;
+  }
+  .cta{
+    background:var(--purple);
+    color:#fff;
+    text-align:center;
+    padding:15px 0;
+    font-size:16px;
+    font-weight:600;
+  }
+  .tabbar{
+    background:#fff;
+    border-top:1px solid var(--line);
+    display:flex;
+    padding:9px 0 14px;
+  }
+  .tab{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:4px;
+    font-size:12px;
+    color:var(--muted);
+  }
+  .tab.on{color:var(--purple);font-weight:600;}
+</style>
+</head>
+<body>
+<div class="screen">
+
+  <div class="topbar">
+    <span class="iconbtn" aria-hidden="true">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square"><path d="M15 5 8 12l7 7"/></svg>
+    </span>
+    <h1>Send money</h1>
+    <span class="limit">Limits</span>
+  </div>
+
+  <div class="content">
+
+    <div class="card amount">
+      <div class="lbl">Amount to send</div>
+      <div class="figure">
+        <span class="cur">$</span><span class="val">1,250.00</span><span class="caret"></span>
+      </div>
+      <div class="avail">Available $8,420.16 · Everyday Checking ··4402</div>
+      <div class="chips">
+        <div class="chip">$50</div>
+        <div class="chip">$100</div>
+        <div class="chip on">$1,250</div>
+        <div class="chip">Max</div>
+      </div>
+    </div>
+
+    <div class="sechead"><span class="t">Recipient</span></div>
+    <div class="card selected">
+      <div class="row">
+        <div class="mono solid">DW</div>
+        <div class="who">
+          <div class="n">Dana Whitfield</div>
+          <div class="d">Meridian Bank ··3391 · Checking</div>
+        </div>
+        <span class="change">Change</span>
+      </div>
+    </div>
+
+    <div class="sechead"><span class="t">Recent</span><span class="a">Last sent</span></div>
+    <div class="card list">
+      <div class="row">
+        <div class="mono">PR</div>
+        <div class="who">
+          <div class="n">Priya Raman</div>
+          <div class="d">Cascade Credit Union ··7108</div>
+        </div>
+        <div class="side">
+          <div class="amt">$340.00</div>
+          <div class="dt">Mar 4</div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="mono">TA</div>
+        <div class="who">
+          <div class="n">Theo Alvarez</div>
+          <div class="d">theo.alvarez@mailbox.com</div>
+        </div>
+        <div class="side">
+          <div class="amt">$85.00</div>
+          <div class="dt">Feb 26</div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="mono">NK</div>
+        <div class="who">
+          <div class="n">Nina Kowalski</div>
+          <div class="d">Meridian Bank ··2245</div>
+        </div>
+        <div class="side">
+          <div class="amt">$1,000.00</div>
+          <div class="dt">Feb 19</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card detail">
+      <div class="drow"><span class="k">Arrives</span><span class="v">Today by 6:00 PM</span></div>
+      <div class="drow"><span class="k">Transfer fee</span><span class="v">$0.00</span></div>
+      <div class="drow total"><span class="k">Total debited</span><span class="v">$1,250.00</span></div>
+    </div>
+
+  </div>
+
+  <div class="footer">
+    <div class="cta">Review transfer</div>
+  </div>
+
+  <div class="tabbar">
+    <div class="tab">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square"><path d="M4 11 12 4l8 7v9H4z"/></svg>
+      Home
+    </div>
+    <div class="tab on">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
+      Send
+    </div>
+    <div class="tab">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square"><path d="M4 7h16M4 12h16M4 17h10"/></svg>
+      Activity
+    </div>
+    <div class="tab">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square"><circle cx="12" cy="8.5" r="3.5"/><path d="M5 20c1.4-3.6 4-5.4 7-5.4s5.6 1.8 7 5.4"/></svg>
+      Profile
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

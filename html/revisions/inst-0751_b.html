@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Account — Vessel Health Rehab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 40px 0;
+    margin: 0;
+    background: #d8d6cf;
+    font-family: 'Source Serif 4', Georgia, serif;
+    color: #16150f;
+  }
+  .screen {
+    width: 768px;
+    height: 1024px;
+    background: #ffffff;
+    display: flex;
+    border: 1px solid #cbc8be;
+  }
+
+  /* vertical tab rail — filled active cell */
+  .rail {
+    flex: 0 0 88px;
+    width: 88px;
+    border-right: 1px solid #e2dfd4;
+    display: flex;
+    flex-direction: column;
+    background: #faf9f4;
+  }
+  .tab {
+    padding: 20px 6px 18px;
+    text-align: center;
+    font-size: 11px;
+    line-height: 1.25;
+    color: #6f6c60;
+    border-bottom: 1px solid #e2dfd4;
+  }
+  .tab svg { display: block; margin: 0 auto 6px; }
+  .tab.on { background: #f7d000; color: #16150f; font-weight: 700; }
+  .tab.bottom { margin-top: auto; border-bottom: 0; border-top: 1px solid #e2dfd4; }
+
+  /* main */
+  .main { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; }
+
+  /* header carries the patient identity */
+  .topbar {
+    display: flex; align-items: center; gap: 16px;
+    padding: 20px 26px;
+    border-bottom: 1px solid #e2dfd4;
+  }
+  .mono {
+    width: 56px; height: 56px; flex: 0 0 56px;
+    background: #f7d000; color: #16150f;
+    font-size: 21px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    letter-spacing: .02em;
+  }
+  .who { min-width: 0; }
+  .pname { font-size: 21px; font-weight: 700; line-height: 1.15; }
+  .pmeta { font-size: 13px; color: #6f6c60; margin-top: 5px; }
+  .hspace { margin-left: auto; display: flex; align-items: center; gap: 16px; }
+  .btn {
+    font-size: 14px; font-weight: 600;
+    border: 1px solid #16150f;
+    padding: 11px 16px;
+    white-space: nowrap;
+  }
+  .ico { display: block; }
+
+  .body { flex: 1 1 auto; display: flex; min-height: 0; }
+  .colL { flex: 0 0 352px; width: 352px; border-right: 1px solid #e2dfd4; }
+  .colR { flex: 1 1 auto; min-width: 0; padding: 20px 24px 24px; }
+
+  /* yellow week block */
+  .week { background: #f7d000; padding: 22px 24px 24px; }
+  .klabel { font-size: 12px; text-transform: uppercase; letter-spacing: .12em; font-weight: 600; }
+  .week .big { font-size: 29px; font-weight: 700; margin-top: 10px; line-height: 1.08; }
+  .week .sub { font-size: 13px; margin-top: 8px; line-height: 1.4; }
+  .bar { margin-top: 16px; height: 10px; background: rgba(22,21,15,.18); display: flex; }
+  .bar > i { display: block; height: 10px; width: 80%; background: #16150f; }
+  .barnote { display: flex; justify-content: space-between; font-size: 12px; margin-top: 7px; }
+
+  /* the three headline numbers, inverted */
+  .band { display: flex; background: #16150f; }
+  .band > div {
+    flex: 1 1 0;
+    padding: 20px 12px 22px;
+    text-align: center;
+    border-right: 1px solid rgba(247,208,0,.35);
+  }
+  .band > div:last-child { border-right: 0; }
+  .band .bl {
+    font-size: 10px; text-transform: uppercase; letter-spacing: .12em;
+    font-weight: 600; color: #cbc8be;
+  }
+  .band .bv {
+    font-size: 42px; font-weight: 700; color: #f7d000;
+    line-height: 1; margin-top: 10px; letter-spacing: -.01em;
+  }
+  .band .bu { font-size: 15px; font-weight: 600; }
+  .band .bn { font-size: 11px; color: #9d998c; margin-top: 9px; }
+
+  .panel { padding: 20px 24px; border-bottom: 1px solid #e2dfd4; }
+  .pl { font-size: 11px; text-transform: uppercase; letter-spacing: .12em; font-weight: 600; color: #6f6c60; }
+  .pt { font-size: 17px; font-weight: 700; margin-top: 8px; line-height: 1.25; }
+  .pm { font-size: 13px; color: #6f6c60; margin-top: 6px; line-height: 1.45; }
+
+  /* right column: exercise cards */
+  .shead { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 12px; }
+  .shead .st { font-size: 12px; text-transform: uppercase; letter-spacing: .12em; font-weight: 600; }
+  .shead .sa { font-size: 12px; color: #6f6c60; }
+
+  .ecard {
+    border: 1px solid #e2dfd4;
+    padding: 13px;
+    display: flex; align-items: center; gap: 14px;
+    margin-bottom: 11px;
+  }
+  .ecard img { width: 64px; height: 64px; object-fit: cover; display: block; background: #cbc8be; flex: 0 0 64px; }
+  .emain { min-width: 0; flex: 1 1 auto; }
+  .et { font-size: 15px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .em { font-size: 13px; color: #6f6c60; margin-top: 5px; }
+  .chip {
+    font-size: 10px; text-transform: uppercase; letter-spacing: .09em; font-weight: 700;
+    border: 1px solid #16150f; padding: 5px 8px; white-space: nowrap;
+  }
+  .chip.done { background: #f7d000; }
+  .chip.due { border-color: #6f6c60; color: #6f6c60; }
+
+  .abox { border: 1px solid #e2dfd4; margin-top: 6px; }
+  .arow { display: flex; align-items: center; gap: 12px; padding: 15px 14px; border-top: 1px solid #e2dfd4; }
+  .arow:first-child { border-top: 0; }
+  .arow .at { font-size: 15px; }
+  .arow .av { margin-left: auto; font-size: 13px; color: #6f6c60; white-space: nowrap; }
+  .sect2 { margin-top: 20px; }
+</style>
+</head>
+<body>
+  <div class="screen">
+
+    <div class="rail">
+      <div class="tab">
+        <svg width="22" height="22" viewBox="0 0 20 20" fill="none" stroke="#6f6c60" stroke-width="1.4"><path d="M3 10.5 10 4l7 6.5"/><path d="M5 10v6h10v-6"/></svg>
+        <div>Today</div>
+      </div>
+      <div class="tab">
+        <svg width="22" height="22" viewBox="0 0 20 20" fill="none" stroke="#6f6c60" stroke-width="1.4"><path d="M3 15l4-5 3.2 3L17 5"/></svg>
+        <div>Progress</div>
+      </div>
+      <div class="tab">
+        <svg width="22" height="22" viewBox="0 0 20 20" fill="none" stroke="#6f6c60" stroke-width="1.4"><path d="M10 4v12M4 10h12"/></svg>
+        <div>Log pain</div>
+      </div>
+      <div class="tab on">
+        <svg width="22" height="22" viewBox="0 0 20 20" fill="none" stroke="#16150f" stroke-width="1.4"><circle cx="10" cy="7" r="3.2"/><path d="M4 17c0-3.1 2.7-5 6-5s6 1.9 6 5"/></svg>
+        <div>Account</div>
+      </div>
+      <div class="tab bottom">
+        <svg width="22" height="22" viewBox="0 0 20 20" fill="none" stroke="#6f6c60" stroke-width="1.4"><circle cx="10" cy="10" r="2.6"/><path d="M10 1.8v2.4M10 15.8v2.4M18.2 10h-2.4M4.2 10H1.8M15.8 4.2l-1.7 1.7M5.9 14.1l-1.7 1.7M15.8 15.8l-1.7-1.7M5.9 5.9 4.2 4.2"/></svg>
+        <div>Settings</div>
+      </div>
+    </div>
+
+    <div class="main">
+
+      <div class="topbar">
+        <div class="mono">NW</div>
+        <div class="who">
+          <div class="pname">Nora Whitfield</div>
+          <div class="pmeta">Patient #40122 · Ridgeway Physical Therapy</div>
+        </div>
+        <div class="hspace">
+          <svg class="ico" width="22" height="22" viewBox="0 0 20 20" fill="none" stroke="#16150f" stroke-width="1.4">
+            <path d="M10 2.5 3 5.5v4.2c0 3.6 2.8 6.6 7 7.8 4.2-1.2 7-4.2 7-7.8V5.5L10 2.5z"/>
+          </svg>
+          <div class="btn">Edit details</div>
+        </div>
+      </div>
+
+      <div class="body">
+
+        <div class="colL">
+          <div class="week">
+            <div class="klabel">Prescribed this week</div>
+            <div class="big">4 of 5 sessions done</div>
+            <div class="sub">Two days left in the window Dr. Alvarez set on Monday.</div>
+            <div class="bar"><i></i></div>
+            <div class="barnote"><span>Mar 10 – Mar 16</span><span>80%</span></div>
+          </div>
+
+          <div class="band">
+            <div>
+              <div class="bl">Pain level</div>
+              <div class="bv">3<span class="bu">/10</span></div>
+              <div class="bn">6 check-ins</div>
+            </div>
+            <div>
+              <div class="bl">Resting HR</div>
+              <div class="bv">58</div>
+              <div class="bn">bpm, steady</div>
+            </div>
+            <div>
+              <div class="bl">Avg sleep</div>
+              <div class="bv">7.2</div>
+              <div class="bn">hours a night</div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="pl">Recovery plan</div>
+            <div class="pt">Right knee ACL reconstruction</div>
+            <div class="pm">Week 6 of 12 · load progression phase. Full weight bearing cleared Mar 4.</div>
+          </div>
+
+          <div class="panel">
+            <div class="pl">Next visit</div>
+            <div class="pt">Thu, Mar 14 · 9:30 AM</div>
+            <div class="pm">Dr. Alvarez · Ridgeway PT, Room 2. Bring your brace and pain diary.</div>
+          </div>
+        </div>
+
+        <div class="colR">
+          <div class="shead">
+            <span class="st">Prescribed exercises</span>
+            <span class="sa">Last 3 days</span>
+          </div>
+
+          <div class="ecard">
+            <img src="https://loremflickr.com/64/64/stretching?lock=10020" width="64" height="64" alt="Patient performing a lying knee flexion stretch">
+            <div class="emain">
+              <div class="et">Heel slides — knee flexion</div>
+              <div class="em">Tue, Mar 12 · 3 × 12 reps · pain 2/10</div>
+            </div>
+            <div class="chip done">Done</div>
+          </div>
+
+          <div class="ecard">
+            <img src="https://loremflickr.com/64/64/gym?lock=10021" width="64" height="64" alt="Mat and strap set up for isometric quad holds">
+            <div class="emain">
+              <div class="et">Quad set holds</div>
+              <div class="em">Tue, Mar 12 · 4 × 20 sec · pain 3/10</div>
+            </div>
+            <div class="chip done">Done</div>
+          </div>
+
+          <div class="ecard">
+            <img src="https://loremflickr.com/64/64/bicycle?lock=10022" width="64" height="64" alt="Stationary bike used for the low resistance cycling block">
+            <div class="emain">
+              <div class="et">Stationary bike — low load</div>
+              <div class="em">Mon, Mar 11 · 12 min · pain 4/10</div>
+            </div>
+            <div class="chip done">Done</div>
+          </div>
+
+          <div class="ecard">
+            <img src="https://loremflickr.com/64/64/running?lock=10023" width="64" height="64" alt="Corridor used for the standing hamstring curl exercise">
+            <div class="emain">
+              <div class="et">Standing hamstring curl</div>
+              <div class="em">Due today · 3 × 15 reps prescribed</div>
+            </div>
+            <div class="chip due">Due</div>
+          </div>
+
+          <div class="sect2">
+            <div class="shead">
+              <span class="st">Account</span>
+              <span class="sa">Managed with your clinic</span>
+            </div>
+            <div class="abox">
+              <div class="arow">
+                <span class="at">Care plan</span>
+                <span class="av">ACL rehab · week 6 of 12</span>
+              </div>
+              <div class="arow">
+                <span class="at">Clinician</span>
+                <span class="av">Dr. Alvarez, Ridgeway PT</span>
+              </div>
+              <div class="arow">
+                <span class="at">Connected devices</span>
+                <span class="av">2 active</span>
+              </div>
+              <div class="arow">
+                <span class="at">Data and privacy</span>
+                <span class="av">Export, clinic sharing</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

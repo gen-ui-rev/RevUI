@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Marginal — Canvas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --accent:#C026D3;
+    --line:#E4E2E7;
+    --ink:#17151A;
+    --muted:#7A7580;
+  }
+  *{box-sizing:border-box;}
+  body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    padding:40px 0;
+    margin:0;
+    background:#E7E5E9;
+    font-family:'Plus Jakarta Sans', system-ui, sans-serif;
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+  }
+  .screen{
+    position:relative;
+    width:390px;
+    height:844px;
+    background:#fff;
+    display:flex;
+    flex-direction:column;
+  }
+
+  /* top bar */
+  .topbar{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:16px 16px 14px;
+    border-bottom:1px solid var(--line);
+  }
+  .iconbtn{
+    width:34px;height:34px;
+    border:1px solid var(--line);
+    border-radius:14px;
+    background:#fff;
+    display:flex;align-items:center;justify-content:center;
+    color:var(--ink);
+    flex:none;
+  }
+  .titleblock{flex:1;min-width:0;}
+  .titleblock h1{
+    margin:0;
+    font-size:17px;
+    font-weight:700;
+    letter-spacing:-0.2px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .titleblock p{
+    margin:2px 0 0;
+    font-size:12px;
+    font-weight:500;
+    color:var(--muted);
+  }
+  .done{
+    font-size:15px;
+    font-weight:700;
+    color:var(--accent);
+    padding:6px 4px;
+  }
+
+  /* presence strip */
+  .presence{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding:10px 16px;
+    border-bottom:1px solid var(--line);
+  }
+  .presence .who{
+    flex:1;
+    font-size:12px;
+    font-weight:500;
+    color:var(--muted);
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .mono{
+    width:26px;height:26px;
+    border-radius:14px;
+    border:1px solid var(--line);
+    background:#F4F2F6;
+    font-size:12px;
+    font-weight:700;
+    color:#4A454F;
+    display:flex;align-items:center;justify-content:center;
+    flex:none;
+  }
+  .mono.me{background:var(--accent);color:#fff;border-color:var(--accent);}
+
+  /* canvas */
+  .canvaswrap{
+    padding:16px 16px 12px;
+  }
+  .canvas{
+    position:relative;
+    width:358px;
+    border:1px solid var(--line);
+    border-radius:14px;
+    overflow:hidden;
+    background:#F0EEF2;
+  }
+  .canvas img{
+    display:block;
+    width:358px;
+    height:210px;
+    object-fit:cover;
+    background:#DDDAE0;
+  }
+  .marks{
+    position:absolute;
+    top:0;left:0;
+    width:358px;
+    height:210px;
+  }
+
+  /* pin notes — a card per pin, two lines each */
+  .notes{margin:0 16px 14px;}
+  .notes .caption{
+    margin:0 0 7px;
+    font-size:11px;
+    line-height:16px;
+    font-weight:700;
+    letter-spacing:0.7px;
+    text-transform:uppercase;
+    color:var(--muted);
+  }
+  .notecard{
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:9px 11px;
+    background:#fff;
+  }
+  .notecard + .notecard{margin-top:8px;}
+  .notecard .head{
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .notecard .pin{
+    width:20px;height:20px;
+    border-radius:14px;
+    background:var(--accent);
+    color:#fff;
+    font-size:11px;
+    font-weight:700;
+    display:flex;align-items:center;justify-content:center;
+    flex:none;
+  }
+  .notecard .who{
+    flex:1;
+    min-width:0;
+    font-size:12.5px;
+    line-height:20px;
+    font-weight:700;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .notecard .when{
+    flex:none;
+    font-size:11px;
+    line-height:20px;
+    font-weight:500;
+    color:var(--muted);
+  }
+  .notecard .txt{
+    margin:4px 0 0;
+    font-size:12.5px;
+    line-height:17px;
+    font-weight:500;
+    color:var(--muted);
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+
+  /* tools */
+  .tools{
+    margin:0 16px;
+    padding:11px 12px;
+    border:1px solid var(--line);
+    border-radius:14px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+  }
+  .tool{
+    width:38px;height:38px;
+    border-radius:14px;
+    display:flex;align-items:center;justify-content:center;
+    color:#4A454F;
+  }
+  .tool.on{background:var(--accent);color:#fff;}
+  .swatch{
+    width:38px;height:38px;
+    border-radius:14px;
+    border:1px solid var(--line);
+    display:flex;align-items:center;justify-content:center;
+  }
+  .swatch span{
+    width:18px;height:18px;
+    border-radius:14px;
+    background:var(--accent);
+    display:block;
+  }
+  .divider{width:1px;height:24px;background:var(--line);}
+
+  /* pages */
+  .pages{padding:16px 16px 0;}
+  .sechead{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    margin-bottom:10px;
+  }
+  .sechead h2{margin:0;font-size:15px;font-weight:700;}
+  .sechead span{font-size:12px;font-weight:500;color:var(--muted);}
+  .thumbs{display:flex;gap:13px;}
+  .thumb{width:96px;}
+  .thumb .frame{
+    width:96px;height:72px;
+    border:1px solid var(--line);
+    border-radius:14px;
+    overflow:hidden;
+    background:#F0EEF2;
+  }
+  .thumb.active .frame{border:2px solid var(--accent);}
+  .thumb img{
+    display:block;
+    width:96px;height:72px;
+    object-fit:cover;
+    background:#DDDAE0;
+  }
+  .thumb.active img{width:92px;height:68px;}
+  .thumb .name{
+    margin:6px 0 0;
+    font-size:12px;
+    font-weight:700;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .thumb .meta{
+    margin:1px 0 0;
+    font-size:12px;
+    font-weight:500;
+    color:var(--muted);
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+
+  /* tab bar */
+  .tabbar{
+    position:absolute;
+    left:0;right:0;bottom:0;
+    display:flex;
+    border-top:1px solid var(--line);
+    background:#fff;
+    padding:10px 8px 14px;
+  }
+  .tab{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:4px;
+    color:var(--muted);
+    font-size:12px;
+    font-weight:500;
+  }
+  .tab.on{color:var(--accent);font-weight:700;}
+</style>
+</head>
+<body>
+<div class="screen">
+
+  <div class="topbar">
+    <div class="iconbtn" aria-label="Back">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
+    </div>
+    <div class="titleblock">
+      <h1>Sprint 12 Retro Wall</h1>
+      <p>Page 2 of 6 · Saved 2 min ago</p>
+    </div>
+    <div class="iconbtn" aria-label="Undo last mark">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h11a4.5 4.5 0 010 9H9"/><path d="M8 5L4 9l4 4"/></svg>
+    </div>
+    <div class="done">Done</div>
+  </div>
+
+  <div class="presence">
+    <div class="who">Marcus Cole and Dana Reyes are drawing</div>
+    <div class="mono me">TP</div>
+    <div class="mono">MC</div>
+    <div class="mono">DR</div>
+  </div>
+
+  <div class="canvaswrap">
+    <div class="canvas">
+      <img src="https://loremflickr.com/358/210/notebook?lock=11341" width="358" height="210" alt="Photographed notebook page of retro notes being annotated on the canvas">
+      <svg class="marks" viewBox="0 0 358 210" fill="none" aria-hidden="true">
+        <path d="M62 62C48 42 138 26 172 46c30 18-34 52-96 40-14-3-20-14-14-24z" stroke="#C026D3" stroke-width="3.5" stroke-linecap="round"/>
+        <rect x="52" y="126" width="148" height="46" rx="10" fill="#C026D3" fill-opacity="0.13" stroke="#C026D3" stroke-width="3.5"/>
+        <path d="M222 92c34 12 42 42 20 66" stroke="#C026D3" stroke-width="3.5" stroke-linecap="round"/>
+        <path d="M234 142l9 13 15-6" stroke="#C026D3" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M206 186c14-7 28 5 42-2s26 4 40-4" stroke="#C026D3" stroke-width="3" stroke-linecap="round"/>
+        <circle cx="300" cy="42" r="14" fill="#C026D3"/>
+        <text x="300" y="47" text-anchor="middle" font-family="'Plus Jakarta Sans', sans-serif" font-size="13" font-weight="700" fill="#ffffff">1</text>
+        <circle cx="60" cy="188" r="14" fill="#C026D3"/>
+        <text x="60" y="193" text-anchor="middle" font-family="'Plus Jakarta Sans', sans-serif" font-size="13" font-weight="700" fill="#ffffff">2</text>
+      </svg>
+    </div>
+  </div>
+
+  <div class="notes">
+    <p class="caption">Notes on this page</p>
+    <div class="notecard">
+      <div class="head">
+        <div class="pin">1</div>
+        <div class="who">MC · Marcus Cole</div>
+        <div class="when">4 min</div>
+      </div>
+      <p class="txt">Deploy checklist still has no owner.</p>
+    </div>
+    <div class="notecard">
+      <div class="head">
+        <div class="pin">2</div>
+        <div class="who">DR · Dana Reyes</div>
+        <div class="when">just now</div>
+      </div>
+      <p class="txt">Move standup to 9:30 so QA can join.</p>
+    </div>
+  </div>
+
+  <div class="tools">
+    <div class="tool on" title="Pen">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M16.5 3.5l4 4L8 20H4v-4z"/><path d="M14 6l4 4"/></svg>
+    </div>
+    <div class="tool" title="Highlighter">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14l-2 5h5l7-7-4-4-7 7z"/><path d="M4 21h7"/></svg>
+    </div>
+    <div class="tool" title="Rectangle">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="6" width="16" height="12" rx="2"/></svg>
+    </div>
+    <div class="tool" title="Arrow">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 19L19 5"/><path d="M12 5h7v7"/></svg>
+    </div>
+    <div class="tool" title="Text">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 6h14"/><path d="M12 6v13"/><path d="M9 19h6"/></svg>
+    </div>
+    <div class="tool" title="Eraser">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8 19l-4-4 9-9 4 4-9 9z"/><path d="M9 19h11"/></svg>
+    </div>
+    <div class="divider"></div>
+    <div class="swatch" title="Stroke color"><span></span></div>
+  </div>
+
+  <div class="pages">
+    <div class="sechead">
+      <h2>Pages</h2>
+      <span>6 total · 24 marks</span>
+    </div>
+    <div class="thumbs">
+      <div class="thumb">
+        <div class="frame"><img src="https://loremflickr.com/96/72/desk?lock=11342" width="96" height="72" alt="Desk with printed agenda, page one of the board"></div>
+        <p class="name">Cover</p>
+        <p class="meta">No marks</p>
+      </div>
+      <div class="thumb active">
+        <div class="frame"><img src="https://loremflickr.com/96/72/notebook?lock=11343" width="96" height="72" alt="Notebook retro wall, the page open on the canvas"></div>
+        <p class="name">Retro wall</p>
+        <p class="meta">11 marks</p>
+      </div>
+      <div class="thumb">
+        <div class="frame"><img src="https://loremflickr.com/96/72/meeting?lock=11344" width="96" height="72" alt="Team meeting table, page three of the board"></div>
+        <p class="name">Backlog</p>
+        <p class="meta">4 marks</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="tabbar">
+    <div class="tab">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11l8-6 8 6"/><path d="M6 10v9h12v-9"/></svg>
+      Home
+    </div>
+    <div class="tab">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/></svg>
+      Boards
+    </div>
+    <div class="tab on">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16.5 3.5l4 4L8 20H4v-4z"/><path d="M14 6l4 4"/></svg>
+      Canvas
+    </div>
+    <div class="tab">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="9" r="3.2"/><path d="M3.5 19c0-3 2.5-5 5.5-5s5.5 2 5.5 5"/><path d="M16 6.2a3 3 0 010 5.6"/><path d="M17.5 19c0-2.3-1-4-2.5-4.6"/></svg>
+      Team
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

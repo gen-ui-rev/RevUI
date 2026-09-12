@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Brimwork Offline Route Packs</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #d9d9df;
+      color: #20242b;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #f2f4f5;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 17px 18px 15px;
+      background: #ffffff;
+      border-bottom: 1px solid #dfe3e6;
+    }
+
+    .eyebrow {
+      margin: 0 0 3px;
+      color: #68717a;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .page-title {
+      margin: 0;
+      color: #18202a;
+      font-size: 20px;
+      font-weight: 700;
+      line-height: 1.25;
+    }
+
+    .manage-button {
+      padding: 8px 0 8px 12px;
+      border: 0;
+      background: transparent;
+      color: #075d65;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    main {
+      padding: 16px 15px 14px;
+    }
+
+    .storage-card {
+      padding: 17px 17px 16px;
+      background: #0a2239;
+      box-shadow: 0 6px 16px rgba(12, 31, 49, 0.2);
+    }
+
+    .storage-topline {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    .storage-label {
+      margin: 0 0 5px;
+      color: #bfcddd;
+      font-size: 12px;
+      font-weight: 650;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .storage-amount {
+      margin: 0;
+      color: #ffffff;
+      font-size: 27px;
+      font-weight: 700;
+      line-height: 1.15;
+    }
+
+    .capacity {
+      flex: 0 0 auto;
+      margin: 0 0 3px;
+      color: #d7e2ec;
+      font-size: 13px;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 10px;
+      margin-top: 15px;
+      background: #3d5064;
+      border: 1px solid #637386;
+    }
+
+    .progress-value {
+      width: 56%;
+      height: 100%;
+      background: #ffdc3f;
+    }
+
+    .storage-note {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      margin-top: 11px;
+      color: #d7e2ec;
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .storage-note span:last-child {
+      color: #ffe778;
+      font-weight: 700;
+    }
+
+    .downloads-heading {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin: 20px 2px 9px;
+    }
+
+    .downloads-title {
+      margin: 0;
+      color: #242a31;
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .downloads-total {
+      color: #6f7780;
+      font-size: 12px;
+    }
+
+    .route-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      background: #ffffff;
+      border: 1px solid #dce1e4;
+      box-shadow: 0 2px 8px rgba(30, 40, 48, 0.04);
+    }
+
+    .group-label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 9px 13px;
+      background: #e8eef0;
+      color: #24343d;
+      font-size: 12px;
+      font-weight: 750;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .group-label span:last-child {
+      color: #66737b;
+      font-weight: 650;
+      letter-spacing: 0;
+      text-transform: none;
+    }
+
+    .visit-row {
+      display: flex;
+      align-items: center;
+      padding: 12px 13px;
+      border-bottom: 1px solid #e5e8ea;
+    }
+
+    .schedule-badge {
+      width: 48px;
+      flex: 0 0 48px;
+      margin-right: 12px;
+      padding: 6px 3px;
+      background: #f3f5f6;
+      border-left: 3px solid #11727a;
+      color: #27343c;
+      text-align: center;
+    }
+
+    .schedule-day {
+      display: block;
+      font-size: 10px;
+      font-weight: 750;
+      line-height: 1.1;
+      text-transform: uppercase;
+    }
+
+    .schedule-time {
+      display: block;
+      margin-top: 4px;
+      font-size: 12px;
+      font-weight: 750;
+      line-height: 1.1;
+    }
+
+    .visit-copy {
+      min-width: 0;
+      flex: 1;
+      padding-right: 8px;
+    }
+
+    .visit-title {
+      margin: 0;
+      overflow: hidden;
+      color: #252b32;
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 1.35;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .visit-site {
+      margin: 4px 0 0;
+      overflow: hidden;
+      color: #707982;
+      font-size: 12px;
+      line-height: 1.35;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .download-state {
+      flex: 0 0 auto;
+      color: #16666d;
+    }
+
+    .download-state svg {
+      display: block;
+      width: 20px;
+      height: 20px;
+    }
+
+    .route-list .visit-row:last-child {
+      border-bottom: 0;
+    }
+
+    .wifi-note {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      margin-top: 12px;
+      padding: 10px 12px;
+      background: #ffffff;
+      border: 1px solid #dce1e4;
+      color: #606a73;
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .wifi-note svg {
+      width: 18px;
+      height: 18px;
+      flex: 0 0 auto;
+      color: #0c6670;
+    }
+
+    .tabbar {
+      display: flex;
+      margin-top: auto;
+      background: #ffffff;
+      border-top: 1px solid #d9dfe2;
+    }
+
+    .tab {
+      position: relative;
+      width: 25%;
+      padding: 10px 3px 11px;
+      border: 0;
+      background: transparent;
+      color: #747c84;
+      text-align: center;
+    }
+
+    .tab.active {
+      background: #f2f7f7;
+      color: #075d65;
+    }
+
+    .tab.active::before {
+      position: absolute;
+      top: -1px;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: #08727a;
+      content: "";
+    }
+
+    .tab svg {
+      display: block;
+      width: 21px;
+      height: 21px;
+      margin: 0 auto 5px;
+    }
+
+    .tab-label {
+      display: block;
+      font-size: 12px;
+      font-weight: 650;
+      line-height: 1.2;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">Field operations</p>
+        <h1 class="page-title">Offline route packs</h1>
+      </div>
+      <button class="manage-button" type="button">Manage</button>
+    </header>
+
+    <main>
+      <section class="storage-card" aria-labelledby="storage-heading-b">
+        <div class="storage-topline">
+          <div>
+            <p class="storage-label" id="storage-heading-b">Device storage</p>
+            <p class="storage-amount">2.8 GB</p>
+          </div>
+          <p class="capacity">5 GB capacity</p>
+        </div>
+        <div class="progress-track" role="progressbar" aria-label="Device storage used by route packs" aria-valuemin="0" aria-valuemax="100" aria-valuenow="56">
+          <div class="progress-value"></div>
+        </div>
+        <div class="storage-note">
+          <span>4 visits available without signal</span>
+          <span>56% used</span>
+        </div>
+      </section>
+
+      <div class="downloads-heading">
+        <h2 class="downloads-title" id="packs-heading-b">Downloaded schedule</h2>
+        <span class="downloads-total">4 packs</span>
+      </div>
+
+      <ul class="route-list" aria-labelledby="packs-heading-b">
+        <li class="group-label">
+          <span>Today’s visits</span>
+          <span>2 stops</span>
+        </li>
+        <li class="visit-row">
+          <div class="schedule-badge" aria-label="Today at 9:00 AM">
+            <span class="schedule-day">Today</span>
+            <span class="schedule-time">9:00</span>
+          </div>
+          <div class="visit-copy">
+            <p class="visit-title">Medical Equipment Service</p>
+            <p class="visit-site">Riverside Clinic · 9:00 AM</p>
+          </div>
+          <span class="download-state" aria-label="Downloaded">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.7"/>
+              <path d="M8 12.5L10.7 15L16.2 9.3" stroke="currentColor" stroke-width="1.8"/>
+            </svg>
+          </span>
+        </li>
+        <li class="visit-row">
+          <div class="schedule-badge" aria-label="Today at 2:30 PM">
+            <span class="schedule-day">Today</span>
+            <span class="schedule-time">2:30</span>
+          </div>
+          <div class="visit-copy">
+            <p class="visit-title">Refrigeration Inspection</p>
+            <p class="visit-site">Northgate Market · 2:30 PM</p>
+          </div>
+          <span class="download-state" aria-label="Downloaded">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.7"/>
+              <path d="M8 12.5L10.7 15L16.2 9.3" stroke="currentColor" stroke-width="1.8"/>
+            </svg>
+          </span>
+        </li>
+
+        <li class="group-label">
+          <span>Upcoming visits</span>
+          <span>2 stops</span>
+        </li>
+        <li class="visit-row">
+          <div class="schedule-badge" aria-label="Tomorrow at 8:00 AM">
+            <span class="schedule-day">Thu</span>
+            <span class="schedule-time">8:00</span>
+          </div>
+          <div class="visit-copy">
+            <p class="visit-title">Backup Generator Service</p>
+            <p class="visit-site">Westfield Depot · Tomorrow, 8:00 AM</p>
+          </div>
+          <span class="download-state" aria-label="Downloaded">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.7"/>
+              <path d="M8 12.5L10.7 15L16.2 9.3" stroke="currentColor" stroke-width="1.8"/>
+            </svg>
+          </span>
+        </li>
+        <li class="visit-row">
+          <div class="schedule-badge" aria-label="Friday at 11:30 AM">
+            <span class="schedule-day">Fri</span>
+            <span class="schedule-time">11:30</span>
+          </div>
+          <div class="visit-copy">
+            <p class="visit-title">Annual Safety Audit</p>
+            <p class="visit-site">Harbor Office · Friday, 11:30 AM</p>
+          </div>
+          <span class="download-state" aria-label="Downloaded">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.7"/>
+              <path d="M8 12.5L10.7 15L16.2 9.3" stroke="currentColor" stroke-width="1.8"/>
+            </svg>
+          </span>
+        </li>
+      </ul>
+
+      <div class="wifi-note">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M4 9.5C8.8 5.5 15.2 5.5 20 9.5M7 13C10 10.5 14 10.5 17 13M10 16.5C11.3 15.5 12.7 15.5 14 16.5" stroke="currentColor" stroke-width="1.7"/>
+          <circle cx="12" cy="19" r="1" fill="currentColor"/>
+        </svg>
+        <span>Upcoming packs refresh automatically when connected to Wi-Fi.</span>
+      </div>
+    </main>
+
+    <nav class="tabbar" aria-label="Primary navigation">
+      <button class="tab" type="button">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M4 18.5V10L12 4L20 10V18.5H4Z" stroke="currentColor" stroke-width="1.7"/>
+          <path d="M9 18.5V13H15V18.5" stroke="currentColor" stroke-width="1.7"/>
+        </svg>
+        <span class="tab-label">Home</span>
+      </button>
+
+      <button class="tab" type="button">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <rect x="4" y="5.5" width="16" height="15" stroke="currentColor" stroke-width="1.7"/>
+          <path d="M8 3V8M16 3V8M4 10H20" stroke="currentColor" stroke-width="1.7"/>
+        </svg>
+        <span class="tab-label">Schedule</span>
+      </button>
+
+      <button class="tab active" type="button" aria-current="page">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M5 3.5H15L19 7.5V20.5H5V3.5Z" stroke="currentColor" stroke-width="1.7"/>
+          <path d="M15 3.5V7.5H19M12 10V16M9.5 13.5L12 16L14.5 13.5" stroke="currentColor" stroke-width="1.7"/>
+        </svg>
+        <span class="tab-label">Offline</span>
+      </button>
+
+      <button class="tab" type="button">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M12 3.5L14.1 6.1L17.4 5.6L18 8.9L20.5 11L18 13.1L17.4 16.4L14.1 15.9L12 18.5L9.9 15.9L6.6 16.4L6 13.1L3.5 11L6 8.9L6.6 5.6L9.9 6.1L12 3.5Z" stroke="currentColor" stroke-width="1.6"/>
+          <circle cx="12" cy="11" r="2.5" stroke="currentColor" stroke-width="1.6"/>
+        </svg>
+        <span class="tab-label">Settings</span>
+      </button>
+    </nav>
+  </div>
+</body>
+</html>

@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trailkeep Voice Recording</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    :root {
+      --olive: #6f773f;
+      --olive-dark: #52592f;
+      --olive-soft: rgba(111, 119, 63, 0.12);
+      --olive-soft-2: rgba(111, 119, 63, 0.07);
+      --olive-line: rgba(111, 119, 63, 0.2);
+      --ink: #24261f;
+      --muted: #727568;
+      --live: #c34a35;
+      --screen: #fbfaf6;
+      --body: #e5e5df;
+      --white: #ffffff;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: var(--body);
+      color: var(--ink);
+      font-family: 'Poppins', system-ui, sans-serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: var(--screen);
+    }
+
+    .topbar {
+      display: grid;
+      grid-template-columns: 40px 1fr 40px;
+      align-items: center;
+      padding: 15px 16px;
+    }
+
+    .topbar h1 {
+      margin: 0;
+      text-align: center;
+      font-size: 18px;
+      line-height: 28px;
+      font-weight: 600;
+    }
+
+    .icon-button {
+      width: 40px;
+      height: 40px;
+      padding: 8px;
+      display: grid;
+      place-items: center;
+      border: 0;
+      border-radius: 4px;
+      background: transparent;
+      color: var(--ink);
+    }
+
+    .icon-button svg,
+    .nav-item svg {
+      width: 22px;
+      height: 22px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    main {
+      flex: 1;
+      padding: 10px 20px 16px;
+    }
+
+    /* Live state announced in its own banner strip */
+    .live-banner {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 9px 14px;
+      border-radius: 4px;
+      background: var(--olive-dark);
+      color: var(--white);
+    }
+
+    .live-dot {
+      flex: 0 0 auto;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--live);
+      box-shadow: 0 0 0 4px rgba(195, 74, 53, 0.32);
+    }
+
+    .live-label {
+      font-size: 11px;
+      line-height: 18px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .live-copy {
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+      color: rgba(255, 255, 255, 0.78);
+      font-size: 12px;
+      line-height: 18px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .live-status {
+      flex: 0 0 auto;
+      color: rgba(255, 255, 255, 0.85);
+      font-size: 11px;
+      line-height: 18px;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .recorder {
+      margin-top: 12px;
+      padding: 18px;
+      border: 1px solid var(--olive-line);
+      border-radius: 4px;
+      background: var(--white);
+      box-shadow: 0 2px 10px rgba(36, 38, 31, 0.06);
+    }
+
+    .recorder-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .field-label {
+      margin: 0;
+      color: var(--muted);
+      font-size: 10px;
+      line-height: 15px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .timer {
+      margin: 2px 0 0;
+      color: var(--ink);
+      font-size: 40px;
+      line-height: 48px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+
+    .head-side {
+      text-align: right;
+    }
+
+    .rec-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(195, 74, 53, 0.12);
+      color: var(--live);
+      font-size: 11px;
+      line-height: 16px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .rec-pill span.dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--live);
+    }
+
+    .head-note {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 16px;
+    }
+
+    .waveform {
+      width: 100%;
+      height: 92px;
+      display: block;
+      margin-top: 8px;
+    }
+
+    .wave-active {
+      stroke: var(--live);
+    }
+
+    .wave-later {
+      stroke: rgba(111, 119, 63, 0.24);
+    }
+
+    .controls {
+      display: flex;
+      justify-content: center;
+      gap: 26px;
+      margin-top: 12px;
+    }
+
+    .control {
+      min-width: 64px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 7px;
+      color: var(--ink);
+      font-size: 12px;
+      line-height: 18px;
+    }
+
+    .control button {
+      width: 54px;
+      height: 54px;
+      padding: 0;
+      display: grid;
+      place-items: center;
+      border: 0;
+      border-radius: 4px;
+      color: var(--olive-dark);
+      background: rgba(111, 119, 63, 0.16);
+    }
+
+    .control.primary button {
+      color: var(--white);
+      background: var(--live);
+    }
+
+    .control svg {
+      width: 23px;
+      height: 23px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .section {
+      margin-top: 16px;
+    }
+
+    .section-title {
+      margin: 0 0 8px;
+      font-size: 14px;
+      line-height: 22px;
+      font-weight: 600;
+    }
+
+    /* Trip context: split into labelled data cells */
+    .context-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border: 1px solid var(--olive-line);
+      border-radius: 4px;
+      background: var(--white);
+    }
+
+    .context-cell {
+      min-width: 0;
+      padding: 10px 14px;
+    }
+
+    .context-cell + .context-cell {
+      border-left: 1px solid var(--olive-line);
+    }
+
+    .cell-value {
+      margin: 1px 0 0;
+      overflow: hidden;
+      font-size: 13px;
+      line-height: 20px;
+      font-weight: 600;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .context-foot {
+      grid-column: 1 / -1;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 14px;
+      border-top: 1px solid var(--olive-line);
+      background: var(--olive-soft-2);
+    }
+
+    .context-foot svg {
+      flex: 0 0 auto;
+      width: 15px;
+      height: 15px;
+      fill: none;
+      stroke: var(--olive-dark);
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .context-foot p {
+      flex: 1;
+      min-width: 0;
+      margin: 0;
+      overflow: hidden;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 18px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .recording-row {
+      display: flex;
+      align-items: center;
+      padding: 9px 12px;
+      border-radius: 4px;
+      background: var(--olive-soft-2);
+    }
+
+    .play-icon {
+      flex: 0 0 auto;
+      width: 38px;
+      height: 38px;
+      margin-right: 11px;
+      display: grid;
+      place-items: center;
+      border-radius: 4px;
+      color: var(--olive-dark);
+      background: var(--olive-soft);
+    }
+
+    .play-icon svg {
+      width: 21px;
+      height: 21px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .row-copy {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .row-title {
+      margin: 0;
+      overflow: hidden;
+      color: var(--ink);
+      font-size: 14px;
+      line-height: 21px;
+      font-weight: 600;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .row-subtitle {
+      margin: 2px 0 0;
+      overflow: hidden;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 18px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .recording-list {
+      display: grid;
+      gap: 6px;
+    }
+
+    .duration {
+      margin-left: 12px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 18px;
+      white-space: nowrap;
+    }
+
+    .tabbar {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      padding: 10px 8px 11px;
+      background: var(--olive-soft-2);
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 2px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 18px;
+      text-decoration: none;
+    }
+
+    .nav-item.active {
+      color: var(--olive-dark);
+      font-weight: 600;
+    }
+
+    .nav-item.active svg {
+      stroke-width: 2.1;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <button class="icon-button" type="button" aria-label="Go back">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M15 18l-6-6 6-6"></path>
+        </svg>
+      </button>
+      <h1>Voice recording</h1>
+      <button class="icon-button" type="button" aria-label="More options">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="5" cy="12" r="1"></circle>
+          <circle cx="12" cy="12" r="1"></circle>
+          <circle cx="19" cy="12" r="1"></circle>
+        </svg>
+      </button>
+    </header>
+
+    <main>
+      <div class="live-banner" role="status">
+        <span class="live-dot" aria-hidden="true"></span>
+        <span class="live-label">Live</span>
+        <span class="live-copy">Started 10:52 AM</span>
+        <span class="live-status">Auto-save on</span>
+      </div>
+
+      <section class="recorder" aria-label="Active voice recording">
+        <div class="recorder-head">
+          <div>
+            <p class="field-label">Elapsed</p>
+            <p class="timer">00:38</p>
+          </div>
+          <div class="head-side">
+            <span class="rec-pill"><span class="dot" aria-hidden="true"></span>Rec</span>
+            <p class="head-note">Take 3 · 48 kHz mono</p>
+          </div>
+        </div>
+
+        <svg class="waveform" viewBox="0 0 318 92" role="img" aria-label="Live audio waveform">
+          <g fill="none" stroke-width="3" stroke-linecap="round">
+            <path class="wave-active" d="M5 43v6 M15 35v22 M25 29v34 M35 39v14 M45 22v48 M55 32v28 M65 14v64 M75 26v40 M85 36v20 M95 18v56 M105 8v76 M115 28v36 M125 34v24 M135 20v52 M145 30v32 M155 12v68 M165 25v42 M175 37v18 M185 21v50 M195 32v28"></path>
+            <path class="wave-later" d="M205 38v16 M215 30v32 M225 41v10 M235 25v42 M245 34v24 M255 19v54 M265 31v30 M275 39v14 M285 27v38 M295 35v22 M305 40v12 M313 43v6"></path>
+          </g>
+        </svg>
+
+        <div class="controls">
+          <div class="control">
+            <button type="button" aria-label="Pause recording">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M8 6v12M16 6v12"></path>
+              </svg>
+            </button>
+            <span>Pause</span>
+          </div>
+          <div class="control primary">
+            <button type="button" aria-label="Finish and save recording">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <rect x="7" y="7" width="10" height="10" rx="1"></rect>
+              </svg>
+            </button>
+            <span>Finish</span>
+          </div>
+          <div class="control">
+            <button type="button" aria-label="Add a marker">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M6 4v16M6 5h10l-2 3 2 3H6"></path>
+              </svg>
+            </button>
+            <span>Marker</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" aria-labelledby="trip-context-title">
+        <h2 class="section-title" id="trip-context-title">Trip context</h2>
+        <div class="context-grid">
+          <div class="context-cell">
+            <p class="field-label">Trip</p>
+            <p class="cell-value">Lisbon weekend</p>
+          </div>
+          <div class="context-cell">
+            <p class="field-label">Segment</p>
+            <p class="cell-value">Day 2 · Alfama</p>
+          </div>
+          <div class="context-foot">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 21s6-5.2 6-11a6 6 0 10-12 0c0 5.8 6 11 6 11z"></path>
+              <circle cx="12" cy="10" r="2"></circle>
+            </svg>
+            <p>Pinned near Miradouro de Santa Luzia</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" aria-labelledby="today-title">
+        <h2 class="section-title" id="today-title">Today’s recordings</h2>
+        <div class="recording-list">
+          <div class="recording-row">
+            <div class="play-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                <path d="M9 7l8 5-8 5z"></path>
+              </svg>
+            </div>
+            <div class="row-copy">
+              <p class="row-title">Market directions</p>
+              <p class="row-subtitle">Saved at 10:24 AM</p>
+            </div>
+            <span class="duration">0:26</span>
+          </div>
+
+          <div class="recording-row">
+            <div class="play-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                <path d="M9 7l8 5-8 5z"></path>
+              </svg>
+            </div>
+            <div class="row-copy">
+              <p class="row-title">Café recommendation</p>
+              <p class="row-subtitle">Saved at 9:41 AM</p>
+            </div>
+            <span class="duration">1:12</span>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <nav class="tabbar" aria-label="Primary navigation">
+      <a class="nav-item" href="#" aria-label="Explore">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="11" cy="11" r="6"></circle>
+          <path d="M16 16l4 4"></path>
+        </svg>
+        <span>Explore</span>
+      </a>
+      <a class="nav-item" href="#" aria-label="Trips">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M5 7h14v12H5zM9 7V5h6v2"></path>
+        </svg>
+        <span>Trips</span>
+      </a>
+      <a class="nav-item active" href="#" aria-current="page" aria-label="Record">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <rect x="9" y="3" width="6" height="12" rx="3"></rect>
+          <path d="M6 11a6 6 0 0012 0M12 17v4M9 21h6"></path>
+        </svg>
+        <span>Record</span>
+      </a>
+      <a class="nav-item" href="#" aria-label="Profile">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="8" r="3"></circle>
+          <path d="M6 20c.5-4 2.5-6 6-6s5.5 2 6 6"></path>
+        </svg>
+        <span>Profile</span>
+      </a>
+    </nav>
+  </div>
+</body>
+</html>

@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Sundial Dental — Book a visit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --teal:#0f7d75;
+    --teal-08:rgba(15,125,117,.08);
+    --teal-14:rgba(15,125,117,.14);
+    --ink:#1b1e1d;
+    --mute:#6c7370;
+    --line:#ecebe7;
+  }
+  *{box-sizing:border-box;}
+  body{
+    min-height:100vh;
+    margin:0;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:28px 0;
+    background:#e6e4df;
+    font-family:'Source Serif 4', Georgia, serif;
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+  }
+  .screen{
+    width:1024px;
+    height:768px;
+    background:#fff;
+    display:flex;
+    flex-direction:column;
+    position:relative;
+    box-shadow:0 18px 48px rgba(27,30,29,.16);
+  }
+
+  /* ---------- top nav (relocated tabs) ---------- */
+  .topnav{
+    display:flex;
+    align-items:center;
+    gap:20px;
+    padding:14px 26px;
+    border-bottom:1px solid var(--line);
+  }
+  .brand{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-size:17px;
+    line-height:22px;
+    font-weight:700;
+    white-space:nowrap;
+  }
+  .brand .mark{
+    width:28px;height:28px;
+    flex:0 0 28px;
+    border-radius:9px;
+    background:var(--teal);
+    color:#fff;
+    display:flex;align-items:center;justify-content:center;
+    font-size:14px;font-weight:700;
+  }
+  .navtabs{display:flex;gap:4px;margin-left:auto;}
+  .tab{
+    display:flex;
+    align-items:center;
+    gap:7px;
+    padding:8px 13px;
+    border-radius:12px;
+    font-size:14px;
+    line-height:19px;
+    color:#6c7370;
+    white-space:nowrap;
+  }
+  .tab.on{background:var(--teal-14);color:var(--teal);font-weight:600;}
+  .who{
+    display:flex;
+    align-items:center;
+    gap:9px;
+    padding-left:18px;
+    margin-left:4px;
+    border-left:1px solid var(--line);
+    font-size:13px;
+    line-height:18px;
+    color:#4c5350;
+    white-space:nowrap;
+  }
+  .who .av{
+    width:30px;height:30px;
+    flex:0 0 30px;
+    border-radius:50%;
+    background:var(--teal-14);
+    color:var(--teal);
+    display:flex;align-items:center;justify-content:center;
+    font-size:13px;font-weight:700;
+  }
+
+  /* ---------- search bar ---------- */
+  .searchbar{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:16px 26px;
+    border-bottom:1px solid var(--line);
+    background:#fbfaf8;
+  }
+  .field{
+    flex:1 1 auto;
+    min-width:0;
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:11px 14px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .field.loc{flex:0 0 268px;}
+  .field .q{
+    flex:1 1 auto;
+    min-width:0;
+    font-size:15px;
+    line-height:22px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .field .q.dim{color:#4c5350;}
+  .field svg{flex:0 0 auto;}
+  .caret{width:1.5px;height:19px;background:var(--teal);flex:0 0 auto;}
+  .btn-primary{
+    background:var(--teal);
+    color:#fff;
+    border-radius:14px;
+    padding:12px 22px;
+    font-size:15px;
+    line-height:20px;
+    font-weight:600;
+    white-space:nowrap;
+  }
+
+  /* ---------- content ---------- */
+  .content{
+    flex:1 1 auto;
+    min-height:0;
+    display:flex;
+    gap:22px;
+    padding:20px 26px 24px;
+  }
+  .results{flex:1 1 auto;min-width:0;}
+
+  .chips{display:flex;gap:8px;}
+  .chip{
+    background:var(--teal-08);
+    border-radius:14px;
+    padding:7px 13px;
+    font-size:13px;
+    line-height:18px;
+    color:#3d4644;
+    white-space:nowrap;
+  }
+  .chip.on{background:var(--teal);color:#fff;font-weight:600;}
+
+  .rhead{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    gap:14px;
+    margin-top:18px;
+  }
+  .rhead .count{font-size:15px;line-height:22px;color:var(--mute);}
+  .rhead .count b{font-weight:600;color:var(--ink);}
+  .rhead .sort{font-size:13px;line-height:20px;color:var(--teal);font-weight:600;white-space:nowrap;}
+  .area{
+    font-size:12px;
+    line-height:17px;
+    color:#8d9391;
+    margin-top:4px;
+  }
+
+  .list{margin-top:12px;}
+  .row{
+    display:flex;
+    gap:13px;
+    align-items:center;
+    padding:12px 12px;
+    border-radius:14px;
+    border-bottom:1px solid var(--line);
+  }
+  .row:last-child{border-bottom:0;}
+  .row.sel{background:var(--teal-08);border-bottom:0;}
+  .row img{
+    width:56px;height:56px;
+    flex:0 0 56px;
+    border-radius:12px;
+    object-fit:cover;
+    display:block;
+    background:#d8d5ce;
+  }
+  .body{flex:1 1 auto;min-width:0;}
+  .title{
+    font-size:16px;
+    line-height:22px;
+    font-weight:600;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .meta{
+    font-size:13px;
+    line-height:19px;
+    color:#4c5350;
+    margin-top:1px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .sub{
+    font-size:12px;
+    line-height:17px;
+    color:var(--mute);
+    margin-top:1px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .side-num{
+    flex:0 0 auto;
+    text-align:right;
+    white-space:nowrap;
+  }
+  .side-num .dist{font-size:15px;line-height:20px;font-weight:600;}
+  .side-num .next{font-size:12px;line-height:17px;color:var(--teal);font-weight:600;margin-top:2px;}
+
+  /* ---------- booking panel ---------- */
+  .panel{
+    width:336px;
+    flex:0 0 336px;
+    border:1px solid var(--line);
+    border-radius:18px;
+    padding:16px;
+    background:#fbfaf8;
+  }
+  .panel .kicker{
+    font-size:11px;
+    line-height:16px;
+    letter-spacing:.07em;
+    text-transform:uppercase;
+    color:var(--mute);
+    margin-bottom:8px;
+  }
+  .panel img{
+    width:300px;height:120px;
+    border-radius:13px;
+    object-fit:cover;
+    display:block;
+    background:#d8d5ce;
+    margin-bottom:12px;
+  }
+  .panel .pname{font-size:19px;line-height:25px;font-weight:700;}
+  .panel .paddr{font-size:13px;line-height:19px;color:#4c5350;margin-top:2px;}
+  .panel .prate{font-size:13px;line-height:19px;color:var(--mute);margin-top:1px;}
+  .divide{height:1px;background:var(--line);margin:14px 0;}
+  .slot-label{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    font-size:14px;
+    line-height:19px;
+    font-weight:600;
+    margin-bottom:10px;
+  }
+  .slot-label span.small{font-size:12px;font-weight:400;color:var(--mute);}
+  .slotgrid{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+  }
+  .slot{
+    width:146px;
+    text-align:center;
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:11px;
+    padding:8px 0;
+    font-size:13px;
+    line-height:19px;
+    color:#3d4644;
+    white-space:nowrap;
+  }
+  .slot.on{background:var(--teal);border-color:var(--teal);color:#fff;font-weight:600;}
+  .cta{
+    display:block;
+    margin-top:14px;
+    text-align:center;
+    background:var(--teal);
+    color:#fff;
+    border-radius:13px;
+    padding:12px 0;
+    font-size:15px;
+    line-height:20px;
+    font-weight:600;
+  }
+  .fine{
+    font-size:12px;
+    line-height:17px;
+    color:var(--mute);
+    margin-top:10px;
+  }
+</style>
+</head>
+<body>
+  <div class="screen">
+
+    <div class="topnav">
+      <div class="brand"><span class="mark">S</span> Sundial Dental</div>
+      <nav class="navtabs">
+        <div class="tab">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5L12 4l8 6.5V20h-5v-5.5H9V20H4z"/></svg>
+          <span>Home</span>
+        </div>
+        <div class="tab on">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg>
+          <span>Find a clinic</span>
+        </div>
+        <div class="tab">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="15" rx="2.5"/><path d="M8 3.5v3M16 3.5v3M4 10h16"/></svg>
+          <span>Appointments</span>
+        </div>
+        <div class="tab">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3.5h9l4 4V20.5H6z"/><path d="M9.5 13h5M12 10.5v5"/></svg>
+          <span>Records</span>
+        </div>
+      </nav>
+      <div class="who"><span class="av">JP</span><span>Julia Prado</span></div>
+    </div>
+
+    <div class="searchbar">
+      <div class="field">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#0f7d75" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg>
+        <span class="q">dental cleaning near me</span>
+        <span class="caret"></span>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6c7370" stroke-width="1.8" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </div>
+      <div class="field loc">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#6c7370" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s6.5-6.1 6.5-10.5A6.5 6.5 0 0 0 5.5 10.5C5.5 14.9 12 21 12 21z"/><circle cx="12" cy="10.3" r="2.4"/></svg>
+        <span class="q dim">Riverside, Portland OR · 5 mi</span>
+      </div>
+      <span class="btn-primary">Update search</span>
+    </div>
+
+    <div class="content">
+
+      <div class="results">
+        <div class="chips">
+          <span class="chip on">In network</span>
+          <span class="chip">Cleanings</span>
+          <span class="chip">Open now</span>
+          <span class="chip">New patients</span>
+          <span class="chip">Weekend hours</span>
+        </div>
+
+        <div class="rhead">
+          <span class="count"><b>5 clinics</b> for “dental cleaning near me”</span>
+          <span class="sort">Soonest opening</span>
+        </div>
+        <div class="area">Search area: Riverside &amp; Midtown, Portland OR · reaching 5 miles out from your location</div>
+
+        <div class="list">
+
+          <div class="row sel">
+            <img src="https://loremflickr.com/56/56/dentist?lock=9320" width="56" height="56" alt="Treatment room at Riverside Dental Care">
+            <div class="body">
+              <div class="title">Riverside Dental Care</div>
+              <div class="meta">Dr. Ana Reyes, DDS · 1420 SE Rivergate Ave</div>
+              <div class="sub">Open until 6 PM · 4.9 from 412 patients</div>
+            </div>
+            <div class="side-num">
+              <div class="dist">0.6 mi</div>
+              <div class="next">Today 2:30 PM</div>
+            </div>
+          </div>
+
+          <div class="row">
+            <img src="https://loremflickr.com/56/56/clinic?lock=9321" width="56" height="56" alt="Reception desk at Midtown Family Dentistry">
+            <div class="body">
+              <div class="title">Midtown Family Dentistry</div>
+              <div class="meta">Dr. Diego Marin, DMD · 88 NW Ash St, Suite 300</div>
+              <div class="sub">Open until 7 PM · 4.7 from 268 patients</div>
+            </div>
+            <div class="side-num">
+              <div class="dist">1.2 mi</div>
+              <div class="next">Tomorrow 9:00 AM</div>
+            </div>
+          </div>
+
+          <div class="row">
+            <img src="https://loremflickr.com/56/56/dental?lock=9322" width="56" height="56" alt="Hygienist chair at Harbor Point Dental Group">
+            <div class="body">
+              <div class="title">Harbor Point Dental Group</div>
+              <div class="meta">Dr. Carmen Ortiz, DDS · 615 N Harbor Way</div>
+              <div class="sub">Closes 5:30 PM · 4.8 from 531 patients</div>
+            </div>
+            <div class="side-num">
+              <div class="dist">2.4 mi</div>
+              <div class="next">Thu 8:15 AM</div>
+            </div>
+          </div>
+
+          <div class="row">
+            <img src="https://loremflickr.com/56/56/office?lock=9323" width="56" height="56" alt="Waiting area at Cedar Street Dental Studio">
+            <div class="body">
+              <div class="title">Cedar Street Dental Studio</div>
+              <div class="meta">Dr. Mateo Salas, DMD · 204 SE Cedar St</div>
+              <div class="sub">Open Saturdays · 4.6 from 190 patients</div>
+            </div>
+            <div class="side-num">
+              <div class="dist">3.1 mi</div>
+              <div class="next">Sat 10:30 AM</div>
+            </div>
+          </div>
+
+          <div class="row">
+            <img src="https://loremflickr.com/56/56/smile?lock=9324" width="56" height="56" alt="Exam room at Lakeview Smile Clinic">
+            <div class="body">
+              <div class="title">Lakeview Smile Clinic</div>
+              <div class="meta">Dr. Lucia Fernandez, DDS · 3300 SW Lakeview Blvd</div>
+              <div class="sub">Evening slots · 4.9 from 347 patients</div>
+            </div>
+            <div class="side-num">
+              <div class="dist">4.7 mi</div>
+              <div class="next">Tomorrow 6:30 PM</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <aside class="panel">
+        <div class="kicker">Booking at</div>
+        <img src="https://loremflickr.com/300/120/dentistoffice?lock=9330" width="300" height="120" alt="Front desk and waiting room at Riverside Dental Care">
+        <div class="pname">Riverside Dental Care</div>
+        <div class="paddr">1420 SE Rivergate Ave · 0.6 mi away</div>
+        <div class="prate">4.9 from 412 patients · In network</div>
+
+        <div class="divide"></div>
+
+        <div class="slot-label"><span>Available times</span><span class="small">45 min cleaning</span></div>
+        <div class="slotgrid">
+          <span class="slot on">Today 2:30 PM</span>
+          <span class="slot">Today 4:15 PM</span>
+          <span class="slot">Tomorrow 8:45 AM</span>
+          <span class="slot">Tomorrow 1:00 PM</span>
+          <span class="slot">Thu 10:15 AM</span>
+          <span class="slot">Fri 3:30 PM</span>
+        </div>
+
+        <span class="cta">Book today at 2:30 PM</span>
+        <div class="fine">Free cancellation up to 24 hours before your visit. Insurance verified at check-in.</div>
+      </aside>
+
+    </div>
+
+  </div>
+</body>
+</html>

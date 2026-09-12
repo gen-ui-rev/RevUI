@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Roundup — Production Day</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#201e1a;
+    --muted:#746f66;
+    --line:#e4e0d7;
+    --accent:#e9c34a;
+    --accent-pale:#fbf2cf;
+    --paper:#fff;
+    --soft:#f5f3ee;
+    --dark:#2b2925;
+  }
+  *{box-sizing:border-box;}
+  body{
+    min-height:100vh;
+    margin:0;
+    padding:32px 0;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    background:#d8d5cf;
+    color:var(--ink);
+    font-family:'Nunito Sans', system-ui, sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .screen{
+    width:768px;
+    height:1024px;
+    position:relative;
+    display:flex;
+    flex-direction:column;
+    background:var(--paper);
+  }
+
+  .topbar{
+    padding:17px 28px;
+    border-bottom:1px solid var(--line);
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+  }
+  .brand-lockup{
+    display:flex;
+    align-items:center;
+    gap:12px;
+  }
+  .brand-mark{
+    width:38px;
+    height:38px;
+    border-radius:10px;
+    background:var(--dark);
+    color:var(--accent);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:17px;
+    font-weight:700;
+  }
+  .brand-lockup strong{
+    display:block;
+    font-size:16px;
+    line-height:19px;
+  }
+  .brand-lockup span{
+    display:block;
+    color:var(--muted);
+    font-size:11px;
+  }
+  .header-tools{
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .tool{
+    min-height:38px;
+    padding:0 14px;
+    border:1px solid var(--line);
+    border-radius:9px;
+    display:flex;
+    align-items:center;
+    gap:7px;
+    font-size:13px;
+    font-weight:700;
+  }
+  .tool.square{
+    width:38px;
+    padding:0;
+    justify-content:center;
+  }
+
+  .tabs{
+    padding:0 28px;
+    border-bottom:1px solid var(--line);
+    display:flex;
+    align-items:center;
+    gap:30px;
+  }
+  .tab{
+    min-height:48px;
+    position:relative;
+    display:flex;
+    align-items:center;
+    gap:7px;
+    color:var(--muted);
+    font-size:13px;
+    font-weight:600;
+  }
+  .tab.active{
+    color:var(--ink);
+    font-weight:700;
+  }
+  .tab.active::after{
+    content:"";
+    position:absolute;
+    left:0;
+    right:0;
+    bottom:-1px;
+    height:4px;
+    border-radius:5px 5px 0 0;
+    background:var(--accent);
+  }
+
+  main{
+    padding:22px 28px 26px;
+  }
+  .page-heading{
+    margin-bottom:13px;
+    display:flex;
+    align-items:flex-end;
+    justify-content:space-between;
+  }
+  .page-heading p{
+    margin:0 0 3px;
+    color:var(--muted);
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:.8px;
+    text-transform:uppercase;
+  }
+  .page-heading h1{
+    margin:0;
+    font-size:24px;
+    line-height:29px;
+    letter-spacing:-.5px;
+  }
+  .status{
+    padding:7px 11px;
+    border-radius:8px;
+    background:var(--accent-pale);
+    font-size:12px;
+    font-weight:700;
+  }
+
+  .hero{
+    border:1px solid var(--line);
+    border-radius:12px;
+    display:flex;
+    background:#fff;
+  }
+  .hero img{
+    display:block;
+    width:348px;
+    height:140px;
+    flex:0 0 348px;
+    object-fit:cover;
+    background:#cac6bd;
+    border-radius:11px 0 0 11px;
+  }
+  .hero-copy{
+    flex:1;
+    padding:16px 18px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    position:relative;
+  }
+  .sheet-badge{
+    align-self:flex-start;
+    margin-bottom:8px;
+    padding:5px 9px;
+    border-radius:7px;
+    background:var(--accent);
+    font-size:10px;
+    font-weight:700;
+    letter-spacing:.6px;
+  }
+  .hero-copy h2{
+    margin:0;
+    font-size:19px;
+    line-height:24px;
+    letter-spacing:-.3px;
+  }
+  .hero-copy p{
+    margin:4px 0 0;
+    color:var(--muted);
+    font-size:12px;
+    line-height:17px;
+  }
+
+  .summary{
+    margin-top:14px;
+    padding:12px 0;
+    border:1px solid var(--line);
+    border-radius:12px;
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+  }
+  .metric{
+    padding:0 14px;
+    border-right:1px solid var(--line);
+  }
+  .metric:last-child{border-right:none;}
+  .metric span{
+    display:block;
+    color:var(--muted);
+    font-size:10px;
+    font-weight:700;
+    letter-spacing:.5px;
+    text-transform:uppercase;
+  }
+  .metric strong{
+    display:block;
+    margin-top:3px;
+    font-size:15px;
+    line-height:20px;
+  }
+
+  .body-grid{
+    margin-top:20px;
+    display:grid;
+    grid-template-columns:430px 258px;
+    gap:24px;
+    align-items:start;
+  }
+  .section-head{
+    margin-bottom:8px;
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+  }
+  .section-head h3{
+    margin:0;
+    font-size:13px;
+    letter-spacing:.7px;
+    text-transform:uppercase;
+  }
+  .section-head span{
+    color:var(--muted);
+    font-size:12px;
+  }
+
+  .timeline{
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:0 14px;
+  }
+  .timeline-row{
+    min-height:62px;
+    padding:10px 0;
+    border-bottom:1px solid var(--line);
+    display:grid;
+    grid-template-columns:67px 25px 1fr 34px;
+    gap:10px;
+    align-items:center;
+  }
+  .timeline-row:last-child{border-bottom:none;}
+  .time{
+    font-size:13px;
+    font-weight:700;
+  }
+  .check{
+    width:23px;
+    height:23px;
+    border-radius:50%;
+    border:1.5px solid #c9c4ba;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .check.done{
+    background:var(--accent);
+    border-color:var(--accent);
+  }
+  .event{
+    min-width:0;
+  }
+  .event strong{
+    display:block;
+    font-size:13px;
+    line-height:18px;
+  }
+  .event span{
+    display:block;
+    color:var(--muted);
+    font-size:11px;
+    line-height:15px;
+  }
+  .timeline-row.complete .event strong{
+    color:var(--muted);
+    text-decoration:line-through;
+    font-weight:400;
+  }
+  .owner{
+    width:32px;
+    height:32px;
+    border-radius:9px;
+    background:var(--soft);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:10px;
+    font-weight:700;
+  }
+
+  .panel{
+    margin-bottom:16px;
+    border:1px solid var(--line);
+    border-radius:12px;
+    background:#fff;
+  }
+  .panel-title{
+    padding:11px 13px;
+    border-bottom:1px solid var(--line);
+    font-size:12px;
+    font-weight:700;
+    letter-spacing:.5px;
+    text-transform:uppercase;
+  }
+  .detail{
+    padding:10px 13px;
+    border-bottom:1px solid var(--line);
+  }
+  .detail:last-child{border-bottom:none;}
+  .detail span{
+    display:block;
+    color:var(--muted);
+    font-size:10px;
+    font-weight:700;
+    letter-spacing:.4px;
+    text-transform:uppercase;
+  }
+  .detail strong{
+    display:block;
+    margin-top:2px;
+    font-size:12px;
+    line-height:17px;
+  }
+  .contact{
+    padding:10px 13px;
+    border-bottom:1px solid var(--line);
+    display:flex;
+    align-items:center;
+    gap:9px;
+  }
+  .contact:last-child{border-bottom:none;}
+  .avatar{
+    width:32px;
+    height:32px;
+    flex:0 0 32px;
+    border-radius:9px;
+    background:var(--soft);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:10px;
+    font-weight:700;
+  }
+  .contact-copy{
+    min-width:0;
+    flex:1;
+  }
+  .contact-copy strong{
+    display:block;
+    font-size:12px;
+  }
+  .contact-copy span{
+    display:block;
+    color:var(--muted);
+    font-size:10px;
+  }
+  .contact-phone{
+    color:var(--muted);
+    font-size:10px;
+  }
+  .notice{
+    padding:13px;
+    border:1px solid #e6d38c;
+    border-radius:12px;
+    background:var(--accent-pale);
+  }
+  .notice strong{
+    display:block;
+    margin-bottom:4px;
+    font-size:12px;
+  }
+  .notice p{
+    margin:0;
+    color:#665d40;
+    font-size:11px;
+    line-height:16px;
+  }
+
+  .footer-strip{
+    margin-top:18px;
+    padding:12px 14px;
+    border-radius:11px;
+    background:var(--dark);
+    color:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:18px;
+  }
+  .footer-strip strong{
+    display:block;
+    font-size:12px;
+  }
+  .footer-strip span{
+    display:block;
+    margin-top:2px;
+    color:#c7c2b9;
+    font-size:10px;
+  }
+  .footer-right{
+    display:flex;
+    gap:22px;
+    text-align:right;
+  }
+</style>
+</head>
+<body>
+<div class="screen">
+  <header class="topbar">
+    <div class="brand-lockup">
+      <div class="brand-mark">R</div>
+      <div>
+        <strong>Roundup Production</strong>
+        <span>Rooftop Dinner Campaign</span>
+      </div>
+    </div>
+    <div class="header-tools">
+      <div class="tool square" aria-hidden="true">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M18 8a6 6 0 00-12 0c0 7-3 7-3 7h18s-3 0-3-7"/><path d="M10 19h4"/></svg>
+      </div>
+      <div class="tool">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+        Add crew note
+      </div>
+    </div>
+  </header>
+
+  <nav class="tabs" aria-label="Primary navigation">
+    <div class="tab">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="7" rx="2"/><rect x="3" y="14" width="18" height="6" rx="2"/></svg>
+      Feed
+    </div>
+    <div class="tab">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="9" cy="9" r="3.4"/><path d="M3.5 19c.6-3 2.9-4.6 5.5-4.6s4.9 1.6 5.5 4.6"/><path d="M16 6.2a3.2 3.2 0 010 6"/></svg>
+      Crew
+    </div>
+    <div class="tab active">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3.5" y="4.5" width="17" height="16" rx="2.5"/><path d="M8 3v3M16 3v3M7.5 11h9M7.5 15h6"/></svg>
+      Call sheets
+    </div>
+    <div class="tab">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M20.5 12.2c0 3.9-3.8 7-8.5 7-1 0-2-.15-2.9-.42L4 20.5l1.5-3.4A6.6 6.6 0 013.5 12.2c0-3.9 3.8-7 8.5-7s8.5 3.1 8.5 7z"/></svg>
+      Messages
+    </div>
+  </nav>
+
+  <main>
+    <div class="page-heading">
+      <div>
+        <p>Saturday, June 14 · Production 07</p>
+        <h1>Daily shoot call sheet</h1>
+      </div>
+      <div class="status">Distributed to 14 crew</div>
+    </div>
+
+    <section class="hero">
+      <img src="https://loremflickr.com/348/140/party?lock=5541" width="348" height="140" alt="Rooftop set for the dinner scene">
+      <div class="hero-copy">
+        <div class="sheet-badge">SHOOT DAY 1 OF 1</div>
+        <h2>Rooftop Dinner — Night Exterior</h2>
+        <p>Harbor House Rooftop<br>88 Mercer Street · Enter through main lobby</p>
+      </div>
+    </section>
+
+    <section class="summary" aria-label="Call sheet summary">
+      <div class="metric"><span>Crew call</span><strong>4:30 PM</strong></div>
+      <div class="metric"><span>Talent call</span><strong>6:15 PM</strong></div>
+      <div class="metric"><span>Camera up</span><strong>7:30 PM</strong></div>
+      <div class="metric"><span>Sunset</span><strong>8:27 PM</strong></div>
+      <div class="metric"><span>Est. wrap</span><strong>10:30 PM</strong></div>
+    </section>
+
+    <div class="body-grid">
+      <section>
+        <div class="section-head">
+          <h3>Run of day</h3>
+          <span>3 tasks open</span>
+        </div>
+        <div class="timeline">
+          <div class="timeline-row complete">
+            <div class="time">9:40 AM</div>
+            <div class="check done">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#1c1a17" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4 10-10"/></svg>
+            </div>
+            <div class="event"><strong>Send crew call sheet</strong><span>All departments acknowledged</span></div>
+            <div class="owner">DR</div>
+          </div>
+          <div class="timeline-row complete">
+            <div class="time">11:20 AM</div>
+            <div class="check done">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#1c1a17" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4 10-10"/></svg>
+            </div>
+            <div class="event"><strong>Camera and media check</strong><span>A-camera package verified</span></div>
+            <div class="owner">TF</div>
+          </div>
+          <div class="timeline-row">
+            <div class="time">3:30 PM</div>
+            <div class="check"></div>
+            <div class="event"><strong>Confirm rooftop access</strong><span>Location handoff with building staff</span></div>
+            <div class="owner">MK</div>
+          </div>
+          <div class="timeline-row">
+            <div class="time">4:30 PM</div>
+            <div class="check"></div>
+            <div class="event"><strong>Crew call and safety briefing</strong><span>Meet beside the south stairwell</span></div>
+            <div class="owner">OB</div>
+          </div>
+          <div class="timeline-row">
+            <div class="time">6:15 PM</div>
+            <div class="check"></div>
+            <div class="event"><strong>Talent call and wardrobe check</strong><span>Holding area on level six</span></div>
+            <div class="owner">PA</div>
+          </div>
+          <div class="timeline-row">
+            <div class="time">7:30 PM</div>
+            <div class="check"></div>
+            <div class="event"><strong>First shot: dinner wide</strong><span>Scene 1A · facing west</span></div>
+            <div class="owner">JW</div>
+          </div>
+        </div>
+      </section>
+
+      <aside>
+        <div class="panel">
+          <div class="panel-title">Set information</div>
+          <div class="detail">
+            <span>Parking</span>
+            <strong>Alder Street crew garage; validate at reception</strong>
+          </div>
+          <div class="detail">
+            <span>Wardrobe</span>
+            <strong>Summer evening casual; avoid tight patterns</strong>
+          </div>
+          <div class="detail">
+            <span>Weather</span>
+            <strong>72°F, clear · light west wind</strong>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-title">Department leads</div>
+          <div class="contact">
+            <div class="avatar">MK</div>
+            <div class="contact-copy"><strong>Maya Kim</strong><span>Producer</span></div>
+            <div class="contact-phone">0142</div>
+          </div>
+          <div class="contact">
+            <div class="avatar">DR</div>
+            <div class="contact-copy"><strong>Devon Reed</strong><span>1st AD</span></div>
+            <div class="contact-phone">0178</div>
+          </div>
+          <div class="contact">
+            <div class="avatar">OB</div>
+            <div class="contact-copy"><strong>Owen Brooks</strong><span>Locations</span></div>
+            <div class="contact-phone">0196</div>
+          </div>
+        </div>
+
+        <div class="notice">
+          <strong>Roof safety notice</strong>
+          <p>Keep the north fire lane clear. All stands near the parapet require sandbags and a safety line.</p>
+        </div>
+      </aside>
+    </div>
+
+    <div class="footer-strip">
+      <div>
+        <strong>Emergency and medical</strong>
+        <span>Call 911 · City Medical Center, 410 Pine Avenue</span>
+      </div>
+      <div class="footer-right">
+        <div><strong>Production channel</strong><span>Radio 1</span></div>
+        <div><strong>Nearest exit</strong><span>South stairwell</span></div>
+      </div>
+    </div>
+  </main>
+</div>
+</body>
+</html>

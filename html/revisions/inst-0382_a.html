@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Perch — Wallet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --accent:#3E4C5E;
+    --accent-08:rgba(62,76,94,0.08);
+    --accent-14:rgba(62,76,94,0.14);
+    --ink:#1B2029;
+    --muted:#6B7280;
+    --deep:#242D3A;
+  }
+  *{box-sizing:border-box;}
+  body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    padding:40px 0;
+    margin:0;
+    background:#E7E8EA;
+    font-family:'Nunito Sans', system-ui, sans-serif;
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+  }
+  .screen{
+    width:390px;
+    height:844px;
+    background:#FFFFFF;
+    display:flex;
+    flex-direction:column;
+    position:relative;
+  }
+
+  /* top bar */
+  .topbar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:20px 20px 14px;
+  }
+  .topbar h1{
+    margin:0;
+    font-size:17px;
+    font-weight:700;
+    letter-spacing:.1px;
+  }
+  .iconbtn{
+    width:32px;height:32px;
+    display:flex;align-items:center;justify-content:center;
+    color:var(--accent);
+  }
+
+  .body{
+    padding:0 20px;
+    flex:1;
+  }
+
+  /* hero — bold, high-contrast card */
+  .hero{
+    background:linear-gradient(160deg,#43526A 0%,var(--deep) 100%);
+    border-radius:6px;
+    padding:20px 20px;
+    color:#FFFFFF;
+    box-shadow:0 10px 22px rgba(36,45,58,0.22);
+  }
+  .hero-top{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+  }
+  .label{
+    font-size:12px;
+    color:rgba(255,255,255,0.68);
+    letter-spacing:.6px;
+    text-transform:uppercase;
+    font-weight:700;
+  }
+  .chip{
+    font-size:10px;
+    font-weight:700;
+    letter-spacing:.6px;
+    text-transform:uppercase;
+    color:rgba(255,255,255,0.9);
+    background:rgba(255,255,255,0.16);
+    border-radius:999px;
+    padding:4px 9px;
+    white-space:nowrap;
+  }
+  .balance{
+    font-size:40px;
+    font-weight:700;
+    line-height:1.05;
+    margin:10px 0 6px;
+    letter-spacing:-.8px;
+    color:#FFFFFF;
+  }
+  .sub{
+    font-size:13px;
+    color:rgba(255,255,255,0.7);
+  }
+  .actions{
+    display:flex;
+    gap:10px;
+    margin-top:18px;
+  }
+  .btn{
+    flex:1;
+    text-align:center;
+    border-radius:6px;
+    padding:12px 8px;
+    font-size:14px;
+    font-weight:700;
+  }
+  .btn.solid{background:#FFFFFF;color:var(--deep);}
+  .btn.quiet{
+    background:rgba(255,255,255,0.10);
+    color:#FFFFFF;
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,0.34);
+  }
+
+  /* tier */
+  .tier{
+    margin-top:16px;
+    background:var(--accent-08);
+    border-radius:6px;
+    padding:16px 18px 18px;
+  }
+  .tier-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    gap:12px;
+  }
+  .tier-name{font-size:15px;font-weight:700;}
+  .tier-pct{font-size:14px;color:var(--muted);}
+  .track{
+    margin-top:12px;
+    height:8px;
+    border-radius:6px;
+    background:var(--accent-14);
+    overflow:hidden;
+  }
+  .fill{width:68%;height:100%;background:var(--accent);border-radius:6px;}
+  .tier-note{
+    margin-top:10px;
+    font-size:13px;
+    color:var(--muted);
+  }
+
+  /* activity */
+  .sec-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    margin:24px 2px 4px;
+  }
+  .sec-head h2{
+    margin:0;
+    font-size:15px;
+    font-weight:700;
+  }
+  .sec-head span{
+    font-size:13px;
+    color:var(--accent);
+    font-weight:700;
+  }
+  .row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:14px;
+    padding:13px 2px;
+    border-bottom:1px solid #EDEEF0;
+  }
+  .row:last-child{border-bottom:none;}
+  .row .main{min-width:0;}
+  .row .title{
+    font-size:15px;
+    font-weight:700;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .row .meta{
+    font-size:13px;
+    color:var(--muted);
+    margin-top:3px;
+  }
+  .amt{
+    font-size:15px;
+    font-weight:700;
+    white-space:nowrap;
+  }
+  .amt.in{color:var(--accent);}
+
+  /* tab bar */
+  .tabbar{
+    display:flex;
+    padding:10px 8px 20px;
+    border-top:1px solid #EDEEF0;
+  }
+  .tab{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:5px;
+    font-size:12px;
+    color:var(--muted);
+  }
+  .tab.active{color:var(--accent);font-weight:700;}
+</style>
+</head>
+<body>
+<div class="screen">
+
+  <div class="topbar">
+    <div class="iconbtn" aria-hidden="true">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
+    </div>
+    <h1>Wallet</h1>
+    <div class="iconbtn" aria-hidden="true">
+      <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+    </div>
+  </div>
+
+  <div class="body">
+
+    <div class="hero">
+      <div class="hero-top">
+        <div class="label">Available balance</div>
+        <div class="chip">Auto top-up on</div>
+      </div>
+      <div class="balance">$126.40</div>
+      <div class="sub">12,640 Sparks · 100 Sparks = $1.00</div>
+      <div class="actions">
+        <div class="btn solid">Add Sparks</div>
+        <div class="btn quiet">Cash out</div>
+      </div>
+    </div>
+
+    <div class="tier">
+      <div class="tier-top">
+        <div class="tier-name">Supporter tier</div>
+        <div class="tier-pct">3,400 / 5,000</div>
+      </div>
+      <div class="track"><div class="fill"></div></div>
+      <div class="tier-note">1,600 more Sparks sent this month unlocks Patron.</div>
+    </div>
+
+    <div class="sec-head">
+      <h2>Recent activity</h2>
+      <span>All</span>
+    </div>
+
+    <div class="row">
+      <div class="main">
+        <div class="title">Tip to Marisol Vane</div>
+        <div class="meta">Mar 14 · 400 Sparks</div>
+      </div>
+      <div class="amt">−$4.00</div>
+    </div>
+
+    <div class="row">
+      <div class="main">
+        <div class="title">Sparks purchase</div>
+        <div class="meta">Mar 12 · Visa ending 4417</div>
+      </div>
+      <div class="amt in">+$20.00</div>
+    </div>
+
+    <div class="row">
+      <div class="main">
+        <div class="title">Group gift — Trail Crew</div>
+        <div class="meta">Mar 9 · Split with 4 members</div>
+      </div>
+      <div class="amt">−$12.50</div>
+    </div>
+
+    <div class="row">
+      <div class="main">
+        <div class="title">Payout to Northbank Savings</div>
+        <div class="meta">Mar 6 · Completed</div>
+      </div>
+      <div class="amt">−$60.00</div>
+    </div>
+
+  </div>
+
+  <div class="tabbar">
+    <div class="tab">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5L12 4l8 6.5V20a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1z"/></svg>
+      Home
+    </div>
+    <div class="tab">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="9" r="3.2"/><path d="M3.5 19c.6-3 2.8-4.6 5.5-4.6S14 16 14.6 19"/><path d="M16 6.4a3 3 0 0 1 0 5.6"/><path d="M17.6 14.6c1.9.6 3 2.1 3.4 4.4"/></svg>
+      Groups
+    </div>
+    <div class="tab">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12.5c0 3.6-3.6 6.5-8 6.5-.9 0-1.8-.1-2.6-.3L5 20.5l1-3.2C4.7 16.1 4 14.4 4 12.5 4 8.9 7.6 6 12 6s8 2.9 8 6.5z"/></svg>
+      Messages
+    </div>
+    <div class="tab active">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5A1.5 1.5 0 0 1 4.5 7H19a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M3 8.5V7a2 2 0 0 1 2-2h11"/><circle cx="16.5" cy="13" r="1.3" fill="currentColor" stroke="none"/></svg>
+      Wallet
+    </div>
+    <div class="tab">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8.5" r="3.5"/><path d="M5 20c.8-3.6 3.4-5.5 7-5.5s6.2 1.9 7 5.5"/></svg>
+      Profile
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

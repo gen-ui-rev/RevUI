@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Driftwell Stay Search</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #e9e6e2;
+      color: #292522;
+      font-family: 'Source Serif 4', Georgia, serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #fffdfb;
+      border: 1px solid #d8d3ce;
+    }
+
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 13px 16px 11px;
+      border-bottom: 1px solid #e1ddd8;
+    }
+
+    .brand {
+      font-size: 20px;
+      line-height: 1.3;
+      font-weight: 600;
+      letter-spacing: -0.2px;
+    }
+
+    .top-action {
+      border: 0;
+      padding: 3px 0;
+      background: transparent;
+      color: #c7352e;
+      font-size: 14px;
+      line-height: 1.4;
+      font-weight: 600;
+    }
+
+    main {
+      flex: 1;
+    }
+
+    .search-area {
+      padding: 12px 16px 13px;
+      border-bottom: 1px solid #e1ddd8;
+    }
+
+    .search-box {
+      height: 48px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 12px;
+      border: 1px solid #c7352e;
+      border-radius: 10px;
+      background: #ffffff;
+    }
+
+    .search-box svg {
+      width: 20px;
+      height: 20px;
+      flex: 0 0 auto;
+      color: #c7352e;
+    }
+
+    .query {
+      min-width: 0;
+      flex: 1;
+      overflow: hidden;
+      color: #24201e;
+      font-size: 16px;
+      line-height: 1.3;
+      font-weight: 600;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .clear-search {
+      width: 26px;
+      height: 26px;
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      padding: 0;
+      border: 0;
+      border-radius: 10px;
+      background: #f1eeeb;
+      color: #746d67;
+    }
+
+    .clear-search svg {
+      width: 14px;
+      height: 14px;
+      color: currentColor;
+    }
+
+    .filters {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .filter {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 6px 10px;
+      border: 1px solid #d8d3ce;
+      border-radius: 10px;
+      background: #fffdfb;
+      color: #4d4742;
+      font-size: 14px;
+      line-height: 1.35;
+      white-space: nowrap;
+    }
+
+    .filter svg {
+      width: 14px;
+      height: 14px;
+      color: #746d67;
+    }
+
+    .results-heading {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 16px 10px;
+    }
+
+    .results-heading h1 {
+      margin: 0;
+      font-size: 24px;
+      line-height: 1.2;
+      font-weight: 600;
+      letter-spacing: -0.35px;
+    }
+
+    .results-heading p {
+      flex: 0 0 auto;
+      margin: 0 0 2px;
+      color: #766f69;
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .result-list {
+      border-bottom: 1px solid #e1ddd8;
+    }
+
+    .result-row {
+      display: flex;
+      gap: 12px;
+      padding: 9px 16px;
+      border-top: 1px solid #e1ddd8;
+    }
+
+    .result-row img {
+      width: 104px;
+      height: 88px;
+      flex: 0 0 auto;
+      display: block;
+      object-fit: cover;
+      border-radius: 10px;
+      background: #d8d1ca;
+    }
+
+    .result-details {
+      min-width: 0;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .result-details h2 {
+      margin: 0;
+      overflow: hidden;
+      color: #292522;
+      font-size: 16px;
+      line-height: 1.3;
+      font-weight: 600;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .location {
+      margin: 2px 0 0;
+      overflow: hidden;
+      color: #746d67;
+      font-size: 12px;
+      line-height: 1.35;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .rating {
+      margin: 5px 0 0;
+      color: #4d4742;
+      font-size: 12px;
+      line-height: 1.3;
+    }
+
+    .rating strong {
+      color: #292522;
+      font-weight: 600;
+    }
+
+    .rate {
+      margin: 3px 0 0;
+      color: #292522;
+      font-size: 14px;
+      line-height: 1.3;
+    }
+
+    .rate strong {
+      font-weight: 600;
+    }
+
+    .tab-bar {
+      display: flex;
+      align-items: stretch;
+      margin-top: auto;
+      padding: 7px 8px 8px;
+      border-top: 1px solid #d8d3ce;
+      background: #fffdfb;
+    }
+
+    .tab {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      padding: 2px 0;
+      border: 0;
+      background: transparent;
+      color: #77706a;
+      font-size: 12px;
+      line-height: 1.25;
+      font-weight: 400;
+    }
+
+    .tab svg {
+      width: 21px;
+      height: 21px;
+    }
+
+    .tab.active {
+      color: #c7352e;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="top-bar">
+      <div class="brand">Driftwell</div>
+      <button class="top-action" type="button">Map view</button>
+    </header>
+
+    <main>
+      <section class="search-area" aria-label="Stay search">
+        <div class="search-box">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="10.5" cy="10.5" r="6.5" stroke="currentColor" stroke-width="1.8"></circle>
+            <path d="M15.5 15.5L21 21" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
+          </svg>
+          <div class="query">Santa Barbara, California</div>
+          <button class="clear-search" type="button" aria-label="Clear search">
+            <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M4 4L12 12M12 4L4 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
+            </svg>
+          </button>
+        </div>
+
+        <div class="filters" aria-label="Search filters">
+          <button class="filter" type="button">
+            May 18–21
+          </button>
+          <button class="filter" type="button">
+            2 guests
+          </button>
+          <button class="filter" type="button">
+            Filters
+            <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M3 4H13M5 8H11M7 12H9" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"></path>
+            </svg>
+          </button>
+        </div>
+      </section>
+
+      <section aria-labelledby="results-title">
+        <div class="results-heading">
+          <h1 id="results-title">Santa Barbara stays</h1>
+          <p>48 properties</p>
+        </div>
+
+        <div class="result-list">
+          <article class="result-row">
+            <img src="https://loremflickr.com/104/88/hotel?lock=1030" width="104" height="88" alt="White coastal hotel with a courtyard">
+            <div class="result-details">
+              <h2>Harbor House Inn</h2>
+              <p class="location">West Beach · 0.4 mi from shore</p>
+              <p class="rating"><strong>4.8</strong> · 214 reviews</p>
+              <p class="rate"><strong>$286</strong> per night</p>
+            </div>
+          </article>
+
+          <article class="result-row">
+            <img src="https://loremflickr.com/104/88/beach?lock=1031" width="104" height="88" alt="Sandy beach near a seaside lodging">
+            <div class="result-details">
+              <h2>East Beach Bungalows</h2>
+              <p class="location">East Beach · 0.2 mi from shore</p>
+              <p class="rating"><strong>4.7</strong> · 168 reviews</p>
+              <p class="rate"><strong>$249</strong> per night</p>
+            </div>
+          </article>
+
+          <article class="result-row">
+            <img src="https://loremflickr.com/104/88/hotel?lock=1032" width="104" height="88" alt="Hotel terrace surrounded by gardens">
+            <div class="result-details">
+              <h2>Mesa Garden Hotel</h2>
+              <p class="location">The Mesa · 1.1 mi from shore</p>
+              <p class="rating"><strong>4.6</strong> · 302 reviews</p>
+              <p class="rate"><strong>$221</strong> per night</p>
+            </div>
+          </article>
+
+          <article class="result-row">
+            <img src="https://loremflickr.com/104/88/cityscape?lock=1033" width="104" height="88" alt="Downtown streets near a boutique hotel">
+            <div class="result-details">
+              <h2>State Street Rooms</h2>
+              <p class="location">Downtown · 0.1 mi from State Street</p>
+              <p class="rating"><strong>4.5</strong> · 447 reviews</p>
+              <p class="rate"><strong>$198</strong> per night</p>
+            </div>
+          </article>
+
+          <article class="result-row">
+            <img src="https://loremflickr.com/104/88/mountain?lock=1034" width="104" height="88" alt="Mountain foothills behind a quiet inn">
+            <div class="result-details">
+              <h2>Mission Canyon Lodge</h2>
+              <p class="location">Upper East · 1.8 mi from downtown</p>
+              <p class="rating"><strong>4.9</strong> · 126 reviews</p>
+              <p class="rate"><strong>$274</strong> per night</p>
+            </div>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <nav class="tab-bar" aria-label="Primary navigation">
+      <button class="tab active" type="button" aria-current="page">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="10.5" cy="10.5" r="6.5" stroke="currentColor" stroke-width="1.7"></circle>
+          <path d="M15.5 15.5L21 21" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"></path>
+        </svg>
+        Search
+      </button>
+      <button class="tab" type="button">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M4 10.5L12 4L20 10.5V20H14.5V14H9.5V20H4V10.5Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"></path>
+        </svg>
+        Trips
+      </button>
+      <button class="tab" type="button">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M12 20S4.5 15.7 4.5 9.5C4.5 6.9 6.3 5 8.8 5C10.3 5 11.4 5.8 12 6.8C12.6 5.8 13.7 5 15.2 5C17.7 5 19.5 6.9 19.5 9.5C19.5 15.7 12 20 12 20Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"></path>
+        </svg>
+        Saved
+      </button>
+      <button class="tab" type="button">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="12" cy="8" r="3.5" stroke="currentColor" stroke-width="1.6"></circle>
+          <path d="M5.5 20C6 16.4 8.2 14.5 12 14.5C15.8 14.5 18 16.4 18.5 20" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path>
+        </svg>
+        Account
+      </button>
+    </nav>
+  </div>
+</body>
+</html>

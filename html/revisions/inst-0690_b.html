@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Followers — Perch</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+
+  body {
+    min-height: 100vh;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #dededb;
+    font-family: 'Poppins', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  button { font: inherit; }
+
+  .screen {
+    width: 1024px;
+    height: 768px;
+    display: flex;
+    background: #f7f7f5;
+    color: #18181b;
+    box-shadow: 0 16px 48px rgba(24, 24, 27, 0.12);
+  }
+
+  .sidebar {
+    width: 218px;
+    flex: 0 0 218px;
+    display: flex;
+    flex-direction: column;
+    padding: 25px 18px 20px;
+    background: #20201f;
+    color: #ffffff;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding: 0 8px 26px;
+    font-size: 17px;
+    font-weight: 600;
+  }
+
+  .brand-mark {
+    width: 32px;
+    height: 32px;
+    display: grid;
+    place-items: center;
+    border-radius: 7px;
+    background: #f0a316;
+    color: #332305;
+    font-size: 15px;
+    font-weight: 600;
+  }
+
+  .nav-label {
+    padding: 0 10px 8px;
+    color: #8d8d89;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.9px;
+    text-transform: uppercase;
+  }
+
+  .nav {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding: 10px 11px;
+    border-radius: 6px;
+    color: #bfbfbb;
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  .nav-item.on {
+    background: #343432;
+    color: #ffffff;
+  }
+
+  .nav-item.on svg { color: #f0a316; }
+
+  .nav-item svg {
+    width: 17px;
+    height: 17px;
+    flex: 0 0 17px;
+  }
+
+  .profile {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: auto;
+    padding: 14px 9px 0;
+    border-top: 1px solid #383836;
+  }
+
+  .profile-av {
+    width: 34px;
+    height: 34px;
+    display: grid;
+    place-items: center;
+    flex: 0 0 34px;
+    border-radius: 6px;
+    background: #f0a316;
+    color: #332305;
+    font-size: 11px;
+    font-weight: 600;
+  }
+
+  .profile-copy {
+    min-width: 0;
+  }
+
+  .profile-name {
+    overflow: hidden;
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 500;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .profile-sub {
+    margin-top: 2px;
+    color: #969692;
+    font-size: 10px;
+  }
+
+  .main {
+    min-width: 0;
+    flex: 1;
+    padding: 27px 34px 30px;
+  }
+
+  .utility {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 26px;
+  }
+
+  .crumb {
+    color: #8a8a93;
+    font-size: 12px;
+  }
+
+  .crumb strong {
+    color: #52525b;
+    font-weight: 500;
+  }
+
+  .utility-actions {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+  }
+
+  .search {
+    width: 205px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 11px;
+    border: 1px solid #dededb;
+    border-radius: 6px;
+    background: #ffffff;
+    color: #9a9a9f;
+    font-size: 12px;
+  }
+
+  .account {
+    width: 34px;
+    height: 34px;
+    display: grid;
+    place-items: center;
+    border-radius: 6px;
+    background: #ececea;
+    color: #52525b;
+    font-size: 11px;
+    font-weight: 600;
+  }
+
+  .title-row {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+    padding-bottom: 17px;
+    border-bottom: 1px solid #dededb;
+  }
+
+  .title-row h1 {
+    margin: 0;
+    font-size: 25px;
+    line-height: 1.25;
+    font-weight: 600;
+    letter-spacing: -0.5px;
+  }
+
+  .title-row p {
+    margin: 5px 0 0;
+    color: #71717a;
+    font-size: 13px;
+  }
+
+  .tabs {
+    display: flex;
+    gap: 8px;
+  }
+
+  .tab {
+    padding: 8px 13px;
+    border: 1px solid #dededb;
+    border-radius: 5px;
+    background: #ffffff;
+    color: #71717a;
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  .tab.on {
+    border-color: #e5b14e;
+    background: #fff7e7;
+    color: #77530f;
+  }
+
+  .directory {
+    padding-top: 19px;
+  }
+
+  .group {
+    margin-bottom: 18px;
+  }
+
+  .group-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+
+  .group-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .group-title h2 {
+    margin: 0;
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  .count {
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: #e8e8e5;
+    color: #62626a;
+    font-size: 10px;
+    font-weight: 500;
+  }
+
+  .group-help {
+    color: #8a8a93;
+    font-size: 11px;
+  }
+
+  .table {
+    border: 1px solid #e0e0dd;
+    border-radius: 7px;
+    background: #ffffff;
+    box-shadow: 0 2px 8px rgba(24, 24, 27, 0.035);
+  }
+
+  .table-head,
+  .person-row {
+    display: grid;
+    grid-template-columns: minmax(260px, 1.4fr) minmax(150px, 0.85fr) 120px;
+    align-items: center;
+    gap: 16px;
+    padding: 0 17px;
+  }
+
+  .table-head {
+    padding-top: 8px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #ececea;
+    background: #fafaf8;
+    color: #929299;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    border-radius: 7px 7px 0 0;
+  }
+
+  .person-row {
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+
+  .person-row + .person-row {
+    border-top: 1px solid #eeeeec;
+  }
+
+  .person {
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .av {
+    width: 38px;
+    height: 38px;
+    display: grid;
+    place-items: center;
+    flex: 0 0 38px;
+    border-radius: 6px;
+    background: #f0f0ee;
+    color: #52525b;
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  .person-copy { min-width: 0; }
+
+  .nm {
+    overflow: hidden;
+    color: #18181b;
+    font-size: 13px;
+    font-weight: 500;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .handle {
+    margin-top: 1px;
+    color: #8a8a93;
+    font-size: 11px;
+  }
+
+  .connection {
+    color: #71717a;
+    font-size: 11px;
+  }
+
+  .btn {
+    width: 120px;
+    padding: 7px 10px;
+    border-radius: 5px;
+    font-size: 11px;
+    font-weight: 500;
+    cursor: default;
+  }
+
+  .btn.fill {
+    border: 1px solid #f0a316;
+    background: #f0a316;
+    color: #2d2006;
+  }
+
+  .btn.ghost {
+    border: 1px solid #d8d8d6;
+    background: #ffffff;
+    color: #52525b;
+  }
+
+  .more {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    padding-top: 1px;
+    color: #8a6413;
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  .more svg { display: block; }
+</style>
+</head>
+<body>
+  <div class="screen">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark">P</div>
+        Perch
+      </div>
+
+      <div class="nav-label">Workspace</div>
+      <nav class="nav" aria-label="Workspace navigation">
+        <div class="nav-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="7" height="7"></rect>
+            <rect x="14" y="3" width="7" height="7"></rect>
+            <rect x="3" y="14" width="7" height="7"></rect>
+            <rect x="14" y="14" width="7" height="7"></rect>
+          </svg>
+          Overview
+        </div>
+        <div class="nav-item on">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+            <circle cx="9" cy="7" r="4"></circle>
+            <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+          </svg>
+          Audience
+        </div>
+        <div class="nav-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z"></path>
+          </svg>
+          Messages
+        </div>
+        <div class="nav-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="20" x2="18" y2="10"></line>
+            <line x1="12" y1="20" x2="12" y2="4"></line>
+            <line x1="6" y1="20" x2="6" y2="14"></line>
+          </svg>
+          Insights
+        </div>
+      </nav>
+
+      <div class="profile">
+        <div class="profile-av">PS</div>
+        <div class="profile-copy">
+          <div class="profile-name">Perch Studio</div>
+          <div class="profile-sub">Business workspace</div>
+        </div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <div class="utility">
+        <div class="crumb">Audience / <strong>Followers</strong></div>
+        <div class="utility-actions">
+          <div class="search">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+              <circle cx="11" cy="11" r="7"></circle>
+              <line x1="20" y1="20" x2="16.2" y2="16.2"></line>
+            </svg>
+            Search followers
+          </div>
+          <div class="account">PS</div>
+        </div>
+      </div>
+
+      <div class="title-row">
+        <div>
+          <h1>Followers</h1>
+          <p>1,284 people follow Perch Studio</p>
+        </div>
+        <div class="tabs" aria-label="Connection views">
+          <div class="tab on">Followers · 1,284</div>
+          <div class="tab">Following · 312</div>
+        </div>
+      </div>
+
+      <div class="directory">
+        <section class="group">
+          <div class="group-head">
+            <div class="group-title">
+              <h2>Not followed back</h2>
+              <span class="count">2</span>
+            </div>
+            <div class="group-help">Review new connection opportunities</div>
+          </div>
+
+          <div class="table">
+            <div class="table-head">
+              <div>Follower</div>
+              <div>Connection</div>
+              <div>Action</div>
+            </div>
+            <div class="person-row">
+              <div class="person">
+                <div class="av">MR</div>
+                <div class="person-copy">
+                  <div class="nm">Marisol Reyes</div>
+                  <div class="handle">@marisol</div>
+                </div>
+              </div>
+              <div class="connection">12 mutual</div>
+              <button class="btn fill" type="button">Follow back</button>
+            </div>
+            <div class="person-row">
+              <div class="person">
+                <div class="av">TA</div>
+                <div class="person-copy">
+                  <div class="nm">Theodora Ainsworth-Pyle</div>
+                  <div class="handle">@theo.ap</div>
+                </div>
+              </div>
+              <div class="connection">Joined Mar 2024</div>
+              <button class="btn fill" type="button">Follow back</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="group">
+          <div class="group-head">
+            <div class="group-title">
+              <h2>Already following</h2>
+              <span class="count">2</span>
+            </div>
+            <div class="group-help">People with a mutual follow</div>
+          </div>
+
+          <div class="table">
+            <div class="table-head">
+              <div>Follower</div>
+              <div>Connection</div>
+              <div>Status</div>
+            </div>
+            <div class="person-row">
+              <div class="person">
+                <div class="av">DK</div>
+                <div class="person-copy">
+                  <div class="nm">Devin Kwan</div>
+                  <div class="handle">@dkwan</div>
+                </div>
+              </div>
+              <div class="connection">4 mutual</div>
+              <button class="btn ghost" type="button">Following</button>
+            </div>
+            <div class="person-row">
+              <div class="person">
+                <div class="av">JB</div>
+                <div class="person-copy">
+                  <div class="nm">Jonah Betts</div>
+                  <div class="handle">@jonahb</div>
+                </div>
+              </div>
+              <div class="connection">27 mutual</div>
+              <button class="btn ghost" type="button">Following</button>
+            </div>
+          </div>
+        </section>
+
+        <div class="more">
+          Show 1,280 more followers
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8a6413" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </div>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

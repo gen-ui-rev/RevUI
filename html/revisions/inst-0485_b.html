@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lingua Ladder — Course Progress</title>
+<style>
+  html, body {
+    margin: 0;
+    padding: 0;
+  }
+  body {
+    background: #EFEFEC;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 40px 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .screen {
+    width: 390px;
+    height: 560px;
+    box-sizing: border-box;
+    padding: 28px 24px;
+    background: #EFEFEC;
+  }
+  .card {
+    border: 1px solid #DCDCD8;
+    background: #FFFFFF;
+  }
+  .hero {
+    display: block;
+    width: 100%;
+    height: 96px;
+    object-fit: cover;
+    background: #D8D8D4;
+  }
+  .body {
+    padding: 20px;
+  }
+  .eyebrow {
+    font-size: 12px;
+    line-height: 16px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #7A7A74;
+    margin: 0;
+  }
+  .title {
+    font-size: 19px;
+    line-height: 24px;
+    font-weight: 600;
+    color: #16161A;
+    margin: 6px 0 0;
+  }
+  .ringrow {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin-top: 20px;
+  }
+  .ring {
+    display: block;
+    flex: 0 0 auto;
+  }
+  .ring-label {
+    font-size: 20px;
+    font-weight: 600;
+    fill: #16161A;
+  }
+  .facts {
+    min-width: 0;
+  }
+  .facts .lead {
+    font-size: 15px;
+    line-height: 20px;
+    font-weight: 600;
+    color: #16161A;
+    margin: 0;
+  }
+  .facts .sub {
+    font-size: 13px;
+    line-height: 18px;
+    color: #7A7A74;
+    margin: 4px 0 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .facts .sub + .sub {
+    margin-top: 2px;
+  }
+  .rule {
+    border: 0;
+    border-top: 1px solid #E6E6E2;
+    margin: 20px 0 0;
+  }
+  .step {
+    display: flex;
+    align-items: stretch;
+    gap: 12px;
+  }
+  .rail {
+    flex: 0 0 18px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .seg {
+    width: 2px;
+    flex: 1 1 auto;
+    background: #6D28D9;
+  }
+  .seg.blank {
+    background: transparent;
+  }
+  .seg.pending {
+    background: #CDBFF0;
+  }
+  .marker {
+    flex: 0 0 auto;
+    width: 18px;
+    height: 18px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #FFFFFF;
+  }
+  .marker.done {
+    background: #6D28D9;
+  }
+  .marker.current {
+    border: 2px solid #6D28D9;
+  }
+  .marker.locked {
+    border: 1px solid #CFCFC9;
+  }
+  .dot {
+    width: 6px;
+    height: 6px;
+    background: #6D28D9;
+  }
+  .step-main {
+    flex: 1 1 auto;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 0;
+  }
+  .unit-name {
+    flex: 1 1 auto;
+    min-width: 0;
+    font-size: 14px;
+    line-height: 18px;
+    color: #16161A;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .unit-name.muted {
+    color: #9A9A94;
+  }
+  .unit-meta {
+    flex: 0 0 auto;
+    font-size: 12px;
+    line-height: 18px;
+    color: #7A7A74;
+  }
+  .step.active .rail .seg.top {
+    flex: 0 0 12px;
+  }
+  .step-main.panel {
+    display: block;
+    padding: 12px;
+    background: #F4F0FB;
+    border-left: 2px solid #6D28D9;
+  }
+  .panel-name {
+    display: block;
+    font-size: 14px;
+    line-height: 18px;
+    font-weight: 600;
+    color: #16161A;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .panel-status {
+    display: block;
+    margin-top: 3px;
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 600;
+    color: #6D28D9;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .panel-cta {
+    display: inline-flex;
+    align-items: center;
+    height: 32px;
+    margin-top: 8px;
+    padding: 0 16px;
+    border: 0;
+    background: #6D28D9;
+    color: #FFFFFF;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+</style>
+</head>
+<body>
+  <div class="screen">
+    <div class="card">
+      <img class="hero" src="https://loremflickr.com/340/96/library?lock=6621" width="340" height="96" alt="Learners reading at a long table in a library">
+      <div class="body">
+        <p class="eyebrow">Spanish B1 · Week 5</p>
+        <h1 class="title">Everyday Conversation</h1>
+
+        <div class="ringrow">
+          <svg class="ring" width="92" height="92" viewBox="0 0 92 92" role="img" aria-label="68 percent of the course complete">
+            <circle cx="46" cy="46" r="42" fill="none" stroke="#E6E6E2" stroke-width="8"></circle>
+            <circle cx="46" cy="46" r="42" fill="none" stroke="#6D28D9" stroke-width="8"
+                    stroke-dasharray="179.4 84.5" transform="rotate(-90 46 46)"></circle>
+            <text class="ring-label" x="46" y="53" text-anchor="middle">68%</text>
+          </svg>
+          <div class="facts">
+            <p class="lead">8 of 12 units complete</p>
+            <p class="sub">Estimated finish April 2, 2025</p>
+            <p class="sub">Weekly goal · 3 of 5 lessons</p>
+          </div>
+        </div>
+
+        <hr class="rule">
+
+        <div class="step">
+          <span class="rail" aria-hidden="true">
+            <span class="seg top blank"></span>
+            <span class="marker done">
+              <svg width="10" height="10" viewBox="0 0 10 10"><path d="M1.5 5.2 L4 7.6 L8.5 2.6" fill="none" stroke="#FFFFFF" stroke-width="1.6"></path></svg>
+            </span>
+            <span class="seg"></span>
+          </span>
+          <div class="step-main">
+            <span class="unit-name">Unit 6 · Talking about the past</span>
+            <span class="unit-meta">Done</span>
+          </div>
+        </div>
+
+        <div class="step active">
+          <span class="rail" aria-hidden="true">
+            <span class="seg top"></span>
+            <span class="marker current"><span class="dot"></span></span>
+            <span class="seg pending"></span>
+          </span>
+          <div class="step-main panel">
+            <span class="panel-name">Unit 7 · Reported speech</span>
+            <span class="panel-status">In progress · 4 of 6 lessons</span>
+            <button class="panel-cta" type="button">Resume lesson 5</button>
+          </div>
+        </div>
+
+        <div class="step">
+          <span class="rail" aria-hidden="true">
+            <span class="seg top pending"></span>
+            <span class="marker locked"></span>
+            <span class="seg blank"></span>
+          </span>
+          <div class="step-main">
+            <span class="unit-name muted">Unit 8 · The subjunctive</span>
+            <span class="unit-meta">Opens Mar 17</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

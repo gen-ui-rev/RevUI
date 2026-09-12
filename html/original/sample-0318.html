@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Filter and Sort Stays</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #d9dce1;
+      color: #202124;
+      font-family: 'Roboto', system-ui, sans-serif;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      color: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #f1f2f4;
+      box-shadow: 0 8px 24px rgba(26, 30, 36, 0.14);
+    }
+
+    .topbar {
+      display: grid;
+      grid-template-columns: 32px 1fr auto;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 16px;
+      background: #ffffff;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    .icon-button {
+      width: 28px;
+      height: 28px;
+      padding: 2px;
+      border: 0;
+      background: transparent;
+      display: grid;
+      place-items: center;
+    }
+
+    .topbar h1 {
+      margin: 0;
+      font-size: 20px;
+      line-height: 24px;
+      font-weight: 700;
+    }
+
+    .reset-button {
+      padding: 4px 0;
+      border: 0;
+      background: transparent;
+      color: #b31569;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 500;
+    }
+
+    .trip-context {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 12px;
+      padding: 9px 16px 10px;
+      background: #ffffff;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    .trip-copy {
+      min-width: 0;
+    }
+
+    .trip-title {
+      margin: 0;
+      overflow: hidden;
+      color: #202124;
+      font-size: 15px;
+      line-height: 20px;
+      font-weight: 500;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .trip-meta {
+      margin: 1px 0 0;
+      color: #69707a;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .result-count {
+      color: #b31569;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .tabbar {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      background: #ffffff;
+      border-bottom: 1px solid #dfe1e5;
+    }
+
+    .tab {
+      position: relative;
+      padding: 11px 4px 10px;
+      border: 0;
+      background: #ffffff;
+      color: #5f6368;
+      font-size: 13px;
+      line-height: 20px;
+      font-weight: 500;
+      text-align: center;
+    }
+
+    .tab.active {
+      color: #b31569;
+    }
+
+    .tab.active::after {
+      position: absolute;
+      right: 10px;
+      bottom: 0;
+      left: 10px;
+      height: 3px;
+      background: #c21875;
+      content: "";
+    }
+
+    .filters {
+      flex: 1;
+      padding: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .filter-card {
+      background: #ffffff;
+      border: 1px solid #e2e4e8;
+    }
+
+    .section-title {
+      margin: 0;
+      padding: 9px 12px 7px;
+      color: #202124;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 700;
+    }
+
+    .option-row {
+      min-height: 32px;
+      padding: 5px 12px;
+      display: grid;
+      grid-template-columns: 18px 1fr;
+      align-items: center;
+      gap: 10px;
+      border-top: 1px solid #f0f1f3;
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .selection-box {
+      width: 16px;
+      height: 16px;
+      display: grid;
+      place-items: center;
+      border: 1px solid #a9adb4;
+      background: #ffffff;
+    }
+
+    .selection-box.selected {
+      border-color: #c21875;
+      background: #c21875;
+    }
+
+    .selection-box svg {
+      width: 12px;
+      height: 12px;
+      stroke: #ffffff;
+    }
+
+    .price-track {
+      position: relative;
+      height: 8px;
+      margin: 8px 14px 7px;
+      background: #d9dce1;
+    }
+
+    .price-track::before {
+      position: absolute;
+      top: 0;
+      right: 68px;
+      bottom: 0;
+      left: 38px;
+      background: #c21875;
+      content: "";
+    }
+
+    .price-handle {
+      position: absolute;
+      top: -5px;
+      width: 18px;
+      height: 18px;
+      border: 2px solid #c21875;
+      background: #ffffff;
+    }
+
+    .price-handle.low {
+      left: 30px;
+    }
+
+    .price-handle.high {
+      right: 59px;
+    }
+
+    .price-inputs {
+      padding: 2px 12px 10px;
+      display: grid;
+      grid-template-columns: 1fr 18px 1fr;
+      align-items: end;
+      gap: 8px;
+    }
+
+    .price-field {
+      padding: 5px 8px;
+      border: 1px solid #c9ccd1;
+      background: #ffffff;
+    }
+
+    .field-label {
+      display: block;
+      color: #70757a;
+      font-size: 12px;
+      line-height: 14px;
+    }
+
+    .field-value {
+      display: block;
+      margin-top: 1px;
+      font-size: 14px;
+      line-height: 18px;
+      font-weight: 500;
+    }
+
+    .range-divider {
+      padding-bottom: 13px;
+      color: #80868b;
+      font-size: 14px;
+      text-align: center;
+    }
+
+    .choice-grid {
+      padding: 0 12px 10px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .choice {
+      min-height: 34px;
+      padding: 6px 11px;
+      border: 1px solid #c9ccd1;
+      background: #ffffff;
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .choice.selected {
+      border-color: #c21875;
+      background: #fbe7f2;
+      color: #9d125b;
+      font-weight: 500;
+    }
+
+    .amenity-row {
+      min-height: 32px;
+      padding: 5px 12px;
+      display: grid;
+      grid-template-columns: 1fr 18px;
+      align-items: center;
+      gap: 12px;
+      border-top: 1px solid #f0f1f3;
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .checkbox {
+      width: 17px;
+      height: 17px;
+      display: grid;
+      place-items: center;
+      border: 1px solid #a9adb4;
+      background: #ffffff;
+    }
+
+    .checkbox.checked {
+      border-color: #c21875;
+      background: #c21875;
+    }
+
+    .checkbox svg {
+      width: 12px;
+      height: 12px;
+      fill: none;
+      stroke: #ffffff;
+      stroke-width: 2.2;
+    }
+
+    .rating-options {
+      padding: 0 12px 10px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+    }
+
+    .rating {
+      padding: 7px 2px;
+      border: 1px solid #c9ccd1;
+      background: #ffffff;
+      font-size: 14px;
+      line-height: 20px;
+      text-align: center;
+    }
+
+    .rating.selected {
+      border-color: #c21875;
+      background: #fbe7f2;
+      color: #9d125b;
+      font-weight: 500;
+    }
+
+    .actionbar {
+      padding: 10px 12px;
+      display: grid;
+      grid-template-columns: 92px 1fr;
+      gap: 8px;
+      background: #ffffff;
+      border-top: 1px solid #dfe1e5;
+    }
+
+    .action {
+      min-height: 48px;
+      padding: 11px 12px;
+      border: 1px solid #b8bcc2;
+      background: #ffffff;
+      font-size: 15px;
+      line-height: 24px;
+      font-weight: 500;
+    }
+
+    .action.primary {
+      border-color: #c21875;
+      background: #c21875;
+      color: #ffffff;
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <button class="icon-button" type="button" aria-label="Close filter and sort">
+        <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
+          <path d="M6 6L18 18M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"/>
+        </svg>
+      </button>
+      <h1>Filter &amp; sort stays</h1>
+      <button class="reset-button" type="button">Reset</button>
+    </header>
+
+    <section class="trip-context" aria-label="Current stay search">
+      <div class="trip-copy">
+        <p class="trip-title">North Harbor, Bellweather</p>
+        <p class="trip-meta">Jun 18–21 · 2 guests · 1 room</p>
+      </div>
+      <div class="result-count">128 stays</div>
+    </section>
+
+    <nav class="tabbar" aria-label="Filter sections">
+      <button class="tab active" type="button">Sort</button>
+      <button class="tab" type="button">Price</button>
+      <button class="tab" type="button">Type</button>
+      <button class="tab" type="button">Amenities</button>
+    </nav>
+
+    <main class="filters">
+      <section class="filter-card" aria-labelledby="sort-title">
+        <h2 class="section-title" id="sort-title">Sort by</h2>
+        <div class="option-row">
+          <span class="selection-box selected" aria-hidden="true">
+            <svg viewBox="0 0 16 16">
+              <path d="M3 8.5L6.5 12L13 4.5" fill="none" stroke-width="2"/>
+            </svg>
+          </span>
+          <span>Recommended</span>
+        </div>
+        <div class="option-row">
+          <span class="selection-box" aria-hidden="true"></span>
+          <span>Price: low to high</span>
+        </div>
+        <div class="option-row">
+          <span class="selection-box" aria-hidden="true"></span>
+          <span>Guest rating</span>
+        </div>
+      </section>
+
+      <section class="filter-card" aria-labelledby="price-title">
+        <h2 class="section-title" id="price-title">Nightly price</h2>
+        <div class="price-track" aria-label="Price range from 90 dollars to 310 dollars">
+          <span class="price-handle low"></span>
+          <span class="price-handle high"></span>
+        </div>
+        <div class="price-inputs">
+          <div class="price-field">
+            <span class="field-label">Minimum</span>
+            <span class="field-value">$90</span>
+          </div>
+          <span class="range-divider">to</span>
+          <div class="price-field">
+            <span class="field-label">Maximum</span>
+            <span class="field-value">$310</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="filter-card" aria-labelledby="type-title">
+        <h2 class="section-title" id="type-title">Property type</h2>
+        <div class="choice-grid">
+          <button class="choice selected" type="button">Hotel</button>
+          <button class="choice" type="button">Apartment</button>
+          <button class="choice" type="button">Guesthouse</button>
+          <button class="choice selected" type="button">Resort</button>
+          <button class="choice" type="button">Cabin</button>
+        </div>
+      </section>
+
+      <section class="filter-card" aria-labelledby="amenities-title">
+        <h2 class="section-title" id="amenities-title">Amenities</h2>
+        <div class="amenity-row">
+          <span>Free cancellation</span>
+          <span class="checkbox checked" aria-hidden="true">
+            <svg viewBox="0 0 16 16">
+              <path d="M3 8.5L6.5 12L13 4.5"/>
+            </svg>
+          </span>
+        </div>
+        <div class="amenity-row">
+          <span>Breakfast included</span>
+          <span class="checkbox" aria-hidden="true"></span>
+        </div>
+        <div class="amenity-row">
+          <span>Parking available</span>
+          <span class="checkbox checked" aria-hidden="true">
+            <svg viewBox="0 0 16 16">
+              <path d="M3 8.5L6.5 12L13 4.5"/>
+            </svg>
+          </span>
+        </div>
+      </section>
+
+      <section class="filter-card" aria-labelledby="rating-title">
+        <h2 class="section-title" id="rating-title">Guest rating</h2>
+        <div class="rating-options">
+          <button class="rating" type="button">Any</button>
+          <button class="rating" type="button">7+</button>
+          <button class="rating selected" type="button">8+</button>
+          <button class="rating" type="button">9+</button>
+        </div>
+      </section>
+    </main>
+
+    <footer class="actionbar">
+      <button class="action" type="button">Clear all</button>
+      <button class="action primary" type="button">Show 128 stays</button>
+    </footer>
+  </div>
+</body>
+</html>

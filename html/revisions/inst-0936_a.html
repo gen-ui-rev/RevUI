@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Workout Details</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #e6e9e8;
+      color: #162321;
+      font-family: 'Source Sans 3', system-ui, sans-serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    svg {
+      display: block;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #fbfcfb;
+      border: 1px solid #d6dcda;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 11px 16px;
+      border-bottom: 1px solid #dce2e0;
+      background: #fbfcfb;
+    }
+
+    .topbar-title {
+      flex: 1;
+      margin: 0;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 20px;
+      line-height: 1.2;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    .icon-button {
+      width: 36px;
+      height: 36px;
+      padding: 7px;
+      border: 0;
+      background: transparent;
+      color: #263633;
+      display: grid;
+      place-items: center;
+    }
+
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+    }
+
+    .topbar-spacer {
+      width: 36px;
+      flex: 0 0 36px;
+    }
+
+    .main {
+      flex: 1;
+      min-height: 0;
+      padding: 0 20px;
+    }
+
+    .workout-hero {
+      display: grid;
+      grid-template-columns: 110px minmax(0, 1fr);
+      gap: 15px;
+      align-items: center;
+      margin-top: 14px;
+    }
+
+    .workout-art {
+      width: 110px;
+      height: 110px;
+      border-radius: 18px;
+      display: grid;
+      place-items: center;
+      background: #d9f0ec;
+      color: #087e72;
+      border: 1px solid #b9ded8;
+    }
+
+    .workout-art svg {
+      width: 72px;
+      height: 72px;
+    }
+
+    .program-name {
+      margin: 0 0 4px;
+      color: #087e72;
+      font-size: 13px;
+      line-height: 1.2;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .workout-title {
+      margin: 0;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 25px;
+      line-height: 1.08;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+    }
+
+    .coach-name {
+      margin: 7px 0 0;
+      color: #61706d;
+      font-size: 14px;
+      line-height: 1.25;
+    }
+
+    .start-button {
+      width: 100%;
+      margin-top: 11px;
+      padding: 10px 16px;
+      border: 0;
+      border-radius: 13px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      background: #087e72;
+      color: #ffffff;
+      font-size: 16px;
+      line-height: 1.3;
+      font-weight: 600;
+    }
+
+    .workout-facts {
+      display: grid;
+      grid-template-columns: 76px 74px minmax(0, 1fr);
+      margin-top: 11px;
+      padding: 10px 0;
+      border-bottom: 1px solid #dce2e0;
+    }
+
+    .fact {
+      min-width: 0;
+      padding-right: 9px;
+    }
+
+    .fact + .fact {
+      padding-left: 10px;
+      border-left: 1px solid #dce2e0;
+    }
+
+    .fact-label {
+      display: block;
+      color: #7a8784;
+      font-size: 11px;
+      line-height: 1.15;
+      text-transform: uppercase;
+      letter-spacing: 0.45px;
+    }
+
+    .fact-value {
+      display: block;
+      margin-top: 2px;
+      color: #263633;
+      font-size: 13px;
+      line-height: 1.25;
+      font-weight: 600;
+    }
+
+    .plan-heading {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      padding: 12px 0 7px;
+    }
+
+    .section-title {
+      margin: 0;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 20px;
+      line-height: 1.2;
+      font-weight: 600;
+    }
+
+    .plan-note {
+      color: #687774;
+      font-size: 13px;
+      line-height: 1.25;
+    }
+
+    .exercise-list {
+      border-top: 1px solid #dce2e0;
+    }
+
+    .exercise-row {
+      display: grid;
+      grid-template-columns: 34px minmax(0, 1fr) auto;
+      gap: 11px;
+      align-items: center;
+      padding: 9px 0;
+      border-bottom: 1px solid #dce2e0;
+    }
+
+    .step-number {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: #e3f2ef;
+      color: #087e72;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 17px;
+      font-weight: 700;
+    }
+
+    .exercise-info {
+      min-width: 0;
+    }
+
+    .exercise-name {
+      margin: 0;
+      color: #1d2b29;
+      font-size: 15px;
+      line-height: 1.2;
+      font-weight: 600;
+    }
+
+    .exercise-cue {
+      margin: 2px 0 0;
+      color: #6a7875;
+      font-size: 12px;
+      line-height: 1.2;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .exercise-dose {
+      margin: 0;
+      padding-left: 8px;
+      color: #263633;
+      font-size: 13px;
+      line-height: 1.2;
+      font-weight: 600;
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .round-note {
+      margin: 9px 0 0;
+      padding: 8px 10px;
+      border-radius: 10px;
+      background: #f0f5f3;
+      color: #52615e;
+      font-size: 12px;
+      line-height: 1.3;
+      text-align: center;
+    }
+
+    .tabbar {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      padding: 8px 8px 9px;
+      border-top: 1px solid #d4dcda;
+      background: #fbfcfb;
+    }
+
+    .tab {
+      border: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      background: transparent;
+      color: #74817f;
+      font-size: 12px;
+      line-height: 1.2;
+    }
+
+    .tab svg {
+      width: 23px;
+      height: 23px;
+    }
+
+    .tab.active {
+      color: #087e72;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <button class="icon-button" aria-label="Go back">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M15 18l-6-6 6-6"></path>
+        </svg>
+      </button>
+
+      <h1 class="topbar-title">Workout details</h1>
+
+      <div class="topbar-actions">
+        <button class="icon-button" aria-label="Save workout">
+          <svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M7 4.5h10a1 1 0 0 1 1 1v15l-6-3.8-6 3.8v-15a1 1 0 0 1 1-1z"></path>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <main class="main">
+      <section class="workout-hero" aria-labelledby="workout-title-a">
+        <div class="workout-art" aria-hidden="true">
+          <svg viewBox="0 0 80 80" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M13 33v14"></path>
+            <path d="M20 28v24"></path>
+            <path d="M60 28v24"></path>
+            <path d="M67 33v14"></path>
+            <path d="M20 40h40"></path>
+            <circle cx="40" cy="19" r="6"></circle>
+            <path d="M40 25v14"></path>
+            <path d="M31 31l9 8 9-8"></path>
+            <path d="M40 39l-9 20"></path>
+            <path d="M40 39l9 20"></path>
+          </svg>
+        </div>
+
+        <div>
+          <p class="program-name">Full-body strength</p>
+          <h2 class="workout-title" id="workout-title-a">Strong in 20</h2>
+          <p class="coach-name">Led by Coach Mara</p>
+        </div>
+      </section>
+
+      <button class="start-button" aria-label="Start workout">
+        <svg viewBox="0 0 24 24" width="21" height="21" fill="currentColor" aria-hidden="true">
+          <path d="M8 5.7v12.6c0 .8.9 1.3 1.6.9l9.3-6.3c.6-.4.6-1.3 0-1.7L9.6 4.8C8.9 4.4 8 4.9 8 5.7z"></path>
+        </svg>
+        Start workout
+      </button>
+
+      <div class="workout-facts" aria-label="Workout facts">
+        <div class="fact">
+          <span class="fact-label">Time</span>
+          <span class="fact-value">20 min</span>
+        </div>
+        <div class="fact">
+          <span class="fact-label">Level</span>
+          <span class="fact-value">Moderate</span>
+        </div>
+        <div class="fact">
+          <span class="fact-label">Equipment</span>
+          <span class="fact-value">Dumbbells and mat</span>
+        </div>
+      </div>
+
+      <section aria-labelledby="plan-heading-a">
+        <div class="plan-heading">
+          <h2 class="section-title" id="plan-heading-a">Follow in order</h2>
+          <span class="plan-note">3 rounds</span>
+        </div>
+
+        <div class="exercise-list">
+          <article class="exercise-row">
+            <div class="step-number" aria-hidden="true">1</div>
+            <div class="exercise-info">
+              <h3 class="exercise-name">Bodyweight warm-up</h3>
+              <p class="exercise-cue">March, reach, then hinge slowly</p>
+            </div>
+            <p class="exercise-dose">2 min</p>
+          </article>
+
+          <article class="exercise-row">
+            <div class="step-number" aria-hidden="true">2</div>
+            <div class="exercise-info">
+              <h3 class="exercise-name">Goblet squat</h3>
+              <p class="exercise-cue">Keep your chest tall</p>
+            </div>
+            <p class="exercise-dose">10 reps</p>
+          </article>
+
+          <article class="exercise-row">
+            <div class="step-number" aria-hidden="true">3</div>
+            <div class="exercise-info">
+              <h3 class="exercise-name">Bent-over row</h3>
+              <p class="exercise-cue">Pull elbows toward your ribs</p>
+            </div>
+            <p class="exercise-dose">10 reps</p>
+          </article>
+
+          <article class="exercise-row">
+            <div class="step-number" aria-hidden="true">4</div>
+            <div class="exercise-info">
+              <h3 class="exercise-name">Reverse lunge</h3>
+              <p class="exercise-cue">Alternate sides with control</p>
+            </div>
+            <p class="exercise-dose">8 / side</p>
+          </article>
+
+          <article class="exercise-row">
+            <div class="step-number" aria-hidden="true">5</div>
+            <div class="exercise-info">
+              <h3 class="exercise-name">Dead bug</h3>
+              <p class="exercise-cue">Press your lower back down</p>
+            </div>
+            <p class="exercise-dose">10 reps</p>
+          </article>
+        </div>
+
+        <p class="round-note">Rest 45 seconds after step 5, then return to step 2.</p>
+      </section>
+    </main>
+
+    <nav class="tabbar" aria-label="Primary navigation">
+      <button class="tab">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M3.5 10.5L12 4l8.5 6.5"></path>
+          <path d="M5.5 9.5v10h13v-10"></path>
+          <path d="M9.5 19.5v-6h5v6"></path>
+        </svg>
+        <span>Home</span>
+      </button>
+
+      <button class="tab">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="10.5" cy="10.5" r="6.5"></circle>
+          <path d="M15.5 15.5L21 21"></path>
+        </svg>
+        <span>Explore</span>
+      </button>
+
+      <button class="tab active" aria-current="page">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M4 9v6"></path>
+          <path d="M8 6v12"></path>
+          <path d="M16 6v12"></path>
+          <path d="M20 9v6"></path>
+          <path d="M8 12h8"></path>
+        </svg>
+        <span>Train</span>
+      </button>
+
+      <button class="tab">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="8" r="3.5"></circle>
+          <path d="M5.5 20c.8-4 3-6 6.5-6s5.7 2 6.5 6"></path>
+        </svg>
+        <span>Profile</span>
+      </button>
+    </nav>
+  </div>
+</body>
+</html>

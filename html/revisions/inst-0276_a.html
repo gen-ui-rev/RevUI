@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vela Health Playlists</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 32px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #e9edec;
+      color: #172321;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    button {
+      font: inherit;
+      cursor: pointer;
+    }
+
+    .screen {
+      width: 1024px;
+      height: 768px;
+      display: flex;
+      background: #ffffff;
+      border: 1px solid #d8dfdd;
+    }
+
+    /* ---------- sidebar ---------- */
+    .sidebar {
+      width: 224px;
+      flex: 0 0 224px;
+      display: flex;
+      flex-direction: column;
+      padding: 20px 14px 18px;
+      border-right: 1px solid #e2e7e6;
+      background: #fbfcfc;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 0 8px 16px;
+      font-size: 15px;
+      line-height: 20px;
+      font-weight: 700;
+      letter-spacing: -0.2px;
+    }
+
+    .brand-mark {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 26px;
+      height: 26px;
+      border-radius: 8px;
+      background: #0c5f58;
+      color: #ffffff;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .side-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      padding: 9px 10px;
+      border: 0;
+      border-radius: 10px;
+      background: transparent;
+      color: #4c5d5a;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 600;
+      text-align: left;
+    }
+
+    .nav-item svg {
+      width: 19px;
+      height: 19px;
+      fill: none;
+      stroke: currentColor;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-width: 1.8;
+    }
+
+    .nav-item.active {
+      background: #e5f4f1;
+      color: #087d73;
+    }
+
+    .side-label {
+      margin: 20px 10px 6px;
+      color: #8a9895;
+      font-size: 11px;
+      line-height: 15px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+    }
+
+    .side-links {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+
+    .side-link {
+      padding: 7px 10px;
+      border: 0;
+      border-radius: 9px;
+      background: transparent;
+      color: #52645f;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 500;
+      text-align: left;
+    }
+
+    .side-note {
+      margin-top: auto;
+      padding: 12px;
+      border: 1px solid #cfe6e2;
+      border-radius: 12px;
+      background: #f1f9f7;
+    }
+
+    .side-note-label {
+      margin: 0 0 3px;
+      color: #087d73;
+      font-size: 11px;
+      line-height: 15px;
+      font-weight: 700;
+      letter-spacing: 0.7px;
+      text-transform: uppercase;
+    }
+
+    .side-note-text {
+      margin: 0;
+      color: #26403b;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 600;
+    }
+
+    /* ---------- content ---------- */
+    .content {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 18px 28px;
+      background: #0c5f58;
+      color: #ffffff;
+    }
+
+    .topbar h1 {
+      margin: 0;
+      font-size: 27px;
+      line-height: 34px;
+      letter-spacing: -0.5px;
+      font-weight: 700;
+    }
+
+    .topbar-sub {
+      margin: 2px 0 0;
+      color: #b7dcd7;
+      font-size: 13px;
+      line-height: 18px;
+    }
+
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .ghost-button {
+      padding: 8px 14px;
+      border: 1px solid rgba(255, 255, 255, 0.45);
+      border-radius: 10px;
+      background: transparent;
+      color: #ffffff;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 600;
+    }
+
+    .new-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 8px 14px;
+      border: 1px solid #ffffff;
+      border-radius: 10px;
+      background: #ffffff;
+      color: #0c5f58;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 700;
+    }
+
+    .new-button svg {
+      width: 15px;
+      height: 15px;
+    }
+
+    main {
+      flex: 1;
+      min-height: 0;
+      padding: 20px 28px;
+    }
+
+    .playlist-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      padding: 17px 20px;
+      border: 1px solid #a9d4cf;
+      border-radius: 14px;
+      background: #eff9f7;
+    }
+
+    .eyebrow {
+      margin: 0 0 4px;
+      color: #087d73;
+      font-size: 11px;
+      line-height: 15px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+    }
+
+    .playlist-card h2 {
+      margin: 0;
+      color: #132824;
+      font-size: 22px;
+      line-height: 28px;
+      font-weight: 700;
+      letter-spacing: -0.25px;
+    }
+
+    .playlist-card p.desc {
+      margin: 3px 0 0;
+      color: #526461;
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .card-right {
+      display: flex;
+      align-items: center;
+      gap: 26px;
+      flex: 0 0 auto;
+    }
+
+    .card-stats {
+      display: flex;
+      gap: 24px;
+    }
+
+    .stat-value {
+      margin: 0;
+      color: #16302c;
+      font-size: 18px;
+      line-height: 24px;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .stat-label {
+      margin: 0;
+      color: #6b7976;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .play-all {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      border: 1px solid #087d73;
+      border-radius: 12px;
+      background: #087d73;
+      color: #ffffff;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 700;
+    }
+
+    .play-all svg {
+      width: 15px;
+      height: 15px;
+      fill: currentColor;
+    }
+
+    .section-heading {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin: 18px 0 0;
+    }
+
+    .section-heading h3 {
+      margin: 0;
+      font-size: 17px;
+      line-height: 24px;
+      font-weight: 700;
+    }
+
+    .section-heading span {
+      color: #687774;
+      font-size: 13px;
+      line-height: 18px;
+    }
+
+    .track-head,
+    .track {
+      display: grid;
+      grid-template-columns: 34px minmax(0, 1fr) 156px 130px 56px;
+      column-gap: 12px;
+      align-items: center;
+      padding: 8px 10px;
+    }
+
+    .track-head {
+      padding-top: 6px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid #dfe5e4;
+      color: #8a9895;
+      font-size: 11px;
+      line-height: 14px;
+      font-weight: 700;
+      letter-spacing: 0.7px;
+      text-transform: uppercase;
+    }
+
+    .group-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 12px 0 0;
+      padding: 7px 10px;
+      border-radius: 8px;
+      background: #f1f6f5;
+    }
+
+    .track-group:first-of-type .group-row {
+      margin-top: 6px;
+    }
+
+    .group-name {
+      color: #0c5f58;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 700;
+      letter-spacing: 0.7px;
+      text-transform: uppercase;
+    }
+
+    .group-time {
+      color: #596966;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .track-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .track {
+      border-bottom: 1px solid #eef2f1;
+    }
+
+    .track-number {
+      color: #7a8885;
+      font-size: 13px;
+      line-height: 20px;
+      text-align: center;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .track-title {
+      margin: 0;
+      overflow: hidden;
+      color: #1a2926;
+      font-size: 15px;
+      line-height: 20px;
+      font-weight: 600;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .track-coach {
+      overflow: hidden;
+      color: #526461;
+      font-size: 13px;
+      line-height: 20px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .focus-pill {
+      justify-self: start;
+      max-width: 100%;
+      overflow: hidden;
+      padding: 3px 9px;
+      border-radius: 999px;
+      background: #edf2f1;
+      color: #4d5f5c;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 600;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .track-time {
+      color: #596966;
+      font-size: 13px;
+      line-height: 20px;
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .ta-r {
+      text-align: right;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <aside class="sidebar">
+      <div class="brand">
+        <span class="brand-mark">V</span>
+        Vela Health
+      </div>
+
+      <nav class="side-nav" aria-label="Primary navigation">
+        <button class="nav-item" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 10.5 12 4l8 6.5V20H4Z"/>
+            <path d="M9.5 20v-6h5v6"/>
+          </svg>
+          <span>Today</span>
+        </button>
+        <button class="nav-item" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="4" y="4" width="16" height="16" rx="3"/>
+            <path d="M8 9h8M8 13h8M8 17h5"/>
+          </svg>
+          <span>Programs</span>
+        </button>
+        <button class="nav-item active" type="button" aria-current="page">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M5 6h10M5 12h10M5 18h7"/>
+            <path d="M18 10v8M18 18l3-2"/>
+          </svg>
+          <span>Playlists</span>
+        </button>
+        <button class="nav-item" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="8" r="3.5"/>
+            <path d="M5.5 20c.6-4 2.8-6 6.5-6s5.9 2 6.5 6"/>
+          </svg>
+          <span>Profile</span>
+        </button>
+      </nav>
+
+      <p class="side-label">Your playlists</p>
+      <div class="side-links">
+        <button class="side-link" type="button">Joint-Friendly Strength</button>
+        <button class="side-link" type="button">Morning Mobility</button>
+        <button class="side-link" type="button">Post-Op Knee Care</button>
+        <button class="side-link" type="button">Balance Basics</button>
+      </div>
+
+      <div class="side-note">
+        <p class="side-note-label">Next session</p>
+        <p class="side-note-text">Thursday · 7:00 AM</p>
+      </div>
+    </aside>
+
+    <div class="content">
+      <header class="topbar">
+        <div>
+          <h1>Playlists</h1>
+          <p class="topbar-sub">12 playlists · Last updated today</p>
+        </div>
+        <div class="topbar-actions">
+          <button class="ghost-button" type="button">Import session</button>
+          <button class="new-button" type="button">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+            </svg>
+            New playlist
+          </button>
+        </div>
+      </header>
+
+      <main>
+        <section class="playlist-card" aria-labelledby="selected-playlist">
+          <div>
+            <p class="eyebrow">Selected playlist</p>
+            <h2 id="selected-playlist">Joint-Friendly Strength</h2>
+            <p class="desc">Low-impact full-body training, sequenced by session phase.</p>
+          </div>
+          <div class="card-right">
+            <div class="card-stats">
+              <div>
+                <p class="stat-value">8</p>
+                <p class="stat-label">Tracks</p>
+              </div>
+              <div>
+                <p class="stat-value">42</p>
+                <p class="stat-label">Minutes</p>
+              </div>
+              <div>
+                <p class="stat-value">3</p>
+                <p class="stat-label">Phases</p>
+              </div>
+            </div>
+            <button class="play-all" type="button">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M8 5.8v12.4c0 .8.9 1.3 1.6.8l9-6.2c.6-.4.6-1.2 0-1.6l-9-6.2C8.9 4.5 8 5 8 5.8Z"/>
+              </svg>
+              Play all
+            </button>
+          </div>
+        </section>
+
+        <section aria-labelledby="tracks-heading">
+          <div class="section-heading">
+            <h3 id="tracks-heading">Tracks by session phase</h3>
+            <span>42 min total · 4 coaches</span>
+          </div>
+
+          <div class="track-head">
+            <span>#</span>
+            <span>Track</span>
+            <span>Coach</span>
+            <span>Focus</span>
+            <span class="ta-r">Time</span>
+          </div>
+
+          <div class="track-group">
+            <div class="group-row">
+              <span class="group-name">Warm-up · 2 tracks</span>
+              <span class="group-time">8:49</span>
+            </div>
+            <ol class="track-list">
+              <li class="track">
+                <span class="track-number">1</span>
+                <p class="track-title">Warm-Up Mobility</p>
+                <span class="track-coach">Mira Cole</span>
+                <span class="focus-pill">Mobility</span>
+                <span class="track-time">4:12</span>
+              </li>
+              <li class="track">
+                <span class="track-number">2</span>
+                <p class="track-title">Balance and Reach</p>
+                <span class="track-coach">Tessa Ward</span>
+                <span class="focus-pill">Balance</span>
+                <span class="track-time">4:37</span>
+              </li>
+            </ol>
+          </div>
+
+          <div class="track-group">
+            <div class="group-row">
+              <span class="group-name">Strength block · 4 tracks</span>
+              <span class="group-time">21:53</span>
+            </div>
+            <ol class="track-list">
+              <li class="track">
+                <span class="track-number">3</span>
+                <p class="track-title">Supported Squat Flow</p>
+                <span class="track-coach">Evan Hale</span>
+                <span class="focus-pill">Lower body</span>
+                <span class="track-time">5:26</span>
+              </li>
+              <li class="track">
+                <span class="track-number">4</span>
+                <p class="track-title">Standing Core Control</p>
+                <span class="track-coach">Mira Cole</span>
+                <span class="focus-pill">Core</span>
+                <span class="track-time">4:48</span>
+              </li>
+              <li class="track">
+                <span class="track-number">5</span>
+                <p class="track-title">Upper-Body Endurance</p>
+                <span class="track-coach">Noah Brenner</span>
+                <span class="focus-pill">Strength</span>
+                <span class="track-time">6:05</span>
+              </li>
+              <li class="track">
+                <span class="track-number">6</span>
+                <p class="track-title">Glute Stability Set</p>
+                <span class="track-coach">Evan Hale</span>
+                <span class="focus-pill">Lower body</span>
+                <span class="track-time">5:34</span>
+              </li>
+            </ol>
+          </div>
+
+          <div class="track-group">
+            <div class="group-row">
+              <span class="group-name">Cooldown · 2 tracks</span>
+              <span class="group-time">11:33</span>
+            </div>
+            <ol class="track-list">
+              <li class="track">
+                <span class="track-number">7</span>
+                <p class="track-title">Slow Strength Finisher</p>
+                <span class="track-coach">Noah Brenner</span>
+                <span class="focus-pill">Full body</span>
+                <span class="track-time">6:14</span>
+              </li>
+              <li class="track">
+                <span class="track-number">8</span>
+                <p class="track-title">Recovery Stretch</p>
+                <span class="track-coach">Tessa Ward</span>
+                <span class="focus-pill">Cooldown</span>
+                <span class="track-time">5:19</span>
+              </li>
+            </ol>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+</body>
+</html>

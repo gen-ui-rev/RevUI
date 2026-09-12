@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit Rotating Shift Plan</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #e5e9e9;
+      color: #183033;
+      font-family: 'Source Sans 3', system-ui, sans-serif;
+    }
+
+    button,
+    input,
+    textarea,
+    select {
+      font: inherit;
+      color: inherit;
+    }
+
+    .screen {
+      width: 1024px;
+      height: 768px;
+      padding: 38px 52px;
+      background: #f3f5f5;
+    }
+
+    .editor {
+      width: 100%;
+      background: #ffffff;
+      border: 1px solid #b9c6c8;
+      border-top: 5px solid #10b9cb;
+      box-shadow: 0 8px 24px rgba(24, 48, 51, 0.08);
+    }
+
+    .editor-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 30px;
+      padding: 20px 26px;
+      border-bottom: 1px solid #d4dddd;
+    }
+
+    .heading-group {
+      display: grid;
+      grid-template-columns: 54px 1fr;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .header-glyph {
+      width: 54px;
+      height: 54px;
+      display: grid;
+      place-items: center;
+      color: #087f8c;
+      background: #e9f9fb;
+      border: 1px solid #9edee5;
+    }
+
+    .header-glyph svg {
+      width: 30px;
+      height: 30px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.7;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    h1 {
+      margin: 0;
+      color: #102c30;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 29px;
+      line-height: 1.08;
+      font-weight: 700;
+    }
+
+    .header-meta {
+      margin: 5px 0 0;
+      color: #617578;
+      font-size: 14px;
+      line-height: 1.3;
+    }
+
+    .status {
+      padding: 7px 11px;
+      border: 1px solid #a9d9de;
+      background: #edf9fa;
+      color: #08717c;
+      font-size: 13px;
+      line-height: 1.2;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    form {
+      padding: 22px 26px 24px;
+    }
+
+    .field-label,
+    legend {
+      display: block;
+      margin: 0 0 7px;
+      padding: 0;
+      color: #304c50;
+      font-size: 14px;
+      line-height: 1.2;
+      font-weight: 600;
+    }
+
+    fieldset {
+      min-width: 0;
+      margin: 0 0 19px;
+      padding: 0;
+      border: 0;
+    }
+
+    .cycle-options {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+
+    .cycle-option {
+      position: relative;
+    }
+
+    .cycle-option input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .cycle-option label {
+      display: block;
+      min-height: 76px;
+      padding: 12px 14px;
+      border: 1px solid #aab9bb;
+      background: #ffffff;
+      cursor: default;
+    }
+
+    .cycle-name {
+      display: block;
+      color: #243f43;
+      font-size: 15px;
+      line-height: 1.2;
+      font-weight: 600;
+    }
+
+    .cycle-detail {
+      display: block;
+      margin-top: 5px;
+      color: #64777a;
+      font-size: 13px;
+      line-height: 1.25;
+    }
+
+    .cycle-option input:checked + label {
+      border: 2px solid #0da8b9;
+      padding: 11px 13px;
+      background: #e9f9fb;
+      box-shadow: inset 4px 0 0 #0da8b9;
+    }
+
+    .cycle-option input:checked + label .cycle-name {
+      color: #076f7a;
+    }
+
+    .summary {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 24px;
+      margin-bottom: 20px;
+      padding: 18px 20px;
+      border: 1px solid #80cbd3;
+      border-left: 6px solid #10b9cb;
+      background: #effafb;
+    }
+
+    .summary-kicker {
+      display: block;
+      margin-bottom: 2px;
+      color: #4d6c70;
+      font-size: 13px;
+      line-height: 1.2;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .summary-title {
+      display: block;
+      color: #13363a;
+      font-size: 17px;
+      line-height: 1.25;
+      font-weight: 600;
+    }
+
+    .summary-value {
+      color: #076f7a;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 31px;
+      line-height: 1;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .detail-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1.12fr;
+      gap: 16px;
+      align-items: start;
+    }
+
+    .time-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .input-box {
+      width: 100%;
+      padding: 10px 11px;
+      background: #ffffff;
+      border: 1px solid #9fb0b2;
+      border-radius: 0;
+      font-size: 15px;
+      line-height: 1.2;
+      outline: none;
+    }
+
+    .help-copy {
+      margin: 6px 0 0;
+      color: #667a7d;
+      font-size: 12px;
+      line-height: 1.3;
+    }
+
+    textarea.input-box {
+      display: block;
+      min-height: 68px;
+      resize: none;
+      line-height: 1.35;
+    }
+
+    .actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 21px;
+      padding-top: 18px;
+      border-top: 1px solid #d4dddd;
+    }
+
+    .button {
+      min-width: 132px;
+      padding: 11px 18px;
+      border-radius: 0;
+      font-size: 15px;
+      line-height: 1.2;
+      font-weight: 600;
+      cursor: default;
+    }
+
+    .button-secondary {
+      border: 1px solid #9fb0b2;
+      background: #ffffff;
+      color: #344f53;
+    }
+
+    .button-primary {
+      min-width: 168px;
+      border: 1px solid #079aaa;
+      background: #10b9cb;
+      color: #062f34;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <section class="editor" aria-labelledby="edit-title">
+      <header class="editor-header">
+        <div class="heading-group">
+          <div class="header-glyph" aria-hidden="true">
+            <svg viewBox="0 0 32 32">
+              <path d="M20.5 5.5a11 11 0 1 0 6 18.8A12 12 0 0 1 20.5 5.5Z"></path>
+              <path d="M8.5 23.5h7"></path>
+              <path d="M12 20v7"></path>
+            </svg>
+          </div>
+          <div>
+            <h1 id="edit-title">Edit rotating shift plan</h1>
+            <p class="header-meta">Operations team · Cycle begins May 19, 2025</p>
+          </div>
+        </div>
+        <span class="status">Active plan</span>
+      </header>
+
+      <form>
+        <fieldset>
+          <legend>Shift cycle</legend>
+          <div class="cycle-options">
+            <div class="cycle-option">
+              <input id="cycle-four" name="cycle" type="radio" checked>
+              <label for="cycle-four">
+                <span class="cycle-name">4 days / 4 off</span>
+                <span class="cycle-detail">Four day shifts followed by four rest days</span>
+              </label>
+            </div>
+            <div class="cycle-option">
+              <input id="cycle-two" name="cycle" type="radio">
+              <label for="cycle-two">
+                <span class="cycle-name">2 days / 2 nights</span>
+                <span class="cycle-detail">Two day shifts, two nights, then four off</span>
+              </label>
+            </div>
+            <div class="cycle-option">
+              <input id="cycle-week" name="cycle" type="radio">
+              <label for="cycle-week">
+                <span class="cycle-name">Weekly rotation</span>
+                <span class="cycle-detail">Alternate day and night shifts each week</span>
+              </label>
+            </div>
+            <div class="cycle-option">
+              <input id="cycle-custom" name="cycle" type="radio">
+              <label for="cycle-custom">
+                <span class="cycle-name">Custom cycle</span>
+                <span class="cycle-detail">Build a cycle for your assigned roster</span>
+              </label>
+            </div>
+          </div>
+        </fieldset>
+
+        <div class="summary" aria-label="Scheduled sleep summary">
+          <div>
+            <span class="summary-kicker">Scheduled sleep</span>
+            <span class="summary-title">10:45 PM to 6:30 AM before each day shift</span>
+          </div>
+          <strong class="summary-value">7 hr 45 min</strong>
+        </div>
+
+        <div class="detail-grid">
+          <div>
+            <span class="field-label">Sleep window</span>
+            <div class="time-grid">
+              <label>
+                <span class="field-label">Bedtime</span>
+                <input class="input-box" type="text" value="10:45 PM" aria-label="Bedtime">
+              </label>
+              <label>
+                <span class="field-label">Wake time</span>
+                <input class="input-box" type="text" value="6:30 AM" aria-label="Wake time">
+              </label>
+            </div>
+          </div>
+
+          <label>
+            <span class="field-label">Wind-down reminder</span>
+            <select class="input-box" aria-label="Wind-down reminder">
+              <option selected>30 minutes before bedtime</option>
+              <option>45 minutes before bedtime</option>
+              <option>60 minutes before bedtime</option>
+            </select>
+            <span class="help-copy">Applied on scheduled work nights.</span>
+          </label>
+
+          <label>
+            <span class="field-label">Plan note</span>
+            <textarea class="input-box" aria-label="Plan note">Keep the room cool and avoid caffeine after 2:00 PM.</textarea>
+          </label>
+        </div>
+
+        <div class="actions">
+          <button class="button button-secondary" type="button">Cancel</button>
+          <button class="button button-primary" type="submit">Save shift plan</button>
+        </div>
+      </form>
+    </section>
+  </div>
+</body>
+</html>

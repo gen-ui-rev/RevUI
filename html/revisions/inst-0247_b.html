@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Post Detail — Tunerow</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #deddd8;
+      color: #1d1c18;
+      font-family: 'Source Serif 4', Georgia, serif;
+    }
+
+    button, input { font: inherit; }
+    button { color: inherit; }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #fffef9;
+      border: 1px solid #c8c6bd;
+    }
+
+    .topbar {
+      flex: 0 0 56px;
+      display: grid;
+      grid-template-columns: 44px 1fr 44px;
+      align-items: center;
+      padding: 0 10px;
+      border-bottom: 1px solid #d9d7ce;
+      background: #fffef9;
+    }
+
+    .topbar h1 {
+      margin: 0;
+      text-align: center;
+      font-size: 19px;
+      line-height: 1.2;
+      font-weight: 700;
+    }
+
+    .icon-button {
+      width: 40px;
+      height: 40px;
+      padding: 0;
+      display: grid;
+      place-items: center;
+      border: 0;
+      background: transparent;
+    }
+
+    .icon-button svg {
+      width: 21px;
+      height: 21px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.7;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    main {
+      flex: 1 1 auto;
+      padding: 0 15px;
+    }
+
+    .post-head {
+      display: grid;
+      grid-template-columns: 40px 1fr auto;
+      gap: 10px;
+      align-items: center;
+      padding: 10px 0 8px;
+    }
+
+    .monogram {
+      width: 40px;
+      height: 40px;
+      display: grid;
+      place-items: center;
+      border-radius: 6px;
+      background: #25241f;
+      color: #fffef9;
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .author-name {
+      margin: 0;
+      font-size: 15px;
+      line-height: 1.15;
+      font-weight: 700;
+    }
+
+    .post-meta {
+      margin: 3px 0 0;
+      color: #6e6b61;
+      font-size: 12px;
+      line-height: 1.2;
+    }
+
+    .post-label {
+      padding: 3px 7px;
+      border: 1px solid #d4b900;
+      border-radius: 6px;
+      background: #f4d928;
+      color: #29260d;
+      font-size: 12px;
+      line-height: 1.2;
+      font-weight: 600;
+    }
+
+    .post-copy {
+      margin: 0 0 10px;
+      font-size: 15px;
+      line-height: 1.35;
+    }
+
+    .post-photo {
+      width: 358px;
+      height: 184px;
+      display: block;
+      object-fit: cover;
+      border-radius: 6px;
+      background: #d1cec3;
+    }
+
+    .track-line {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 8px 0;
+      border-bottom: 1px solid #dedcd3;
+    }
+
+    .play-mark {
+      width: 25px;
+      height: 25px;
+      flex: 0 0 25px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: #f4d928;
+      border: 1px solid #d1b900;
+    }
+
+    .play-mark svg {
+      width: 12px;
+      height: 12px;
+      margin-left: 1px;
+      fill: #29260d;
+    }
+
+    .track-copy {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .track-title, .track-detail {
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    .track-title {
+      font-size: 14px;
+      line-height: 1.15;
+      font-weight: 600;
+    }
+
+    .track-detail {
+      margin-top: 2px;
+      color: #716e64;
+      font-size: 12px;
+      line-height: 1.15;
+    }
+
+    .track-length {
+      color: #716e64;
+      font-size: 12px;
+    }
+
+    .reaction-summary {
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: #68655c;
+      font-size: 12px;
+      border-bottom: 1px solid #dedcd3;
+    }
+
+    .reaction-actions {
+      height: 42px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      border-bottom: 1px solid #c9c7be;
+    }
+
+    .action {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 0;
+      border: 0;
+      border-right: 1px solid #dedcd3;
+      background: transparent;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .action:last-child { border-right: 0; }
+
+    .action.active {
+      background: #ffffff;
+      color: #1d1c18;
+    }
+
+    .action.active::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      bottom: 0;
+      width: 48px;
+      height: 2px;
+      transform: translateX(-50%);
+      background: #e0c400;
+    }
+
+    .action svg {
+      width: 17px;
+      height: 17px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.7;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .action.active svg {
+      fill: #e0c400;
+      stroke: #bda600;
+      stroke-width: 1.3;
+    }
+
+    .comments-heading {
+      height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #dedcd3;
+    }
+
+    .comments-heading h2 {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .comments-heading span {
+      color: #706d63;
+      font-size: 12px;
+    }
+
+    .comment {
+      display: grid;
+      grid-template-columns: 32px 1fr;
+      gap: 9px;
+      padding: 8px 0;
+      border-bottom: 1px solid #e3e1d8;
+    }
+
+    .comment .monogram {
+      width: 32px;
+      height: 32px;
+      background: #ece9de;
+      color: #3a3831;
+      font-size: 12px;
+      border: 1px solid #d5d2c8;
+    }
+
+    .comment-line {
+      margin: 0;
+      font-size: 14px;
+      line-height: 1.25;
+    }
+
+    .comment-line strong { font-weight: 700; }
+
+    .comment-info {
+      display: flex;
+      gap: 13px;
+      margin-top: 4px;
+      color: #747168;
+      font-size: 12px;
+      line-height: 1.1;
+    }
+
+    .comment-info .reply {
+      color: #4e4b43;
+      font-weight: 600;
+    }
+
+    .composer {
+      display: grid;
+      grid-template-columns: 32px 1fr 58px;
+      gap: 8px;
+      align-items: center;
+      padding: 8px 0;
+    }
+
+    .composer .monogram {
+      width: 32px;
+      height: 32px;
+      font-size: 12px;
+    }
+
+    .composer input {
+      min-width: 0;
+      height: 34px;
+      padding: 6px 9px;
+      border: 1px solid #c9c7be;
+      border-radius: 6px;
+      outline: none;
+      background: #fff;
+      color: #1d1c18;
+      font-size: 14px;
+    }
+
+    .composer input::placeholder {
+      color: #77746b;
+      opacity: 1;
+    }
+
+    .post-button {
+      height: 34px;
+      padding: 0;
+      border: 1px solid #cfb600;
+      border-radius: 6px;
+      background: #f4d928;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .tabbar {
+      flex: 0 0 61px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border-top: 1px solid #c9c7be;
+      background: #fffef9;
+    }
+
+    .tab {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      border: 0;
+      background: transparent;
+      color: #69665e;
+      font-size: 12px;
+      line-height: 1;
+    }
+
+    .tab.active {
+      color: #1d1c18;
+      font-weight: 700;
+    }
+
+    .tab.active::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      width: 36px;
+      height: 3px;
+      background: #e0c400;
+    }
+
+    .tab svg {
+      width: 20px;
+      height: 20px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.6;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <button class="icon-button" type="button" aria-label="Go back">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M15 5l-7 7 7 7"></path>
+        </svg>
+      </button>
+      <h1>Post</h1>
+      <button class="icon-button" type="button" aria-label="More options">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="5" cy="12" r="1"></circle>
+          <circle cx="12" cy="12" r="1"></circle>
+          <circle cx="19" cy="12" r="1"></circle>
+        </svg>
+      </button>
+    </header>
+
+    <main>
+      <section aria-label="Community post">
+        <div class="post-head">
+          <div class="monogram" aria-hidden="true">JW</div>
+          <div>
+            <p class="author-name">June Wilder</p>
+            <p class="post-meta">Today at 10:42 AM · Public</p>
+          </div>
+          <span class="post-label">Community</span>
+        </div>
+
+        <p class="post-copy">
+          The room went silent for the new bridge, then everyone joined the final chorus. This live cut keeps that moment intact.
+        </p>
+
+        <img class="post-photo" src="https://loremflickr.com/358/184/concert?lock=3890" width="358" height="184" alt="A live concert performance under warm stage lights">
+
+        <div class="track-line">
+          <div class="play-mark" aria-hidden="true">
+            <svg viewBox="0 0 16 16">
+              <path d="M4 2.5v11l9-5.5z"></path>
+            </svg>
+          </div>
+          <div class="track-copy">
+            <div class="track-title">Harbor Lights — Live at North Hall</div>
+            <div class="track-detail">June Wilder · Sessions, Volume Two</div>
+          </div>
+          <span class="track-length">4:18</span>
+        </div>
+
+        <div class="reaction-summary">
+          <span>82 appreciations</span>
+          <span>14 comments · 6 shares</span>
+        </div>
+
+        <div class="reaction-actions" aria-label="Post actions">
+          <button class="action active" type="button">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 20.5S4 15.7 4 9.5A4.5 4.5 0 0 1 12 6.7a4.5 4.5 0 0 1 8 2.8c0 6.2-8 11-8 11z"></path>
+            </svg>
+            Appreciate
+          </button>
+          <button class="action" type="button">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M20 15a3 3 0 0 1-3 3H9l-5 3v-6a3 3 0 0 1-1-2.2V7a3 3 0 0 1 3-3h11a3 3 0 0 1 3 3z"></path>
+            </svg>
+            Comment
+          </button>
+          <button class="action" type="button">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M14 5l6 6-6 6"></path>
+              <path d="M20 11H9a5 5 0 0 0-5 5v3"></path>
+            </svg>
+            Share
+          </button>
+        </div>
+      </section>
+
+      <section aria-labelledby="comments-title">
+        <div class="comments-heading">
+          <h2 id="comments-title">Comments</h2>
+          <span>Newest first</span>
+        </div>
+
+        <article class="comment">
+          <div class="monogram" aria-hidden="true">AL</div>
+          <div>
+            <p class="comment-line"><strong>Arden Lane</strong> The crowd vocal at 3:26 is the part I keep replaying.</p>
+            <div class="comment-info">
+              <span>18 min</span>
+              <span>7 likes</span>
+              <span class="reply">Reply</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="comment">
+          <div class="monogram" aria-hidden="true">MP</div>
+          <div>
+            <p class="comment-line"><strong>Miles Porter</strong> Glad the room sound stayed in the mix. It feels close.</p>
+            <div class="comment-info">
+              <span>31 min</span>
+              <span>4 likes</span>
+              <span class="reply">Reply</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="comment">
+          <div class="monogram" aria-hidden="true">CR</div>
+          <div>
+            <p class="comment-line"><strong>Clara Reed</strong> That bridge lands differently live. Beautiful arrangement.</p>
+            <div class="comment-info">
+              <span>46 min</span>
+              <span>9 likes</span>
+              <span class="reply">Reply</span>
+            </div>
+          </div>
+        </article>
+
+        <form class="composer">
+          <div class="monogram" aria-hidden="true">TS</div>
+          <input type="text" aria-label="Add a comment" placeholder="Add a comment">
+          <button class="post-button" type="button">Post</button>
+        </form>
+      </section>
+    </main>
+
+    <nav class="tabbar" aria-label="Primary navigation">
+      <button class="tab" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M3 11l9-7 9 7"></path>
+          <path d="M5 10v10h14V10"></path>
+          <path d="M9 20v-6h6v6"></path>
+        </svg>
+        Home
+      </button>
+      <button class="tab" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="11" cy="11" r="7"></circle>
+          <path d="M16 16l5 5"></path>
+        </svg>
+        Search
+      </button>
+      <button class="tab active" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M4 5h16v14H4z"></path>
+          <path d="M8 9h8"></path>
+          <path d="M8 13h5"></path>
+        </svg>
+        Community
+      </button>
+      <button class="tab" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M5 4h14v16H5z"></path>
+          <path d="M9 4v16"></path>
+          <path d="M9 9h10"></path>
+        </svg>
+        Library
+      </button>
+    </nav>
+  </div>
+</body>
+</html>

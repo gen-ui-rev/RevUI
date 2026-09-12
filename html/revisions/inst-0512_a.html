@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Weekly focus — Latchwork</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --green:#1c8a4e;
+    --green-soft:#cfe6d9;
+    --gray-bar:#d9dcda;
+    --line:#e4e6e5;
+    --ink:#15181a;
+    --mute:#6d7570;
+  }
+  *{box-sizing:border-box;}
+  body{
+    font-family:'Inter', system-ui, sans-serif;
+    background:#f0f1f0;
+    margin:0;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    padding:24px 0;
+    -webkit-font-smoothing:antialiased;
+  }
+  .screen{
+    width:390px;
+    height:560px;
+    padding:18px 20px;
+    background:#f0f1f0;
+  }
+  .card{
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:4px;
+    padding:16px;
+  }
+  .eyebrow{
+    font-size:12px;
+    font-weight:500;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    color:var(--mute);
+    margin:0 0 5px;
+  }
+  h1{
+    font-size:17px;
+    font-weight:600;
+    color:var(--ink);
+    margin:0;
+    line-height:1.25;
+  }
+  .headline{
+    display:flex;
+    align-items:flex-start;
+    gap:10px;
+    margin-top:8px;
+  }
+  .metric{
+    display:flex;
+    flex-direction:column;
+    gap:3px;
+  }
+  .total{
+    font-size:27px;
+    font-weight:700;
+    color:var(--green);
+    line-height:1;
+    letter-spacing:-.01em;
+  }
+  .change{
+    display:flex;
+    align-items:center;
+    gap:4px;
+    font-size:11px;
+    font-weight:500;
+    color:#535a56;
+    line-height:1.2;
+    white-space:nowrap;
+  }
+  .change .arrow{
+    font-size:13px;
+    line-height:1;
+  }
+  .target{
+    padding-top:8px;
+    font-size:13px;
+    color:var(--mute);
+  }
+  .chart{
+    margin-top:12px;
+    display:flex;
+    gap:8px;
+  }
+  .yaxis{
+    width:24px;
+    position:relative;
+    height:126px;
+  }
+  .yaxis span{
+    position:absolute;
+    right:0;
+    font-size:12px;
+    color:var(--mute);
+    line-height:1;
+  }
+  .plot{
+    flex:1;
+    position:relative;
+    height:126px;
+  }
+  .grid{
+    position:absolute;
+    left:0;
+    right:0;
+    height:1px;
+    background:var(--line);
+  }
+  .bars{
+    position:relative;
+    height:126px;
+    display:flex;
+    align-items:flex-end;
+    gap:8px;
+  }
+  .bar{
+    flex:1;
+    max-width:34px;
+    display:flex;
+    flex-direction:column;
+    justify-content:flex-end;
+  }
+  .seg-meet{
+    background:var(--gray-bar);
+    border-radius:4px 4px 0 0;
+  }
+  .seg-focus{background:var(--green);}
+  .bar.round .seg-focus{border-radius:4px 4px 0 0;}
+  .days{
+    display:flex;
+    gap:8px;
+    margin-top:6px;
+    padding-left:32px;
+  }
+  .days span{
+    flex:1;
+    max-width:34px;
+    text-align:center;
+    font-size:12px;
+    color:var(--mute);
+  }
+  .days span.now{
+    color:var(--ink);
+    font-weight:600;
+  }
+  .legend{
+    display:flex;
+    gap:16px;
+    margin-top:11px;
+    padding-left:32px;
+  }
+  .legend div{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    font-size:12px;
+    color:var(--mute);
+    white-space:nowrap;
+  }
+  .sw{
+    width:10px;
+    height:10px;
+    border-radius:2px;
+    flex:none;
+  }
+  .legend b{
+    font-weight:600;
+    color:var(--ink);
+  }
+  .split{
+    margin-top:13px;
+    padding-top:11px;
+    border-top:1px solid var(--line);
+  }
+  .split-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    font-size:12px;
+    color:var(--mute);
+  }
+  .split-head strong{
+    font-size:13px;
+    font-weight:600;
+    color:var(--ink);
+  }
+  .row{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    height:31px;
+    border-top:1px solid var(--line);
+  }
+  .row:first-of-type{border-top:none;}
+  .row .name{
+    width:104px;
+    font-size:14px;
+    color:var(--ink);
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .track{
+    flex:1;
+    height:6px;
+    background:#f0f1f0;
+    border-radius:4px;
+  }
+  .fill{
+    display:block;
+    height:6px;
+    background:var(--green);
+    border-radius:4px;
+  }
+  .fill.light{background:var(--green-soft);}
+  .row .val{
+    width:64px;
+    text-align:right;
+    font-size:13px;
+    font-weight:500;
+    color:var(--ink);
+    font-variant-numeric:tabular-nums;
+  }
+  .foot{
+    display:flex;
+    align-items:center;
+    gap:7px;
+    margin-top:9px;
+    font-size:12px;
+    color:var(--mute);
+  }
+</style>
+</head>
+<body>
+  <div class="screen">
+    <div class="card">
+      <p class="eyebrow">Latchwork · Design Guild</p>
+      <h1>Focus vs. meetings, Mar 10–16</h1>
+
+      <div class="headline">
+        <div class="metric">
+          <span class="total">38h 30m</span>
+          <span class="change"><span class="arrow">↑</span>3h 20m vs last week</span>
+        </div>
+        <span class="target">tracked of 45h planned</span>
+      </div>
+
+      <div class="chart">
+        <div class="yaxis">
+          <span style="top:-5px">9h</span>
+          <span style="top:37px">6h</span>
+          <span style="top:79px">3h</span>
+          <span style="top:121px">0</span>
+        </div>
+        <div class="plot">
+          <div class="grid" style="top:0"></div>
+          <div class="grid" style="top:42px"></div>
+          <div class="grid" style="top:84px"></div>
+          <div class="grid" style="top:125px"></div>
+          <div class="bars">
+            <div class="bar"><div class="seg-meet" style="height:21px"></div><div class="seg-focus" style="height:77px"></div></div>
+            <div class="bar"><div class="seg-meet" style="height:28px"></div><div class="seg-focus" style="height:84px"></div></div>
+            <div class="bar"><div class="seg-meet" style="height:42px"></div><div class="seg-focus" style="height:63px"></div></div>
+            <div class="bar"><div class="seg-meet" style="height:14px"></div><div class="seg-focus" style="height:92px"></div></div>
+            <div class="bar"><div class="seg-meet" style="height:21px"></div><div class="seg-focus" style="height:71px"></div></div>
+            <div class="bar round"><div class="seg-focus" style="height:21px"></div></div>
+            <div class="bar round"><div class="seg-focus" style="height:7px"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="days">
+        <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span>
+        <span class="now">Fri</span><span>Sat</span><span>Sun</span>
+      </div>
+
+      <div class="legend">
+        <div><span class="sw" style="background:var(--green)"></span>Focus <b>29h 30m</b></div>
+        <div><span class="sw" style="background:var(--gray-bar)"></span>Meetings <b>9h 00m</b></div>
+      </div>
+
+      <div class="split">
+        <div class="split-head">
+          <strong>Top projects</strong>
+          <span>Focus time only</span>
+        </div>
+        <div class="row">
+          <span class="name">Sprint 24 build</span>
+          <span class="track"><span class="fill" style="width:100%"></span></span>
+          <span class="val">12h 45m</span>
+        </div>
+        <div class="row">
+          <span class="name">Client review</span>
+          <span class="track"><span class="fill" style="width:67%"></span></span>
+          <span class="val">8h 30m</span>
+        </div>
+        <div class="row">
+          <span class="name">Docs cleanup</span>
+          <span class="track"><span class="fill" style="width:49%"></span></span>
+          <span class="val">6h 15m</span>
+        </div>
+        <div class="row">
+          <span class="name">Hiring loop</span>
+          <span class="track"><span class="fill light" style="width:34%"></span></span>
+          <span class="val">4h 20m</span>
+        </div>
+      </div>
+
+      <div class="foot">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6d7570" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="9"></circle>
+          <path d="M12 7.5v5l3 2"></path>
+        </svg>
+        Synced from 6 calendars, 4 minutes ago
+      </div>
+    </div>
+  </div>
+</body>
+</html>

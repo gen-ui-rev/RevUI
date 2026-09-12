@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Search Results — Morrow Market</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+
+  body {
+    min-height: 100vh;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #e8e9e4;
+    color: #1d2118;
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+
+  button {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    color: inherit;
+    font: inherit;
+    background: none;
+    cursor: pointer;
+  }
+
+  .screen {
+    width: 1024px;
+    height: 768px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: #ffffff;
+    box-shadow: 0 18px 48px rgba(29, 33, 24, 0.16);
+  }
+
+  /* ---------- top bar ---------- */
+  .topbar {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 0 24px;
+    height: 64px;
+    flex: 0 0 auto;
+    border-bottom: 1px solid #e6e8e0;
+  }
+
+  .brand {
+    display: flex;
+    align-items: baseline;
+    gap: 7px;
+    flex: 0 0 auto;
+  }
+
+  .brand-mark {
+    color: #1d2118;
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
+  .brand-tag {
+    color: #8a9080;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .query-field {
+    min-width: 0;
+    height: 40px;
+    flex: 1;
+    max-width: 440px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 12px;
+    border-radius: 4px;
+    background: rgba(184, 230, 46, 0.22);
+  }
+
+  .query-field svg {
+    width: 18px;
+    height: 18px;
+    flex: 0 0 auto;
+    color: #596329;
+  }
+
+  .query {
+    min-width: 0;
+    flex: 1;
+    overflow: hidden;
+    color: #171b13;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 19px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .clear-button {
+    width: 22px;
+    height: 22px;
+    display: grid;
+    flex: 0 0 auto;
+    place-items: center;
+    border-radius: 4px;
+    background: rgba(184, 230, 46, 0.34);
+    color: #424a20;
+  }
+
+  .clear-button svg { width: 13px; height: 13px; }
+
+  .nav {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    margin-left: auto;
+  }
+
+  .nav-link {
+    padding: 7px 11px;
+    border-radius: 4px;
+    color: #61675a;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 18px;
+  }
+
+  .nav-link.active {
+    background: rgba(184, 230, 46, 0.28);
+    color: #2f3813;
+    font-weight: 600;
+  }
+
+  .bag-button {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    height: 36px;
+    padding: 0 12px;
+    border-radius: 4px;
+    background: rgba(184, 230, 46, 0.14);
+    color: #353b2c;
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  .bag-button svg { width: 18px; height: 18px; }
+
+  /* ---------- body ---------- */
+  .body {
+    min-height: 0;
+    flex: 1;
+    display: flex;
+  }
+
+  .sidebar {
+    width: 240px;
+    flex: 0 0 auto;
+    padding: 18px 20px;
+    border-right: 1px solid #e6e8e0;
+    background: rgba(184, 230, 46, 0.05);
+  }
+
+  .sidebar-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+
+  .sidebar-head h2 {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 19px;
+  }
+
+  .link-quiet {
+    color: #6d7462;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 17px;
+  }
+
+  .facet-block { margin-bottom: 18px; }
+  .facet-block:last-child { margin-bottom: 0; }
+
+  .facet-label {
+    margin-bottom: 6px;
+    color: #7b8172;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    line-height: 16px;
+  }
+
+  .facet {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    width: 100%;
+    height: 26px;
+    color: #3f4539;
+    font-size: 13px;
+    line-height: 18px;
+    text-align: left;
+  }
+
+  .facet .box {
+    width: 14px;
+    height: 14px;
+    flex: 0 0 auto;
+    border: 1.5px solid #b3b9a9;
+    border-radius: 3px;
+  }
+
+  .facet.on { color: #232916; font-weight: 600; }
+  .facet.on .box { border-color: #8fb724; background: #b8e62e; }
+
+  .facet .count {
+    margin-left: auto;
+    color: #8a9080;
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  .size-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .size-chip {
+    min-width: 38px;
+    height: 30px;
+    display: grid;
+    place-items: center;
+    padding: 0 8px;
+    border: 1px solid #dfe2d7;
+    border-radius: 4px;
+    color: #454b3d;
+    font-size: 12px;
+    font-weight: 500;
+    background: #ffffff;
+  }
+
+  .size-chip.on {
+    border-color: #a9cf2f;
+    background: rgba(184, 230, 46, 0.32);
+    color: #262d13;
+    font-weight: 600;
+  }
+
+  /* ---------- results ---------- */
+  .results {
+    min-width: 0;
+    flex: 1;
+    padding: 18px 24px;
+  }
+
+  .results-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+
+  .results-head p {
+    margin: 0;
+    color: #5b6054;
+    font-size: 13px;
+    line-height: 20px;
+  }
+
+  .results-head strong { color: #24291e; font-weight: 600; }
+
+  .controls { display: flex; align-items: center; gap: 8px; }
+
+  .control {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    height: 32px;
+    padding: 0 10px;
+    border: 1px solid #e0e3d8;
+    border-radius: 4px;
+    color: #3b4126;
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  .control svg { width: 14px; height: 14px; }
+  .control .muted { color: #868c78; font-weight: 500; }
+
+  .price-group { margin-bottom: 16px; }
+  .price-group:last-child { margin-bottom: 0; }
+
+  .group-head {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    padding-bottom: 8px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #e9ebe3;
+  }
+
+  .group-title {
+    color: #2b3120;
+    font-size: 13px
+    ;font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    line-height: 18px;
+  }
+
+  .group-note {
+    color: #7b8172;
+    font-size: 12px;
+    line-height: 17px;
+  }
+
+  .group-badge {
+    padding: 2px 7px;
+    border-radius: 3px;
+    background: rgba(184, 230, 46, 0.34);
+    color: #384014;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 15px;
+  }
+
+  .group-count {
+    margin-left: auto;
+    color: #7b8172;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 17px;
+  }
+
+  .group-items {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .product-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 8px;
+    border: 1px solid #eceee7;
+    border-radius: 5px;
+    background: rgba(184, 230, 46, 0.05);
+  }
+
+  .product-row img {
+    width: 88px;
+    height: 88px;
+    display: block;
+    flex: 0 0 auto;
+    border-radius: 4px;
+    object-fit: cover;
+    background: #e6e8df;
+  }
+
+  .product-info { min-width: 0; flex: 1; }
+
+  .product-name {
+    overflow: hidden;
+    color: #20251b;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 19px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .product-detail {
+    margin-top: 2px;
+    overflow: hidden;
+    color: #6a7063;
+    font-size: 12px;
+    line-height: 17px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .product-meta {
+    margin-top: 2px;
+    overflow: hidden;
+    color: #7c8274;
+    font-size: 12px;
+    line-height: 17px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .product-meta .rating { color: #4d5530; font-weight: 600; }
+
+  .price-line {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-top: 4px;
+  }
+
+  .product-price {
+    color: #242a17;
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 19px;
+  }
+
+  .was {
+    color: #9aa08e;
+    font-size: 12px;
+    font-weight: 500;
+    text-decoration: line-through;
+  }
+</style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-mark">Morrow Market</span>
+        <span class="brand-tag">Footwear</span>
+      </div>
+
+      <div class="query-field" role="search">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="1.8"/>
+          <path d="M16 16L20 20" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+        <span class="query">white sneakers</span>
+        <button class="clear-button" type="button" aria-label="Clear search">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M8 8L16 16M16 8L8 16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+
+      <nav class="nav" aria-label="Primary navigation">
+        <button class="nav-link" type="button">Home</button>
+        <button class="nav-link active" type="button">Search</button>
+        <button class="nav-link" type="button">Sell</button>
+        <button class="nav-link" type="button">Saved</button>
+        <button class="nav-link" type="button">Account</button>
+      </nav>
+
+      <button class="bag-button" type="button">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M5 8.5H19L18 20H6L5 8.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+          <path d="M9 9V6.5C9 4.8 10.3 3.5 12 3.5C13.7 3.5 15 4.8 15 6.5V9" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+        </svg>
+        Bag · 2
+      </button>
+    </header>
+
+    <div class="body">
+      <aside class="sidebar" aria-label="Search filters">
+        <div class="sidebar-head">
+          <h2>Filters</h2>
+          <button class="link-quiet" type="button">Clear all</button>
+        </div>
+
+        <div class="facet-block">
+          <div class="facet-label">Department</div>
+          <button class="facet on" type="button"><span class="box"></span>All departments<span class="count">126</span></button>
+          <button class="facet" type="button"><span class="box"></span>Men<span class="count">54</span></button>
+          <button class="facet" type="button"><span class="box"></span>Women<span class="count">48</span></button>
+          <button class="facet" type="button"><span class="box"></span>Kids<span class="count">24</span></button>
+        </div>
+
+        <div class="facet-block">
+          <div class="facet-label">Price band</div>
+          <button class="facet" type="button"><span class="box"></span>Under $70<span class="count">38</span></button>
+          <button class="facet" type="button"><span class="box"></span>$70 – $79<span class="count">31</span></button>
+          <button class="facet" type="button"><span class="box"></span>$80 – $99<span class="count">44</span></button>
+          <button class="facet" type="button"><span class="box"></span>$100 and up<span class="count">13</span></button>
+        </div>
+
+        <div class="facet-block">
+          <div class="facet-label">Size</div>
+          <div class="size-grid">
+            <button class="size-chip" type="button">7</button>
+            <button class="size-chip" type="button">8</button>
+            <button class="size-chip on" type="button">9</button>
+            <button class="size-chip on" type="button">9.5</button>
+            <button class="size-chip" type="button">10</button>
+            <button class="size-chip" type="button">11</button>
+          </div>
+        </div>
+
+        <div class="facet-block">
+          <div class="facet-label">Delivery</div>
+          <button class="facet on" type="button"><span class="box"></span>Free shipping<span class="count">89</span></button>
+          <button class="facet" type="button"><span class="box"></span>In stock today<span class="count">72</span></button>
+        </div>
+      </aside>
+
+      <main class="results">
+        <div class="results-head">
+          <p><strong>126 results</strong> for white sneakers · grouped into price bands</p>
+          <div class="controls">
+            <button class="control" type="button"><span class="muted">Group</span> Price bands
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M8 10L12 14L16 10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <button class="control" type="button"><span class="muted">Sort</span> Best match
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M8 10L12 14L16 10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <section class="price-group">
+          <div class="group-head">
+            <span class="group-title">Under $70</span>
+            <span class="group-badge">Best value</span>
+            <span class="group-note">avg $57</span>
+            <span class="group-count">38 items · showing 3</span>
+          </div>
+          <div class="group-items">
+            <article class="product-row">
+              <img src="https://loremflickr.com/88/88/sneakers?lock=8814" width="88" height="88" alt="White knit training sneakers">
+              <div class="product-info">
+                <div class="product-name">Harbor Knit Trainer</div>
+                <div class="product-detail">Women's 5–12 · Machine-washable knit</div>
+                <div class="product-meta"><span class="rating">★ 4.7</span> (312) · Free 2-day shipping</div>
+                <div class="price-line"><span class="product-price">$49.00</span><span class="was">$65.00</span></div>
+              </div>
+            </article>
+
+            <article class="product-row">
+              <img src="https://loremflickr.com/88/88/sneakers?lock=8811" width="88" height="88" alt="White canvas running sneakers">
+              <div class="product-info">
+                <div class="product-name">Alder Canvas Runner</div>
+                <div class="product-detail">Women's 5–11 · Natural white canvas</div>
+                <div class="product-meta"><span class="rating">★ 4.5</span> (188) · Free returns · 3 colors</div>
+                <div class="price-line"><span class="product-price">$58.00</span></div>
+              </div>
+            </article>
+
+            <article class="product-row">
+              <img src="https://loremflickr.com/88/88/sneakers?lock=8813" width="88" height="88" alt="White retro court sneakers">
+              <div class="product-info">
+                <div class="product-name">Commonstep Retro Court</div>
+                <div class="product-detail">Men's 6–12 · Chalk white, suede trim</div>
+                <div class="product-meta"><span class="rating">★ 4.4</span> (96) · Ships from Portland, OR</div>
+                <div class="price-line"><span class="product-price">$66.00</span></div>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section class="price-group">
+          <div class="group-head">
+            <span class="group-title">$70 – $79</span>
+            <span class="group-note">avg $73</span>
+            <span class="group-count">31 items · showing 2</span>
+          </div>
+          <div class="group-items">
+            <article class="product-row">
+              <img src="https://loremflickr.com/88/88/sneakers?lock=8816" width="88" height="88" alt="Off-white suede low-top sneakers">
+              <div class="product-info">
+                <div class="product-name">Drift Suede Low</div>
+                <div class="product-detail">Men's 7–13 · Off-white brushed suede</div>
+                <div class="product-meta"><span class="rating">★ 4.6</span> (241) · Free 2-day shipping</div>
+                <div class="price-line"><span class="product-price">$71.00</span></div>
+              </div>
+            </article>
+
+            <article class="product-row">
+              <img src="https://loremflickr.com/88/88/sneakers?lock=8810" width="88" height="88" alt="White low-top court sneakers">
+              <div class="product-info">
+                <div class="product-name">Northline Court Low</div>
+                <div class="product-detail">Men's 7–13 · Full-grain white leather</div>
+                <div class="product-meta"><span class="rating">★ 4.8</span> (508) · Free returns · Top rated</div>
+                <div class="price-line"><span class="product-price">$74.00</span><span class="was">$88.00</span></div>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section class="price-group">
+          <div class="group-head">
+            <span class="group-title">$80 and up</span>
+            <span class="group-note">avg $94</span>
+            <span class="group-count">57 items · showing 2</span>
+          </div>
+          <div class="group-items">
+            <article class="product-row">
+              <img src="https://loremflickr.com/88/88/sneakers?lock=8815" width="88" height="88" alt="White classic lace-up sneakers">
+              <div class="product-info">
+                <div class="product-name">Pave Classic Sneaker</div>
+                <div class="product-detail">Unisex 4–14 · Bright white, cork insole</div>
+                <div class="product-meta"><span class="rating">★ 4.3</span> (74) · Ships in 3–5 days</div>
+                <div class="price-line"><span class="product-price">$80.00</span></div>
+              </div>
+            </article>
+
+            <article class="product-row">
+              <img src="https://loremflickr.com/88/88/sneakers?lock=8812" width="88" height="88" alt="White leather everyday sneakers">
+              <div class="product-info">
+                <div class="product-name">Fieldday Leather Low</div>
+                <div class="product-detail">Unisex 4–13 · Soft nappa leather</div>
+                <div class="product-meta"><span class="rating">★ 4.9</span> (411) · Free 2-day shipping</div>
+                <div class="price-line"><span class="product-price">$92.00</span></div>
+              </div>
+            </article>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+</body>
+</html>

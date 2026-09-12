@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Episode Upload Progress</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 24px 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #e8e6e5;
+      color: #211d1e;
+      font-family: 'Inter', system-ui, sans-serif;
+    }
+
+    .screen {
+      width: 390px;
+      height: 560px;
+      flex: none;
+      padding: 28px 24px;
+      background: #fbf9f9;
+    }
+
+    .component {
+      width: 100%;
+    }
+
+    .eyebrow {
+      margin: 0 0 8px;
+      color: #b92753;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      max-width: 300px;
+      font-size: 28px;
+      line-height: 1.18;
+      font-weight: 600;
+      letter-spacing: -0.03em;
+    }
+
+    .intro {
+      margin: 8px 0 0;
+      color: #686164;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .upload {
+      margin-top: 18px;
+      padding: 14px 0;
+      border-top: 1px solid #dcd6d8;
+      border-bottom: 1px solid #dcd6d8;
+    }
+
+    .file-row {
+      display: grid;
+      grid-template-columns: 72px minmax(0, 1fr);
+      gap: 14px;
+      align-items: center;
+    }
+
+    .file-row img {
+      width: 72px;
+      height: 72px;
+      display: block;
+      object-fit: cover;
+      background: #d8d1d3;
+      border-radius: 0;
+    }
+
+    .file-copy {
+      min-width: 0;
+    }
+
+    .file-name {
+      margin: 0;
+      overflow: hidden;
+      color: #211d1e;
+      font-size: 16px;
+      line-height: 1.35;
+      font-weight: 600;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .file-detail {
+      margin: 5px 0 0;
+      color: #756d70;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    .progress-heading {
+      margin-top: 14px;
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .progress-label {
+      margin: 0;
+      font-size: 14px;
+      line-height: 1.4;
+      font-weight: 600;
+    }
+
+    .progress-value {
+      margin: 0;
+      color: #b92753;
+      font-size: 28px;
+      line-height: 1;
+      font-weight: 600;
+      letter-spacing: -0.03em;
+    }
+
+    .progress-track {
+      position: relative;
+      width: 100%;
+      height: 8px;
+      margin-top: 10px;
+      background: #e5dfe1;
+      border-radius: 0;
+    }
+
+    .progress-fill {
+      width: 68%;
+      height: 8px;
+      background: #c42d59;
+      border-radius: 0;
+    }
+
+    .progress-end {
+      position: absolute;
+      top: 50%;
+      left: 68%;
+      width: 16px;
+      height: 16px;
+      border: 3px solid #fbf9f9;
+      border-radius: 50%;
+      background: #c42d59;
+      box-shadow: 0 0 0 1px #c42d59;
+      transform: translate(-50%, -50%);
+    }
+
+    .connection-panel {
+      margin-top: 12px;
+      padding: 9px 10px;
+      background: #f1eded;
+      color: #686164;
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .connection-line,
+    .transfer-line {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .transfer-line {
+      margin-top: 5px;
+    }
+
+    .connection-label {
+      color: #403a3c;
+      font-weight: 600;
+    }
+
+    .connection-value {
+      color: #3f6c55;
+      font-weight: 600;
+    }
+
+    .next-step {
+      margin: 10px 0 0;
+      color: #686164;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .actions {
+      margin-top: 16px;
+      display: grid;
+      grid-template-columns: 112px minmax(0, 1fr);
+      gap: 10px;
+    }
+
+    button {
+      min-width: 0;
+      min-height: 44px;
+      border-radius: 0;
+      font: inherit;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: default;
+    }
+
+    .primary {
+      padding: 11px 12px;
+      border: 1px solid #b92753;
+      background: #b92753;
+      color: #ffffff;
+    }
+
+    .secondary {
+      padding: 11px 12px;
+      border: 1px solid #bdb5b8;
+      background: transparent;
+      color: #403a3c;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <main class="component" aria-labelledby="upload-title">
+      <p class="eyebrow">Rosewave creator upload</p>
+      <h1 id="upload-title">Uploading your episode</h1>
+      <p class="intro">Keep this page open while the audio file is transferred for publishing.</p>
+
+      <section class="upload" aria-label="Current upload">
+        <div class="file-row">
+          <img src="https://loremflickr.com/76/76/studio?lock=11550" width="76" height="76" alt="Recording studio used as the episode artwork">
+          <div class="file-copy">
+            <p class="file-name">After Hours, Episode 08</p>
+            <p class="file-detail">MP3 audio · 458 MB</p>
+          </div>
+        </div>
+
+        <div class="progress-heading">
+          <p class="progress-label">File upload</p>
+          <p class="progress-value">68%</p>
+        </div>
+
+        <div class="progress-track" role="progressbar" aria-label="Episode upload progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="68">
+          <div class="progress-fill"></div>
+          <div class="progress-end" aria-hidden="true"></div>
+        </div>
+
+        <div class="connection-panel" aria-label="Upload details">
+          <div class="connection-line">
+            <span class="connection-label">Connection status</span>
+            <span class="connection-value">Secure and stable</span>
+          </div>
+          <div class="transfer-line">
+            <span>312 MB of 458 MB</span>
+            <span>About 1 min left</span>
+          </div>
+        </div>
+
+        <p class="next-step">Audio checks begin automatically after upload.</p>
+      </section>
+
+      <div class="actions">
+        <button class="secondary" type="button">Cancel</button>
+        <button class="primary" type="button">Run in background</button>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

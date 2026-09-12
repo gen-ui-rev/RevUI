@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Local Services — Marketmoss</title>
+<style>
+  :root{
+    --indigo:#4F46E5;
+    --indigo-dark:#3730A3;
+    --tint:rgba(79,70,229,.08);
+    --tint-strong:rgba(79,70,229,.15);
+    --ink:#17191E;
+    --mid:#6B7280;
+    --line:#E7E8ED;
+    --panel:#F7F7FA;
+    --green:#27775A;
+    --green-bg:#EAF7F1;
+    --amber:#9A5C12;
+    --amber-bg:#FFF3DE;
+  }
+  *{box-sizing:border-box;}
+  body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    margin:0;
+    padding:32px 0;
+    background:#DCDDE2;
+    color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  .screen{
+    width:768px;
+    height:1024px;
+    position:relative;
+    display:flex;
+    flex-direction:column;
+    background:#fff;
+  }
+  .topbar{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    padding:17px 24px;
+    border-bottom:1px solid var(--line);
+  }
+  .brand{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    flex:1;
+    font-size:17px;
+    font-weight:750;
+  }
+  .brandmark{
+    width:34px;
+    min-height:34px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:9px;
+    color:#fff;
+    background:var(--indigo);
+  }
+  .crumb{color:var(--mid);font-weight:500;}
+  .topaction{
+    min-height:42px;
+    padding:0 14px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:7px;
+    border-radius:8px;
+    background:var(--panel);
+    color:var(--ink);
+    font-size:13px;
+    font-weight:650;
+  }
+  .layout{
+    display:grid;
+    grid-template-columns:246px 1fr;
+    flex:1;
+    min-height:0;
+  }
+  .sidebar{
+    padding:24px 20px;
+    background:var(--panel);
+    border-right:1px solid var(--line);
+  }
+  .avatar{
+    width:72px;
+    min-height:72px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:12px;
+    color:var(--indigo-dark);
+    background:var(--tint-strong);
+  }
+  .namerow{display:flex;align-items:center;gap:6px;margin-top:15px;}
+  .name{font-size:20px;font-weight:750;letter-spacing:-.25px;}
+  .verified{display:flex;color:var(--indigo);flex:none;}
+  .role{margin-top:5px;color:var(--mid);font-size:13px;line-height:1.45;}
+  .status{
+    display:flex;
+    align-items:center;
+    gap:7px;
+    margin-top:14px;
+    padding:9px 10px;
+    border-radius:8px;
+    color:var(--green);
+    background:var(--green-bg);
+    font-size:12px;
+    font-weight:700;
+  }
+  .statusdot{width:7px;height:7px;border-radius:50%;background:#2E9B6D;}
+  .sideactions{display:grid;gap:8px;margin-top:16px;}
+  .btn{
+    min-height:44px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    border-radius:8px;
+    font-size:14px;
+    font-weight:700;
+  }
+  .btn.primary{color:#fff;background:var(--indigo);}
+  .btn.secondary{color:var(--indigo-dark);background:#fff;border:1px solid #D9D9E8;}
+  .sideheading{
+    margin-top:24px;
+    color:var(--mid);
+    font-size:11px;
+    font-weight:750;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+  }
+  .facts{margin-top:8px;}
+  .fact{
+    display:flex;
+    gap:9px;
+    padding:9px 0;
+    color:#464A54;
+    font-size:12px;
+    line-height:1.4;
+    border-bottom:1px solid var(--line);
+  }
+  .fact svg{color:var(--indigo-dark);flex:none;}
+  .rating{
+    display:flex;
+    align-items:baseline;
+    gap:6px;
+    margin-top:11px;
+  }
+  .rating strong{font-size:23px;}
+  .rating span{color:var(--mid);font-size:12px;}
+  .coverage{
+    margin-top:7px;
+    color:var(--mid);
+    font-size:12px;
+    line-height:1.5;
+  }
+  .main{
+    min-width:0;
+    padding:23px 24px 16px;
+  }
+  .maintitle{font-size:24px;font-weight:750;letter-spacing:-.35px;}
+  .intro{
+    margin-top:5px;
+    color:var(--mid);
+    font-size:13px;
+    line-height:1.45;
+  }
+  .filters{
+    display:flex;
+    gap:8px;
+    margin-top:16px;
+    padding-bottom:16px;
+    border-bottom:1px solid var(--line);
+  }
+  .filter{
+    padding:9px 12px;
+    border-radius:8px;
+    color:var(--mid);
+    background:var(--panel);
+    font-size:12px;
+    font-weight:650;
+  }
+  .filter.on{color:var(--indigo-dark);background:var(--tint);}
+  .group{margin-top:20px;}
+  .grouphead{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:9px;
+  }
+  .groupname{
+    font-size:12px;
+    font-weight:800;
+    letter-spacing:.075em;
+    text-transform:uppercase;
+  }
+  .groupdesc{
+    flex:1;
+    color:var(--mid);
+    font-size:11px;
+  }
+  .today{
+    padding:4px 7px;
+    border-radius:5px;
+    color:var(--amber);
+    background:var(--amber-bg);
+    font-size:11px;
+    font-weight:750;
+  }
+  .rows{
+    border:1px solid var(--line);
+    border-radius:10px;
+    background:#fff;
+  }
+  .service{
+    display:grid;
+    grid-template-columns:42px minmax(0,1fr) auto 24px;
+    align-items:center;
+    gap:11px;
+    padding:12px;
+    border-bottom:1px solid var(--line);
+  }
+  .service:last-child{border-bottom:none;}
+  .serviceicon{
+    width:42px;
+    min-height:42px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:8px;
+    color:var(--indigo-dark);
+    background:var(--tint);
+  }
+  .callout .serviceicon{color:var(--amber);background:var(--amber-bg);}
+  .info{min-width:0;}
+  .ttl{
+    font-size:14px;
+    font-weight:680;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .sub{
+    margin-top:3px;
+    color:var(--mid);
+    font-size:11px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .price{
+    text-align:right;
+    font-size:14px;
+    font-weight:750;
+    white-space:nowrap;
+  }
+  .price small{display:block;color:var(--mid);font-size:10px;font-weight:500;}
+  .chev{display:flex;justify-content:flex-end;color:#A1A4AD;}
+  .note{
+    margin-top:14px;
+    padding:11px 12px;
+    border-radius:8px;
+    color:#555B66;
+    background:var(--panel);
+    font-size:11px;
+    line-height:1.45;
+  }
+  .tabbar{
+    display:flex;
+    padding:11px 12px 14px;
+    border-top:1px solid var(--line);
+    background:#fff;
+  }
+  .nav{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:4px;
+    color:#9296A1;
+    font-size:12px;
+  }
+  .nav.on{color:var(--indigo-dark);font-weight:750;}
+</style>
+</head>
+<body>
+<div class="screen">
+  <div class="topbar">
+    <div class="brand">
+      <span class="brandmark" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 11l8-6 8 6"/><path d="M6 10v10h12V10"/><path d="M9 20v-6h6v6"/></svg>
+      </span>
+      Marketmoss <span class="crumb">/ Local services</span>
+    </div>
+    <div class="topaction">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 16V4"/><path d="M8 8l4-4 4 4"/><path d="M5 14v5h14v-5"/></svg>
+      Share
+    </div>
+    <div class="topaction">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="12" cy="19" r="1.6"/></svg>
+    </div>
+  </div>
+
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="avatar" aria-hidden="true">
+        <svg width="37" height="37" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.45" stroke-linecap="round" stroke-linejoin="round"><path d="M14 5l5 5"/><path d="M12.5 6.5l5 5"/><path d="M3.5 20.5l6.8-6.8"/><path d="M8.8 5.2a4 4 0 005 5L20 4a4 4 0 01-5 5L8.8 15.2a4 4 0 01-5-5l3.1 3.1"/></svg>
+      </div>
+      <div class="namerow">
+        <div class="name">Northline Fix</div>
+        <span class="verified" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.3 1.7 2.8-.2.9 2.7 2.3 1.7-1 2.7 1 2.7-2.3 1.7-.9 2.7-2.8-.2L12 21l-2.3-1.7-2.8.2-.9-2.7L3.7 15.1l1-2.7-1-2.7L6 8l.9-2.7 2.8.2L12 3z"/><path d="M9 12.2l2.1 2.1L15 10.5"/></svg>
+        </span>
+      </div>
+      <div class="role">Home maintenance and small-project specialists in Portland, Oregon.</div>
+      <div class="status"><span class="statusdot"></span>Accepting same-day jobs</div>
+
+      <div class="sideactions">
+        <div class="btn primary">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M8 2v3M16 2v3M3 9h18M5 5h14a2 2 0 012 2v13H3V7a2 2 0 012-2z"/></svg>
+          Check availability
+        </div>
+        <div class="btn secondary">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4V5z"/></svg>
+          Ask a question
+        </div>
+      </div>
+
+      <div class="sideheading">Provider details</div>
+      <div class="facts">
+        <div class="fact">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 21s7-6 7-12a7 7 0 10-14 0c0 6 7 12 7 12z"/><circle cx="12" cy="9" r="2.3"/></svg>
+          Travels up to 15 miles
+        </div>
+        <div class="fact">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+          Replies in about 30 minutes
+        </div>
+        <div class="fact">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3l7 3v5c0 5-3 8-7 10-4-2-7-5-7-10V6l7-3z"/><path d="M9 12l2 2 4-4"/></svg>
+          License and insurance verified
+        </div>
+      </div>
+
+      <div class="sideheading">Customer rating</div>
+      <div class="rating"><strong>4.8</strong><span>from 524 reviews</span></div>
+      <div class="coverage">1,860 completed visits<br>96% would book again</div>
+    </aside>
+
+    <main class="main">
+      <div class="maintitle">Choose a service</div>
+      <div class="intro">Book urgent help for today or plan a larger home project with a written estimate.</div>
+
+      <div class="filters">
+        <div class="filter on">All services</div>
+        <div class="filter">Repairs</div>
+        <div class="filter">Installation</div>
+        <div class="filter">Carpentry</div>
+      </div>
+
+      <section class="group">
+        <div class="grouphead">
+          <div class="groupname">Same-day call-outs</div>
+          <div class="groupdesc">Arrival windows from 90 minutes</div>
+          <div class="today">3 slots today</div>
+        </div>
+        <div class="rows">
+          <div class="service callout">
+            <div class="serviceicon" aria-hidden="true">
+              <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M7 4h10l2 5-3 2v9H8v-9L5 9l2-5z"/><path d="M9 15h6"/></svg>
+            </div>
+            <div class="info">
+              <div class="ttl">Minor wall and ceiling repair</div>
+              <div class="sub">Holes, loose trim and damaged plaster</div>
+            </div>
+            <div class="price"><small>from</small>$110</div>
+            <div class="chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 5l7 7-7 7"/></svg></div>
+          </div>
+          <div class="service callout">
+            <div class="serviceicon" aria-hidden="true">
+              <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M6 4h12v16H6z"/><circle cx="15" cy="12" r="1"/><path d="M9 8h6"/></svg>
+            </div>
+            <div class="info">
+              <div class="ttl">Door, latch and hinge repair</div>
+              <div class="sub">Interior and exterior door adjustments</div>
+            </div>
+            <div class="price"><small>from</small>$90</div>
+            <div class="chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 5l7 7-7 7"/></svg></div>
+          </div>
+          <div class="service callout">
+            <div class="serviceicon" aria-hidden="true">
+              <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M12 3v8"/><path d="M8 7l4 4 4-4"/><path d="M5 14h14v6H5z"/></svg>
+            </div>
+            <div class="info">
+              <div class="ttl">Leaking sink diagnosis</div>
+              <div class="sub">Visible leaks at faucets and drain traps</div>
+            </div>
+            <div class="price"><small>from</small>$95</div>
+            <div class="chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 5l7 7-7 7"/></svg></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="group">
+        <div class="grouphead">
+          <div class="groupname">Scheduled projects</div>
+          <div class="groupdesc">Reserve a date and confirm scope first</div>
+        </div>
+        <div class="rows">
+          <div class="service">
+            <div class="serviceicon" aria-hidden="true">
+              <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M5 5h14v14H5z"/><path d="M5 10h14M10 10v9"/></svg>
+            </div>
+            <div class="info">
+              <div class="ttl">Closet storage installation</div>
+              <div class="sub">Design review, assembly and wall mounting</div>
+            </div>
+            <div class="price"><small>from</small>$480</div>
+            <div class="chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 5l7 7-7 7"/></svg></div>
+          </div>
+          <div class="service">
+            <div class="serviceicon" aria-hidden="true">
+              <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M4 20h16M6 20V8l6-4 6 4v12"/><path d="M9 20v-6h6v6"/></svg>
+            </div>
+            <div class="info">
+              <div class="ttl">Mudroom bench and hooks</div>
+              <div class="sub">Finish carpentry sized for your entryway</div>
+            </div>
+            <div class="price"><small>from</small>$760</div>
+            <div class="chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 5l7 7-7 7"/></svg></div>
+          </div>
+          <div class="service">
+            <div class="serviceicon" aria-hidden="true">
+              <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M5 4h14v16H5z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>
+            </div>
+            <div class="info">
+              <div class="ttl">Rental turnover punch list</div>
+              <div class="sub">Coordinated repairs before the next tenant</div>
+            </div>
+            <div class="price">Estimate</div>
+            <div class="chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 5l7 7-7 7"/></svg></div>
+          </div>
+          <div class="service">
+            <div class="serviceicon" aria-hidden="true">
+              <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M4 19h16M6 19V9h12v10"/><path d="M8 9l4-5 4 5M10 14h4"/></svg>
+            </div>
+            <div class="info">
+              <div class="ttl">Porch step restoration</div>
+              <div class="sub">Board replacement, fastening and finish work</div>
+            </div>
+            <div class="price"><small>from</small>$690</div>
+            <div class="chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 5l7 7-7 7"/></svg></div>
+          </div>
+        </div>
+      </section>
+
+      <div class="note">A standard call-out includes travel and up to 30 minutes of assessment. Project materials are confirmed in your estimate before work begins.</div>
+    </main>
+  </div>
+
+  <div class="tabbar">
+    <div class="nav">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11l8-6 8 6"/><path d="M6 10v10h12V10"/></svg>
+      Home
+    </div>
+    <div class="nav on">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="6"/><path d="M16 16l4 4"/></svg>
+      Find services
+    </div>
+    <div class="nav">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M8 2v3M16 2v3M3 9h18M5 5h14a2 2 0 012 2v13H3V7a2 2 0 012-2z"/></svg>
+      Bookings
+    </div>
+    <div class="nav">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 5h16v11H9l-5 4V5z"/></svg>
+      Inbox
+    </div>
+    <div class="nav">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="8.5" r="3.5"/><path d="M5 20c1.5-3.5 4-5 7-5s5.5 1.5 7 5"/></svg>
+      You
+    </div>
+  </div>
+</div>
+</body>
+</html>

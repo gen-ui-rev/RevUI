@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Commonry Comments</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #d8d4d5;
+      color: #272326;
+      font-family: 'Source Serif 4', Georgia, serif;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      color: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #f3f1f2;
+    }
+
+    .topbar {
+      flex: none;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 14px;
+      background: #16244a;
+      border-bottom: 3px solid #a84f6d;
+    }
+
+    .icon-button {
+      width: 32px;
+      height: 32px;
+      padding: 5px;
+      display: grid;
+      place-items: center;
+      border: 0;
+      background: transparent;
+      color: #ffffff;
+      cursor: pointer;
+    }
+
+    .topbar-copy {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .title-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .topbar h1 {
+      margin: 0;
+      color: #ffffff;
+      font-size: 20px;
+      line-height: 24px;
+      font-weight: 600;
+    }
+
+    .header-chip {
+      flex: none;
+      padding: 1px 7px;
+      border: 1px solid rgba(255, 255, 255, 0.45);
+      border-radius: 3px;
+      color: #ffffff;
+      font-size: 11px;
+      line-height: 15px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .topbar p {
+      margin: 1px 0 0;
+      color: #a9b4cc;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .main {
+      min-height: 0;
+      flex: 1;
+      padding: 12px;
+    }
+
+    .post-card,
+    .comments-card {
+      background: #ffffff;
+      border-radius: 4px;
+    }
+
+    .post-card {
+      padding: 12px;
+      box-shadow: 0 2px 8px rgba(46, 35, 40, 0.09);
+    }
+
+    .author-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .monogram {
+      flex: none;
+      display: grid;
+      place-items: center;
+      border-radius: 4px;
+      background: #ead8de;
+      color: #914b63;
+      font-size: 14px;
+      line-height: 1;
+      font-weight: 600;
+    }
+
+    .author-avatar {
+      width: 36px;
+      height: 36px;
+    }
+
+    .comment-avatar {
+      width: 32px;
+      height: 32px;
+      background: #e6e2e3;
+      color: #5f565a;
+    }
+
+    .author-meta {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .author-name,
+    .comment-name {
+      margin: 0;
+      font-size: 14px;
+      line-height: 19px;
+      font-weight: 600;
+    }
+
+    .post-time,
+    .comment-time {
+      color: #81777c;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .post-text {
+      margin: 9px 0 10px;
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .post-photo {
+      width: 342px;
+      height: 112px;
+      display: block;
+      object-fit: cover;
+      border-radius: 4px;
+      background: #d4ced0;
+    }
+
+    .shift-line {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 9px;
+      padding: 6px 9px;
+      border-left: 3px solid #16244a;
+      background: #f1f3f8;
+      color: #35405c;
+      font-size: 12px;
+      line-height: 17px;
+    }
+
+    .shift-line strong {
+      font-weight: 600;
+    }
+
+    .post-actions {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      margin-top: 9px;
+      color: #655c60;
+      font-size: 13px;
+      line-height: 20px;
+    }
+
+    .text-action {
+      padding: 0;
+      border: 0;
+      background: transparent;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .text-action.active {
+      color: #a84f6d;
+    }
+
+    .comments-heading {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin: 13px 2px 7px;
+    }
+
+    .comments-heading h2 {
+      margin: 0;
+      font-size: 16px;
+      line-height: 22px;
+      font-weight: 600;
+    }
+
+    .comments-heading span {
+      color: #81777c;
+      font-size: 12px;
+      line-height: 18px;
+    }
+
+    .comments-card {
+      border: 1px solid #e1dcde;
+    }
+
+    .comment {
+      display: grid;
+      grid-template-columns: 32px minmax(0, 1fr);
+      gap: 10px;
+      padding: 10px 12px;
+    }
+
+    .comment + .comment {
+      border-top: 1px solid #ece8e9;
+    }
+
+    .reply-block {
+      padding: 8px 12px 10px 36px;
+      border-top: 1px solid #ece8e9;
+      background: #f7f5f6;
+    }
+
+    .reply-label {
+      margin: 0 0 5px;
+      color: #8b8085;
+      font-size: 11px;
+      line-height: 15px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+
+    .comment.nested {
+      max-width: 288px;
+      grid-template-columns: 28px minmax(0, 1fr);
+      gap: 9px;
+      padding: 0;
+    }
+
+    .comment.nested .comment-avatar {
+      width: 28px;
+      height: 28px;
+      background: #dfe3ee;
+      color: #3c4763;
+      font-size: 12px;
+    }
+
+    .comment-body {
+      min-width: 0;
+    }
+
+    .comment-head {
+      display: flex;
+      align-items: baseline;
+      gap: 7px;
+    }
+
+    .comment-text {
+      margin: 2px 0 4px;
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .comment-actions {
+      display: flex;
+      gap: 14px;
+      color: #766d72;
+      font-size: 12px;
+      line-height: 17px;
+    }
+
+    .reply-marker {
+      color: #a84f6d;
+      font-weight: 600;
+    }
+
+    .composer {
+      flex: none;
+      padding: 11px 12px;
+      background: #ffffff;
+      border-top: 1px solid #ded9db;
+    }
+
+    .composer-form {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .composer input {
+      min-width: 0;
+      flex: 1;
+      height: 42px;
+      padding: 9px 11px;
+      border: 1px solid #d7d0d3;
+      border-radius: 4px;
+      outline: none;
+      background: #faf9f9;
+      color: #272326;
+      font-size: 14px;
+    }
+
+    .composer input::placeholder {
+      color: #8c8287;
+      opacity: 1;
+    }
+
+    .send-button {
+      height: 42px;
+      padding: 0 16px;
+      border: 1px solid #a84f6d;
+      border-radius: 4px;
+      background: #a84f6d;
+      color: #ffffff;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .tabbar {
+      flex: none;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      background: #ffffff;
+      border-top: 1px solid #ded9db;
+    }
+
+    .tab {
+      position: relative;
+      padding: 13px 4px 15px;
+      border: 0;
+      background: transparent;
+      color: #766d72;
+      font-size: 14px;
+      line-height: 18px;
+      cursor: pointer;
+    }
+
+    .tab.active {
+      color: #a84f6d;
+      font-weight: 600;
+    }
+
+    .tab.active::before {
+      content: "";
+      position: absolute;
+      top: -1px;
+      left: 24px;
+      right: 24px;
+      height: 3px;
+      background: #a84f6d;
+    }
+
+    svg {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <button class="icon-button" type="button" aria-label="Back to feed">
+        <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M15 5L8 12L15 19" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square" stroke-linejoin="miter"/>
+        </svg>
+      </button>
+      <div class="topbar-copy">
+        <div class="title-row">
+          <h1>Cleanup Crew</h1>
+          <span class="header-chip">SAT 8 AM</span>
+        </div>
+        <p>Volunteer coordination thread</p>
+      </div>
+      <button class="icon-button" type="button" aria-label="More options">
+        <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="5" cy="12" r="1.5" fill="currentColor"/>
+          <circle cx="12" cy="12" r="1.5" fill="currentColor"/>
+          <circle cx="19" cy="12" r="1.5" fill="currentColor"/>
+        </svg>
+      </button>
+    </header>
+
+    <main class="main">
+      <article class="post-card">
+        <div class="author-row">
+          <div class="monogram author-avatar" aria-hidden="true">JM</div>
+          <div class="author-meta">
+            <p class="author-name">June Mercer</p>
+            <div class="post-time">Volunteer lead · 10:24 AM</div>
+          </div>
+        </div>
+
+        <p class="post-text">Supplies for Saturday are stacked in the shed. I need one person to take the key handoff at the café.</p>
+
+        <img
+          class="post-photo"
+          src="https://loremflickr.com/342/112/cafe?lock=12290"
+          width="342"
+          height="112"
+          alt="Volunteers gathering at the corner café before the cleanup"
+        >
+
+        <div class="shift-line">
+          <span><strong>Morning shift:</strong> 8:00 – 11:00 AM</span>
+          <span>Key: unassigned</span>
+        </div>
+
+        <div class="post-actions" aria-label="Post activity">
+          <button class="text-action active" type="button">8 signed up</button>
+          <button class="text-action" type="button">Reply</button>
+          <span>3 updates</span>
+        </div>
+      </article>
+
+      <div class="comments-heading">
+        <h2>Availability</h2>
+        <span>Handoff pending</span>
+      </div>
+
+      <section class="comments-card" aria-label="Coordination thread">
+        <article class="comment">
+          <div class="monogram comment-avatar" aria-hidden="true">AS</div>
+          <div class="comment-body">
+            <div class="comment-head">
+              <p class="comment-name">Avery Stone</p>
+              <span class="comment-time">11:02 AM</span>
+            </div>
+            <p class="comment-text">I can cover 8 to 11 Saturday. Who has the shed key before then?</p>
+            <div class="comment-actions">
+              <button class="text-action" type="button">Like</button>
+              <button class="text-action" type="button">Reply</button>
+            </div>
+          </div>
+        </article>
+
+        <div class="reply-block">
+          <p class="reply-label">In reply to Avery Stone</p>
+          <article class="comment nested">
+            <div class="monogram comment-avatar" aria-hidden="true">JM</div>
+            <div class="comment-body">
+              <div class="comment-head">
+                <p class="comment-name">June Mercer</p>
+                <span class="comment-time">11:16 AM</span>
+              </div>
+              <p class="comment-text"><span class="reply-marker">Avery,</span> key goes to the café host at 7:45 with the sign-in sheet.</p>
+              <div class="comment-actions">
+                <button class="text-action active" type="button">1 like</button>
+                <button class="text-action" type="button">Reply</button>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <article class="comment">
+          <div class="monogram comment-avatar" aria-hidden="true">CT</div>
+          <div class="comment-body">
+            <div class="comment-head">
+              <p class="comment-name">Caleb Turner</p>
+              <span class="comment-time">12:08 PM</span>
+            </div>
+            <p class="comment-text">Free after noon — I'll handle the bag drop-off and log the totals.</p>
+            <div class="comment-actions">
+              <button class="text-action" type="button">Like</button>
+              <button class="text-action" type="button">Reply</button>
+            </div>
+          </div>
+        </article>
+      </section>
+    </main>
+
+    <div class="composer">
+      <form class="composer-form">
+        <input type="text" aria-label="Post a shift update" placeholder="Claim a shift or add details">
+        <button class="send-button" type="submit">Post</button>
+      </form>
+    </div>
+
+    <nav class="tabbar" aria-label="Primary navigation">
+      <button class="tab active" type="button">Feed</button>
+      <button class="tab" type="button">Circles</button>
+      <button class="tab" type="button">Inbox</button>
+      <button class="tab" type="button">You</button>
+    </nav>
+  </div>
+</body>
+</html>

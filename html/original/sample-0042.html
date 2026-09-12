@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Loomcart Assistant</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --green:#17804a;
+    --green-dark:#12673b;
+    --ink:#1a1d1f;
+    --muted:#6b7280;
+    --line:#e5e7eb;
+    --ground:#f2f3f5;
+    --shadow:0 1px 3px rgba(16,24,40,.10);
+  }
+  *{box-sizing:border-box;}
+  body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    padding:40px 0;
+    margin:0;
+    background:#d7d9dd;
+    font-family:'Nunito Sans', system-ui, sans-serif;
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+  }
+  .screen{
+    width:390px;
+    height:844px;
+    background:var(--ground);
+    display:flex;
+    flex-direction:column;
+    position:relative;
+  }
+
+  /* top bar */
+  .topbar{
+    background:#fff;
+    border-bottom:1px solid var(--line);
+    padding:12px 14px;
+    display:flex;
+    align-items:center;
+    gap:12px;
+  }
+  .iconbtn{
+    width:32px;height:32px;
+    display:flex;align-items:center;justify-content:center;
+    color:#2b2f33;
+    flex:none;
+  }
+  .titleblock{flex:1;min-width:0;}
+  .titleblock h1{
+    margin:0;
+    font-size:16px;
+    font-weight:700;
+    line-height:20px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .titleblock p{
+    margin:1px 0 0;
+    font-size:12px;
+    color:var(--muted);
+    line-height:16px;
+  }
+  .dot{
+    display:inline-block;width:6px;height:6px;border-radius:50%;
+    background:var(--green);margin-right:5px;vertical-align:1px;
+  }
+
+  /* thread */
+  .thread{
+    flex:1;
+    padding:14px 16px 4px;
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+  }
+  .daymark{
+    align-self:center;
+    font-size:12px;
+    color:var(--muted);
+    line-height:16px;
+  }
+  .row{display:flex;}
+  .row.me{justify-content:flex-end;}
+  .bubble{
+    max-width:296px;
+    border-radius:4px;
+    padding:10px 12px;
+    font-size:14px;
+    line-height:20px;
+  }
+  .bubble.bot{
+    background:#fff;
+    box-shadow:var(--shadow);
+  }
+  .bubble.me{
+    background:var(--green);
+    color:#fff;
+    font-weight:600;
+  }
+  .bubble.wide{max-width:322px;}
+  .bubble p{margin:0;}
+  .bubble p + p{margin-top:6px;}
+
+  .picks{
+    margin-top:10px;
+    border:1px solid var(--line);
+    border-radius:4px;
+  }
+  .pick{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:9px 10px;
+    border-bottom:1px solid var(--line);
+  }
+  .pick:last-child{border-bottom:none;}
+  .thumb{
+    width:44px;height:44px;border-radius:4px;flex:none;
+  }
+  .t1{background:#cfdfd4;}
+  .t2{background:#dcdfe4;}
+  .t3{background:#e2dbcf;}
+  .pick .info{flex:1;min-width:0;}
+  .pick .name{
+    font-size:14px;font-weight:600;line-height:18px;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .pick .meta{
+    font-size:12px;color:var(--muted);line-height:16px;margin-top:2px;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .pick .price{
+    font-size:14px;font-weight:700;line-height:18px;text-align:right;flex:none;
+  }
+  .pick .price span{
+    display:block;font-size:12px;font-weight:400;color:var(--muted);line-height:16px;
+  }
+  .foot{
+    margin-top:8px;
+    font-size:12px;
+    color:var(--muted);
+    line-height:16px;
+  }
+  .tag{
+    display:inline-block;
+    margin-top:8px;
+    background:#e8f3ec;
+    color:var(--green-dark);
+    font-size:12px;
+    font-weight:700;
+    line-height:16px;
+    padding:3px 7px;
+    border-radius:4px;
+  }
+
+  /* suggestions */
+  .suggest{
+    padding:10px 16px 12px;
+  }
+  .suggest .label{
+    font-size:12px;
+    color:var(--muted);
+    line-height:16px;
+    margin-bottom:8px;
+  }
+  .chips{display:flex;gap:8px;}
+  .chip{
+    background:#fff;
+    border:1px solid #cfe0d5;
+    color:var(--green-dark);
+    border-radius:4px;
+    padding:7px 10px;
+    font-size:13px;
+    font-weight:600;
+    line-height:18px;
+    white-space:nowrap;
+  }
+
+  /* composer */
+  .composer{
+    background:#fff;
+    border-top:1px solid var(--line);
+    padding:10px 12px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .field{
+    flex:1;
+    background:var(--ground);
+    border:1px solid var(--line);
+    border-radius:4px;
+    padding:10px 12px;
+    font-size:14px;
+    line-height:18px;
+    color:#9aa1a9;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .send{
+    width:40px;height:40px;
+    flex:none;
+    background:var(--green);
+    border-radius:4px;
+    display:flex;align-items:center;justify-content:center;
+    color:#fff;
+  }
+
+  /* tab bar */
+  .tabbar{
+    background:#fff;
+    border-top:1px solid var(--line);
+    display:flex;
+    padding:8px 4px 10px;
+  }
+  .tab{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:3px;
+    color:#8b9199;
+    font-size:12px;
+    line-height:16px;
+  }
+  .tab.active{color:var(--green);font-weight:700;}
+</style>
+</head>
+<body>
+  <div class="screen">
+
+    <header class="topbar">
+      <div class="iconbtn" aria-label="Back">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      </div>
+      <div class="titleblock">
+        <h1>Loomcart Assistant</h1>
+        <p><span class="dot"></span>Answers from live catalog</p>
+      </div>
+      <div class="iconbtn" aria-label="New conversation">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+      </div>
+    </header>
+
+    <main class="thread">
+      <div class="daymark">Today, 2:14 PM</div>
+
+      <div class="row me">
+        <div class="bubble me">Trail running shoes under $120, women's size 8, good grip on wet rock.</div>
+      </div>
+
+      <div class="row">
+        <div class="bubble bot wide">
+          <p>Three in your size ship free and are in stock now.</p>
+          <div class="picks">
+            <div class="pick">
+              <div class="thumb t1"></div>
+              <div class="info">
+                <div class="name">Ridgeline Trail 4</div>
+                <div class="meta">Lug 5 mm · 4.6 (812)</div>
+              </div>
+              <div class="price">$104<span>Free ship</span></div>
+            </div>
+            <div class="pick">
+              <div class="thumb t2"></div>
+              <div class="info">
+                <div class="name">Kestrel Grip GTX</div>
+                <div class="meta">Waterproof · 4.4 (1,209)</div>
+              </div>
+              <div class="price">$118<span>2 left</span></div>
+            </div>
+            <div class="pick">
+              <div class="thumb t3"></div>
+              <div class="info">
+                <div class="name">Alder Path Low</div>
+                <div class="meta">Lug 4 mm · 4.5 (367)</div>
+              </div>
+              <div class="price">$92<span>Free ship</span></div>
+            </div>
+          </div>
+          <p class="foot">Prices checked 8 minutes ago.</p>
+        </div>
+      </div>
+
+      <div class="row me">
+        <div class="bubble me">Which holds up best on wet rock?</div>
+      </div>
+
+      <div class="row">
+        <div class="bubble bot">
+          <p>The Kestrel Grip GTX. Its outsole compound stays soft below 50°F, and 78 reviews mention wet traction specifically.</p>
+          <p>Ridgeline Trail 4 drains faster but slips on smooth stone.</p>
+          <span class="tag">Returns free within 30 days</span>
+        </div>
+      </div>
+    </main>
+
+    <div class="suggest">
+      <div class="label">Suggested</div>
+      <div class="chips">
+        <div class="chip">Compare picks</div>
+        <div class="chip">Size guide</div>
+        <div class="chip">Wide fit</div>
+      </div>
+    </div>
+
+    <div class="composer">
+      <div class="field">Ask about products, orders, or returns</div>
+      <div class="send" aria-label="Send">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
+      </div>
+    </div>
+
+    <nav class="tabbar">
+      <div class="tab">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5L12 4l8 6.5V20H4z"/></svg>
+        Home
+      </div>
+      <div class="tab">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6"/><path d="M20 20l-3.6-3.6"/></svg>
+        Search
+      </div>
+      <div class="tab active">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a7 7 0 0 1-7 7H8l-4 3v-4.6A7 7 0 0 1 11 5h2a7 7 0 0 1 7 7z"/></svg>
+        Assistant
+      </div>
+      <div class="tab">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8l8-4 8 4v8l-8 4-8-4z"/><path d="M4 8l8 4 8-4"/><path d="M12 12v8"/></svg>
+        Orders
+      </div>
+      <div class="tab">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h2l2.2 10.2A2 2 0 0 0 10.2 17h7.3a2 2 0 0 0 2-1.6L21 8H7"/><circle cx="10.5" cy="20" r="1.2"/><circle cx="17.5" cy="20" r="1.2"/></svg>
+        Cart
+      </div>
+    </nav>
+
+  </div>
+</body>
+</html>

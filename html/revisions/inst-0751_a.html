@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Account — Vessel Health Rehab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 40px 0;
+    margin: 0;
+    background: #d8d6cf;
+    font-family: 'Source Serif 4', Georgia, serif;
+    color: #16150f;
+  }
+  .screen {
+    width: 768px;
+    height: 1024px;
+    background: #ffffff;
+    display: flex;
+    border: 1px solid #cbc8be;
+  }
+
+  /* vertical tab rail */
+  .rail {
+    flex: 0 0 96px;
+    width: 96px;
+    border-right: 1px solid #e2dfd4;
+    display: flex;
+    flex-direction: column;
+    padding: 18px 0 20px;
+  }
+  .logo {
+    width: 36px; height: 36px;
+    background: #f7d000;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 700; letter-spacing: .04em;
+    margin: 0 auto 22px;
+  }
+  .tab {
+    position: relative;
+    padding: 17px 6px;
+    text-align: center;
+    font-size: 12px;
+    color: #6f6c60;
+    line-height: 1.2;
+  }
+  .tab.on { color: #16150f; font-weight: 600; }
+  .tab .mark {
+    position: absolute; left: 0; top: 12px; bottom: 12px;
+    width: 4px; background: #f7d000;
+  }
+  .tab svg { margin-bottom: 5px; display: block; margin-left: auto; margin-right: auto; }
+  .tab.help { margin-top: auto; }
+
+  /* main */
+  .main { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; }
+  .topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 22px 26px 18px;
+    border-bottom: 1px solid #e2dfd4;
+  }
+  .topbar h1 { font-size: 24px; font-weight: 700; margin: 0; letter-spacing: .01em; }
+  .topbar .tools { display: flex; gap: 22px; align-items: center; }
+  .ico { display: block; }
+
+  .body { flex: 1 1 auto; display: flex; min-height: 0; }
+  .colL { flex: 0 0 312px; width: 312px; border-right: 1px solid #e2dfd4; }
+  .colR { flex: 1 1 auto; min-width: 0; }
+
+  /* profile */
+  .profile { padding: 20px 22px 18px; display: flex; gap: 14px; align-items: center; }
+  .mono {
+    width: 62px; height: 62px; flex: 0 0 62px;
+    background: #f7d000; color: #16150f;
+    font-size: 23px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    letter-spacing: .02em;
+  }
+  .pname { font-size: 19px; font-weight: 700; line-height: 1.2; }
+  .pmeta { font-size: 13px; color: #6f6c60; margin-top: 5px; }
+  .editlink {
+    display: block;
+    margin: 0 22px 18px;
+    text-align: center;
+    font-size: 14px; font-weight: 600;
+    border: 1px solid #16150f;
+    padding: 12px 14px;
+  }
+
+  /* yellow week block */
+  .week { background: #f7d000; padding: 20px 22px 22px; }
+  .klabel { font-size: 12px; text-transform: uppercase; letter-spacing: .12em; font-weight: 600; }
+  .week .big { font-size: 28px; font-weight: 700; margin-top: 9px; line-height: 1.1; }
+  .week .sub { font-size: 13px; margin-top: 7px; line-height: 1.4; }
+  .bar { margin-top: 15px; height: 9px; background: rgba(22,21,15,.18); display: flex; }
+  .bar > i { display: block; height: 9px; width: 80%; background: #16150f; }
+  .barnote { display: flex; justify-content: space-between; font-size: 12px; margin-top: 7px; }
+
+  /* three headline numbers */
+  .stat { padding: 15px 22px 16px; border-top: 1px solid #e2dfd4; }
+  .stat .sl { font-size: 11px; text-transform: uppercase; letter-spacing: .12em; font-weight: 600; color: #6f6c60; }
+  .stat .sv { font-size: 46px; font-weight: 700; line-height: 1; margin-top: 8px; letter-spacing: -.01em; }
+  .stat .u { font-size: 19px; font-weight: 600; }
+  .tick { width: 34px; height: 5px; background: #f7d000; margin-top: 10px; }
+  .stat .sd { font-size: 12px; color: #6f6c60; margin-top: 8px; }
+
+  .visit { border-top: 1px solid #e2dfd4; padding: 16px 22px 18px; }
+  .visit .vl { font-size: 11px; text-transform: uppercase; letter-spacing: .12em; font-weight: 600; color: #6f6c60; }
+  .visit .vt { font-size: 15px; font-weight: 600; margin-top: 7px; }
+  .visit .vm { font-size: 13px; color: #6f6c60; margin-top: 4px; }
+
+  /* right column lists */
+  .shead {
+    display: flex; align-items: baseline; justify-content: space-between;
+    padding: 18px 24px 11px;
+  }
+  .shead .st { font-size: 12px; text-transform: uppercase; letter-spacing: .12em; font-weight: 600; }
+  .shead .sa { font-size: 12px; color: #6f6c60; }
+
+  .row { display: flex; align-items: center; gap: 15px; padding: 13px 24px; border-top: 1px solid #e2dfd4; }
+  .row img { width: 72px; height: 72px; object-fit: cover; display: block; background: #cbc8be; flex: 0 0 72px; }
+  .rmain { min-width: 0; flex: 1 1 auto; }
+  .rt { font-size: 16px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .rm { font-size: 13px; color: #6f6c60; margin-top: 5px; }
+  .rv { font-size: 12px; font-weight: 600; white-space: nowrap; text-transform: uppercase; letter-spacing: .08em; }
+  .rv.skip { color: #6f6c60; }
+
+  .arow { display: flex; align-items: center; gap: 12px; padding: 16px 24px; border-top: 1px solid #e2dfd4; }
+  .arow .at { font-size: 15px; }
+  .arow .av { margin-left: auto; font-size: 13px; color: #6f6c60; white-space: nowrap; }
+  .last { border-bottom: 1px solid #e2dfd4; }
+</style>
+</head>
+<body>
+  <div class="screen">
+
+    <div class="rail">
+      <div class="logo">VH</div>
+      <div class="tab">
+        <svg width="22" height="22" viewBox="0 0 20 20" fill="none" stroke="#6f6c60" stroke-width="1.4"><path d="M3 10.5 10 4l7 6.5"/><path d="M5 10v6h10v-6"/></svg>
+        <div>Today</div>
+      </div>
+      <div class="tab">
+        <svg width="22" height="22" viewBox="0 0 20 20" fill="none" stroke="#6f6c60" stroke-width="1.4"><path d="M3 15l4-5 3.2 3L17 5"/></svg>
+        <div>Progress</div>
+      </div>
+      <div class="tab">
+        <svg width="22" height="22" viewBox="0 0 20 20" fill="none" stroke="#6f6c60" stroke-width="1.4"><path d="M10 4v12M4 10h12"/></svg>
+        <div>Log pain</div>
+      </div>
+      <div class="tab on">
+        <div class="mark"></div>
+        <svg width="22" height="22" viewBox="0 0 20 20" fill="none" stroke="#16150f" stroke-width="1.4"><circle cx="10" cy="7" r="3.2"/><path d="M4 17c0-3.1 2.7-5 6-5s6 1.9 6 5"/></svg>
+        <div>Account</div>
+      </div>
+      <div class="tab help">
+        <svg width="22" height="22" viewBox="0 0 20 20" fill="none" stroke="#6f6c60" stroke-width="1.4"><circle cx="10" cy="10" r="7"/><path d="M8.2 8a1.9 1.9 0 1 1 2.6 1.8v1.4"/><path d="M10 14h.01"/></svg>
+        <div>Help</div>
+      </div>
+    </div>
+
+    <div class="main">
+
+      <div class="topbar">
+        <h1>Account</h1>
+        <div class="tools">
+          <svg class="ico" width="22" height="22" viewBox="0 0 20 20" fill="none" stroke="#16150f" stroke-width="1.4">
+            <path d="M10 2.5 3 5.5v4.2c0 3.6 2.8 6.6 7 7.8 4.2-1.2 7-4.2 7-7.8V5.5L10 2.5z"/>
+          </svg>
+          <svg class="ico" width="22" height="22" viewBox="0 0 20 20" fill="none" stroke="#16150f" stroke-width="1.4">
+            <circle cx="10" cy="10" r="2.6"/>
+            <path d="M10 1.8v2.4M10 15.8v2.4M18.2 10h-2.4M4.2 10H1.8M15.8 4.2l-1.7 1.7M5.9 14.1l-1.7 1.7M15.8 15.8l-1.7-1.7M5.9 5.9 4.2 4.2"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="body">
+
+        <div class="colL">
+          <div class="profile">
+            <div class="mono">NW</div>
+            <div>
+              <div class="pname">Nora Whitfield</div>
+              <div class="pmeta">Patient #40122 · Ridgeway PT</div>
+            </div>
+          </div>
+          <div class="editlink">Edit patient details</div>
+
+          <div class="week">
+            <div class="klabel">Prescribed this week</div>
+            <div class="big">4 of 5 sessions done</div>
+            <div class="sub">Two days left in the window your clinician set Monday.</div>
+            <div class="bar"><i></i></div>
+            <div class="barnote"><span>Mar 10 – Mar 16</span><span>80%</span></div>
+          </div>
+
+          <div class="stat">
+            <div class="sl">Pain level</div>
+            <div class="sv">3<span class="u">/10</span></div>
+            <div class="tick"></div>
+            <div class="sd">Average of 6 daily check-ins</div>
+          </div>
+          <div class="stat">
+            <div class="sl">Resting HR</div>
+            <div class="sv">58<span class="u"> bpm</span></div>
+            <div class="tick"></div>
+            <div class="sd">Steady since week 4</div>
+          </div>
+          <div class="stat">
+            <div class="sl">Avg sleep</div>
+            <div class="sv">7<span class="u">h</span> 12<span class="u">m</span></div>
+            <div class="tick"></div>
+            <div class="sd">Up 24 min from last week</div>
+          </div>
+
+          <div class="visit">
+            <div class="vl">Next visit</div>
+            <div class="vt">Thu, Mar 14 · 9:30 AM</div>
+            <div class="vm">Dr. Alvarez · Ridgeway PT, Room 2</div>
+          </div>
+        </div>
+
+        <div class="colR">
+          <div class="shead">
+            <span class="st">Prescribed exercises</span>
+            <span class="sa">Last 3 days</span>
+          </div>
+
+          <div class="row">
+            <img src="https://loremflickr.com/72/72/stretching?lock=10020" width="72" height="72" alt="Patient performing a lying knee flexion stretch">
+            <div class="rmain">
+              <div class="rt">Heel slides — knee flexion</div>
+              <div class="rm">Tue, Mar 12 · 3 × 12 reps · pain 2/10</div>
+            </div>
+            <div class="rv">Done</div>
+          </div>
+
+          <div class="row">
+            <img src="https://loremflickr.com/72/72/gym?lock=10021" width="72" height="72" alt="Mat and strap set up for isometric quad holds">
+            <div class="rmain">
+              <div class="rt">Quad set holds</div>
+              <div class="rm">Tue, Mar 12 · 4 × 20 sec · pain 3/10</div>
+            </div>
+            <div class="rv">Done</div>
+          </div>
+
+          <div class="row">
+            <img src="https://loremflickr.com/72/72/bicycle?lock=10022" width="72" height="72" alt="Stationary bike used for the low resistance cycling block">
+            <div class="rmain">
+              <div class="rt">Stationary bike — low load</div>
+              <div class="rm">Mon, Mar 11 · 12 min · pain 4/10</div>
+            </div>
+            <div class="rv">Done</div>
+          </div>
+
+          <div class="row last">
+            <img src="https://loremflickr.com/72/72/running?lock=10023" width="72" height="72" alt="Corridor used for the standing hamstring curl exercise">
+            <div class="rmain">
+              <div class="rt">Standing hamstring curl</div>
+              <div class="rm">Mon, Mar 11 · 3 × 15 reps prescribed</div>
+            </div>
+            <div class="rv skip">Skipped</div>
+          </div>
+
+          <div class="shead">
+            <span class="st">Account</span>
+          </div>
+
+          <div class="arow">
+            <span class="at">Care plan</span>
+            <span class="av">ACL rehab · week 6 of 12</span>
+          </div>
+          <div class="arow">
+            <span class="at">Clinician</span>
+            <span class="av">Dr. Alvarez, Ridgeway PT</span>
+          </div>
+          <div class="arow">
+            <span class="at">Connected devices</span>
+            <span class="av">2 active</span>
+          </div>
+          <div class="arow last">
+            <span class="at">Data and privacy</span>
+            <span class="av">Export, clinic sharing</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

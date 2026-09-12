@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Baleyard Market — Buyer Inquiries</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 40px 0;
+    margin: 0;
+    background: #2f3033;
+    font-family: 'Source Serif 4', Georgia, serif;
+  }
+  .screen {
+    width: 390px;
+    height: 844px;
+    background: #ebebe8;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    color: #1a1c1d;
+  }
+  .topbar {
+    background: #ffffff;
+    padding: 18px 16px 12px;
+    border-bottom: 1px solid #dededa;
+  }
+  .titlerow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .titlerow h1 {
+    margin: 0;
+    font-size: 23px;
+    font-weight: 600;
+    letter-spacing: -0.2px;
+  }
+  .acts { display: flex; gap: 16px; }
+  .acts button {
+    background: none;
+    border: 0;
+    padding: 0;
+    line-height: 0;
+    color: #43474a;
+  }
+  .sub {
+    margin: 5px 0 0;
+    font-size: 13px;
+    color: #6d716f;
+  }
+  .sub b { font-weight: 600; color: #2f3437; }
+  .filters {
+    display: flex;
+    gap: 7px;
+    margin-top: 13px;
+  }
+  .chip {
+    font-family: inherit;
+    font-size: 12px;
+    padding: 6px 10px;
+    border: 1px solid #d5d5d0;
+    background: #ffffff;
+    color: #3f4346;
+    border-radius: 0;
+    white-space: nowrap;
+  }
+  .chip.on {
+    background: #2f3437;
+    border-color: #2f3437;
+    color: #ffffff;
+    font-weight: 600;
+  }
+  .list {
+    margin: 12px 12px 0;
+    background: #ffffff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.10);
+  }
+  .row {
+    display: flex;
+    gap: 12px;
+    padding: 12px 14px;
+    border-bottom: 1px solid #ececeb;
+  }
+  .row:last-child { border-bottom: 0; }
+  .row img, .mono {
+    width: 52px;
+    height: 52px;
+    flex: 0 0 52px;
+  }
+  .row img {
+    display: block;
+    object-fit: cover;
+    background: #dcdcd8;
+  }
+  .mono {
+    background: #dededa;
+    color: #3a3e40;
+    font-size: 15px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    letter-spacing: 0.5px;
+  }
+  .body { flex: 1 1 auto; min-width: 0; }
+  .meta {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 7px;
+  }
+  .sender {
+    padding-top: 2px;
+    font-size: 14px;
+    color: #4c5052;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .deadline {
+    flex: 0 0 auto;
+    text-align: right;
+    color: #717577;
+    line-height: 1.05;
+  }
+  .deadline small {
+    display: block;
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .deadline strong {
+    display: block;
+    margin-top: 3px;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .deadline.urgent { color: #8a342c; }
+  .subject {
+    margin: 2px 0 0;
+    font-size: 15px;
+    font-weight: 600;
+    color: #4f5355;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .row.unread .subject { color: #14171a; }
+  .row.unread .sender { color: #2f3437; font-weight: 600; }
+  .preview {
+    margin: 1px 0 0;
+    font-size: 13px;
+    color: #7c807e;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .tabs {
+    margin-top: auto;
+    background: #ffffff;
+    border-top: 1px solid #dededa;
+    display: flex;
+    padding: 8px 4px 10px;
+  }
+  .tab {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    font-size: 12px;
+    color: #83878a;
+  }
+  .tab.on { color: #2f3437; font-weight: 600; }
+</style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <div class="titlerow">
+        <h1>Buyer inquiries</h1>
+        <div class="acts">
+          <button aria-label="Search inquiries">
+            <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg>
+          </button>
+          <button aria-label="Filter inquiries">
+            <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3.5 7h17M6.5 12h11M10 17h4"/></svg>
+          </button>
+        </div>
+      </div>
+      <p class="sub"><b>3 need a reply</b> · 7 open inquiries · Baleyard Market</p>
+      <div class="filters">
+        <button class="chip on">All</button>
+        <button class="chip">Due today</button>
+        <button class="chip">Awaiting buyer</button>
+        <button class="chip">Closed</button>
+      </div>
+    </header>
+
+    <section class="list">
+      <article class="row unread">
+        <img src="https://loremflickr.com/52/52/sneakers?lock=4740" width="52" height="52" alt="Gray running shoes discussed in a buyer inquiry">
+        <div class="body">
+          <div class="meta">
+            <span class="sender">Maya Robinson</span>
+            <span class="deadline urgent"><small>Reply by</small><strong>11:30 AM</strong></span>
+          </div>
+          <p class="subject">Do these runners fit true to size?</p>
+          <p class="preview">I usually wear a women’s 8. Should I size up?</p>
+        </div>
+      </article>
+
+      <article class="row unread">
+        <img src="https://loremflickr.com/52/52/product?lock=4741" width="52" height="52" alt="Ceramic mug discussed in a buyer inquiry">
+        <div class="body">
+          <div class="meta">
+            <span class="sender">Ethan Cole</span>
+            <span class="deadline urgent"><small>Reply by</small><strong>1:15 PM</strong></span>
+          </div>
+          <p class="subject">Can you gift-wrap this mug?</p>
+          <p class="preview">It is for a birthday next week. Is a note included?</p>
+        </div>
+      </article>
+
+      <article class="row unread">
+        <img src="https://loremflickr.com/52/52/fashion?lock=4744" width="52" height="52" alt="Linen shirt discussed in a buyer inquiry">
+        <div class="body">
+          <div class="meta">
+            <span class="sender">Nora Bennett</span>
+            <span class="deadline"><small>Reply by</small><strong>4:00 PM</strong></span>
+          </div>
+          <p class="subject">Is the linen shirt sheer?</p>
+          <p class="preview">Would the natural color need a layer underneath?</p>
+        </div>
+      </article>
+
+      <article class="row">
+        <div class="mono">JL</div>
+        <div class="body">
+          <div class="meta">
+            <span class="sender">Jonah Lee</span>
+            <span class="deadline"><small>Reply by</small><strong>Tomorrow</strong></span>
+          </div>
+          <p class="subject">Could this arrive before Friday?</p>
+          <p class="preview">Shipping to Portland, Oregon with standard delivery.</p>
+        </div>
+      </article>
+
+      <article class="row">
+        <img src="https://loremflickr.com/52/52/product?lock=4742" width="52" height="52" alt="Stoneware bowl set discussed in a buyer inquiry">
+        <div class="body">
+          <div class="meta">
+            <span class="sender">Alice Morgan</span>
+            <span class="deadline"><small>Reply by</small><strong>Tomorrow</strong></span>
+          </div>
+          <p class="subject">Are these bowls dishwasher-safe?</p>
+          <p class="preview">I also wanted to check whether the glaze is lead-free.</p>
+        </div>
+      </article>
+
+      <article class="row">
+        <img src="https://loremflickr.com/52/52/furniture?lock=4743" width="52" height="52" alt="Two-seat sofa discussed in a buyer inquiry">
+        <div class="body">
+          <div class="meta">
+            <span class="sender">Theo Williams</span>
+            <span class="deadline"><small>Reply by</small><strong>Mar 15</strong></span>
+          </div>
+          <p class="subject">Can the sofa fit through a 30-inch door?</p>
+          <p class="preview">Could you share the packaged dimensions and weight?</p>
+        </div>
+      </article>
+
+      <article class="row">
+        <div class="mono">SC</div>
+        <div class="body">
+          <div class="meta">
+            <span class="sender">Sofia Chen</span>
+            <span class="deadline"><small>Reply by</small><strong>Mar 16</strong></span>
+          </div>
+          <p class="subject">Do you offer a combined-shipping rate?</p>
+          <p class="preview">I am considering three pieces from your storefront.</p>
+        </div>
+      </article>
+    </section>
+
+    <nav class="tabs">
+      <div class="tab">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 10.5 12 4l8 6.5V20H4z"/></svg>
+        Home
+      </div>
+      <div class="tab">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg>
+        Browse
+      </div>
+      <div class="tab">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5.5 8h13l-1 12h-11z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>
+        Orders
+      </div>
+      <div class="tab on">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 5.5h16v11H9l-5 3z"/><path d="M8 9h8M8 12.5h5"/></svg>
+        Inquiries
+      </div>
+      <div class="tab">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="9" r="3.5"/><path d="M5 20c0-3.6 3.1-5.5 7-5.5s7 1.9 7 5.5"/></svg>
+        Account
+      </div>
+    </nav>
+  </div>
+</body>
+</html>

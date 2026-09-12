@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Send Money — Gatherline</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #d8d9de;
+      color: #202127;
+      font-family: 'Inter', system-ui, sans-serif;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .screen {
+      width: 1024px;
+      height: 768px;
+      display: flex;
+      flex-direction: column;
+      background: #f6f6f8;
+      border: 1px solid #c9cad0;
+      box-shadow: 0 18px 52px rgba(28, 29, 34, 0.14);
+    }
+
+    .topbar {
+      padding: 0 28px;
+      display: flex;
+      align-items: center;
+      gap: 30px;
+      background: #ffffff;
+      border-bottom: 1px solid #dedee3;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      color: #25262c;
+      font-size: 16px;
+      line-height: 22px;
+      font-weight: 700;
+    }
+
+    .brand-mark {
+      width: 28px;
+      height: 28px;
+      display: grid;
+      place-items: center;
+      border-radius: 7px;
+      background: #b31273;
+      color: #ffffff;
+      font-size: 13px;
+    }
+
+    .nav {
+      align-self: stretch;
+      display: flex;
+      align-items: stretch;
+      gap: 5px;
+    }
+
+    .nav-item {
+      padding: 19px 14px 17px;
+      border: 0;
+      border-bottom: 2px solid transparent;
+      background: transparent;
+      color: #6b6d76;
+      font-size: 12px;
+      line-height: 18px;
+      font-weight: 500;
+    }
+
+    .nav-item.active {
+      border-bottom-color: #b31273;
+      color: #a51269;
+      font-weight: 700;
+    }
+
+    .topbar-spacer {
+      flex: 1;
+    }
+
+    .activity-button {
+      padding: 7px 11px;
+      border: 1px solid #dadade;
+      border-radius: 5px;
+      background: #ffffff;
+      color: #4f515a;
+      font-size: 11px;
+      line-height: 17px;
+      font-weight: 600;
+    }
+
+    .profile-button {
+      width: 32px;
+      height: 32px;
+      padding: 0;
+      display: grid;
+      place-items: center;
+      border: 0;
+      border-radius: 50%;
+      background: #e8d7e2;
+      color: #881254;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    main {
+      min-height: 0;
+      flex: 1;
+      padding: 22px 30px 26px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .page-heading {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .eyebrow {
+      margin: 0 0 3px;
+      color: #a51269;
+      font-size: 10px;
+      line-height: 15px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .page-title {
+      margin: 0;
+      font-size: 22px;
+      line-height: 29px;
+      font-weight: 700;
+    }
+
+    .page-subtitle {
+      margin: 3px 0 0;
+      color: #747680;
+      font-size: 12px;
+      line-height: 17px;
+    }
+
+    .secure-note {
+      padding: 7px 10px;
+      border-radius: 5px;
+      background: #ececef;
+      color: #60626b;
+      font-size: 10px;
+      line-height: 16px;
+      font-weight: 600;
+    }
+
+    .workspace {
+      min-height: 0;
+      flex: 1;
+      margin-top: 18px;
+      display: grid;
+      grid-template-columns: minmax(0, 1.12fr) minmax(0, 0.88fr);
+      gap: 22px;
+    }
+
+    .stage {
+      min-width: 0;
+      padding: 19px;
+      background: #ffffff;
+      border: 1px solid #dcdce2;
+      border-radius: 7px;
+    }
+
+    .stage-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    .stage-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      min-width: 0;
+    }
+
+    .stage-number {
+      width: 24px;
+      height: 24px;
+      flex: 0 0 24px;
+      display: grid;
+      place-items: center;
+      border-radius: 4px;
+      background: #2d2e34;
+      color: #ffffff;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .stage-title {
+      margin: 0;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 700;
+    }
+
+    .stage-status {
+      color: #278051;
+      font-size: 10px;
+      line-height: 15px;
+      font-weight: 700;
+    }
+
+    .search-row {
+      margin-top: 15px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+    }
+
+    .search-field {
+      min-width: 0;
+      padding: 8px 10px;
+      border: 1px solid #d7d7dd;
+      border-radius: 5px;
+      background: #fafafd;
+      color: #36373e;
+      font-size: 11px;
+      line-height: 18px;
+      outline: 0;
+    }
+
+    .search-button {
+      padding: 8px 13px;
+      border: 1px solid #cfcfd5;
+      border-radius: 5px;
+      background: #ffffff;
+      color: #4d4f58;
+      font-size: 11px;
+      line-height: 18px;
+      font-weight: 600;
+    }
+
+    .selected-recipient {
+      margin-top: 14px;
+      padding: 11px 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-left: 3px solid #b31273;
+      background: #fbf2f8;
+    }
+
+    .monogram {
+      width: 36px;
+      height: 36px;
+      flex: 0 0 36px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: #e7d6e1;
+      color: #891357;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .recipient-copy,
+    .person-copy {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .recipient-name,
+    .person-name {
+      margin: 0;
+      color: #292a30;
+      font-size: 12px;
+      line-height: 17px;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .recipient-handle,
+    .person-detail {
+      margin: 1px 0 0;
+      color: #767882;
+      font-size: 10px;
+      line-height: 15px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .selected-badge {
+      padding: 4px 7px;
+      border-radius: 4px;
+      background: #ffffff;
+      color: #9c155f;
+      font-size: 9px;
+      line-height: 14px;
+      font-weight: 700;
+    }
+
+    .table-heading {
+      margin-top: 17px;
+      padding-bottom: 7px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 112px 62px;
+      gap: 10px;
+      border-bottom: 1px solid #e3e3e7;
+      color: #858791;
+      font-size: 9px;
+      line-height: 14px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .recent-label {
+      margin: 0;
+      color: #555761;
+      font-size: 11px;
+      line-height: 16px;
+      font-weight: 700;
+      text-transform: none;
+      letter-spacing: 0;
+    }
+
+    .person-row {
+      padding: 9px 0;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 112px 62px;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 1px solid #ececef;
+    }
+
+    .person-main {
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+
+    .person-row .monogram {
+      width: 30px;
+      height: 30px;
+      flex-basis: 30px;
+      background: #ededf0;
+      color: #555761;
+      font-size: 10px;
+    }
+
+    .last-paid {
+      color: #6d6f79;
+      font-size: 10px;
+      line-height: 15px;
+    }
+
+    .select-button {
+      padding: 5px 7px;
+      border: 1px solid #d5d5db;
+      border-radius: 4px;
+      background: #ffffff;
+      color: #4f515a;
+      font-size: 9px;
+      line-height: 14px;
+      font-weight: 700;
+    }
+
+    .amount-stage {
+      display: flex;
+      flex-direction: column;
+      background: #fcfcfd;
+    }
+
+    .amount-editor {
+      margin-top: 15px;
+      padding: 15px;
+      border: 1px solid #d7d7dd;
+      border-radius: 6px;
+      background: #ffffff;
+    }
+
+    .amount-label {
+      margin: 0;
+      color: #666873;
+      font-size: 10px;
+      line-height: 15px;
+      font-weight: 600;
+    }
+
+    .amount-field {
+      margin-top: 5px;
+      padding-bottom: 8px;
+      display: flex;
+      align-items: baseline;
+      border-bottom: 2px solid #b31273;
+    }
+
+    .currency-symbol {
+      color: #b31273;
+      font-size: 26px;
+      line-height: 34px;
+      font-weight: 600;
+    }
+
+    .amount-value {
+      margin: 0;
+      color: #28292f;
+      font-size: 39px;
+      line-height: 46px;
+      font-weight: 700;
+      letter-spacing: -0.04em;
+    }
+
+    .balance-line {
+      margin-top: 8px;
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      color: #777984;
+      font-size: 10px;
+      line-height: 15px;
+    }
+
+    .balance-line strong {
+      color: #3f4149;
+      font-weight: 600;
+    }
+
+    .quick-amounts {
+      margin-top: 11px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+    }
+
+    .quick-amount {
+      padding: 6px 3px;
+      border: 1px solid #d9d9df;
+      border-radius: 4px;
+      background: #f7f7f9;
+      color: #4c4e57;
+      font-size: 10px;
+      line-height: 15px;
+      font-weight: 600;
+    }
+
+    .review-card {
+      margin-top: 15px;
+      border: 1px solid #dfdfe4;
+      border-radius: 6px;
+      background: #ffffff;
+    }
+
+    .review-head {
+      padding: 11px 13px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #e6e6ea;
+    }
+
+    .review-title {
+      margin: 0;
+      font-size: 11px;
+      line-height: 16px;
+      font-weight: 700;
+    }
+
+    .edit-button {
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: #a51269;
+      font-size: 9px;
+      line-height: 14px;
+      font-weight: 700;
+    }
+
+    .review-body {
+      padding: 8px 13px 10px;
+    }
+
+    .review-row {
+      padding: 5px 0;
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      color: #6b6d76;
+      font-size: 10px;
+      line-height: 15px;
+    }
+
+    .review-row strong {
+      max-width: 62%;
+      color: #303139;
+      font-weight: 600;
+      text-align: right;
+    }
+
+    .review-row.total {
+      margin-top: 5px;
+      padding-top: 9px;
+      border-top: 1px solid #e3e3e7;
+      color: #292a30;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .review-row.total strong {
+      color: #a51269;
+      font-size: 13px;
+    }
+
+    .action-area {
+      margin-top: auto;
+      padding-top: 15px;
+    }
+
+    .primary-action {
+      width: 100%;
+      padding: 10px 15px;
+      border: 0;
+      border-radius: 5px;
+      background: #b31273;
+      color: #ffffff;
+      font-size: 12px;
+      line-height: 19px;
+      font-weight: 700;
+    }
+
+    .action-note {
+      margin: 7px 0 0;
+      color: #858791;
+      font-size: 9px;
+      line-height: 14px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-mark">G</span>
+        <span>Gatherline</span>
+      </div>
+
+      <nav class="nav" aria-label="Gatherline navigation">
+        <button class="nav-item" type="button">Home</button>
+        <button class="nav-item" type="button">Messages</button>
+        <button class="nav-item active" type="button" aria-current="page">Send</button>
+        <button class="nav-item" type="button">Profile</button>
+      </nav>
+
+      <div class="topbar-spacer"></div>
+      <button class="activity-button" type="button">Activity</button>
+      <button class="profile-button" type="button" aria-label="Open profile">AK</button>
+    </header>
+
+    <main>
+      <div class="page-heading">
+        <div>
+          <p class="eyebrow">New transfer</p>
+          <h1 class="page-title">Send money</h1>
+          <p class="page-subtitle">Complete both stages to prepare your Gatherline transfer.</p>
+        </div>
+        <span class="secure-note">Secure transfer workspace</span>
+      </div>
+
+      <div class="workspace">
+        <section class="stage" aria-labelledby="recipient-title">
+          <div class="stage-header">
+            <div class="stage-title-wrap">
+              <span class="stage-number">1</span>
+              <h2 class="stage-title" id="recipient-title">Recipient selection</h2>
+            </div>
+            <span class="stage-status">Recipient selected</span>
+          </div>
+
+          <div class="search-row">
+            <input class="search-field" type="text" placeholder="Search name, email, or @handle" aria-label="Search recipients">
+            <button class="search-button" type="button">Search</button>
+          </div>
+
+          <div class="selected-recipient" aria-label="Selected recipient">
+            <div class="monogram" aria-hidden="true">EP</div>
+            <div class="recipient-copy">
+              <p class="recipient-name">Elena Park</p>
+              <p class="recipient-handle">@elenap · Gatherline friend</p>
+            </div>
+            <span class="selected-badge">Selected</span>
+          </div>
+
+          <div class="table-heading">
+            <p class="recent-label">Recent people</p>
+            <span>Last transfer</span>
+            <span>Action</span>
+          </div>
+
+          <div class="person-row">
+            <div class="person-main">
+              <div class="monogram" aria-hidden="true">MC</div>
+              <div class="person-copy">
+                <p class="person-name">Marcus Cole</p>
+                <p class="person-detail">@marcus.c</p>
+              </div>
+            </div>
+            <span class="last-paid">May 18</span>
+            <button class="select-button" type="button">Select</button>
+          </div>
+
+          <div class="person-row">
+            <div class="person-main">
+              <div class="monogram" aria-hidden="true">NF</div>
+              <div class="person-copy">
+                <p class="person-name">Nora Fields</p>
+                <p class="person-detail">@noraf</p>
+              </div>
+            </div>
+            <span class="last-paid">May 11</span>
+            <button class="select-button" type="button">Select</button>
+          </div>
+
+          <div class="person-row">
+            <div class="person-main">
+              <div class="monogram" aria-hidden="true">JL</div>
+              <div class="person-copy">
+                <p class="person-name">Jordan Lee</p>
+                <p class="person-detail">@jordanl</p>
+              </div>
+            </div>
+            <span class="last-paid">April 29</span>
+            <button class="select-button" type="button">Select</button>
+          </div>
+
+          <div class="person-row">
+            <div class="person-main">
+              <div class="monogram" aria-hidden="true">RS</div>
+              <div class="person-copy">
+                <p class="person-name">Riley Stone</p>
+                <p class="person-detail">@rileystone</p>
+              </div>
+            </div>
+            <span class="last-paid">April 22</span>
+            <button class="select-button" type="button">Select</button>
+          </div>
+        </section>
+
+        <section class="stage amount-stage" aria-labelledby="amount-title">
+          <div class="stage-header">
+            <div class="stage-title-wrap">
+              <span class="stage-number">2</span>
+              <h2 class="stage-title" id="amount-title">Amount entry and review</h2>
+            </div>
+          </div>
+
+          <div class="amount-editor">
+            <p class="amount-label">Amount to send</p>
+            <div class="amount-field">
+              <span class="currency-symbol">$</span>
+              <p class="amount-value">125.00</p>
+            </div>
+            <div class="balance-line">
+              <span>Gatherline balance</span>
+              <strong>$842.16 available</strong>
+            </div>
+            <div class="quick-amounts" aria-label="Quick amounts">
+              <button class="quick-amount" type="button">$25</button>
+              <button class="quick-amount" type="button">$50</button>
+              <button class="quick-amount" type="button">$100</button>
+              <button class="quick-amount" type="button">$200</button>
+            </div>
+          </div>
+
+          <div class="review-card">
+            <div class="review-head">
+              <h3 class="review-title">Review transfer</h3>
+              <button class="edit-button" type="button">Edit details</button>
+            </div>
+            <div class="review-body">
+              <div class="review-row">
+                <span>Send to</span>
+                <strong>Elena Park · @elenap</strong>
+              </div>
+              <div class="review-row">
+                <span>Pay with</span>
+                <strong>Gatherline balance</strong>
+              </div>
+              <div class="review-row">
+                <span>Delivery</span>
+                <strong>Usually instant</strong>
+              </div>
+              <div class="review-row">
+                <span>Fee</span>
+                <strong>$0.00</strong>
+              </div>
+              <div class="review-row total">
+                <span>Total</span>
+                <strong>$125.00</strong>
+              </div>
+            </div>
+          </div>
+
+          <div class="action-area">
+            <button class="primary-action" type="button">Review $125.00 transfer</button>
+            <p class="action-note">You can confirm the final details on the next screen.</p>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

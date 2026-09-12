@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pathnest Upload Progress</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #ebe8e9;
+      color: #272326;
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    }
+
+    .screen {
+      width: 390px;
+      height: 560px;
+      padding: 30px 24px;
+      background: #f8f7f7;
+    }
+
+    .upload-panel {
+      width: 100%;
+      padding: 22px;
+      background: #ffffff;
+      border: 1px solid #ded9dc;
+      border-radius: 8px;
+    }
+
+    .heading-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+    }
+
+    .upload-mark {
+      width: 42px;
+      height: 42px;
+      flex: 0 0 42px;
+      display: grid;
+      place-items: center;
+      padding: 0;
+      border: 1px solid #edc4d6;
+      border-radius: 6px;
+      background: #fbeaf2;
+      color: #c92f72;
+      cursor: pointer;
+    }
+
+    .upload-mark:focus-visible {
+      outline: 3px solid rgba(201, 47, 114, 0.22);
+      outline-offset: 2px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 20px;
+      line-height: 1.3;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .intro {
+      margin: 5px 0 0;
+      color: #70696d;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .progress-heading {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 16px;
+      margin-top: 22px;
+    }
+
+    .progress-heading strong {
+      font-size: 14px;
+      line-height: 1.4;
+      font-weight: 700;
+    }
+
+    .progress-value {
+      color: #c92f72;
+      font-size: 14px;
+      line-height: 1.4;
+      font-weight: 700;
+    }
+
+    .segmented-progress {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+      margin-top: 10px;
+    }
+
+    .segment {
+      height: 8px;
+      background: #eee9eb;
+      border-radius: 3px;
+    }
+
+    .segment.complete {
+      background: #d4377b;
+    }
+
+    .segment.current {
+      background: linear-gradient(to right, #d4377b 12%, #eee9eb 12%);
+      box-shadow: inset 0 0 0 1px #e7dfe2;
+    }
+
+    .progress-caption {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 8px 0 0;
+      color: #766f73;
+      font-size: 11px;
+      line-height: 1.4;
+    }
+
+    .progress-caption span:last-child {
+      color: #9a3e67;
+      font-weight: 600;
+    }
+
+    .file-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-top: 18px;
+      padding: 13px;
+      border: 1px solid #e3dee0;
+      border-radius: 6px;
+    }
+
+    .file-row img {
+      width: 72px;
+      height: 72px;
+      flex: 0 0 72px;
+      object-fit: cover;
+      display: block;
+      background: #e5e1e2;
+      border-radius: 6px;
+    }
+
+    .file-info {
+      min-width: 0;
+    }
+
+    .file-label {
+      margin: 0 0 4px;
+      color: #c92f72;
+      font-size: 10px;
+      line-height: 1.3;
+      font-weight: 700;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+    }
+
+    .file-name {
+      margin: 0;
+      overflow: hidden;
+      color: #302b2e;
+      font-size: 14px;
+      line-height: 1.4;
+      font-weight: 600;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .file-detail {
+      margin: 5px 0 0;
+      color: #766f73;
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .support-note {
+      margin: 16px 0 0;
+      color: #766f73;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .cancel-button {
+      width: 100%;
+      margin-top: 17px;
+      padding: 10px 16px;
+      border: 1px solid #d6cfd2;
+      border-radius: 6px;
+      background: #ffffff;
+      color: #4f484c;
+      font: inherit;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <section class="upload-panel" aria-labelledby="upload-title">
+      <div class="heading-row">
+        <button class="upload-mark" type="button" aria-label="Pause upload" title="Pause upload">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <rect x="6.5" y="5" width="3.5" height="14" rx="1.2" fill="currentColor"/>
+            <rect x="14" y="5" width="3.5" height="14" rx="1.2" fill="currentColor"/>
+          </svg>
+        </button>
+        <div>
+          <h1 id="upload-title">Uploading trip photos</h1>
+          <p class="intro">Adding 3 files to your Lisbon itinerary.</p>
+        </div>
+      </div>
+
+      <div class="progress-heading">
+        <strong>2 of 3 files uploaded</strong>
+        <span class="progress-value">68%</span>
+      </div>
+
+      <div class="segmented-progress" role="progressbar" aria-label="Upload progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="68">
+        <div class="segment complete"></div>
+        <div class="segment complete"></div>
+        <div class="segment current"></div>
+      </div>
+      <p class="progress-caption">
+        <span>Two complete</span>
+        <span>Final file uploading</span>
+      </p>
+
+      <div class="file-row">
+        <img src="https://loremflickr.com/72/72/cityscape?lock=8970" width="72" height="72" alt="Lisbon cityscape photo being uploaded">
+        <div class="file-info">
+          <p class="file-label">Now uploading</p>
+          <p class="file-name">lisbon-overlook.jpg</p>
+          <p class="file-detail">8.4 MB of 12.3 MB</p>
+        </div>
+      </div>
+
+      <p class="support-note">Files are added to this trip, but not to your offline downloads.</p>
+
+      <button class="cancel-button" type="button">Cancel upload</button>
+    </section>
+  </div>
+</body>
+</html>

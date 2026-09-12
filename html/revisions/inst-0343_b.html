@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hushline Voice Recorder</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #d9dcdf;
+      color: #202327;
+      font-family: 'Poppins', system-ui, sans-serif;
+    }
+
+    button {
+      font: inherit;
+      color: inherit;
+      border: 0;
+      cursor: default;
+    }
+
+    .screen {
+      position: relative;
+      width: 390px;
+      height: 844px;
+      background: #ffffff;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 18px 12px;
+    }
+
+    .topbar-side {
+      width: 86px;
+      display: flex;
+      align-items: center;
+    }
+
+    .topbar-side:last-child {
+      justify-content: flex-end;
+    }
+
+    .icon-button {
+      width: 36px;
+      height: 36px;
+      padding: 0;
+      display: grid;
+      place-items: center;
+      background: #f0f1f2;
+      border-radius: 10px;
+    }
+
+    .topbar h1 {
+      margin: 0;
+      font-size: 17px;
+      line-height: 1.4;
+      font-weight: 600;
+    }
+
+    .draft-button {
+      padding: 8px 0;
+      background: transparent;
+      color: #62676d;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    main {
+      padding: 4px 18px 100px;
+    }
+
+    .live-banner {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 11px 14px;
+      background: #d92d20;
+      border-radius: 12px;
+      color: #ffffff;
+    }
+
+    .recording-mark {
+      width: 10px;
+      height: 10px;
+      background: #ffffff;
+      border-radius: 50%;
+      box-shadow: 0 0 0 4px rgba(255, 255, 255, .28);
+      flex-shrink: 0;
+    }
+
+    .banner-copy {
+      min-width: 0;
+      flex: 1;
+      font-size: 13px;
+      line-height: 1.35;
+      font-weight: 500;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .banner-copy strong {
+      font-weight: 600;
+    }
+
+    .banner-tag {
+      flex-shrink: 0;
+      padding: 3px 9px;
+      background: rgba(255, 255, 255, .22);
+      border-radius: 999px;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 1.1px;
+    }
+
+    .mode-switch {
+      margin-top: 14px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      padding: 5px;
+      background: #f0f1f2;
+      border-radius: 10px;
+    }
+
+    .mode {
+      padding: 9px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      background: transparent;
+      border-radius: 10px;
+      color: #70757a;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .mode.active {
+      background: #d92d20;
+      color: #ffffff;
+    }
+
+    .recorder-card {
+      margin-top: 16px;
+      padding: 16px 18px 18px;
+      background: #fff6f4;
+      border: 1.5px solid #f3c4bd;
+      border-left: 5px solid #d92d20;
+      border-radius: 12px;
+    }
+
+    .timer-row {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .timer {
+      margin: 0;
+      color: #8f1c12;
+      font-size: 38px;
+      line-height: 1.1;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    .timer-meta {
+      text-align: right;
+      color: #8a6b66;
+      font-size: 11px;
+      line-height: 1.5;
+      font-weight: 500;
+    }
+
+    .timer-meta span {
+      display: block;
+    }
+
+    .waveform {
+      height: 84px;
+      margin: 12px 0 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+    }
+
+    .waveform span {
+      display: block;
+      width: 4px;
+      background: #d92d20;
+      border-radius: 2px;
+    }
+
+    .waveform span:nth-child(1) { height: 12px; opacity: .30; }
+    .waveform span:nth-child(2) { height: 20px; opacity: .36; }
+    .waveform span:nth-child(3) { height: 34px; opacity: .44; }
+    .waveform span:nth-child(4) { height: 54px; opacity: .52; }
+    .waveform span:nth-child(5) { height: 32px; opacity: .60; }
+    .waveform span:nth-child(6) { height: 64px; opacity: .70; }
+    .waveform span:nth-child(7) { height: 44px; opacity: .78; }
+    .waveform span:nth-child(8) { height: 74px; opacity: .88; }
+    .waveform span:nth-child(9) { height: 48px; }
+    .waveform span:nth-child(10) { height: 28px; }
+    .waveform span:nth-child(11) { height: 58px; }
+    .waveform span:nth-child(12) { height: 78px; }
+    .waveform span:nth-child(13) { height: 50px; }
+    .waveform span:nth-child(14) { height: 66px; }
+    .waveform span:nth-child(15) { height: 38px; }
+    .waveform span:nth-child(16) { height: 56px; }
+    .waveform span:nth-child(17) { height: 26px; }
+    .waveform span:nth-child(18) { height: 44px; }
+    .waveform span:nth-child(19) { height: 68px; }
+    .waveform span:nth-child(20) { height: 36px; }
+    .waveform span:nth-child(21) { height: 52px; }
+    .waveform span:nth-child(22) { height: 28px; opacity: .84; }
+    .waveform span:nth-child(23) { height: 40px; opacity: .74; }
+    .waveform span:nth-child(24) { height: 20px; opacity: .62; }
+    .waveform span:nth-child(25) { height: 14px; opacity: .46; }
+
+    .session-log {
+      margin: 0 0 16px;
+      padding: 0 0 0 16px;
+      list-style: none;
+      border-left: 2px solid #f0cac4;
+    }
+
+    .session-log li {
+      position: relative;
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      padding: 3px 0;
+      font-size: 12px;
+      line-height: 1.5;
+      color: #6f5f5c;
+    }
+
+    .session-log li::before {
+      content: "";
+      position: absolute;
+      left: -22px;
+      top: 8px;
+      width: 8px;
+      height: 8px;
+      background: #ffffff;
+      border: 2px solid #d9a49c;
+      border-radius: 50%;
+    }
+
+    .session-log li.now::before {
+      background: #d92d20;
+      border-color: #d92d20;
+    }
+
+    .log-time {
+      flex-shrink: 0;
+      width: 58px;
+      font-weight: 600;
+      color: #4a3b39;
+    }
+
+    .session-log li.now .log-time,
+    .session-log li.now .log-text {
+      color: #a3231a;
+      font-weight: 600;
+    }
+
+    .log-text {
+      min-width: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .record-actions {
+      display: grid;
+      grid-template-columns: 1fr 1.4fr;
+      gap: 10px;
+    }
+
+    .control {
+      min-height: 54px;
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .pause-control {
+      background: #ffffff;
+      border: 1.5px solid #e6c3bd;
+      color: #7a3c35;
+    }
+
+    .finish-control {
+      background: #d92d20;
+      color: #ffffff;
+      font-weight: 600;
+    }
+
+    .post-settings {
+      margin-top: 18px;
+    }
+
+    .section-heading {
+      margin: 0 0 10px;
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .settings-card {
+      padding: 4px 14px;
+      background: #f3f4f5;
+      border-radius: 10px;
+    }
+
+    .setting-row {
+      min-height: 56px;
+      padding: 12px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    .setting-row + .setting-row {
+      box-shadow: inset 0 1px #e1e3e5;
+    }
+
+    .setting-copy {
+      min-width: 0;
+    }
+
+    .setting-label {
+      margin: 0;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .setting-detail {
+      margin: 2px 0 0;
+      color: #74797e;
+      font-size: 12px;
+    }
+
+    .setting-value {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      flex-shrink: 0;
+      color: #5e646a;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .tabbar {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      padding: 10px 12px 12px;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      background: #ffffff;
+      box-shadow: 0 -1px 0 #eceeef;
+    }
+
+    .tab {
+      min-width: 0;
+      padding: 7px 2px 5px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      background: transparent;
+      color: #858a8f;
+      font-size: 12px;
+      line-height: 1.2;
+      font-weight: 400;
+    }
+
+    .tab.active {
+      color: #b3261b;
+      font-weight: 500;
+    }
+
+    .tab.active .tab-icon {
+      background: #fbe0dd;
+    }
+
+    .tab-icon {
+      width: 30px;
+      height: 28px;
+      display: grid;
+      place-items: center;
+      border-radius: 10px;
+    }
+
+    svg {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <div class="topbar-side">
+        <button class="icon-button" aria-label="Close recorder">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <path d="M5 5L15 15M15 5L5 15" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+      <h1>New recording</h1>
+      <div class="topbar-side">
+        <button class="draft-button">Save draft</button>
+      </div>
+    </header>
+
+    <main>
+      <div class="live-banner" aria-label="Recording status">
+        <span class="recording-mark"></span>
+        <p class="banner-copy">Recording since <strong>2:14 PM</strong> · mic is open</p>
+        <span class="banner-tag">LIVE</span>
+      </div>
+
+      <div class="mode-switch" aria-label="Recording format">
+        <button class="mode active" aria-pressed="true">
+          <svg width="17" height="17" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <rect x="7" y="2.5" width="6" height="10" rx="3" stroke="currentColor" stroke-width="1.6"/>
+            <path d="M4.8 9.8C4.8 12.7 7.1 15 10 15C12.9 15 15.2 12.7 15.2 9.8M10 15V18M7.5 18H12.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+          </svg>
+          Voice
+        </button>
+        <button class="mode" aria-pressed="false">
+          <svg width="18" height="17" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <rect x="2.5" y="5" width="10.5" height="10" rx="2" stroke="currentColor" stroke-width="1.6"/>
+            <path d="M13 8L17.5 5.8V14.2L13 12" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+          </svg>
+          Video
+        </button>
+      </div>
+
+      <section class="recorder-card" aria-label="Active voice recording">
+        <div class="timer-row">
+          <p class="timer">01:24</p>
+          <div class="timer-meta">
+            <span>of 10:00 limit</span>
+            <span>Auto-stop 2:24 PM</span>
+          </div>
+        </div>
+
+        <div class="waveform" aria-label="Live audio waveform">
+          <span></span><span></span><span></span><span></span><span></span>
+          <span></span><span></span><span></span><span></span><span></span>
+          <span></span><span></span><span></span><span></span><span></span>
+          <span></span><span></span><span></span><span></span><span></span>
+          <span></span><span></span><span></span><span></span><span></span>
+        </div>
+
+        <ul class="session-log" aria-label="Session timeline">
+          <li>
+            <span class="log-time">2:14 PM</span>
+            <span class="log-text">Recording started</span>
+          </li>
+          <li class="now">
+            <span class="log-time">2:15 PM</span>
+            <span class="log-text">Now — 01:24 captured</span>
+          </li>
+        </ul>
+
+        <div class="record-actions">
+          <button class="control pause-control">
+            <svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <rect x="5" y="3.5" width="3.2" height="13" rx="1" fill="currentColor"/>
+              <rect x="11.8" y="3.5" width="3.2" height="13" rx="1" fill="currentColor"/>
+            </svg>
+            Pause
+          </button>
+          <button class="control finish-control">
+            <svg width="17" height="17" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <rect x="5" y="5" width="10" height="10" rx="2" fill="currentColor"/>
+            </svg>
+            Stop recording
+          </button>
+        </div>
+      </section>
+
+      <section class="post-settings">
+        <h2 class="section-heading">Post settings</h2>
+        <div class="settings-card">
+          <div class="setting-row">
+            <div class="setting-copy">
+              <p class="setting-label">Share with</p>
+              <p class="setting-detail">Choose who can listen</p>
+            </div>
+            <div class="setting-value">
+              Close circle
+              <svg width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                <path d="M7.5 4.5L13 10L7.5 15.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+          </div>
+          <div class="setting-row">
+            <div class="setting-copy">
+              <p class="setting-label">Replies</p>
+              <p class="setting-detail">Voice or text responses</p>
+            </div>
+            <div class="setting-value">
+              On
+              <svg width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                <path d="M7.5 4.5L13 10L7.5 15.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <nav class="tabbar" aria-label="Primary navigation">
+      <button class="tab">
+        <span class="tab-icon">
+          <svg width="20" height="20" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+            <path d="M3.5 10L11 3.8L18.5 10V18.3H13.5V13H8.5V18.3H3.5V10Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+          </svg>
+        </span>
+        Home
+      </button>
+      <button class="tab">
+        <span class="tab-icon">
+          <svg width="20" height="20" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+            <path d="M4 5.5H18V15H10L6 18V15H4V5.5Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+          </svg>
+        </span>
+        Circles
+      </button>
+      <button class="tab active" aria-current="page">
+        <span class="tab-icon">
+          <svg width="20" height="20" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+            <rect x="8" y="3" width="6" height="11" rx="3" stroke="currentColor" stroke-width="1.7"/>
+            <path d="M5.5 11C5.5 14 7.9 16.5 11 16.5C14.1 16.5 16.5 14 16.5 11M11 16.5V19" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+          </svg>
+        </span>
+        Record
+      </button>
+      <button class="tab">
+        <span class="tab-icon">
+          <svg width="20" height="20" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+            <path d="M3.5 5H18.5V17H3.5V5Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+            <path d="M4.5 6L11 11.5L17.5 6" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+          </svg>
+        </span>
+        Inbox
+      </button>
+      <button class="tab">
+        <span class="tab-icon">
+          <svg width="20" height="20" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+            <rect x="4" y="4" width="14" height="14" rx="5" fill="#747a80"/>
+            <text x="11" y="14" text-anchor="middle" font-size="8" font-family="Poppins, sans-serif" font-weight="600" fill="white">JM</text>
+          </svg>
+        </span>
+        Profile
+      </button>
+    </nav>
+  </div>
+</body>
+</html>

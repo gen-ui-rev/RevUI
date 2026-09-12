@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Daily Price Check — Kettlebox</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --accent:#6f8fa3;
+    --accent-soft:#eef3f6;
+    --ink:#1e2429;
+    --muted:#6c757d;
+    --line:#e4e7ea;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    padding:40px 0;
+    background:#d9dcdf;
+    font-family:'Poppins', system-ui, sans-serif;
+    color:var(--ink);
+  }
+  .screen{
+    position:relative;
+    width:390px;
+    height:844px;
+    background:#f1f2f4;
+  }
+
+  /* top bar */
+  .topbar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    padding:16px 16px 14px;
+    background:#ffffff;
+    border-bottom:1px solid var(--line);
+  }
+  .topbar h1{
+    margin:0;
+    font-size:16px;
+    font-weight:600;
+    letter-spacing:.1px;
+  }
+  .iconbtn{
+    width:26px;height:26px;
+    display:flex;align-items:center;justify-content:center;
+    color:#4a5257;
+  }
+
+  /* progress */
+  .progress{
+    padding:16px 20px 18px;
+  }
+  .progress-top{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    margin-bottom:10px;
+  }
+  .progress-top .step{font-size:14px;font-weight:600;}
+  .progress-top .round{font-size:13px;font-weight:400;color:var(--muted);}
+  .bar{
+    height:6px;
+    width:100%;
+    border-radius:6px;
+    background:#e2e5e8;
+    display:flex;
+  }
+  .bar span{
+    display:block;
+    width:60%;
+    background:var(--accent);
+    border-radius:6px;
+  }
+
+  /* question card */
+  .card{
+    margin:0 16px;
+    background:#ffffff;
+    border-radius:6px;
+    padding:18px;
+    box-shadow:0 2px 8px rgba(30,36,41,.07);
+  }
+  .card h2{
+    margin:0;
+    font-size:20px;
+    line-height:1.35;
+    font-weight:600;
+  }
+  .card .hint{
+    margin:8px 0 0;
+    font-size:13px;
+    font-weight:400;
+    color:var(--muted);
+  }
+  .grid{
+    margin-top:16px;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+  }
+  .opt{
+    width:155px;
+    border:1px solid var(--line);
+    border-radius:6px;
+    background:#fff;
+    overflow:hidden;
+  }
+  .opt img{
+    display:block;
+    width:153px;
+    height:116px;
+    object-fit:cover;
+    background:#dfe3e6;
+  }
+  .opt .body{
+    padding:10px 10px 12px;
+  }
+  .opt .name{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    font-size:14px;
+    font-weight:600;
+    line-height:1.3;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .opt .meta{
+    margin-top:3px;
+    font-size:12px;
+    font-weight:400;
+    color:var(--muted);
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .opt.selected{
+    border-color:var(--accent);
+    background:var(--accent-soft);
+  }
+  .check{
+    flex:0 0 auto;
+    width:16px;height:16px;
+    color:var(--accent);
+  }
+
+  /* action */
+  .action{
+    padding:16px 16px 0;
+  }
+  .submit{
+    display:block;
+    width:100%;
+    padding:15px 0;
+    border:0;
+    border-radius:6px;
+    background:var(--accent);
+    color:#fff;
+    font-family:inherit;
+    font-size:16px;
+    font-weight:600;
+    text-align:center;
+  }
+  .below{
+    margin:12px 0 0;
+    text-align:center;
+    font-size:13px;
+    font-weight:400;
+    color:var(--muted);
+  }
+
+  /* tab bar */
+  .tabbar{
+    position:absolute;
+    left:0;bottom:0;
+    width:100%;
+    height:64px;
+    display:flex;
+    background:#ffffff;
+    border-top:1px solid var(--line);
+  }
+  .tab{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:4px;
+    font-size:12px;
+    font-weight:400;
+    color:#8d959b;
+  }
+  .tab.active{color:var(--accent);font-weight:600;}
+</style>
+</head>
+<body>
+<div class="screen">
+
+  <div class="topbar">
+    <span class="iconbtn" aria-label="Close quiz">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </span>
+    <h1>Daily Price Check</h1>
+    <span class="iconbtn" aria-label="How scoring works">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M9.6 9.3a2.5 2.5 0 1 1 3.4 2.3c-.6.3-1 .8-1 1.5v.4"/><path d="M12 17h.01"/></svg>
+    </span>
+  </div>
+
+  <div class="progress">
+    <div class="progress-top">
+      <span class="step">Question 3 of 5</span>
+      <span class="round">Sneakers round</span>
+    </div>
+    <div class="bar"><span></span></div>
+  </div>
+
+  <div class="card">
+    <h2>Which pair had the highest average resale price last month?</h2>
+    <p class="hint">Based on completed sales across the Kettlebox marketplace.</p>
+
+    <div class="grid">
+      <div class="opt">
+        <img src="https://loremflickr.com/153/116/sneakers?lock=10060" width="153" height="116" alt="White low-top court sneaker on a plain background">
+        <div class="body">
+          <div class="name">Court Classic 77</div>
+          <div class="meta">Men's · 412 sales</div>
+        </div>
+      </div>
+      <div class="opt selected">
+        <img src="https://loremflickr.com/153/116/sneakers?lock=10061" width="153" height="116" alt="Gray trail running shoe with thick tread">
+        <div class="body">
+          <div class="name">
+            Trail Runner GX
+            <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg>
+          </div>
+          <div class="meta">Unisex · 268 sales</div>
+        </div>
+      </div>
+      <div class="opt">
+        <img src="https://loremflickr.com/153/116/sneakers?lock=10062" width="153" height="116" alt="Black slip-on knit sneaker photographed from the side">
+        <div class="body">
+          <div class="name">Slipstream Low</div>
+          <div class="meta">Women's · 530 sales</div>
+        </div>
+      </div>
+      <div class="opt">
+        <img src="https://loremflickr.com/153/116/sneakers?lock=10063" width="153" height="116" alt="Blue knit high-top sneaker with white sole">
+        <div class="body">
+          <div class="name">Arc Fly Knit</div>
+          <div class="meta">Unisex · 197 sales</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="action">
+    <button class="submit" type="button">Submit answer</button>
+    <p class="below">2 correct so far · 6-day streak</p>
+  </div>
+
+  <nav class="tabbar">
+    <div class="tab">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5L12 4l8 6.5V20H4z"/></svg>
+      Shop
+    </div>
+    <div class="tab">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4 4"/></svg>
+      Search
+    </div>
+    <div class="tab active">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h14v10a7 7 0 0 1-14 0z"/><path d="M9 20h6"/></svg>
+      Quiz
+    </div>
+    <div class="tab">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 7h12l-1 13H7z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg>
+      Cart
+    </div>
+  </nav>
+
+</div>
+</body>
+</html>

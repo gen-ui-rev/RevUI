@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Ratings &amp; Reviews</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#16161a;
+    --muted:#6d6d70;
+    --soft:#f3f3f0;
+    --track:#e4e4e0;
+  }
+  *{box-sizing:border-box;}
+  body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    padding:40px 0;
+    margin:0;
+    background:#ececea;
+    font-family:'Nunito Sans', system-ui, sans-serif;
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+  }
+  .screen{
+    width:390px;
+    height:844px;
+    background:#fff;
+    position:relative;
+    display:flex;
+    flex-direction:column;
+  }
+  .topbar{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:15px 16px;
+  }
+  .topbar svg{display:block;flex:none;}
+  .topbar h1{
+    margin:0;
+    font-size:16px;
+    font-weight:700;
+    letter-spacing:.1px;
+  }
+  .album{
+    display:flex;
+    gap:14px;
+    align-items:center;
+    padding:12px 16px;
+  }
+  .album img{
+    width:80px;
+    height:80px;
+    display:block;
+    object-fit:cover;
+    background:#d9d9d6;
+    border-radius:14px;
+  }
+  .album .meta{min-width:0;}
+  .album .title{
+    font-size:18px;
+    font-weight:700;
+    line-height:24px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .album .artist{
+    margin-top:2px;
+    color:var(--muted);
+    font-size:14px;
+  }
+  .album .sub{
+    margin-top:6px;
+    color:var(--muted);
+    font-size:12px;
+  }
+  .summary{
+    padding:8px 16px 14px;
+  }
+  .rating-main{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:14px;
+    width:100%;
+  }
+  .score-num{
+    font-size:48px;
+    line-height:50px;
+    font-weight:700;
+    letter-spacing:-1.5px;
+  }
+  .big-stars{
+    color:var(--ink);
+    font-size:24px;
+    line-height:28px;
+    letter-spacing:1px;
+    white-space:nowrap;
+  }
+  .big-stars .off{color:#d3d3cf;}
+  .count{
+    margin-top:1px;
+    text-align:center;
+    color:var(--muted);
+    font-size:12px;
+  }
+  .bars{
+    margin-top:12px;
+  }
+  .bar{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-bottom:5px;
+  }
+  .bar:last-child{margin-bottom:0;}
+  .bar .lab{
+    width:10px;
+    flex:none;
+    color:var(--muted);
+    font-size:12px;
+    text-align:right;
+  }
+  .track{
+    height:6px;
+    flex:1;
+    background:var(--track);
+    border-radius:999px;
+  }
+  .fill{
+    display:block;
+    height:6px;
+    background:var(--ink);
+    border-radius:999px;
+  }
+  .bar .val{
+    width:38px;
+    flex:none;
+    color:var(--muted);
+    font-size:12px;
+    text-align:right;
+  }
+  .write{
+    margin:0 16px;
+    padding:11px 0;
+    border:1px solid var(--ink);
+    border-radius:14px;
+    text-align:center;
+    font-size:15px;
+    font-weight:700;
+  }
+  .sectionhead{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:15px 16px 10px;
+    margin-top:3px;
+  }
+  .sectionhead h2{
+    margin:0;
+    font-size:15px;
+    font-weight:700;
+  }
+  .sort{
+    display:flex;
+    align-items:center;
+    gap:4px;
+    color:var(--muted);
+    font-size:13px;
+  }
+  .reviews{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    padding:0 12px;
+  }
+  .review{
+    padding:11px 12px;
+    background:var(--soft);
+    border-radius:16px;
+  }
+  .rhead{
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .mono{
+    width:36px;
+    height:36px;
+    flex:none;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#fff;
+    border-radius:50%;
+    color:var(--ink);
+    font-size:12px;
+    font-weight:700;
+  }
+  .rinfo{min-width:0;}
+  .rname{
+    font-size:14px;
+    font-weight:700;
+    line-height:18px;
+  }
+  .rmeta{
+    display:flex;
+    align-items:center;
+    gap:7px;
+    margin-top:1px;
+    color:var(--muted);
+    font-size:11px;
+  }
+  .small-stars{
+    color:var(--ink);
+    font-size:12px;
+    letter-spacing:.5px;
+    white-space:nowrap;
+  }
+  .small-stars .off{color:#c9c9c5;}
+  .rbody{
+    margin-top:7px;
+    color:#303034;
+    font-size:13px;
+    line-height:18px;
+  }
+  .tabbar{
+    display:flex;
+    margin-top:auto;
+    padding:9px 0 13px;
+    background:#fafaf8;
+  }
+  .tab{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:3px;
+    color:var(--muted);
+    font-size:11px;
+  }
+  .tab.on{
+    color:var(--ink);
+    font-weight:700;
+  }
+  .tab svg{display:block;}
+</style>
+</head>
+<body>
+<div class="screen">
+  <div class="topbar">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#16161a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
+    <h1>Ratings &amp; Reviews</h1>
+  </div>
+
+  <div class="album">
+    <img src="https://loremflickr.com/80/80/vinyl?lock=12280" width="80" height="80" alt="Cover art for the album Paper Lanterns, a vinyl record sleeve">
+    <div class="meta">
+      <div class="title">Paper Lanterns</div>
+      <div class="artist">Nyla Verhoeven</div>
+      <div class="sub">Album &middot; 12 tracks &middot; 2025</div>
+    </div>
+  </div>
+
+  <div class="summary">
+    <div class="rating-main">
+      <div class="score-num">4.3</div>
+      <div class="big-stars" aria-label="4 out of 5 stars">★★★★<span class="off">★</span></div>
+    </div>
+    <div class="count">2,184 ratings</div>
+
+    <div class="bars">
+      <div class="bar"><span class="lab">5</span><span class="track"><span class="fill" style="width:62%"></span></span><span class="val">1,354</span></div>
+      <div class="bar"><span class="lab">4</span><span class="track"><span class="fill" style="width:21%"></span></span><span class="val">459</span></div>
+      <div class="bar"><span class="lab">3</span><span class="track"><span class="fill" style="width:9%"></span></span><span class="val">197</span></div>
+      <div class="bar"><span class="lab">2</span><span class="track"><span class="fill" style="width:5%"></span></span><span class="val">109</span></div>
+      <div class="bar"><span class="lab">1</span><span class="track"><span class="fill" style="width:3%"></span></span><span class="val">65</span></div>
+    </div>
+  </div>
+
+  <div class="write">Write a review</div>
+
+  <div class="sectionhead">
+    <h2>312 written reviews</h2>
+    <span class="sort">Most recent
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6d6d70" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+    </span>
+  </div>
+
+  <div class="reviews">
+    <div class="review">
+      <div class="rhead">
+        <div class="mono">ME</div>
+        <div class="rinfo">
+          <div class="rname">Marcus Ely</div>
+          <div class="rmeta">
+            <span class="small-stars" aria-label="5 out of 5 stars">★★★★★</span>
+            <span>Mar 14, 2025</span>
+          </div>
+        </div>
+      </div>
+      <div class="rbody">The back half is the clearest she has ever sounded. Track seven alone justifies the wait.</div>
+    </div>
+
+    <div class="review">
+      <div class="rhead">
+        <div class="mono">PR</div>
+        <div class="rinfo">
+          <div class="rname">Priya Raman</div>
+          <div class="rmeta">
+            <span class="small-stars" aria-label="4 out of 5 stars">★★★★<span class="off">★</span></span>
+            <span>Mar 9, 2025</span>
+          </div>
+        </div>
+      </div>
+      <div class="rbody">Warmer than the last record, though the interludes break the momentum more than they bridge it.</div>
+    </div>
+
+    <div class="review">
+      <div class="rhead">
+        <div class="mono">DW</div>
+        <div class="rinfo">
+          <div class="rname">Dana Whitfield</div>
+          <div class="rmeta">
+            <span class="small-stars" aria-label="3 out of 5 stars">★★★<span class="off">★★</span></span>
+            <span>Feb 28, 2025</span>
+          </div>
+        </div>
+      </div>
+      <div class="rbody">Beautifully produced, but I still reach for the singles instead of the whole album.</div>
+    </div>
+  </div>
+
+  <div class="tabbar">
+    <div class="tab">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#6d6d70" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5L12 4l8 6.5V20a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1z"/></svg>
+      Home
+    </div>
+    <div class="tab">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#6d6d70" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4 4"/></svg>
+      Search
+    </div>
+    <div class="tab on">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#16161a" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4v16M9 4v16"/><path d="M13.5 5.2l4.3 15.2"/></svg>
+      Library
+    </div>
+    <div class="tab">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#6d6d70" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8.5" r="3.8"/><path d="M5 20c.9-3.6 3.6-5.4 7-5.4S18.1 16.4 19 20"/></svg>
+      Profile
+    </div>
+  </div>
+</div>
+</body>
+</html>

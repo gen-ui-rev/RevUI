@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Driftcast Annotation</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      display: grid;
+      place-items: center;
+      background: #dcdcd7;
+      color: #181817;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    button {
+      font: inherit;
+      cursor: pointer;
+    }
+
+    .screen {
+      width: 1024px;
+      height: 768px;
+      padding: 26px;
+      background: #f4f3ee;
+    }
+
+    .app-shell {
+      width: 100%;
+      background: #ffffff;
+      border: 1px solid #bdbdb7;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 28px;
+      padding: 18px 22px 17px;
+      border-bottom: 1px solid #c8c8c2;
+    }
+
+    .eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0 0 6px;
+      color: #5f5f5a;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow-mark {
+      width: 20px;
+      height: 4px;
+      background: #f2cf2f;
+    }
+
+    h1 {
+      margin: 0 0 4px;
+      font-size: 24px;
+      line-height: 1.2;
+      font-weight: 650;
+      letter-spacing: -0.025em;
+    }
+
+    .subtitle {
+      margin: 0;
+      color: #666660;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    .session-badge {
+      flex: none;
+      margin-top: 5px;
+      padding: 7px 10px;
+      border: 1px solid #b9a22f;
+      background: #fff6c8;
+      color: #4b4217;
+      font-size: 12px;
+      font-weight: 650;
+    }
+
+    .review-layout {
+      display: grid;
+      grid-template-columns: 270px minmax(0, 1fr);
+      align-items: stretch;
+    }
+
+    .context-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      padding: 22px;
+      background: #fafaf7;
+      border-right: 1px solid #c8c8c2;
+    }
+
+    .context-label {
+      margin: 0 0 8px;
+      color: #6a6a64;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .episode-title {
+      margin: 0 0 4px;
+      font-size: 18px;
+      line-height: 1.3;
+      font-weight: 650;
+    }
+
+    .episode-meta {
+      margin: 0;
+      color: #6a6a64;
+      font-size: 13px;
+    }
+
+    .time-block {
+      margin: 18px 0 0;
+      padding: 14px;
+      border: 1px solid #c9c9c3;
+      background: #ffffff;
+    }
+
+    .time-label {
+      margin: 0 0 4px;
+      color: #73736d;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .timecode {
+      margin: 0;
+      font-size: 24px;
+      line-height: 1.15;
+      font-weight: 650;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -0.02em;
+    }
+
+    .context-rule {
+      margin: 20px 0;
+      border: 0;
+      border-top: 1px solid #d1d1cb;
+    }
+
+    .instruction-title {
+      margin: 0 0 7px;
+      font-size: 15px;
+      font-weight: 650;
+    }
+
+    .instruction-copy {
+      margin: 0;
+      color: #5f5f59;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .reviewer {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 21px;
+    }
+
+    .monogram {
+      width: 36px;
+      height: 36px;
+      flex: none;
+      display: grid;
+      place-items: center;
+      background: #e7e6df;
+      border: 1px solid #bdbdb6;
+      color: #41413d;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .reviewer-name,
+    .layer-status {
+      margin: 0;
+    }
+
+    .reviewer-name {
+      font-size: 13px;
+      font-weight: 650;
+    }
+
+    .layer-status {
+      margin-top: 2px;
+      color: #6c6c66;
+      font-size: 12px;
+    }
+
+    .save-button {
+      width: 100%;
+      margin-top: 20px;
+      padding: 11px 15px;
+      border: 1px solid #171716;
+      background: #171716;
+      color: #ffffff;
+      font-size: 14px;
+      font-weight: 650;
+    }
+
+    .workspace {
+      min-width: 0;
+      background: #eeede7;
+    }
+
+    .tool-row {
+      display: flex;
+      align-items: stretch;
+      background: #f2cf2f;
+      border-bottom: 1px solid #b9a22f;
+    }
+
+    .tool {
+      min-width: 0;
+      padding: 10px 18px;
+      border: 0;
+      border-right: 1px solid #b9a22f;
+      background: transparent;
+      color: #292711;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      font-size: 13px;
+      font-weight: 650;
+    }
+
+    .tool.active {
+      background: #ffffff;
+      box-shadow: inset 0 -3px 0 #181817;
+    }
+
+    .tool svg {
+      width: 18px;
+      height: 18px;
+      flex: none;
+      stroke: currentColor;
+    }
+
+    .toolbar-spacer {
+      flex: 1;
+      border-right: 1px solid #b9a22f;
+    }
+
+    .toolbar-count {
+      display: flex;
+      align-items: center;
+      padding: 0 16px;
+      color: #4b4217;
+      font-size: 12px;
+      font-weight: 650;
+    }
+
+    .canvas-wrap {
+      padding: 18px;
+    }
+
+    .canvas-card {
+      border: 1px solid #bdbdb7;
+      background: #ffffff;
+    }
+
+    .canvas {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1.72 / 1;
+      background: #fbfbf8;
+    }
+
+    .canvas > svg {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    .canvas-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 12px 15px;
+      border-top: 1px solid #c8c8c2;
+      background: #ffffff;
+    }
+
+    .annotation-summary {
+      min-width: 0;
+    }
+
+    .summary-title {
+      margin: 0 0 3px;
+      overflow: hidden;
+      color: #242421;
+      font-size: 14px;
+      font-weight: 650;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .summary-meta {
+      margin: 0;
+      color: #6a6a64;
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    .annotation-tag {
+      flex: none;
+      padding: 6px 9px;
+      border: 1px solid #b9a22f;
+      background: #fff6c8;
+      color: #4b4217;
+      font-size: 12px;
+      font-weight: 650;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <main class="app-shell" aria-labelledby="annotation-title">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow"><span class="eyebrow-mark"></span>Driftcast review layer</p>
+          <h1 id="annotation-title">Mark the pause to tighten</h1>
+          <p class="subtitle">Draw directly over this podcast moment for the production team.</p>
+        </div>
+        <span class="session-badge">Draft 3 · Production review</span>
+      </header>
+
+      <div class="review-layout">
+        <aside class="context-panel" aria-label="Episode and review details">
+          <p class="context-label">Now reviewing</p>
+          <h2 class="episode-title">Night Routes · Episode 26</h2>
+          <p class="episode-meta">Production review · Draft 3</p>
+
+          <div class="time-block">
+            <p class="time-label">Selected moment</p>
+            <p class="timecode">18:42.6</p>
+          </div>
+
+          <hr class="context-rule">
+
+          <p class="context-label">Review direction</p>
+          <h3 class="instruction-title">Tighten the handoff</h3>
+          <p class="instruction-copy">Mark the long pause between speakers so the production team can trim the exchange.</p>
+
+          <div class="reviewer">
+            <span class="monogram" aria-hidden="true">JM</span>
+            <div>
+              <p class="reviewer-name">Jordan Miles</p>
+              <p class="layer-status">1 annotation</p>
+            </div>
+          </div>
+
+          <button class="save-button" type="button">Save note</button>
+        </aside>
+
+        <section class="workspace" aria-label="Annotation canvas">
+          <div class="tool-row" role="toolbar" aria-label="Drawing tools">
+            <button class="tool active" type="button" aria-pressed="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="square" stroke-linejoin="miter" aria-hidden="true">
+                <path d="M4 20l4.3-1.1L19 8.2 15.8 5 5.1 15.7 4 20Z"></path>
+                <path d="m13.8 7 3.2 3.2"></path>
+              </svg>
+              Pen
+            </button>
+            <button class="tool" type="button" aria-pressed="false">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="square" aria-hidden="true">
+                <rect x="4" y="4" width="16" height="16"></rect>
+              </svg>
+              Shape
+            </button>
+            <button class="tool" type="button" aria-pressed="false">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="square" aria-hidden="true">
+                <path d="M5 6h14M12 6v13M8 19h8"></path>
+              </svg>
+              Text
+            </button>
+            <button class="tool" type="button" aria-label="Erase annotation">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="square" stroke-linejoin="miter" aria-hidden="true">
+                <path d="m5 15 8.8-10L20 10.5 12.5 19H8l-3-4Z"></path>
+                <path d="m10.5 9 6.2 5.5M12.5 19H21"></path>
+              </svg>
+              Erase
+            </button>
+            <span class="toolbar-spacer" aria-hidden="true"></span>
+            <span class="toolbar-count">1 annotation</span>
+          </div>
+
+          <div class="canvas-wrap">
+            <div class="canvas-card">
+              <div class="canvas">
+                <svg viewBox="0 0 348 202" role="img" aria-label="Podcast waveform with a yellow annotation around a long pause">
+                  <rect x="0.5" y="0.5" width="347" height="201" fill="#fbfbf8"></rect>
+                  <g stroke="#deded8" stroke-width="1">
+                    <path d="M18 35H330M18 101H330M18 167H330M82 22V178M174 22V178M266 22V178"></path>
+                  </g>
+                  <g fill="#33332f">
+                    <path d="M20 81h4v40h-4zM28 67h4v68h-4zM36 88h4v26h-4zM44 54h4v94h-4zM52 74h4v54h-4zM60 63h4v76h-4zM68 84h4v34h-4zM76 47h4v108h-4zM84 69h4v64h-4zM92 79h4v44h-4zM100 59h4v84h-4zM108 72h4v58h-4zM116 86h4v30h-4zM124 77h4v48h-4zM132 92h4v18h-4zM140 96h4v10h-4zM148 98h4v6h-4zM156 97h4v8h-4zM164 98h4v6h-4zM172 96h4v10h-4zM180 97h4v8h-4zM188 98h4v6h-4zM196 96h4v10h-4zM204 91h4v20h-4zM212 77h4v48h-4zM220 62h4v78h-4zM228 83h4v36h-4zM236 54h4v94h-4zM244 69h4v64h-4zM252 80h4v42h-4zM260 61h4v80h-4zM268 73h4v56h-4zM276 48h4v106h-4zM284 68h4v66h-4zM292 82h4v38h-4zM300 60h4v82h-4zM308 76h4v50h-4zM316 88h4v26h-4zM324 72h4v58h-4z"></path>
+                  </g>
+                  <path d="M132 69C145 56 194 56 207 72C219 88 216 123 200 134C185 145 145 143 131 128C116 112 117 84 132 69Z" fill="none" stroke="#e1b900" stroke-width="5" stroke-linecap="square" stroke-linejoin="miter"></path>
+                  <path d="M216 61l19-15M230 45l7 1-2 7" fill="none" stroke="#e1b900" stroke-width="4" stroke-linecap="square" stroke-linejoin="miter"></path>
+                  <rect x="205" y="18" width="112" height="30" fill="#f2cf2f" stroke="#8d7920"></rect>
+                  <text x="216" y="38" fill="#252311" font-size="13" font-weight="600" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">Trim this pause</text>
+                </svg>
+              </div>
+
+              <div class="canvas-footer">
+                <div class="annotation-summary">
+                  <p class="summary-title">Trim this pause</p>
+                  <p class="summary-meta">Night Routes · Episode 26 · 18:42.6</p>
+                </div>
+                <span class="annotation-tag">Production review</span>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

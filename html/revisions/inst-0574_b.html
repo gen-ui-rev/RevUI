@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Quiet Ledger — Morrow Stories</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 24px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #d7dcde;
+      color: #1f292d;
+      font-family: 'Nunito Sans', system-ui, sans-serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #eef1f2;
+    }
+
+    .topbar {
+      flex: 0 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      background: #ffffff;
+      border-bottom: 1px solid #dfe4e5;
+    }
+
+    .icon-button {
+      width: 36px;
+      height: 36px;
+      padding: 0;
+      display: grid;
+      place-items: center;
+      border: 0;
+      border-radius: 6px;
+      color: #273337;
+      background: transparent;
+    }
+
+    .topbar-title {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .topbar-title strong {
+      display: block;
+      font-size: 16px;
+      line-height: 20px;
+      font-weight: 700;
+    }
+
+    .topbar-title span {
+      display: block;
+      color: #6f7b7f;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .content {
+      flex: 1 1 auto;
+      min-height: 0;
+    }
+
+    .hero {
+      width: 390px;
+      height: 176px;
+      object-fit: cover;
+      display: block;
+      background: #c5ced1;
+    }
+
+    .detail-card {
+      position: relative;
+      margin: -26px 16px 0;
+      padding: 12px;
+      border-radius: 6px;
+      background: #ffffff;
+      box-shadow: 0 5px 16px rgba(35, 49, 54, 0.12);
+    }
+
+    .title-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .title-row h1 {
+      min-width: 0;
+      flex: 1;
+      margin: 0;
+      font-size: 23px;
+      line-height: 28px;
+      font-weight: 700;
+      letter-spacing: -0.2px;
+    }
+
+    .rating {
+      flex: 0 0 auto;
+      margin-top: 3px;
+      padding: 3px 7px;
+      border-radius: 6px;
+      background: #dce8ea;
+      color: #31535a;
+      font-size: 12px;
+      line-height: 17px;
+      font-weight: 700;
+    }
+
+    .metadata {
+      margin: 2px 0 0;
+      color: #657176;
+      font-size: 13px;
+      line-height: 18px;
+    }
+
+    .synopsis {
+      margin: 6px 0 0;
+      color: #364247;
+      font-size: 14px;
+      line-height: 19px;
+    }
+
+    .detail-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .primary-action,
+    .secondary-action {
+      height: 34px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .primary-action {
+      flex: 1;
+      border: 1px solid #b9d0d4;
+      color: #203b41;
+      background: #dce8ea;
+    }
+
+    .secondary-action {
+      width: 88px;
+      border: 1px solid #d5dcde;
+      color: #344146;
+      background: #ffffff;
+    }
+
+    .section-tabs {
+      margin-top: 7px;
+      padding: 0 16px;
+      display: flex;
+      height: 43px;
+      align-items: flex-end;
+      border-bottom: 1px solid #d7dddf;
+      background: #ffffff;
+    }
+
+    .section-tab {
+      flex: 1;
+      height: 43px;
+      padding: 0;
+      border: 0;
+      border-bottom: 3px solid transparent;
+      color: #727e82;
+      background: transparent;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .section-tab.active {
+      border-bottom-color: #8fb1b8;
+      color: #26383d;
+      font-weight: 700;
+    }
+
+    .section {
+      margin: 10px 12px 0;
+    }
+
+    .section-heading {
+      margin: 0 4px 6px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .section-heading h2 {
+      margin: 0;
+      font-size: 16px;
+      line-height: 22px;
+      font-weight: 700;
+    }
+
+    .season-button {
+      padding: 2px 6px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      border: 0;
+      color: #506065;
+      background: transparent;
+      font-size: 13px;
+      line-height: 20px;
+      font-weight: 600;
+    }
+
+    .voice-roster {
+      padding: 8px 10px;
+      border-left: 4px solid #8fb1b8;
+      border-radius: 6px;
+      background: #ffffff;
+    }
+
+    .lead-voice {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding-bottom: 7px;
+      border-bottom: 1px solid #e2e7e8;
+    }
+
+    .lead-avatar {
+      width: 40px;
+      height: 40px;
+      flex: 0 0 40px;
+      display: grid;
+      place-items: center;
+      border-radius: 6px;
+      color: #ffffff;
+      background: #557980;
+      font-size: 13px;
+      line-height: 16px;
+      font-weight: 700;
+    }
+
+    .lead-copy {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .lead-line {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .lead-name {
+      min-width: 0;
+      overflow: hidden;
+      color: #26363a;
+      font-size: 14px;
+      line-height: 18px;
+      font-weight: 700;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    .lead-badge {
+      flex: 0 0 auto;
+      padding: 1px 5px;
+      border-radius: 10px;
+      color: #31535a;
+      background: #dce8ea;
+      font-size: 10px;
+      line-height: 14px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .lead-note {
+      margin: 1px 0 0;
+      overflow: hidden;
+      color: #68777b;
+      font-size: 12px;
+      line-height: 16px;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    .supporting-voices {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      padding-top: 7px;
+    }
+
+    .supporting-voice {
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .small-avatar {
+      width: 28px;
+      height: 28px;
+      flex: 0 0 28px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      color: #39545a;
+      background: #e4edef;
+      font-size: 10px;
+      line-height: 14px;
+      font-weight: 700;
+    }
+
+    .support-copy {
+      min-width: 0;
+    }
+
+    .support-name,
+    .support-role {
+      display: block;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    .support-name {
+      color: #2d3b40;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 700;
+    }
+
+    .support-role {
+      color: #778287;
+      font-size: 11px;
+      line-height: 14px;
+    }
+
+    .episode-list {
+      border-radius: 6px;
+      background: #ffffff;
+    }
+
+    .episode {
+      min-height: 66px;
+      padding: 8px 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 1px solid #e4e8e9;
+    }
+
+    .episode:last-child {
+      border-bottom: 0;
+    }
+
+    .episode img {
+      width: 84px;
+      height: 50px;
+      flex: 0 0 84px;
+      object-fit: cover;
+      display: block;
+      border-radius: 6px;
+      background: #c5ced1;
+    }
+
+    .episode-copy {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .episode-copy h3 {
+      margin: 0;
+      overflow: hidden;
+      color: #253237;
+      font-size: 14px;
+      line-height: 19px;
+      font-weight: 700;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    .episode-meta {
+      margin: 1px 0 0;
+      color: #718085;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .episode-summary {
+      margin: 1px 0 0;
+      overflow: hidden;
+      color: #4d5a5f;
+      font-size: 12px;
+      line-height: 16px;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    .play-button {
+      width: 30px;
+      height: 30px;
+      flex: 0 0 30px;
+      padding: 0;
+      display: grid;
+      place-items: center;
+      border: 1px solid #c3d5d8;
+      border-radius: 6px;
+      color: #35555b;
+      background: #edf4f5;
+    }
+
+    .tabbar {
+      height: 62px;
+      flex: 0 0 62px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border-top: 1px solid #d8dfe1;
+      background: #ffffff;
+    }
+
+    .nav-item {
+      padding: 7px 0 5px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      border: 0;
+      color: #788488;
+      background: transparent;
+      font-size: 12px;
+      line-height: 15px;
+      font-weight: 600;
+    }
+
+    .nav-item.active {
+      color: #35575e;
+      background: #edf4f5;
+      font-weight: 700;
+    }
+
+    svg {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <button class="icon-button" type="button" aria-label="Go back">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M15 5L8 12L15 19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <div class="topbar-title">
+        <strong>Morrow Stories</strong>
+        <span>Series details</span>
+      </div>
+      <button class="icon-button" type="button" aria-label="Share series">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="18" cy="5" r="2.5" stroke="currentColor" stroke-width="1.7"/>
+          <circle cx="6" cy="12" r="2.5" stroke="currentColor" stroke-width="1.7"/>
+          <circle cx="18" cy="19" r="2.5" stroke="currentColor" stroke-width="1.7"/>
+          <path d="M8.2 10.8L15.8 6.3M8.2 13.2L15.8 17.7" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </header>
+
+    <main class="content">
+      <img class="hero" src="https://loremflickr.com/390/176/city?lock=7670" width="390" height="176" alt="Downtown towers featured in The Quiet Ledger">
+
+      <article class="detail-card">
+        <div class="title-row">
+          <h1>The Quiet Ledger</h1>
+          <span class="rating">TV-14</span>
+        </div>
+        <p class="metadata">2025 · Documentary · 1 season · 4 episodes</p>
+        <p class="synopsis">An auditor traces hidden debt through boardrooms, public filings, and a divided city.</p>
+        <div class="detail-actions">
+          <button class="primary-action" type="button">Play Episode 1</button>
+          <button class="secondary-action" type="button">My List</button>
+        </div>
+      </article>
+
+      <nav class="section-tabs" aria-label="Series sections">
+        <button class="section-tab" type="button">Overview</button>
+        <button class="section-tab active" type="button">Episodes</button>
+        <button class="section-tab" type="button">Details</button>
+      </nav>
+
+      <section class="section" aria-labelledby="featured-heading-b">
+        <div class="section-heading">
+          <h2 id="featured-heading-b">Featured voices</h2>
+        </div>
+        <div class="voice-roster">
+          <article class="lead-voice">
+            <span class="lead-avatar" aria-hidden="true">MC</span>
+            <div class="lead-copy">
+              <div class="lead-line">
+                <span class="lead-name">Mira Cole</span>
+                <span class="lead-badge">Lead voice</span>
+              </div>
+              <p class="lead-note">The auditor guiding the investigation.</p>
+            </div>
+          </article>
+          <div class="supporting-voices">
+            <article class="supporting-voice">
+              <span class="small-avatar" aria-hidden="true">OP</span>
+              <span class="support-copy">
+                <span class="support-name">Owen Pike</span>
+                <span class="support-role">Reporter</span>
+              </span>
+            </article>
+            <article class="supporting-voice">
+              <span class="small-avatar" aria-hidden="true">TW</span>
+              <span class="support-copy">
+                <span class="support-name">Tessa Ward</span>
+                <span class="support-role">Analyst</span>
+              </span>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" aria-labelledby="episodes-heading-b">
+        <div class="section-heading">
+          <h2 id="episodes-heading-b">Episodes</h2>
+          <button class="season-button" type="button">
+            Season 1
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+
+        <div class="episode-list">
+          <article class="episode">
+            <img src="https://loremflickr.com/84/50/office?lock=7671" width="84" height="50" alt="Corporate meeting room in episode one">
+            <div class="episode-copy">
+              <h3>1. The Missing Column</h3>
+              <p class="episode-meta">42 min · Released Mar 7, 2025</p>
+              <p class="episode-summary">A routine audit exposes a second set of books.</p>
+            </div>
+            <button class="play-button" type="button" aria-label="Play The Missing Column">
+              <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M5.3 3.5L12 8L5.3 12.5V3.5Z" fill="currentColor"/>
+              </svg>
+            </button>
+          </article>
+
+          <article class="episode">
+            <img src="https://loremflickr.com/84/50/chart?lock=7672" width="84" height="50" alt="Financial chart examined in episode two">
+            <div class="episode-copy">
+              <h3>2. Paper Profits</h3>
+              <p class="episode-meta">39 min · Released Mar 14, 2025</p>
+              <p class="episode-summary">Reported growth conflicts with the cash trail.</p>
+            </div>
+            <button class="play-button" type="button" aria-label="Play Paper Profits">
+              <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M5.3 3.5L12 8L5.3 12.5V3.5Z" fill="currentColor"/>
+              </svg>
+            </button>
+          </article>
+
+          <article class="episode">
+            <img src="https://loremflickr.com/84/50/architecture?lock=7673" width="84" height="50" alt="Glass headquarters investigated in episode three">
+            <div class="episode-copy">
+              <h3>3. Behind the Glass</h3>
+              <p class="episode-meta">45 min · Released Mar 21, 2025</p>
+              <p class="episode-summary">Former executives describe pressure from the board.</p>
+            </div>
+            <button class="play-button" type="button" aria-label="Play Behind the Glass">
+              <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M5.3 3.5L12 8L5.3 12.5V3.5Z" fill="currentColor"/>
+              </svg>
+            </button>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <nav class="tabbar" aria-label="Primary navigation">
+      <button class="nav-item" type="button">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M4 10.5L12 4L20 10.5V20H14.8V14H9.2V20H4V10.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+        </svg>
+        <span>Home</span>
+      </button>
+      <button class="nav-item" type="button">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <rect x="3.5" y="6" width="17" height="13" rx="2" stroke="currentColor" stroke-width="1.7"/>
+          <path d="M3.5 10H20.5M7 15H10" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+        </svg>
+        <span>Accounts</span>
+      </button>
+      <button class="nav-item active" type="button" aria-current="page">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <rect x="4" y="4" width="16" height="16" rx="2" stroke="currentColor" stroke-width="1.7"/>
+          <path d="M10 8.5L15 12L10 15.5V8.5Z" fill="currentColor"/>
+        </svg>
+        <span>Stories</span>
+      </button>
+      <button class="nav-item" type="button">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="12" cy="8" r="3.5" stroke="currentColor" stroke-width="1.7"/>
+          <path d="M5.5 20C6.2 16.7 8.4 15 12 15C15.6 15 17.8 16.7 18.5 20" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+        </svg>
+        <span>Profile</span>
+      </button>
+    </nav>
+  </div>
+</body>
+</html>

@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Ledgerwave — Playlist</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;}
+  body{
+    font-family:'Plus Jakarta Sans',system-ui,sans-serif;
+    background:#dcdfe3;
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin:0;
+    color:#161c22;
+    -webkit-font-smoothing:antialiased;
+  }
+  .screen{
+    width:1024px;
+    height:768px;
+    background:#f3f4f6;
+    display:grid;
+    grid-template-columns:220px 1fr;
+    position:relative;
+  }
+
+  .sidebar{
+    background:#172126;
+    color:#fff;
+    padding:24px 16px 18px;
+    display:flex;
+    flex-direction:column;
+    min-width:0;
+  }
+  .brand{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:0 10px 26px;
+    font-size:18px;
+    font-weight:700;
+    letter-spacing:-.02em;
+  }
+  .brandmark{
+    width:30px;
+    height:30px;
+    border-radius:9px;
+    background:#19a39b;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#fff;
+  }
+  .nav-label{
+    margin:0 10px 8px;
+    color:#91a0a6;
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+  }
+  .nav{
+    display:flex;
+    flex-direction:column;
+    gap:5px;
+  }
+  .nav-item{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:11px 12px;
+    border-radius:9px;
+    color:#b7c1c5;
+    font-size:14px;
+    font-weight:500;
+  }
+  .nav-item.on{
+    color:#fff;
+    background:#26363b;
+    font-weight:700;
+  }
+  .nav-item.on svg{color:#30b8af;}
+  .nav svg{flex:none;}
+  .side-card{
+    margin-top:auto;
+    padding:14px;
+    border:1px solid #34454a;
+    border-radius:10px;
+    background:#1e2b30;
+  }
+  .side-card strong{
+    display:block;
+    font-size:13px;
+    margin-bottom:5px;
+  }
+  .side-card p{
+    color:#a9b5b9;
+    font-size:12px;
+    line-height:1.45;
+    margin:0;
+  }
+  .profile{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:18px 8px 0;
+  }
+  .avatar{
+    width:32px;
+    height:32px;
+    border-radius:50%;
+    background:#d7ecea;
+    color:#087c76;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:12px;
+    font-weight:700;
+  }
+  .profile-text{min-width:0;}
+  .profile-text strong{
+    display:block;
+    font-size:12px;
+  }
+  .profile-text span{
+    display:block;
+    margin-top:2px;
+    color:#91a0a6;
+    font-size:11px;
+  }
+
+  .main{
+    min-width:0;
+    display:flex;
+    flex-direction:column;
+  }
+  .topbar{
+    background:#fff;
+    border-bottom:1px solid #e2e5e8;
+    padding:15px 24px;
+    display:flex;
+    align-items:center;
+    gap:14px;
+  }
+  .back{
+    width:36px;
+    height:36px;
+    border:1px solid #dfe3e6;
+    border-radius:9px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#3b454c;
+    flex:none;
+  }
+  .title-block{min-width:0;}
+  .title-block h1{
+    margin:0;
+    font-size:18px;
+    font-weight:700;
+    letter-spacing:-.02em;
+  }
+  .title-block p{
+    margin:3px 0 0;
+    font-size:12px;
+    font-weight:500;
+    color:#778189;
+  }
+  .top-actions{
+    margin-left:auto;
+    display:flex;
+    gap:8px;
+  }
+  .action{
+    padding:9px 13px;
+    border:1px solid #dfe3e6;
+    border-radius:9px;
+    background:#fff;
+    color:#3d474e;
+    font-size:12px;
+    font-weight:700;
+  }
+  .action.primary{
+    background:#0f8b85;
+    border-color:#0f8b85;
+    color:#fff;
+  }
+
+  .content{
+    padding:22px 24px 24px;
+    flex:1;
+    min-height:0;
+  }
+  .content-grid{
+    display:grid;
+    grid-template-columns:296px minmax(0,1fr);
+    gap:22px;
+    align-items:start;
+  }
+  .panel-title{
+    margin:0 0 10px;
+    font-size:14px;
+    font-weight:700;
+    letter-spacing:-.01em;
+  }
+
+  .hero{
+    background:#fff;
+    border:1px solid #e4e7ea;
+    border-radius:12px;
+    box-shadow:0 2px 7px rgba(16,24,32,.06);
+    padding:18px;
+  }
+  .hero-top{
+    display:flex;
+    align-items:flex-start;
+    gap:13px;
+  }
+  .hero img{
+    width:76px;
+    height:76px;
+    border-radius:10px;
+    object-fit:cover;
+    display:block;
+    background:#c9ced3;
+    flex:none;
+  }
+  .hero-copy{min-width:0;}
+  .eyebrow{
+    margin:0 0 5px;
+    color:#0f8b85;
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:.07em;
+    text-transform:uppercase;
+  }
+  .hero-title{
+    margin:0 0 5px;
+    font-size:17px;
+    line-height:1.25;
+    font-weight:700;
+    letter-spacing:-.02em;
+  }
+  .hero-meta{
+    margin:0;
+    color:#717c84;
+    font-size:12px;
+    font-weight:500;
+  }
+  .description{
+    margin:16px 0 0;
+    color:#566169;
+    font-size:12px;
+    line-height:1.55;
+  }
+  .progress-meta{
+    display:flex;
+    justify-content:space-between;
+    margin-top:15px;
+    font-size:11px;
+    font-weight:600;
+    color:#6f7981;
+  }
+  .progress-meta strong{color:#0f8b85;}
+  .track-bar{
+    height:5px;
+    margin-top:7px;
+    background:#e5e9eb;
+    border-radius:8px;
+  }
+  .track-bar i{
+    display:block;
+    width:62%;
+    height:5px;
+    border-radius:8px;
+    background:#0f8b85;
+  }
+  .player-actions{
+    margin-top:18px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:18px;
+  }
+  .skip{
+    width:34px;
+    height:34px;
+    border-radius:50%;
+    border:1px solid #dfe3e6;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#566169;
+  }
+  .play{
+    width:48px;
+    height:48px;
+    border-radius:50%;
+    background:#0f8b85;
+    color:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    box-shadow:0 4px 10px rgba(15,139,133,.22);
+  }
+  .playlist-note{
+    margin-top:14px;
+    padding:13px 14px;
+    background:#e8f3f2;
+    border-radius:10px;
+  }
+  .playlist-note strong{
+    display:block;
+    color:#116f6a;
+    font-size:12px;
+    margin-bottom:4px;
+  }
+  .playlist-note span{
+    display:block;
+    color:#54716f;
+    font-size:11px;
+    line-height:1.45;
+  }
+
+  .queue-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    margin-bottom:10px;
+  }
+  .queue-head h2{
+    margin:0;
+    font-size:14px;
+    font-weight:700;
+  }
+  .queue-head p{
+    margin:0;
+    color:#778189;
+    font-size:12px;
+    font-weight:500;
+  }
+  .list{
+    background:#fff;
+    border:1px solid #e4e7ea;
+    border-radius:12px;
+    box-shadow:0 2px 7px rgba(16,24,32,.06);
+  }
+  .row{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:9px 13px;
+    border-bottom:1px solid #edf0f2;
+  }
+  .row:last-child{border-bottom:none;}
+  .row img{
+    width:46px;
+    height:46px;
+    border-radius:9px;
+    object-fit:cover;
+    display:block;
+    background:#c9ced3;
+    flex:none;
+  }
+  .row-body{flex:1;min-width:0;}
+  .row-title{
+    margin:0 0 4px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    font-size:13px;
+    font-weight:700;
+    letter-spacing:-.01em;
+  }
+  .row-meta{
+    margin:0;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    color:#778189;
+    font-size:11px;
+    font-weight:500;
+  }
+  .dur{
+    color:#778189;
+    font-size:11px;
+    font-weight:600;
+    flex:none;
+  }
+  .row-play{
+    width:28px;
+    height:28px;
+    border:1px solid #dfe3e6;
+    border-radius:50%;
+    color:#0f8b85;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex:none;
+  }
+</style>
+</head>
+<body>
+<div class="screen">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brandmark" aria-hidden="true">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M5 16l4-5 4 3 6-8"/><path d="M5 20h14"/></svg>
+      </div>
+      Ledgerwave
+    </div>
+
+    <p class="nav-label">Workspace</p>
+    <nav class="nav" aria-label="Primary navigation">
+      <div class="nav-item">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5L12 4l8 6.5V20H4z"/></svg>
+        Home
+      </div>
+      <div class="nav-item">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 19V11M12 19V5M19 19v-6"/></svg>
+        Markets
+      </div>
+      <div class="nav-item on">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15v-3a8 8 0 0 1 16 0v3"/><rect x="2.5" y="14" width="4.5" height="6" rx="2"/><rect x="17" y="14" width="4.5" height="6" rx="2"/></svg>
+        Listen
+      </div>
+      <div class="nav-item">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="12" rx="2.5"/><path d="M3 10.5h18"/></svg>
+        Accounts
+      </div>
+    </nav>
+
+    <div class="side-card">
+      <strong>Weekly listening</strong>
+      <p>Three episodes completed this week. Your queue is ready.</p>
+    </div>
+
+    <div class="profile">
+      <div class="avatar">AR</div>
+      <div class="profile-text">
+        <strong>Alex Rivera</strong>
+        <span>Personal workspace</span>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div class="back" aria-hidden="true">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
+      </div>
+      <div class="title-block">
+        <h1>Money Basics, Weekly</h1>
+        <p>The Yield Desk · updated Tuesdays</p>
+      </div>
+      <div class="top-actions">
+        <div class="action">Share playlist</div>
+        <div class="action primary">Follow</div>
+      </div>
+    </header>
+
+    <div class="content">
+      <div class="content-grid">
+        <section aria-labelledby="now-playing-title">
+          <h2 class="panel-title" id="now-playing-title">Now playing</h2>
+          <div class="hero">
+            <div class="hero-top">
+              <img src="https://loremflickr.com/76/76/chart?lock=12760" width="76" height="76" alt="Cover art for the episode on rate cuts, showing an interest rate chart">
+              <div class="hero-copy">
+                <p class="eyebrow">Episode 41</p>
+                <h3 class="hero-title">Rate Cuts and Your Mortgage</h3>
+                <p class="hero-meta">Priya Raghavan · Sep 30</p>
+              </div>
+            </div>
+            <p class="description">How lower benchmark rates can affect refinancing, monthly payments, and the timing of a home purchase.</p>
+            <div class="progress-meta">
+              <span>24 min left of 38 min</span>
+              <strong>62%</strong>
+            </div>
+            <div class="track-bar"><i></i></div>
+            <div class="player-actions">
+              <div class="skip" aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 6l-8 6 8 6z"/><path d="M6 6v12"/></svg>
+              </div>
+              <div class="play" aria-hidden="true">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5l11 6.5-11 6.5z"/></svg>
+              </div>
+              <div class="skip" aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 6l8 6-8 6z"/><path d="M18 6v12"/></svg>
+              </div>
+            </div>
+          </div>
+          <div class="playlist-note">
+            <strong>About this playlist</strong>
+            <span>Clear weekly explainers for everyday saving, borrowing, and investing decisions.</span>
+          </div>
+        </section>
+
+        <section aria-labelledby="queue-title">
+          <div class="queue-head">
+            <h2 id="queue-title">Up next</h2>
+            <p>7 episodes · 1 hr 44 min</p>
+          </div>
+          <div class="list">
+            <div class="row">
+              <img src="https://loremflickr.com/46/46/chart?lock=12761" width="46" height="46" alt="Cover art showing a bond yield chart">
+              <div class="row-body">
+                <p class="row-title">Bond Yields Explained in Ten Minutes</p>
+                <p class="row-meta">Priya Raghavan · Sep 23</p>
+              </div>
+              <div class="dur">11 min</div>
+              <div class="row-play" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5l11 6.5-11 6.5z"/></svg></div>
+            </div>
+            <div class="row">
+              <img src="https://loremflickr.com/46/46/office?lock=12762" width="46" height="46" alt="Cover art showing a central bank meeting room">
+              <div class="row-body">
+                <p class="row-title">What the Fed Minutes Actually Said</p>
+                <p class="row-meta">Dean Alcott · Sep 16</p>
+              </div>
+              <div class="dur">14 min</div>
+              <div class="row-play" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5l11 6.5-11 6.5z"/></svg></div>
+            </div>
+            <div class="row">
+              <img src="https://loremflickr.com/46/46/city?lock=12763" width="46" height="46" alt="Cover art showing a city street at dusk">
+              <div class="row-body">
+                <p class="row-title">Building a Six-Month Cash Buffer</p>
+                <p class="row-meta">Marisol Trent · Sep 9</p>
+              </div>
+              <div class="dur">9 min</div>
+              <div class="row-play" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5l11 6.5-11 6.5z"/></svg></div>
+            </div>
+            <div class="row">
+              <img src="https://loremflickr.com/46/46/chart?lock=12764" width="46" height="46" alt="Cover art showing small-cap earnings figures">
+              <div class="row-body">
+                <p class="row-title">Small-Cap Earnings, Week in Review</p>
+                <p class="row-meta">Dean Alcott · Sep 2</p>
+              </div>
+              <div class="dur">22 min</div>
+              <div class="row-play" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5l11 6.5-11 6.5z"/></svg></div>
+            </div>
+            <div class="row">
+              <img src="https://loremflickr.com/46/46/architecture?lock=12765" width="46" height="46" alt="Cover art showing a bank facade">
+              <div class="row-body">
+                <p class="row-title">Index Funds vs. Target-Date Funds</p>
+                <p class="row-meta">Priya Raghavan · Aug 26</p>
+              </div>
+              <div class="dur">17 min</div>
+              <div class="row-play" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5l11 6.5-11 6.5z"/></svg></div>
+            </div>
+            <div class="row">
+              <img src="https://loremflickr.com/46/46/office?lock=12766" width="46" height="46" alt="Cover art showing a lending desk">
+              <div class="row-body">
+                <p class="row-title">How Credit Scores Are Weighted</p>
+                <p class="row-meta">Marisol Trent · Aug 19</p>
+              </div>
+              <div class="dur">12 min</div>
+              <div class="row-play" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5l11 6.5-11 6.5z"/></svg></div>
+            </div>
+            <div class="row">
+              <img src="https://loremflickr.com/46/46/city?lock=12767" width="46" height="46" alt="Cover art showing a financial district skyline">
+              <div class="row-body">
+                <p class="row-title">Reading a Company Balance Sheet</p>
+                <p class="row-meta">Dean Alcott · Aug 12</p>
+              </div>
+              <div class="dur">19 min</div>
+              <div class="row-play" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5l11 6.5-11 6.5z"/></svg></div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+</div>
+</body>
+</html>

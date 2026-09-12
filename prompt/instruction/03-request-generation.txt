@@ -1,0 +1,123 @@
+Instruction generation: individual requests
+===========================================
+
+SYSTEM
+------
+You turn a UI change spec into the sentence a designer would actually type.
+Write one revision request in English.
+
+{level_rules}
+{target_rules}
+
+Rules:
+- Never restore information the assigned level told you to drop.
+- Write a plain imperative request ("Add ...", "Make ...").
+- Stay inside the length target. Being under it is fine; going over is not. If it runs
+  long, drop a word — never drop information the level is supposed to keep.
+- Quote on-screen copy in English.
+- No preamble, no explanation.
+
+Output: JSON and nothing else.
+{"en": "..."}
+
+LEVEL RULES: insert as {level_rules}
+------------------------------------
+Four instruction levels. Each fixes part of the change and leaves the rest open.
+Say only what its line fixes.
+
+L1 the solution : element, position, and form.
+L2 the element  : what to touch and what to do. Position and form stay open.
+L3 the goal     : the end state. The element and the means stay open.
+L4 a direction : what changes, and that it should differ. Never what it becomes.
+
+Name the element as it looks on screen. At L4, keep that name only if `element` is one
+part of the screen; if it is the whole screen, the axis alone is the request.
+Say the axis the way someone would say it pointing at the screen, rather than using
+a design-taxonomy term. Still never say what it becomes.
+
+The request must still read as the kind of change it is. "Add a way to save this" and
+"Rearrange this" are different requests even when they touch the same card. If the
+axis is so broad that both would fit, the sentence has lost the request. Say the
+kind of change plainly, and stop before saying what the result becomes.
+
+TARGET RULES: target F, at every level
+--------------------------------------
+This request changes the device. The device name is the situation the request lives in,
+not the means — so it survives every level, L4 included. Name the device in the request:
+tablet, desktop, or smartwatch. At L4 the request is the device plus the axis and
+nothing more.
+
+What moves is the whole screen, so the object of the sentence is the screen, never a
+part of it. Moving one list to another device while the rest stays put is not a
+coherent change.
+
+The device is where the screen is going, not where it already is. The change being
+requested is the move. Say the move, then what follows from it.
+
+TARGET RULES: target E, at every level
+--------------------------------------
+This request changes who the screen is for, or what it is about. That swap is the
+request — say it, then say what follows from it. A sentence that only describes what
+the new audience needs takes the swap as already done and asks for something on top.
+The new subject or audience is where the screen is going, not a condition it already
+meets.
+
+ADDITIONAL TARGET RULE: target E at L4
+--------------------------------------
+At L4, the swap is the whole request: say that the audience or the subject changes,
+never who or what it becomes.
+
+USER TEMPLATE
+-------------
+[SPEC]
+element : {element}
+{now_line}goal    : {goal}
+solution: {solution}
+axis    : {axis}
+
+Write this spec at instruction level L{level}.
+{change_type_rule}
+Length target — English {min_words}–{max_words} words. If it runs long,
+drop the least important detail rather than listing more.
+{reason_hint}
+{multiple_request_hint}
+{retry_note}
+
+CURRENT-STATE LINE: insert as {now_line} at L1–L3; leave empty at L4
+--------------------------------------------------------------------
+now     : {now} — already true. Never ask for this as if it were new.
+
+CHANGE-TYPE RULE: insert as {change_type_rule} at L4 only
+---------------------------------------------------------
+This request's change type is {target} {target_name} — {target_definition}.
+Whatever else the level strips, the sentence must still read as that kind of change:
+if the same sentence would fit a different change type on the same element, it has
+lost the request.
+
+REASON HINT: insert as {reason_hint} at L1–L3; leave empty at L4
+----------------------------------------------------------------
+It may open with the annoyance before the request.
+
+MULTIPLE-REQUEST HINT: insert as {multiple_request_hint} only when n is at least 2
+----------------------------------------------------------------------------------
+It is one of {n} requests the same person says in one breath — keep it at the short end of the target.
+
+WORD LIMITS: choose {min_words} and {max_words} by level
+--------------------------------------------------------
+L1: 10–18 words
+L2: 5–11 words
+L3: 5–11 words
+L4: 5–9 words
+
+RETRY NOTE: insert as {retry_note} only after rejection
+-------------------------------------------------------
+Your last attempt was rejected: {reason}
+
+REJECTION REASON: developer wording
+-----------------------------------
+The sentence used developer wording ({matched_wording}). Say it the way it looks on screen instead.
+
+REJECTION REASON: missing device
+--------------------------------
+This request changes the device ({device}) but the sentence does not say which device.
+The device is the situation, not the means — name it at this level too.

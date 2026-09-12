@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Tandemly — Booked Road-Test Centre</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body {
+    min-height: 100vh;
+    margin: 0;
+    padding: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #e6e7ea;
+    font-family: 'Nunito Sans', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .screen {
+    width: 768px;
+    height: 1024px;
+    background: #ffffff;
+    color: #16181d;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    box-shadow: 0 12px 32px rgba(24, 31, 43, 0.08);
+  }
+
+  .topbar {
+    display: flex;
+    align-items: center;
+    padding: 19px 30px;
+    border-bottom: 1px solid #e5e8ed;
+  }
+  .back {
+    width: 38px;
+    height: 38px;
+    margin-right: 14px;
+    border-radius: 19px;
+    background: #f3f5f8;
+    color: #21242a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+  }
+  .titleblock h1 {
+    margin: 0;
+    font-size: 20px;
+    line-height: 26px;
+    font-weight: 700;
+  }
+  .titleblock p {
+    margin: 2px 0 0;
+    color: #6b7280;
+    font-size: 12px;
+    line-height: 17px;
+  }
+  .booking-ref {
+    margin-left: auto;
+    color: #6b7280;
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  .appointment {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    align-items: center;
+    gap: 26px;
+    padding: 18px 30px;
+    background: #f7f9fc;
+    border-bottom: 1px solid #e5e8ed;
+  }
+  .appointment-main {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+  }
+  .datebox {
+    width: 48px;
+    height: 48px;
+    margin-right: 13px;
+    border-radius: 7px;
+    background: #1a5fd8;
+    color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+  }
+  .datebox strong {
+    font-size: 18px;
+    line-height: 19px;
+  }
+  .datebox span {
+    font-size: 10px;
+    line-height: 13px;
+    font-weight: 700;
+    letter-spacing: 0.7px;
+  }
+  .appointment-title {
+    font-size: 15px;
+    line-height: 21px;
+    font-weight: 700;
+  }
+  .appointment-sub {
+    color: #6b7280;
+    font-size: 12px;
+    line-height: 17px;
+  }
+  .appointment-stat {
+    padding-left: 24px;
+    border-left: 1px solid #dde2e9;
+  }
+  .stat-label {
+    color: #8b909b;
+    font-size: 10px;
+    line-height: 14px;
+    font-weight: 700;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+  }
+  .stat-value {
+    margin-top: 2px;
+    font-size: 14px;
+    line-height: 19px;
+    font-weight: 700;
+  }
+
+  .content {
+    padding: 22px 30px 18px;
+  }
+  .heading-row {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 14px;
+  }
+  .heading-row h2 {
+    margin: 0;
+    font-size: 19px;
+    line-height: 25px;
+  }
+  .heading-row p {
+    margin: 3px 0 0;
+    color: #6b7280;
+    font-size: 13px;
+    line-height: 18px;
+  }
+  .help {
+    color: #1a5fd8;
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  .searchline {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 12px;
+  }
+  .search {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    border: 1px solid #cfd5df;
+    border-radius: 7px;
+    padding: 13px 14px;
+    color: #596273;
+    background: #ffffff;
+  }
+  .search span {
+    color: #8b909b;
+    font-size: 14px;
+  }
+  .nearby {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 13px 16px;
+    border: 1px solid #b8cef5;
+    border-radius: 7px;
+    color: #1a5fd8;
+    background: #f7faff;
+    font-size: 13px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  .filters {
+    display: flex;
+    gap: 8px;
+    margin: 12px 0 16px;
+  }
+  .chip {
+    padding: 7px 11px;
+    border: 1px solid #dce1e8;
+    border-radius: 999px;
+    color: #626b78;
+    background: #ffffff;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .chip.on {
+    border-color: #1a5fd8;
+    background: #eef5ff;
+    color: #1a5fd8;
+  }
+
+  .listhead {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 92px 102px 34px;
+    gap: 14px;
+    padding: 9px 15px;
+    border: 1px solid #e1e5eb;
+    border-bottom: 0;
+    border-radius: 7px 7px 0 0;
+    background: #f7f8fa;
+    color: #7b828e;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+  }
+  .centres {
+    border: 1px solid #e1e5eb;
+    border-radius: 0 0 7px 7px;
+  }
+  .centre {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 92px 102px 34px;
+    gap: 14px;
+    align-items: center;
+    padding: 13px 15px;
+    border-top: 1px solid #e8ebef;
+  }
+  .centre:first-child { border-top: 0; }
+  .centre.selected {
+    background: #eaf3ff;
+  }
+  .centre-info {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+  }
+  .marker {
+    width: 35px;
+    height: 35px;
+    margin-right: 11px;
+    border-radius: 18px;
+    background: #f0f2f5;
+    color: #687284;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+  }
+  .selected .marker {
+    background: #d5e7ff;
+    color: #1a5fd8;
+  }
+  .body {
+    min-width: 0;
+  }
+  .name {
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 700;
+  }
+  .selected .name { color: #1a5fd8; }
+  .addr {
+    color: #6b7280;
+    font-size: 12px;
+    line-height: 17px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .distance {
+    color: #4f5662;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .availability {
+    font-size: 12px;
+    line-height: 17px;
+    font-weight: 700;
+  }
+  .availability.booked { color: #1a5fd8; }
+  .availability.open { color: #2f6d39; }
+  .check {
+    display: flex;
+    justify-content: flex-end;
+    color: #1a5fd8;
+  }
+
+  .all-centres {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 3px 15px;
+    color: #1a5fd8;
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  .recent-area {
+    border-top: 1px solid #e5e8ed;
+    padding-top: 13px;
+  }
+  .recent-title {
+    color: #6b7280;
+    font-size: 11px;
+    line-height: 16px;
+    font-weight: 700;
+    letter-spacing: 0.7px;
+    text-transform: uppercase;
+  }
+  .recent-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 9px;
+  }
+  .recent {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding: 11px 12px;
+    border: 1px solid #e2e6ec;
+    border-radius: 6px;
+  }
+  .recent svg {
+    color: #7b8492;
+    flex: none;
+  }
+  .recent .name {
+    font-size: 13px;
+    line-height: 18px;
+  }
+  .recent .addr {
+    font-size: 11px;
+    line-height: 16px;
+  }
+
+  .actionbar {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin-top: auto;
+    padding: 15px 30px;
+    border-top: 1px solid #e1e5eb;
+    background: #fbfcfd;
+  }
+  .selected-summary {
+    min-width: 0;
+    flex: 1;
+  }
+  .selected-label {
+    color: #6b7280;
+    font-size: 10px;
+    line-height: 14px;
+    font-weight: 700;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+  }
+  .selected-name {
+    color: #1a5fd8;
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 700;
+  }
+  .warning {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    max-width: 220px;
+    color: #6b7280;
+    font-size: 11px;
+    line-height: 16px;
+  }
+  .warning svg {
+    color: #1a5fd8;
+    flex: none;
+  }
+  .confirm {
+    padding: 13px 22px;
+    border-radius: 6px;
+    background: #1a5fd8;
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  .tabs {
+    display: flex;
+    border-top: 1px solid #e1e5eb;
+    background: #ffffff;
+  }
+  .tab {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 10px 0 13px;
+    color: #8b909b;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .tab.on { color: #1a5fd8; }
+</style>
+</head>
+<body>
+<div class="screen">
+  <div class="topbar">
+    <span class="back" aria-hidden="true">
+      <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+    </span>
+    <div class="titleblock">
+      <h1>Booked road-test centre</h1>
+      <p>Review or change the location attached to your appointment.</p>
+    </div>
+    <div class="booking-ref">Booking RT-40827</div>
+  </div>
+
+  <div class="appointment">
+    <div class="appointment-main">
+      <div class="datebox">
+        <span>MAY</span>
+        <strong>08</strong>
+      </div>
+      <div>
+        <div class="appointment-title">Class C road test · Alex Morgan</div>
+        <div class="appointment-sub">Thursday · Bring your permit and proof of insurance</div>
+      </div>
+    </div>
+    <div class="appointment-stat">
+      <div class="stat-label">Test time</div>
+      <div class="stat-value">9:20 AM</div>
+    </div>
+    <div class="appointment-stat">
+      <div class="stat-label">Arrival</div>
+      <div class="stat-value">9:00 AM</div>
+    </div>
+  </div>
+
+  <div class="content">
+    <div class="heading-row">
+      <div>
+        <h2>Select a test centre</h2>
+        <p>Your currently booked centre is highlighted below.</p>
+      </div>
+      <div class="help">Centre requirements</div>
+    </div>
+
+    <div class="searchline">
+      <div class="search">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M16.5 16.5L21 21"/></svg>
+        <span>Search by centre, city, or postal code</span>
+      </div>
+      <div class="nearby">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="8"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2"/></svg>
+        Near my location
+      </div>
+    </div>
+
+    <div class="filters">
+      <div class="chip on">Saved</div>
+      <div class="chip">Within 10 miles</div>
+      <div class="chip">Wheelchair access</div>
+      <div class="chip">Weekend hours</div>
+    </div>
+
+    <div class="listhead">
+      <div>Test centre</div>
+      <div>Distance</div>
+      <div>Status</div>
+      <div></div>
+    </div>
+
+    <div class="centres">
+      <div class="centre selected">
+        <div class="centre-info">
+          <div class="marker">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-5.6 7-11a7 7 0 1 0-14 0c0 5.4 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>
+          </div>
+          <div class="body">
+            <div class="name">North Portland Road Test Centre</div>
+            <div class="addr">1420 N Hayden Island Dr, Portland, OR 97217</div>
+          </div>
+        </div>
+        <div class="distance">4.2 miles</div>
+        <div class="availability booked">Booked</div>
+        <span class="check" aria-label="Selected">
+          <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8.5 12.2l2.4 2.4 4.6-4.9"/></svg>
+        </span>
+      </div>
+
+      <div class="centre">
+        <div class="centre-info">
+          <div class="marker">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-5.6 7-11a7 7 0 1 0-14 0c0 5.4 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>
+          </div>
+          <div class="body">
+            <div class="name">East Portland Testing Centre</div>
+            <div class="addr">8710 SE Powell Blvd, Portland, OR 97266</div>
+          </div>
+        </div>
+        <div class="distance">8.4 miles</div>
+        <div class="availability open">Times available</div>
+        <span></span>
+      </div>
+
+      <div class="centre">
+        <div class="centre-info">
+          <div class="marker">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-5.6 7-11a7 7 0 1 0-14 0c0 5.4 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>
+          </div>
+          <div class="body">
+            <div class="name">Beaverton Driver Services</div>
+            <div class="addr">10280 SW Park Way, Portland, OR 97225</div>
+          </div>
+        </div>
+        <div class="distance">10.1 miles</div>
+        <div class="availability open">Times available</div>
+        <span></span>
+      </div>
+
+      <div class="centre">
+        <div class="centre-info">
+          <div class="marker">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-5.6 7-11a7 7 0 1 0-14 0c0 5.4 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>
+          </div>
+          <div class="body">
+            <div class="name">Gresham Road Test Centre</div>
+            <div class="addr">1519 NE 181st Ave, Portland, OR 97230</div>
+          </div>
+        </div>
+        <div class="distance">13.7 miles</div>
+        <div class="availability open">Times available</div>
+        <span></span>
+      </div>
+    </div>
+
+    <div class="all-centres">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+      View all road-test centres
+    </div>
+
+    <div class="recent-area">
+      <div class="recent-title">Recently viewed</div>
+      <div class="recent-grid">
+        <div class="recent">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></svg>
+          <div class="body">
+            <div class="name">Lake Oswego Testing Office</div>
+            <div class="addr">3 Monroe Pkwy, Lake Oswego, OR</div>
+          </div>
+        </div>
+        <div class="recent">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></svg>
+          <div class="body">
+            <div class="name">Hillsboro Driver Services</div>
+            <div class="addr">1300 SW Oak St, Hillsboro, OR</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="actionbar">
+    <div class="selected-summary">
+      <div class="selected-label">Selected centre</div>
+      <div class="selected-name">North Portland Road Test Centre</div>
+    </div>
+    <div class="warning">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>
+      Changing centres may also change your test time.
+    </div>
+    <div class="confirm">Confirm centre</div>
+  </div>
+
+  <div class="tabs">
+    <div class="tab">
+      <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 11h18"/></svg>
+      Bookings
+    </div>
+    <div class="tab">
+      <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 19h14M7 16l2-8h6l2 8M9 12h6"/></svg>
+      Prepare
+    </div>
+    <div class="tab on">
+      <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-5.6 7-11a7 7 0 1 0-14 0c0 5.4 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>
+      Centres
+    </div>
+    <div class="tab">
+      <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0"/></svg>
+      Profile
+    </div>
+  </div>
+</div>
+</body>
+</html>

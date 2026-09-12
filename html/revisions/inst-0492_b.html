@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Money Tasks — Hearth Ledger</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 28px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #d9ddda;
+      color: #18211d;
+      font-family: 'Source Serif 4', Georgia, serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      width: 1024px;
+      height: 768px;
+      display: flex;
+      flex-direction: column;
+      background: #f3f5f3;
+      border: 1px solid #cfd5d1;
+      box-shadow: 0 18px 45px rgba(26, 42, 34, 0.12);
+    }
+
+    .top-bar {
+      display: flex;
+      align-items: center;
+      padding: 0 34px;
+      background: #ffffff;
+      border-bottom: 1px solid #dce1de;
+    }
+
+    .service-name {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 19px 0;
+      font-size: 19px;
+      line-height: 1.2;
+      font-weight: 700;
+      letter-spacing: -0.15px;
+    }
+
+    .service-mark {
+      width: 22px;
+      height: 22px;
+      display: grid;
+      place-items: center;
+      border: 2px solid #087b59;
+      border-radius: 4px;
+      color: #087b59;
+    }
+
+    .desktop-nav {
+      display: flex;
+      align-self: stretch;
+      gap: 28px;
+      margin-left: 54px;
+    }
+
+    .nav-item {
+      position: relative;
+      padding: 0 2px;
+      border: 0;
+      background: transparent;
+      color: #647069;
+      font-size: 14px;
+      line-height: 1.25;
+    }
+
+    .nav-item.active {
+      color: #075f46;
+      font-weight: 700;
+    }
+
+    .nav-item.active::after {
+      content: "";
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      height: 3px;
+      background: #087b59;
+    }
+
+    .top-spacer {
+      flex: 1;
+    }
+
+    .profile {
+      width: 36px;
+      height: 36px;
+      display: grid;
+      place-items: center;
+      border: 0;
+      border-radius: 4px;
+      background: #dceee7;
+      color: #075f46;
+      font-size: 13px;
+      line-height: 1;
+      font-weight: 700;
+    }
+
+    main {
+      flex: 1;
+      padding: 24px 38px 25px;
+    }
+
+    .page-heading {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 30px;
+      line-height: 1.12;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+
+    .summary {
+      margin: 4px 0 0;
+      color: #5e6963;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    .heading-actions {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+
+    .filter-button,
+    .add-button {
+      padding: 8px 14px;
+      border-radius: 4px;
+      font-size: 14px;
+      line-height: 1.25;
+      font-weight: 600;
+    }
+
+    .filter-button {
+      border: 1px solid #cbd3ce;
+      background: #ffffff;
+      color: #39463f;
+    }
+
+    .add-button {
+      border: 1px solid #087b59;
+      background: #087b59;
+      color: #ffffff;
+    }
+
+    .workspace {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 220px;
+      align-items: start;
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .task-panel {
+      min-width: 0;
+      background: #ffffff;
+      border: 1px solid #dde3df;
+      border-radius: 5px;
+      box-shadow: 0 3px 10px rgba(25, 47, 37, 0.06);
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      padding: 12px 16px;
+      border-bottom: 1px solid #e4e8e5;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: 18px;
+      line-height: 1.3;
+      font-weight: 700;
+    }
+
+    .panel-count {
+      color: #69736e;
+      font-size: 12px;
+      line-height: 1.3;
+    }
+
+    .account-group + .account-group {
+      border-top: 1px solid #dfe4e1;
+    }
+
+    .account-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 7px 14px;
+      background: #f6f8f6;
+    }
+
+    .account-name {
+      margin: 0;
+      font-size: 13px;
+      line-height: 1.3;
+      font-weight: 700;
+    }
+
+    .account-type {
+      color: #78827d;
+      font-size: 11px;
+      line-height: 1.3;
+    }
+
+    .task-row {
+      display: grid;
+      grid-template-columns: 22px minmax(0, 1.15fr) minmax(0, 1.45fr) 66px;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px 11px;
+    }
+
+    .task-check {
+      width: 20px;
+      height: 20px;
+      padding: 0;
+      border: 1.5px solid #7e8a84;
+      border-radius: 4px;
+      background: #ffffff;
+    }
+
+    .task-copy,
+    .reason-copy {
+      min-width: 0;
+    }
+
+    .task-title {
+      margin: 0;
+      font-size: 14px;
+      line-height: 1.3;
+      font-weight: 700;
+    }
+
+    .task-meta {
+      margin: 2px 0 0;
+      color: #69746e;
+      font-size: 12px;
+      line-height: 1.3;
+    }
+
+    .reason-label {
+      display: block;
+      color: #846c35;
+      font-size: 10px;
+      line-height: 1.25;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .reason-text {
+      margin: 2px 0 0;
+      color: #544d3d;
+      font-size: 12px;
+      line-height: 1.3;
+    }
+
+    .due-date {
+      color: #626e67;
+      font-size: 12px;
+      line-height: 1.3;
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .due-date.urgent {
+      color: #087b59;
+      font-weight: 700;
+    }
+
+    .side-column {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .summary-card,
+    .completed-panel {
+      background: #ffffff;
+      border: 1px solid #dde3df;
+      border-radius: 5px;
+    }
+
+    .summary-card {
+      padding: 15px;
+    }
+
+    .summary-card h2 {
+      font-size: 16px;
+    }
+
+    .summary-list {
+      margin: 12px 0 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .summary-list li {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 8px 0;
+      border-top: 1px solid #ebeeec;
+      color: #5f6a64;
+      font-size: 12px;
+      line-height: 1.3;
+    }
+
+    .summary-list strong {
+      color: #1e2a24;
+      font-size: 15px;
+    }
+
+    .completed-panel {
+      padding-bottom: 4px;
+    }
+
+    .completed-heading {
+      padding: 12px 14px 9px;
+    }
+
+    .completed-heading h2 {
+      font-size: 16px;
+    }
+
+    .completed-heading p {
+      margin: 2px 0 0;
+      color: #747f79;
+      font-size: 11px;
+      line-height: 1.3;
+    }
+
+    .completed-account {
+      padding: 7px 14px;
+      border-top: 1px solid #e4e8e5;
+      background: #f7f9f7;
+      color: #58645d;
+      font-size: 11px;
+      line-height: 1.3;
+      font-weight: 700;
+    }
+
+    .completed-task {
+      display: grid;
+      grid-template-columns: 20px minmax(0, 1fr);
+      align-items: center;
+      gap: 9px;
+      padding: 9px 14px;
+    }
+
+    .completed-check {
+      width: 19px;
+      height: 19px;
+      display: grid;
+      place-items: center;
+      border-radius: 4px;
+      background: #087b59;
+      color: #ffffff;
+    }
+
+    .completed-title {
+      margin: 0;
+      color: #4f5b54;
+      font-size: 12px;
+      line-height: 1.3;
+      font-weight: 700;
+    }
+
+    .completed-date {
+      margin: 1px 0 0;
+      color: #79837e;
+      font-size: 11px;
+      line-height: 1.3;
+    }
+
+    .help-note {
+      margin: 0;
+      padding: 0 3px;
+      color: #69746e;
+      font-size: 11px;
+      line-height: 1.4;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="top-bar">
+      <div class="service-name">
+        <span class="service-mark" aria-hidden="true">
+          <svg viewBox="0 0 20 20" width="14" height="14" fill="none">
+            <path d="M4 13.5L8 9.5L11 12.5L16 6.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="square" stroke-linejoin="miter"/>
+          </svg>
+        </span>
+        <span>Hearth Ledger</span>
+      </div>
+
+      <nav class="desktop-nav" aria-label="Primary navigation">
+        <button class="nav-item" type="button">Home</button>
+        <button class="nav-item" type="button">Accounts</button>
+        <button class="nav-item active" type="button" aria-current="page">Tasks</button>
+      </nav>
+
+      <div class="top-spacer"></div>
+      <button class="profile" type="button" aria-label="Open Morgan Vale's profile">MV</button>
+    </header>
+
+    <main>
+      <div class="page-heading">
+        <div>
+          <h1>Money tasks</h1>
+          <p class="summary">Three items need your review across your financial accounts.</p>
+        </div>
+        <div class="heading-actions">
+          <button class="filter-button" type="button">All accounts</button>
+          <button class="add-button" type="button">Add task</button>
+        </div>
+      </div>
+
+      <div class="workspace">
+        <section class="task-panel" aria-labelledby="open-heading">
+          <div class="panel-header">
+            <h2 id="open-heading">Open tasks by account</h2>
+            <span class="panel-count">3 open</span>
+          </div>
+
+          <section class="account-group" aria-labelledby="harbor-heading">
+            <header class="account-heading">
+              <p class="account-name" id="harbor-heading">Harbor checking</p>
+              <span class="account-type">Everyday banking</span>
+            </header>
+            <article class="task-row">
+              <button class="task-check" type="button" aria-label="Mark Confirm May rent payment as complete"></button>
+              <div class="task-copy">
+                <p class="task-title">Confirm May rent payment</p>
+                <p class="task-meta">$1,840 payment</p>
+              </div>
+              <div class="reason-copy">
+                <span class="reason-label">Review reason</span>
+                <p class="reason-text">Amount is $90 higher than usual.</p>
+              </div>
+              <div class="due-date urgent">Today</div>
+            </article>
+          </section>
+
+          <section class="account-group" aria-labelledby="rainy-heading">
+            <header class="account-heading">
+              <p class="account-name" id="rainy-heading">Rainy Day fund</p>
+              <span class="account-type">Savings account</span>
+            </header>
+            <article class="task-row">
+              <button class="task-check" type="button" aria-label="Mark Increase weekly savings as complete"></button>
+              <div class="task-copy">
+                <p class="task-title">Increase weekly savings</p>
+                <p class="task-meta">Set weekly transfer to $125</p>
+              </div>
+              <div class="reason-copy">
+                <span class="reason-label">Review reason</span>
+                <p class="reason-text">Monthly savings target is $210 behind.</p>
+              </div>
+              <div class="due-date">May 17</div>
+            </article>
+          </section>
+
+          <section class="account-group" aria-labelledby="northline-heading">
+            <header class="account-heading">
+              <p class="account-name" id="northline-heading">Northline card</p>
+              <span class="account-type">Credit card</span>
+            </header>
+            <article class="task-row">
+              <button class="task-check" type="button" aria-label="Mark Review card subscription as complete"></button>
+              <div class="task-copy">
+                <p class="task-title">Review card subscription</p>
+                <p class="task-meta">$24.99 recurring charge</p>
+              </div>
+              <div class="reason-copy">
+                <span class="reason-label">Review reason</span>
+                <p class="reason-text">Price increased by $5 since last month.</p>
+              </div>
+              <div class="due-date">May 20</div>
+            </article>
+          </section>
+        </section>
+
+        <aside class="side-column">
+          <section class="summary-card" aria-labelledby="overview-heading">
+            <h2 id="overview-heading">Review overview</h2>
+            <ul class="summary-list">
+              <li><span>Due today</span><strong>1</strong></li>
+              <li><span>Account changes</span><strong>2</strong></li>
+              <li><span>Recurring charges</span><strong>1</strong></li>
+            </ul>
+          </section>
+
+          <section class="completed-panel" aria-labelledby="completed-heading">
+            <div class="completed-heading">
+              <h2 id="completed-heading">Completed recently</h2>
+              <p>This month · grouped by account</p>
+            </div>
+
+            <div class="completed-account">Voyager travel card</div>
+            <article class="completed-task">
+              <span class="completed-check" aria-hidden="true">
+                <svg viewBox="0 0 20 20" width="13" height="13" fill="none">
+                  <path d="M4.5 10.5L8.2 14L15.5 6.5" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter"/>
+                </svg>
+              </span>
+              <div>
+                <p class="completed-title">Set travel spending cap</p>
+                <p class="completed-date">Completed May 12</p>
+              </div>
+            </article>
+
+            <div class="completed-account">Cedar brokerage</div>
+            <article class="completed-task">
+              <span class="completed-check" aria-hidden="true">
+                <svg viewBox="0 0 20 20" width="13" height="13" fill="none">
+                  <path d="M4.5 10.5L8.2 14L15.5 6.5" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter"/>
+                </svg>
+              </span>
+              <div>
+                <p class="completed-title">Verify dividend settings</p>
+                <p class="completed-date">Completed May 9</p>
+              </div>
+            </article>
+          </section>
+
+          <p class="help-note">Review reasons highlight changes that may affect your budget or account settings.</p>
+        </aside>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

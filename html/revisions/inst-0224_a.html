@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Sidegroove — Friday Night Rotation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --accent:#d8232a;
+    --ink:#17161a;
+    --muted:#76747c;
+    --ground:#f1f1f2;
+    --line:#e5e4e8;
+    --shadow:0 1px 3px rgba(20,18,25,.09);
+  }
+  *{box-sizing:border-box;}
+  body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    padding:40px 0;
+    margin:0;
+    background:#dcdbdf;
+    font-family:'Source Sans 3', system-ui, sans-serif;
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+  }
+  .screen{
+    width:1024px;
+    height:768px;
+    background:var(--ground);
+    display:flex;
+    position:relative;
+    box-shadow:0 12px 40px rgba(20,18,25,.18);
+  }
+
+  /* ---------- left rail ---------- */
+  .rail{
+    width:236px;flex:none;background:#fff;border-right:1px solid var(--line);
+    display:flex;flex-direction:column;min-width:0;
+  }
+  .brand{
+    font-family:'Playfair Display', Georgia, serif;font-weight:700;font-size:19px;line-height:22px;
+    padding:16px 18px;border-bottom:1px solid var(--line);
+  }
+  .brand em{font-style:normal;color:var(--accent);}
+  .nav{padding:10px 10px 12px;display:flex;flex-direction:column;gap:1px;border-bottom:1px solid var(--line);}
+  .nitem{
+    display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:6px;
+    font-size:13px;line-height:18px;color:#4a4850;cursor:pointer;
+  }
+  .nitem.active{background:#fbe9e9;color:var(--accent);font-weight:600;}
+  .rooms{padding:12px 10px 0;min-width:0;}
+  .sectlabel{
+    font-size:11px;line-height:14px;letter-spacing:.9px;text-transform:uppercase;
+    color:var(--muted);font-weight:600;padding:0 10px 7px;
+  }
+  .room{display:flex;align-items:center;gap:9px;padding:7px 10px;border-radius:6px;min-width:0;cursor:pointer;}
+  .room.active{background:#f4f4f6;}
+  .ravatar{
+    width:30px;height:30px;border-radius:6px;flex:none;color:#fff;
+    display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;letter-spacing:.3px;
+  }
+  .rt{flex:1;min-width:0;}
+  .rn{font-size:13px;line-height:17px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .rs{font-size:12px;line-height:15px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .rw{font-size:11px;line-height:15px;color:var(--muted);flex:none;font-variant-numeric:tabular-nums;}
+  .me{
+    margin-top:auto;border-top:1px solid var(--line);padding:12px 18px;
+    display:flex;align-items:center;gap:9px;min-width:0;
+  }
+  .me .ravatar{background:#33323a;}
+  .me .mn{font-size:13px;line-height:16px;font-weight:600;}
+  .me .ms{font-size:12px;line-height:15px;color:var(--accent);}
+
+  /* ---------- center ---------- */
+  .main{flex:1;min-width:0;display:flex;flex-direction:column;}
+  .chead{
+    background:#fff;border-bottom:1px solid var(--line);
+    padding:11px 20px;display:flex;align-items:center;gap:11px;
+  }
+  .gavatar{
+    width:34px;height:34px;border-radius:6px;background:#2a2930;color:#fff;
+    display:flex;align-items:center;justify-content:center;
+    font-size:13px;font-weight:600;letter-spacing:.3px;flex:none;
+  }
+  .titlewrap{flex:1;min-width:0;}
+  .titlewrap h1{
+    font-family:'Playfair Display', Georgia, serif;
+    font-weight:700;font-size:18px;line-height:22px;margin:0;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .titlewrap p{margin:1px 0 0;font-size:12px;line-height:15px;color:var(--muted);}
+  .hactions{display:flex;align-items:center;gap:8px;flex:none;}
+  .ghost{
+    font-size:13px;line-height:16px;font-weight:600;color:#4a4850;
+    border:1px solid var(--line);border-radius:6px;padding:6px 12px;cursor:pointer;
+  }
+  .iconbtn{
+    width:30px;height:30px;border-radius:6px;border:1px solid var(--line);color:#4a4850;
+    display:flex;align-items:center;justify-content:center;cursor:pointer;
+  }
+
+  /* ---------- now playing strip ---------- */
+  .nowbar{background:#fff;border-bottom:1px solid var(--line);}
+  .nowbar .inner{padding:9px 20px;display:flex;align-items:center;gap:12px;}
+  .nowbar img{width:40px;height:40px;border-radius:6px;object-fit:cover;display:block;background:#cfcdd3;flex:none;}
+  .nowtext{flex:1;min-width:0;}
+  .kicker{
+    font-size:11px;line-height:14px;font-weight:600;color:var(--accent);
+    letter-spacing:.8px;text-transform:uppercase;
+  }
+  .nowtext .track{
+    font-size:14px;line-height:18px;font-weight:600;margin-top:1px;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .transport{display:flex;align-items:center;gap:8px;flex:none;color:#4a4850;}
+  .transport .tbtn{width:26px;height:26px;border-radius:6px;display:flex;align-items:center;justify-content:center;cursor:pointer;}
+  .transport .tbtn.main{background:var(--accent);color:#fff;}
+  .times{font-size:12px;line-height:15px;color:var(--muted);flex:none;font-variant-numeric:tabular-nums;}
+  .progress{height:2px;background:#e9e8ec;}
+  .progress span{display:block;height:2px;width:56%;background:var(--accent);}
+
+  /* ---------- thread ---------- */
+  .thread{
+    flex:1;padding:16px 24px 18px;display:flex;flex-direction:column;
+    justify-content:flex-end;gap:12px;min-width:0;
+  }
+  .divider{text-align:center;font-size:12px;line-height:18px;color:var(--muted);}
+  .row{display:flex;gap:9px;align-items:flex-end;}
+  .row.out{justify-content:flex-end;}
+  .mono{
+    width:32px;height:32px;border-radius:6px;flex:none;
+    display:flex;align-items:center;justify-content:center;
+    color:#fff;font-size:12px;font-weight:600;letter-spacing:.3px;
+  }
+  .mono.dw{background:#33323a;}
+  .mono.ma{background:#5c5b64;}
+  .mono.pr{background:#83828b;}
+  .mono.spacer{background:transparent;}
+  .stack{max-width:400px;min-width:0;}
+  .meta{display:flex;align-items:baseline;gap:6px;margin:0 0 3px 2px;}
+  .meta .who{font-size:13px;line-height:16px;font-weight:600;}
+  .meta .when{font-size:12px;line-height:16px;color:var(--muted);}
+  .bubble{
+    background:#fff;border-radius:6px;box-shadow:var(--shadow);
+    padding:9px 13px;font-size:14px;line-height:20px;
+  }
+  .out .bubble{background:var(--accent);color:#fff;}
+  .out .when{font-size:12px;line-height:16px;color:var(--muted);align-self:flex-end;margin-bottom:4px;}
+  .card{
+    background:#fff;border-radius:6px;box-shadow:var(--shadow);
+    padding:10px;display:flex;align-items:center;gap:11px;width:300px;
+  }
+  .card img{width:48px;height:48px;border-radius:6px;object-fit:cover;display:block;background:#cfcdd3;flex:none;}
+  .card .ct{flex:1;min-width:0;}
+  .card .ct .t{font-size:14px;line-height:18px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .card .ct .s{font-size:12px;line-height:16px;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .card .play{width:26px;height:26px;border-radius:6px;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;flex:none;}
+  .reacts{margin:5px 0 0 2px;display:inline-flex;align-items:center;gap:5px;
+    background:#fff;border:1px solid var(--line);border-radius:6px;padding:2px 7px;}
+  .reacts span{font-size:12px;line-height:16px;color:#4a4850;}
+  .typing{display:flex;align-items:center;gap:8px;margin-left:41px;}
+  .dots{display:flex;gap:3px;}
+  .dots i{width:5px;height:5px;border-radius:50%;background:#b6b4bc;display:block;}
+  .typing p{margin:0;font-size:12px;line-height:16px;color:var(--muted);}
+
+  /* ---------- composer ---------- */
+  .composer{
+    background:#fff;border-top:1px solid var(--line);
+    padding:12px 20px;display:flex;align-items:center;gap:10px;
+  }
+  .attach{width:32px;height:32px;border-radius:6px;background:var(--ground);color:#4a4850;
+    display:flex;align-items:center;justify-content:center;flex:none;cursor:pointer;}
+  .field{
+    flex:1;height:36px;border:1px solid var(--line);border-radius:6px;background:var(--ground);
+    display:flex;align-items:center;padding:0 12px;font-size:14px;color:#9b99a1;
+    overflow:hidden;white-space:nowrap;
+  }
+  .send{
+    height:36px;border-radius:6px;background:var(--accent);color:#fff;flex:none;
+    display:flex;align-items:center;gap:7px;padding:0 14px;font-size:13px;font-weight:600;cursor:pointer;
+  }
+
+  /* ---------- right aside ---------- */
+  .side{
+    width:268px;flex:none;background:#fff;border-left:1px solid var(--line);
+    display:flex;flex-direction:column;min-width:0;
+  }
+  .sblock{padding:14px 18px;border-bottom:1px solid var(--line);min-width:0;}
+  .sh{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin-bottom:9px;}
+  .sh strong{font-size:13px;line-height:17px;font-weight:600;}
+  .sh span{font-size:12px;line-height:16px;color:var(--muted);}
+  .qrow{display:flex;align-items:center;gap:10px;padding:5px 0;min-width:0;}
+  .qn{width:16px;flex:none;font-size:12px;line-height:16px;color:var(--muted);font-variant-numeric:tabular-nums;}
+  .qt{flex:1;min-width:0;}
+  .qt .a{font-size:13px;line-height:17px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .qt .b{font-size:12px;line-height:15px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .qd{font-size:12px;line-height:16px;color:var(--muted);flex:none;font-variant-numeric:tabular-nums;}
+  .more{font-size:12px;line-height:16px;color:var(--accent);font-weight:600;margin-top:7px;cursor:pointer;}
+  .mrow{display:flex;align-items:center;gap:9px;padding:4px 0;min-width:0;}
+  .mav{
+    width:26px;height:26px;border-radius:6px;flex:none;color:#fff;
+    display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;
+  }
+  .mname{flex:1;min-width:0;font-size:13px;line-height:17px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .mstat{font-size:12px;line-height:16px;color:var(--muted);flex:none;}
+  .mstat.live{color:var(--accent);font-weight:600;}
+  .pin{background:var(--ground);border-radius:6px;padding:10px 12px;}
+  .pin .pw{font-size:12px;line-height:16px;color:var(--muted);}
+  .pin p{margin:2px 0 0;font-size:13px;line-height:18px;}
+</style>
+</head>
+<body>
+<div class="screen">
+
+  <!-- left rail -->
+  <aside class="rail">
+    <div class="brand">Side<em>groove</em></div>
+
+    <nav class="nav">
+      <div class="nitem">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M4 10.5L12 4l8 6.5V20H4z"/></svg>
+        Home
+      </div>
+      <div class="nitem">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="6"/><path d="M15.5 15.5L20 20"/></svg>
+        Search
+      </div>
+      <div class="nitem active">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4z"/></svg>
+        Rooms
+      </div>
+      <div class="nitem">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 5v14M9.5 5v14M14 5.8l4.6 12.6"/></svg>
+        Library
+      </div>
+      <div class="nitem">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="9" r="3.4"/><path d="M5.5 19.5a6.8 6.8 0 0 1 13 0"/></svg>
+        You
+      </div>
+    </nav>
+
+    <div class="rooms">
+      <div class="sectlabel">Your rooms</div>
+      <div class="room active">
+        <div class="ravatar" style="background:#2a2930">FR</div>
+        <div class="rt">
+          <div class="rn">Friday Night Rotation</div>
+          <div class="rs">Priya: Adding it after Dana's pick</div>
+        </div>
+        <div class="rw">7:53</div>
+      </div>
+      <div class="room">
+        <div class="ravatar" style="background:#5c5b64">SC</div>
+        <div class="rt">
+          <div class="rn">Slow Coast Listening</div>
+          <div class="rs">Theo: Room reopens Sunday morning</div>
+        </div>
+        <div class="rw">6:10</div>
+      </div>
+      <div class="room">
+        <div class="ravatar" style="background:#83828b">BW</div>
+        <div class="rt">
+          <div class="rn">B-Sides Weekly</div>
+          <div class="rs">Dana: New rotation is up</div>
+        </div>
+        <div class="rw">Thu</div>
+      </div>
+      <div class="room">
+        <div class="ravatar" style="background:#9a99a1">TR</div>
+        <div class="rt">
+          <div class="rn">Tape Room</div>
+          <div class="rs">Miles: Sent three reissues</div>
+        </div>
+        <div class="rw">Wed</div>
+      </div>
+    </div>
+
+    <div class="me">
+      <div class="ravatar">JL</div>
+      <div class="rt">
+        <div class="mn">Jonah Ledger</div>
+        <div class="ms">Listening in this room</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- center column -->
+  <section class="main">
+
+    <header class="chead">
+      <div class="gavatar">FR</div>
+      <div class="titlewrap">
+        <h1>Friday Night Rotation</h1>
+        <p>5 members · 3 listening now</p>
+      </div>
+      <div class="hactions">
+        <div class="ghost">Invite</div>
+        <div class="iconbtn" aria-hidden="true">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="9" r="3.2"/><path d="M6 19.2a6.3 6.3 0 0 1 12 0"/></svg>
+        </div>
+        <div class="iconbtn" aria-hidden="true">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.7"/><circle cx="12" cy="12" r="1.7"/><circle cx="12" cy="19" r="1.7"/></svg>
+        </div>
+      </div>
+    </header>
+
+    <div class="nowbar">
+      <div class="inner">
+        <img src="https://loremflickr.com/40/40/vinyl?lock=3640" width="40" height="40" alt="Album sleeve for the track playing in the room">
+        <div class="nowtext">
+          <div class="kicker">Playing in room</div>
+          <div class="track">Cold Harbor Light — Neva Sparrow</div>
+        </div>
+        <div class="transport" aria-hidden="true">
+          <div class="tbtn"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18 5v14L7 12z"/><path d="M5 5h2v14H5z"/></svg></div>
+          <div class="tbtn main"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7 5h4v14H7zM13 5h4v14h-4z"/></svg></div>
+          <div class="tbtn"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M6 5v14l11-7z"/><path d="M17 5h2v14h-2z"/></svg></div>
+        </div>
+        <div class="times">2:14 / 3:58</div>
+      </div>
+      <div class="progress"><span></span></div>
+    </div>
+
+    <div class="thread">
+      <div class="divider">Today</div>
+
+      <div class="row">
+        <div class="mono dw">DW</div>
+        <div class="stack">
+          <div class="meta"><span class="who">Dana Whitlock</span><span class="when">7:42 PM</span></div>
+          <div class="bubble">Cleared the last three off the shared queue. The Halden set doesn't hold up.</div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="mono ma">MA</div>
+        <div class="stack">
+          <div class="meta"><span class="who">Miles Arroyo</span><span class="when">7:44 PM</span></div>
+          <div class="card">
+            <img src="https://loremflickr.com/48/48/studio?lock=3641" width="48" height="48" alt="Cover art for Cold Harbor Light">
+            <div class="ct">
+              <div class="t">Cold Harbor Light</div>
+              <div class="s">Neva Sparrow · 3:58</div>
+            </div>
+            <div class="play" aria-hidden="true">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7 4l13 8-13 8z"/></svg>
+            </div>
+          </div>
+          <div class="reacts">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="#d8232a" aria-hidden="true"><path d="M12 20s-7-4.6-7-9.4A3.9 3.9 0 0 1 12 8a3.9 3.9 0 0 1 7 2.6C19 15.4 12 20 12 20z"/></svg>
+            <span>3</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="row out">
+        <span class="when">7:46 PM</span>
+        <div class="stack">
+          <div class="bubble">Queued it. The bass on that intro is enormous.</div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="mono pr">PR</div>
+        <div class="stack">
+          <div class="meta"><span class="who">Priya Rankin</span><span class="when">7:47 PM</span></div>
+          <div class="bubble">Is that the 2019 mix or the reissue?</div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="mono spacer"></div>
+        <div class="stack">
+          <div class="bubble">Reissue. The 2019 master clips on the chorus.</div>
+        </div>
+      </div>
+
+      <div class="row out">
+        <span class="when">7:51 PM</span>
+        <div class="stack">
+          <div class="card">
+            <img src="https://loremflickr.com/48/48/guitar?lock=3642" width="48" height="48" alt="Cover art for Ninth Street Sessions">
+            <div class="ct">
+              <div class="t">Ninth Street Sessions</div>
+              <div class="s">The Loam Brothers · 3:38</div>
+            </div>
+            <div class="play" aria-hidden="true">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7 4l13 8-13 8z"/></svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="mono pr">PR</div>
+        <div class="stack">
+          <div class="meta"><span class="who">Priya Rankin</span><span class="when">7:53 PM</span></div>
+          <div class="bubble">Adding it after Dana's pick. Room is at 14 tracks now.</div>
+        </div>
+      </div>
+
+      <div class="typing">
+        <div class="dots" aria-hidden="true"><i></i><i></i><i></i></div>
+        <p>Theo Blanchard is typing</p>
+      </div>
+    </div>
+
+    <div class="composer">
+      <div class="attach" aria-hidden="true">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+      </div>
+      <div class="field">Message the room</div>
+      <div class="send">
+        Send
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h13M12 5l7 7-7 7"/></svg>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- right aside -->
+  <aside class="side">
+    <div class="sblock">
+      <div class="sh"><strong>Up next</strong><span>14 tracks</span></div>
+      <div class="qrow">
+        <div class="qn">1</div>
+        <div class="qt"><div class="a">Ninth Street Sessions</div><div class="b">The Loam Brothers · added by you</div></div>
+        <div class="qd">3:38</div>
+      </div>
+      <div class="qrow">
+        <div class="qn">2</div>
+        <div class="qt"><div class="a">Marrow &amp; Wire</div><div class="b">Dana Whitlock's pick</div></div>
+        <div class="qd">4:02</div>
+      </div>
+      <div class="qrow">
+        <div class="qn">3</div>
+        <div class="qt"><div class="a">Long Way To Kestrel</div><div class="b">Priya Rankin's pick</div></div>
+        <div class="qd">2:51</div>
+      </div>
+      <div class="qrow">
+        <div class="qn">4</div>
+        <div class="qt"><div class="a">Beacon Street Dub</div><div class="b">Miles Arroyo's pick</div></div>
+        <div class="qd">5:16</div>
+      </div>
+      <div class="more">Open the full queue</div>
+    </div>
+
+    <div class="sblock">
+      <div class="sh"><strong>Members</strong><span>5</span></div>
+      <div class="mrow">
+        <div class="mav" style="background:#33323a">DW</div>
+        <div class="mname">Dana Whitlock</div>
+        <div class="mstat live">Listening</div>
+      </div>
+      <div class="mrow">
+        <div class="mav" style="background:#5c5b64">MA</div>
+        <div class="mname">Miles Arroyo</div>
+        <div class="mstat live">Listening</div>
+      </div>
+      <div class="mrow">
+        <div class="mav" style="background:#83828b">PR</div>
+        <div class="mname">Priya Rankin</div>
+        <div class="mstat live">Listening</div>
+      </div>
+      <div class="mrow">
+        <div class="mav" style="background:#9a99a1">TB</div>
+        <div class="mname">Theo Blanchard</div>
+        <div class="mstat">Away</div>
+      </div>
+      <div class="mrow">
+        <div class="mav" style="background:#b0aeb6">JL</div>
+        <div class="mname">Jonah Ledger (you)</div>
+        <div class="mstat live">Host</div>
+      </div>
+    </div>
+
+    <div class="sblock">
+      <div class="sh"><strong>Pinned</strong><span>7:02 PM</span></div>
+      <div class="pin">
+        <div class="pw">Dana Whitlock</div>
+        <p>Two tracks per person tonight — keep the rotation moving.</p>
+      </div>
+    </div>
+  </aside>
+
+</div>
+</body>
+</html>

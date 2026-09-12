@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Select a Lesson Time</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #e7e9ec;
+      color: #172033;
+      font-family: 'Source Sans 3', system-ui, sans-serif;
+    }
+
+    .screen {
+      width: 390px;
+      height: 560px;
+      padding: 14px 20px;
+      background: #f1f2f4;
+    }
+
+    .picker {
+      width: 100%;
+      background: #ffffff;
+      box-shadow: 0 8px 24px rgba(23, 32, 51, 0.1);
+    }
+
+    .picker-header {
+      padding: 14px 20px 10px;
+      border-top: 4px solid #2767d8;
+      border-bottom: 1px solid #e3e6ea;
+    }
+
+    h1 {
+      margin: 0;
+      color: #14213a;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 20px;
+      font-weight: 700;
+      line-height: 1.15;
+    }
+
+    .intro {
+      margin: 6px 0 0;
+      color: #5c6575;
+      font-size: 13.5px;
+      line-height: 1.4;
+    }
+
+    .picker-form {
+      padding: 12px 20px 14px;
+    }
+
+    fieldset {
+      min-width: 0;
+      margin: 0;
+      padding: 0;
+      border: 0;
+    }
+
+    fieldset + fieldset {
+      margin-top: 12px;
+    }
+
+    legend {
+      width: 100%;
+      margin: 0 0 6px;
+      padding: 0;
+      color: #202b40;
+      font-size: 13.5px;
+      font-weight: 600;
+      line-height: 1.3;
+    }
+
+    .date-options,
+    .time-options {
+      display: grid;
+      gap: 8px;
+    }
+
+    .date-options {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .time-options {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .choice {
+      position: relative;
+      display: block;
+      min-width: 0;
+      cursor: pointer;
+    }
+
+    .choice input {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      margin: 0;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .choice-content {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border: 1px solid #cfd4dc;
+      background: #ffffff;
+      color: #354055;
+      font-size: 14px;
+      line-height: 1.25;
+      text-align: center;
+    }
+
+    .date-options .choice-content {
+      min-height: 46px;
+      padding: 7px 4px;
+      flex-direction: column;
+    }
+
+    .date-day {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .date-number {
+      display: block;
+      margin-top: 2px;
+      color: #687184;
+      font-size: 12px;
+    }
+
+    .zone-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin: 0 0 8px;
+    }
+
+    .zone-label {
+      color: #6a7280;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .zone-choice {
+      display: block;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .zone-choice input {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      margin: 0;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .zone-choice span {
+      display: block;
+      padding: 3px 8px;
+      border: 1px solid #cfd4dc;
+      background: #ffffff;
+      color: #4a5468;
+      font-size: 11.5px;
+      line-height: 1.3;
+      white-space: nowrap;
+    }
+
+    .zone-choice input:checked + span {
+      border-color: #2767d8;
+      background: #edf4ff;
+      color: #164fae;
+      font-weight: 600;
+    }
+
+    .time-options .choice-content {
+      min-height: 50px;
+      padding: 7px 6px;
+      flex-direction: column;
+    }
+
+    .time-main {
+      display: block;
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .time-alt {
+      display: block;
+      margin-top: 2px;
+      color: #6a7280;
+      font-size: 11.5px;
+    }
+
+    .choice input:checked + .choice-content {
+      border: 2px solid #2767d8;
+      background: #edf4ff;
+      color: #164fae;
+    }
+
+    .choice input:checked + .choice-content .date-number,
+    .choice input:checked + .choice-content .time-alt {
+      color: #2b5fbf;
+    }
+
+    .timezone {
+      margin: 8px 0 0;
+      color: #6a7280;
+      font-size: 11.5px;
+      line-height: 1.35;
+    }
+
+    .summary {
+      margin: 12px 0 0;
+      padding: 10px 0;
+      border-top: 1px solid #e3e6ea;
+      border-bottom: 1px solid #e3e6ea;
+      color: #354055;
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
+    .summary strong {
+      color: #172033;
+      font-weight: 600;
+    }
+
+    .summary-alt {
+      display: block;
+      margin-top: 3px;
+      color: #6a7280;
+      font-size: 11.5px;
+    }
+
+    .continue-button {
+      width: 100%;
+      margin-top: 12px;
+      padding: 11px 16px;
+      border: 0;
+      border-radius: 0;
+      background: #2767d8;
+      color: #ffffff;
+      font-family: 'Source Sans 3', system-ui, sans-serif;
+      font-size: 14.5px;
+      font-weight: 600;
+      line-height: 1.3;
+      cursor: pointer;
+    }
+
+    .choice input:focus-visible + .choice-content,
+    .zone-choice input:focus-visible + span,
+    .continue-button:focus-visible {
+      outline: 3px solid #9bbcf5;
+      outline-offset: 2px;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <section class="picker" aria-labelledby="picker-title">
+      <header class="picker-header">
+        <h1 id="picker-title">Choose your lesson time</h1>
+        <p class="intro">30-min speaking session with Mara Ellison.</p>
+      </header>
+
+      <form class="picker-form">
+        <fieldset>
+          <legend>Select a date</legend>
+          <div class="date-options">
+            <label class="choice">
+              <input type="radio" name="lesson-date">
+              <span class="choice-content">
+                <span class="date-day">Tuesday</span>
+                <span class="date-number">May 12</span>
+              </span>
+            </label>
+            <label class="choice">
+              <input type="radio" name="lesson-date" checked>
+              <span class="choice-content">
+                <span class="date-day">Wednesday</span>
+                <span class="date-number">May 13</span>
+              </span>
+            </label>
+            <label class="choice">
+              <input type="radio" name="lesson-date">
+              <span class="choice-content">
+                <span class="date-day">Thursday</span>
+                <span class="date-number">May 14</span>
+              </span>
+            </label>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Select a start time</legend>
+          <div class="zone-row">
+            <span class="zone-label">Compare</span>
+            <label class="zone-choice">
+              <input type="radio" name="compare-zone" checked>
+              <span>Los Angeles</span>
+            </label>
+            <label class="zone-choice">
+              <input type="radio" name="compare-zone">
+              <span>London</span>
+            </label>
+            <label class="zone-choice">
+              <input type="radio" name="compare-zone">
+              <span>Berlin</span>
+            </label>
+          </div>
+          <div class="time-options">
+            <label class="choice">
+              <input type="radio" name="lesson-time">
+              <span class="choice-content">
+                <span class="time-main">9:30 AM ET</span>
+                <span class="time-alt">6:30 AM PT</span>
+              </span>
+            </label>
+            <label class="choice">
+              <input type="radio" name="lesson-time" checked>
+              <span class="choice-content">
+                <span class="time-main">11:00 AM ET</span>
+                <span class="time-alt">8:00 AM PT</span>
+              </span>
+            </label>
+            <label class="choice">
+              <input type="radio" name="lesson-time">
+              <span class="choice-content">
+                <span class="time-main">2:30 PM ET</span>
+                <span class="time-alt">11:30 AM PT</span>
+              </span>
+            </label>
+            <label class="choice">
+              <input type="radio" name="lesson-time">
+              <span class="choice-content">
+                <span class="time-main">4:00 PM ET</span>
+                <span class="time-alt">1:00 PM PT</span>
+              </span>
+            </label>
+          </div>
+          <p class="timezone">Lesson times are set in Eastern Time (UTC&minus;4).</p>
+        </fieldset>
+
+        <p class="summary"><strong>Selected:</strong> Wed, May 13 &middot; 11:00 AM ET
+          <span class="summary-alt">8:00 AM LA &middot; 4:00 PM London &middot; 5:00 PM Berlin</span>
+        </p>
+        <button class="continue-button" type="button">Continue with this time</button>
+      </form>
+    </section>
+  </div>
+</body>
+</html>

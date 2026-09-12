@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Filter and Sort</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 32px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #e9e8e5;
+      color: #24231f;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      color: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #ffffff;
+      border: 1px solid #cfcdc7;
+    }
+
+    .top-bar {
+      display: grid;
+      grid-template-columns: 44px 1fr 60px;
+      align-items: center;
+      padding: 15px 12px;
+      border-bottom: 1px solid #dedcd6;
+    }
+
+    .icon-button,
+    .clear-button {
+      border: 0;
+      background: transparent;
+      cursor: default;
+    }
+
+    .icon-button {
+      width: 32px;
+      padding: 4px;
+      display: grid;
+      place-items: center;
+    }
+
+    .icon-button svg {
+      width: 20px;
+      height: 20px;
+      stroke: #24231f;
+    }
+
+    .top-bar h1 {
+      margin: 0;
+      text-align: center;
+      font-size: 18px;
+      line-height: 24px;
+      font-weight: 600;
+    }
+
+    .clear-button {
+      justify-self: end;
+      padding: 4px;
+      color: #9a6200;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 600;
+    }
+
+    .tab-bar {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border-bottom: 1px solid #dedcd6;
+    }
+
+    .tab {
+      position: relative;
+      border: 0;
+      background: #ffffff;
+      padding: 11px 4px 10px;
+      color: #69665f;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 400;
+    }
+
+    .tab.active {
+      color: #24231f;
+      font-weight: 600;
+    }
+
+    .tab.active::after {
+      content: "";
+      position: absolute;
+      right: 16px;
+      bottom: -1px;
+      left: 16px;
+      height: 3px;
+      background: #d88a00;
+    }
+
+    .filter-content {
+      flex: 1;
+      padding: 0 16px;
+    }
+
+    .result-summary {
+      margin: 0;
+      padding: 12px 0;
+      color: #5e5b54;
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .result-summary strong {
+      color: #24231f;
+      font-weight: 600;
+    }
+
+    .filter-section {
+      border-top: 1px solid #dedcd6;
+    }
+
+    .filter-section h2 {
+      margin: 0 0 4px;
+      padding-top: 11px;
+      font-size: 16px;
+      line-height: 19px;
+      font-weight: 600;
+    }
+
+    .option-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 0;
+      color: #34322d;
+      font-size: 14px;
+      line-height: 20px;
+      cursor: default;
+    }
+
+    .option-row input {
+      width: 18px;
+      height: 18px;
+      flex: 0 0 auto;
+      margin: 0;
+      accent-color: #d88a00;
+    }
+
+    .option-text {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .price-fields {
+      display: grid;
+      grid-template-columns: 1fr 18px 1fr;
+      align-items: center;
+      gap: 8px;
+      padding: 0 0 2px;
+    }
+
+    .price-separator {
+      color: #77736b;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    .price-input {
+      position: relative;
+      display: flex;
+      align-items: center;
+      border: 1px solid #c9c6be;
+      border-radius: 4px;
+      background: #ffffff;
+    }
+
+    .price-input span {
+      padding-left: 11px;
+      color: #6d6961;
+      font-size: 14px;
+    }
+
+    .price-input input {
+      min-width: 0;
+      width: 100%;
+      border: 0;
+      outline: 0;
+      padding: 10px 10px 10px 3px;
+      background: transparent;
+      color: #24231f;
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .bottom-action {
+      padding: 12px 16px;
+      border-top: 1px solid #d5d2cb;
+      background: #ffffff;
+    }
+
+    .apply-button {
+      width: 100%;
+      border: 1px solid #c77e00;
+      border-radius: 4px;
+      padding: 12px 16px;
+      background: #d88a00;
+      color: #1f1a12;
+      font-size: 16px;
+      line-height: 20px;
+      font-weight: 600;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="top-bar">
+      <button class="icon-button" type="button" aria-label="Close filters">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M5 5L19 19M19 5L5 19" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+      </button>
+      <h1>Filter &amp; sort</h1>
+      <button class="clear-button" type="button">Clear</button>
+    </header>
+
+    <nav class="tab-bar" aria-label="Filter categories">
+      <button class="tab active" type="button" aria-current="page">All</button>
+      <button class="tab" type="button">Price</button>
+      <button class="tab" type="button">Item</button>
+      <button class="tab" type="button">Delivery</button>
+    </nav>
+
+    <main class="filter-content">
+      <p class="result-summary"><strong>684</strong> of 2,418 Home &amp; kitchen listings</p>
+
+      <section class="filter-section" aria-labelledby="sort-heading">
+        <h2 id="sort-heading">Sort by</h2>
+        <label class="option-row">
+          <input type="radio" name="sort" checked>
+          <span class="option-text">Recommended</span>
+        </label>
+        <label class="option-row">
+          <input type="radio" name="sort">
+          <span class="option-text">Newest listed</span>
+        </label>
+        <label class="option-row">
+          <input type="radio" name="sort">
+          <span class="option-text">Price: low to high</span>
+        </label>
+        <label class="option-row">
+          <input type="radio" name="sort">
+          <span class="option-text">Price: high to low</span>
+        </label>
+      </section>
+
+      <section class="filter-section" aria-labelledby="price-heading">
+        <h2 id="price-heading">Price</h2>
+        <div class="price-fields">
+          <label class="price-input">
+            <span>$</span>
+            <input type="text" value="25" aria-label="Minimum price">
+          </label>
+          <span class="price-separator">to</span>
+          <label class="price-input">
+            <span>$</span>
+            <input type="text" value="180" aria-label="Maximum price">
+          </label>
+        </div>
+        <label class="option-row">
+          <input type="checkbox" checked>
+          <span class="option-text">Include negotiable prices</span>
+        </label>
+      </section>
+
+      <section class="filter-section" aria-labelledby="condition-heading">
+        <h2 id="condition-heading">Item condition</h2>
+        <label class="option-row">
+          <input type="checkbox" checked>
+          <span class="option-text">New</span>
+        </label>
+        <label class="option-row">
+          <input type="checkbox" checked>
+          <span class="option-text">Like new</span>
+        </label>
+        <label class="option-row">
+          <input type="checkbox">
+          <span class="option-text">Good</span>
+        </label>
+        <label class="option-row">
+          <input type="checkbox">
+          <span class="option-text">Fair</span>
+        </label>
+      </section>
+
+      <section class="filter-section" aria-labelledby="delivery-heading">
+        <h2 id="delivery-heading">Delivery &amp; availability</h2>
+        <label class="option-row">
+          <input type="checkbox" checked>
+          <span class="option-text">In stock</span>
+        </label>
+        <label class="option-row">
+          <input type="checkbox" checked>
+          <span class="option-text">Free shipping</span>
+        </label>
+        <label class="option-row">
+          <input type="checkbox">
+          <span class="option-text">Pickup within 10 miles</span>
+        </label>
+      </section>
+    </main>
+
+    <footer class="bottom-action">
+      <button class="apply-button" type="button">View 684 items</button>
+    </footer>
+  </div>
+</body>
+</html>

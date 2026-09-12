@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hearthline — Verify caregiver license</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --accent:#1E9E5A;
+    --ink:#15181c;
+    --muted:#6b7280;
+    --line:#dcdfe4;
+    --ground:#f1f2f4;
+    --blue:#315a73;
+  }
+  *{box-sizing:border-box;}
+  body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    padding:40px 0;
+    margin:0;
+    background:#5c6068;
+    font-family:'Plus Jakarta Sans', system-ui, sans-serif;
+  }
+  .screen{
+    width:390px;
+    height:844px;
+    background:var(--ground);
+    position:relative;
+    display:flex;
+    flex-direction:column;
+    color:var(--ink);
+  }
+  .topbar{
+    background:#fff;
+    border-bottom:1px solid var(--line);
+    padding:13px 16px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .back{
+    width:28px;
+    height:28px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#2b2f36;
+  }
+  .title{font-size:15px;font-weight:600;}
+  .save{
+    margin-left:auto;
+    font-size:12px;
+    line-height:17px;
+    font-weight:700;
+    color:var(--accent);
+  }
+  .progress{
+    padding:12px 20px 11px;
+    background:#fff;
+    border-bottom:1px solid var(--line);
+  }
+  .progress-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:7px;
+    font-size:11px;
+    line-height:15px;
+  }
+  .progress-row strong{font-size:12px;color:#3d434b;}
+  .progress-row span{color:var(--muted);font-weight:600;}
+  .track{height:4px;border-radius:4px;background:#e4e7ea;}
+  .fill{width:50%;height:4px;border-radius:4px;background:var(--accent);}
+  .body{padding:17px 20px 16px;}
+  .eyebrow{
+    margin:0 0 4px;
+    color:var(--accent);
+    font-size:11px;
+    line-height:15px;
+    font-weight:700;
+    letter-spacing:.7px;
+    text-transform:uppercase;
+  }
+  h1{
+    margin:0;
+    font-size:23px;
+    line-height:29px;
+    letter-spacing:-.3px;
+  }
+  .sub{
+    margin:6px 0 14px;
+    font-size:13px;
+    line-height:19px;
+    color:var(--muted);
+  }
+  .summary{
+    margin-bottom:12px;
+    padding:10px 12px;
+    background:#e9eef1;
+    border-radius:4px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .badge{
+    width:32px;
+    height:32px;
+    flex:0 0 32px;
+    border-radius:4px;
+    background:var(--blue);
+    color:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .summary-copy{min-width:0;}
+  .summary strong{
+    display:block;
+    font-size:12px;
+    line-height:16px;
+  }
+  .summary span{
+    display:block;
+    font-size:11px;
+    line-height:16px;
+    color:var(--muted);
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .change{
+    margin-left:auto;
+    color:var(--blue);
+    font-size:11px;
+    line-height:15px;
+    font-weight:700;
+  }
+  .card{
+    background:#fff;
+    border:1px solid #e0e2e6;
+    border-radius:6px;
+    box-shadow:0 1px 3px rgba(16,20,26,.06);
+    padding:15px;
+  }
+  .card-title{
+    margin:0 0 12px;
+    font-size:14px;
+    line-height:19px;
+    font-weight:700;
+  }
+  .field{margin-bottom:12px;}
+  .field:last-child{margin-bottom:0;}
+  .labelrow{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    margin-bottom:5px;
+  }
+  label{
+    font-size:12px;
+    line-height:16px;
+    font-weight:600;
+    color:#3d434b;
+  }
+  .verified{
+    color:var(--accent);
+    font-size:11px;
+    line-height:15px;
+    font-weight:700;
+  }
+  .input{
+    min-height:41px;
+    border:1px solid var(--line);
+    border-radius:4px;
+    padding:0 11px;
+    display:flex;
+    align-items:center;
+    background:#fff;
+  }
+  .val{
+    min-width:0;
+    font-size:14px;
+    line-height:20px;
+    font-weight:500;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .chevron{margin-left:auto;color:#8b9198;display:flex;}
+  .attach{
+    margin-top:8px;
+    padding:12px 10px;
+    border:1px dashed #80ae93;
+    border-radius:5px;
+    background:#f7fbf8;
+    display:flex;
+    align-items:center;
+    gap:11px;
+  }
+  .camera{
+    width:34px;
+    height:34px;
+    flex:0 0 34px;
+    border-radius:50%;
+    background:#dff2e6;
+    color:#147944;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .attach-copy{min-width:0;}
+  .attach strong{
+    display:block;
+    color:#147944;
+    font-size:13px;
+    line-height:18px;
+  }
+  .attach span{
+    display:block;
+    margin-top:1px;
+    color:var(--muted);
+    font-size:10px;
+    line-height:15px;
+  }
+  .tips{
+    margin-top:12px;
+    padding:11px 12px;
+    background:#fff;
+    border-left:3px solid var(--blue);
+    border-radius:0 4px 4px 0;
+  }
+  .tips strong{
+    display:block;
+    margin-bottom:5px;
+    font-size:12px;
+    line-height:16px;
+  }
+  .tips ul{
+    margin:0;
+    padding-left:17px;
+    color:var(--muted);
+    font-size:11px;
+    line-height:17px;
+  }
+  .consent{
+    margin-top:12px;
+    display:flex;
+    align-items:flex-start;
+    gap:9px;
+  }
+  .box{
+    width:18px;
+    height:18px;
+    flex:0 0 18px;
+    margin-top:1px;
+    border-radius:4px;
+    background:var(--accent);
+    border:1px solid var(--accent);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .consent p{
+    margin:0;
+    color:#3d434b;
+    font-size:11px;
+    line-height:17px;
+  }
+  .actions{
+    margin-top:14px;
+    display:flex;
+    gap:9px;
+  }
+  .secondary,.primary{
+    min-height:46px;
+    border-radius:4px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:13px;
+    line-height:18px;
+    font-weight:700;
+  }
+  .secondary{
+    width:108px;
+    background:#fff;
+    border:1px solid var(--line);
+    color:#3d434b;
+  }
+  .primary{
+    flex:1;
+    background:var(--accent);
+    color:#fff;
+  }
+  .secure{
+    margin:11px 0 0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:5px;
+    color:var(--muted);
+    font-size:10px;
+    line-height:15px;
+  }
+</style>
+</head>
+<body>
+  <div class="screen">
+    <div class="topbar">
+      <div class="back">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      </div>
+      <div class="title">Caregiver application</div>
+      <div class="save">Save draft</div>
+    </div>
+
+    <div class="progress">
+      <div class="progress-row">
+        <strong>Credential verification</strong>
+        <span>Step 2 of 4</span>
+      </div>
+      <div class="track"><div class="fill"></div></div>
+    </div>
+
+    <div class="body">
+      <p class="eyebrow">Professional license</p>
+      <h1>Verify your credential</h1>
+      <p class="sub">We use these details to confirm that you are eligible to provide care.</p>
+
+      <div class="summary">
+        <div class="badge">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v5c0 4.7-2.8 8-7 10-4.2-2-7-5.3-7-10V6l7-3z"/><path d="M9 12l2 2 4-4"/></svg>
+        </div>
+        <div class="summary-copy">
+          <strong>Home Health Aide</strong>
+          <span>Credential selected in your application</span>
+        </div>
+        <div class="change">Change</div>
+      </div>
+
+      <div class="card">
+        <p class="card-title">License details</p>
+
+        <div class="field">
+          <div class="labelrow"><label>Issuing state</label></div>
+          <div class="input">
+            <span class="val">Washington</span>
+            <span class="chevron">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+            </span>
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="labelrow">
+            <label>License number</label>
+            <span class="verified">Format accepted</span>
+          </div>
+          <div class="input"><span class="val">HM60729418</span></div>
+          <div class="attach">
+            <div class="camera">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7.5h3l1.5-2h7l1.5 2h3v11H4z"/><circle cx="12" cy="13" r="3.2"/></svg>
+            </div>
+            <div class="attach-copy">
+              <strong>Take or attach a license photo</strong>
+              <span>JPG, PNG, or PDF · Up to 10 MB</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="labelrow"><label>Expiration date</label></div>
+          <div class="input"><span class="val">September 30, 2027</span></div>
+        </div>
+      </div>
+
+      <div class="tips">
+        <strong>Before attaching your license</strong>
+        <ul>
+          <li>Make sure your name and number are readable.</li>
+          <li>Do not crop out the expiration date or state seal.</li>
+        </ul>
+      </div>
+
+      <div class="consent">
+        <div class="box">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+        </div>
+        <p>I authorize Hearthline to confirm this credential with the issuing agency.</p>
+      </div>
+
+      <div class="actions">
+        <div class="secondary">Back</div>
+        <div class="primary">Save and continue</div>
+      </div>
+
+      <p class="secure">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 018 0v3"/></svg>
+        Your credential documents are encrypted and private.
+      </p>
+    </div>
+  </div>
+</body>
+</html>

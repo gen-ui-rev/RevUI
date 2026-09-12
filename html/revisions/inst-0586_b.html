@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Kai — Coach</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    background: #d8dde3;
+    font-family: 'Roboto', system-ui, sans-serif;
+    color: #0f172a;
+  }
+  .screen {
+    width: 1024px;
+    height: 768px;
+    background: #ffffff;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    box-shadow: 0 18px 50px rgba(15, 23, 42, 0.14);
+  }
+
+  /* global desktop navigation */
+  .appbar {
+    display: flex;
+    align-items: center;
+    padding: 12px 22px;
+    border-bottom: 1px solid #e2e8f0;
+    background: #ffffff;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin-right: 42px;
+    font-size: 17px;
+    line-height: 22px;
+    font-weight: 700;
+    color: #1e293b;
+  }
+  .brand-mark {
+    width: 30px;
+    height: 30px;
+    border-radius: 7px;
+    background: #334155;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+  }
+  .global-nav {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .global-item {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 12px;
+    border-radius: 5px;
+    font-size: 13px;
+    line-height: 18px;
+    color: #64748b;
+  }
+  .global-item.on {
+    color: #1e293b;
+    background: #eef2f6;
+    font-weight: 500;
+  }
+  .profile {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    color: #475569;
+    font-size: 13px;
+    line-height: 18px;
+  }
+  .avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #dbe2e9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #334155;
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  /* two-panel workspace */
+  .content {
+    flex: 1;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: 650px 1fr;
+  }
+  .conversation {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid #e2e8f0;
+  }
+  .topbar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 13px 22px;
+    border-bottom: 1px solid #e2e8f0;
+  }
+  .back,
+  .history {
+    width: 34px;
+    height: 34px;
+    border-radius: 5px;
+    border: 1px solid #e2e8f0;
+    color: #475569;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+  }
+  .identity {
+    flex: 1;
+    min-width: 0;
+  }
+  .name {
+    font-size: 16px;
+    line-height: 20px;
+    font-weight: 500;
+  }
+  .sub {
+    font-size: 12px;
+    line-height: 17px;
+    color: #64748b;
+  }
+
+  .thread {
+    flex: 1;
+    padding: 15px 24px 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: 10px;
+  }
+  .divider {
+    text-align: center;
+    font-size: 12px;
+    line-height: 18px;
+    color: #64748b;
+  }
+  .row { display: flex; }
+  .row.me { justify-content: flex-end; }
+  .bubble {
+    max-width: 470px;
+    padding: 9px 12px;
+    border-radius: 6px;
+    font-size: 14px;
+    line-height: 20px;
+  }
+  .bubble.bot {
+    background: #f4f6f8;
+    border: 1px solid #e2e8f0;
+    color: #1e293b;
+  }
+  .bubble.me {
+    max-width: 390px;
+    background: #475569;
+    color: #ffffff;
+  }
+  .summary-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 300px;
+    padding: 8px 11px;
+    border: 1px solid #d8e0e8;
+    border-radius: 6px;
+    color: #334155;
+    background: #ffffff;
+  }
+  .summary-number {
+    font-size: 21px;
+    line-height: 25px;
+    font-weight: 700;
+    color: #1e293b;
+  }
+  .summary-copy {
+    flex: 1;
+    font-size: 13px;
+    line-height: 18px;
+  }
+  .summary-copy span {
+    display: block;
+    font-size: 12px;
+    line-height: 16px;
+    color: #64748b;
+  }
+  .summary-arrow {
+    color: #94a3b8;
+    display: flex;
+  }
+
+  .composer-area {
+    border-top: 1px solid #e2e8f0;
+    padding: 10px 24px 15px;
+  }
+  .prompt-row {
+    display: flex;
+    gap: 7px;
+    margin-bottom: 9px;
+  }
+  .prompt {
+    border: 1px solid #cbd5e1;
+    border-radius: 5px;
+    padding: 5px 8px;
+    font-size: 12px;
+    line-height: 17px;
+    color: #475569;
+    white-space: nowrap;
+  }
+  .prompt.primary {
+    border-color: #64748b;
+    color: #1e293b;
+    font-weight: 500;
+  }
+  .composer {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+  .field {
+    flex: 1;
+    min-width: 0;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    padding: 11px 12px;
+    font-size: 14px;
+    line-height: 20px;
+    color: #94a3b8;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .mic,
+  .send {
+    width: 42px;
+    height: 42px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+  }
+  .mic {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    color: #475569;
+  }
+  .send {
+    background: #475569;
+    color: #ffffff;
+  }
+
+  /* last-night inspector */
+  .inspector {
+    min-width: 0;
+    padding: 24px;
+    background: #f8fafc;
+  }
+  .panel-heading {
+    font-size: 12px;
+    line-height: 18px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: #64748b;
+    margin-bottom: 10px;
+  }
+  .score-card {
+    border: 1px solid #d8e0e8;
+    border-radius: 8px;
+    background: #ffffff;
+    padding: 20px;
+    margin-bottom: 18px;
+  }
+  .score-first {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding-bottom: 17px;
+    border-bottom: 1px solid #e2e8f0;
+  }
+  .score-value {
+    font-size: 52px;
+    line-height: 52px;
+    font-weight: 700;
+    letter-spacing: -1px;
+    color: #1e293b;
+  }
+  .score-label {
+    font-size: 15px;
+    line-height: 20px;
+    font-weight: 500;
+    color: #334155;
+    margin-top: 5px;
+  }
+  .period {
+    font-size: 12px;
+    line-height: 17px;
+    color: #64748b;
+  }
+  .badge {
+    border: 1px solid #cbd5e1;
+    border-radius: 999px;
+    padding: 4px 8px;
+    font-size: 12px;
+    line-height: 16px;
+    color: #475569;
+  }
+  .metric {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding-top: 13px;
+    font-size: 14px;
+    line-height: 20px;
+  }
+  .metric-name { color: #64748b; }
+  .metric-value { font-weight: 500; color: #1e293b; }
+
+  .insight-card {
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    background: #ffffff;
+    padding: 16px;
+    margin-bottom: 18px;
+  }
+  .insight-title {
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 500;
+    margin-bottom: 6px;
+  }
+  .insight-text {
+    font-size: 13px;
+    line-height: 19px;
+    color: #64748b;
+  }
+  .schedule {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-top: 1px solid #e2e8f0;
+    margin-top: 13px;
+    padding-top: 13px;
+  }
+  .schedule-time {
+    font-size: 18px;
+    line-height: 22px;
+    font-weight: 700;
+    color: #334155;
+  }
+  .schedule-copy {
+    font-size: 12px;
+    line-height: 17px;
+    color: #64748b;
+  }
+  .source {
+    font-size: 12px;
+    line-height: 18px;
+    color: #94a3b8;
+  }
+</style>
+</head>
+<body>
+  <div class="screen">
+    <header class="appbar">
+      <div class="brand">
+        <span class="brand-mark">K</span>
+        Kai Health
+      </div>
+
+      <nav class="global-nav">
+        <div class="global-item">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="4.5" width="17" height="16" rx="2"/><path d="M8 3v3M16 3v3M3.5 9.5h17"/></svg>
+          Today
+        </div>
+        <div class="global-item">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 16l4.5-5 3.5 3 4-6.5 4 4.5"/><path d="M4 20h16"/></svg>
+          Trends
+        </div>
+        <div class="global-item on">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12.5c0 3.9-3.6 7-8 7-1 0-2-.2-2.9-.5L4.5 20.5l1.2-3.3A6.7 6.7 0 0 1 4 12.5c0-3.9 3.6-7 8-7s8 3.1 8 7z"/></svg>
+          Coach
+        </div>
+      </nav>
+
+      <div class="profile">
+        Dana Avery
+        <span class="avatar">DA</span>
+      </div>
+    </header>
+
+    <div class="content">
+      <main class="conversation">
+        <header class="topbar">
+          <span class="back">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
+          </span>
+          <div class="identity">
+            <div class="name">Kai</div>
+            <div class="sub">Sleep &amp; recovery assistant</div>
+          </div>
+          <span class="history">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>
+          </span>
+        </header>
+
+        <div class="thread">
+          <div class="divider">Today, 7:42 AM</div>
+
+          <div class="row">
+            <div class="bubble bot">Good morning, Dana. You slept 6 h 48 m last night — 42 minutes below your seven-day average.</div>
+          </div>
+
+          <div class="row">
+            <div class="summary-link">
+              <div class="summary-number">74</div>
+              <div class="summary-copy">Sleep score<span>Last night</span></div>
+              <span class="summary-arrow">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg>
+              </span>
+            </div>
+          </div>
+
+          <div class="row me">
+            <div class="bubble me">Why does my score drop midweek?</div>
+          </div>
+
+          <div class="row">
+            <div class="bubble bot">You trained after 8 PM on Wednesday and Thursday. Sleep latency those nights was 34 minutes, versus 11 on rest days.</div>
+          </div>
+
+          <div class="row me">
+            <div class="bubble me">Should I train earlier instead?</div>
+          </div>
+
+          <div class="row">
+            <div class="bubble bot">Shifting it before 6:30 PM should help. I can move Thursday's session to 5:45 PM, same 45-minute block.</div>
+          </div>
+        </div>
+
+        <div class="composer-area">
+          <div class="prompt-row">
+            <div class="prompt primary">Move Thursday to 5:45 PM</div>
+            <div class="prompt">Show sleep trend</div>
+            <div class="prompt">Set wind-down reminder</div>
+          </div>
+          <div class="composer">
+            <div class="field">Ask about sleep, food, or training</div>
+            <div class="mic" aria-label="Voice input">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v3M9 21h6"/></svg>
+            </div>
+            <div class="send" aria-label="Send message">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V6"/><path d="M6 12l6-6 6 6"/></svg>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <aside class="inspector">
+        <div class="panel-heading">Last night</div>
+
+        <div class="score-card">
+          <div class="score-first">
+            <div>
+              <div class="score-value">74</div>
+              <div class="score-label">Sleep score</div>
+              <div class="period">6 h 48 m asleep</div>
+            </div>
+            <div class="badge">Below average</div>
+          </div>
+          <div class="metric">
+            <span class="metric-name">Deep sleep</span>
+            <span class="metric-value">1 h 12 m</span>
+          </div>
+          <div class="metric">
+            <span class="metric-name">Resting heart rate</span>
+            <span class="metric-value">58 bpm</span>
+          </div>
+        </div>
+
+        <div class="panel-heading">Kai's insight</div>
+        <div class="insight-card">
+          <div class="insight-title">Late training may delay sleep</div>
+          <div class="insight-text">Wednesday and Thursday sessions ended after 8 PM. Your sleep latency rose to 34 minutes on those nights.</div>
+          <div class="schedule">
+            <div class="schedule-time">5:45 PM</div>
+            <div class="schedule-copy">Suggested Thursday start<br>45-minute session</div>
+          </div>
+        </div>
+
+        <div class="source">Based on your recent sleep and training data.</div>
+      </aside>
+    </div>
+  </div>
+</body>
+</html>

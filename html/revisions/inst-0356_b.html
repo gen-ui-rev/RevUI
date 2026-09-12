@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Verbly — Past-Tense Storytelling</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 40px 0;
+    margin: 0;
+    background: #d9d6d0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    color: #1b1a18;
+  }
+  .screen {
+    width: 390px;
+    height: 844px;
+    background: #ffffff;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+
+  /* top bar */
+  .topbar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 15px 16px;
+    border-bottom: 1px solid #e6e3dd;
+  }
+  .topbar .tb-title {
+    font-size: 14px;
+    font-weight: 600;
+    flex: 1;
+    text-align: center;
+  }
+  .icon-btn {
+    width: 20px;
+    height: 20px;
+    display: block;
+    color: #1b1a18;
+  }
+
+  /* hero */
+  .hero {
+    padding: 18px 16px 16px;
+    background: #faf8f4;
+  }
+  .eyebrow {
+    font-size: 12px;
+    line-height: 16px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #a2740a;
+    font-weight: 600;
+  }
+  h1 {
+    margin: 6px 0 8px;
+    font-size: 29px;
+    line-height: 34px;
+    font-weight: 600;
+    letter-spacing: -0.5px;
+  }
+  .meta {
+    font-size: 13px;
+    line-height: 18px;
+    color: #6f6b64;
+  }
+  .author {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 14px;
+  }
+  .mono {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #f5a300;
+    color: #2a2000;
+    font-size: 13px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    letter-spacing: 0.02em;
+    flex: none;
+  }
+  .author-text { font-size: 13px; line-height: 16px; }
+  .author-text .sub { color: #6f6b64; font-size: 12px; margin-top: 2px; }
+
+  /* progress inside cream hero */
+  .progress { padding: 16px 16px 4px; background: #faf8f4; border-bottom: 1px solid #e6e3dd; }
+  .progress-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-size: 13px;
+    line-height: 16px;
+    margin-bottom: 8px;
+  }
+  .progress-row .pct { color: #6f6b64; font-size: 12px; }
+  .bar {
+    height: 6px;
+    border-radius: 4px;
+    background: #eae5db;
+    overflow: hidden;
+    margin-bottom: 12px;
+  }
+  .bar > span {
+    display: block;
+    width: 38%;
+    height: 100%;
+    background: #f5a300;
+    border-radius: 4px;
+  }
+
+  /* sections */
+  .sec-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 9px 16px 8px;
+    background: #faf8f4;
+    border-top: 1px solid #e6e3dd;
+    border-bottom: 1px solid #e6e3dd;
+  }
+  .sec-head h2 {
+    margin: 0;
+    font-size: 12px;
+    line-height: 16px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: #4c4842;
+  }
+  .sec-head .count {
+    font-size: 12px;
+    line-height: 16px;
+    color: #7c776f;
+  }
+
+  .mat {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    padding: 10px 16px;
+    border-bottom: 1px solid #eeebe5;
+  }
+  .mat .name {
+    flex: 1;
+    font-size: 15px;
+    line-height: 18px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .mat .amt {
+    font-size: 13px;
+    line-height: 18px;
+    color: #6f6b64;
+    white-space: nowrap;
+  }
+
+  /* finished steps, condensed band */
+  .done-panel {
+    background: #f6f3ed;
+    border-top: 1px solid #e6e3dd;
+    border-bottom: 1px solid #e6e3dd;
+    padding: 9px 16px 11px;
+  }
+  .dp-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-size: 11px;
+    line-height: 15px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: #7c776f;
+    margin-bottom: 6px;
+  }
+  .dp-row {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 3px 0;
+    font-size: 13px;
+    line-height: 18px;
+    color: #5f5b55;
+  }
+  .tick {
+    width: 15px;
+    height: 15px;
+    flex: none;
+    border-radius: 50%;
+    background: #f5a300;
+    color: #2a2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .dp-row .t {
+    flex: 1;
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .dp-row .d { flex: none; font-size: 12px; color: #8b867e; }
+
+  /* remaining steps, full rows */
+  .step {
+    display: flex;
+    gap: 12px;
+    padding: 9px 16px 9px 13px;
+    border-bottom: 1px solid #eeebe5;
+    border-left: 3px solid #eae5db;
+  }
+  .step.up-next { border-left-color: #f5a300; background: #fffdf8; }
+  .num {
+    width: 22px;
+    height: 22px;
+    border-radius: 4px;
+    flex: none;
+    margin-top: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 600;
+    color: #6f6b64;
+    border: 1px solid #ded9d0;
+  }
+  .num.next {
+    border-color: #f5a300;
+    color: #a2740a;
+  }
+  .step-body { flex: 1; min-width: 0; }
+  .step-title {
+    font-size: 15px;
+    line-height: 20px;
+    font-weight: 500;
+  }
+  .step-sub {
+    font-size: 12px;
+    line-height: 16px;
+    color: #6f6b64;
+    margin-top: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .flag {
+    align-self: flex-start;
+    margin-top: 9px;
+    flex: none;
+    font-size: 12px;
+    line-height: 16px;
+    padding: 1px 6px;
+    border-radius: 4px;
+    background: #fff2d6;
+    color: #8a6205;
+    font-weight: 600;
+  }
+
+  /* tab bar */
+  .tabbar {
+    margin-top: auto;
+    display: flex;
+    border-top: 1px solid #e6e3dd;
+    padding: 8px 0 10px;
+  }
+  .tab {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    line-height: 14px;
+    color: #7c776f;
+  }
+  .tab.active { color: #a2740a; font-weight: 600; }
+  .tab svg { width: 21px; height: 21px; display: block; }
+</style>
+</head>
+<body>
+  <div class="screen">
+
+    <div class="topbar">
+      <svg class="icon-btn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+      <div class="tb-title">Lesson Recipe</div>
+      <svg class="icon-btn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 4h12v16l-6-4.5L6 20z"/></svg>
+    </div>
+
+    <div class="hero">
+      <div class="eyebrow">Spanish B1 &middot; Unit 4</div>
+      <h1>Past-Tense Storytelling</h1>
+      <div class="meta">25 min &middot; 8 steps &middot; Speaking and writing</div>
+      <div class="author">
+        <div class="mono">MR</div>
+        <div class="author-text">
+          Marisol Reyes
+          <div class="sub">Course coach &middot; Updated February 12</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="progress">
+      <div class="progress-row">
+        <span>3 of 8 steps done</span>
+        <span class="pct">38%</span>
+      </div>
+      <div class="bar"><span></span></div>
+    </div>
+
+    <div class="sec-head">
+      <h2>What you'll need</h2>
+      <span class="count">3 items</span>
+    </div>
+    <div class="mat"><span class="name">Verb card set: preterite</span><span class="amt">24 cards</span></div>
+    <div class="mat"><span class="name">Audio: A Weekend in Oaxaca</span><span class="amt">2 min 40 sec</span></div>
+    <div class="mat"><span class="name">Writing prompt worksheet</span><span class="amt">1 page</span></div>
+
+    <div class="done-panel">
+      <div class="dp-head">
+        <span>Finished steps</span>
+        <span>3 &middot; 12 min</span>
+      </div>
+      <div class="dp-row">
+        <span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="width:9px;height:9px"><path d="M5 13l4 4L19 7"/></svg></span>
+        <span class="t">Sort 12 verbs by tense</span>
+        <span class="d">Feb 18</span>
+      </div>
+      <div class="dp-row">
+        <span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="width:9px;height:9px"><path d="M5 13l4 4L19 7"/></svg></span>
+        <span class="t">Listen to the audio twice</span>
+        <span class="d">Feb 18</span>
+      </div>
+      <div class="dp-row">
+        <span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="width:9px;height:9px"><path d="M5 13l4 4L19 7"/></svg></span>
+        <span class="t">Read the note, mark five examples</span>
+        <span class="d">Feb 19</span>
+      </div>
+    </div>
+
+    <div class="sec-head">
+      <h2>Remaining steps</h2>
+      <span class="count">5 left &middot; 21 min</span>
+    </div>
+
+    <div class="step up-next">
+      <div class="num next">4</div>
+      <div class="step-body">
+        <div class="step-title">Retell the story out loud</div>
+        <div class="step-sub">6 min &middot; Recording, reviewed by coach</div>
+      </div>
+      <div class="flag">Up next</div>
+    </div>
+
+    <div class="step">
+      <div class="num">5</div>
+      <div class="step-body">
+        <div class="step-title">Write six sentences from the prompt</div>
+        <div class="step-sub">5 min &middot; Worksheet, submitted for feedback</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="num">6</div>
+      <div class="step-body">
+        <div class="step-title">Record a 60-second weekend summary</div>
+        <div class="step-sub">4 min &middot; Recording, self-check rubric</div>
+      </div>
+    </div>
+
+    <div class="tabbar">
+      <div class="tab">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11l8-6 8 6v8a1 1 0 01-1 1h-4v-6H9v6H5a1 1 0 01-1-1z"/></svg>
+        Home
+      </div>
+      <div class="tab active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h6a2 2 0 012 2v12a2 2 0 00-2-2H4zM20 5h-6a2 2 0 00-2 2v12a2 2 0 012-2h6z"/></svg>
+        Lessons
+      </div>
+      <div class="tab">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4a3 3 0 013 3v4a3 3 0 01-6 0V7a3 3 0 013-3z"/><path d="M6 11a6 6 0 0012 0M12 17v3"/></svg>
+        Practice
+      </div>
+      <div class="tab">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8.5" r="3.5"/><path d="M5 20c1.2-3.4 3.8-5 7-5s5.8 1.6 7 5"/></svg>
+        Profile
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

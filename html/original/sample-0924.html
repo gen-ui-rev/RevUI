@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vela Care Reminder</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #e8e7e3;
+      color: #24231f;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    button {
+      margin: 0;
+      padding: 0;
+      border: 0;
+      background: none;
+      color: inherit;
+      font: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #ffffff;
+      border: 1px solid #d8d6cf;
+    }
+
+    .top-bar {
+      min-height: 64px;
+      display: grid;
+      grid-template-columns: 72px 1fr 72px;
+      align-items: center;
+      border-bottom: 1px solid #dedcd5;
+      background: #ffffff;
+    }
+
+    .back-button {
+      height: 64px;
+      display: flex;
+      align-items: center;
+      padding-left: 20px;
+      cursor: pointer;
+    }
+
+    .back-button svg {
+      width: 22px;
+      height: 22px;
+      stroke: #24231f;
+      stroke-width: 1.8;
+      fill: none;
+    }
+
+    .top-title {
+      margin: 0;
+      text-align: center;
+      font-size: 17px;
+      line-height: 22px;
+      font-weight: 600;
+    }
+
+    .save-button {
+      height: 64px;
+      padding-right: 20px;
+      text-align: right;
+      color: #a96500;
+      font-size: 15px;
+      line-height: 20px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    main {
+      flex: 1;
+      min-height: 0;
+    }
+
+    .reminder-hero {
+      padding: 22px 20px 21px;
+      background: #fff8e9;
+      border-bottom: 1px solid #e3dccd;
+      border-left: 5px solid #d18a00;
+    }
+
+    .eyebrow {
+      margin: 0 0 7px;
+      color: #7a6540;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .hero-heading {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .hero-heading h1 {
+      margin: 0;
+      font-size: 23px;
+      line-height: 30px;
+      font-weight: 600;
+    }
+
+    .toggle {
+      width: 48px;
+      height: 28px;
+      position: relative;
+      flex: 0 0 auto;
+      background: #d18a00;
+      border: 1px solid #b97600;
+      cursor: pointer;
+    }
+
+    .toggle-knob {
+      position: absolute;
+      top: 3px;
+      right: 3px;
+      width: 20px;
+      height: 20px;
+      background: #ffffff;
+      border: 1px solid #a66b00;
+    }
+
+    .time-display {
+      margin: 14px 0 3px;
+      color: #8f5900;
+      font-size: 44px;
+      line-height: 50px;
+      font-weight: 600;
+      letter-spacing: -0.03em;
+    }
+
+    .hero-note {
+      margin: 0;
+      color: #635f56;
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .section {
+      padding: 19px 20px 20px;
+      border-bottom: 1px solid #dedcd5;
+    }
+
+    .section-title {
+      margin: 0 0 10px;
+      font-size: 18px;
+      line-height: 24px;
+      font-weight: 600;
+    }
+
+    .setting-row {
+      min-height: 51px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      border-top: 1px solid #e5e3dc;
+    }
+
+    .setting-label {
+      font-size: 15px;
+      line-height: 21px;
+      font-weight: 400;
+    }
+
+    .row-value {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+      color: #555249;
+      font-size: 15px;
+      line-height: 21px;
+      font-weight: 400;
+    }
+
+    .row-value svg {
+      width: 17px;
+      height: 17px;
+      flex: 0 0 auto;
+      stroke: #777269;
+      stroke-width: 1.7;
+      fill: none;
+    }
+
+    .repeat-block {
+      padding-top: 14px;
+      border-top: 1px solid #e5e3dc;
+    }
+
+    .repeat-heading {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 12px;
+    }
+
+    .repeat-heading span {
+      font-size: 15px;
+      line-height: 21px;
+    }
+
+    .repeat-value {
+      color: #8f5900;
+      font-weight: 600;
+    }
+
+    .days {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 6px;
+    }
+
+    .day {
+      height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid #cbc8bf;
+      background: #ffffff;
+      color: #68645b;
+      font-size: 14px;
+      line-height: 18px;
+      font-weight: 600;
+    }
+
+    .day.selected {
+      border-color: #bb7800;
+      background: #d18a00;
+      color: #ffffff;
+    }
+
+    .section-footnote {
+      margin: 12px 0 0;
+      color: #6b675e;
+      font-size: 13px;
+      line-height: 19px;
+    }
+
+    .tab-bar {
+      min-height: 76px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      align-items: stretch;
+      border-top: 1px solid #d8d6cf;
+      background: #ffffff;
+    }
+
+    .tab {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      color: #747168;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 400;
+      cursor: pointer;
+    }
+
+    .tab svg {
+      width: 22px;
+      height: 22px;
+      stroke: currentColor;
+      stroke-width: 1.7;
+      fill: none;
+    }
+
+    .tab.active {
+      color: #9d6100;
+      font-weight: 600;
+    }
+
+    .tab.active::before {
+      content: "";
+      position: absolute;
+      top: -1px;
+      left: 26px;
+      right: 26px;
+      height: 3px;
+      background: #d18a00;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="top-bar">
+      <button class="back-button" aria-label="Go back">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M15.5 4.5 8 12l7.5 7.5"></path>
+        </svg>
+      </button>
+      <p class="top-title">Set reminder</p>
+      <button class="save-button">Save</button>
+    </header>
+
+    <main>
+      <section class="reminder-hero" aria-labelledby="reminder-name">
+        <p class="eyebrow">Vela Care reminder</p>
+        <div class="hero-heading">
+          <h1 id="reminder-name">Vitamin D</h1>
+          <button class="toggle" role="switch" aria-checked="true" aria-label="Reminder enabled">
+            <span class="toggle-knob"></span>
+          </button>
+        </div>
+        <p class="time-display">8:00 AM</p>
+        <p class="hero-note">Take 1 capsule with breakfast.</p>
+      </section>
+
+      <section class="section" aria-labelledby="schedule-title">
+        <h2 class="section-title" id="schedule-title">Schedule</h2>
+
+        <button class="setting-row" style="width:100%;" aria-label="Change reminder time">
+          <span class="setting-label">Time</span>
+          <span class="row-value">
+            8:00 AM
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="m9 5 7 7-7 7"></path>
+            </svg>
+          </span>
+        </button>
+
+        <div class="repeat-block">
+          <div class="repeat-heading">
+            <span>Repeat</span>
+            <span class="repeat-value">Weekdays</span>
+          </div>
+          <div class="days" aria-label="Repeats Monday through Friday">
+            <button class="day" aria-label="Sunday not selected">S</button>
+            <button class="day selected" aria-label="Monday selected">M</button>
+            <button class="day selected" aria-label="Tuesday selected">T</button>
+            <button class="day selected" aria-label="Wednesday selected">W</button>
+            <button class="day selected" aria-label="Thursday selected">T</button>
+            <button class="day selected" aria-label="Friday selected">F</button>
+            <button class="day" aria-label="Saturday not selected">S</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" aria-labelledby="duration-title">
+        <h2 class="section-title" id="duration-title">Duration</h2>
+
+        <button class="setting-row" style="width:100%;" aria-label="Change start date">
+          <span class="setting-label">Starts</span>
+          <span class="row-value">
+            June 18, 2025
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="m9 5 7 7-7 7"></path>
+            </svg>
+          </span>
+        </button>
+
+        <button class="setting-row" style="width:100%;" aria-label="Change end date">
+          <span class="setting-label">Ends</span>
+          <span class="row-value">
+            Never
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="m9 5 7 7-7 7"></path>
+            </svg>
+          </span>
+        </button>
+
+        <p class="section-footnote">This reminder stays active until you turn it off.</p>
+      </section>
+    </main>
+
+    <nav class="tab-bar" aria-label="Primary navigation">
+      <button class="tab">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M4 10.5 12 4l8 6.5"></path>
+          <path d="M6.5 9.5V20h11V9.5"></path>
+        </svg>
+        <span>Today</span>
+      </button>
+
+      <button class="tab">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M6 3.5v17"></path>
+          <path d="M6 6h11l-2.5 4L17 14H6"></path>
+        </svg>
+        <span>Plan</span>
+      </button>
+
+      <button class="tab active" aria-current="page">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M6.5 10a5.5 5.5 0 0 1 11 0v3.5l2 3H4.5l2-3Z"></path>
+          <path d="M9.5 19a2.8 2.8 0 0 0 5 0"></path>
+        </svg>
+        <span>Reminders</span>
+      </button>
+
+      <button class="tab">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="8" r="3.5"></circle>
+          <path d="M5 20c.6-4 3-6 7-6s6.4 2 7 6"></path>
+        </svg>
+        <span>Profile</span>
+      </button>
+    </nav>
+  </div>
+</body>
+</html>

@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Harborly Market</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 24px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #dfe5e4;
+      color: #172321;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    button {
+      font: inherit;
+      cursor: pointer;
+    }
+
+    .screen {
+      width: 1024px;
+      height: 768px;
+      display: flex;
+      flex-direction: column;
+      background: #ffffff;
+      border: 1px solid #cfd8d6;
+      border-radius: 18px;
+      box-shadow: 0 18px 48px rgba(31, 54, 50, 0.12);
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 15px 22px;
+      border-bottom: 1px solid #e3eae8;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      min-width: 0;
+    }
+
+    .brand-mark {
+      width: 32px;
+      height: 32px;
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      border-radius: 10px;
+      color: #087c74;
+      background: #dff2ef;
+    }
+
+    .brand-mark svg,
+    .icon-button svg,
+    .nav-item svg {
+      display: block;
+      width: 22px;
+      height: 22px;
+    }
+
+    .brand-name {
+      font-size: 18px;
+      line-height: 24px;
+      font-weight: 750;
+      letter-spacing: -0.25px;
+      white-space: nowrap;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .icon-button {
+      width: 38px;
+      height: 36px;
+      display: grid;
+      place-items: center;
+      padding: 0;
+      color: #30413f;
+      background: #f4f7f6;
+      border: 1px solid #e1e8e6;
+      border-radius: 10px;
+    }
+
+    .workspace {
+      min-height: 0;
+      flex: 1;
+      display: flex;
+    }
+
+    .sidebar {
+      width: 202px;
+      flex: 0 0 202px;
+      display: flex;
+      flex-direction: column;
+      padding: 20px 14px;
+      background: #f6f9f8;
+      border-right: 1px solid #e3eae8;
+      border-radius: 0 0 0 18px;
+    }
+
+    .nav-label {
+      margin: 0 10px 9px;
+      color: #84918f;
+      font-size: 11px;
+      line-height: 16px;
+      font-weight: 750;
+      letter-spacing: 0.7px;
+      text-transform: uppercase;
+    }
+
+    .nav-list {
+      display: grid;
+      gap: 5px;
+    }
+
+    .nav-item {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      padding: 10px 12px;
+      color: #667572;
+      background: transparent;
+      border: 0;
+      border-radius: 10px;
+      text-align: left;
+      font-size: 14px;
+      line-height: 22px;
+      font-weight: 650;
+    }
+
+    .nav-item.active {
+      color: #087c74;
+      background: #dff2ef;
+      font-weight: 750;
+    }
+
+    .sidebar-note {
+      margin-top: auto;
+      padding: 14px;
+      color: #4e625f;
+      background: #eaf4f2;
+      border-radius: 12px;
+      font-size: 12px;
+      line-height: 18px;
+    }
+
+    .sidebar-note strong {
+      display: block;
+      margin-bottom: 2px;
+      color: #21433f;
+      font-size: 13px;
+    }
+
+    main {
+      min-width: 0;
+      flex: 1;
+      padding: 20px 24px 22px;
+    }
+
+    .intro-row {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .intro h1 {
+      margin: 0;
+      font-size: 27px;
+      line-height: 33px;
+      font-weight: 750;
+      letter-spacing: -0.6px;
+    }
+
+    .intro p {
+      margin: 2px 0 0;
+      color: #667572;
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .filter-summary {
+      color: #667572;
+      font-size: 13px;
+      line-height: 20px;
+      white-space: nowrap;
+    }
+
+    .hero {
+      display: flex;
+      margin-top: 15px;
+      border-radius: 14px;
+      background: #e1f2ef;
+    }
+
+    .hero img {
+      width: 132px;
+      height: 150px;
+      flex: 0 0 132px;
+      display: block;
+      object-fit: cover;
+      border-radius: 14px 0 0 14px;
+      background: #b7d6d2;
+    }
+
+    .hero-copy {
+      min-width: 0;
+      flex: 1;
+      padding: 16px 18px;
+    }
+
+    .eyebrow {
+      margin: 0 0 4px;
+      color: #087c74;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 750;
+      text-transform: uppercase;
+      letter-spacing: 0.65px;
+    }
+
+    .hero h2 {
+      margin: 0;
+      font-size: 21px;
+      line-height: 26px;
+      font-weight: 750;
+      letter-spacing: -0.35px;
+    }
+
+    .hero p {
+      margin: 5px 0 12px;
+      color: #4e625f;
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .hero-action {
+      padding: 8px 14px;
+      color: #ffffff;
+      background: #087c74;
+      border: 0;
+      border-radius: 9px;
+      font-size: 13px;
+      line-height: 20px;
+      font-weight: 750;
+    }
+
+    .goal-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      margin-top: 17px;
+    }
+
+    .section-title {
+      margin: 0;
+      font-size: 18px;
+      line-height: 24px;
+      font-weight: 750;
+      letter-spacing: -0.25px;
+    }
+
+    .categories {
+      display: flex;
+      gap: 7px;
+    }
+
+    .category {
+      padding: 7px 12px;
+      color: #32514d;
+      background: #edf7f5;
+      border: 1px solid transparent;
+      border-radius: 9px;
+      font-size: 12px;
+      line-height: 18px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .category.active {
+      color: #ffffff;
+      background: #087c74;
+    }
+
+    .goal-grid {
+      display: grid;
+      grid-template-columns: 1.35fr 1fr 1fr;
+      gap: 12px;
+      margin-top: 10px;
+    }
+
+    .goal-group {
+      padding: 13px;
+      border: 1px solid #dfe9e7;
+      border-radius: 13px;
+      background: #fbfdfc;
+    }
+
+    .group-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 9px;
+    }
+
+    .group-heading h3 {
+      margin: 0;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 750;
+    }
+
+    .group-count {
+      color: #71807d;
+      font-size: 11px;
+      line-height: 18px;
+      white-space: nowrap;
+    }
+
+    .product-list {
+      display: grid;
+      gap: 7px;
+    }
+
+    .product {
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      padding: 6px;
+      border-radius: 11px;
+      background: #f1f8f7;
+    }
+
+    .product img {
+      width: 54px;
+      height: 54px;
+      flex: 0 0 54px;
+      display: block;
+      object-fit: cover;
+      border-radius: 9px;
+      background: #bfd4d1;
+    }
+
+    .product-copy {
+      min-width: 0;
+      flex: 1;
+      padding: 0 8px;
+    }
+
+    .product-name {
+      margin: 0;
+      overflow: hidden;
+      color: #172321;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 750;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .product-meta {
+      margin: 2px 0 0;
+      overflow: hidden;
+      color: #71807d;
+      font-size: 11px;
+      line-height: 16px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .product-value {
+      flex: 0 0 auto;
+      padding-right: 4px;
+      text-align: right;
+    }
+
+    .rate {
+      display: block;
+      color: #087c74;
+      font-size: 12px;
+      line-height: 18px;
+      font-weight: 750;
+      white-space: nowrap;
+    }
+
+    .minimum {
+      display: block;
+      color: #71807d;
+      font-size: 10px;
+      line-height: 15px;
+      white-space: nowrap;
+    }
+
+    .goal-group.compact .product {
+      display: block;
+      padding: 9px;
+    }
+
+    .goal-group.compact .product img {
+      margin-bottom: 8px;
+    }
+
+    .goal-group.compact .product-copy {
+      padding: 0;
+    }
+
+    .goal-group.compact .product-value {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 8px;
+      margin-top: 7px;
+      padding: 0;
+      text-align: left;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M5 18V10.5M10 18V6M15 18v-4.5M20 18V3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="brand-name">Harborly Market</div>
+      </div>
+
+      <div class="top-actions">
+        <button class="icon-button" aria-label="Search products">
+          <svg viewBox="0 0 24 24" fill="none">
+            <circle cx="10.5" cy="10.5" r="6.5" stroke="currentColor" stroke-width="2"/>
+            <path d="m15.5 15.5 4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
+        <button class="icon-button" aria-label="View saved products">
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M6.5 4.5h11v15l-5.5-3.4-5.5 3.4v-15Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <div class="workspace">
+      <nav class="sidebar" aria-label="Primary navigation">
+        <p class="nav-label">Workspace</p>
+        <div class="nav-list">
+          <button class="nav-item">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M4 10.5 12 4l8 6.5V20h-5v-6H9v6H4v-9.5Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+            </svg>
+            <span>Home</span>
+          </button>
+
+          <button class="nav-item active" aria-current="page">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M5 8h14l-1 12H6L5 8Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+              <path d="M9 9V6a3 3 0 0 1 6 0v3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <span>Market</span>
+          </button>
+
+          <button class="nav-item">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M4 19V11M10 19V6M16 19v-5M22 19V3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <span>Portfolio</span>
+          </button>
+
+          <button class="nav-item">
+            <svg viewBox="0 0 24 24" fill="none">
+              <circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="2"/>
+              <path d="M5 20a7 7 0 0 1 14 0" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <span>Account</span>
+          </button>
+        </div>
+
+        <div class="sidebar-note">
+          <strong>Compare with confidence</strong>
+          Review yield, recent returns, and minimums before choosing.
+        </div>
+      </nav>
+
+      <main>
+        <div class="intro-row">
+          <section class="intro" aria-labelledby="market-title-a">
+            <h1 id="market-title-a">Shop investments</h1>
+            <p>Compare ready-made products by goal, yield, and minimum.</p>
+          </section>
+          <div class="filter-summary">5 products across 3 goals</div>
+        </div>
+
+        <section class="hero" aria-labelledby="featured-title-a">
+          <img src="https://loremflickr.com/132/150/city?lock=3110" width="132" height="150" alt="City buildings representing a diversified income portfolio">
+          <div class="hero-copy">
+            <p class="eyebrow">Featured bundle</p>
+            <h2 id="featured-title-a">Steady Income Set</h2>
+            <p>Three bond products with a 4.8% estimated yield.</p>
+            <button class="hero-action">View bundle</button>
+          </div>
+        </section>
+
+        <section aria-labelledby="goal-title-a">
+          <div class="goal-toolbar">
+            <h2 class="section-title" id="goal-title-a">Products by investment goal</h2>
+            <div class="categories" aria-label="Filter investment goals">
+              <button class="category active">All goals</button>
+              <button class="category">Earn income</button>
+              <button class="category">Grow wealth</button>
+              <button class="category">Keep cash</button>
+            </div>
+          </div>
+
+          <div class="goal-grid">
+            <section class="goal-group" aria-labelledby="income-title-a">
+              <div class="group-heading">
+                <h3 id="income-title-a">Earn income</h3>
+                <span class="group-count">3 products</span>
+              </div>
+              <div class="product-list">
+                <article class="product">
+                  <img src="https://loremflickr.com/54/54/architecture?lock=3111" width="54" height="54" alt="Government building representing the Harbor Treasury Ladder">
+                  <div class="product-copy">
+                    <h4 class="product-name">Harbor Treasury Ladder</h4>
+                    <p class="product-meta">Short-term US Treasuries</p>
+                  </div>
+                  <div class="product-value">
+                    <span class="rate">4.7% yield</span>
+                    <span class="minimum">Min. $100</span>
+                  </div>
+                </article>
+
+                <article class="product">
+                  <img src="https://loremflickr.com/54/54/office?lock=3113" width="54" height="54" alt="Office building representing the Cedar Income Fund">
+                  <div class="product-copy">
+                    <h4 class="product-name">Cedar Income Fund</h4>
+                    <p class="product-meta">Dividend-focused companies</p>
+                  </div>
+                  <div class="product-value">
+                    <span class="rate">5.1% yield</span>
+                    <span class="minimum">Min. $50</span>
+                  </div>
+                </article>
+
+                <article class="product">
+                  <img src="https://loremflickr.com/54/54/city?lock=3114" width="54" height="54" alt="Downtown skyline representing the Metro Bond Basket">
+                  <div class="product-copy">
+                    <h4 class="product-name">Metro Bond Basket</h4>
+                    <p class="product-meta">Investment-grade city bonds</p>
+                  </div>
+                  <div class="product-value">
+                    <span class="rate">4.3% yield</span>
+                    <span class="minimum">Min. $100</span>
+                  </div>
+                </article>
+              </div>
+            </section>
+
+            <section class="goal-group compact" aria-labelledby="growth-title-a">
+              <div class="group-heading">
+                <h3 id="growth-title-a">Grow wealth</h3>
+                <span class="group-count">1 product</span>
+              </div>
+              <article class="product">
+                <img src="https://loremflickr.com/54/54/chart?lock=3112" width="54" height="54" alt="Market chart representing the Broadway Index Mix">
+                <div class="product-copy">
+                  <h4 class="product-name">Broadway Index Mix</h4>
+                  <p class="product-meta">Four diversified index funds</p>
+                </div>
+                <div class="product-value">
+                  <span class="rate">12.4% 1 yr</span>
+                  <span class="minimum">Min. $25</span>
+                </div>
+              </article>
+            </section>
+
+            <section class="goal-group compact" aria-labelledby="cash-title-a">
+              <div class="group-heading">
+                <h3 id="cash-title-a">Keep cash</h3>
+                <span class="group-count">1 product</span>
+              </div>
+              <article class="product">
+                <img src="https://loremflickr.com/54/54/architecture?lock=3115" width="54" height="54" alt="Modern financial building representing Daylight Cash Reserve">
+                <div class="product-copy">
+                  <h4 class="product-name">Daylight Cash Reserve</h4>
+                  <p class="product-meta">Flexible government money fund</p>
+                </div>
+                <div class="product-value">
+                  <span class="rate">4.0% APY</span>
+                  <span class="minimum">Min. $1</span>
+                </div>
+              </article>
+            </section>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+</body>
+</html>

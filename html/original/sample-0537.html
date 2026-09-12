@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Playlists — Lingo Grove</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #e9e7e2;
+      color: #24221e;
+      font-family: 'Nunito Sans', system-ui, sans-serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #fffdf8;
+      border: 1px solid #d8d4cc;
+    }
+
+    .topbar {
+      flex: 0 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 13px 20px 12px;
+      border-bottom: 1px solid #e7e1d8;
+    }
+
+    .topbar h1 {
+      margin: 0;
+      font-size: 23px;
+      line-height: 1.2;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+    }
+
+    .top-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .icon-button {
+      width: 38px;
+      height: 38px;
+      padding: 0;
+      display: grid;
+      place-items: center;
+      color: #4b4841;
+      background: transparent;
+      border: 1px solid #ddd7ce;
+      border-radius: 10px;
+    }
+
+    .icon-button.add {
+      color: #2d261a;
+      background: #e9a82b;
+      border-color: #e9a82b;
+    }
+
+    .icon-button svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    main {
+      flex: 1 1 auto;
+      padding: 0 20px;
+    }
+
+    .view-tabs {
+      display: flex;
+      gap: 26px;
+      border-bottom: 1px solid #e7e1d8;
+    }
+
+    .view-tab {
+      position: relative;
+      padding: 11px 0 10px;
+      color: #777168;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 600;
+      background: transparent;
+      border: 0;
+    }
+
+    .view-tab.active {
+      color: #9a5b00;
+      font-weight: 700;
+    }
+
+    .view-tab.active::after {
+      content: "";
+      position: absolute;
+      right: 0;
+      bottom: -1px;
+      left: 0;
+      height: 3px;
+      background: #d98a00;
+    }
+
+    .current-playlist {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 0;
+      border-bottom: 1px solid #e7e1d8;
+    }
+
+    .current-playlist img {
+      width: 88px;
+      height: 88px;
+      flex: 0 0 88px;
+      display: block;
+      object-fit: cover;
+      border-radius: 10px;
+      background: #d8c9ab;
+    }
+
+    .current-copy {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .current-heading {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .current-title {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .eyebrow {
+      margin: 0 0 2px;
+      color: #9a5b00;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.7px;
+    }
+
+    .current-title h2 {
+      margin: 0;
+      font-size: 17px;
+      line-height: 21px;
+      font-weight: 700;
+    }
+
+    .play-button {
+      width: 38px;
+      height: 38px;
+      flex: 0 0 38px;
+      padding: 0;
+      display: grid;
+      place-items: center;
+      color: #2e271b;
+      background: #e9a82b;
+      border: 0;
+      border-radius: 10px;
+    }
+
+    .play-button svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .playlist-meta {
+      margin: 5px 0 7px;
+      color: #6e6961;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .progress-line {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+
+    .progress-track {
+      height: 5px;
+      min-width: 0;
+      flex: 1;
+      background: #ebe6dd;
+      border-radius: 10px;
+    }
+
+    .progress-fill {
+      width: 58%;
+      height: 5px;
+      background: #d98a00;
+      border-radius: 10px;
+    }
+
+    .progress-label {
+      color: #5e594f;
+      font-size: 12px;
+      line-height: 16px;
+      white-space: nowrap;
+    }
+
+    .section-heading {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      padding: 8px 0 7px;
+    }
+
+    .section-heading h3 {
+      margin: 0;
+      font-size: 15px;
+      line-height: 20px;
+      font-weight: 700;
+    }
+
+    .section-heading span {
+      color: #827b71;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .track-list,
+    .playlist-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .track-row {
+      display: grid;
+      grid-template-columns: 26px minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 0 7px;
+      border-bottom: 1px solid #ece7de;
+    }
+
+    .track-number {
+      color: #958f85;
+      font-size: 13px;
+      line-height: 18px;
+      text-align: center;
+    }
+
+    .track-number.playing {
+      color: #b46b00;
+    }
+
+    .track-number svg {
+      width: 16px;
+      height: 16px;
+      display: block;
+      margin: auto;
+    }
+
+    .track-copy {
+      min-width: 0;
+    }
+
+    .track-title {
+      margin: 0;
+      overflow: hidden;
+      color: #292722;
+      font-size: 14px;
+      line-height: 19px;
+      font-weight: 600;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .track-row.current .track-title {
+      color: #9a5b00;
+      font-weight: 700;
+    }
+
+    .track-detail {
+      margin: 0;
+      color: #817b72;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .duration {
+      color: #736d64;
+      font-size: 12px;
+      line-height: 18px;
+      white-space: nowrap;
+    }
+
+    .more-heading {
+      padding-top: 11px;
+    }
+
+    .playlist-row {
+      display: grid;
+      grid-template-columns: 50px minmax(0, 1fr) 18px;
+      align-items: center;
+      gap: 12px;
+      padding: 6px 0;
+      border-bottom: 1px solid #ece7de;
+    }
+
+    .playlist-row img {
+      width: 50px;
+      height: 50px;
+      display: block;
+      object-fit: cover;
+      border-radius: 10px;
+      background: #d8c9ab;
+    }
+
+    .playlist-copy {
+      min-width: 0;
+    }
+
+    .playlist-name {
+      margin: 0 0 2px;
+      overflow: hidden;
+      color: #292722;
+      font-size: 14px;
+      line-height: 19px;
+      font-weight: 700;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .playlist-detail {
+      margin: 0;
+      color: #817b72;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .chevron {
+      width: 18px;
+      height: 18px;
+      color: #9a948a;
+    }
+
+    .tabbar {
+      flex: 0 0 auto;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      padding: 8px 8px 7px;
+      background: #fffdf8;
+      border-top: 1px solid #ded8ce;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      padding: 2px 0;
+      color: #7e786f;
+      font-size: 12px;
+      line-height: 15px;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .nav-item.active {
+      color: #a96100;
+      font-weight: 700;
+    }
+
+    .nav-item svg {
+      width: 22px;
+      height: 22px;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <h1>Playlists</h1>
+      <div class="top-actions">
+        <button class="icon-button" type="button" aria-label="Search playlists">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="1.8"/>
+            <path d="M16 16L20 20" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+        </button>
+        <button class="icon-button add" type="button" aria-label="Create playlist">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <main>
+      <nav class="view-tabs" aria-label="Playlist views">
+        <button class="view-tab active" type="button">My playlists</button>
+        <button class="view-tab" type="button">Shared with me</button>
+      </nav>
+
+      <section class="current-playlist" aria-labelledby="current-playlist-title">
+        <img src="https://loremflickr.com/88/88/study?lock=7250" width="88" height="88" alt="Open notebook and study materials">
+        <div class="current-copy">
+          <div class="current-heading">
+            <div class="current-title">
+              <p class="eyebrow">Continue learning</p>
+              <h2 id="current-playlist-title">Everyday English</h2>
+            </div>
+            <button class="play-button" type="button" aria-label="Resume Everyday English">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M8.2 5.8C8.2 5.08 9 4.65 9.6 5.05L18 10.67C18.54 11.03 18.54 11.82 18 12.18L9.6 17.8C9 18.2 8.2 17.77 8.2 17.05V5.8Z"/>
+              </svg>
+            </button>
+          </div>
+          <p class="playlist-meta">12 lessons · 2 hr 18 min</p>
+          <div class="progress-line" aria-label="7 of 12 lessons complete">
+            <div class="progress-track">
+              <div class="progress-fill"></div>
+            </div>
+            <span class="progress-label">7 of 12</span>
+          </div>
+        </div>
+      </section>
+
+      <section aria-labelledby="tracks-heading">
+        <div class="section-heading">
+          <h3 id="tracks-heading">Up next</h3>
+          <span>5 lessons</span>
+        </div>
+        <ol class="track-list">
+          <li class="track-row current">
+            <span class="track-number playing">
+              <svg viewBox="0 0 18 18" fill="none" aria-hidden="true">
+                <path d="M4 11V7M9 14V4M14 11V7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </span>
+            <div class="track-copy">
+              <p class="track-title">Making Weekend Plans</p>
+              <p class="track-detail">Conversation practice</p>
+            </div>
+            <span class="duration">8:24</span>
+          </li>
+          <li class="track-row">
+            <span class="track-number">8</span>
+            <div class="track-copy">
+              <p class="track-title">Ordering at a Café</p>
+              <p class="track-detail">Listening lesson</p>
+            </div>
+            <span class="duration">10:12</span>
+          </li>
+          <li class="track-row">
+            <span class="track-number">9</span>
+            <div class="track-copy">
+              <p class="track-title">Asking for Directions</p>
+              <p class="track-detail">Speaking drill</p>
+            </div>
+            <span class="duration">7:48</span>
+          </li>
+          <li class="track-row">
+            <span class="track-number">10</span>
+            <div class="track-copy">
+              <p class="track-title">Talking About Your Routine</p>
+              <p class="track-detail">Vocabulary review</p>
+            </div>
+            <span class="duration">12:05</span>
+          </li>
+          <li class="track-row">
+            <span class="track-number">11</span>
+            <div class="track-copy">
+              <p class="track-title">Checking In at a Hotel</p>
+              <p class="track-detail">Role-play lesson</p>
+            </div>
+            <span class="duration">9:36</span>
+          </li>
+        </ol>
+      </section>
+
+      <section aria-labelledby="more-playlists-heading">
+        <div class="section-heading more-heading">
+          <h3 id="more-playlists-heading">More playlists</h3>
+          <span>4 total</span>
+        </div>
+        <ul class="playlist-list">
+          <li class="playlist-row">
+            <img src="https://loremflickr.com/50/50/books?lock=7251" width="50" height="50" alt="Stack of language study books">
+            <div class="playlist-copy">
+              <p class="playlist-name">Business Vocabulary Basics</p>
+              <p class="playlist-detail">9 lessons · 1 hr 34 min</p>
+            </div>
+            <svg class="chevron" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+              <path d="M7 4.5L11.5 9L7 13.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </li>
+          <li class="playlist-row">
+            <img src="https://loremflickr.com/50/50/library?lock=7252" width="50" height="50" alt="Quiet library shelves for reading practice">
+            <div class="playlist-copy">
+              <p class="playlist-name">Short Stories for Listening</p>
+              <p class="playlist-detail">14 lessons · 2 hr 42 min</p>
+            </div>
+            <svg class="chevron" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+              <path d="M7 4.5L11.5 9L7 13.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </li>
+          <li class="playlist-row">
+            <img src="https://loremflickr.com/50/50/classroom?lock=7253" width="50" height="50" alt="Classroom prepared for a pronunciation lesson">
+            <div class="playlist-copy">
+              <p class="playlist-name">Clear Pronunciation Practice</p>
+              <p class="playlist-detail">11 lessons · 1 hr 56 min</p>
+            </div>
+            <svg class="chevron" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+              <path d="M7 4.5L11.5 9L7 13.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </li>
+        </ul>
+      </section>
+    </main>
+
+    <nav class="tabbar" aria-label="Primary navigation">
+      <a class="nav-item" href="#">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M4 10.5L12 4L20 10.5V20H14.5V14H9.5V20H4V10.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+        </svg>
+        <span>Home</span>
+      </a>
+      <a class="nav-item" href="#">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M4 5.5C6.8 4.8 9.4 5.2 12 7V19C9.4 17.2 6.8 16.8 4 17.5V5.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+          <path d="M20 5.5C17.2 4.8 14.6 5.2 12 7V19C14.6 17.2 17.2 16.8 20 17.5V5.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+        </svg>
+        <span>Courses</span>
+      </a>
+      <a class="nav-item active" href="#" aria-current="page">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <rect x="4" y="5" width="16" height="4" rx="1" stroke="currentColor" stroke-width="1.7"/>
+          <rect x="4" y="15" width="16" height="4" rx="1" stroke="currentColor" stroke-width="1.7"/>
+          <path d="M10 11.3L14 13L10 14.7V11.3Z" fill="currentColor"/>
+        </svg>
+        <span>Playlists</span>
+      </a>
+      <a class="nav-item" href="#">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <rect x="5" y="4" width="14" height="16" rx="3" stroke="currentColor" stroke-width="1.7"/>
+          <path d="M9 9H15M9 13H15M9 17H13" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+        </svg>
+        <span>Activity</span>
+      </a>
+    </nav>
+  </div>
+</body>
+</html>

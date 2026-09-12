@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Meridian Pass — Billing</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --accent:#b4189e;
+    --ink:#1d1a1e;
+    --muted:#6f6873;
+    --line:#eeebef;
+  }
+  body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    padding:40px 0;
+    margin:0;
+    background:#eceaec;
+    font-family:'Source Sans 3', system-ui, sans-serif;
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+  }
+  .screen{
+    width:1024px;
+    height:768px;
+    box-sizing:border-box;
+    background:#ffffff;
+    display:flex;
+    flex-direction:column;
+  }
+
+  /* ---------- full-width title band ---------- */
+  .band{
+    box-sizing:border-box;
+    width:100%;
+    padding:34px 48px 30px;
+    background:rgba(180,24,158,.07);
+    border-bottom:1px solid rgba(180,24,158,.18);
+  }
+  .eyebrow{
+    font-size:12px;
+    letter-spacing:.16em;
+    text-transform:uppercase;
+    font-weight:600;
+    color:var(--accent);
+    margin:0 0 8px;
+  }
+  .band h1{
+    font-family:'Playfair Display', Georgia, serif;
+    font-weight:700;
+    font-size:52px;
+    line-height:1.06;
+    margin:0 0 8px;
+  }
+  .plan-note{
+    font-size:15px;
+    color:var(--muted);
+    margin:0;
+  }
+
+  /* ---------- two columns ---------- */
+  .body{
+    display:flex;
+    gap:44px;
+    padding:30px 48px 0;
+    align-items:flex-start;
+  }
+  .main{flex:1;min-width:0;}
+  .side{width:300px;flex:none;}
+
+  h2{
+    font-family:'Playfair Display', Georgia, serif;
+    font-weight:600;
+    font-size:20px;
+    margin:0 0 4px;
+  }
+  .sec-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    gap:16px;
+    border-bottom:2px solid var(--ink);
+    padding-bottom:8px;
+  }
+  .sec-head .count{
+    font-size:13px;
+    color:var(--muted);
+  }
+
+  .invoice{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:20px;
+    padding:14px 0;
+    border-bottom:1px solid var(--line);
+  }
+  .inv-date{
+    font-size:16px;
+    font-weight:600;
+    margin:0;
+  }
+  .inv-id{
+    font-size:13px;
+    color:var(--muted);
+    margin:3px 0 0;
+  }
+  .inv-right{
+    display:flex;
+    align-items:center;
+    gap:22px;
+  }
+  .inv-amt{
+    font-size:16px;
+    font-weight:600;
+    white-space:nowrap;
+    width:76px;
+    text-align:right;
+  }
+  .pdf{
+    font-size:13px;
+    font-weight:600;
+    color:var(--accent);
+    text-decoration:none;
+    white-space:nowrap;
+    border-bottom:1px solid rgba(180,24,158,.35);
+    padding-bottom:1px;
+  }
+  .footer-link{
+    display:inline-block;
+    margin-top:16px;
+    font-size:14px;
+    font-weight:600;
+    color:var(--accent);
+    text-decoration:none;
+  }
+
+  /* ---------- sidebar ---------- */
+  .charge{
+    background:rgba(180,24,158,.09);
+    border-radius:14px;
+    padding:20px 20px 18px;
+  }
+  .charge .label{
+    font-size:12px;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    font-weight:600;
+    color:var(--accent);
+    margin:0 0 8px;
+  }
+  .amount{
+    font-family:'Playfair Display', Georgia, serif;
+    font-weight:700;
+    font-size:30px;
+    line-height:1;
+    margin:0;
+  }
+  .when{
+    font-size:14px;
+    color:var(--muted);
+    margin:8px 0 0;
+  }
+  .rule{
+    height:1px;
+    background:rgba(180,24,158,.2);
+    margin:16px 0 13px;
+  }
+  .method{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    gap:12px;
+  }
+  .method .card{font-size:14px;font-weight:600;}
+  .method .change{
+    font-size:14px;
+    font-weight:600;
+    color:var(--accent);
+    text-decoration:none;
+    white-space:nowrap;
+  }
+  .facts{
+    margin-top:22px;
+    border-top:1px solid var(--line);
+  }
+  .fact{
+    display:flex;
+    justify-content:space-between;
+    gap:14px;
+    padding:11px 0;
+    border-bottom:1px solid var(--line);
+    font-size:14px;
+  }
+  .fact span:first-child{color:var(--muted);}
+  .fact span:last-child{font-weight:600;}
+
+  .support{
+    margin-top:auto;
+    padding:18px 48px 24px;
+    border-top:1px solid var(--line);
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:20px;
+    font-size:14px;
+    color:var(--muted);
+  }
+  .support a{
+    color:var(--accent);
+    font-weight:600;
+    text-decoration:none;
+  }
+</style>
+</head>
+<body>
+  <div class="screen">
+
+    <div class="band">
+      <p class="eyebrow">Subscription</p>
+      <h1>Meridian Pass</h1>
+      <p class="plan-note">Annual plan · renews automatically · account 8842-Q</p>
+    </div>
+
+    <div class="body">
+      <div class="main">
+        <div class="sec-head">
+          <h2>Invoices</h2>
+          <span class="count">4 documents · 2023–2025</span>
+        </div>
+
+        <div class="invoice">
+          <div>
+            <p class="inv-date">March 14, 2025</p>
+            <p class="inv-id">INV-2025-0314 · Annual renewal</p>
+          </div>
+          <div class="inv-right">
+            <span class="inv-amt">$149.00</span>
+            <a class="pdf" href="#">Download PDF</a>
+          </div>
+        </div>
+
+        <div class="invoice">
+          <div>
+            <p class="inv-date">March 14, 2024</p>
+            <p class="inv-id">INV-2024-0314 · Annual renewal</p>
+          </div>
+          <div class="inv-right">
+            <span class="inv-amt">$129.00</span>
+            <a class="pdf" href="#">Download PDF</a>
+          </div>
+        </div>
+
+        <div class="invoice">
+          <div>
+            <p class="inv-date">November 2, 2023</p>
+            <p class="inv-id">INV-2023-1102 · Offline maps add-on</p>
+          </div>
+          <div class="inv-right">
+            <span class="inv-amt">$18.00</span>
+            <a class="pdf" href="#">Download PDF</a>
+          </div>
+        </div>
+
+        <div class="invoice">
+          <div>
+            <p class="inv-date">March 14, 2023</p>
+            <p class="inv-id">INV-2023-0314 · Annual renewal</p>
+          </div>
+          <div class="inv-right">
+            <span class="inv-amt">$129.00</span>
+            <a class="pdf" href="#">Download PDF</a>
+          </div>
+        </div>
+
+        <a class="footer-link" href="#">View all invoices</a>
+      </div>
+
+      <div class="side">
+        <div class="charge">
+          <p class="label">Next charge</p>
+          <p class="amount">$149.00</p>
+          <p class="when">Bills on March 14, 2026</p>
+          <div class="rule"></div>
+          <div class="method">
+            <span class="card">Visa ending 4417</span>
+            <a class="change" href="#">Change</a>
+          </div>
+        </div>
+
+        <div class="facts">
+          <div class="fact"><span>Billing cycle</span><span>Yearly</span></div>
+          <div class="fact"><span>Billing email</span><span>ops@northsail.co</span></div>
+          <div class="fact"><span>Seats included</span><span>4 travellers</span></div>
+          <div class="fact"><span>Member since</span><span>March 2023</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="support">
+      <span>Invoices are issued by Meridian Labs GmbH and include VAT where applicable.</span>
+      <a href="#">Contact billing support</a>
+    </div>
+
+  </div>
+</body>
+</html>

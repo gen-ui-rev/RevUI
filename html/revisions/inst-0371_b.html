@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Move to folder</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --accent:#1a5fe0;
+    --line:#e2e5ea;
+    --ink:#141821;
+    --muted:#6b7280;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    padding:0;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:#d9dce1;
+    font-family:'Roboto', system-ui, sans-serif;
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+  }
+  .screen{
+    width:1024px;
+    height:768px;
+    display:flex;
+    background:#ffffff;
+    border:1px solid #cfd3da;
+    overflow:hidden;
+  }
+
+  /* ---- sidebar ---- */
+  .side{
+    width:236px;
+    flex:none;
+    background:#f5f6f8;
+    border-right:1px solid var(--line);
+    padding:22px 18px;
+    display:flex;
+    flex-direction:column;
+    gap:22px;
+  }
+  .brand{
+    font-size:16px;
+    font-weight:700;
+    letter-spacing:-0.2px;
+    padding:0 8px;
+  }
+  .navlabel{
+    font-size:11px;
+    font-weight:500;
+    letter-spacing:0.7px;
+    text-transform:uppercase;
+    color:var(--muted);
+    padding:0 8px 6px;
+  }
+  .nav{display:flex;flex-direction:column;}
+  .nav a{
+    display:flex;
+    justify-content:space-between;
+    gap:10px;
+    padding:8px;
+    border-radius:7px;
+    font-size:14px;
+    line-height:19px;
+    color:var(--ink);
+    text-decoration:none;
+  }
+  .nav a span.n{color:var(--muted);font-size:12px;line-height:19px;}
+  .nav a.on{background:#e7ecf8;color:var(--accent);font-weight:500;}
+  .nav a.on span.n{color:var(--accent);}
+  .sidefoot{
+    margin-top:auto;
+    padding:12px 8px 0;
+    border-top:1px solid var(--line);
+    font-size:12px;
+    line-height:16px;
+    color:var(--muted);
+  }
+  .sidefoot b{display:block;color:var(--ink);font-size:13px;font-weight:500;}
+
+  /* ---- main ---- */
+  .main{flex:1;min-width:0;display:flex;flex-direction:column;}
+  .topbar{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    gap:20px;
+    padding:18px 32px;
+    border-bottom:1px solid var(--line);
+  }
+  .crumb{font-size:13px;color:var(--muted);}
+  .crumb b{color:var(--ink);font-weight:500;}
+  .selcount{font-size:13px;color:var(--muted);}
+  .content{flex:1;padding:26px 32px;}
+  h1{
+    margin:0;
+    font-size:22px;
+    font-weight:700;
+    letter-spacing:-0.3px;
+  }
+  .lead{
+    margin:6px 0 0;
+    font-size:13px;
+    line-height:18px;
+    color:var(--muted);
+  }
+  .subject{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    margin-top:18px;
+    padding:12px 16px;
+    border:1px solid var(--line);
+    border-radius:10px;
+    background:#fafbfc;
+  }
+  .subject img{
+    width:64px;
+    height:64px;
+    border-radius:9px;
+    object-fit:cover;
+    display:block;
+    background:#d6d9de;
+    flex:none;
+  }
+  .subject .txt{min-width:0;flex:1;}
+  .subject .name{
+    font-size:16px;
+    font-weight:500;
+    line-height:21px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .subject .meta{
+    font-size:12px;
+    color:var(--muted);
+    margin-top:4px;
+    line-height:16px;
+  }
+  .badge{
+    flex:none;
+    font-size:12px;
+    line-height:16px;
+    color:var(--muted);
+    border:1px solid var(--line);
+    background:#fff;
+    border-radius:999px;
+    padding:5px 12px;
+  }
+  .label{
+    margin:24px 0 8px;
+    font-size:11px;
+    font-weight:500;
+    letter-spacing:0.7px;
+    text-transform:uppercase;
+    color:var(--muted);
+  }
+  .table{
+    border:1px solid var(--line);
+    border-radius:10px;
+  }
+  .hrow, .row{
+    display:grid;
+    grid-template-columns:22px minmax(0,1fr) 110px 220px;
+    align-items:center;
+    gap:16px;
+    padding:11px 18px;
+  }
+  .hrow{
+    border-bottom:1px solid var(--line);
+    background:#f7f8fa;
+    border-radius:10px 10px 0 0;
+    font-size:11px;
+    font-weight:500;
+    letter-spacing:0.6px;
+    text-transform:uppercase;
+    color:var(--muted);
+  }
+  .row{
+    border-bottom:1px solid var(--line);
+    cursor:pointer;
+  }
+  .row:last-child{border-bottom:none;border-radius:0 0 10px 10px;}
+  .row.selected{background:#f3f7fe;}
+  .row .title{
+    font-size:15px;
+    line-height:20px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .row.selected .title{font-weight:500;color:var(--accent);}
+  .row .cell{
+    font-size:13px;
+    line-height:18px;
+    color:var(--muted);
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .mark{width:20px;height:20px;display:block;}
+  .footnote{
+    margin:14px 2px 0;
+    font-size:12px;
+    line-height:17px;
+    color:var(--muted);
+  }
+  .footbar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:16px;
+    padding:16px 32px;
+    border-top:1px solid var(--line);
+    background:#fafbfc;
+  }
+  .hint{font-size:12px;color:var(--muted);}
+  .btnrow{display:flex;gap:10px;}
+  .btn{
+    border-radius:9px;
+    font-family:inherit;
+    font-size:14px;
+    font-weight:500;
+    padding:11px 24px;
+    text-align:center;
+    cursor:pointer;
+  }
+  .btn.ghost{
+    border:1px solid var(--line);
+    background:#fff;
+    color:var(--ink);
+  }
+  .btn.primary{
+    border:1px solid var(--accent);
+    background:var(--accent);
+    color:#fff;
+  }
+</style>
+</head>
+<body>
+  <div class="screen">
+
+    <aside class="side">
+      <div class="brand">Fieldnote</div>
+      <div>
+        <div class="navlabel">Library</div>
+        <nav class="nav">
+          <a href="#">All notes <span class="n">76</span></a>
+          <a href="#">Shared with me <span class="n">18</span></a>
+          <a href="#">Starred <span class="n">5</span></a>
+          <a class="on" href="#">Inbox <span class="n">6</span></a>
+          <a href="#">Archive <span class="n">41</span></a>
+          <a href="#">Trash <span class="n">2</span></a>
+        </nav>
+      </div>
+      <div class="sidefoot">
+        <b>Nadia Ellery</b>
+        Product workspace &middot; 12 members
+      </div>
+    </aside>
+
+    <main class="main">
+      <div class="topbar">
+        <div class="crumb">Inbox / <b>Q3 Launch Retrospective</b></div>
+        <div class="selcount">1 note selected</div>
+      </div>
+
+      <div class="content">
+        <h1>Move to folder</h1>
+        <p class="lead">Choose a destination folder. Collaborators listed below keep their access.</p>
+
+        <div class="subject">
+          <img src="https://loremflickr.com/64/64/notebook?lock=5281" width="64" height="64" alt="Cover thumbnail of the note being moved, an open notebook on a desk">
+          <div class="txt">
+            <div class="name">Q3 Launch Retrospective</div>
+            <div class="meta">Note &middot; Edited Mar 4, 2024 &middot; 12 min read</div>
+          </div>
+          <div class="badge">Currently in Inbox</div>
+        </div>
+
+        <div class="label">Destination</div>
+
+        <div class="table">
+          <div class="hrow">
+            <div></div>
+            <div>Folder</div>
+            <div>Notes</div>
+            <div>Shared with</div>
+          </div>
+
+          <div class="row">
+            <svg class="mark" viewBox="0 0 20 20" aria-hidden="true">
+              <circle cx="10" cy="10" r="8.5" fill="none" stroke="#c8ccd3" stroke-width="1"/>
+            </svg>
+            <div class="title">Product Team</div>
+            <div class="cell">24 notes</div>
+            <div class="cell">Whole workspace &middot; can edit</div>
+          </div>
+
+          <div class="row selected">
+            <svg class="mark" viewBox="0 0 20 20" aria-hidden="true">
+              <circle cx="10" cy="10" r="9" fill="#1a5fe0"/>
+              <path d="M6 10.3l2.6 2.6L14.2 7.3" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <div class="title">Design Reviews</div>
+            <div class="cell">8 notes</div>
+            <div class="cell">Nadia Ellery + 4 &middot; can edit</div>
+          </div>
+
+          <div class="row">
+            <svg class="mark" viewBox="0 0 20 20" aria-hidden="true">
+              <circle cx="10" cy="10" r="8.5" fill="none" stroke="#c8ccd3" stroke-width="1"/>
+            </svg>
+            <div class="title">Personal Drafts</div>
+            <div class="cell">3 notes</div>
+            <div class="cell">Only you</div>
+          </div>
+
+          <div class="row">
+            <svg class="mark" viewBox="0 0 20 20" aria-hidden="true">
+              <circle cx="10" cy="10" r="8.5" fill="none" stroke="#c8ccd3" stroke-width="1"/>
+            </svg>
+            <div class="title">Launch Archive</div>
+            <div class="cell">41 notes</div>
+            <div class="cell">Whole workspace &middot; view only</div>
+          </div>
+
+          <div class="row">
+            <svg class="mark" viewBox="0 0 20 20" aria-hidden="true">
+              <circle cx="10" cy="10" r="8.5" fill="none" stroke="#c8ccd3" stroke-width="1"/>
+            </svg>
+            <div class="title">Customer Interviews</div>
+            <div class="cell">17 notes</div>
+            <div class="cell">Research guild &middot; can comment</div>
+          </div>
+        </div>
+
+        <p class="footnote">Moving keeps sharing with Nadia Ellery and 4 others. Folder permissions apply after the move.</p>
+      </div>
+
+      <div class="footbar">
+        <div class="hint">Design Reviews selected &middot; press Enter to confirm</div>
+        <div class="btnrow">
+          <div class="btn ghost">Cancel</div>
+          <div class="btn primary">Move note</div>
+        </div>
+      </div>
+    </main>
+
+  </div>
+</body>
+</html>

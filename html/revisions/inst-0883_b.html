@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fernwood Market — Followers</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 40px 0;
+    margin: 0;
+    background: #d9d7d0;
+    font-family: 'Source Sans 3', system-ui, sans-serif;
+  }
+  .screen {
+    width: 390px;
+    height: 844px;
+    background: #ffffff;
+    position: relative;
+    color: #1a1a17;
+  }
+
+  /* top bar */
+  .topbar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 18px 20px 14px;
+  }
+  .topbar .back { display: flex; }
+  .topbar h1 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-weight: 700;
+    font-size: 22px;
+    margin: 0;
+    line-height: 1.1;
+  }
+  .topbar .sub {
+    font-size: 13px;
+    color: #77776c;
+    margin-top: 2px;
+  }
+  .topbar .spacer { flex: 1; }
+
+  /* segmented */
+  .segs {
+    display: flex;
+    padding: 0 20px;
+    border-bottom: 1px solid #eceae3;
+  }
+  .seg {
+    padding: 10px 0 12px;
+    margin-right: 28px;
+    font-size: 15px;
+    color: #83837a;
+    border-bottom: 3px solid transparent;
+  }
+  .seg .n { font-size: 13px; }
+  .seg.on {
+    color: #1a1a17;
+    font-weight: 600;
+    border-bottom-color: #f2c012;
+  }
+
+  /* status filters */
+  .filters {
+    display: flex;
+    gap: 8px;
+    padding: 14px 20px 12px;
+  }
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: #5d5d53;
+    background: #f4f3ee;
+    padding: 6px 10px;
+    white-space: nowrap;
+  }
+  .chip.on {
+    background: #1a1a17;
+    color: #ffffff;
+  }
+  .chip .n { font-weight: 400; opacity: .8; }
+  .chip i {
+    width: 8px; height: 8px;
+    flex: 0 0 8px;
+    display: block;
+  }
+  .chip i.mut { background: #2f6b4f; }
+  .chip i.pen { background: #d3a30c; }
+
+  /* pending strip */
+  .strip {
+    margin: 4px 20px 0;
+    background: rgba(242, 192, 18, 0.22);
+    border-left: 3px solid #d3a30c;
+    padding: 12px 14px;
+    font-size: 13.5px;
+    line-height: 1.4;
+    color: #4d4a3e;
+  }
+  .strip strong { color: #1a1a17; }
+
+  /* sections */
+  .sechead {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding: 18px 20px 6px;
+  }
+  .sechead h2 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-weight: 600;
+    font-size: 17px;
+    margin: 0;
+  }
+  .sechead .count {
+    font-size: 11px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+  .sechead .count.pen { color: #97740a; }
+  .sechead .count.mut { color: #2f6b4f; }
+
+  .row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 20px 11px 17px;
+    border-left: 3px solid transparent;
+  }
+  .row.pending { border-left-color: #d3a30c; }
+  .row.mutual { border-left-color: #2f6b4f; }
+  .av {
+    width: 44px; height: 44px;
+    flex: 0 0 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    font-weight: 600;
+  }
+  .row.pending .av { background: rgba(242, 192, 18, 0.20); color: #6f5b0d; }
+  .row.mutual .av { background: #e3ece1; color: #2f6b4f; }
+  .who { flex: 1; min-width: 0; }
+  .who .nm {
+    font-size: 15px;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .who .mt {
+    font-size: 13px;
+    color: #7d7d72;
+    margin-top: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .btn {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 9px 13px;
+    border: 0;
+    background: #f2c012;
+    color: #1a1a17;
+  }
+  .btn.ghost {
+    background: #eef3ec;
+    color: #2f6b4f;
+  }
+
+  .divider { height: 1px; background: #f0eee8; margin: 8px 20px 0; }
+
+  /* tab bar */
+  .tabs {
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    display: flex;
+    border-top: 1px solid #eceae3;
+    background: #fff;
+    padding: 9px 6px 14px;
+  }
+  .tab {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    color: #8d8d83;
+  }
+  .tab.on { color: #1a1a17; font-weight: 600; }
+</style>
+</head>
+<body>
+<div class="screen">
+
+  <div class="topbar">
+    <span class="back">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1a1a17" stroke-width="1.8" stroke-linecap="square"><path d="M15 5 8 12l7 7"/></svg>
+    </span>
+    <div>
+      <h1>Kettle &amp; Kiln</h1>
+      <div class="sub">Shop account</div>
+    </div>
+    <span class="spacer"></span>
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1a1a17" stroke-width="1.8" stroke-linecap="square"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg>
+  </div>
+
+  <div class="segs">
+    <div class="seg on">Followers <span class="n">2,418</span></div>
+    <div class="seg">Following <span class="n">312</span></div>
+  </div>
+
+  <div class="filters">
+    <span class="chip on">All <span class="n">2,418</span></span>
+    <span class="chip"><i class="mut"></i>Mutual <span class="n">274</span></span>
+    <span class="chip"><i class="pen"></i>Pending <span class="n">2,144</span></span>
+  </div>
+
+  <div class="strip">
+    <strong>24 of 42</strong> new followers are still waiting on your follow back.
+  </div>
+
+  <div class="sechead">
+    <h2>Waiting on you</h2>
+    <span class="count pen">24 pending</span>
+  </div>
+
+  <div class="row pending">
+    <div class="av">DM</div>
+    <div class="who">
+      <div class="nm">Dana Mercer</div>
+      <div class="mt">@claycoast · 6 orders placed</div>
+    </div>
+    <button class="btn">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square"><path d="M12 5v14M5 12h14"/></svg>
+      Follow back
+    </button>
+  </div>
+  <div class="row pending">
+    <div class="av">TO</div>
+    <div class="who">
+      <div class="nm">Theo Ashgrove</div>
+      <div class="mt">@ashgrove.studio · Seller in Portland</div>
+    </div>
+    <button class="btn">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square"><path d="M12 5v14M5 12h14"/></svg>
+      Follow back
+    </button>
+  </div>
+  <div class="row pending">
+    <div class="av">NP</div>
+    <div class="who">
+      <div class="nm">Nadia Pelletier</div>
+      <div class="mt">@nadia.p · 1 order placed</div>
+    </div>
+    <button class="btn">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square"><path d="M12 5v14M5 12h14"/></svg>
+      Follow back
+    </button>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="sechead">
+    <h2>You follow each other</h2>
+    <span class="count mut">274 mutual</span>
+  </div>
+
+  <div class="row mutual">
+    <div class="av">RL</div>
+    <div class="who">
+      <div class="nm">Rosalind Vance</div>
+      <div class="mt">@rosalindmakes · 2 orders placed</div>
+    </div>
+    <button class="btn ghost">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square"><path d="M5 12.5 10 17.5 19 7"/></svg>
+      Following
+    </button>
+  </div>
+  <div class="row mutual">
+    <div class="av">HK</div>
+    <div class="who">
+      <div class="nm">Harriet Kwan</div>
+      <div class="mt">@saltglazehome · 14 orders placed</div>
+    </div>
+    <button class="btn ghost">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square"><path d="M5 12.5 10 17.5 19 7"/></svg>
+      Following
+    </button>
+  </div>
+  <div class="row mutual">
+    <div class="av">SC</div>
+    <div class="who">
+      <div class="nm">Simon Carraway</div>
+      <div class="mt">@carrawaygoods · 9 orders placed</div>
+    </div>
+    <button class="btn ghost">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square"><path d="M5 12.5 10 17.5 19 7"/></svg>
+      Following
+    </button>
+  </div>
+
+  <div class="tabs">
+    <div class="tab">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="square"><path d="M4 10.5 12 4l8 6.5V20H4z"/></svg>
+      Home
+    </div>
+    <div class="tab">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="square"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg>
+      Browse
+    </div>
+    <div class="tab">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="square"><path d="M6 4h12v16l-6-4.5L6 20z"/></svg>
+      Saved
+    </div>
+    <div class="tab">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="square"><path d="M4 7h16v13H4z"/><path d="M8.5 7V4.5h7V7"/></svg>
+      Orders
+    </div>
+    <div class="tab on">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="square"><circle cx="12" cy="8.5" r="3.8"/><path d="M5 20c1.3-3.6 4-5.4 7-5.4s5.7 1.8 7 5.4"/></svg>
+      Shop
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

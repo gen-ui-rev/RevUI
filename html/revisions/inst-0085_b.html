@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Select Trip Stops — Waymark</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #e9eaf0;
+      color: #20212a;
+      font-family: 'Manrope', system-ui, sans-serif;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      cursor: default;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #ffffff;
+      border: 1px solid #d8dae3;
+    }
+
+    .topbar {
+      min-height: 64px;
+      padding: 0 16px;
+      display: grid;
+      grid-template-columns: 72px 1fr 72px;
+      align-items: center;
+      border-bottom: 1px solid #e4e5eb;
+      background: #ffffff;
+    }
+
+    .icon-button {
+      width: 40px;
+      height: 40px;
+      padding: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 0;
+      border-radius: 10px;
+      background: transparent;
+      color: #383a45;
+    }
+
+    .topbar-title {
+      margin: 0;
+      text-align: center;
+      font-size: 15px;
+      line-height: 22px;
+      font-weight: 700;
+      color: #292b34;
+    }
+
+    .cancel-button {
+      justify-self: end;
+      padding: 8px 0;
+      border: 0;
+      background: transparent;
+      color: #4f46b8;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 700;
+    }
+
+    main {
+      flex: 1;
+      padding: 20px 20px 16px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .intro {
+      margin-bottom: 16px;
+    }
+
+    .intro h1 {
+      margin: 0;
+      font-size: 26px;
+      line-height: 34px;
+      font-weight: 700;
+      letter-spacing: -0.4px;
+      color: #1e1f27;
+    }
+
+    .intro p {
+      margin: 7px 0 0;
+      max-width: 330px;
+      font-size: 14px;
+      line-height: 21px;
+      color: #666976;
+    }
+
+    .selection-count {
+      color: #4f46b8;
+      font-weight: 700;
+    }
+
+    .search {
+      height: 48px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 13px;
+      border: 1px solid #d9dbe4;
+      border-radius: 10px;
+      background: #fafafe;
+      color: #777a87;
+    }
+
+    .search input {
+      min-width: 0;
+      width: 100%;
+      padding: 0;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      color: #292b34;
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .search input::placeholder {
+      color: #7d808d;
+      opacity: 1;
+    }
+
+    .section-heading {
+      margin: 18px 0 6px;
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .section-heading h2 {
+      margin: 0;
+      font-size: 16px;
+      line-height: 24px;
+      font-weight: 700;
+      color: #262832;
+    }
+
+    .section-heading span {
+      font-size: 12px;
+      line-height: 18px;
+      color: #777a86;
+    }
+
+    /* Suggested stops split into an ordered route timeline plus nearby options */
+    .route-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .route-item {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 9px 0;
+    }
+
+    .route-line {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 12px;
+      width: 2px;
+      background: #dcdce6;
+    }
+
+    .route-item:first-child .route-line {
+      top: 50%;
+    }
+
+    .route-item:last-child .route-line {
+      bottom: 50%;
+    }
+
+    .route-node {
+      position: relative;
+      z-index: 1;
+      width: 26px;
+      height: 26px;
+      flex: 0 0 26px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: #4f46b8;
+      color: #ffffff;
+      font-size: 12px;
+      line-height: 26px;
+      font-weight: 700;
+    }
+
+    .route-thumb {
+      width: 56px;
+      height: 56px;
+      flex: 0 0 56px;
+      display: block;
+      object-fit: cover;
+      border-radius: 10px;
+      background: #d9dbe3;
+    }
+
+    .route-info {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .place-name {
+      margin: 0;
+      overflow: hidden;
+      color: #23252e;
+      font-size: 15px;
+      line-height: 21px;
+      font-weight: 700;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .place-detail {
+      margin: 3px 0 0;
+      overflow: hidden;
+      color: #737682;
+      font-size: 13px;
+      line-height: 19px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .select-box {
+      width: 24px;
+      height: 24px;
+      flex: 0 0 24px;
+      padding: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 1.5px solid #5148bd;
+      border-radius: 10px;
+      background: #5148bd;
+      color: #ffffff;
+    }
+
+    .leg {
+      position: relative;
+      padding: 2px 0 2px 38px;
+      color: #8b8e9a;
+      font-size: 12px;
+      line-height: 18px;
+      font-weight: 500;
+    }
+
+    .leg .route-line {
+      top: 0;
+      bottom: 0;
+    }
+
+    .nearby-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      border: 1px solid #dedfe6;
+      border-radius: 10px;
+      background: #ffffff;
+    }
+
+    .nearby-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 9px 11px;
+      border-bottom: 1px solid #e7e8ed;
+    }
+
+    .nearby-row:last-child {
+      border-bottom: 0;
+    }
+
+    .add-pill {
+      flex: 0 0 auto;
+      padding: 6px 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      border: 1px solid #c8c6e6;
+      border-radius: 20px;
+      background: #f5f4fc;
+      color: #4f46b8;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 700;
+    }
+
+    .primary-action {
+      width: 100%;
+      height: 48px;
+      margin-top: auto;
+      padding: 0 18px;
+      border: 1px solid #4f46b8;
+      border-radius: 10px;
+      background: #4f46b8;
+      color: #ffffff;
+      font-size: 15px;
+      line-height: 22px;
+      font-weight: 700;
+    }
+
+    .tabbar {
+      min-height: 74px;
+      padding: 8px 14px 9px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      align-items: center;
+      border-top: 1px solid #e1e2e8;
+      background: #ffffff;
+    }
+
+    .tab {
+      padding: 3px 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      border: 0;
+      background: transparent;
+      color: #777a86;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 500;
+    }
+
+    .tab.active {
+      color: #4f46b8;
+      font-weight: 700;
+    }
+
+    .tab svg {
+      width: 22px;
+      height: 22px;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <button class="icon-button" type="button" aria-label="Go back">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M15 5L8 12L15 19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <p class="topbar-title">Edit coastal trip</p>
+      <button class="cancel-button" type="button">Cancel</button>
+    </header>
+
+    <main>
+      <section class="intro" aria-labelledby="screen-title">
+        <h1 id="screen-title">Choose your stops</h1>
+        <p>Select up to three places for your route. <span class="selection-count">2 of 3 selected.</span></p>
+      </section>
+
+      <label class="search">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="1.7"/>
+          <path d="M16 16L20 20" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+        </svg>
+        <input type="text" placeholder="Search by city or landmark" aria-label="Search places">
+      </label>
+
+      <section aria-labelledby="route-title">
+        <div class="section-heading">
+          <h2 id="route-title">Stops in route order</h2>
+          <span>2 of 3 chosen</span>
+        </div>
+
+        <ul class="route-list">
+          <li class="route-item">
+            <span class="route-line" aria-hidden="true"></span>
+            <span class="route-node" aria-hidden="true">1</span>
+            <img class="route-thumb" src="https://loremflickr.com/56/56/beach?lock=2070" width="56" height="56" alt="Rocky beach along the Monterey coastline">
+            <div class="route-info">
+              <p class="place-name">Monterey</p>
+              <p class="place-detail">Coastal trail · 2 nights</p>
+            </div>
+            <button class="select-box" type="button" aria-label="Monterey selected">
+              <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M3.25 8.2L6.35 11.1L12.75 4.8" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+          </li>
+
+          <li class="leg">
+            <span class="route-line" aria-hidden="true"></span>
+            1 hr 25 min drive · 43 mi
+          </li>
+
+          <li class="route-item">
+            <span class="route-line" aria-hidden="true"></span>
+            <span class="route-node" aria-hidden="true">2</span>
+            <img class="route-thumb" src="https://loremflickr.com/56/56/mountain?lock=2071" width="56" height="56" alt="Mountain overlook near Big Sur">
+            <div class="route-info">
+              <p class="place-name">Big Sur</p>
+              <p class="place-detail">Scenic overlooks · 1 night</p>
+            </div>
+            <button class="select-box" type="button" aria-label="Big Sur selected">
+              <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M3.25 8.2L6.35 11.1L12.75 4.8" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+          </li>
+        </ul>
+      </section>
+
+      <section aria-labelledby="nearby-title">
+        <div class="section-heading">
+          <h2 id="nearby-title">Add one more</h2>
+          <span>Pacific Coast</span>
+        </div>
+
+        <ul class="nearby-list">
+          <li class="nearby-row">
+            <img class="route-thumb" src="https://loremflickr.com/56/56/cityscape?lock=2072" width="56" height="56" alt="Downtown skyline in Santa Barbara">
+            <div class="route-info">
+              <p class="place-name">Santa Barbara</p>
+              <p class="place-detail">Waterfront district · 2 nights</p>
+            </div>
+            <button class="add-pill" type="button" aria-label="Add Santa Barbara to route">
+              <svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M8 3.2V12.8M3.2 8H12.8" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/>
+              </svg>
+              Add
+            </button>
+          </li>
+
+          <li class="nearby-row">
+            <img class="route-thumb" src="https://loremflickr.com/56/56/hotel?lock=2073" width="56" height="56" alt="Coastal hotel in Laguna Beach">
+            <div class="route-info">
+              <p class="place-name">Laguna Beach</p>
+              <p class="place-detail">Coves and galleries · 1 night</p>
+            </div>
+            <button class="add-pill" type="button" aria-label="Add Laguna Beach to route">
+              <svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M8 3.2V12.8M3.2 8H12.8" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/>
+              </svg>
+              Add
+            </button>
+          </li>
+        </ul>
+      </section>
+
+      <button class="primary-action" type="button">Save route with 2 stops</button>
+    </main>
+
+    <nav class="tabbar" aria-label="Primary navigation">
+      <button class="tab" type="button">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="1.7"/>
+          <path d="M16 16L20 20" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+        </svg>
+        <span>Explore</span>
+      </button>
+
+      <button class="tab active" type="button" aria-current="page">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M5 19.5V6.5L10 4.5L15 6.5L20 4.5V17.5L15 19.5L10 17.5L5 19.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+          <path d="M10 4.5V17.5M15 6.5V19.5" stroke="currentColor" stroke-width="1.7"/>
+        </svg>
+        <span>Trips</span>
+      </button>
+
+      <button class="tab" type="button">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M6.5 4.5H17.5C18.6 4.5 19.5 5.4 19.5 6.5V19.5L12 16L4.5 19.5V6.5C4.5 5.4 5.4 4.5 6.5 4.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+        </svg>
+        <span>Saved</span>
+      </button>
+
+      <button class="tab" type="button">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="12" cy="8" r="3.5" stroke="currentColor" stroke-width="1.7"/>
+          <path d="M5.5 19C6.1 15.9 8.3 14 12 14C15.7 14 17.9 15.9 18.5 19" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+        </svg>
+        <span>Profile</span>
+      </button>
+    </nav>
+  </div>
+</body>
+</html>

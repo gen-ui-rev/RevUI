@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Send Money</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #e8edf0;
+      color: #162630;
+      font-family: 'Manrope', system-ui, sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    button,
+    input,
+    textarea {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .screen {
+      width: 1024px;
+      height: 768px;
+      display: flex;
+      flex-direction: column;
+      background: #fbfdfe;
+      box-shadow: 0 18px 55px rgba(27, 54, 67, 0.13);
+    }
+
+    .appbar {
+      padding: 15px 26px;
+      display: flex;
+      align-items: center;
+      gap: 34px;
+      border-bottom: 1px solid #dce7ec;
+      background: #ffffff;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #123346;
+      font-size: 17px;
+      font-weight: 700;
+    }
+
+    .brand-mark {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      border-radius: 10px;
+      background: #38a7dc;
+      color: #ffffff;
+    }
+
+    .brand-mark svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .desktop-nav {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .nav-button {
+      padding: 8px 13px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      border: 0;
+      border-radius: 8px;
+      background: transparent;
+      color: #617885;
+      font-size: 13px;
+    }
+
+    .nav-button svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .nav-button.active {
+      background: rgba(72, 177, 230, 0.13);
+      color: #167ca9;
+      font-weight: 700;
+    }
+
+    .app-actions {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .balance-chip {
+      padding: 8px 12px;
+      border-radius: 9px;
+      background: #f1f7f9;
+      color: #526e7c;
+      font-size: 12px;
+    }
+
+    .icon-button {
+      width: 36px;
+      height: 36px;
+      padding: 0;
+      display: grid;
+      place-items: center;
+      border: 0;
+      border-radius: 9px;
+      background: rgba(72, 177, 230, 0.12);
+      color: #1c789f;
+    }
+
+    .icon-button svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    main {
+      flex: 1;
+      padding: 24px 34px 25px;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    .page-heading {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .page-heading h1 {
+      margin: 0;
+      font-size: 24px;
+      line-height: 1.25;
+      font-weight: 700;
+      letter-spacing: -0.4px;
+    }
+
+    .page-heading p {
+      margin: 4px 0 0;
+      color: #617885;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .history-button {
+      padding: 9px 13px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      border: 1px solid #cbdce4;
+      border-radius: 9px;
+      background: #ffffff;
+      color: #31677e;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .history-button svg {
+      width: 17px;
+      height: 17px;
+    }
+
+    .stepper {
+      margin-top: 20px;
+      padding: 14px 18px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border: 1px solid #dce7ec;
+      border-radius: 12px;
+      background: #ffffff;
+    }
+
+    .step {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      color: #718690;
+      font-size: 12px;
+    }
+
+    .step:not(:last-child)::after {
+      content: "";
+      position: absolute;
+      top: 15px;
+      left: 45px;
+      right: 14px;
+      height: 1px;
+      background: #d8e4e9;
+    }
+
+    .step-number {
+      width: 30px;
+      height: 30px;
+      flex: 0 0 30px;
+      display: grid;
+      place-items: center;
+      position: relative;
+      z-index: 1;
+      border: 1px solid #cbdce4;
+      border-radius: 50%;
+      background: #ffffff;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .step.complete,
+    .step.active {
+      color: #176f98;
+      font-weight: 700;
+    }
+
+    .step.complete .step-number,
+    .step.active .step-number {
+      border-color: #38a7dc;
+      background: #38a7dc;
+      color: #ffffff;
+    }
+
+    .step-number svg {
+      width: 15px;
+      height: 15px;
+    }
+
+    .workspace {
+      margin-top: 18px;
+      display: grid;
+      grid-template-columns: minmax(0, 1.42fr) minmax(300px, 0.88fr);
+      gap: 18px;
+      align-items: start;
+    }
+
+    .form-card,
+    .summary-card {
+      border: 1px solid #dce7ec;
+      border-radius: 12px;
+      background: #ffffff;
+    }
+
+    .form-card {
+      padding: 20px 22px;
+    }
+
+    .card-title {
+      margin: 0;
+      font-size: 16px;
+      line-height: 1.4;
+      font-weight: 700;
+    }
+
+    .card-subtitle {
+      margin: 3px 0 0;
+      color: #617885;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .field-label {
+      display: block;
+      margin: 16px 0 7px;
+      color: #385464;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .recipient-row {
+      padding: 11px 12px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border: 1px solid #cfe0e7;
+      border-radius: 10px;
+      background: #fbfdfe;
+    }
+
+    .avatar {
+      width: 42px;
+      height: 42px;
+      flex: 0 0 42px;
+      display: grid;
+      place-items: center;
+      border-radius: 10px;
+      background: rgba(72, 177, 230, 0.17);
+      color: #237fa8;
+    }
+
+    .avatar svg {
+      width: 25px;
+      height: 25px;
+    }
+
+    .recipient-copy {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .recipient-name {
+      margin: 0;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .recipient-meta {
+      margin: 2px 0 0;
+      color: #617885;
+      font-size: 12px;
+    }
+
+    .verified {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      color: #247457;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .verified svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    .change-button {
+      padding: 8px 11px;
+      border: 0;
+      border-radius: 8px;
+      background: rgba(72, 177, 230, 0.14);
+      color: #176f98;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .amount-entry {
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      border: 1px solid #89c9e6;
+      border-radius: 10px;
+      box-shadow: 0 0 0 3px rgba(56, 167, 220, 0.08);
+    }
+
+    .amount-symbol {
+      color: #506b79;
+      font-size: 22px;
+      font-weight: 700;
+    }
+
+    .amount-input {
+      min-width: 0;
+      flex: 1;
+      padding: 0 7px;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      color: #123346;
+      font-size: 25px;
+      font-weight: 700;
+    }
+
+    .currency {
+      color: #357d9f;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .amount-help {
+      margin: 7px 0 0;
+      color: #617885;
+      font-size: 11px;
+    }
+
+    .details-grid {
+      display: grid;
+      grid-template-columns: 1fr 170px;
+      gap: 12px;
+    }
+
+    .text-field {
+      width: 100%;
+      padding: 10px 11px;
+      border: 1px solid #cfdde4;
+      border-radius: 9px;
+      outline: 0;
+      background: #ffffff;
+      color: #243d49;
+      font-size: 12px;
+    }
+
+    .summary-card {
+      padding: 19px 20px;
+      background: rgba(72, 177, 230, 0.055);
+    }
+
+    .summary-card h2 {
+      margin: 0;
+      font-size: 15px;
+      line-height: 1.4;
+    }
+
+    .summary-card > p {
+      margin: 4px 0 0;
+      color: #617885;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .destination-box {
+      margin-top: 15px;
+      padding: 13px;
+      border: 1px solid #bcd8e4;
+      border-radius: 10px;
+      background: #ffffff;
+    }
+
+    .destination-label {
+      margin: 0;
+      color: #617885;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .destination-name {
+      margin: 7px 0 0;
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .destination-detail {
+      margin: 3px 0 0;
+      color: #526e7c;
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .verify-line {
+      margin-top: 11px;
+      padding-top: 10px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      border-top: 1px solid #e2ebef;
+      color: #247457;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .verify-line svg {
+      width: 17px;
+      height: 17px;
+    }
+
+    .summary-list {
+      margin: 14px 0 0;
+    }
+
+    .summary-item {
+      padding: 7px 0;
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      color: #617885;
+      font-size: 12px;
+    }
+
+    .summary-item strong {
+      color: #213a47;
+      font-weight: 700;
+      text-align: right;
+    }
+
+    .summary-item.total {
+      margin-top: 3px;
+      padding-top: 11px;
+      border-top: 1px solid #d6e3e8;
+      color: #203b48;
+    }
+
+    .summary-item.total strong {
+      font-size: 16px;
+    }
+
+    .review-button {
+      width: 100%;
+      margin-top: 14px;
+      padding: 12px 18px;
+      border: 0;
+      border-radius: 9px;
+      background: #38a7dc;
+      color: #ffffff;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .review-note {
+      margin: 8px 0 0;
+      color: #718690;
+      font-size: 10px;
+      line-height: 1.45;
+      text-align: center;
+    }
+
+    svg {
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="appbar">
+      <div class="brand">
+        <span class="brand-mark">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M5 7h14v12H5z"></path>
+            <path d="M8 7V5h8v2"></path>
+            <path d="M5 11h14"></path>
+          </svg>
+        </span>
+        <span>Workgrove</span>
+      </div>
+
+      <nav class="desktop-nav" aria-label="Primary navigation">
+        <button class="nav-button" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 10l8-6 8 6v9H4v-9z"></path>
+            <path d="M9 19v-6h6v6"></path>
+          </svg>
+          Work
+        </button>
+        <button class="nav-button" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M6 4h12v16H6z"></path>
+            <path d="M9 8h6M9 12h6M9 16h4"></path>
+          </svg>
+          Notes
+        </button>
+        <button class="nav-button active" type="button" aria-current="page">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 8h13M13 4l4 4-4 4M20 16H7M11 12l-4 4 4 4"></path>
+          </svg>
+          Send
+        </button>
+        <button class="nav-button" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M5 5h14v15H5zM8 3v4M16 3v4M5 10h14"></path>
+          </svg>
+          Schedule
+        </button>
+      </nav>
+
+      <div class="app-actions">
+        <span class="balance-chip">Balance · $1,840.50</span>
+        <button class="icon-button" type="button" aria-label="Account menu">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="8" r="3.5"></circle>
+            <path d="M5.5 20c.5-4 2.8-6 6.5-6s6 2 6.5 6"></path>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <main>
+      <div class="page-heading">
+        <div>
+          <h1>Send money</h1>
+          <p>Set up your transfer and confirm the destination before continuing.</p>
+        </div>
+        <button class="history-button" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M3 12a9 9 0 1 0 3-6.7M3 4.5v5h5M12 7.5V12l3 2"></path>
+          </svg>
+          Transfer history
+        </button>
+      </div>
+
+      <div class="stepper" aria-label="Transfer steps">
+        <div class="step complete">
+          <span class="step-number">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M5 12l4 4 10-10"></path>
+            </svg>
+          </span>
+          <span>Choose recipient</span>
+        </div>
+        <div class="step active">
+          <span class="step-number">2</span>
+          <span>Enter amount</span>
+        </div>
+        <div class="step">
+          <span class="step-number">3</span>
+          <span>Add details</span>
+        </div>
+        <div class="step">
+          <span class="step-number">4</span>
+          <span>Review</span>
+        </div>
+      </div>
+
+      <div class="workspace">
+        <section class="form-card" aria-labelledby="setup-heading">
+          <h2 class="card-title" id="setup-heading">Transfer setup</h2>
+          <p class="card-subtitle">Review the recipient, enter an amount, and add any useful details.</p>
+
+          <span class="field-label">Recipient</span>
+          <div class="recipient-row">
+            <div class="avatar" aria-hidden="true">
+              <svg viewBox="0 0 28 28">
+                <circle cx="14" cy="9" r="4"></circle>
+                <path d="M6.5 23c.5-4.3 3.3-6.7 7.5-6.7s7 2.4 7.5 6.7"></path>
+              </svg>
+            </div>
+            <div class="recipient-copy">
+              <p class="recipient-name">Mara Bennett</p>
+              <p class="recipient-meta">Design team · @mara.b</p>
+            </div>
+            <span class="verified">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="12" cy="12" r="9"></circle>
+                <path d="M8 12l2.5 2.5L16 9"></path>
+              </svg>
+              Verified
+            </span>
+            <button class="change-button" type="button">Change</button>
+          </div>
+
+          <label class="field-label" for="amount">Amount</label>
+          <div class="amount-entry">
+            <span class="amount-symbol">$</span>
+            <input class="amount-input" id="amount" type="text" value="285.00" aria-label="Transfer amount">
+            <span class="currency">USD</span>
+          </div>
+          <p class="amount-help">Workgrove balance · $1,840.50 available</p>
+
+          <div class="details-grid">
+            <div>
+              <label class="field-label" for="note">Note <span style="font-weight:500;color:#718690;">(optional)</span></label>
+              <input class="text-field" id="note" type="text" value="Design resources" aria-label="Transfer note">
+            </div>
+            <div>
+              <label class="field-label" for="arrival">Delivery</label>
+              <input class="text-field" id="arrival" type="text" value="Instant" aria-label="Delivery speed">
+            </div>
+          </div>
+        </section>
+
+        <aside class="summary-card" aria-labelledby="destination-heading">
+          <h2 id="destination-heading">Verify destination</h2>
+          <p>Make sure this is where you intend to send the money.</p>
+
+          <div class="destination-box">
+            <p class="destination-label">Money will go to</p>
+            <p class="destination-name">Mara Bennett</p>
+            <p class="destination-detail">Workgrove account · @mara.b<br>Design team</p>
+            <div class="verify-line">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 3l7 3v5c0 4.5-2.4 7.7-7 10-4.6-2.3-7-5.5-7-10V6l7-3z"></path>
+                <path d="M8.5 12l2.2 2.2 4.8-5"></path>
+              </svg>
+              Recipient identity verified
+            </div>
+          </div>
+
+          <div class="summary-list">
+            <div class="summary-item">
+              <span>Transfer fee</span>
+              <strong>$0.00</strong>
+            </div>
+            <div class="summary-item">
+              <span>Arrival</span>
+              <strong>Usually instant</strong>
+            </div>
+            <div class="summary-item total">
+              <span>Total</span>
+              <strong>$285.00 USD</strong>
+            </div>
+          </div>
+
+          <button class="review-button" type="button">Review transfer</button>
+          <p class="review-note">You can check all transfer details before sending.</p>
+        </aside>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

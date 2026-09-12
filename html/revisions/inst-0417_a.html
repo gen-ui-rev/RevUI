@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nutrilume — Scan a label</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 40px 0;
+    margin: 0;
+    background: #E9E9EC;
+    font-family: 'Manrope', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .screen {
+    width: 390px;
+    height: 844px;
+    background: #F7F3F8;
+    display: flex;
+    flex-direction: column;
+    color: #17171A;
+  }
+
+  .capture {
+    flex: none;
+    background: #131316;
+    color: #FFFFFF;
+  }
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px 18px;
+  }
+  .topbar .title {
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: .01em;
+  }
+  .iconbtn {
+    width: 26px;
+    height: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #FFFFFF;
+  }
+  .flash {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #E44BF0;
+    font-size: 13px;
+    font-weight: 500;
+  }
+  .viewfinder {
+    height: 300px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  .vfmeta {
+    position: absolute;
+    top: 0;
+    left: 18px;
+    right: 18px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: #8B8B94;
+    font-weight: 500;
+  }
+  .frame {
+    width: 280px;
+    height: 146px;
+    position: relative;
+  }
+  .frame span {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    border: 3px solid #E44BF0;
+  }
+  .frame .tl { top: 0; left: 0; border-right: 0; border-bottom: 0; border-radius: 6px 0 0 0; }
+  .frame .tr { top: 0; right: 0; border-left: 0; border-bottom: 0; border-radius: 0 6px 0 0; }
+  .frame .bl { bottom: 0; left: 0; border-right: 0; border-top: 0; border-radius: 0 0 0 6px; }
+  .frame .br { bottom: 0; right: 0; border-left: 0; border-top: 0; border-radius: 0 0 6px 0; }
+  .scanline {
+    position: absolute;
+    left: 8px;
+    right: 8px;
+    top: 72px;
+    height: 2px;
+    background: #E44BF0;
+    opacity: .55;
+  }
+  .hint {
+    margin-top: 16px;
+    max-width: 292px;
+    color: #A6A6AE;
+    font-size: 13px;
+    line-height: 1.4;
+    text-align: center;
+  }
+  .lock {
+    margin-top: 6px;
+    color: #E44BF0;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+  }
+
+  .below {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background: #F7F3F8;
+  }
+  .modes {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    padding: 13px 20px 9px;
+  }
+  .mode {
+    padding-bottom: 6px;
+    border-bottom: 2px solid transparent;
+    color: #7E7781;
+    font-size: 13px;
+    font-weight: 500;
+  }
+  .mode.on {
+    border-bottom-color: #B522C8;
+    color: #A51DB7;
+    font-weight: 700;
+  }
+
+  .controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 3px 35px 12px;
+  }
+  .side {
+    width: 72px;
+    color: #5E5861;
+    text-align: center;
+  }
+  .side .box {
+    width: 40px;
+    height: 40px;
+    margin: 0 auto 5px;
+    border: 1px solid #D7CFD9;
+    border-radius: 7px;
+    background: #FFFFFF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #3A353C;
+  }
+  .side .lbl,
+  .shutterwrap .lbl {
+    font-size: 11px;
+    font-weight: 500;
+  }
+  .shutterwrap { text-align: center; }
+  .shutter {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 5px;
+    border-radius: 50%;
+    background: #B522C8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .shutter i {
+    display: block;
+    width: 52px;
+    height: 52px;
+    border: 2px solid #FFFFFF;
+    border-radius: 50%;
+  }
+  .shutterwrap .lbl {
+    color: #A51DB7;
+    font-weight: 700;
+  }
+
+  .section {
+    margin: 0 14px;
+    padding: 0 12px 5px;
+    border: 1px solid #E3DCE5;
+    border-radius: 12px;
+    background: #FFFFFF;
+  }
+  .sechead {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding: 10px 0 7px;
+  }
+  .sechead h2 {
+    margin: 0;
+    color: #625A65;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+  }
+  .sechead .count {
+    color: #8A828C;
+    font-size: 11px;
+    font-weight: 500;
+  }
+  .mealhead {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 7px 0 5px;
+    border-top: 1px solid #ECE7ED;
+    color: #6D6670;
+    font-size: 11px;
+    font-weight: 700;
+  }
+  .mealhead .subtotal {
+    color: #A51DB7;
+    white-space: nowrap;
+  }
+  .row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 5px 0;
+  }
+  .row .name {
+    min-width: 0;
+    color: #272329;
+    font-size: 13px;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .row .meta {
+    color: #777079;
+    font-size: 12px;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  .tabs {
+    margin-top: auto;
+    border-top: 1px solid #DED7E0;
+    background: #FBF9FB;
+    display: flex;
+    padding: 8px 6px 10px;
+  }
+  .tab {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    color: #817A84;
+    font-size: 11px;
+    font-weight: 500;
+  }
+  .tab.on {
+    color: #A51DB7;
+    font-weight: 700;
+  }
+</style>
+</head>
+<body>
+  <div class="screen">
+    <div class="capture">
+      <div class="topbar">
+        <div class="iconbtn" aria-label="Close">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+        </div>
+        <div class="title">Scan a label</div>
+        <div class="flash">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L4 14h6l-1 8 9-12h-6l1-8z"/></svg>
+          Auto
+        </div>
+      </div>
+
+      <div class="viewfinder">
+        <div class="vfmeta">
+          <span>Nutrilume · rear camera</span>
+          <span>Distance 7 in</span>
+        </div>
+        <div class="frame">
+          <span class="tl"></span><span class="tr"></span><span class="bl"></span><span class="br"></span>
+          <div class="scanline"></div>
+        </div>
+        <div class="hint">Fit the whole nutrition panel inside the frame, including serving size.</div>
+        <div class="lock">Focus locked</div>
+      </div>
+    </div>
+
+    <div class="below">
+      <div class="modes">
+        <div class="mode">Barcode</div>
+        <div class="mode on">Nutrition label</div>
+        <div class="mode">Portion</div>
+      </div>
+
+      <div class="controls">
+        <div class="side">
+          <div class="box">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 9h.01M12 9h.01M17 9h.01M7 13h.01M12 13h.01M17 13h.01M8 17h8"/></svg>
+          </div>
+          <div class="lbl">Enter code</div>
+        </div>
+
+        <div class="shutterwrap">
+          <div class="shutter"><i></i></div>
+          <div class="lbl">Capture</div>
+        </div>
+
+        <div class="side">
+          <div class="box">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.6 9.2a2.5 2.5 0 013.9-1.1c1 .8 1 2.1 0 2.9-.7.5-1.4.9-1.4 1.8"/><path d="M12 16.6h.01"/></svg>
+          </div>
+          <div class="lbl">Scan tips</div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="sechead">
+          <h2>Scanned today</h2>
+          <span class="count">3 entries · 398 cal</span>
+        </div>
+
+        <div class="mealhead">
+          <span>Breakfast · 8:00–8:15 AM</span>
+          <span class="subtotal">300 cal</span>
+        </div>
+        <div class="row">
+          <div class="name">Plain Greek yogurt, 6 oz</div>
+          <div class="meta">120 cal</div>
+        </div>
+        <div class="row">
+          <div class="name">Whole grain toast, 2 slices</div>
+          <div class="meta">180 cal</div>
+        </div>
+
+        <div class="mealhead">
+          <span>Morning snack · 8:15–8:30 AM</span>
+          <span class="subtotal">98 cal</span>
+        </div>
+        <div class="row">
+          <div class="name">Almond butter, 1 tbsp</div>
+          <div class="meta">98 cal</div>
+        </div>
+      </div>
+
+      <div class="tabs">
+        <div class="tab">
+          <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10l8-6 8 6v9a1 1 0 01-1 1H5a1 1 0 01-1-1v-9z"/></svg>
+          Today
+        </div>
+        <div class="tab">
+          <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11h16a8 8 0 01-8 8 8 8 0 01-8-8z"/><path d="M12 7V4"/></svg>
+          Meals
+        </div>
+        <div class="tab on">
+          <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8V6a2 2 0 012-2h2M16 4h2a2 2 0 012 2v2M20 16v2a2 2 0 01-2 2h-2M8 20H6a2 2 0 01-2-2v-2"/><path d="M4 12h16"/></svg>
+          Scan
+        </div>
+        <div class="tab">
+          <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8 8 0 019.5 4a8 8 0 1010.5 10.5z"/></svg>
+          Sleep
+        </div>
+        <div class="tab">
+          <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="9" r="3.4"/><path d="M5.5 20a6.5 6.5 0 0113 0"/></svg>
+          Profile
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

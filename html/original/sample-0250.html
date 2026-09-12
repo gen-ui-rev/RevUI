@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nimbleoak Learning Calendar</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 32px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #eeece9;
+      color: #292724;
+      font-family: 'Poppins', system-ui, sans-serif;
+    }
+
+    button {
+      margin: 0;
+      padding: 0;
+      border: 0;
+      color: inherit;
+      font: inherit;
+      background: transparent;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #ffffff;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 16px;
+      background: #fffaf7;
+    }
+
+    .brand-mark {
+      width: 36px;
+      height: 36px;
+      flex: 0 0 36px;
+      display: grid;
+      place-items: center;
+      border-radius: 4px;
+      color: #e95f18;
+      background: #fde6d9;
+    }
+
+    .brand-mark svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .brand-copy {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .brand-name {
+      margin: 0;
+      font-size: 18px;
+      line-height: 22px;
+      font-weight: 600;
+    }
+
+    .brand-context {
+      margin: 1px 0 0;
+      color: #77716c;
+      font-size: 12px;
+      line-height: 17px;
+      font-weight: 400;
+    }
+
+    .icon-button {
+      width: 36px;
+      height: 36px;
+      flex: 0 0 36px;
+      display: grid;
+      place-items: center;
+      border-radius: 4px;
+      color: #4f4a45;
+      background: #f4eee9;
+    }
+
+    .icon-button svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .content {
+      flex: 1;
+      padding: 0 16px;
+    }
+
+    .calendar-toolbar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 0 10px;
+    }
+
+    .month-title {
+      margin: 0 auto 0 0;
+      white-space: nowrap;
+      font-size: 22px;
+      line-height: 32px;
+      font-weight: 600;
+    }
+
+    .month-nav {
+      display: flex;
+      gap: 4px;
+    }
+
+    .month-nav button {
+      width: 30px;
+      height: 32px;
+      display: grid;
+      place-items: center;
+      border-radius: 4px;
+      color: #68615b;
+      background: #f5f2ef;
+    }
+
+    .month-nav svg {
+      width: 17px;
+      height: 17px;
+    }
+
+    .view-switch {
+      display: flex;
+      gap: 2px;
+      padding: 2px;
+      border-radius: 4px;
+      background: #f3f0ed;
+    }
+
+    .view-switch button {
+      padding: 6px 9px;
+      border-radius: 4px;
+      color: #746d67;
+      font-size: 12px;
+      line-height: 18px;
+      font-weight: 600;
+    }
+
+    .view-switch .active {
+      color: #d95310;
+      background: #fde3d4;
+    }
+
+    .weekday-row,
+    .month-grid {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      gap: 2px;
+    }
+
+    .weekday {
+      padding: 4px 0 6px;
+      color: #8b847e;
+      text-align: center;
+      font-size: 12px;
+      line-height: 18px;
+      font-weight: 600;
+    }
+
+    .month-grid {
+      grid-auto-rows: 56px;
+    }
+
+    .day {
+      min-width: 0;
+      padding: 3px;
+      border-radius: 4px;
+      background: #faf9f8;
+    }
+
+    .day.outside {
+      color: #aaa39d;
+      background: #fcfbfa;
+    }
+
+    .day.selected {
+      background: #fff0e7;
+    }
+
+    .day-number {
+      width: 22px;
+      height: 20px;
+      margin-left: auto;
+      display: grid;
+      place-items: center;
+      border-radius: 4px;
+      color: #5c5651;
+      font-size: 12px;
+      line-height: 20px;
+      font-weight: 600;
+    }
+
+    .outside .day-number {
+      color: #aaa39d;
+    }
+
+    .selected .day-number {
+      color: #ffffff;
+      background: #eb671f;
+    }
+
+    .event-chip {
+      margin-top: 2px;
+      padding: 1px 4px;
+      overflow: hidden;
+      border-radius: 4px;
+      color: #c84d0d;
+      background: #fde4d6;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 400;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .selected .event-chip {
+      background: #f9d4c0;
+    }
+
+    .agenda-heading {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 14px;
+      margin-bottom: 9px;
+    }
+
+    .agenda-heading h2 {
+      margin: 0;
+      font-size: 18px;
+      line-height: 25px;
+      font-weight: 600;
+    }
+
+    .agenda-heading p {
+      margin: 1px 0 0;
+      color: #77716c;
+      font-size: 12px;
+      line-height: 18px;
+      font-weight: 400;
+    }
+
+    .agenda-count {
+      flex: 0 0 auto;
+      color: #d95310;
+      font-size: 12px;
+      line-height: 18px;
+      font-weight: 600;
+    }
+
+    .agenda-list {
+      display: grid;
+      gap: 6px;
+    }
+
+    .agenda-row {
+      display: grid;
+      grid-template-columns: 57px minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 10px;
+      border-radius: 4px;
+      background: #fff3ec;
+    }
+
+    .event-time {
+      color: #d95310;
+      font-size: 12px;
+      line-height: 18px;
+      font-weight: 600;
+    }
+
+    .event-details {
+      min-width: 0;
+    }
+
+    .event-title {
+      margin: 0;
+      overflow: hidden;
+      color: #302d2a;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 600;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .event-course {
+      margin: 1px 0 0;
+      overflow: hidden;
+      color: #746e68;
+      font-size: 12px;
+      line-height: 17px;
+      font-weight: 400;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .event-duration {
+      color: #817a74;
+      font-size: 12px;
+      line-height: 18px;
+      font-weight: 400;
+      white-space: nowrap;
+    }
+
+    .tabbar {
+      margin-top: auto;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      padding: 8px 8px 7px;
+      background: #fffaf7;
+    }
+
+    .tab {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      color: #77716c;
+      font-size: 12px;
+      line-height: 17px;
+      font-weight: 400;
+    }
+
+    .tab svg {
+      width: 21px;
+      height: 21px;
+    }
+
+    .tab.active {
+      color: #df5c17;
+      font-weight: 600;
+    }
+
+    .tab.active .tab-icon {
+      padding: 3px 12px;
+      border-radius: 4px;
+      background: #fde3d4;
+    }
+
+    .tab-icon {
+      display: grid;
+      place-items: center;
+      padding: 3px 12px;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <div class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none">
+          <path d="M4 5.5C6.8 5.5 9.2 6.2 12 8v11c-2.8-1.8-5.2-2.5-8-2.5v-11Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+          <path d="M20 5.5c-2.8 0-5.2.7-8 2.5v11c2.8-1.8 5.2-2.5 8-2.5v-11Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="brand-copy">
+        <p class="brand-name">Nimbleoak</p>
+        <p class="brand-context">Learning calendar</p>
+      </div>
+      <button class="icon-button" aria-label="Search calendar">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="10.8" cy="10.8" r="5.8" stroke="currentColor" stroke-width="1.8"/>
+          <path d="m15.2 15.2 4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </header>
+
+    <main class="content">
+      <section aria-labelledby="month-heading">
+        <div class="calendar-toolbar">
+          <h1 class="month-title" id="month-heading">April 2025</h1>
+          <div class="month-nav" aria-label="Change month">
+            <button aria-label="Previous month">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="m14.5 6.5-5 5.5 5 5.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+            <button aria-label="Next month">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="m9.5 6.5 5 5.5-5 5.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+          </div>
+          <div class="view-switch" aria-label="Calendar view">
+            <button class="active">Month</button>
+            <button>Week</button>
+          </div>
+        </div>
+
+        <div class="weekday-row" aria-hidden="true">
+          <div class="weekday">Sun</div>
+          <div class="weekday">Mon</div>
+          <div class="weekday">Tue</div>
+          <div class="weekday">Wed</div>
+          <div class="weekday">Thu</div>
+          <div class="weekday">Fri</div>
+          <div class="weekday">Sat</div>
+        </div>
+
+        <div class="month-grid" aria-label="April 2025 monthly calendar">
+          <div class="day outside"><div class="day-number">30</div></div>
+          <div class="day outside"><div class="day-number">31</div></div>
+          <div class="day"><div class="day-number">1</div><div class="event-chip">Speak</div></div>
+          <div class="day"><div class="day-number">2</div></div>
+          <div class="day"><div class="day-number">3</div><div class="event-chip">Quiz</div></div>
+          <div class="day"><div class="day-number">4</div><div class="event-chip">Review</div></div>
+          <div class="day"><div class="day-number">5</div></div>
+
+          <div class="day"><div class="day-number">6</div></div>
+          <div class="day"><div class="day-number">7</div><div class="event-chip">Vocab</div></div>
+          <div class="day"><div class="day-number">8</div></div>
+          <div class="day"><div class="day-number">9</div><div class="event-chip">Lab</div></div>
+          <div class="day"><div class="day-number">10</div></div>
+          <div class="day"><div class="day-number">11</div><div class="event-chip">Tutor</div></div>
+          <div class="day"><div class="day-number">12</div></div>
+
+          <div class="day"><div class="day-number">13</div></div>
+          <div class="day"><div class="day-number">14</div><div class="event-chip">Reading</div></div>
+          <div class="day"><div class="day-number">15</div><div class="event-chip">Quiz</div></div>
+          <div class="day selected"><div class="day-number">16</div><div class="event-chip">Speak</div><div class="event-chip">Live</div></div>
+          <div class="day"><div class="day-number">17</div></div>
+          <div class="day"><div class="day-number">18</div><div class="event-chip">Review</div></div>
+          <div class="day"><div class="day-number">19</div></div>
+
+          <div class="day"><div class="day-number">20</div></div>
+          <div class="day"><div class="day-number">21</div><div class="event-chip">Essay</div></div>
+          <div class="day"><div class="day-number">22</div></div>
+          <div class="day"><div class="day-number">23</div><div class="event-chip">Lab</div></div>
+          <div class="day"><div class="day-number">24</div><div class="event-chip">Vocab</div></div>
+          <div class="day"><div class="day-number">25</div></div>
+          <div class="day"><div class="day-number">26</div><div class="event-chip">Tutor</div></div>
+
+          <div class="day"><div class="day-number">27</div></div>
+          <div class="day"><div class="day-number">28</div><div class="event-chip">Quiz</div></div>
+          <div class="day"><div class="day-number">29</div><div class="event-chip">Review</div></div>
+          <div class="day"><div class="day-number">30</div><div class="event-chip">Live</div></div>
+          <div class="day outside"><div class="day-number">1</div></div>
+          <div class="day outside"><div class="day-number">2</div></div>
+          <div class="day outside"><div class="day-number">3</div></div>
+        </div>
+      </section>
+
+      <section aria-labelledby="agenda-title">
+        <div class="agenda-heading">
+          <div>
+            <h2 id="agenda-title">Wednesday, April 16</h2>
+            <p>Your learning sessions</p>
+          </div>
+          <span class="agenda-count">4 events</span>
+        </div>
+
+        <div class="agenda-list">
+          <article class="agenda-row">
+            <div class="event-time">9:00 AM</div>
+            <div class="event-details">
+              <p class="event-title">Conversation practice</p>
+              <p class="event-course">Everyday Spanish</p>
+            </div>
+            <div class="event-duration">30 min</div>
+          </article>
+
+          <article class="agenda-row">
+            <div class="event-time">11:30 AM</div>
+            <div class="event-details">
+              <p class="event-title">Grammar workshop</p>
+              <p class="event-course">French Foundations</p>
+            </div>
+            <div class="event-duration">45 min</div>
+          </article>
+
+          <article class="agenda-row">
+            <div class="event-time">2:00 PM</div>
+            <div class="event-details">
+              <p class="event-title">Writing feedback</p>
+              <p class="event-course">Academic English</p>
+            </div>
+            <div class="event-duration">25 min</div>
+          </article>
+
+          <article class="agenda-row">
+            <div class="event-time">6:30 PM</div>
+            <div class="event-details">
+              <p class="event-title">Live pronunciation lab</p>
+              <p class="event-course">Clear Speech</p>
+            </div>
+            <div class="event-duration">40 min</div>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <nav class="tabbar" aria-label="Primary navigation">
+      <button class="tab">
+        <span class="tab-icon">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M4.5 5.5h15v14h-15v-14Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+            <path d="M8 3.8v3.5M16 3.8v3.5M4.5 9h15" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+          </svg>
+        </span>
+        Today
+      </button>
+
+      <button class="tab active">
+        <span class="tab-icon">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M4 6h16v14H4V6Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+            <path d="M8 3.8v4M16 3.8v4M4 10h16" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+            <path d="M8 14h2M13 14h3M8 17h3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+          </svg>
+        </span>
+        Calendar
+      </button>
+
+      <button class="tab">
+        <span class="tab-icon">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M5 4.5h11.5A2.5 2.5 0 0 1 19 7v12.5H7.5A2.5 2.5 0 0 1 5 17V4.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+            <path d="M5 16.5h11M9 8h6M9 11h5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+          </svg>
+        </span>
+        Courses
+      </button>
+
+      <button class="tab">
+        <span class="tab-icon">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="12" cy="8" r="3.2" stroke="currentColor" stroke-width="1.7"/>
+            <path d="M5.5 19c.5-3.5 2.7-5.3 6.5-5.3s6 1.8 6.5 5.3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+          </svg>
+        </span>
+        Profile
+      </button>
+    </nav>
+  </div>
+</body>
+</html>

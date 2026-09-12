@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VitaTrail Activity Fit Check</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 28px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #dfe2dc;
+      color: #182014;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    button,
+    input {
+      font: inherit;
+      color: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .screen {
+      width: 768px;
+      height: 1024px;
+      display: flex;
+      background: #f8faf5;
+      box-shadow: 0 16px 45px rgba(31, 39, 27, 0.12);
+    }
+
+    .side-rail {
+      width: 176px;
+      flex: 0 0 176px;
+      display: flex;
+      flex-direction: column;
+      padding: 28px 18px 22px;
+      background: #26301f;
+      color: #f7f9f3;
+    }
+
+    .brand {
+      margin-bottom: 42px;
+    }
+
+    .brand-name {
+      margin: 0;
+      color: #c8ef5b;
+      font-size: 21px;
+      font-weight: 750;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-note {
+      margin: 4px 0 0;
+      color: #aeb8a8;
+      font-size: 12px;
+      line-height: 17px;
+    }
+
+    .rail-nav {
+      display: grid;
+      gap: 8px;
+    }
+
+    .rail-link {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      min-height: 48px;
+      padding: 11px 12px;
+      border-radius: 8px;
+      color: #c8d0c3;
+      font-size: 14px;
+      font-weight: 650;
+    }
+
+    .rail-link svg {
+      width: 21px;
+      height: 21px;
+      flex: 0 0 auto;
+    }
+
+    .rail-link.active {
+      background: #b7e43a;
+      color: #243000;
+    }
+
+    .rail-spacer {
+      flex: 1;
+    }
+
+    .rail-note {
+      padding-top: 18px;
+      border-top: 1px solid #46513f;
+    }
+
+    .rail-note img {
+      width: 88px;
+      height: 72px;
+      display: block;
+      margin-bottom: 12px;
+      border-radius: 6px;
+      object-fit: cover;
+      background: #dfe5d8;
+    }
+
+    .rail-note strong {
+      display: block;
+      font-size: 13px;
+      line-height: 18px;
+    }
+
+    .rail-note p {
+      margin: 5px 0 0;
+      color: #aeb8a8;
+      font-size: 12px;
+      line-height: 17px;
+    }
+
+    .workspace {
+      min-width: 0;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 28px;
+      background: #ffffff;
+      border-bottom: 1px solid #e4e8df;
+    }
+
+    .location {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #4f5c48;
+      font-size: 14px;
+      font-weight: 650;
+    }
+
+    .location-mark {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      border-radius: 8px;
+      background: rgba(183, 228, 58, 0.24);
+      color: #486000;
+    }
+
+    .profile {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #53604c;
+      font-size: 13px;
+      font-weight: 650;
+    }
+
+    .monogram {
+      width: 40px;
+      height: 40px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: #edf3e6;
+      color: #35402f;
+      font-size: 14px;
+      font-weight: 750;
+    }
+
+    main {
+      flex: 1;
+      padding: 25px 28px 26px;
+    }
+
+    .eyebrow {
+      margin: 0 0 7px;
+      color: #63705c;
+      font-size: 12px;
+      font-weight: 750;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 30px;
+      line-height: 37px;
+      letter-spacing: -0.035em;
+    }
+
+    .intro {
+      max-width: 520px;
+      margin: 8px 0 18px;
+      color: #586352;
+      font-size: 15px;
+      line-height: 22px;
+    }
+
+    .progress-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 17px;
+    }
+
+    .progress-track {
+      flex: 1;
+      height: 7px;
+      border-radius: 99px;
+      background: #e2e7dc;
+    }
+
+    .progress-fill {
+      width: 38%;
+      height: 7px;
+      border-radius: 99px;
+      background: #8eb71d;
+    }
+
+    .progress-row span {
+      color: #64705e;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .assessment-card {
+      padding: 21px;
+      border: 1px solid #dce2d7;
+      border-radius: 12px;
+      background: #ffffff;
+      box-shadow: 0 4px 18px rgba(30, 39, 25, 0.05);
+    }
+
+    .assessment-card h2 {
+      margin: 0 0 4px;
+      font-size: 20px;
+      line-height: 26px;
+    }
+
+    .card-intro {
+      margin: 0 0 18px;
+      color: #65705f;
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    fieldset {
+      min-width: 0;
+      margin: 0;
+      padding: 0;
+      border: 0;
+    }
+
+    fieldset + fieldset {
+      margin-top: 19px;
+      padding-top: 18px;
+      border-top: 1px solid #e7ebe3;
+    }
+
+    legend {
+      width: 100%;
+      margin-bottom: 10px;
+      padding: 0;
+      font-size: 15px;
+      line-height: 21px;
+      font-weight: 750;
+    }
+
+    .choice-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 9px;
+    }
+
+    .choice {
+      position: relative;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      min-width: 0;
+      padding: 11px 10px;
+      border: 1px solid #d8ded3;
+      border-radius: 8px;
+      background: #fbfcf9;
+      font-size: 13px;
+      line-height: 18px;
+    }
+
+    .choice.selected {
+      border-color: #89aa2c;
+      background: rgba(183, 228, 58, 0.15);
+    }
+
+    .choice input {
+      width: 17px;
+      height: 17px;
+      flex: 0 0 auto;
+      margin: 1px 0 0;
+      accent-color: #668400;
+    }
+
+    .choice strong {
+      display: block;
+      font-size: 13px;
+    }
+
+    .choice small {
+      display: block;
+      margin-top: 2px;
+      color: #687263;
+      font-size: 11px;
+      line-height: 15px;
+    }
+
+    .support-note {
+      display: flex;
+      align-items: flex-start;
+      gap: 11px;
+      margin-top: 19px;
+      padding: 13px 14px;
+      border-radius: 8px;
+      background: #eef4e6;
+      color: #46513f;
+    }
+
+    .support-note svg {
+      flex: 0 0 auto;
+      margin-top: 1px;
+      color: #5f790c;
+    }
+
+    .support-note p {
+      margin: 0;
+      font-size: 13px;
+      line-height: 19px;
+    }
+
+    .support-note strong {
+      color: #26351d;
+    }
+
+    .actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-top: 19px;
+    }
+
+    .save-link {
+      padding: 12px 4px;
+      border: 0;
+      background: transparent;
+      color: #526049;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .continue-button {
+      min-height: 50px;
+      padding: 13px 20px;
+      border: 0;
+      border-radius: 8px;
+      background: #263500;
+      color: #ffffff;
+      font-size: 15px;
+      font-weight: 750;
+    }
+
+    .locked-summary {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-top: 17px;
+      padding: 15px 17px;
+      border: 1px dashed #cbd3c4;
+      border-radius: 10px;
+      background: #f4f6f0;
+    }
+
+    .lock-icon {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      border-radius: 50%;
+      background: #e4e9dd;
+      color: #5c6755;
+    }
+
+    .locked-summary h3 {
+      margin: 0 0 3px;
+      font-size: 15px;
+    }
+
+    .locked-summary p {
+      margin: 0;
+      color: #687263;
+      font-size: 13px;
+      line-height: 18px;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <aside class="side-rail">
+      <div class="brand">
+        <p class="brand-name">VitaTrail</p>
+        <p class="brand-note">Movement that meets you where you are.</p>
+      </div>
+
+      <nav class="rail-nav" aria-label="Primary navigation">
+        <div class="rail-link active">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="m4 6 5-2 6 2 5-2v14l-5 2-6-2-5 2V6Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+            <path d="M9 4v14M15 6v14" stroke="currentColor" stroke-width="2"/>
+          </svg>
+          <span>Discover</span>
+        </div>
+        <div class="rail-link">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M5 12a7 7 0 1 0 14 0 7 7 0 0 0-14 0Z" stroke="currentColor" stroke-width="2"/>
+            <path d="M12 8v4l3 2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          <span>My plan</span>
+        </div>
+        <div class="rail-link">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <rect x="4" y="5" width="16" height="15" rx="2" stroke="currentColor" stroke-width="2"/>
+            <path d="M8 3v4M16 3v4M4 10h16" stroke="currentColor" stroke-width="2"/>
+          </svg>
+          <span>Schedule</span>
+        </div>
+        <div class="rail-link">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M12 20s-7-3.9-7-9.5A4.5 4.5 0 0 1 12 6a4.5 4.5 0 0 1 7 4.5C19 16.1 12 20 12 20Z" stroke="currentColor" stroke-width="2"/>
+          </svg>
+          <span>Saved</span>
+        </div>
+      </nav>
+
+      <div class="rail-spacer"></div>
+
+      <div class="rail-note">
+        <img src="https://loremflickr.com/88/72/gym?lock=6310" width="88" height="72" alt="Accessible exercise equipment at a local fitness venue">
+        <strong>Venue details checked</strong>
+        <p>Recommendations consider seating, pace, access and instructor support.</p>
+      </div>
+    </aside>
+
+    <div class="workspace">
+      <header class="top-bar">
+        <div class="location">
+          <div class="location-mark" aria-hidden="true">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
+              <path d="M12 21s6-5.1 6-11a6 6 0 1 0-12 0c0 5.9 6 11 6 11Z" stroke="currentColor" stroke-width="2"/>
+              <circle cx="12" cy="10" r="2.2" fill="currentColor"/>
+            </svg>
+          </div>
+          <span>Near Cedar Center · Within 3 miles</span>
+        </div>
+        <div class="profile">
+          <span>Casey Morgan</span>
+          <div class="monogram" aria-label="Profile for Casey Morgan">CM</div>
+        </div>
+      </header>
+
+      <main>
+        <p class="eyebrow">Suitability check</p>
+        <h1>Find movement that feels right today</h1>
+        <p class="intro">Tell us what feels comfortable before we show nearby low-impact classes and activities for adults 60+.</p>
+
+        <div class="progress-row" aria-label="Assessment progress: step 1 of 3">
+          <div class="progress-track"><div class="progress-fill"></div></div>
+          <span>Step 1 of 3</span>
+        </div>
+
+        <section class="assessment-card" aria-labelledby="comfort-heading">
+          <h2 id="comfort-heading">Your comfort and support</h2>
+          <p class="card-intro">Choose the options that best describe what you would enjoy. You can update these answers at any time.</p>
+
+          <fieldset>
+            <legend>Which starting position feels most comfortable?</legend>
+            <div class="choice-grid">
+              <label class="choice selected">
+                <input type="radio" name="position" checked>
+                <span><strong>Mostly seated</strong><small>A chair is available throughout</small></span>
+              </label>
+              <label class="choice">
+                <input type="radio" name="position">
+                <span><strong>Seated and standing</strong><small>Easy transitions with support</small></span>
+              </label>
+              <label class="choice">
+                <input type="radio" name="position">
+                <span><strong>Mostly standing</strong><small>Steady movement at a gentle pace</small></span>
+              </label>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>What level of impact suits you today?</legend>
+            <div class="choice-grid">
+              <label class="choice selected">
+                <input type="radio" name="impact" checked>
+                <span><strong>Very gentle</strong><small>No jumping or floor work</small></span>
+              </label>
+              <label class="choice">
+                <input type="radio" name="impact">
+                <span><strong>Light</strong><small>Easy walking and mobility</small></span>
+              </label>
+              <label class="choice">
+                <input type="radio" name="impact">
+                <span><strong>Moderate</strong><small>A little more challenge</small></span>
+              </label>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Which support would help you feel confident?</legend>
+            <div class="choice-grid">
+              <label class="choice selected">
+                <input type="checkbox" checked>
+                <span><strong>Chair support</strong><small>Stable seating nearby</small></span>
+              </label>
+              <label class="choice">
+                <input type="checkbox">
+                <span><strong>Beginner guidance</strong><small>Clear, slower instruction</small></span>
+              </label>
+              <label class="choice">
+                <input type="checkbox">
+                <span><strong>Step-free access</strong><small>Accessible route to class</small></span>
+              </label>
+            </div>
+          </fieldset>
+
+          <div class="support-note">
+            <svg width="21" height="21" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/>
+              <path d="M12 11v6M12 7.5v.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <p><strong>Your answers guide recommendations, not medical advice.</strong> If you are returning after an injury or health change, check with a qualified health professional.</p>
+          </div>
+
+          <div class="actions">
+            <button class="save-link" type="button">Save and finish later</button>
+            <button class="continue-button" type="button">Continue suitability check</button>
+          </div>
+        </section>
+
+        <section class="locked-summary" aria-label="Matching activities are locked until the suitability check is complete">
+          <div class="lock-icon">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <rect x="5" y="10" width="14" height="10" rx="2" stroke="currentColor" stroke-width="2"/>
+              <path d="M8 10V7a4 4 0 0 1 8 0v3" stroke="currentColor" stroke-width="2"/>
+            </svg>
+          </div>
+          <div>
+            <h3>Your nearby matches will appear after step 3</h3>
+            <p>We will compare pace, access, class size and instructor support before showing results.</p>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+</body>
+</html>

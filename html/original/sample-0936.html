@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Episode Details</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #e6e9e8;
+      color: #162321;
+      font-family: 'Source Sans 3', system-ui, sans-serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #fbfcfb;
+      border: 1px solid #d6dcda;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 11px 16px;
+      border-bottom: 1px solid #dce2e0;
+      background: #fbfcfb;
+    }
+
+    .topbar-title {
+      flex: 1;
+      margin: 0;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 20px;
+      line-height: 1.2;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    .icon-button {
+      width: 36px;
+      height: 36px;
+      padding: 7px;
+      border: 0;
+      background: transparent;
+      color: #263633;
+      display: grid;
+      place-items: center;
+    }
+
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+    }
+
+    .topbar-spacer {
+      width: 72px;
+      flex: 0 0 72px;
+    }
+
+    svg {
+      display: block;
+    }
+
+    .main {
+      flex: 1;
+      min-height: 0;
+      padding: 0 20px;
+    }
+
+    .episode-hero {
+      display: grid;
+      grid-template-columns: 136px minmax(0, 1fr);
+      gap: 16px;
+      align-items: start;
+      margin-top: 16px;
+    }
+
+    .episode-art {
+      width: 136px;
+      height: 136px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      background: #d9f0ec;
+      color: #087e72;
+      border: 1px solid #b9ded8;
+    }
+
+    .episode-art svg {
+      width: 92px;
+      height: 92px;
+    }
+
+    .series-name {
+      margin: 0 0 5px;
+      color: #087e72;
+      font-size: 14px;
+      line-height: 1.25;
+      font-weight: 600;
+    }
+
+    .episode-title {
+      margin: 0;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 27px;
+      line-height: 1.08;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+    }
+
+    .host-name {
+      margin: 8px 0 0;
+      color: #61706d;
+      font-size: 14px;
+      line-height: 1.3;
+    }
+
+    .play-entry {
+      width: 100%;
+      margin-top: 14px;
+      padding: 12px 16px;
+      border: 0;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      background: #087e72;
+      color: #ffffff;
+      font-size: 16px;
+      line-height: 1.35;
+      font-weight: 600;
+    }
+
+    .episode-facts {
+      display: flex;
+      align-items: center;
+      margin-top: 13px;
+      padding: 10px 0;
+      border-bottom: 1px solid #dce2e0;
+      color: #5d6c69;
+      font-size: 14px;
+      line-height: 1.25;
+    }
+
+    .episode-facts span {
+      display: flex;
+      align-items: center;
+    }
+
+    .episode-facts span + span::before {
+      content: "";
+      width: 3px;
+      height: 3px;
+      margin: 0 9px;
+      border-radius: 50%;
+      background: #91a09d;
+    }
+
+    .description {
+      padding: 14px 0 15px;
+      border-bottom: 1px solid #dce2e0;
+    }
+
+    .section-title {
+      margin: 0;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 20px;
+      line-height: 1.25;
+      font-weight: 600;
+    }
+
+    .description p {
+      margin: 5px 0 0;
+      color: #465653;
+      font-size: 14px;
+      line-height: 1.42;
+    }
+
+    .products-heading {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      padding: 14px 0 7px;
+    }
+
+    .item-count {
+      color: #687774;
+      font-size: 14px;
+      line-height: 1.3;
+    }
+
+    .product-list {
+      border-top: 1px solid #dce2e0;
+    }
+
+    .product-row {
+      display: grid;
+      grid-template-columns: 54px minmax(0, 1fr) auto;
+      gap: 12px;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid #dce2e0;
+    }
+
+    .product-glyph {
+      width: 54px;
+      height: 54px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      background: #eef3f1;
+      color: #39716a;
+    }
+
+    .product-glyph svg {
+      width: 34px;
+      height: 34px;
+    }
+
+    .product-info {
+      min-width: 0;
+    }
+
+    .product-name {
+      margin: 0;
+      color: #1d2b29;
+      font-size: 15px;
+      line-height: 1.25;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .product-maker {
+      margin: 2px 0 0;
+      color: #6a7875;
+      font-size: 14px;
+      line-height: 1.25;
+    }
+
+    .product-price {
+      margin: 0 9px 0 0;
+      color: #1d2b29;
+      font-size: 15px;
+      line-height: 1.25;
+      font-weight: 600;
+      text-align: right;
+    }
+
+    .product-trailing {
+      display: flex;
+      align-items: center;
+      color: #687774;
+    }
+
+    .tabbar {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      padding: 8px 8px 9px;
+      border-top: 1px solid #d4dcda;
+      background: #fbfcfb;
+    }
+
+    .tab {
+      border: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      background: transparent;
+      color: #74817f;
+      font-size: 12px;
+      line-height: 1.2;
+    }
+
+    .tab svg {
+      width: 23px;
+      height: 23px;
+    }
+
+    .tab.active {
+      color: #087e72;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <button class="icon-button" aria-label="Go back">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M15 18l-6-6 6-6"></path>
+        </svg>
+      </button>
+
+      <h1 class="topbar-title">Episode details</h1>
+
+      <div class="topbar-actions">
+        <button class="icon-button" aria-label="Save episode">
+          <svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M7 4.5h10a1 1 0 0 1 1 1v15l-6-3.8-6 3.8v-15a1 1 0 0 1 1-1z"></path>
+          </svg>
+        </button>
+        <button class="icon-button" aria-label="More options">
+          <svg viewBox="0 0 24 24" width="21" height="21" fill="currentColor" aria-hidden="true">
+            <circle cx="5" cy="12" r="1.5"></circle>
+            <circle cx="12" cy="12" r="1.5"></circle>
+            <circle cx="19" cy="12" r="1.5"></circle>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <main class="main">
+      <section class="episode-hero" aria-labelledby="episode-title">
+        <div class="episode-art" aria-hidden="true">
+          <svg viewBox="0 0 96 96" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M25 36h46l-4 38H29l-4-38z"></path>
+            <path d="M37 38v-7c0-7 5-12 11-12s11 5 11 12v7"></path>
+            <rect x="39" y="45" width="18" height="23" rx="9"></rect>
+            <path d="M34 56v3c0 8 6 14 14 14s14-6 14-14v-3"></path>
+            <path d="M48 73v7"></path>
+            <path d="M41 80h14"></path>
+          </svg>
+        </div>
+
+        <div>
+          <p class="series-name">The Useful Cart</p>
+          <h2 class="episode-title" id="episode-title">The Real Cost of Fast Delivery</h2>
+          <p class="host-name">With Mara Bell and Owen Pike</p>
+        </div>
+      </section>
+
+      <button class="play-entry" aria-label="Play episode">
+        <svg viewBox="0 0 24 24" width="21" height="21" fill="currentColor" aria-hidden="true">
+          <path d="M8 5.7v12.6c0 .8.9 1.3 1.6.9l9.3-6.3c.6-.4.6-1.3 0-1.7L9.6 4.8C8.9 4.4 8 4.9 8 5.7z"></path>
+        </svg>
+        Play episode
+      </button>
+
+      <div class="episode-facts" aria-label="Episode information">
+        <span>Episode 18</span>
+        <span>32 min</span>
+        <span>Mar 14, 2025</span>
+      </div>
+
+      <section class="description" aria-labelledby="about-heading">
+        <h2 class="section-title" id="about-heading">About this episode</h2>
+        <p>Mara and Owen trace a package from checkout to doorstep, then explain where shipping fees go and how to choose slower options without missing a deadline.</p>
+      </section>
+
+      <section aria-labelledby="products-heading">
+        <div class="products-heading">
+          <h2 class="section-title" id="products-heading">Mentioned products</h2>
+          <span class="item-count">3 items</span>
+        </div>
+
+        <div class="product-list">
+          <div class="product-row">
+            <div class="product-glyph" aria-hidden="true">
+              <svg viewBox="0 0 36 36" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M8 10h20v17H8z"></path>
+                <path d="M12 10V7h12v3"></path>
+                <path d="M8 15h20"></path>
+                <path d="M13 20h10"></path>
+                <path d="M13 24h7"></path>
+              </svg>
+            </div>
+            <div class="product-info">
+              <p class="product-name">Stackable Storage Crate</p>
+              <p class="product-maker">Morrow Supply</p>
+            </div>
+            <div class="product-trailing">
+              <p class="product-price">$28</p>
+              <svg viewBox="0 0 20 20" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M7 4l6 6-6 6"></path>
+              </svg>
+            </div>
+          </div>
+
+          <div class="product-row">
+            <div class="product-glyph" aria-hidden="true">
+              <svg viewBox="0 0 36 36" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 12h18l-2 16H11L9 12z"></path>
+                <path d="M13 12V9c0-3 2-5 5-5s5 2 5 5v3"></path>
+                <path d="M14 17h8"></path>
+                <path d="M15 21h6"></path>
+              </svg>
+            </div>
+            <div class="product-info">
+              <p class="product-name">Reusable Parcel Tote</p>
+              <p class="product-maker">Field &amp; Harbor</p>
+            </div>
+            <div class="product-trailing">
+              <p class="product-price">$34</p>
+              <svg viewBox="0 0 20 20" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M7 4l6 6-6 6"></path>
+              </svg>
+            </div>
+          </div>
+
+          <div class="product-row">
+            <div class="product-glyph" aria-hidden="true">
+              <svg viewBox="0 0 36 36" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M7 13l11-6 11 6-11 6-11-6z"></path>
+                <path d="M7 13v11l11 6 11-6V13"></path>
+                <path d="M18 19v11"></path>
+                <path d="M12 10l11 6"></path>
+              </svg>
+            </div>
+            <div class="product-info">
+              <p class="product-name">Paper Packing Tape Set</p>
+              <p class="product-maker">North Pine Goods</p>
+            </div>
+            <div class="product-trailing">
+              <p class="product-price">$16</p>
+              <svg viewBox="0 0 20 20" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M7 4l6 6-6 6"></path>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <nav class="tabbar" aria-label="Primary navigation">
+      <button class="tab">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M3.5 10.5L12 4l8.5 6.5"></path>
+          <path d="M5.5 9.5v10h13v-10"></path>
+          <path d="M9.5 19.5v-6h5v6"></path>
+        </svg>
+        <span>Home</span>
+      </button>
+
+      <button class="tab">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="10.5" cy="10.5" r="6.5"></circle>
+          <path d="M15.5 15.5L21 21"></path>
+        </svg>
+        <span>Browse</span>
+      </button>
+
+      <button class="tab active" aria-current="page">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M5 10v4"></path>
+          <path d="M9 7v10"></path>
+          <path d="M13 4v16"></path>
+          <path d="M17 8v8"></path>
+          <path d="M21 10v4"></path>
+        </svg>
+        <span>Listen</span>
+      </button>
+
+      <button class="tab">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M4 6h2l2 10h9.5l2-7H7"></path>
+          <circle cx="10" cy="20" r="1.2"></circle>
+          <circle cx="17" cy="20" r="1.2"></circle>
+        </svg>
+        <span>Cart</span>
+      </button>
+    </nav>
+  </div>
+</body>
+</html>

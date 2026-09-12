@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Send Money</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #e9eef1;
+      color: #162630;
+      font-family: 'Manrope', system-ui, sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    button,
+    input,
+    textarea {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .screen {
+      width: 1024px;
+      height: 768px;
+      display: grid;
+      grid-template-columns: 258px 1fr;
+      background: #fbfdfe;
+      box-shadow: 0 18px 55px rgba(27, 54, 67, 0.13);
+    }
+
+    .sidebar {
+      padding: 24px 20px 20px;
+      display: flex;
+      flex-direction: column;
+      background: #12384a;
+      color: #ffffff;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .brand-mark {
+      width: 36px;
+      height: 36px;
+      display: grid;
+      place-items: center;
+      border-radius: 10px;
+      background: #42afe1;
+      color: #ffffff;
+    }
+
+    .brand-mark svg {
+      width: 21px;
+      height: 21px;
+    }
+
+    .sidebar-label {
+      margin: 34px 0 12px;
+      color: #9fc3d2;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+    }
+
+    .steps {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .step {
+      position: relative;
+      padding: 0 0 24px;
+      display: flex;
+      gap: 11px;
+      color: #a9c3cf;
+    }
+
+    .step:not(:last-child)::after {
+      content: "";
+      position: absolute;
+      top: 30px;
+      bottom: 1px;
+      left: 14px;
+      width: 1px;
+      background: rgba(191, 221, 233, 0.28);
+    }
+
+    .step-number {
+      width: 29px;
+      height: 29px;
+      flex: 0 0 29px;
+      display: grid;
+      place-items: center;
+      position: relative;
+      z-index: 1;
+      border: 1px solid rgba(199, 224, 234, 0.48);
+      border-radius: 50%;
+      background: #12384a;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .step-copy strong {
+      display: block;
+      color: inherit;
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    .step-copy span {
+      display: block;
+      margin-top: 2px;
+      color: #82a7b7;
+      font-size: 10px;
+      line-height: 1.4;
+    }
+
+    .step.complete,
+    .step.active {
+      color: #ffffff;
+    }
+
+    .step.complete .step-number {
+      border-color: #4ab381;
+      background: #4ab381;
+    }
+
+    .step.active .step-number {
+      border-color: #42afe1;
+      background: #42afe1;
+    }
+
+    .step-number svg {
+      width: 15px;
+      height: 15px;
+    }
+
+    .side-summary {
+      margin-top: auto;
+      padding: 14px;
+      border: 1px solid rgba(169, 211, 228, 0.22);
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .side-summary p {
+      margin: 0;
+      color: #a9c3cf;
+      font-size: 10px;
+      line-height: 1.4;
+    }
+
+    .side-summary strong {
+      display: block;
+      margin-top: 5px;
+      color: #ffffff;
+      font-size: 20px;
+    }
+
+    .side-summary span {
+      display: block;
+      margin-top: 3px;
+      color: #9fc3d2;
+      font-size: 11px;
+    }
+
+    .content {
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .topbar {
+      padding: 15px 26px;
+      display: flex;
+      align-items: center;
+      border-bottom: 1px solid #dce7ec;
+      background: #ffffff;
+    }
+
+    .back-button {
+      padding: 8px 10px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      border: 0;
+      border-radius: 8px;
+      background: rgba(72, 177, 230, 0.1);
+      color: #1c789f;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .back-button svg {
+      width: 17px;
+      height: 17px;
+    }
+
+    .top-nav {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .top-nav button {
+      padding: 8px 11px;
+      border: 0;
+      border-radius: 8px;
+      background: transparent;
+      color: #617885;
+      font-size: 12px;
+    }
+
+    .top-nav button.active {
+      background: rgba(72, 177, 230, 0.12);
+      color: #167ca9;
+      font-weight: 700;
+    }
+
+    .history-button {
+      margin-left: 13px;
+      width: 35px;
+      height: 35px;
+      padding: 0;
+      display: grid;
+      place-items: center;
+      border: 0;
+      border-radius: 9px;
+      background: #edf6f9;
+      color: #1c789f;
+    }
+
+    .history-button svg {
+      width: 19px;
+      height: 19px;
+    }
+
+    main {
+      flex: 1;
+      min-height: 0;
+      padding: 25px 30px 27px;
+      background: #fbfdfe;
+    }
+
+    .heading-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .heading-row h1 {
+      margin: 0;
+      font-size: 24px;
+      line-height: 1.3;
+      letter-spacing: -0.4px;
+    }
+
+    .heading-row p {
+      margin: 5px 0 0;
+      color: #617885;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .status-chip {
+      padding: 8px 11px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      border-radius: 9px;
+      background: #eaf7f0;
+      color: #247457;
+      font-size: 11px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .status-chip svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .layout {
+      margin-top: 20px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 250px;
+      gap: 19px;
+      align-items: start;
+    }
+
+    .panel,
+    .transfer-card {
+      border: 1px solid #dce7ec;
+      border-radius: 12px;
+      background: #ffffff;
+    }
+
+    .panel {
+      padding: 21px 22px;
+    }
+
+    .panel h2,
+    .transfer-card h2 {
+      margin: 0;
+      font-size: 16px;
+      line-height: 1.4;
+    }
+
+    .panel-intro {
+      margin: 4px 0 0;
+      color: #617885;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .field-label {
+      display: block;
+      margin: 17px 0 7px;
+      color: #385464;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .note-field {
+      width: 100%;
+      padding: 11px 12px;
+      border: 1px solid #cbdce4;
+      border-radius: 9px;
+      outline: 0;
+      resize: none;
+      background: #ffffff;
+      color: #243d49;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .optional {
+      color: #718690;
+      font-weight: 500;
+    }
+
+    .delivery-options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .delivery-option {
+      padding: 12px;
+      display: flex;
+      align-items: flex-start;
+      gap: 9px;
+      border: 1px solid #d3e0e6;
+      border-radius: 9px;
+      background: #ffffff;
+      text-align: left;
+      color: #294654;
+    }
+
+    .delivery-option.selected {
+      border-color: #63b9df;
+      background: rgba(72, 177, 230, 0.07);
+    }
+
+    .radio {
+      width: 16px;
+      height: 16px;
+      flex: 0 0 16px;
+      margin-top: 1px;
+      border: 1px solid #9db5c1;
+      border-radius: 50%;
+    }
+
+    .selected .radio {
+      border: 5px solid #38a7dc;
+    }
+
+    .delivery-option strong {
+      display: block;
+      font-size: 12px;
+    }
+
+    .delivery-option span:last-child {
+      display: block;
+      margin-top: 2px;
+      color: #718690;
+      font-size: 10px;
+      line-height: 1.4;
+    }
+
+    .destination {
+      margin-top: 18px;
+      padding: 15px;
+      border-radius: 10px;
+      background: #f2f8fa;
+    }
+
+    .destination-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .destination-head h3 {
+      margin: 0;
+      font-size: 13px;
+    }
+
+    .edit-button {
+      padding: 6px 9px;
+      border: 0;
+      border-radius: 7px;
+      background: #ffffff;
+      color: #176f98;
+      font-size: 10px;
+      font-weight: 700;
+    }
+
+    .recipient {
+      margin-top: 12px;
+      display: flex;
+      align-items: center;
+      gap: 11px;
+    }
+
+    .avatar {
+      width: 40px;
+      height: 40px;
+      flex: 0 0 40px;
+      display: grid;
+      place-items: center;
+      border-radius: 9px;
+      background: rgba(72, 177, 230, 0.18);
+      color: #237fa8;
+    }
+
+    .avatar svg {
+      width: 24px;
+      height: 24px;
+    }
+
+    .recipient-copy {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .recipient-copy strong {
+      display: block;
+      font-size: 13px;
+    }
+
+    .recipient-copy span {
+      display: block;
+      margin-top: 2px;
+      color: #617885;
+      font-size: 11px;
+    }
+
+    .verified {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      color: #247457;
+      font-size: 10px;
+      font-weight: 700;
+    }
+
+    .verified svg {
+      width: 15px;
+      height: 15px;
+    }
+
+    .destination-warning {
+      margin: 11px 0 0;
+      padding-top: 10px;
+      border-top: 1px solid #d7e6ec;
+      color: #526e7c;
+      font-size: 10px;
+      line-height: 1.5;
+    }
+
+    .transfer-card {
+      padding: 19px;
+    }
+
+    .transfer-card > p {
+      margin: 4px 0 0;
+      color: #718690;
+      font-size: 11px;
+      line-height: 1.45;
+    }
+
+    .amount {
+      margin-top: 17px;
+      color: #123346;
+      font-size: 29px;
+      line-height: 1.25;
+      font-weight: 700;
+      letter-spacing: -0.8px;
+    }
+
+    .amount span {
+      color: #357d9f;
+      font-size: 11px;
+      letter-spacing: 0;
+    }
+
+    .summary-list {
+      margin-top: 14px;
+      padding-top: 10px;
+      border-top: 1px solid #e1eaee;
+    }
+
+    .summary-row {
+      padding: 6px 0;
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      color: #617885;
+      font-size: 11px;
+    }
+
+    .summary-row strong {
+      color: #294654;
+      font-weight: 700;
+      text-align: right;
+    }
+
+    .summary-row.total {
+      margin-top: 5px;
+      padding-top: 11px;
+      border-top: 1px solid #e1eaee;
+      color: #213a47;
+    }
+
+    .summary-row.total strong {
+      font-size: 14px;
+    }
+
+    .review-button {
+      width: 100%;
+      margin-top: 16px;
+      padding: 12px 15px;
+      border: 0;
+      border-radius: 9px;
+      background: #38a7dc;
+      color: #ffffff;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .security-note {
+      margin: 9px 0 0;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      gap: 5px;
+      color: #718690;
+      font-size: 9px;
+      line-height: 1.45;
+      text-align: center;
+    }
+
+    .security-note svg {
+      width: 13px;
+      height: 13px;
+      flex: 0 0 13px;
+    }
+
+    svg {
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <aside class="sidebar">
+      <div class="brand">
+        <span class="brand-mark">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M5 7h14v12H5z"></path>
+            <path d="M8 7V5h8v2"></path>
+            <path d="M5 11h14"></path>
+          </svg>
+        </span>
+        <span>Workgrove</span>
+      </div>
+
+      <p class="sidebar-label">Send money</p>
+
+      <div class="steps" aria-label="Transfer progress">
+        <div class="step complete">
+          <span class="step-number">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M5 12l4 4 10-10"></path>
+            </svg>
+          </span>
+          <div class="step-copy">
+            <strong>Choose recipient</strong>
+            <span>Mara Bennett selected</span>
+          </div>
+        </div>
+
+        <div class="step complete">
+          <span class="step-number">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M5 12l4 4 10-10"></path>
+            </svg>
+          </span>
+          <div class="step-copy">
+            <strong>Enter amount</strong>
+            <span>$285.00 USD</span>
+          </div>
+        </div>
+
+        <div class="step active">
+          <span class="step-number">3</span>
+          <div class="step-copy">
+            <strong>Add details</strong>
+            <span>Note and delivery</span>
+          </div>
+        </div>
+
+        <div class="step">
+          <span class="step-number">4</span>
+          <div class="step-copy">
+            <strong>Review</strong>
+            <span>Confirm before sending</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="side-summary">
+        <p>Workgrove balance</p>
+        <strong>$1,840.50</strong>
+        <span>$1,555.50 after transfer</span>
+      </div>
+    </aside>
+
+    <div class="content">
+      <header class="topbar">
+        <button class="back-button" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M15 18l-6-6 6-6"></path>
+          </svg>
+          Exit transfer
+        </button>
+
+        <nav class="top-nav" aria-label="Primary navigation">
+          <button type="button">Work</button>
+          <button type="button">Notes</button>
+          <button class="active" type="button" aria-current="page">Send</button>
+          <button type="button">Schedule</button>
+        </nav>
+
+        <button class="history-button" type="button" aria-label="Transfer history">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M3 12a9 9 0 1 0 3-6.7"></path>
+            <path d="M3 4.5v5h5"></path>
+            <path d="M12 7.5V12l3 2"></path>
+          </svg>
+        </button>
+      </header>
+
+      <main>
+        <div class="heading-row">
+          <div>
+            <h1>Add transfer details</h1>
+            <p>Include a note, choose delivery, and verify where the money will go.</p>
+          </div>
+          <span class="status-chip">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="12" cy="12" r="9"></circle>
+              <path d="M8 12l2.5 2.5L16 9"></path>
+            </svg>
+            Recipient verified
+          </span>
+        </div>
+
+        <div class="layout">
+          <section class="panel" aria-labelledby="details-heading">
+            <h2 id="details-heading">Transfer details</h2>
+            <p class="panel-intro">These details will appear in your transfer history and the recipient’s activity.</p>
+
+            <label class="field-label" for="note">Note <span class="optional">(optional)</span></label>
+            <textarea class="note-field" id="note" rows="2">Design resources</textarea>
+
+            <span class="field-label">Delivery</span>
+            <div class="delivery-options">
+              <button class="delivery-option selected" type="button">
+                <span class="radio" aria-hidden="true"></span>
+                <span>
+                  <strong>Send instantly</strong>
+                  <span>Usually arrives in seconds · No fee</span>
+                </span>
+              </button>
+              <button class="delivery-option" type="button">
+                <span class="radio" aria-hidden="true"></span>
+                <span>
+                  <strong>Schedule for later</strong>
+                  <span>Choose a future business day</span>
+                </span>
+              </button>
+            </div>
+
+            <div class="destination">
+              <div class="destination-head">
+                <h3>Verify destination</h3>
+                <button class="edit-button" type="button">Change recipient</button>
+              </div>
+
+              <div class="recipient">
+                <div class="avatar" aria-hidden="true">
+                  <svg viewBox="0 0 28 28">
+                    <circle cx="14" cy="9" r="4"></circle>
+                    <path d="M6.5 23c.5-4.3 3.3-6.7 7.5-6.7s7 2.4 7.5 6.7"></path>
+                  </svg>
+                </div>
+                <div class="recipient-copy">
+                  <strong>Mara Bennett</strong>
+                  <span>Workgrove account · @mara.b · Design team</span>
+                </div>
+                <span class="verified">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M12 3l7 3v5c0 4.5-2.4 7.7-7 10-4.6-2.3-7-5.5-7-10V6l7-3z"></path>
+                    <path d="M8.5 12l2.2 2.2 4.8-5"></path>
+                  </svg>
+                  Verified
+                </span>
+              </div>
+
+              <p class="destination-warning">The money will be credited to Mara’s Workgrove balance. Confirm the name and handle before continuing.</p>
+            </div>
+          </section>
+
+          <aside class="transfer-card" aria-labelledby="summary-heading">
+            <h2 id="summary-heading">Transfer summary</h2>
+            <p>Review the current setup before the final confirmation.</p>
+
+            <div class="amount">$285.00 <span>USD</span></div>
+
+            <div class="summary-list">
+              <div class="summary-row">
+                <span>To</span>
+                <strong>Mara Bennett</strong>
+              </div>
+              <div class="summary-row">
+                <span>From</span>
+                <strong>Workgrove balance</strong>
+              </div>
+              <div class="summary-row">
+                <span>Delivery</span>
+                <strong>Usually instant</strong>
+              </div>
+              <div class="summary-row">
+                <span>Transfer fee</span>
+                <strong>$0.00</strong>
+              </div>
+              <div class="summary-row total">
+                <span>Total</span>
+                <strong>$285.00</strong>
+              </div>
+            </div>
+
+            <button class="review-button" type="button">Review transfer</button>
+
+            <p class="security-note">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M7 10V7a5 5 0 0 1 10 0v3"></path>
+                <path d="M5 10h14v10H5z"></path>
+              </svg>
+              Nothing will be sent until you confirm on the review step.
+            </p>
+          </aside>
+        </div>
+      </main>
+    </div>
+  </div>
+</body>
+</html>

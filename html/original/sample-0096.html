@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Driftcast Annotation</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #deded9;
+      color: #181817;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      padding: 24px 20px;
+      background: #f4f3ee;
+    }
+
+    .annotation-panel {
+      width: 100%;
+      background: #ffffff;
+      border: 1px solid #c8c8c2;
+    }
+
+    .panel-header {
+      padding: 18px 18px 16px;
+      border-bottom: 1px solid #c8c8c2;
+    }
+
+    .eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0 0 7px;
+      color: #5f5f5a;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow-mark {
+      width: 18px;
+      height: 4px;
+      background: #f2cf2f;
+    }
+
+    h1 {
+      margin: 0 0 5px;
+      font-size: 22px;
+      line-height: 1.2;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+
+    .subtitle {
+      margin: 0;
+      color: #666660;
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .workspace {
+      border-bottom: 1px solid #c8c8c2;
+    }
+
+    .tool-row {
+      display: flex;
+      align-items: stretch;
+      background: #f2cf2f;
+      border-bottom: 1px solid #b9a22f;
+    }
+
+    .tool {
+      min-width: 0;
+      flex: 1;
+      padding: 10px 6px;
+      border: 0;
+      border-right: 1px solid #b9a22f;
+      background: transparent;
+      color: #292711;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .tool:last-child {
+      border-right: 0;
+    }
+
+    .tool.active {
+      background: #ffffff;
+      box-shadow: inset 0 -3px 0 #181817;
+    }
+
+    .tool svg {
+      width: 17px;
+      height: 17px;
+      flex: none;
+      stroke: currentColor;
+    }
+
+    .canvas {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1.72 / 1;
+      background: #fbfbf8;
+    }
+
+    .canvas > svg {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    .moment-details {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 12px 14px;
+      border-top: 1px solid #c8c8c2;
+    }
+
+    .moment-copy {
+      min-width: 0;
+    }
+
+    .moment-title {
+      margin: 0 0 3px;
+      overflow: hidden;
+      color: #242421;
+      font-size: 14px;
+      font-weight: 600;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .moment-meta {
+      margin: 0;
+      color: #6a6a64;
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    .timecode {
+      flex: none;
+      padding: 5px 7px;
+      border: 1px solid #9c9c96;
+      color: #343431;
+      font-size: 12px;
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .panel-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px;
+    }
+
+    .reviewer {
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+
+    .monogram {
+      width: 32px;
+      height: 32px;
+      flex: none;
+      display: grid;
+      place-items: center;
+      background: #e7e6df;
+      border: 1px solid #bdbdb6;
+      color: #41413d;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .reviewer-copy {
+      min-width: 0;
+    }
+
+    .reviewer-name,
+    .layer-status {
+      margin: 0;
+    }
+
+    .reviewer-name {
+      overflow: hidden;
+      font-size: 13px;
+      font-weight: 600;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .layer-status {
+      margin-top: 2px;
+      color: #6c6c66;
+      font-size: 12px;
+    }
+
+    .save-button {
+      flex: none;
+      padding: 9px 14px;
+      border: 1px solid #171716;
+      background: #171716;
+      color: #ffffff;
+      font-size: 14px;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <main class="annotation-panel" aria-labelledby="annotation-title">
+      <header class="panel-header">
+        <p class="eyebrow"><span class="eyebrow-mark"></span>Driftcast review layer</p>
+        <h1 id="annotation-title">Mark the pause to tighten</h1>
+        <p class="subtitle">Draw directly over this podcast moment for the production team.</p>
+      </header>
+
+      <section class="workspace" aria-label="Annotation canvas">
+        <div class="tool-row" role="toolbar" aria-label="Drawing tools">
+          <button class="tool active" type="button" aria-pressed="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="square" stroke-linejoin="miter" aria-hidden="true">
+              <path d="M4 20l4.3-1.1L19 8.2 15.8 5 5.1 15.7 4 20Z"></path>
+              <path d="m13.8 7 3.2 3.2"></path>
+            </svg>
+            Pen
+          </button>
+          <button class="tool" type="button" aria-pressed="false">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="square" aria-hidden="true">
+              <rect x="4" y="4" width="16" height="16"></rect>
+            </svg>
+            Shape
+          </button>
+          <button class="tool" type="button" aria-pressed="false">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="square" aria-hidden="true">
+              <path d="M5 6h14M12 6v13M8 19h8"></path>
+            </svg>
+            Text
+          </button>
+          <button class="tool" type="button" aria-label="Erase annotation">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="square" stroke-linejoin="miter" aria-hidden="true">
+              <path d="m5 15 8.8-10L20 10.5 12.5 19H8l-3-4Z"></path>
+              <path d="m10.5 9 6.2 5.5M12.5 19H21"></path>
+            </svg>
+          </button>
+        </div>
+
+        <div class="canvas">
+          <svg viewBox="0 0 348 202" role="img" aria-label="Podcast waveform with a yellow annotation around a long pause">
+            <rect x="0.5" y="0.5" width="347" height="201" fill="#fbfbf8"></rect>
+
+            <g stroke="#deded8" stroke-width="1">
+              <line x1="18" y1="35" x2="330" y2="35"></line>
+              <line x1="18" y1="101" x2="330" y2="101"></line>
+              <line x1="18" y1="167" x2="330" y2="167"></line>
+              <line x1="82" y1="22" x2="82" y2="178"></line>
+              <line x1="174" y1="22" x2="174" y2="178"></line>
+              <line x1="266" y1="22" x2="266" y2="178"></line>
+            </g>
+
+            <g fill="#33332f">
+              <rect x="20" y="81" width="4" height="40"></rect>
+              <rect x="28" y="67" width="4" height="68"></rect>
+              <rect x="36" y="88" width="4" height="26"></rect>
+              <rect x="44" y="54" width="4" height="94"></rect>
+              <rect x="52" y="74" width="4" height="54"></rect>
+              <rect x="60" y="63" width="4" height="76"></rect>
+              <rect x="68" y="84" width="4" height="34"></rect>
+              <rect x="76" y="47" width="4" height="108"></rect>
+              <rect x="84" y="69" width="4" height="64"></rect>
+              <rect x="92" y="79" width="4" height="44"></rect>
+              <rect x="100" y="59" width="4" height="84"></rect>
+              <rect x="108" y="72" width="4" height="58"></rect>
+              <rect x="116" y="86" width="4" height="30"></rect>
+              <rect x="124" y="77" width="4" height="48"></rect>
+              <rect x="132" y="92" width="4" height="18"></rect>
+              <rect x="140" y="96" width="4" height="10"></rect>
+              <rect x="148" y="98" width="4" height="6"></rect>
+              <rect x="156" y="97" width="4" height="8"></rect>
+              <rect x="164" y="98" width="4" height="6"></rect>
+              <rect x="172" y="96" width="4" height="10"></rect>
+              <rect x="180" y="97" width="4" height="8"></rect>
+              <rect x="188" y="98" width="4" height="6"></rect>
+              <rect x="196" y="96" width="4" height="10"></rect>
+              <rect x="204" y="91" width="4" height="20"></rect>
+              <rect x="212" y="77" width="4" height="48"></rect>
+              <rect x="220" y="62" width="4" height="78"></rect>
+              <rect x="228" y="83" width="4" height="36"></rect>
+              <rect x="236" y="54" width="4" height="94"></rect>
+              <rect x="244" y="69" width="4" height="64"></rect>
+              <rect x="252" y="80" width="4" height="42"></rect>
+              <rect x="260" y="61" width="4" height="80"></rect>
+              <rect x="268" y="73" width="4" height="56"></rect>
+              <rect x="276" y="48" width="4" height="106"></rect>
+              <rect x="284" y="68" width="4" height="66"></rect>
+              <rect x="292" y="82" width="4" height="38"></rect>
+              <rect x="300" y="60" width="4" height="82"></rect>
+              <rect x="308" y="76" width="4" height="50"></rect>
+              <rect x="316" y="88" width="4" height="26"></rect>
+              <rect x="324" y="72" width="4" height="58"></rect>
+            </g>
+
+            <path d="M132 69C145 56 194 56 207 72C219 88 216 123 200 134C185 145 145 143 131 128C116 112 117 84 132 69Z"
+                  fill="none" stroke="#e1b900" stroke-width="5" stroke-linecap="square" stroke-linejoin="miter"></path>
+            <path d="M216 61l19-15M230 45l7 1-2 7" fill="none" stroke="#e1b900" stroke-width="4" stroke-linecap="square" stroke-linejoin="miter"></path>
+
+            <rect x="205" y="18" width="112" height="30" fill="#f2cf2f" stroke="#8d7920"></rect>
+            <text x="216" y="38" fill="#252311" font-size="13" font-weight="600"
+                  font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">Trim this pause</text>
+          </svg>
+        </div>
+
+        <div class="moment-details">
+          <div class="moment-copy">
+            <p class="moment-title">Night Routes · Episode 26</p>
+            <p class="moment-meta">Production review · Draft 3</p>
+          </div>
+          <span class="timecode">18:42.6</span>
+        </div>
+      </section>
+
+      <footer class="panel-footer">
+        <div class="reviewer">
+          <span class="monogram" aria-hidden="true">JM</span>
+          <div class="reviewer-copy">
+            <p class="reviewer-name">Jordan Miles</p>
+            <p class="layer-status">1 annotation</p>
+          </div>
+        </div>
+        <button class="save-button" type="button">Save note</button>
+      </footer>
+    </main>
+  </div>
+</body>
+</html>

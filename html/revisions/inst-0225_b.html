@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Business Travel Profile Setup</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #e8e7eb;
+      color: #211c29;
+      font-family: 'Inter', system-ui, sans-serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #ffffff;
+    }
+
+    .topbar {
+      display: grid;
+      grid-template-columns: 36px 1fr 48px;
+      align-items: center;
+      gap: 8px;
+      padding: 16px 16px 10px;
+    }
+
+    .icon-button {
+      width: 36px;
+      padding: 2px 0;
+      display: grid;
+      place-items: start;
+      color: #42394e;
+      background: transparent;
+      border: 0;
+    }
+
+    .icon-button svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .topbar-title {
+      font-size: 15px;
+      line-height: 20px;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    .skip {
+      padding: 3px 0;
+      color: #6c3cc7;
+      background: transparent;
+      border: 0;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 600;
+      text-align: right;
+    }
+
+    /* Segmented switcher with a step counter replaces the underlined tabs */
+    .setup-progress {
+      padding: 2px 20px 12px;
+    }
+
+    .progress-caption {
+      color: #7f7689;
+      font-size: 11px;
+      line-height: 16px;
+      font-weight: 700;
+      letter-spacing: 0.7px;
+      text-transform: uppercase;
+    }
+
+    .segmented {
+      margin-top: 6px;
+      padding: 4px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 4px;
+      background: #f1ecf8;
+      border-radius: 12px;
+    }
+
+    .segment {
+      padding: 7px 4px;
+      border-radius: 9px;
+      color: #776f80;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 500;
+      text-align: center;
+    }
+
+    .segment.active {
+      color: #5d2caa;
+      background: #ffffff;
+      box-shadow: 0 1px 2px rgba(33, 28, 41, 0.14);
+      font-weight: 600;
+    }
+
+    main {
+      flex: 1;
+      padding: 14px 20px 8px;
+    }
+
+    .intro {
+      margin-bottom: 14px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 22px;
+      line-height: 29px;
+      font-weight: 700;
+      letter-spacing: -0.4px;
+    }
+
+    .intro p {
+      margin: 5px 0 0;
+      color: #716a78;
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .section-title {
+      margin: 0;
+      font-size: 15px;
+      line-height: 19px;
+      font-weight: 600;
+    }
+
+    .traveler-card {
+      margin-top: 8px;
+      padding: 12px;
+      border: 1px solid #e6e1ee;
+      border-radius: 14px;
+    }
+
+    .traveler-head {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .avatar {
+      width: 42px;
+      padding: 11px 0;
+      flex: 0 0 42px;
+      background: #ded0f4;
+      border-radius: 999px;
+      color: #5e2dab;
+      font-size: 15px;
+      line-height: 20px;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .identity-copy {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .identity-name {
+      overflow: hidden;
+      font-size: 14px;
+      line-height: 19px;
+      font-weight: 600;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .identity-note {
+      margin-top: 1px;
+      overflow: hidden;
+      color: #776f80;
+      font-size: 12px;
+      line-height: 16px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .photo-action {
+      padding: 7px 10px;
+      flex: 0 0 auto;
+      color: #6632bb;
+      background: transparent;
+      border: 1px solid #d9cbef;
+      border-radius: 999px;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 600;
+    }
+
+    .detail-grid {
+      margin-top: 12px;
+      padding-top: 12px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px 12px;
+      border-top: 1px solid #eee7f2;
+    }
+
+    .detail-label {
+      display: block;
+      color: #7b7382;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 500;
+    }
+
+    .detail-value {
+      display: block;
+      margin-top: 1px;
+      overflow: hidden;
+      color: #28212f;
+      font-size: 14px;
+      line-height: 19px;
+      font-weight: 600;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .policy {
+      margin-top: 16px;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .import-button {
+      padding: 6px 11px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex: 0 0 auto;
+      color: #5d2caa;
+      background: #ffffff;
+      border: 1px solid #cdb9ec;
+      border-radius: 8px;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 600;
+    }
+
+    .import-button svg {
+      width: 14px;
+      height: 14px;
+      flex: 0 0 14px;
+    }
+
+    .policy-card {
+      margin-top: 8px;
+      border: 1px solid #e6e1ee;
+      border-radius: 14px;
+    }
+
+    .policy-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 8px 12px;
+      border-bottom: 1px solid #efeaf4;
+    }
+
+    .policy-row:last-child {
+      border-bottom: 0;
+    }
+
+    .policy-key {
+      color: #7b7382;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 500;
+    }
+
+    .policy-val {
+      min-width: 0;
+      overflow: hidden;
+      color: #28212f;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 600;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .defaults {
+      margin-top: 16px;
+    }
+
+    .pref-list {
+      margin-top: 4px;
+    }
+
+    .pref {
+      width: 100%;
+      padding: 10px 2px;
+      display: grid;
+      grid-template-columns: 1fr auto 18px;
+      align-items: center;
+      gap: 8px;
+      color: #28212f;
+      background: transparent;
+      border: 0;
+      border-bottom: 1px solid #eee8f3;
+      text-align: left;
+    }
+
+    .pref:last-child {
+      border-bottom: 0;
+    }
+
+    .pref-label {
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 500;
+    }
+
+    .pref-value {
+      overflow: hidden;
+      color: #6c3cc7;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 600;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .pref svg {
+      width: 18px;
+      height: 18px;
+      color: #817789;
+    }
+
+    .footer {
+      margin-top: auto;
+      padding: 10px 20px 14px;
+      background: #ffffff;
+    }
+
+    .continue-button {
+      width: 100%;
+      padding: 15px 18px;
+      color: #ffffff;
+      background: #6f38c5;
+      border: 0;
+      border-radius: 10px;
+      font-size: 15px;
+      line-height: 22px;
+      font-weight: 600;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <button class="icon-button" type="button" aria-label="Go back">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M15 5L8 12L15 19" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <div class="topbar-title">Roamlet for Business</div>
+      <button class="skip" type="button">Skip</button>
+    </header>
+
+    <nav class="setup-progress" aria-label="Setup progress">
+      <div class="progress-caption">Step 1 of 3 · Traveler profile</div>
+      <div class="segmented">
+        <div class="segment active">Profile</div>
+        <div class="segment">Policy</div>
+        <div class="segment">Review</div>
+      </div>
+    </nav>
+
+    <main>
+      <section class="intro">
+        <h1>Your business traveler profile</h1>
+        <p>Every booking follows your company policy.</p>
+      </section>
+
+      <section aria-labelledby="traveler-heading">
+        <h2 class="section-title" id="traveler-heading">Traveler details</h2>
+        <div class="traveler-card">
+          <div class="traveler-head">
+            <div class="avatar" aria-hidden="true">MV</div>
+            <div class="identity-copy">
+              <div class="identity-name">Maren Vale</div>
+              <div class="identity-note">Northwind Analytics · Sales</div>
+            </div>
+            <button class="photo-action" type="button">Add photo</button>
+          </div>
+          <div class="detail-grid">
+            <div class="detail">
+              <span class="detail-label">Employee ID</span>
+              <span class="detail-value">NW-48213</span>
+            </div>
+            <div class="detail">
+              <span class="detail-label">Cost center</span>
+              <span class="detail-value">Sales · West</span>
+            </div>
+            <div class="detail">
+              <span class="detail-label">Home airport</span>
+              <span class="detail-value">Portland · PDX</span>
+            </div>
+            <div class="detail">
+              <span class="detail-label">Approver</span>
+              <span class="detail-value">Dana Reyes</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="policy" aria-labelledby="policy-heading">
+        <div class="section-head">
+          <h2 class="section-title" id="policy-heading">Employer policy</h2>
+          <button class="import-button" type="button">
+            <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <path d="M5.5 3.5H12L15 6.6V16.5H5.5V3.5Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+              <path d="M10.2 12.7V8.4M10.2 8.4L8.4 10.2M10.2 8.4L12 10.2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Import file
+          </button>
+        </div>
+        <div class="policy-card">
+          <div class="policy-row">
+            <span class="policy-key">Cabin class</span>
+            <span class="policy-val">Economy under 6h</span>
+          </div>
+          <div class="policy-row">
+            <span class="policy-key">Hotel cap</span>
+            <span class="policy-val">$260 / night</span>
+          </div>
+          <div class="policy-row">
+            <span class="policy-key">Preferred airline</span>
+            <span class="policy-val">Alaska Airlines</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="defaults" aria-labelledby="defaults-heading">
+        <h2 class="section-title" id="defaults-heading">Booking defaults</h2>
+        <div class="pref-list">
+          <button class="pref" type="button">
+            <span class="pref-label">Seat preference</span>
+            <span class="pref-value">Aisle, nonstop</span>
+            <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <path d="M7.5 4.5L13 10L7.5 15.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <button class="pref" type="button">
+            <span class="pref-label">Stay near</span>
+            <span class="pref-value">Client office</span>
+            <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <path d="M7.5 4.5L13 10L7.5 15.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <button class="pref" type="button">
+            <span class="pref-label">Expense receipts</span>
+            <span class="pref-value">Auto-attach</span>
+            <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <path d="M7.5 4.5L13 10L7.5 15.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <button class="continue-button" type="button">Continue to policy limits</button>
+    </footer>
+  </div>
+</body>
+</html>

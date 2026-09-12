@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Weekly Seller Standings</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 40px 0;
+    margin: 0;
+    background: #ebebe9;
+    font-family: 'Roboto', system-ui, sans-serif;
+    color: #1f2124;
+    -webkit-font-smoothing: antialiased;
+  }
+  .screen {
+    width: 390px;
+    height: 560px;
+    background: #ffffff;
+  }
+  .top {
+    padding: 22px 22px 18px;
+    background: #202225;
+    color: #ffffff;
+  }
+  .eyebrow {
+    margin: 0 0 5px;
+    color: #aeb1b5;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+  }
+  h1 {
+    margin: 0 0 3px;
+    font-size: 22px;
+    line-height: 1.2;
+  }
+  .period {
+    margin: 0;
+    color: #afb2b6;
+    font-size: 12px;
+  }
+  .tabs {
+    display: flex;
+    gap: 22px;
+    margin-top: 15px;
+    border-bottom: 1px solid #484b4f;
+  }
+  .tab {
+    padding: 0 0 8px;
+    color: #9fa2a6;
+    font-size: 13px;
+    font-weight: 500;
+  }
+  .tab.active {
+    margin-bottom: -1px;
+    border-bottom: 2px solid #ffffff;
+    color: #ffffff;
+  }
+  .podium-label {
+    margin: 14px 0 8px;
+    color: #aeb1b5;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+  }
+  .podium {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 7px;
+  }
+  .place {
+    padding: 8px 7px;
+    border: 1px solid #484b4f;
+    border-radius: 5px;
+    background: #292b2f;
+  }
+  .place.first {
+    border-color: #ffffff;
+    background: #ffffff;
+    color: #202225;
+  }
+  .position {
+    margin-bottom: 4px;
+    color: #aeb1b5;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+  .first .position { color: #686b70; }
+  .top-name {
+    overflow: hidden;
+    font-size: 12px;
+    font-weight: 700;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .top-score {
+    margin-top: 3px;
+    color: #c3c5c8;
+    font-size: 11px;
+    font-variant-numeric: tabular-nums;
+  }
+  .first .top-score { color: #55585c; }
+  .ranking {
+    padding: 16px 22px 14px;
+  }
+  .heading {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #202225;
+  }
+  .heading h2 {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.2;
+  }
+  .heading span {
+    color: #777a7e;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+  }
+  .row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 0;
+    border-bottom: 1px solid #e4e4e1;
+  }
+  .rank {
+    width: 20px;
+    flex: none;
+    color: #6e7175;
+    font-size: 13px;
+    font-weight: 500;
+    text-align: right;
+  }
+  .avatar {
+    width: 34px;
+    height: 34px;
+    flex: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: #e8e8e5;
+    color: #414448;
+    font-size: 11px;
+    font-weight: 700;
+  }
+  .who {
+    flex: 1;
+    min-width: 0;
+  }
+  .name {
+    overflow: hidden;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.25;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .meta {
+    margin-top: 2px;
+    color: #777a7e;
+    font-size: 11px;
+    line-height: 1.2;
+  }
+  .score {
+    flex: none;
+    font-size: 14px;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+  }
+  .break {
+    padding: 5px 0 5px 64px;
+    border-bottom: 1px solid #e4e4e1;
+    color: #8a8d91;
+    font-size: 10px;
+  }
+  .row.self {
+    margin-top: 3px;
+    padding: 9px 8px;
+    border: 0;
+    border-radius: 5px;
+    background: #e9eee9;
+    box-shadow: inset 3px 0 0 #202225;
+  }
+  .self .rank {
+    color: #202225;
+    font-weight: 700;
+  }
+  .self .avatar {
+    background: #202225;
+    color: #ffffff;
+  }
+  .badge {
+    margin-left: 4px;
+    padding: 2px 4px;
+    border-radius: 3px;
+    background: #202225;
+    color: #ffffff;
+    font-size: 9px;
+    font-weight: 700;
+    vertical-align: 1px;
+  }
+</style>
+</head>
+<body>
+  <div class="screen">
+    <header class="top">
+      <p class="eyebrow">Marketwell Sellers</p>
+      <h1>Weekly standings</h1>
+      <p class="period">Mar 3 – Mar 9 &middot; 1,428 shops ranked</p>
+
+      <nav class="tabs" aria-label="Ranking metric">
+        <div class="tab active">Sales</div>
+        <div class="tab">Orders</div>
+      </nav>
+
+      <p class="podium-label">This week’s top three</p>
+      <section class="podium" aria-label="Top three sellers">
+        <div class="place first">
+          <div class="position">1st</div>
+          <div class="top-name">Dana W.</div>
+          <div class="top-score">$9,140</div>
+        </div>
+        <div class="place">
+          <div class="position">2nd</div>
+          <div class="top-name">Marcus O.</div>
+          <div class="top-score">$7,605</div>
+        </div>
+        <div class="place">
+          <div class="position">3rd</div>
+          <div class="top-name">Priya R.</div>
+          <div class="top-score">$6,982</div>
+        </div>
+      </section>
+    </header>
+
+    <main class="ranking">
+      <div class="heading">
+        <h2>All standings</h2>
+        <span>Gross sales</span>
+      </div>
+
+      <section aria-label="Seller ranking">
+        <div class="row">
+          <div class="rank">4</div>
+          <div class="avatar">JF</div>
+          <div class="who">
+            <div class="name">Jonah Feldt</div>
+            <div class="meta">29 orders</div>
+          </div>
+          <div class="score">$5,310</div>
+        </div>
+        <div class="row">
+          <div class="rank">5</div>
+          <div class="avatar">AC</div>
+          <div class="who">
+            <div class="name">Avery Cole</div>
+            <div class="meta">Cole Paper Goods &middot; 53 orders</div>
+          </div>
+          <div class="score">$4,885</div>
+        </div>
+        <div class="row">
+          <div class="rank">11</div>
+          <div class="avatar">RB</div>
+          <div class="who">
+            <div class="name">Rosa Behrend</div>
+            <div class="meta">Studio Behrend &middot; 38 orders</div>
+          </div>
+          <div class="score">$3,685</div>
+        </div>
+        <div class="row self">
+          <div class="rank">12</div>
+          <div class="avatar">EK</div>
+          <div class="who">
+            <div class="name">Ellis Kwan <span class="badge">YOU</span></div>
+            <div class="meta">Harbor Supply &middot; 41 orders</div>
+          </div>
+          <div class="score">$3,470</div>
+        </div>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Billing — Fluenta</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --pink:#d92c73;
+    --ink:#1c1a19;
+    --muted:#6f6863;
+    --line:#e7e2de;
+  }
+  *{box-sizing:border-box;}
+  body{
+    min-height:100vh;display:flex;justify-content:center;align-items:flex-start;
+    padding:40px 0;margin:0;background:#e9e6e2;
+    font-family:'Source Serif 4',Georgia,serif;color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+  }
+  .screen{
+    width:768px;height:1024px;background:#ffffff;display:flex;flex-direction:column;
+    position:relative;
+  }
+
+  /* ---------- header with top tabs ---------- */
+  .head{padding:22px 32px 0;border-bottom:1px solid var(--line);}
+  .head-top{display:flex;align-items:center;gap:14px;}
+  .back{width:28px;height:28px;display:flex;align-items:center;justify-content:center;color:var(--ink);}
+  .head-top h1{margin:0;font-size:25px;font-weight:600;letter-spacing:.01em;}
+  .head-actions{margin-left:auto;display:flex;gap:10px;}
+  .btn{
+    display:flex;align-items:center;gap:7px;font-size:13.5px;font-weight:600;
+    padding:9px 15px;border-radius:10px;border:1px solid var(--line);color:var(--ink);background:#fff;
+  }
+  .btn svg{display:block;color:var(--pink);}
+  .btn.solid{background:var(--pink);border-color:var(--pink);color:#fff;}
+  .btn.solid svg{color:#fff;}
+
+  .tabs{display:flex;gap:30px;margin-top:18px;}
+  .tab{
+    display:flex;align-items:center;gap:8px;padding:0 2px 12px;color:var(--muted);
+    font-size:15px;border-bottom:2px solid transparent;
+  }
+  .tab svg{display:block;}
+  .tab.on{color:var(--pink);border-bottom-color:var(--pink);font-weight:600;}
+
+  /* ---------- two column body ---------- */
+  .body{flex:1;padding:26px 32px;display:flex;gap:24px;align-items:flex-start;}
+  .col-a{width:296px;flex:none;}
+  .col-b{flex:1;min-width:0;}
+  .card{border:1px solid var(--line);border-radius:16px;padding:20px;background:#fff;}
+  .card + .card{margin-top:18px;}
+  .card h2{margin:0 0 12px;font-size:16px;font-weight:600;}
+
+  /* plan card — cream with pink accent only */
+  .plan{
+    position:relative;overflow:hidden;background:#fbf7f4;border:1px solid #ebe4de;
+    border-radius:16px;padding:22px 22px 22px 26px;
+  }
+  .plan:before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--pink);}
+  .eyebrow{font-size:11.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--pink);font-weight:600;}
+  .plan-name{font-size:15px;font-weight:600;margin-top:10px;color:var(--muted);}
+  .amount{font-size:31px;font-weight:600;margin-top:2px;line-height:1.15;}
+  .amount span{font-size:15px;font-weight:400;color:var(--muted);}
+  .track{height:6px;border-radius:3px;background:#eae3dd;margin-top:16px;}
+  .track i{display:block;height:6px;border-radius:3px;background:var(--pink);width:32%;}
+  .cycle{font-size:13px;color:var(--muted);margin-top:9px;}
+  .plan-foot{
+    margin-top:16px;padding-top:14px;border-top:1px solid #e6ded7;
+    display:flex;align-items:center;justify-content:space-between;gap:10px;
+  }
+  .plan-foot .pm{font-size:14px;}
+  .plan-foot .act{font-size:14px;font-weight:600;color:var(--pink);display:flex;align-items:center;gap:5px;}
+
+  /* included courses list */
+  .clist{margin:0;}
+  .citem{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--line);}
+  .citem:last-child{border-bottom:0;padding-bottom:0;}
+  .citem:first-of-type{padding-top:0;}
+  .citem img{width:88px;height:60px;border-radius:10px;object-fit:cover;display:block;background:#ded9d4;flex:none;}
+  .citem b{display:block;font-size:14px;font-weight:600;}
+  .citem small{display:block;font-size:12.5px;color:var(--muted);margin-top:3px;}
+
+  /* details */
+  .field{margin-top:12px;}
+  .field:first-of-type{margin-top:0;}
+  .field .k{font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);}
+  .field .v{font-size:14.5px;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+
+  /* payment methods */
+  .pm-row{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--line);}
+  .pm-row:first-of-type{padding-top:0;}
+  .brandbox{
+    width:44px;height:30px;border-radius:7px;border:1px solid var(--line);background:#faf8f6;
+    display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;
+    letter-spacing:.06em;color:var(--muted);flex:none;
+  }
+  .pm-row .txt{flex:1;min-width:0;}
+  .pm-row b{display:block;font-size:14px;font-weight:600;}
+  .pm-row small{display:block;font-size:12.5px;color:var(--muted);margin-top:2px;}
+  .tag{
+    font-size:11.5px;font-weight:600;color:var(--pink);border:1px solid var(--pink);
+    border-radius:14px;padding:1px 9px;flex:none;
+  }
+  .add{
+    margin-top:12px;font-size:13.5px;font-weight:600;color:var(--pink);
+    display:flex;align-items:center;gap:7px;
+  }
+
+  /* invoices table */
+  .thead{
+    display:flex;align-items:center;gap:12px;padding-bottom:9px;
+    font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);
+  }
+  .thead .c1{flex:1;min-width:0;}
+  .thead .c2{width:72px;flex:none;text-align:right;}
+  .thead .c3{width:34px;flex:none;text-align:center;}
+  .irow{display:flex;align-items:center;gap:12px;padding:13px 0;border-top:1px solid var(--line);}
+  .irow .l{flex:1;min-width:0;}
+  .irow .t{font-size:14.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .irow .s{font-size:12.5px;color:var(--muted);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .irow .s em{font-style:normal;color:var(--pink);font-weight:600;}
+  .irow .v{width:72px;flex:none;text-align:right;font-size:14.5px;font-weight:600;}
+  .dl{
+    width:34px;height:34px;flex:none;border:1px solid var(--line);border-radius:10px;
+    display:flex;align-items:center;justify-content:center;color:var(--pink);
+  }
+  .dl svg{display:block;}
+  .note{font-size:12px;color:var(--muted);margin-top:14px;padding-top:14px;border-top:1px solid var(--line);}
+</style>
+</head>
+<body>
+  <div class="screen">
+
+    <div class="head">
+      <div class="head-top">
+        <div class="back" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 5 8 12l6.5 7"/></svg>
+        </div>
+        <h1>Billing</h1>
+        <div class="head-actions">
+          <div class="btn">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="M7.5 11 12 15.5 16.5 11"/><path d="M5 19.5h14"/></svg>
+            All receipts
+          </div>
+          <div class="btn solid">Manage plan</div>
+        </div>
+      </div>
+      <div class="tabs">
+        <div class="tab">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5h6a2 2 0 0 1 2 2V19a2 2 0 0 0-2-2H4z"/><path d="M20 5.5h-6a2 2 0 0 0-2 2V19a2 2 0 0 1 2-2h6z"/></svg>
+          <span>Learn</span>
+        </div>
+        <div class="tab">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6.5h16v9H9l-5 3.5z"/></svg>
+          <span>Practice</span>
+        </div>
+        <div class="tab">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h4v14H4zM10 5h4v14h-4zM16.5 6l3.5 12.5"/></svg>
+          <span>Library</span>
+        </div>
+        <div class="tab on">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8.5" r="3.5"/><path d="M5 19.5c1.3-3.2 3.9-4.7 7-4.7s5.7 1.5 7 4.7"/></svg>
+          <span>Account</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="body">
+
+      <div class="col-a">
+
+        <div class="plan">
+          <div class="eyebrow">Current plan</div>
+          <div class="plan-name">Fluenta Plus — annual</div>
+          <div class="amount">$119.00 <span>/ year</span></div>
+          <div class="track"><i></i></div>
+          <div class="cycle">Day 118 of 365 · renews March 14, 2025</div>
+          <div class="plan-foot">
+            <div class="pm">Card ending 4417</div>
+            <div class="act">Change
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 5 16 12l-6.5 7"/></svg>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>Included in Plus</h2>
+          <div class="clist">
+            <div class="citem">
+              <img src="https://loremflickr.com/88/60/books?lock=6020" width="88" height="60" alt="Stack of Spanish grammar workbooks">
+              <div>
+                <b>Spanish B1</b>
+                <small>24 units · self-paced</small>
+              </div>
+            </div>
+            <div class="citem">
+              <img src="https://loremflickr.com/88/60/classroom?lock=6021" width="88" height="60" alt="Classroom used for live Korean lessons">
+              <div>
+                <b>Korean Basics</b>
+                <small>18 units · live classes</small>
+              </div>
+            </div>
+            <div class="citem">
+              <img src="https://loremflickr.com/88/60/library?lock=6022" width="88" height="60" alt="Library shelves in the business English reading room">
+              <div>
+                <b>Business English</b>
+                <small>31 units · self-paced</small>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>Billing details</h2>
+          <div class="field">
+            <div class="k">Receipts sent to</div>
+            <div class="v">mara.delgado@fluenta.app</div>
+          </div>
+          <div class="field">
+            <div class="k">VAT ID</div>
+            <div class="v">SE556 998 4471 01</div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="col-b">
+
+        <div class="card">
+          <h2>Payment methods</h2>
+          <div class="pm-row">
+            <div class="brandbox">VISA</div>
+            <div class="txt">
+              <b>Visa ending 4417</b>
+              <small>Expires 09 / 2027</small>
+            </div>
+            <div class="tag">Default</div>
+          </div>
+          <div class="pm-row">
+            <div class="brandbox">MC</div>
+            <div class="txt">
+              <b>Mastercard ending 8802</b>
+              <small>Expires 04 / 2026</small>
+            </div>
+          </div>
+          <div class="add">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
+            Add a card
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>Invoices</h2>
+          <div class="thead">
+            <div class="c1">Invoice</div>
+            <div class="c2">Amount</div>
+            <div class="c3">PDF</div>
+          </div>
+          <div class="irow">
+            <div class="l">
+              <div class="t">Plus annual · 2024–2025</div>
+              <div class="s">Paid March 14, 2024</div>
+            </div>
+            <div class="v">$119.00</div>
+            <div class="dl">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="M7.5 11 12 15.5 16.5 11"/><path d="M5 19.5h14"/></svg>
+            </div>
+          </div>
+          <div class="irow">
+            <div class="l">
+              <div class="t">Tutor sessions add-on</div>
+              <div class="s">February 2, 2024 · <em>Refunded</em></div>
+            </div>
+            <div class="v">$45.00</div>
+            <div class="dl">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="M7.5 11 12 15.5 16.5 11"/><path d="M5 19.5h14"/></svg>
+            </div>
+          </div>
+          <div class="irow">
+            <div class="l">
+              <div class="t">Certificate exam fee</div>
+              <div class="s">Paid October 9, 2023</div>
+            </div>
+            <div class="v">$28.00</div>
+            <div class="dl">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="M7.5 11 12 15.5 16.5 11"/><path d="M5 19.5h14"/></svg>
+            </div>
+          </div>
+          <div class="irow">
+            <div class="l">
+              <div class="t">Plus annual · 2023–2024</div>
+              <div class="s">Paid March 14, 2023</div>
+            </div>
+            <div class="v">$109.00</div>
+            <div class="dl">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="M7.5 11 12 15.5 16.5 11"/><path d="M5 19.5h14"/></svg>
+            </div>
+          </div>
+          <div class="irow">
+            <div class="l">
+              <div class="t">Korean workbook pack</div>
+              <div class="s">Paid November 21, 2022</div>
+            </div>
+            <div class="v">$19.00</div>
+            <div class="dl">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="M7.5 11 12 15.5 16.5 11"/><path d="M5 19.5h14"/></svg>
+            </div>
+          </div>
+          <div class="note">Every receipt downloads as a VAT-ready PDF issued by Fluenta AB, Stockholm.</div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+</body>
+</html>

@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Halcyon Podcasts — Offline Listening</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --accent:#8d6b8f;
+    --accent-dark:#694f6b;
+    --accent-soft:rgba(141,107,143,.12);
+    --accent-track:rgba(141,107,143,.20);
+    --ink:#231f26;
+    --mid:#6f6a73;
+    --line:#eceaee;
+    --panel:#f8f7f9;
+  }
+  *{box-sizing:border-box;}
+  body{
+    min-height:100vh;display:flex;justify-content:center;align-items:flex-start;
+    padding:40px 0;margin:0;background:#dedbe1;
+    font-family:'Manrope',system-ui,sans-serif;color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+  }
+  .screen{
+    width:390px;height:844px;background:#fff;position:relative;
+  }
+  .topbar{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:20px 20px 13px;
+  }
+  .eyebrow{
+    margin:0 0 2px;font-size:10px;color:var(--accent);font-weight:700;
+    letter-spacing:.1em;text-transform:uppercase;
+  }
+  .topbar h1{margin:0;font-size:22px;font-weight:700;letter-spacing:-.3px;}
+  .manage{
+    border:0;background:var(--accent-soft);color:var(--accent-dark);
+    border-radius:4px;padding:8px 10px;font:700 12px 'Manrope',sans-serif;
+  }
+  .summary{
+    margin:2px 16px 0;padding:13px 14px;background:var(--accent-soft);border-radius:8px;
+  }
+  .summary-top{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;}
+  .summary-title{font-size:12px;font-weight:700;color:var(--accent-dark);}
+  .summary-amount{
+    margin-top:2px;font-size:22px;line-height:1.15;font-weight:700;letter-spacing:-.4px;
+  }
+  .summary-amount span{font-size:12px;color:var(--mid);font-weight:500;letter-spacing:0;}
+  .free{text-align:right;font-size:11px;color:var(--mid);font-weight:500;}
+  .free strong{display:block;font-size:14px;color:var(--ink);}
+  .track{height:6px;margin:10px 0;border-radius:4px;background:var(--accent-track);}
+  .fill{width:35%;height:6px;border-radius:4px;background:var(--accent);}
+  .metrics{display:flex;gap:8px;}
+  .metric{
+    flex:1;border-left:1px solid rgba(141,107,143,.24);padding-left:8px;
+    font-size:10px;color:var(--mid);font-weight:500;
+  }
+  .metric:first-child{border-left:0;padding-left:0;}
+  .metric strong{display:block;font-size:12px;color:var(--ink);}
+  .sechead{
+    display:flex;align-items:baseline;justify-content:space-between;
+    padding:15px 20px 7px;
+  }
+  .sechead h2{margin:0;font-size:15px;font-weight:700;letter-spacing:-.1px;}
+  .sechead span{font-size:11px;color:var(--mid);font-weight:500;}
+  .episode-list{margin:0 16px;border:1px solid var(--line);border-radius:8px;}
+  .episode{
+    display:flex;align-items:center;gap:10px;padding:5px 8px;
+    border-top:1px solid var(--line);
+  }
+  .episode:first-child{border-top:0;}
+  .episode img{
+    flex:none;display:block;object-fit:cover;border-radius:4px;background:#dcd8de;
+  }
+  .episode-body{flex:1;min-width:0;}
+  .episode-name{
+    font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .episode-meta{
+    margin-top:2px;font-size:10px;color:var(--mid);font-weight:500;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .play{
+    width:30px;height:30px;border-radius:50%;background:var(--accent-soft);color:var(--accent);
+    display:flex;align-items:center;justify-content:center;flex:none;
+  }
+  .showgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:0 16px;}
+  .showcard{
+    display:flex;align-items:center;gap:8px;background:var(--panel);
+    border:1px solid var(--line);border-radius:8px;padding:8px;
+  }
+  .showcard img{
+    flex:none;display:block;object-fit:cover;border-radius:4px;background:#dcd8de;
+  }
+  .showbody{min-width:0;}
+  .showname{
+    font-size:12px;line-height:1.25;font-weight:700;
+    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;
+  }
+  .showmeta{margin-top:4px;font-size:9px;line-height:1.35;color:var(--mid);font-weight:500;}
+  .autonote{
+    display:flex;align-items:center;gap:9px;margin:11px 16px 0;padding:9px 11px;
+    border-radius:6px;background:var(--panel);color:var(--mid);font-size:10px;font-weight:500;
+  }
+  .autonote svg{flex:none;color:var(--accent);}
+  .autonote strong{display:block;color:var(--ink);font-size:11px;}
+  .tabbar{
+    position:absolute;left:0;right:0;bottom:0;height:64px;border-top:1px solid var(--line);
+    display:flex;background:#fff;
+  }
+  .tab{
+    flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
+    font-size:12px;font-weight:500;color:#8b868f;
+  }
+  .tab.on{color:var(--accent);font-weight:700;}
+</style>
+</head>
+<body>
+  <div class="screen">
+    <div class="topbar">
+      <div>
+        <p class="eyebrow">Offline listening</p>
+        <h1>Your downloads</h1>
+      </div>
+      <button class="manage" type="button">Manage</button>
+    </div>
+
+    <div class="summary">
+      <div class="summary-top">
+        <div>
+          <div class="summary-title">On Nadia's iPhone</div>
+          <div class="summary-amount">1.4 GB <span>downloaded</span></div>
+        </div>
+        <div class="free"><strong>2.6 GB</strong>available</div>
+      </div>
+      <div class="track"><div class="fill"></div></div>
+      <div class="metrics">
+        <div class="metric"><strong>9 hr 18 min</strong>ready to play</div>
+        <div class="metric"><strong>11 episodes</strong>across 6 shows</div>
+        <div class="metric"><strong>High</strong>audio quality</div>
+      </div>
+    </div>
+
+    <div class="sechead">
+      <h2>Episodes</h2>
+      <span>4 recent downloads</span>
+    </div>
+
+    <div class="episode-list">
+      <div class="episode">
+        <img src="https://loremflickr.com/52/52/fashion?lock=4200" width="52" height="52" alt="Cover art for A Wardrobe With a Past">
+        <div class="episode-body">
+          <div class="episode-name">A Wardrobe With a Past</div>
+          <div class="episode-meta">Material Lives · 38 min · 96 MB</div>
+        </div>
+        <div class="play" aria-hidden="true">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+        </div>
+      </div>
+
+      <div class="episode">
+        <img src="https://loremflickr.com/52/52/furniture?lock=4201" width="52" height="52" alt="Cover art for The Chair That Changed an Era">
+        <div class="episode-body">
+          <div class="episode-name">The Chair That Changed an Era</div>
+          <div class="episode-meta">Designed Objects · 52 min · 148 MB</div>
+        </div>
+        <div class="play" aria-hidden="true">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+        </div>
+      </div>
+
+      <div class="episode">
+        <img src="https://loremflickr.com/52/52/sneakers?lock=4202" width="52" height="52" alt="Cover art for Why We Keep Running">
+        <div class="episode-body">
+          <div class="episode-name">Why We Keep Running</div>
+          <div class="episode-meta">Human Pace · 29 min · 74 MB</div>
+        </div>
+        <div class="play" aria-hidden="true">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+        </div>
+      </div>
+
+      <div class="episode">
+        <img src="https://loremflickr.com/52/52/product?lock=4203" width="52" height="52" alt="Cover art for The Hidden Life of Useful Things">
+        <div class="episode-body">
+          <div class="episode-name">The Hidden Life of Useful Things</div>
+          <div class="episode-meta">Curious by Design · 24 min · 62 MB</div>
+        </div>
+        <div class="play" aria-hidden="true">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="sechead">
+      <h2>Shows</h2>
+      <span>Downloaded collections</span>
+    </div>
+
+    <div class="showgrid">
+      <div class="showcard">
+        <img src="https://loremflickr.com/72/52/furniture?lock=4204" width="72" height="52" alt="Cover art for 99 Percent Invisible">
+        <div class="showbody">
+          <div class="showname">99% Invisible</div>
+          <div class="showmeta">6 episodes<br>3 hr 42 min</div>
+        </div>
+      </div>
+      <div class="showcard">
+        <img src="https://loremflickr.com/72/52/fashion?lock=4205" width="72" height="52" alt="Cover art for Articles of Interest">
+        <div class="showbody">
+          <div class="showname">Articles of Interest</div>
+          <div class="showmeta">5 episodes<br>2 hr 58 min</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="autonote">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 3v11"/><path d="m8 10 4 4 4-4"/><path d="M5 19h14"/>
+      </svg>
+      <div><strong>Automatic downloads are on</strong>New episodes from followed shows download over Wi-Fi.</div>
+    </div>
+
+    <nav class="tabbar">
+      <div class="tab">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5 12 4l8 6.5V20H4z"/></svg>
+        Listen
+      </div>
+      <div class="tab">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="6"/><path d="M16 16l4 4"/></svg>
+        Search
+      </div>
+      <div class="tab on">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v10"/><path d="M8 11l4 4 4-4"/><path d="M5 19h14"/></svg>
+        Downloads
+      </div>
+      <div class="tab">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5.5h14v15l-7-3-7 3z"/></svg>
+        Library
+      </div>
+      <div class="tab">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="9" r="3.4"/><path d="M5.5 20c1.2-3.2 3.6-4.6 6.5-4.6s5.3 1.4 6.5 4.6"/></svg>
+        Account
+      </div>
+    </nav>
+  </div>
+</body>
+</html>

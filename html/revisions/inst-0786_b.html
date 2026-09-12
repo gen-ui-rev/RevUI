@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Collections — Fernwood Money</title>
+<style>
+  :root{
+    --ink:#15170f;
+    --muted:#71756a;
+    --rule:#e7e7e1;
+    --lime:#c8f24a;
+    --lime-tint:#eef8cd;
+    --paper:#ffffff;
+    --soft:#f7f7f3;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#e9e9e6;
+    color:var(--ink);
+    font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  }
+  button,select{font:inherit;}
+  .screen{
+    width:1024px;
+    height:768px;
+    display:flex;
+    flex-direction:column;
+    background:var(--paper);
+    border:1px solid #deded8;
+    box-shadow:0 18px 48px rgba(28,30,21,.08);
+  }
+  .appbar{
+    display:flex;
+    align-items:center;
+    gap:34px;
+    padding:17px 30px;
+    border-bottom:1px solid var(--rule);
+  }
+  .brand{
+    flex:0 0 auto;
+    margin:0;
+    font-size:12px;
+    font-weight:750;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+  }
+  .nav{
+    display:flex;
+    align-items:center;
+    gap:7px;
+  }
+  .nav a{
+    padding:8px 11px;
+    border-radius:8px;
+    color:var(--muted);
+    font-size:13px;
+    font-weight:600;
+    text-decoration:none;
+  }
+  .nav a.active{
+    background:var(--lime-tint);
+    color:var(--ink);
+  }
+  .app-actions{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-left:auto;
+  }
+  .search{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    width:190px;
+    padding:8px 11px;
+    border:1px solid var(--rule);
+    border-radius:9px;
+    color:var(--muted);
+    font-size:12px;
+  }
+  .avatar{
+    width:32px;
+    height:32px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:50%;
+    background:#25281b;
+    color:white;
+    font-size:11px;
+    font-weight:700;
+  }
+  .content{
+    padding:30px 34px 32px;
+  }
+  .hero{
+    display:flex;
+    align-items:flex-end;
+    justify-content:space-between;
+    gap:30px;
+    padding-bottom:24px;
+  }
+  .hero-copy{
+    min-width:0;
+  }
+  .eyebrow{
+    margin:0 0 7px;
+    color:var(--muted);
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:.09em;
+    text-transform:uppercase;
+  }
+  h1{
+    margin:0;
+    font-size:31px;
+    line-height:1.12;
+    letter-spacing:-.025em;
+  }
+  .subtitle{
+    margin:8px 0 0;
+    color:var(--muted);
+    font-size:14px;
+  }
+  .hero-actions{
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .sort-field{
+    display:flex;
+    align-items:center;
+    gap:9px;
+    padding:0 11px;
+    border:1px solid var(--rule);
+    border-radius:10px;
+    background:white;
+  }
+  .sort-field label{
+    color:var(--muted);
+    font-size:12px;
+    white-space:nowrap;
+  }
+  .sort-field select{
+    min-width:148px;
+    padding:10px 24px 10px 0;
+    border:0;
+    outline:none;
+    background:white;
+    color:var(--ink);
+    font-size:12px;
+    font-weight:650;
+    cursor:pointer;
+  }
+  .direction{
+    width:39px;
+    height:39px;
+    border:1px solid var(--rule);
+    border-radius:10px;
+    background:white;
+    color:var(--ink);
+    font-size:16px;
+    cursor:pointer;
+  }
+  .new-button{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding:11px 14px;
+    border:0;
+    border-radius:10px;
+    background:var(--lime);
+    color:#1b1f0c;
+    font-size:13px;
+    font-weight:750;
+    cursor:pointer;
+  }
+  .layout{
+    display:grid;
+    grid-template-columns:minmax(0,1fr) 286px;
+    gap:24px;
+    align-items:start;
+  }
+  .section-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:11px;
+  }
+  .section-head h2{
+    margin:0;
+    font-size:14px;
+    letter-spacing:-.005em;
+  }
+  .section-head span{
+    color:var(--muted);
+    font-size:12px;
+  }
+  .collection-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+  }
+  .card{
+    padding:16px;
+    border:1px solid var(--rule);
+    border-radius:14px;
+    background:white;
+  }
+  .card-top{
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:12px;
+  }
+  .folder{
+    width:34px;
+    height:30px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:9px;
+    background:var(--lime-tint);
+    color:#46511d;
+  }
+  .more{
+    border:0;
+    background:transparent;
+    color:var(--muted);
+    letter-spacing:1px;
+    cursor:pointer;
+  }
+  .card h3{
+    margin:14px 0 4px;
+    font-size:15px;
+    line-height:20px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .detail{
+    margin:0;
+    color:var(--muted);
+    font-size:12px;
+    line-height:17px;
+  }
+  .card-foot{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    margin-top:14px;
+    padding-top:11px;
+    border-top:1px solid var(--rule);
+  }
+  .updated{
+    color:var(--muted);
+    font-size:11px;
+  }
+  .item-count{
+    font-size:13px;
+    font-weight:700;
+  }
+  .item-count span{
+    color:var(--muted);
+    font-size:11px;
+    font-weight:400;
+  }
+  .tag{
+    display:inline-block;
+    margin-left:6px;
+    padding:1px 6px;
+    border-radius:8px;
+    background:var(--lime);
+    color:#24280f;
+    font-size:9px;
+    font-weight:750;
+    vertical-align:1px;
+  }
+  .side-panel{
+    padding:17px;
+    border-radius:15px;
+    background:var(--soft);
+    border:1px solid #ededE7;
+  }
+  .shared-list{
+    display:grid;
+    gap:10px;
+  }
+  .shared{
+    padding:13px;
+    border:1px solid var(--rule);
+    border-radius:12px;
+    background:white;
+  }
+  .shared-person{
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .mono{
+    flex:0 0 auto;
+    width:34px;
+    height:34px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:10px;
+    background:var(--lime-tint);
+    color:#3f4a17;
+    font-size:11px;
+    font-weight:750;
+  }
+  .shared-main{
+    min-width:0;
+  }
+  .shared-name{
+    font-size:13px;
+    font-weight:700;
+    line-height:18px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .shared-owner{
+    color:var(--muted);
+    font-size:11px;
+    line-height:16px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .shared-foot{
+    display:flex;
+    justify-content:space-between;
+    margin-top:11px;
+    padding-top:10px;
+    border-top:1px solid var(--rule);
+    color:var(--muted);
+    font-size:11px;
+  }
+  .shared-foot b{
+    color:var(--ink);
+    font-size:12px;
+  }
+  .tip{
+    margin:16px 0 0;
+    padding-top:15px;
+    border-top:1px solid #dfdfd8;
+    color:var(--muted);
+    font-size:11px;
+    line-height:1.5;
+  }
+</style>
+</head>
+<body>
+  <div class="screen">
+    <header class="appbar">
+      <p class="brand">Fernwood Money</p>
+      <nav class="nav" aria-label="Primary navigation">
+        <a href="#">Overview</a>
+        <a href="#">Accounts</a>
+        <a href="#" class="active" aria-current="page">Collections</a>
+        <a href="#">Reports</a>
+      </nav>
+      <div class="app-actions">
+        <div class="search" aria-label="Search">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+            <circle cx="7" cy="7" r="4.2"/>
+            <path d="m10.2 10.2 3 3"/>
+          </svg>
+          Search collections
+        </div>
+        <div class="avatar">FW</div>
+      </div>
+    </header>
+
+    <main class="content">
+      <div class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">Saved library</p>
+          <h1>Collections</h1>
+          <p class="subtitle">Keep financial research, documents, and comparisons together.</p>
+        </div>
+        <div class="hero-actions">
+          <div class="sort-field">
+            <label for="sort">Sort by</label>
+            <select id="sort" aria-label="Sort collections">
+              <option selected>Recently updated</option>
+              <option>Item count</option>
+            </select>
+          </div>
+          <button class="direction" type="button" aria-label="Sort descending">↓</button>
+          <button class="new-button" type="button">
+            <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+              <path d="M8 3.2v9.6M3.2 8h9.6"/>
+            </svg>
+            New collection
+          </button>
+        </div>
+      </div>
+
+      <div class="layout">
+        <section aria-label="Your collections">
+          <div class="section-head">
+            <h2>Your collections</h2>
+            <span>5 collections · 48 items</span>
+          </div>
+
+          <div class="collection-grid">
+            <article class="card">
+              <div class="card-top">
+                <div class="folder">
+                  <svg width="17" height="17" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M3.2 6.3h5.1l1.5 1.8h7v7.3H3.2z"/>
+                  </svg>
+                </div>
+                <button class="more" type="button" aria-label="More options">•••</button>
+              </div>
+              <h3>Dividend watchlist</h3>
+              <p class="detail">Private collection</p>
+              <div class="card-foot">
+                <span class="updated">Updated Mar 4</span>
+                <strong class="item-count">14 <span>items</span></strong>
+              </div>
+            </article>
+
+            <article class="card">
+              <div class="card-top">
+                <div class="folder">
+                  <svg width="17" height="17" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M3.2 6.3h5.1l1.5 1.8h7v7.3H3.2z"/>
+                  </svg>
+                </div>
+                <button class="more" type="button" aria-label="More options">•••</button>
+              </div>
+              <h3>Recurring bills<span class="tag">Shared</span></h3>
+              <p class="detail">Shared with 3 people</p>
+              <div class="card-foot">
+                <span class="updated">Updated Mar 2</span>
+                <strong class="item-count">11 <span>items</span></strong>
+              </div>
+            </article>
+
+            <article class="card">
+              <div class="card-top">
+                <div class="folder">
+                  <svg width="17" height="17" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M3.2 6.3h5.1l1.5 1.8h7v7.3H3.2z"/>
+                  </svg>
+                </div>
+                <button class="more" type="button" aria-label="More options">•••</button>
+              </div>
+              <h3>Tax documents 2024</h3>
+              <p class="detail">Private collection</p>
+              <div class="card-foot">
+                <span class="updated">Updated Feb 27</span>
+                <strong class="item-count">9 <span>items</span></strong>
+              </div>
+            </article>
+
+            <article class="card">
+              <div class="card-top">
+                <div class="folder">
+                  <svg width="17" height="17" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M3.2 6.3h5.1l1.5 1.8h7v7.3H3.2z"/>
+                  </svg>
+                </div>
+                <button class="more" type="button" aria-label="More options">•••</button>
+              </div>
+              <h3>Statements to review</h3>
+              <p class="detail">Private collection</p>
+              <div class="card-foot">
+                <span class="updated">Updated Feb 21</span>
+                <strong class="item-count">8 <span>items</span></strong>
+              </div>
+            </article>
+
+            <article class="card">
+              <div class="card-top">
+                <div class="folder">
+                  <svg width="17" height="17" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M3.2 6.3h5.1l1.5 1.8h7v7.3H3.2z"/>
+                  </svg>
+                </div>
+                <button class="more" type="button" aria-label="More options">•••</button>
+              </div>
+              <h3>Mortgage comparisons</h3>
+              <p class="detail">Private collection</p>
+              <div class="card-foot">
+                <span class="updated">Updated Feb 18</span>
+                <strong class="item-count">6 <span>items</span></strong>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <aside class="side-panel">
+          <div class="section-head">
+            <h2>Shared with you</h2>
+            <span>2 collections</span>
+          </div>
+
+          <div class="shared-list">
+            <article class="shared">
+              <div class="shared-person">
+                <div class="mono">DW</div>
+                <div class="shared-main">
+                  <div class="shared-name">Household budget</div>
+                  <div class="shared-owner">Dana Whitfield</div>
+                </div>
+              </div>
+              <div class="shared-foot">
+                <span>Updated Mar 3</span>
+                <span><b>12</b> items</span>
+              </div>
+            </article>
+
+            <article class="shared">
+              <div class="shared-person">
+                <div class="mono">ME</div>
+                <div class="shared-main">
+                  <div class="shared-name">Q1 investment notes</div>
+                  <div class="shared-owner">Marcus Ellery</div>
+                </div>
+              </div>
+              <div class="shared-foot">
+                <span>Updated Feb 26</span>
+                <span><b>5</b> items</span>
+              </div>
+            </article>
+          </div>
+
+          <p class="tip">Choose “Item count” to bring the largest collections to the top, or sort by recent updates to return to active work.</p>
+        </aside>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

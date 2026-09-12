@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verbloom Sentence Annotation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      display: grid;
+      place-items: center;
+      background: #e4e7eb;
+      color: #1d2733;
+      font-family: 'Poppins', system-ui, sans-serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 560px;
+      padding: 16px;
+      background: #f2f4f6;
+    }
+
+    .editor {
+      width: 100%;
+      background: #ffffff;
+      border: 1px solid #e0e5ea;
+      border-radius: 6px;
+      box-shadow: 0 8px 24px rgba(29, 39, 51, 0.08);
+    }
+
+    .editor-header {
+      padding: 13px 15px 12px;
+      border-bottom: 1px solid #e4e8ed;
+    }
+
+    .eyebrow {
+      margin: 0 0 2px;
+      color: #2563c9;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      color: #18212b;
+      font-size: 20px;
+      line-height: 1.3;
+      font-weight: 600;
+    }
+
+    .lesson-meta {
+      margin: 3px 0 8px;
+      color: #657181;
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .lesson-details {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .detail {
+      padding: 4px 8px;
+      border: 1px solid #dce4ee;
+      border-radius: 12px;
+      background: #f5f8fc;
+      color: #4d5e71;
+      font-size: 10px;
+      line-height: 1.3;
+      font-weight: 500;
+    }
+
+    .task-plan {
+      padding: 10px 15px 11px;
+      border-bottom: 1px solid #e4e8ed;
+      background: #fbfcfd;
+    }
+
+    .section-label {
+      margin: 0 0 7px;
+      color: #536170;
+      font-size: 11px;
+      line-height: 1.4;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 7px;
+    }
+
+    .step {
+      display: flex;
+      align-items: flex-start;
+      gap: 7px;
+      color: #344251;
+      font-size: 11px;
+      line-height: 1.35;
+    }
+
+    .step-number {
+      display: grid;
+      width: 19px;
+      height: 19px;
+      flex: 0 0 19px;
+      place-items: center;
+      border-radius: 50%;
+      background: #2563c9;
+      color: #ffffff;
+      font-size: 10px;
+      font-weight: 600;
+    }
+
+    .tool-section {
+      padding: 9px 15px 10px;
+      border-bottom: 1px solid #e4e8ed;
+    }
+
+    .tool-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 7px;
+    }
+
+    .tool-heading .section-label {
+      margin: 0;
+    }
+
+    .ink-note {
+      color: #778390;
+      font-size: 10px;
+      line-height: 1.4;
+    }
+
+    .tools {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+    }
+
+    .tool {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      padding: 6px 3px;
+      border: 1px solid #d7dde4;
+      border-radius: 4px;
+      background: #ffffff;
+      color: #44515f;
+      font-size: 11px;
+      line-height: 1.4;
+      font-weight: 500;
+    }
+
+    .tool svg {
+      width: 15px;
+      height: 15px;
+      flex: 0 0 auto;
+    }
+
+    .tool.active {
+      border-color: #2563c9;
+      background: #2563c9;
+      color: #ffffff;
+    }
+
+    .workspace {
+      padding: 11px 15px 10px;
+      background: #f8f9fa;
+      border-bottom: 1px solid #e4e8ed;
+    }
+
+    .paper {
+      position: relative;
+      padding: 11px 13px 12px 33px;
+      border: 1px solid #ced8e3;
+      border-radius: 3px;
+      background:
+        linear-gradient(90deg, transparent 20px, #efb5b5 20px, #efb5b5 21px, transparent 21px),
+        repeating-linear-gradient(180deg, #ffffff 0, #ffffff 27px, #dce8f4 28px);
+      box-shadow: 0 3px 8px rgba(41, 55, 72, 0.08);
+    }
+
+    .paper::before {
+      content: "";
+      position: absolute;
+      left: 8px;
+      top: 13px;
+      width: 6px;
+      height: 6px;
+      border: 1px solid #b8c1cb;
+      border-radius: 50%;
+      background: #f8f9fa;
+      box-shadow: 0 36px 0 #f8f9fa, 0 36px 0 1px #b8c1cb, 0 72px 0 #f8f9fa, 0 72px 0 1px #b8c1cb;
+    }
+
+    .question-number {
+      margin: 0 0 7px;
+      color: #647486;
+      font-size: 10px;
+      line-height: 1.4;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .sentence {
+      position: relative;
+      z-index: 1;
+      margin: 0;
+      color: #1d2733;
+      font-size: 15px;
+      line-height: 1.8;
+      font-weight: 400;
+    }
+
+    .hint {
+      position: relative;
+      z-index: 1;
+      margin: 7px 0 0;
+      color: #6f7e8c;
+      font-size: 10px;
+      line-height: 1.5;
+    }
+
+    .annotation {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    .canvas-status {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin-top: 7px;
+      color: #657181;
+      font-size: 10px;
+      line-height: 1.4;
+    }
+
+    .canvas-status svg {
+      width: 13px;
+      height: 13px;
+      color: #2563c9;
+      flex: 0 0 auto;
+    }
+
+    .actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 9px 15px;
+    }
+
+    .clear-button,
+    .submit-button {
+      border-radius: 4px;
+      font-size: 12px;
+      line-height: 1.5;
+      font-weight: 500;
+    }
+
+    .clear-button {
+      padding: 7px 3px;
+      border: 0;
+      background: transparent;
+      color: #5e6a78;
+    }
+
+    .submit-button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 7px 12px;
+      border: 1px solid #2563c9;
+      background: #2563c9;
+      color: #ffffff;
+    }
+
+    .submit-button svg {
+      width: 15px;
+      height: 15px;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <main class="editor" aria-label="Verbloom sentence annotation exercise">
+      <header class="editor-header">
+        <p class="eyebrow">Verbloom Practice · Question 4 of 6</p>
+        <h1>Dependent clause review</h1>
+        <p class="lesson-meta">Grammar Foundations · Lesson 8 · Intermediate</p>
+        <div class="lesson-details" aria-label="Lesson details">
+          <span class="detail">Skill: clause structure</span>
+          <span class="detail">Est. 2 min</span>
+          <span class="detail">1 point</span>
+        </div>
+      </header>
+
+      <section class="task-plan" aria-labelledby="plan-label">
+        <p class="section-label" id="plan-label">Complete in this order</p>
+        <div class="steps">
+          <div class="step">
+            <span class="step-number">1</span>
+            <span>Underline the full dependent clause.</span>
+          </div>
+          <div class="step">
+            <span class="step-number">2</span>
+            <span>Circle the conjunction that introduces it.</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="tool-section" aria-labelledby="tool-label">
+        <div class="tool-heading">
+          <p class="section-label" id="tool-label">Choose a tool</p>
+          <span class="ink-note">Blue ink required</span>
+        </div>
+        <div class="tools" role="toolbar" aria-label="Drawing tools">
+          <button class="tool active" type="button" aria-pressed="true">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M4 20l4.2-1 10.6-10.6a2 2 0 0 0 0-2.8l-.4-.4a2 2 0 0 0-2.8 0L5 15.8 4 20Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+              <path d="m14.5 6.3 3.2 3.2" stroke="currentColor" stroke-width="1.8"/>
+            </svg>
+            Pen
+          </button>
+          <button class="tool" type="button">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="m5 15 8.8-8.8 4 4L9 19H5v-4Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+              <path d="M12.2 7.8 16.2 12M4 21h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+            </svg>
+            Mark
+          </button>
+          <button class="tool" type="button">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <rect x="5" y="5" width="14" height="14" rx="1" stroke="currentColor" stroke-width="1.8"/>
+              <circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.8"/>
+            </svg>
+            Shape
+          </button>
+          <button class="tool" type="button">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="m7.2 17.8-3-3a2 2 0 0 1 0-2.8l6.8-6.8a2 2 0 0 1 2.8 0l5 5a2 2 0 0 1 0 2.8L14 17.8H7.2Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+              <path d="m9 7.2 7.8 7.8M13.5 17.8H20" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+            </svg>
+            Erase
+          </button>
+        </div>
+      </section>
+
+      <section class="workspace" aria-label="Sentence canvas">
+        <div class="paper">
+          <p class="question-number">Sentence 4 · Annotate below</p>
+          <p class="sentence">Although it was raining, the class continued outside.</p>
+          <p class="hint">Check that both marks are visible before submitting.</p>
+
+          <svg class="annotation" viewBox="0 0 324 126" preserveAspectRatio="none" fill="none" aria-hidden="true">
+            <path d="M36 76 C73 79, 110 76, 155 78" stroke="#2563c9" stroke-width="3" stroke-linecap="round"/>
+            <path d="M35 39 C43 33, 87 32, 101 38 C108 42, 108 54, 100 58 C82 63, 49 62, 36 57 C29 53, 29 44, 35 39Z" stroke="#2563c9" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+
+        <div class="canvas-status">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="m5 12 4 4L19 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Draft saved at 2:14 PM
+        </div>
+      </section>
+
+      <footer class="actions">
+        <button class="clear-button" type="button">Clear marks</button>
+        <button class="submit-button" type="button">
+          Submit answer
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="m9 5 7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </footer>
+    </main>
+  </div>
+</body>
+</html>

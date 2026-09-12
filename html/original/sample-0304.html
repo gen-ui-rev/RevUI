@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Send Money — Gatherline</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #d8d9de;
+      color: #202127;
+      font-family: 'Inter', system-ui, sans-serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #f2f2f5;
+    }
+
+    .topbar {
+      min-height: 56px;
+      padding: 0 12px;
+      display: grid;
+      grid-template-columns: 40px 1fr 64px;
+      align-items: center;
+      background: #ffffff;
+      border-bottom: 1px solid #e1e1e6;
+    }
+
+    .icon-button {
+      width: 40px;
+      height: 40px;
+      padding: 8px;
+      border: 0;
+      background: transparent;
+      color: #27282e;
+      display: grid;
+      place-items: center;
+    }
+
+    .icon-button svg,
+    .nav-icon svg {
+      width: 22px;
+      height: 22px;
+      display: block;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .topbar-title {
+      margin: 0;
+      text-align: center;
+      font-size: 17px;
+      line-height: 22px;
+      font-weight: 600;
+    }
+
+    .activity-link {
+      border: 0;
+      padding: 8px 0;
+      background: transparent;
+      color: #b31273;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 600;
+      text-align: right;
+    }
+
+    main {
+      flex: 1;
+      padding: 14px 16px 12px;
+    }
+
+    .field-label,
+    .section-title {
+      margin: 0;
+      color: #555761;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 600;
+    }
+
+    .recipient-field {
+      margin-top: 7px;
+      padding: 9px 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #ffffff;
+      border: 1px solid #d8d8de;
+      border-radius: 4px;
+    }
+
+    .monogram {
+      width: 38px;
+      height: 38px;
+      flex: 0 0 38px;
+      border-radius: 4px;
+      background: #ece0e8;
+      color: #8d145f;
+      display: grid;
+      place-items: center;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
+    .recipient-copy,
+    .person-copy {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .recipient-name,
+    .person-name {
+      margin: 0;
+      color: #202127;
+      font-size: 14px;
+      line-height: 19px;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .recipient-handle,
+    .person-detail {
+      margin: 1px 0 0;
+      color: #747680;
+      font-size: 12px;
+      line-height: 17px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .change-button {
+      border: 0;
+      padding: 7px 4px;
+      background: transparent;
+      color: #b31273;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 600;
+    }
+
+    .amount-card {
+      margin-top: 12px;
+      padding: 17px 16px 15px;
+      background: #ffffff;
+      border: 1px solid #ece8eb;
+      border-radius: 4px;
+      box-shadow: 0 6px 18px rgba(45, 36, 42, 0.08);
+    }
+
+    .amount-label {
+      margin: 0;
+      color: #555761;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 500;
+    }
+
+    .amount-value {
+      margin: 4px 0 12px;
+      color: #b31273;
+      font-size: 46px;
+      line-height: 54px;
+      font-weight: 700;
+      letter-spacing: -0.04em;
+    }
+
+    .amount-rule {
+      height: 2px;
+      background: #b31273;
+    }
+
+    .balance-line {
+      margin-top: 10px;
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .balance-label {
+      color: #6b6d76;
+      font-size: 12px;
+      line-height: 17px;
+    }
+
+    .balance-value {
+      color: #303139;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 600;
+    }
+
+    .quick-amounts {
+      margin-top: 12px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 7px;
+    }
+
+    .quick-amount {
+      min-height: 34px;
+      border: 1px solid #d9d9df;
+      border-radius: 4px;
+      background: #fafafd;
+      color: #44464f;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 500;
+    }
+
+    .recent-section {
+      margin-top: 15px;
+    }
+
+    .section-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .section-note {
+      color: #878892;
+      font-size: 12px;
+      line-height: 17px;
+    }
+
+    .people-list {
+      margin-top: 7px;
+      background: #ffffff;
+      border: 1px solid #dfdfe4;
+      border-radius: 4px;
+    }
+
+    .person-row {
+      min-height: 53px;
+      padding: 7px 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 1px solid #e8e8ec;
+    }
+
+    .person-row:last-child {
+      border-bottom: 0;
+    }
+
+    .person-row .monogram {
+      width: 36px;
+      height: 36px;
+      flex-basis: 36px;
+      background: #e8e9ed;
+      color: #555863;
+    }
+
+    .person-action {
+      min-width: 49px;
+      padding: 6px 8px;
+      border: 1px solid #d7d7dd;
+      border-radius: 4px;
+      background: #ffffff;
+      color: #4d4f58;
+      font-size: 12px;
+      line-height: 17px;
+      font-weight: 600;
+    }
+
+    .action-area {
+      padding: 10px 16px;
+      background: #ffffff;
+      border-top: 1px solid #dedee3;
+    }
+
+    .primary-action {
+      width: 100%;
+      min-height: 48px;
+      padding: 12px 16px;
+      border: 0;
+      border-radius: 4px;
+      background: #b31273;
+      color: #ffffff;
+      font-size: 15px;
+      line-height: 22px;
+      font-weight: 700;
+    }
+
+    .tabbar {
+      min-height: 66px;
+      padding: 6px 12px 7px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      background: #ffffff;
+      border-top: 1px solid #dedee3;
+    }
+
+    .nav-item {
+      border: 0;
+      padding: 2px 0;
+      background: transparent;
+      color: #747680;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 500;
+    }
+
+    .nav-item.active {
+      color: #b31273;
+      font-weight: 600;
+    }
+
+    .nav-icon {
+      width: 24px;
+      height: 24px;
+      display: grid;
+      place-items: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <button class="icon-button" type="button" aria-label="Go back">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M15 18l-6-6 6-6"></path>
+        </svg>
+      </button>
+      <h1 class="topbar-title">Send money</h1>
+      <button class="activity-link" type="button">Activity</button>
+    </header>
+
+    <main>
+      <p class="field-label">To</p>
+      <section class="recipient-field" aria-label="Selected recipient">
+        <div class="monogram" aria-hidden="true">EP</div>
+        <div class="recipient-copy">
+          <p class="recipient-name">Elena Park</p>
+          <p class="recipient-handle">@elenap · Gatherline friend</p>
+        </div>
+        <button class="change-button" type="button">Change</button>
+      </section>
+
+      <section class="amount-card" aria-label="Transfer amount">
+        <p class="amount-label">Amount</p>
+        <p class="amount-value">$125.00</p>
+        <div class="amount-rule"></div>
+        <div class="balance-line">
+          <span class="balance-label">Gatherline balance</span>
+          <span class="balance-value">$842.16 available</span>
+        </div>
+        <div class="quick-amounts" aria-label="Quick amounts">
+          <button class="quick-amount" type="button">$25</button>
+          <button class="quick-amount" type="button">$50</button>
+          <button class="quick-amount" type="button">$100</button>
+          <button class="quick-amount" type="button">$200</button>
+        </div>
+      </section>
+
+      <section class="recent-section" aria-labelledby="recent-title">
+        <div class="section-heading">
+          <h2 class="section-title" id="recent-title">Recent people</h2>
+          <span class="section-note">From your circles</span>
+        </div>
+
+        <div class="people-list">
+          <div class="person-row">
+            <div class="monogram" aria-hidden="true">MC</div>
+            <div class="person-copy">
+              <p class="person-name">Marcus Cole</p>
+              <p class="person-detail">@marcus.c · Paid May 18</p>
+            </div>
+            <button class="person-action" type="button">Select</button>
+          </div>
+
+          <div class="person-row">
+            <div class="monogram" aria-hidden="true">NF</div>
+            <div class="person-copy">
+              <p class="person-name">Nora Fields</p>
+              <p class="person-detail">@noraf · Paid May 11</p>
+            </div>
+            <button class="person-action" type="button">Select</button>
+          </div>
+
+          <div class="person-row">
+            <div class="monogram" aria-hidden="true">JL</div>
+            <div class="person-copy">
+              <p class="person-name">Jordan Lee</p>
+              <p class="person-detail">@jordanl · Paid April 29</p>
+            </div>
+            <button class="person-action" type="button">Select</button>
+          </div>
+
+          <div class="person-row">
+            <div class="monogram" aria-hidden="true">RS</div>
+            <div class="person-copy">
+              <p class="person-name">Riley Stone</p>
+              <p class="person-detail">@rileystone · Paid April 22</p>
+            </div>
+            <button class="person-action" type="button">Select</button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <div class="action-area">
+      <button class="primary-action" type="button">Review $125.00 transfer</button>
+    </div>
+
+    <nav class="tabbar" aria-label="Gatherline navigation">
+      <button class="nav-item" type="button">
+        <span class="nav-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M3 11.5L12 4l9 7.5"></path>
+            <path d="M5.5 10.5V20h13v-9.5"></path>
+          </svg>
+        </span>
+        <span>Home</span>
+      </button>
+
+      <button class="nav-item" type="button">
+        <span class="nav-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M7 8.5h10"></path>
+            <path d="M7 12h7"></path>
+            <path d="M5 19l-1 2 4-2h9a4 4 0 0 0 4-4V7a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v8a4 4 0 0 0 2 3.5z"></path>
+          </svg>
+        </span>
+        <span>Messages</span>
+      </button>
+
+      <button class="nav-item active" type="button" aria-current="page">
+        <span class="nav-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 8h13"></path>
+            <path d="M13 4l4 4-4 4"></path>
+            <path d="M20 16H7"></path>
+            <path d="M11 12l-4 4 4 4"></path>
+          </svg>
+        </span>
+        <span>Send</span>
+      </button>
+
+      <button class="nav-item" type="button">
+        <span class="nav-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="8" r="4"></circle>
+            <path d="M4.5 21a7.5 7.5 0 0 1 15 0"></path>
+          </svg>
+        </span>
+        <span>Profile</span>
+      </button>
+    </nav>
+  </div>
+</body>
+</html>

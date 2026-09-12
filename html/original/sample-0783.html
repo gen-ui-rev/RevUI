@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Linden Study Lesson Browser</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #d8d9d3;
+      color: #252820;
+      font-family: 'Manrope', system-ui, sans-serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #fbfbf8;
+      border: 1px solid #c7c9c0;
+    }
+
+    .browser-top {
+      flex: none;
+      background: #eceee7;
+      border-bottom: 1px solid #d4d7cd;
+    }
+
+    .browser-heading {
+      display: grid;
+      grid-template-columns: 36px 1fr 36px;
+      align-items: center;
+      padding: 10px 12px 7px;
+    }
+
+    .browser-title {
+      min-width: 0;
+      text-align: center;
+    }
+
+    .browser-title strong {
+      display: block;
+      font-size: 14px;
+      line-height: 19px;
+      font-weight: 700;
+    }
+
+    .browser-title span {
+      display: block;
+      font-size: 12px;
+      line-height: 16px;
+      color: #74786d;
+    }
+
+    .icon-button {
+      width: 36px;
+      height: 36px;
+      padding: 7px;
+      border: 0;
+      background: transparent;
+      color: #35392f;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .icon-button svg,
+    .toolbar-button svg {
+      width: 22px;
+      height: 22px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .address-wrap {
+      padding: 0 14px 12px;
+    }
+
+    .address-bar {
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 9px 11px;
+      background: #ffffff;
+      border: 1px solid #cfd2c8;
+      border-radius: 4px;
+      color: #4d5247;
+    }
+
+    .address-bar svg {
+      width: 17px;
+      height: 17px;
+      flex: none;
+      fill: none;
+      stroke: #687342;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .address {
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 500;
+    }
+
+    .web-view {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      background: #fbfbf8;
+    }
+
+    .site-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 15px 22px;
+      border-bottom: 1px solid #e1e2dc;
+    }
+
+    .service-name {
+      font-size: 15px;
+      line-height: 21px;
+      font-weight: 700;
+      letter-spacing: -0.2px;
+    }
+
+    .lesson-progress {
+      font-size: 12px;
+      line-height: 17px;
+      font-weight: 500;
+      color: #696e63;
+    }
+
+    main {
+      padding: 21px 24px 20px;
+    }
+
+    .breadcrumb {
+      margin: 0 0 10px;
+      color: #687342;
+      font-size: 12px;
+      line-height: 17px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      color: #22251e;
+      font-size: 29px;
+      line-height: 37px;
+      font-weight: 700;
+      letter-spacing: -0.8px;
+    }
+
+    .summary {
+      margin: 8px 0 10px;
+      max-width: 330px;
+      color: #565b50;
+      font-size: 15px;
+      line-height: 22px;
+    }
+
+    .lesson-meta {
+      display: flex;
+      gap: 14px;
+      color: #74786e;
+      font-size: 12px;
+      line-height: 17px;
+    }
+
+    .content-rule {
+      height: 1px;
+      margin: 18px 0;
+      background: #dfe1da;
+    }
+
+    .lesson-section + .lesson-section {
+      margin-top: 20px;
+    }
+
+    h2 {
+      margin: 0 0 7px;
+      font-size: 18px;
+      line-height: 25px;
+      font-weight: 700;
+      letter-spacing: -0.25px;
+    }
+
+    .lesson-section p {
+      margin: 0;
+      color: #4f554a;
+      font-size: 14px;
+      line-height: 21px;
+    }
+
+    .patterns {
+      margin-top: 8px;
+      border-top: 1px solid #dfe1da;
+    }
+
+    .pattern-row {
+      display: grid;
+      grid-template-columns: 132px 1fr;
+      gap: 14px;
+      align-items: baseline;
+      padding: 10px 0;
+      border-bottom: 1px solid #dfe1da;
+    }
+
+    .pattern {
+      color: #4f5a30;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 700;
+    }
+
+    .use {
+      color: #62675d;
+      font-size: 13px;
+      line-height: 20px;
+    }
+
+    .quick-check {
+      padding-left: 13px;
+      border-left: 3px solid #687342;
+    }
+
+    .quick-check strong {
+      display: block;
+      margin-bottom: 4px;
+      color: #262a21;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 700;
+    }
+
+    .browser-toolbar {
+      flex: none;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      align-items: center;
+      padding: 10px 12px;
+      background: #eceee7;
+      border-top: 1px solid #d4d7cd;
+    }
+
+    .toolbar-button {
+      min-width: 0;
+      height: 40px;
+      padding: 8px;
+      border: 0;
+      background: transparent;
+      color: #373b32;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .toolbar-button.disabled {
+      color: #aeb2a8;
+    }
+
+    .toolbar-button.active {
+      color: #687342;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="browser-top">
+      <div class="browser-heading">
+        <button class="icon-button" type="button" aria-label="Close browser">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M6 6l12 12M18 6L6 18"></path>
+          </svg>
+        </button>
+
+        <div class="browser-title">
+          <strong>Lesson resource</strong>
+          <span>Opened in Linden Study</span>
+        </div>
+
+        <button class="icon-button" type="button" aria-label="More browser options">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="5" cy="12" r="1"></circle>
+            <circle cx="12" cy="12" r="1"></circle>
+            <circle cx="19" cy="12" r="1"></circle>
+          </svg>
+        </button>
+      </div>
+
+      <div class="address-wrap">
+        <div class="address-bar">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="5" y="10" width="14" height="10" rx="1"></rect>
+            <path d="M8 10V7a4 4 0 018 0v3"></path>
+          </svg>
+          <div class="address">guides.lindenstudy.example/requests</div>
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M19 8v5h-5"></path>
+            <path d="M18.1 13a7 7 0 10-1.4 4.2"></path>
+          </svg>
+        </div>
+      </div>
+    </header>
+
+    <div class="web-view">
+      <div class="site-bar">
+        <div class="service-name">Linden Study</div>
+        <div class="lesson-progress">Lesson 4 of 8</div>
+      </div>
+
+      <main>
+        <p class="breadcrumb">Everyday English · A2</p>
+        <h1>Ask for help politely</h1>
+        <p class="summary">Choose a clear phrase that sounds respectful without making your request too formal.</p>
+        <div class="lesson-meta">
+          <span>6 min read</span>
+          <span>Updated March 8, 2025</span>
+        </div>
+
+        <div class="content-rule"></div>
+
+        <section class="lesson-section">
+          <h2>Why the wording matters</h2>
+          <p>In everyday conversation, a short opening such as “Could you” softens a request. Add the action you need, then give a brief reason only when it helps the listener.</p>
+        </section>
+
+        <section class="lesson-section">
+          <h2>Useful patterns</h2>
+          <div class="patterns">
+            <div class="pattern-row">
+              <div class="pattern">Could you…?</div>
+              <div class="use">A neutral request for most situations</div>
+            </div>
+            <div class="pattern-row">
+              <div class="pattern">Would you mind…?</div>
+              <div class="use">A more careful or indirect request</div>
+            </div>
+            <div class="pattern-row">
+              <div class="pattern">Can I ask you to…?</div>
+              <div class="use">Useful before a longer request</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="lesson-section quick-check">
+          <strong>Quick check</strong>
+          <p>For a coworker, try: “Could you review this before 3:00 PM?”</p>
+        </section>
+      </main>
+    </div>
+
+    <nav class="browser-toolbar" aria-label="Browser navigation">
+      <button class="toolbar-button active" type="button" aria-label="Go back">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M15 18l-6-6 6-6"></path>
+        </svg>
+      </button>
+
+      <button class="toolbar-button disabled" type="button" aria-label="Go forward">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M9 18l6-6-6-6"></path>
+        </svg>
+      </button>
+
+      <button class="toolbar-button" type="button" aria-label="Share page">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 15V3"></path>
+          <path d="M8 7l4-4 4 4"></path>
+          <path d="M6 11H5a2 2 0 00-2 2v6a2 2 0 002 2h14a2 2 0 002-2v-6a2 2 0 00-2-2h-1"></path>
+        </svg>
+      </button>
+
+      <button class="toolbar-button" type="button" aria-label="Bookmark page">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M6 4a2 2 0 012-2h8a2 2 0 012 2v17l-6-4-6 4z"></path>
+        </svg>
+      </button>
+
+      <button class="toolbar-button" type="button" aria-label="Open tabs">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <rect x="5" y="5" width="14" height="14" rx="1"></rect>
+          <path d="M9 5V3h10a2 2 0 012 2v10h-2"></path>
+        </svg>
+      </button>
+    </nav>
+  </div>
+</body>
+</html>

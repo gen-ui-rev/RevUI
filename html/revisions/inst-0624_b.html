@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Guided Run Audio Player</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 24px 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #e9e5e3;
+      color: #292526;
+      font-family: 'Source Serif 4', Georgia, serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 560px;
+      padding: 22px 24px;
+      background: #fbf8f7;
+    }
+
+    .player {
+      width: 100%;
+    }
+
+    .eyebrow {
+      margin: 0 0 10px;
+      color: #a54d65;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      line-height: 1.2;
+      text-transform: uppercase;
+    }
+
+    .track-hero {
+      display: grid;
+      grid-template-columns: 108px minmax(0, 1fr);
+      align-items: center;
+      gap: 20px;
+    }
+
+    .artwork {
+      width: 108px;
+      height: 156px;
+      margin: 0;
+      border-radius: 54px 54px 8px 8px;
+      object-fit: cover;
+      object-position: 68% center;
+      display: block;
+      background: #d8ceca;
+    }
+
+    .track-copy {
+      min-width: 0;
+      text-align: left;
+    }
+
+    .track-copy h1 {
+      margin: 0;
+      font-size: 28px;
+      font-weight: 700;
+      line-height: 1.08;
+    }
+
+    .track-copy p {
+      margin: 8px 0 0;
+      color: #756b6e;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    .track-type {
+      display: block;
+      margin-bottom: 7px;
+      color: #a54d65;
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1.25;
+    }
+
+    .timeline {
+      margin-top: 17px;
+    }
+
+    .progress-track {
+      position: relative;
+      width: 100%;
+      height: 4px;
+      background: #ddd5d6;
+    }
+
+    .progress-value {
+      width: 38%;
+      height: 4px;
+      background: #b64f6c;
+    }
+
+    .time-row {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 6px;
+      color: #756b6e;
+      font-size: 12px;
+      line-height: 1;
+    }
+
+    .controls {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 22px;
+      margin-top: 11px;
+    }
+
+    .control {
+      width: 36px;
+      height: 36px;
+      padding: 7px;
+      border: 0;
+      border-radius: 6px;
+      background: transparent;
+      color: #40393b;
+      display: grid;
+      place-items: center;
+    }
+
+    .control.primary {
+      width: 48px;
+      height: 48px;
+      padding: 12px;
+      background: #b64f6c;
+      color: #fff;
+    }
+
+    .control svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+      fill: none;
+      stroke: currentColor;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-width: 1.8;
+    }
+
+    .control.primary svg {
+      fill: currentColor;
+      stroke: none;
+    }
+
+    .queue {
+      margin-top: 15px;
+      padding-top: 12px;
+      border-top: 1px solid #ddd5d6;
+    }
+
+    .queue h2 {
+      margin: 0 0 8px;
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 1.25;
+    }
+
+    .queue-row {
+      display: grid;
+      grid-template-columns: 42px minmax(0, 1fr) auto;
+      align-items: center;
+      column-gap: 10px;
+      padding: 6px 0;
+      border-top: 1px solid #ebe5e4;
+    }
+
+    .queue-row:first-of-type {
+      padding-top: 0;
+      border-top: 0;
+    }
+
+    .queue-row:last-of-type {
+      padding-bottom: 0;
+    }
+
+    .queue-thumb {
+      width: 42px;
+      height: 42px;
+      border-radius: 21px;
+      object-fit: cover;
+      display: block;
+      background: #d8ceca;
+    }
+
+    .queue-copy {
+      min-width: 0;
+    }
+
+    .queue-title {
+      margin: 0;
+      overflow: hidden;
+      color: #292526;
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 1.25;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .queue-meta {
+      margin: 2px 0 0;
+      overflow: hidden;
+      color: #756b6e;
+      font-size: 12px;
+      line-height: 1.25;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .duration {
+      color: #756b6e;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <main class="player" aria-label="Stillwell guided workout audio player">
+      <p class="eyebrow">Now playing · Guided run</p>
+
+      <div class="track-hero">
+        <img
+          class="artwork"
+          src="https://loremflickr.com/132/132/running?lock=8310"
+          width="132"
+          height="132"
+          alt="Runner training on an outdoor path"
+        >
+
+        <section class="track-copy" aria-labelledby="track-title-b">
+          <span class="track-type">Endurance session</span>
+          <h1 id="track-title-b">Steady Miles</h1>
+          <p>25 minutes with coach Rowan Hale</p>
+        </section>
+      </div>
+
+      <section class="timeline" aria-label="Playback progress">
+        <div class="progress-track" role="progressbar" aria-label="Audio progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="38">
+          <div class="progress-value"></div>
+        </div>
+        <div class="time-row">
+          <span>9:32</span>
+          <span>25:00</span>
+        </div>
+      </section>
+
+      <div class="controls" aria-label="Playback controls">
+        <button class="control" type="button" aria-label="Skip back 15 seconds">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M5 8V4L2.5 6.5 5 9"></path>
+            <path d="M5 6.5A8 8 0 1 1 4 16"></path>
+            <path d="M9.3 10.2v5.3"></path>
+            <path d="M13.2 11.2c.5-.7 2.1-.6 2.1.6 0 .8-.7 1.1-1.3 1.1-.8 0-1.4.4-1.4 1.2 0 1.5 2.4 1.7 3 .4"></path>
+          </svg>
+        </button>
+
+        <button class="control primary" type="button" aria-label="Pause">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="6.5" y="4.5" width="4" height="15"></rect>
+            <rect x="13.5" y="4.5" width="4" height="15"></rect>
+          </svg>
+        </button>
+
+        <button class="control" type="button" aria-label="Skip forward 15 seconds">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M19 8V4l2.5 2.5L19 9"></path>
+            <path d="M19 6.5A8 8 0 1 0 20 16"></path>
+            <path d="M8.3 10.2v5.3"></path>
+            <path d="M12.2 11.2c.5-.7 2.1-.6 2.1.6 0 .8-.7 1.1-1.3 1.1-.8 0-1.4.4-1.4 1.2 0 1.5 2.4 1.7 3 .4"></path>
+          </svg>
+        </button>
+      </div>
+
+      <section class="queue" aria-labelledby="queue-heading-b">
+        <h2 id="queue-heading-b">Up next</h2>
+
+        <div class="queue-row">
+          <img
+            class="queue-thumb"
+            src="https://loremflickr.com/44/44/gym?lock=8311"
+            width="44"
+            height="44"
+            alt="Training equipment in a gym"
+          >
+          <div class="queue-copy">
+            <p class="queue-title">Post-Run Mobility</p>
+            <p class="queue-meta">Recovery with June Mercer</p>
+          </div>
+          <span class="duration">8 min</span>
+        </div>
+
+        <div class="queue-row">
+          <img
+            class="queue-thumb"
+            src="https://loremflickr.com/44/44/running?lock=8312"
+            width="44"
+            height="44"
+            alt="Athlete running outdoors"
+          >
+          <div class="queue-copy">
+            <p class="queue-title">Easy Pace Reset</p>
+            <p class="queue-meta">Breath coaching with Ellis Ford</p>
+          </div>
+          <span class="duration">6 min</span>
+        </div>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

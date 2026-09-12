@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Invite Teammates — Fablewave</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #e7e7e4;
+      color: #252625;
+      font-family: 'Source Sans 3', system-ui, sans-serif;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      color: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #fbfbf9;
+      border: 1px solid #d7d7d2;
+    }
+
+    .topbar {
+      min-height: 64px;
+      padding: 0 14px;
+      display: grid;
+      grid-template-columns: 44px 1fr 44px;
+      align-items: center;
+      border-bottom: 1px solid #deded9;
+    }
+
+    .icon-button {
+      width: 40px;
+      height: 40px;
+      padding: 0;
+      display: grid;
+      place-items: center;
+      border: 0;
+      background: transparent;
+    }
+
+    .topbar-title {
+      min-width: 0;
+      text-align: center;
+      line-height: 1.1;
+    }
+
+    .service-name {
+      display: block;
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+    }
+
+    .page-name {
+      display: block;
+      margin-top: 3px;
+      color: #777872;
+      font-size: 12px;
+    }
+
+    .topbar svg,
+    .tabbar svg,
+    .role-control svg {
+      display: block;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    main {
+      flex: 1;
+      min-height: 0;
+      padding: 23px 20px 18px;
+    }
+
+    .workspace-label {
+      margin: 0 0 5px;
+      color: #6f706b;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+    }
+
+    h1,
+    h2 {
+      margin: 0;
+      font-family: 'Playfair Display', Georgia, serif;
+    }
+
+    h1 {
+      font-size: 32px;
+      line-height: 1.16;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .intro {
+      max-width: 340px;
+      margin: 8px 0 0;
+      color: #60615d;
+      font-size: 15px;
+      line-height: 1.45;
+    }
+
+    .invite-form {
+      margin-top: 22px;
+    }
+
+    .field-label {
+      display: block;
+      margin: 0 0 7px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .email-input {
+      width: 100%;
+      height: 50px;
+      padding: 0 14px;
+      border: 1px solid #bfc0bb;
+      border-radius: 10px;
+      outline: none;
+      background: #ffffff;
+      color: #292a29;
+      font-size: 15px;
+    }
+
+    .email-input:focus {
+      border-color: #292a29;
+    }
+
+    .role-field {
+      margin-top: 16px;
+    }
+
+    .role-control {
+      width: 100%;
+      min-height: 66px;
+      padding: 11px 13px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-align: left;
+      border: 1px solid #bfc0bb;
+      border-radius: 10px;
+      background: #ffffff;
+    }
+
+    .role-copy {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .role-name {
+      display: block;
+      font-size: 15px;
+      font-weight: 600;
+      line-height: 1.2;
+    }
+
+    .role-description {
+      display: block;
+      margin-top: 3px;
+      color: #686963;
+      font-size: 13px;
+      line-height: 1.25;
+    }
+
+    .send-button {
+      width: 100%;
+      height: 48px;
+      margin-top: 14px;
+      border: 1px solid #292a29;
+      border-radius: 10px;
+      background: #292a29;
+      color: #ffffff;
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .form-note {
+      margin: 8px 0 0;
+      color: #777872;
+      font-size: 13px;
+      line-height: 1.35;
+      text-align: center;
+    }
+
+    .pending {
+      margin-top: 25px;
+      padding-top: 20px;
+      border-top: 1px solid #deded9;
+    }
+
+    .pending-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .pending h2 {
+      font-size: 20px;
+      line-height: 1.25;
+      font-weight: 600;
+    }
+
+    .pending-count {
+      color: #777872;
+      font-size: 13px;
+    }
+
+    .invite-list {
+      margin-top: 10px;
+      border-top: 1px solid #deded9;
+    }
+
+    .invite-row {
+      min-height: 66px;
+      padding: 10px 0;
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      border-bottom: 1px solid #deded9;
+    }
+
+    .monogram {
+      width: 42px;
+      height: 42px;
+      flex: 0 0 42px;
+      display: grid;
+      place-items: center;
+      border-radius: 10px;
+      background: #e5e5e1;
+      color: #393a38;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .invite-details {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .invite-name {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 1.2;
+    }
+
+    .invite-meta {
+      display: block;
+      margin-top: 3px;
+      color: #74756f;
+      font-size: 12px;
+      line-height: 1.25;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .row-actions {
+      flex: 0 0 86px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .pill-button {
+      height: 26px;
+      padding: 0 10px;
+      display: block;
+      border-radius: 13px;
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 24px;
+      text-align: center;
+    }
+
+    .pill-resend {
+      border: 1px solid #292a29;
+      background: #292a29;
+      color: #ffffff;
+    }
+
+    .pill-cancel {
+      border: 1px solid #c7c8c2;
+      background: #fbfbf9;
+      color: #6f706b;
+    }
+
+    .tabbar {
+      min-height: 72px;
+      padding: 8px 12px 7px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border-top: 1px solid #d8d8d3;
+      background: #fbfbf9;
+    }
+
+    .tab {
+      position: relative;
+      padding: 2px 0 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      border: 0;
+      background: transparent;
+      color: #858680;
+      font-size: 12px;
+      line-height: 1;
+    }
+
+    .tab.active {
+      color: #292a29;
+      font-weight: 600;
+    }
+
+    .tab.active::before {
+      content: "";
+      position: absolute;
+      top: -8px;
+      width: 34px;
+      height: 2px;
+      background: #292a29;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <button class="icon-button" type="button" aria-label="Go back">
+        <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M15 18l-6-6 6-6"></path>
+        </svg>
+      </button>
+
+      <div class="topbar-title">
+        <span class="service-name">Fablewave Studio</span>
+        <span class="page-name">Workspace team</span>
+      </div>
+
+      <button class="icon-button" type="button" aria-label="More options">
+        <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="5" cy="12" r="1"></circle>
+          <circle cx="12" cy="12" r="1"></circle>
+          <circle cx="19" cy="12" r="1"></circle>
+        </svg>
+      </button>
+    </header>
+
+    <main>
+      <section aria-labelledby="invite-heading">
+        <p class="workspace-label">Northline Audio</p>
+        <h1 id="invite-heading">Invite teammates</h1>
+        <p class="intro">Add someone to manage episodes, playlists, and publishing for this workspace.</p>
+
+        <form class="invite-form">
+          <label class="field-label" for="email">Email address</label>
+          <input class="email-input" id="email" type="email" value="jordan.miles@example.com" aria-label="Teammate email address">
+
+          <div class="role-field">
+            <span class="field-label" id="permission-label">Permission</span>
+            <button class="role-control" type="button" aria-labelledby="permission-label role-selected">
+              <span class="role-copy">
+                <span class="role-name" id="role-selected">Editor</span>
+                <span class="role-description">Can upload, edit, and publish episodes</span>
+              </span>
+              <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M7 10l5 5 5-5"></path>
+              </svg>
+            </button>
+          </div>
+
+          <button class="send-button" type="submit">Send invitation</button>
+          <p class="form-note">The invitation expires in 7 days. Access can be changed later.</p>
+        </form>
+      </section>
+
+      <section class="pending" aria-labelledby="pending-heading">
+        <div class="pending-header">
+          <h2 id="pending-heading">Pending invitations</h2>
+          <span class="pending-count">2 invitations</span>
+        </div>
+
+        <div class="invite-list">
+          <div class="invite-row">
+            <div class="monogram" aria-hidden="true">CB</div>
+            <div class="invite-details">
+              <span class="invite-name">Cora Bell</span>
+              <span class="invite-meta">Producer · Sent May 18</span>
+            </div>
+            <div class="row-actions">
+              <button class="pill-button pill-resend" type="button">Resend</button>
+              <button class="pill-button pill-cancel" type="button" aria-label="Cancel invitation for Cora Bell">Cancel</button>
+            </div>
+          </div>
+
+          <div class="invite-row">
+            <div class="monogram" aria-hidden="true">ES</div>
+            <div class="invite-details">
+              <span class="invite-name">Evan Shaw</span>
+              <span class="invite-meta">Viewer · Sent May 20</span>
+            </div>
+            <div class="row-actions">
+              <button class="pill-button pill-resend" type="button">Resend</button>
+              <button class="pill-button pill-cancel" type="button" aria-label="Cancel invitation for Evan Shaw">Cancel</button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <nav class="tabbar" aria-label="Primary navigation">
+      <button class="tab" type="button">
+        <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M3 11.5L12 4l9 7.5"></path>
+          <path d="M5.5 10v10h13V10"></path>
+        </svg>
+        <span>Home</span>
+      </button>
+
+      <button class="tab" type="button">
+        <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
+          <rect x="4" y="4" width="16" height="16" rx="2"></rect>
+          <path d="M9 8v8l7-4-7-4z"></path>
+        </svg>
+        <span>Library</span>
+      </button>
+
+      <button class="tab active" type="button" aria-current="page">
+        <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="9" cy="8" r="3"></circle>
+          <circle cx="17" cy="9" r="2.5"></circle>
+          <path d="M3.5 19c.4-3.2 2.2-5 5.5-5s5.1 1.8 5.5 5"></path>
+          <path d="M14.5 14.5c3.7-.8 5.7.8 6 4.5"></path>
+        </svg>
+        <span>Team</span>
+      </button>
+
+      <button class="tab" type="button">
+        <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="12" r="3"></circle>
+          <path d="M19 13.5v-3l-2-.7a7 7 0 0 0-.8-1.8l.9-1.9-2.2-2.2-1.9.9a7 7 0 0 0-1.8-.8l-.7-2h-3l-.7 2a7 7 0 0 0-1.8.8l-1.9-.9L.9 6.1 1.8 8a7 7 0 0 0-.8 1.8l-2 .7v3l2 .7a7 7 0 0 0 .8 1.8l-.9 1.9 2.2 2.2 1.9-.9a7 7 0 0 0 1.8.8l.7 2h3l.7-2a7 7 0 0 0 1.8-.8l1.9.9 2.2-2.2-.9-1.9a7 7 0 0 0 .8-1.8z" transform="translate(2 0) scale(.83)"></path>
+        </svg>
+        <span>Settings</span>
+      </button>
+    </nav>
+  </div>
+</body>
+</html>

@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Larkline — Clinical Trial Consent</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body {
+    min-height: 100vh;
+    margin: 0;
+    padding: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #d4d4d8;
+    color: #18181b;
+    font-family: 'Source Serif 4', Georgia, serif;
+  }
+  .screen {
+    width: 1024px;
+    height: 768px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    background: #ffffff;
+    border: 1px solid #cfcfd4;
+    box-shadow: 0 18px 48px rgba(24, 24, 27, 0.12);
+  }
+
+  .topbar {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 17px 28px;
+    border-bottom: 1px solid #e4e4e7;
+  }
+  .back,
+  .download {
+    width: 34px;
+    height: 34px;
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #e4e4e7;
+    border-radius: 6px;
+    color: #3f3f46;
+    background: #ffffff;
+  }
+  .topbar-title {
+    flex: 1;
+    min-width: 0;
+  }
+  .topbar-title h1 {
+    margin: 0;
+    font-size: 19px;
+    line-height: 25px;
+    font-weight: 600;
+  }
+  .topbar-title p {
+    margin: 1px 0 0;
+    color: #71717a;
+    font-size: 13px;
+    line-height: 18px;
+  }
+  .status {
+    padding: 7px 11px;
+    border-radius: 999px;
+    background: #ecfdf5;
+    color: #166534;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 18px;
+  }
+
+  .workspace {
+    flex: 1;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: 252px 1fr;
+  }
+
+  .sidebar {
+    padding: 26px 20px;
+    border-right: 1px solid #e4e4e7;
+    background: #fafafa;
+  }
+  .sidebar-label {
+    margin: 0 10px 12px;
+    color: #a1a1aa;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 18px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+  }
+  .nav {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 10px;
+    border-radius: 6px;
+    color: #52525b;
+    font-size: 14px;
+    line-height: 20px;
+  }
+  .nav-item.on {
+    color: #18181b;
+    background: #ffffff;
+    box-shadow: inset 0 0 0 1px #dedee3;
+    font-weight: 600;
+  }
+  .nav-number {
+    width: 22px;
+    height: 22px;
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: #e4e4e7;
+    color: #52525b;
+    font-size: 12px;
+  }
+  .nav-item.on .nav-number {
+    background: #18181b;
+    color: #ffffff;
+  }
+  .study-card {
+    margin-top: 30px;
+    padding: 15px;
+    border: 1px solid #e4e4e7;
+    border-radius: 7px;
+    background: #ffffff;
+  }
+  .study-card .eyebrow {
+    margin: 0 0 5px;
+    color: #71717a;
+    font-size: 12px;
+    line-height: 17px;
+  }
+  .study-card strong {
+    display: block;
+    font-size: 14px;
+    line-height: 20px;
+  }
+  .study-card p {
+    margin: 6px 0 0;
+    color: #71717a;
+    font-size: 12px;
+    line-height: 18px;
+  }
+
+  .document {
+    min-width: 0;
+    padding: 27px 34px 25px;
+    display: flex;
+    flex-direction: column;
+  }
+  .document-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 24px;
+    padding-bottom: 17px;
+    border-bottom: 1px solid #e4e4e7;
+  }
+  .document-head h2 {
+    margin: 0;
+    font-size: 28px;
+    line-height: 34px;
+    font-weight: 700;
+  }
+  .document-head .subtitle {
+    margin: 5px 0 0;
+    color: #52525b;
+    font-size: 14px;
+    line-height: 20px;
+  }
+  .section-count {
+    flex: 0 0 auto;
+    min-width: 96px;
+    padding: 9px 13px;
+    border-left: 3px solid #71717a;
+    background: #f4f4f5;
+  }
+  .section-count strong {
+    display: block;
+    font-size: 20px;
+    line-height: 24px;
+  }
+  .section-count span {
+    color: #71717a;
+    font-size: 12px;
+    line-height: 17px;
+  }
+
+  .metadata {
+    display: flex;
+    gap: 34px;
+    padding: 15px 0 14px;
+  }
+  .meta-block span {
+    display: block;
+    margin-bottom: 2px;
+    color: #71717a;
+    font-size: 12px;
+    line-height: 17px;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+  }
+  .meta-block strong {
+    font-size: 18px;
+    line-height: 24px;
+    font-weight: 600;
+  }
+
+  .lead {
+    margin: 0 0 14px;
+    padding: 12px 14px;
+    border-left: 3px solid #a1a1aa;
+    background: #fafafa;
+    color: #3f3f46;
+    font-size: 14px;
+    line-height: 20px;
+  }
+  .sections {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px 24px;
+  }
+  .sections section {
+    min-width: 0;
+  }
+  .sections h3 {
+    margin: 0 0 4px;
+    font-size: 15px;
+    line-height: 21px;
+    font-weight: 700;
+  }
+  .sections p {
+    margin: 0;
+    color: #3f3f46;
+    font-size: 13px;
+    line-height: 19px;
+  }
+
+  .consent-panel {
+    margin-top: auto;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding-top: 18px;
+    border-top: 1px solid #e4e4e7;
+  }
+  .check {
+    width: 22px;
+    height: 22px;
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    background: #18181b;
+    color: #ffffff;
+  }
+  .consent-copy {
+    flex: 1;
+    min-width: 0;
+  }
+  .consent-copy strong {
+    display: block;
+    font-size: 14px;
+    line-height: 20px;
+  }
+  .consent-copy span {
+    display: block;
+    color: #71717a;
+    font-size: 12px;
+    line-height: 17px;
+  }
+  .decline,
+  .agree {
+    padding: 10px 18px;
+    border-radius: 5px;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 20px;
+  }
+  .decline {
+    color: #3f3f46;
+    border: 1px solid #d4d4d8;
+    background: #ffffff;
+  }
+  .agree {
+    color: #ffffff;
+    border: 1px solid #18181b;
+    background: #18181b;
+  }
+</style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <span class="back" aria-hidden="true">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
+      </span>
+      <div class="topbar-title">
+        <h1>Larkline Research</h1>
+        <p>Participant documents</p>
+      </div>
+      <span class="status">Enrollment open</span>
+      <span class="download" aria-hidden="true">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v10"/><path d="M8 11l4 4 4-4"/><path d="M5 19h14"/></svg>
+      </span>
+    </header>
+
+    <div class="workspace">
+      <aside class="sidebar">
+        <p class="sidebar-label">Consent sections</p>
+        <nav class="nav" aria-label="Consent sections">
+          <div class="nav-item on"><span class="nav-number">1</span><span>Study overview</span></div>
+          <div class="nav-item"><span class="nav-number">2</span><span>What you will do</span></div>
+          <div class="nav-item"><span class="nav-number">3</span><span>Risks and benefits</span></div>
+          <div class="nav-item"><span class="nav-number">4</span><span>Privacy and records</span></div>
+          <div class="nav-item"><span class="nav-number">5</span><span>Voluntary participation</span></div>
+          <div class="nav-item"><span class="nav-number">6</span><span>Consent confirmation</span></div>
+        </nav>
+
+        <div class="study-card">
+          <p class="eyebrow">Study reference</p>
+          <strong>LLV-2025-014</strong>
+          <p>Principal investigator<br>Dr. Maya Ellison</p>
+        </div>
+      </aside>
+
+      <main class="document">
+        <div class="document-head">
+          <div>
+            <h2>Clinical Trial Consent Form</h2>
+            <p class="subtitle">Vocabulary Retention and Adaptive Review Study</p>
+          </div>
+          <div class="section-count">
+            <strong>6</strong>
+            <span>consent sections</span>
+          </div>
+        </div>
+
+        <div class="metadata">
+          <div class="meta-block">
+            <span>Version</span>
+            <strong>3.1</strong>
+          </div>
+          <div class="meta-block">
+            <span>Effective date</span>
+            <strong>March 1, 2025</strong>
+          </div>
+          <div class="meta-block">
+            <span>Study duration</span>
+            <strong>12 weeks</strong>
+          </div>
+        </div>
+
+        <p class="lead">Please read this form before joining. It explains the study, what participation involves, and whom to contact with questions.</p>
+
+        <div class="sections">
+          <section>
+            <h3>1. Purpose of the study</h3>
+            <p>Larkline Learning, Inc. is studying whether personalized review schedules improve vocabulary retention in adult language learners.</p>
+          </section>
+          <section>
+            <h3>2. What participation involves</h3>
+            <p>You will complete ordinary app lessons, brief weekly memory checks, and two online surveys. Total added time is about 20 minutes per week.</p>
+          </section>
+          <section>
+            <h3>3. Possible risks and benefits</h3>
+            <p>Risks are limited to mild fatigue or frustration. You may not benefit directly, but your participation may improve future learning tools.</p>
+          </section>
+          <section>
+            <h3>4. Privacy and study records</h3>
+            <p>Your responses will be assigned a study code. Reports will use grouped results and will not include your name or contact details.</p>
+          </section>
+          <section>
+            <h3>5. Voluntary participation</h3>
+            <p>Joining is your choice. You may stop at any time without losing access to your Larkline account, lessons, or subscription benefits.</p>
+          </section>
+          <section>
+            <h3>6. Questions and contacts</h3>
+            <p>Contact the research team at research@larkline.example or the independent ethics office at ethics@larkline.example.</p>
+          </section>
+        </div>
+
+        <div class="consent-panel">
+          <span class="check" aria-hidden="true">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
+          </span>
+          <div class="consent-copy">
+            <strong>I have read this form and voluntarily agree to participate.</strong>
+            <span>I confirm that I am at least 18 years old and have had the opportunity to ask questions.</span>
+          </div>
+          <div class="decline">Decline</div>
+          <div class="agree">Provide consent</div>
+        </div>
+      </main>
+    </div>
+  </div>
+</body>
+</html>

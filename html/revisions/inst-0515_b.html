@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Soundloom Followers</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      border-radius: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #d8d4d0;
+      color: #272421;
+      font-family: 'Roboto', system-ui, sans-serif;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      border: 0;
+      cursor: default;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #fcfbfa;
+    }
+
+    .topbar {
+      display: grid;
+      grid-template-columns: 40px 1fr 40px;
+      align-items: center;
+      padding: 12px 16px;
+      background: #fcfbfa;
+    }
+
+    .icon-button {
+      width: 36px;
+      height: 36px;
+      padding: 8px;
+      display: grid;
+      place-items: center;
+      color: #403b37;
+      background: transparent;
+    }
+
+    .icon-button:last-child {
+      justify-self: end;
+    }
+
+    .top-title {
+      text-align: center;
+      line-height: 1.2;
+    }
+
+    .service-name {
+      display: block;
+      margin-bottom: 2px;
+      color: #88776b;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .page-title {
+      display: block;
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .profile-context {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      background: rgba(143, 124, 110, 0.14);
+    }
+
+    .profile-initial,
+    .person-initial,
+    .log-initial {
+      flex: 0 0 auto;
+      display: grid;
+      place-items: center;
+      color: #66584f;
+      background: rgba(143, 124, 110, 0.19);
+      font-weight: 700;
+    }
+
+    .profile-initial {
+      width: 40px;
+      height: 40px;
+      font-size: 16px;
+    }
+
+    .profile-copy {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .profile-name {
+      margin: 0;
+      font-size: 15px;
+      font-weight: 700;
+      line-height: 1.3;
+    }
+
+    .profile-meta {
+      margin: 3px 0 0;
+      color: #746b65;
+      font-size: 13px;
+      line-height: 1.3;
+    }
+
+    .tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      padding: 0 16px;
+      background: #fcfbfa;
+    }
+
+    .tab {
+      padding: 15px 8px 13px;
+      color: #756c66;
+      background: transparent;
+      font-size: 14px;
+      font-weight: 500;
+      text-align: center;
+    }
+
+    .tab.active {
+      color: #54483f;
+      background: rgba(143, 124, 110, 0.15);
+      font-weight: 700;
+    }
+
+    main {
+      flex: 1;
+      padding: 14px 16px 12px;
+    }
+
+    .search {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 11px 12px;
+      color: #796f68;
+      background: rgba(143, 124, 110, 0.1);
+    }
+
+    .search svg {
+      flex: 0 0 auto;
+    }
+
+    .search input {
+      width: 100%;
+      min-width: 0;
+      padding: 0;
+      border: 0;
+      outline: 0;
+      color: #302c29;
+      background: transparent;
+      font-size: 14px;
+    }
+
+    .search input::placeholder {
+      color: #837a74;
+      opacity: 1;
+    }
+
+    .section-heading {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 10px;
+      margin: 14px 0 6px;
+    }
+
+    .section-heading.secondary {
+      margin-top: 16px;
+    }
+
+    .section-heading h2 {
+      margin: 0;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .section-heading span {
+      color: #847a73;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .section-heading .pending-count {
+      color: #6b5b50;
+      font-weight: 700;
+    }
+
+    .followback-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 9px 10px 9px 12px;
+      background: rgba(143, 124, 110, 0.14);
+    }
+
+    .followback-bar p {
+      min-width: 0;
+      margin: 0;
+      overflow: hidden;
+      color: #584c43;
+      font-size: 12px;
+      line-height: 1.3;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .followback-bar button {
+      flex: 0 0 auto;
+      padding: 7px 11px;
+      color: #ffffff;
+      background: #8f7c6e;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .log-list {
+      margin-top: 8px;
+      border-top: 1px solid rgba(143, 124, 110, 0.3);
+    }
+
+    .log-row {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      padding: 9px 2px;
+      border-bottom: 1px solid rgba(143, 124, 110, 0.22);
+    }
+
+    .log-initial {
+      width: 34px;
+      height: 34px;
+      font-size: 14px;
+    }
+
+    .log-copy {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .log-name {
+      margin: 0;
+      overflow: hidden;
+      color: #2f2b28;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.3;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .log-meta {
+      margin: 2px 0 0;
+      overflow: hidden;
+      color: #7d746d;
+      font-size: 11px;
+      line-height: 1.3;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .log-action {
+      flex: 0 0 auto;
+      padding: 6px 10px;
+      color: #6b5b50;
+      background: transparent;
+      box-shadow: inset 0 0 0 1px rgba(143, 124, 110, 0.55);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .log-action.done {
+      padding-right: 2px;
+      color: #8b827c;
+      box-shadow: none;
+      font-weight: 500;
+    }
+
+    .people-list {
+      display: grid;
+      gap: 4px;
+    }
+
+    .person-row {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      padding: 10px;
+      background: rgba(143, 124, 110, 0.08);
+    }
+
+    .person-initial {
+      width: 42px;
+      height: 42px;
+      font-size: 15px;
+    }
+
+    .person-copy {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .person-name {
+      margin: 0;
+      overflow: hidden;
+      color: #2f2b28;
+      font-size: 15px;
+      font-weight: 500;
+      line-height: 1.3;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .person-detail {
+      margin: 3px 0 0;
+      overflow: hidden;
+      color: #796f68;
+      font-size: 12px;
+      line-height: 1.3;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .follow-button {
+      flex: 0 0 92px;
+      padding: 10px 8px;
+      color: #ffffff;
+      background: #8f7c6e;
+      font-size: 13px;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .bottom-nav {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      padding: 6px 10px 8px;
+      background: rgba(143, 124, 110, 0.08);
+    }
+
+    .nav-item {
+      display: grid;
+      justify-items: center;
+      gap: 3px;
+      padding: 6px 4px;
+      color: #7a716b;
+      background: transparent;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .nav-item.active {
+      color: #5d5047;
+      background: rgba(143, 124, 110, 0.16);
+      font-weight: 700;
+    }
+
+    svg {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <button class="icon-button" aria-label="Go back">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M15 5L8 12L15 19" stroke="currentColor" stroke-width="1.8" stroke-linecap="square" stroke-linejoin="miter"/>
+        </svg>
+      </button>
+
+      <div class="top-title">
+        <span class="service-name">Soundloom</span>
+        <span class="page-title">Followers</span>
+      </div>
+
+      <button class="icon-button" aria-label="More options">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <rect x="4" y="11" width="2" height="2"/>
+          <rect x="11" y="11" width="2" height="2"/>
+          <rect x="18" y="11" width="2" height="2"/>
+        </svg>
+      </button>
+    </header>
+
+    <section class="profile-context" aria-label="Current profile">
+      <div class="profile-initial" aria-hidden="true">A</div>
+      <div class="profile-copy">
+        <p class="profile-name">Avery Lane</p>
+        <p class="profile-meta">@averylane · Video essays</p>
+      </div>
+    </section>
+
+    <nav class="tabs" aria-label="Connections">
+      <button class="tab active" aria-current="page">Followers 248</button>
+      <button class="tab">Following 91</button>
+    </nav>
+
+    <main>
+      <label class="search">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="10.5" cy="10.5" r="6.5" stroke="currentColor" stroke-width="1.8"/>
+          <path d="M15.5 15.5L20 20" stroke="currentColor" stroke-width="1.8" stroke-linecap="square"/>
+        </svg>
+        <input type="text" placeholder="Search followers" aria-label="Search followers">
+      </label>
+
+      <div class="section-heading">
+        <h2>Recent followers</h2>
+        <span><span class="pending-count">3</span> to follow back</span>
+      </div>
+
+      <div class="followback-bar">
+        <p>3 of these 5 don't follow you back yet</p>
+        <button>Follow back all</button>
+      </div>
+
+      <section class="log-list" aria-label="Recent followers">
+        <article class="log-row">
+          <div class="log-initial" aria-hidden="true">T</div>
+          <div class="log-copy">
+            <p class="log-name">Tessa Rowan</p>
+            <p class="log-meta">@tessarowan · followed you 2h ago</p>
+          </div>
+          <button class="log-action">Follow back</button>
+        </article>
+
+        <article class="log-row">
+          <div class="log-initial" aria-hidden="true">N</div>
+          <div class="log-copy">
+            <p class="log-name">Nolan Beck</p>
+            <p class="log-meta">@nolanbeck · followed you 5h ago</p>
+          </div>
+          <span class="log-action done">Following</span>
+        </article>
+
+        <article class="log-row">
+          <div class="log-initial" aria-hidden="true">I</div>
+          <div class="log-copy">
+            <p class="log-name">Iris Caldwell</p>
+            <p class="log-meta">@iriscaldwell · followed you yesterday</p>
+          </div>
+          <button class="log-action">Follow back</button>
+        </article>
+
+        <article class="log-row">
+          <div class="log-initial" aria-hidden="true">M</div>
+          <div class="log-copy">
+            <p class="log-name">Milo Arden</p>
+            <p class="log-meta">@miloarden · followed you yesterday</p>
+          </div>
+          <span class="log-action done">Following</span>
+        </article>
+
+        <article class="log-row">
+          <div class="log-initial" aria-hidden="true">P</div>
+          <div class="log-copy">
+            <p class="log-name">Priya Nandel</p>
+            <p class="log-meta">@priyanandel · followed you 2d ago</p>
+          </div>
+          <button class="log-action">Follow back</button>
+        </article>
+      </section>
+
+      <div class="section-heading secondary">
+        <h2>From your listeners</h2>
+        <span>Suggested</span>
+      </div>
+
+      <section class="people-list" aria-label="Suggested listeners">
+        <article class="person-row">
+          <div class="person-initial" aria-hidden="true">C</div>
+          <div class="person-copy">
+            <p class="person-name">Clara Finch</p>
+            <p class="person-detail">@clarafinch · 12 shared follows</p>
+          </div>
+          <button class="follow-button">Follow</button>
+        </article>
+
+        <article class="person-row">
+          <div class="person-initial" aria-hidden="true">E</div>
+          <div class="person-copy">
+            <p class="person-name">Elliot Shore</p>
+            <p class="person-detail">@elliotshore · 8 shared follows</p>
+          </div>
+          <button class="follow-button">Follow</button>
+        </article>
+      </section>
+    </main>
+
+    <nav class="bottom-nav" aria-label="Primary navigation">
+      <button class="nav-item">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M5 8V16M9 5V19M13 8V16M17 6V18M21 9V15" stroke="currentColor" stroke-width="1.8"/>
+        </svg>
+        <span>Listen</span>
+      </button>
+
+      <button class="nav-item">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M5 4H19V20H5V4Z" stroke="currentColor" stroke-width="1.8"/>
+          <path d="M9 4V20" stroke="currentColor" stroke-width="1.8"/>
+        </svg>
+        <span>Library</span>
+      </button>
+
+      <button class="nav-item active" aria-current="page">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="9" cy="8" r="3" stroke="currentColor" stroke-width="1.8"/>
+          <circle cx="17" cy="9" r="2.5" stroke="currentColor" stroke-width="1.8"/>
+          <path d="M3.5 19C3.8 15.6 5.7 14 9 14C12.3 14 14.2 15.6 14.5 19" stroke="currentColor" stroke-width="1.8"/>
+          <path d="M15 14.5C18.2 14.2 20.1 15.7 20.5 18.5" stroke="currentColor" stroke-width="1.8"/>
+        </svg>
+        <span>People</span>
+      </button>
+    </nav>
+  </div>
+</body>
+</html>

@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Sidegroove — Friday Night Rotation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --accent:#d8232a;
+    --ink:#17161a;
+    --muted:#76747c;
+    --ground:#f1f1f2;
+    --line:#e5e4e8;
+    --shadow:0 1px 3px rgba(20,18,25,.09);
+  }
+  *{box-sizing:border-box;}
+  body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    padding:40px 0;
+    margin:0;
+    background:#dcdbdf;
+    font-family:'Source Sans 3', system-ui, sans-serif;
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+  }
+  .screen{
+    width:390px;
+    height:844px;
+    background:var(--ground);
+    display:flex;
+    flex-direction:column;
+    position:relative;
+  }
+
+  /* ---------- top bar ---------- */
+  .topbar{
+    background:#fff;
+    border-bottom:1px solid var(--line);
+    padding:12px 16px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .back{
+    width:26px;height:34px;display:flex;align-items:center;color:var(--ink);
+    flex:none;
+  }
+  .gavatar{
+    width:34px;height:34px;border-radius:6px;background:#2a2930;color:#fff;
+    display:flex;align-items:center;justify-content:center;
+    font-size:13px;font-weight:600;letter-spacing:.3px;flex:none;
+  }
+  .titlewrap{flex:1;min-width:0;}
+  .titlewrap h1{
+    font-family:'Playfair Display', Georgia, serif;
+    font-weight:700;font-size:17px;line-height:20px;margin:0;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .titlewrap p{margin:1px 0 0;font-size:12px;line-height:15px;color:var(--muted);}
+  .barbtn{width:26px;height:34px;display:flex;align-items:center;justify-content:flex-end;color:#4a4850;flex:none;}
+
+  /* ---------- now playing strip ---------- */
+  .nowbar{background:#fff;border-bottom:1px solid var(--line);}
+  .nowbar .inner{
+    padding:10px 16px;display:flex;align-items:center;gap:11px;
+  }
+  .nowbar img{width:40px;height:40px;border-radius:6px;object-fit:cover;display:block;background:#cfcdd3;flex:none;}
+  .nowtext{flex:1;min-width:0;}
+  .kicker{
+    font-size:12px;line-height:14px;font-weight:600;color:var(--accent);
+    letter-spacing:.7px;text-transform:uppercase;
+  }
+  .nowtext .track{
+    font-size:14px;line-height:18px;font-weight:600;margin-top:2px;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .times{font-size:12px;line-height:15px;color:var(--muted);flex:none;font-variant-numeric:tabular-nums;}
+  .progress{height:2px;background:#e9e8ec;}
+  .progress span{display:block;height:2px;width:56%;background:var(--accent);}
+
+  /* ---------- thread ---------- */
+  .thread{
+    flex:1;
+    padding:12px 16px;
+    display:flex;
+    flex-direction:column;
+    justify-content:flex-end;
+    gap:10px;
+  }
+  .divider{
+    text-align:center;font-size:12px;line-height:18px;color:var(--muted);
+  }
+  .row{display:flex;gap:8px;align-items:flex-end;}
+  .row.out{justify-content:flex-end;}
+  .mono{
+    width:32px;height:32px;border-radius:6px;flex:none;
+    display:flex;align-items:center;justify-content:center;
+    color:#fff;font-size:12px;font-weight:600;letter-spacing:.3px;
+  }
+  .mono.dw{background:#33323a;}
+  .mono.ma{background:#5c5b64;}
+  .mono.pr{background:#83828b;}
+  .mono.spacer{background:transparent;}
+  .stack{max-width:250px;min-width:0;}
+  .meta{
+    display:flex;align-items:baseline;gap:6px;margin:0 0 3px 2px;
+  }
+  .meta .who{font-size:13px;line-height:16px;font-weight:600;}
+  .meta .when{font-size:12px;line-height:16px;color:var(--muted);}
+  .bubble{
+    background:#fff;border-radius:6px;box-shadow:var(--shadow);
+    padding:10px 12px;font-size:14px;line-height:20px;
+  }
+  .out .bubble{background:var(--accent);color:#fff;}
+  .out .when{font-size:12px;line-height:16px;color:var(--muted);align-self:flex-end;margin-bottom:4px;}
+
+  .card{
+    background:#fff;border-radius:6px;box-shadow:var(--shadow);
+    padding:10px;display:flex;align-items:center;gap:10px;width:250px;
+  }
+  .card img{width:48px;height:48px;border-radius:6px;object-fit:cover;display:block;background:#cfcdd3;flex:none;}
+  .card .ct{flex:1;min-width:0;}
+  .card .ct .t{font-size:14px;line-height:18px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .card .ct .s{font-size:12px;line-height:16px;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .card .play{width:26px;height:26px;border-radius:6px;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;flex:none;}
+
+  .reacts{margin:5px 0 0 2px;display:inline-flex;align-items:center;gap:5px;
+    background:#fff;border:1px solid var(--line);border-radius:6px;padding:2px 7px;}
+  .reacts span{font-size:12px;line-height:16px;color:#4a4850;}
+
+  .typing{display:flex;align-items:center;gap:8px;margin-left:40px;}
+  .dots{display:flex;gap:3px;}
+  .dots i{width:5px;height:5px;border-radius:50%;background:#b6b4bc;display:block;}
+  .typing p{margin:0;font-size:12px;line-height:16px;color:var(--muted);}
+
+  /* ---------- composer ---------- */
+  .composer{
+    background:#fff;border-top:1px solid var(--line);
+    padding:10px 16px;display:flex;align-items:center;gap:10px;
+  }
+  .attach{width:34px;height:34px;border-radius:6px;background:var(--ground);color:#4a4850;
+    display:flex;align-items:center;justify-content:center;flex:none;}
+  .field{
+    flex:1;height:38px;border:1px solid var(--line);border-radius:6px;background:var(--ground);
+    display:flex;align-items:center;padding:0 12px;font-size:14px;color:#9b99a1;
+    overflow:hidden;white-space:nowrap;
+  }
+  .send{width:38px;height:38px;border-radius:6px;background:var(--accent);color:#fff;
+    display:flex;align-items:center;justify-content:center;flex:none;}
+
+  /* ---------- tab bar ---------- */
+  .tabs{
+    background:#fff;border-top:1px solid var(--line);
+    display:flex;padding:8px 6px 10px;
+  }
+  .tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;color:#8a888f;}
+  .tab span{font-size:12px;line-height:14px;}
+  .tab.active{color:var(--accent);}
+  .tab.active span{font-weight:600;}
+</style>
+</head>
+<body>
+<div class="screen">
+
+  <!-- top bar -->
+  <div class="topbar">
+    <div class="back" aria-hidden="true">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
+    </div>
+    <div class="gavatar">FR</div>
+    <div class="titlewrap">
+      <h1>Friday Night Rotation</h1>
+      <p>5 members · 3 listening now</p>
+    </div>
+    <div class="barbtn" aria-hidden="true">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="12" cy="19" r="1.8"/></svg>
+    </div>
+  </div>
+
+  <!-- now playing in room -->
+  <div class="nowbar">
+    <div class="inner">
+      <img src="https://loremflickr.com/40/40/vinyl?lock=3640" width="40" height="40" alt="Album sleeve for the track playing in the room">
+      <div class="nowtext">
+        <div class="kicker">Playing in room</div>
+        <div class="track">Cold Harbor Light — Neva Sparrow</div>
+      </div>
+      <div class="times">2:14 / 3:58</div>
+    </div>
+    <div class="progress"><span></span></div>
+  </div>
+
+  <!-- thread -->
+  <div class="thread">
+    <div class="divider">Today</div>
+
+    <div class="row">
+      <div class="mono dw">DW</div>
+      <div class="stack">
+        <div class="meta"><span class="who">Dana Whitlock</span><span class="when">7:42 PM</span></div>
+        <div class="bubble">Cleared the last three off the shared queue. The Halden set doesn't hold up.</div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="mono ma">MA</div>
+      <div class="stack">
+        <div class="meta"><span class="who">Miles Arroyo</span><span class="when">7:44 PM</span></div>
+        <div class="card">
+          <img src="https://loremflickr.com/48/48/studio?lock=3641" width="48" height="48" alt="Cover art for Cold Harbor Light">
+          <div class="ct">
+            <div class="t">Cold Harbor Light</div>
+            <div class="s">Neva Sparrow · 3:58</div>
+          </div>
+          <div class="play" aria-hidden="true">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7 4l13 8-13 8z"/></svg>
+          </div>
+        </div>
+        <div class="reacts">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="#d8232a" aria-hidden="true"><path d="M12 20s-7-4.6-7-9.4A3.9 3.9 0 0 1 12 8a3.9 3.9 0 0 1 7 2.6C19 15.4 12 20 12 20z"/></svg>
+          <span>3</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="row out">
+      <span class="when">7:46 PM</span>
+      <div class="stack">
+        <div class="bubble">Queued it. The bass on that intro is enormous.</div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="mono pr">PR</div>
+      <div class="stack">
+        <div class="meta"><span class="who">Priya Rankin</span><span class="when">7:47 PM</span></div>
+        <div class="bubble">Is that the 2019 mix or the reissue?</div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="mono spacer"></div>
+      <div class="stack">
+        <div class="bubble">Reissue. The 2019 master clips on the chorus.</div>
+      </div>
+    </div>
+
+    <div class="row out">
+      <span class="when">7:51 PM</span>
+      <div class="stack">
+        <div class="card">
+          <img src="https://loremflickr.com/48/48/guitar?lock=3642" width="48" height="48" alt="Cover art for Ninth Street Sessions">
+          <div class="ct">
+            <div class="t">Ninth Street Sessions</div>
+            <div class="s">The Loam Brothers · 3:38</div>
+          </div>
+          <div class="play" aria-hidden="true">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7 4l13 8-13 8z"/></svg>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="mono pr">PR</div>
+      <div class="stack">
+        <div class="meta"><span class="who">Priya Rankin</span><span class="when">7:53 PM</span></div>
+        <div class="bubble">Adding it after Dana's pick. Room is at 14 tracks now.</div>
+      </div>
+    </div>
+
+    <div class="typing">
+      <div class="dots" aria-hidden="true"><i></i><i></i><i></i></div>
+      <p>Theo Blanchard is typing</p>
+    </div>
+  </div>
+
+  <!-- composer -->
+  <div class="composer">
+    <div class="attach" aria-hidden="true">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+    </div>
+    <div class="field">Message the room</div>
+    <div class="send" aria-hidden="true">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M12 5l7 7-7 7"/></svg>
+    </div>
+  </div>
+
+  <!-- tab bar -->
+  <div class="tabs">
+    <div class="tab">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M4 10.5L12 4l8 6.5V20H4z"/></svg>
+      <span>Home</span>
+    </div>
+    <div class="tab">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="6"/><path d="M15.5 15.5L20 20"/></svg>
+      <span>Search</span>
+    </div>
+    <div class="tab active">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4z"/></svg>
+      <span>Rooms</span>
+    </div>
+    <div class="tab">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 5v14M9.5 5v14M14 5.8l4.6 12.6"/></svg>
+      <span>Library</span>
+    </div>
+    <div class="tab">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="9" r="3.4"/><path d="M5.5 19.5a6.8 6.8 0 0 1 13 0"/></svg>
+      <span>You</span>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

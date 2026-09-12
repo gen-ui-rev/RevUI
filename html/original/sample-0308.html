@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Northlark Groups</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 32px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #dfe3e2;
+      color: #1d2928;
+      font-family: 'Source Sans 3', system-ui, sans-serif;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      cursor: default;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #fbfcfc;
+      border: 1px solid #cfd6d4;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 13px 16px;
+      border-bottom: 1px solid #e1e6e5;
+      background: #ffffff;
+    }
+
+    .wordmark {
+      font-size: 19px;
+      line-height: 1;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+      color: #21312f;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .icon-button {
+      width: 32px;
+      height: 32px;
+      padding: 6px;
+      display: grid;
+      place-items: center;
+      border: 0;
+      background: transparent;
+      color: #354846;
+    }
+
+    .icon-button svg {
+      width: 20px;
+      height: 20px;
+      display: block;
+    }
+
+    .hero {
+      padding: 11px 16px 14px;
+      background: #dce9e7;
+      border-bottom: 1px solid #cadad7;
+    }
+
+    h1,
+    h2 {
+      margin: 0;
+      font-family: 'Playfair Display', Georgia, serif;
+      color: #1c302e;
+    }
+
+    h1 {
+      font-size: 32px;
+      line-height: 40px;
+      font-weight: 700;
+    }
+
+    .hero p {
+      margin: 1px 0 0;
+      font-size: 14px;
+      line-height: 20px;
+      color: #506663;
+    }
+
+    .search {
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 9px 11px;
+      border: 1px solid #b8cbc8;
+      border-radius: 6px;
+      background: #ffffff;
+      color: #617370;
+    }
+
+    .search svg {
+      width: 18px;
+      height: 18px;
+      flex: 0 0 auto;
+    }
+
+    .search span {
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .subtabs {
+      display: flex;
+      align-items: stretch;
+      padding: 0 16px;
+      border-bottom: 1px solid #dfe5e3;
+      background: #ffffff;
+    }
+
+    .subtab {
+      position: relative;
+      flex: 1;
+      padding: 11px 3px 10px;
+      border: 0;
+      background: transparent;
+      color: #667572;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    .subtab.active {
+      color: #285e59;
+    }
+
+    .subtab.active::after {
+      content: "";
+      position: absolute;
+      right: 14px;
+      bottom: -1px;
+      left: 14px;
+      height: 3px;
+      background: #4e817c;
+    }
+
+    .groups {
+      background: #fbfcfc;
+    }
+
+    .section-heading {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      padding: 11px 16px 9px;
+      border-bottom: 1px solid #e2e7e6;
+    }
+
+    h2 {
+      font-size: 20px;
+      line-height: 25px;
+      font-weight: 600;
+    }
+
+    .section-note {
+      font-size: 12px;
+      line-height: 18px;
+      color: #788682;
+    }
+
+    .group-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .group-row {
+      display: grid;
+      grid-template-columns: 58px minmax(0, 1fr) 50px;
+      align-items: center;
+      gap: 12px;
+      padding: 11px 16px;
+      border-bottom: 1px solid #e2e7e6;
+      background: #fbfcfc;
+    }
+
+    .group-photo {
+      width: 58px;
+      height: 58px;
+      display: block;
+      object-fit: cover;
+      border-radius: 6px;
+      background: #d4dddb;
+    }
+
+    .group-copy {
+      min-width: 0;
+    }
+
+    .group-name {
+      margin: 0;
+      overflow: hidden;
+      color: #21312f;
+      font-size: 16px;
+      line-height: 20px;
+      font-weight: 600;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .group-focus {
+      margin: 1px 0 0;
+      overflow: hidden;
+      color: #5d6d6a;
+      font-size: 14px;
+      line-height: 18px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .group-meta {
+      margin: 1px 0 0;
+      overflow: hidden;
+      color: #7a8784;
+      font-size: 12px;
+      line-height: 17px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .join-button {
+      width: 50px;
+      padding: 6px 0;
+      border: 1px solid #4f817c;
+      border-radius: 6px;
+      background: #ffffff;
+      color: #346a65;
+      font-size: 14px;
+      line-height: 18px;
+      font-weight: 600;
+    }
+
+    .tabbar {
+      margin-top: auto;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border-top: 1px solid #d8dfdd;
+      background: #ffffff;
+    }
+
+    .tab-item {
+      position: relative;
+      padding: 7px 2px 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      border: 0;
+      background: transparent;
+      color: #73807d;
+      font-size: 12px;
+      line-height: 15px;
+    }
+
+    .tab-item svg {
+      width: 21px;
+      height: 21px;
+      display: block;
+    }
+
+    .tab-item.active {
+      color: #2f6964;
+      font-weight: 600;
+    }
+
+    .tab-item.active::before {
+      content: "";
+      position: absolute;
+      top: -1px;
+      width: 34px;
+      height: 3px;
+      background: #4e817c;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <div class="wordmark">Northlark</div>
+      <div class="top-actions">
+        <button class="icon-button" type="button" aria-label="Group invitations">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="9" cy="8" r="3"></circle>
+            <path d="M3.5 18c.6-3 2.4-4.5 5.5-4.5s4.9 1.5 5.5 4.5"></path>
+            <path d="M18 7v6M15 10h6"></path>
+          </svg>
+        </button>
+        <button class="icon-button" type="button" aria-label="Notifications">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M6 9a6 6 0 0 1 12 0c0 5 2 6 2 6H4s2-1 2-6"></path>
+            <path d="M10 19h4"></path>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero" aria-labelledby="groups-title">
+        <h1 id="groups-title">Find a group</h1>
+        <p>Connect around the health routines you want to keep.</p>
+        <div class="search" role="search" aria-label="Search groups">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+            <circle cx="11" cy="11" r="6.5"></circle>
+            <path d="m16 16 4 4"></path>
+          </svg>
+          <span>Search goals, activities, or topics</span>
+        </div>
+      </section>
+
+      <nav class="subtabs" aria-label="Group views">
+        <button class="subtab active" type="button" aria-current="page">Explore</button>
+        <button class="subtab" type="button">My groups</button>
+        <button class="subtab" type="button">Nearby</button>
+      </nav>
+
+      <section class="groups" aria-labelledby="recommended-title">
+        <div class="section-heading">
+          <h2 id="recommended-title">Groups for you</h2>
+          <span class="section-note">Updated today</span>
+        </div>
+
+        <ul class="group-list">
+          <li class="group-row">
+            <img class="group-photo" src="https://loremflickr.com/58/58/running?lock=4570" width="58" height="58" alt="Runners training together on a path">
+            <div class="group-copy">
+              <p class="group-name">First 5K Crew</p>
+              <p class="group-focus">Three runs each week</p>
+              <p class="group-meta">1,248 members · Active today</p>
+            </div>
+            <button class="join-button" type="button">Join</button>
+          </li>
+
+          <li class="group-row">
+            <img class="group-photo" src="https://loremflickr.com/58/58/gym?lock=4571" width="58" height="58" alt="Strength training equipment in a gym">
+            <div class="group-copy">
+              <p class="group-name">Strength After 40</p>
+              <p class="group-focus">Safe, steady lifting plans</p>
+              <p class="group-meta">864 members · 18 posts today</p>
+            </div>
+            <button class="join-button" type="button">Join</button>
+          </li>
+
+          <li class="group-row">
+            <img class="group-photo" src="https://loremflickr.com/58/58/salad?lock=4572" width="58" height="58" alt="Fresh vegetable salad prepared for lunch">
+            <div class="group-copy">
+              <p class="group-name">Plant-Forward Lunches</p>
+              <p class="group-focus">Simple weekday meal ideas</p>
+              <p class="group-meta">2,106 members · 31 posts today</p>
+            </div>
+            <button class="join-button" type="button">Join</button>
+          </li>
+
+          <li class="group-row">
+            <img class="group-photo" src="https://loremflickr.com/58/58/running?lock=4573" width="58" height="58" alt="Weekend runners moving along an outdoor route">
+            <div class="group-copy">
+              <p class="group-name">Weekend Trail Runners</p>
+              <p class="group-focus">Local routes at every pace</p>
+              <p class="group-meta">592 members · Meets Saturday</p>
+            </div>
+            <button class="join-button" type="button">Join</button>
+          </li>
+
+          <li class="group-row">
+            <img class="group-photo" src="https://loremflickr.com/58/58/fruit?lock=4574" width="58" height="58" alt="Colorful fresh fruit arranged for a snack">
+            <div class="group-copy">
+              <p class="group-name">Steady Blood Sugar</p>
+              <p class="group-focus">Balanced meals and check-ins</p>
+              <p class="group-meta">735 members · 12 posts today</p>
+            </div>
+            <button class="join-button" type="button">Join</button>
+          </li>
+
+          <li class="group-row">
+            <img class="group-photo" src="https://loremflickr.com/58/58/gym?lock=4575" width="58" height="58" alt="Open exercise space for daily mobility work">
+            <div class="group-copy">
+              <p class="group-name">Mobility Every Day</p>
+              <p class="group-focus">Ten-minute guided routines</p>
+              <p class="group-meta">1,430 members · Active today</p>
+            </div>
+            <button class="join-button" type="button">Join</button>
+          </li>
+        </ul>
+      </section>
+    </main>
+
+    <nav class="tabbar" aria-label="Primary navigation">
+      <button class="tab-item" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M4 11.5 12 5l8 6.5"></path>
+          <path d="M6.5 10.5V20h11v-9.5"></path>
+          <path d="M10 20v-5h4v5"></path>
+        </svg>
+        <span>Today</span>
+      </button>
+
+      <button class="tab-item active" type="button" aria-current="page">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="9" cy="8" r="3"></circle>
+          <circle cx="17" cy="9" r="2.3"></circle>
+          <path d="M3.5 19c.5-3.5 2.4-5.2 5.5-5.2s5 1.7 5.5 5.2"></path>
+          <path d="M15 14c2.9-.7 5 .9 5.5 3.7"></path>
+        </svg>
+        <span>Groups</span>
+      </button>
+
+      <button class="tab-item" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="4" y="5" width="16" height="15" rx="2"></rect>
+          <path d="M8 3v4M16 3v4M4 10h16"></path>
+          <path d="m8 15 2 2 5-5"></path>
+        </svg>
+        <span>Plan</span>
+      </button>
+
+      <button class="tab-item" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="8" r="3.5"></circle>
+          <path d="M5 20c.7-4.2 3-6.3 7-6.3s6.3 2.1 7 6.3"></path>
+        </svg>
+        <span>Profile</span>
+      </button>
+    </nav>
+  </div>
+</body>
+</html>

@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Norlume Health History</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #d6d3d1;
+      color: #292524;
+      font-family: 'Roboto', system-ui, sans-serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #f5f5f4;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 15px 16px;
+      background: #ffffff;
+      border-bottom: 1px solid #e7e5e4;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-mark {
+      width: 30px;
+      height: 30px;
+      display: grid;
+      place-items: center;
+      border-radius: 10px;
+      background: #78716c;
+      color: #ffffff;
+    }
+
+    .brand-name {
+      font-size: 17px;
+      line-height: 22px;
+      font-weight: 700;
+      letter-spacing: -0.2px;
+    }
+
+    .calendar-button {
+      width: 36px;
+      height: 36px;
+      padding: 0;
+      display: grid;
+      place-items: center;
+      border: 1px solid #d6d3d1;
+      border-radius: 10px;
+      background: #ffffff;
+      color: #57534e;
+    }
+
+    main {
+      flex: 1;
+      min-height: 0;
+      padding: 16px 16px 12px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 24px;
+      line-height: 30px;
+      font-weight: 700;
+      letter-spacing: -0.4px;
+    }
+
+    .intro {
+      margin: 3px 0 0;
+      color: #78716c;
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .segmented {
+      display: flex;
+      gap: 4px;
+      margin-top: 12px;
+      padding: 3px;
+      border-radius: 12px;
+      background: #e7e5e4;
+    }
+
+    .segment {
+      flex: 1;
+      height: 34px;
+      padding: 0;
+      border: 0;
+      border-radius: 9px;
+      background: transparent;
+      color: #78716c;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 500;
+    }
+
+    .segment.active {
+      background: #ffffff;
+      color: #292524;
+      font-weight: 700;
+      box-shadow: 0 1px 3px rgba(41, 37, 36, 0.16);
+    }
+
+    .groups {
+      margin-top: 16px;
+    }
+
+    .group-card {
+      background: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(41, 37, 36, 0.08);
+    }
+
+    .group-card + .group-card {
+      margin-top: 12px;
+    }
+
+    .group-head {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+      padding: 12px;
+      border: 0;
+      border-radius: 12px;
+      background: transparent;
+      text-align: left;
+    }
+
+    .group-icon {
+      flex: none;
+      width: 36px;
+      height: 36px;
+      display: grid;
+      place-items: center;
+      border-radius: 10px;
+      background: #f1efee;
+      color: #57534e;
+    }
+
+    .group-meta {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .group-name {
+      margin: 0;
+      overflow: hidden;
+      font-size: 15px;
+      line-height: 20px;
+      font-weight: 700;
+      letter-spacing: -0.1px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .group-sub {
+      margin: 2px 0 0;
+      overflow: hidden;
+      color: #78716c;
+      font-size: 13px;
+      line-height: 16px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .chevron {
+      flex: none;
+      width: 18px;
+      height: 18px;
+      color: #a8a29e;
+    }
+
+    .group-card.open .group-icon {
+      background: #78716c;
+      color: #ffffff;
+    }
+
+    .group-card.open .chevron {
+      color: #57534e;
+    }
+
+    .group-entries {
+      padding: 4px 12px 8px;
+      border-top: 1px solid #e7e5e4;
+    }
+
+    .entry {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 0;
+    }
+
+    .entry + .entry {
+      border-top: 1px solid #f5f5f4;
+    }
+
+    .entry-copy {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .entry-title {
+      margin: 0;
+      overflow: hidden;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 500;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .entry-detail {
+      margin: 0;
+      overflow: hidden;
+      color: #78716c;
+      font-size: 12px;
+      line-height: 16px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .entry-when {
+      flex: none;
+      text-align: right;
+    }
+
+    .entry-time {
+      display: block;
+      color: #57534e;
+      font-size: 12px;
+      line-height: 20px;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .entry-day {
+      display: block;
+      color: #a8a29e;
+      font-size: 11px;
+      line-height: 16px;
+      white-space: nowrap;
+    }
+
+    .tabbar {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      padding: 9px 8px 11px;
+      background: #ffffff;
+      border-top: 1px solid #e7e5e4;
+    }
+
+    .tab {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      color: #a8a29e;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 500;
+      text-decoration: none;
+    }
+
+    .tab.active {
+      color: #57534e;
+    }
+
+    .tab-icon {
+      width: 22px;
+      height: 22px;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+            <path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="brand-name">Norlume</div>
+      </div>
+      <button class="calendar-button" type="button" aria-label="Choose date">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M7 3V6M17 3V6M4 9H20M5 5H19C19.55 5 20 5.45 20 6V20H4V6C4 5.45 4.45 5 5 5Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </header>
+
+    <main>
+      <h1>Health history</h1>
+      <p class="intro">Open a category to see its entries.</p>
+
+      <div class="segmented" role="group" aria-label="Grouping">
+        <button class="segment active" type="button" aria-pressed="true">By type</button>
+        <button class="segment" type="button" aria-pressed="false">By day</button>
+      </div>
+
+      <section class="groups" aria-label="Activity categories">
+        <div class="group-card open">
+          <button class="group-head" type="button" aria-expanded="true">
+            <span class="group-icon" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <path d="M3 12H7L9.5 6L14 18L16.5 12H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+            <span class="group-meta">
+              <span class="group-name">Vitals</span>
+              <span class="group-sub">12 entries · Last 30 days</span>
+            </span>
+            <svg class="chevron" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <path d="M6 12L10 8L14 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <div class="group-entries">
+            <article class="entry">
+              <div class="entry-copy">
+                <p class="entry-title">Blood pressure recorded</p>
+                <p class="entry-detail">118/76 mmHg · Resting</p>
+              </div>
+              <div class="entry-when">
+                <span class="entry-time">8:42 AM</span>
+                <span class="entry-day">Today</span>
+              </div>
+            </article>
+            <article class="entry">
+              <div class="entry-copy">
+                <p class="entry-title">Weight recorded</p>
+                <p class="entry-detail">164.8 lb · Home scale</p>
+              </div>
+              <div class="entry-when">
+                <span class="entry-time">7:06 AM</span>
+                <span class="entry-day">Jun 17</span>
+              </div>
+            </article>
+            <article class="entry">
+              <div class="entry-copy">
+                <p class="entry-title">Resting heart rate</p>
+                <p class="entry-detail">58 bpm · Overnight average</p>
+              </div>
+              <div class="entry-when">
+                <span class="entry-time">6:51 AM</span>
+                <span class="entry-day">Jun 17</span>
+              </div>
+            </article>
+          </div>
+        </div>
+
+        <div class="group-card">
+          <button class="group-head" type="button" aria-expanded="false">
+            <span class="group-icon" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <path d="M8.5 4.5H15.5C17.4 4.5 19 6.1 19 8V16C19 17.9 17.4 19.5 15.5 19.5H8.5C6.6 19.5 5 17.9 5 16V8C5 6.1 6.6 4.5 8.5 4.5Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                <path d="M5 12H19" stroke="currentColor" stroke-width="2"/>
+              </svg>
+            </span>
+            <span class="group-meta">
+              <span class="group-name">Medication</span>
+              <span class="group-sub">8 entries · Lisinopril, Atorvastatin</span>
+            </span>
+            <svg class="chevron" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <path d="M6 8L10 12L14 8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+
+        <div class="group-card">
+          <button class="group-head" type="button" aria-expanded="false">
+            <span class="group-icon" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <path d="M6 3V11M10 3V11M8 11V21M17 3C15.6 5 15 7 15 9.5C15 11 15.7 12 17 12.4V21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+            <span class="group-meta">
+              <span class="group-name">Nutrition</span>
+              <span class="group-sub">14 entries · Meals and hydration</span>
+            </span>
+            <svg class="chevron" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <path d="M6 8L10 12L14 8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+
+        <div class="group-card">
+          <button class="group-head" type="button" aria-expanded="false">
+            <span class="group-icon" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <path d="M4 18L9 8L13 14L16 9L20 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+            <span class="group-meta">
+              <span class="group-name">Movement</span>
+              <span class="group-sub">9 entries · Walks and workouts</span>
+            </span>
+            <svg class="chevron" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <path d="M6 8L10 12L14 8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+
+        <div class="group-card">
+          <button class="group-head" type="button" aria-expanded="false">
+            <span class="group-icon" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <path d="M20 14.5C18.9 15.2 17.6 15.6 16.2 15.6C12.2 15.6 9 12.4 9 8.4C9 7 9.4 5.7 10.1 4.6C6.6 5.3 4 8.4 4 12.1C4 16.4 7.5 19.9 11.8 19.9C15.5 19.9 18.6 17.3 19.3 13.8Z" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+            <span class="group-meta">
+              <span class="group-name">Sleep</span>
+              <span class="group-sub">7 entries · Avg 7 hr 21 min</span>
+            </span>
+            <svg class="chevron" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <path d="M6 8L10 12L14 8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+      </section>
+    </main>
+
+    <nav class="tabbar" aria-label="Primary navigation">
+      <a class="tab" href="#">
+        <svg class="tab-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M4 11L12 4L20 11V20H15V14H9V20H4V11Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+        </svg>
+        <span>Today</span>
+      </a>
+      <a class="tab active" href="#" aria-current="page">
+        <svg class="tab-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M5 6H19M5 12H19M5 18H19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          <circle cx="8" cy="6" r="1.7" fill="currentColor"/>
+          <circle cx="15" cy="12" r="1.7" fill="currentColor"/>
+          <circle cx="10" cy="18" r="1.7" fill="currentColor"/>
+        </svg>
+        <span>History</span>
+      </a>
+      <a class="tab" href="#">
+        <svg class="tab-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M5 19V13M12 19V5M19 19V9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <span>Insights</span>
+      </a>
+      <a class="tab" href="#">
+        <svg class="tab-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.8"/>
+          <path d="M5 21C5.7 16.8 8.1 15 12 15C15.9 15 18.3 16.8 19 21" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+        <span>Profile</span>
+      </a>
+    </nav>
+  </div>
+</body>
+</html>

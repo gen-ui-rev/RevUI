@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Wayfare Bag</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body {
+    min-height: 100vh; display: flex; justify-content: center; align-items: flex-start;
+    padding: 40px 0; margin: 0; background: #d9dde0;
+    font-family: 'Roboto', system-ui, sans-serif; color: #16202a;
+  }
+  .screen {
+    width: 390px; height: 844px; background: #ffffff;
+    display: flex; flex-direction: column; position: relative;
+  }
+
+  /* top bar */
+  .topbar {
+    display: flex; align-items: center; gap: 12px;
+    padding: 16px 16px; border-bottom: 1px solid #eceff1;
+  }
+  .topbar .back { width: 24px; height: 24px; display: block; }
+  .topbar h1 { font-size: 18px; font-weight: 500; margin: 0; flex: 1; letter-spacing: .1px; }
+  .topbar .count { font-size: 13px; color: #6b7a85; }
+
+  /* trip strip — accent */
+  .trip {
+    background: #e6eef2; padding: 11px 16px; border-bottom: 1px solid #d5e0e6;
+  }
+  .trip .name { font-size: 15px; font-weight: 500; line-height: 20px; }
+  .trip .meta { font-size: 13px; line-height: 17px; color: #4f6a78; margin-top: 1px; }
+
+  /* stay rows */
+  .list { padding: 0 16px; }
+  .row {
+    display: flex; gap: 12px; padding: 13px 0; border-bottom: 1px solid #eceff1;
+  }
+  .row img.thumb {
+    width: 76px; height: 76px; border-radius: 10px; object-fit: cover;
+    display: block; background: #c9d2d7; flex: none;
+  }
+  .body { flex: 1; min-width: 0; }
+  .line1 { display: flex; align-items: baseline; gap: 10px; }
+  .title {
+    flex: 1; min-width: 0; font-size: 15px; font-weight: 500; line-height: 20px;
+    overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
+  }
+  .price { font-size: 15px; font-weight: 500; line-height: 20px; white-space: nowrap; }
+  .sub {
+    font-size: 13px; line-height: 17px; color: #6b7a85; margin-top: 3px;
+    overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
+  }
+  .controls { display: flex; align-items: center; gap: 8px; margin-top: 10px; }
+  .clabel { font-size: 12px; color: #6b7a85; }
+  .step {
+    display: flex; align-items: center; border: 1px solid #d6dee3; border-radius: 10px;
+    height: 28px; overflow: hidden;
+  }
+  .step span.sbtn { width: 28px; height: 26px; display: flex; align-items: center; justify-content: center; }
+  .step .sval {
+    min-width: 28px; text-align: center; font-size: 14px; font-weight: 500;
+    border-left: 1px solid #e4eaee; border-right: 1px solid #e4eaee; line-height: 26px;
+  }
+  .remove { margin-left: auto; font-size: 13px; color: #52707f; }
+
+  /* add-ons */
+  .sechead {
+    padding: 11px 16px 5px; font-size: 13px; font-weight: 500; color: #6b7a85;
+    letter-spacing: .3px;
+  }
+  .arow { display: flex; gap: 10px; align-items: center; padding: 9px 0; border-bottom: 1px solid #eceff1; }
+  .arow img.athumb {
+    width: 40px; height: 40px; border-radius: 10px; object-fit: cover; display: block;
+    background: #c9d2d7; flex: none;
+  }
+  .atitle { font-size: 14px; font-weight: 500; line-height: 18px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+  .asub { font-size: 12px; line-height: 16px; color: #6b7a85; margin-top: 2px; }
+
+  /* summary */
+  .summary { padding: 11px 16px 12px; }
+  .sline { display: flex; justify-content: space-between; font-size: 14px; line-height: 20px; color: #435260; }
+  .sline .amt { color: #16202a; }
+  .sline.credit .amt { color: #52707f; }
+
+  /* footer */
+  .footer { margin-top: auto; border-top: 1px solid #e4eaee; padding: 10px 16px 12px; }
+  .totalrow { display: flex; align-items: baseline; justify-content: space-between; }
+  .totalrow .tlabel { font-size: 14px; color: #435260; }
+  .totalrow .tval { font-size: 20px; font-weight: 700; }
+  .note { font-size: 12px; color: #6b7a85; margin-top: 2px; }
+  .cta {
+    margin-top: 9px; height: 46px; border-radius: 10px; background: #4f6f80; color: #fff;
+    font-size: 15px; font-weight: 500; display: flex; align-items: center; justify-content: center;
+  }
+
+  /* tab bar */
+  .tabs { display: flex; border-top: 1px solid #eceff1; padding: 8px 0 9px; }
+  .tab { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; color: #8a969e; position: relative; }
+  .tab .tl { font-size: 12px; line-height: 14px; }
+  .tab.on { color: #33505f; }
+  .tab.on .tl { font-weight: 500; }
+  .badge {
+    position: absolute; top: -2px; left: 50%; margin-left: 5px;
+    min-width: 16px; height: 16px; border-radius: 10px; background: #4f6f80; color: #fff;
+    font-size: 12px; line-height: 16px; text-align: center; padding: 0 3px;
+  }
+</style>
+</head>
+<body>
+  <div class="screen">
+
+    <div class="topbar">
+      <svg class="back" viewBox="0 0 24 24" fill="none" stroke="#16202a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+      <h1>Trip Bag</h1>
+      <span class="count">5 items</span>
+    </div>
+
+    <div class="trip">
+      <div class="name">Coast &amp; Canyon, Spring 2026</div>
+      <div class="meta">Apr 12 – Apr 24 &middot; 2 travelers &middot; held for 48 hours</div>
+    </div>
+
+    <div class="list">
+
+      <div class="row">
+        <img class="thumb" src="https://loremflickr.com/76/76/hotel?lock=6580" width="76" height="76" alt="Harbor Light Hotel room in Lisbon">
+        <div class="body">
+          <div class="line1">
+            <div class="title">Harbor Light Hotel, Lisbon</div>
+            <div class="price">$612.00</div>
+          </div>
+          <div class="sub">Apr 12–15 &middot; 3 nights &middot; Deluxe King</div>
+          <div class="controls">
+            <span class="clabel">Rooms</span>
+            <div class="step">
+              <span class="sbtn"><svg width="14" height="14" viewBox="0 0 14 14" stroke="#9aa6ad" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M3 7h8"/></svg></span>
+              <span class="sval">1</span>
+              <span class="sbtn"><svg width="14" height="14" viewBox="0 0 14 14" stroke="#33505f" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M3 7h8M7 3v8"/></svg></span>
+            </div>
+            <span class="remove">Remove</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <img class="thumb" src="https://loremflickr.com/76/76/beach?lock=6581" width="76" height="76" alt="Coral Bay Bungalow on the beach in Tulum">
+        <div class="body">
+          <div class="line1">
+            <div class="title">Coral Bay Bungalow, Tulum</div>
+            <div class="price">$884.00</div>
+          </div>
+          <div class="sub">Apr 16–20 &middot; 4 nights &middot; Garden Suite</div>
+          <div class="controls">
+            <span class="clabel">Rooms</span>
+            <div class="step">
+              <span class="sbtn"><svg width="14" height="14" viewBox="0 0 14 14" stroke="#9aa6ad" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M3 7h8"/></svg></span>
+              <span class="sval">1</span>
+              <span class="sbtn"><svg width="14" height="14" viewBox="0 0 14 14" stroke="#33505f" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M3 7h8M7 3v8"/></svg></span>
+            </div>
+            <span class="remove">Remove</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <img class="thumb" src="https://loremflickr.com/76/76/mountain?lock=6582" width="76" height="76" alt="Pinecrest Lodge in the mountains near Aspen">
+        <div class="body">
+          <div class="line1">
+            <div class="title">Pinecrest Lodge, Aspen</div>
+            <div class="price">$537.00</div>
+          </div>
+          <div class="sub">Apr 21–24 &middot; 3 nights &middot; Two Queens</div>
+          <div class="controls">
+            <span class="clabel">Rooms</span>
+            <div class="step">
+              <span class="sbtn"><svg width="14" height="14" viewBox="0 0 14 14" stroke="#33505f" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M3 7h8"/></svg></span>
+              <span class="sval">2</span>
+              <span class="sbtn"><svg width="14" height="14" viewBox="0 0 14 14" stroke="#33505f" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M3 7h8M7 3v8"/></svg></span>
+            </div>
+            <span class="remove">Remove</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sechead">Add-ons</div>
+    <div class="list">
+      <div class="arow">
+        <img class="athumb" src="https://loremflickr.com/40/40/cityscape?lock=6583" width="40" height="40" alt="Lisbon old town streets on the walking tour">
+        <div class="body">
+          <div class="atitle">Old Town Walking Tour</div>
+          <div class="asub">Apr 13, 9:00 AM &middot; $32.00 each</div>
+        </div>
+        <div class="step">
+          <span class="sbtn"><svg width="14" height="14" viewBox="0 0 14 14" stroke="#33505f" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M3 7h8"/></svg></span>
+          <span class="sval">2</span>
+          <span class="sbtn"><svg width="14" height="14" viewBox="0 0 14 14" stroke="#33505f" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M3 7h8M7 3v8"/></svg></span>
+        </div>
+      </div>
+      <div class="arow">
+        <img class="athumb" src="https://loremflickr.com/40/40/beach?lock=6584" width="40" height="40" alt="Reef and shoreline at the snorkel charter meeting point">
+        <div class="body">
+          <div class="atitle">Reef Snorkel Charter</div>
+          <div class="asub">Apr 18, 7:30 AM &middot; $76.00 each</div>
+        </div>
+        <div class="step">
+          <span class="sbtn"><svg width="14" height="14" viewBox="0 0 14 14" stroke="#9aa6ad" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M3 7h8"/></svg></span>
+          <span class="sval">1</span>
+          <span class="sbtn"><svg width="14" height="14" viewBox="0 0 14 14" stroke="#33505f" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M3 7h8M7 3v8"/></svg></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="summary">
+      <div class="sline"><span>Subtotal</span><span class="amt">$2,173.00</span></div>
+      <div class="sline"><span>Taxes and fees</span><span class="amt">$274.35</span></div>
+      <div class="sline credit"><span>Member credit</span><span class="amt">−$50.00</span></div>
+    </div>
+
+    <div class="footer">
+      <div class="totalrow">
+        <span class="tlabel">Total due today</span>
+        <span class="tval">$2,397.35</span>
+      </div>
+      <div class="note">Free cancellation on all stays through Apr 5</div>
+      <div class="cta">Continue to payment</div>
+    </div>
+
+    <div class="tabs">
+      <div class="tab">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/></svg>
+        <span class="tl">Explore</span>
+      </div>
+      <div class="tab">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4l6 2 5-2v14l-5 2-6-2-5 2V6z"/><path d="M9 4v14M15 6v14"/></svg>
+        <span class="tl">Maps</span>
+      </div>
+      <div class="tab on">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h16l-1.2 12H5.2z"/><path d="M9 8V6a3 3 0 016 0v2"/></svg>
+        <span class="tl">Bag</span>
+        <span class="badge">5</span>
+      </div>
+      <div class="tab">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8.5" r="3.5"/><path d="M5 20c0-3.6 3.1-5.5 7-5.5s7 1.9 7 5.5"/></svg>
+        <span class="tl">Account</span>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Northline — Inbox</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 24px 0;
+    margin: 0;
+    background: #e4e4e7;
+    font-family: 'Nunito Sans', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .screen {
+    width: 1024px;
+    height: 768px;
+    background: #ffffff;
+    position: relative;
+    display: flex;
+    box-shadow: 0 12px 40px rgba(24,24,27,.16);
+  }
+
+  /* ---------- left column ---------- */
+  .sidebar {
+    width: 240px;
+    flex: 0 0 240px;
+    background: #fafafa;
+    border-right: 1px solid #e4e4e7;
+    display: flex;
+    flex-direction: column;
+    padding: 20px 16px 18px 16px;
+  }
+  .brandrow { display: flex; align-items: center; gap: 10px; margin-bottom: 22px; }
+  .mark {
+    width: 34px; height: 34px;
+    border-radius: 10px;
+    background: #1d4ed8;
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .bname { font-size: 14.5px; font-weight: 700; color: #18181b; line-height: 18px; }
+  .btag { font-size: 11px; color: #a1a1aa; line-height: 14px; letter-spacing: .4px; text-transform: uppercase; }
+
+  .navlabel {
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: .7px;
+    text-transform: uppercase;
+    color: #a1a1aa;
+    padding: 0 12px 8px 12px;
+  }
+  .navitem {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    height: 40px;
+    padding: 0 12px;
+    border-radius: 10px;
+    font-size: 13.5px;
+    color: #52525b;
+    margin-bottom: 2px;
+  }
+  .navitem svg { flex: 0 0 20px; }
+  .navitem.active {
+    background: #eef2ff;
+    color: #1d4ed8;
+    font-weight: 700;
+  }
+  .navitem .count {
+    margin-left: auto;
+    min-width: 20px;
+    height: 20px;
+    border-radius: 10px;
+    background: #1d4ed8;
+    color: #ffffff;
+    font-size: 11.5px;
+    font-weight: 700;
+    line-height: 20px;
+    text-align: center;
+    padding: 0 6px;
+  }
+
+  .advisor {
+    margin-top: auto;
+    border-top: 1px solid #e4e4e7;
+    padding-top: 14px;
+  }
+  .advisor .alabel {
+    font-size: 10.5px;
+    letter-spacing: .7px;
+    text-transform: uppercase;
+    color: #a1a1aa;
+    font-weight: 700;
+  }
+  .advisor .aname { font-size: 13.5px; font-weight: 700; color: #27272a; margin-top: 5px; }
+  .advisor .amail { font-size: 11.5px; color: #a1a1aa; margin-top: 2px; }
+
+  /* ---------- main ---------- */
+  .main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+
+  .topbar {
+    padding: 20px 24px 16px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .topbar h1 {
+    margin: 0;
+    font-size: 24px;
+    line-height: 30px;
+    font-weight: 700;
+    color: #18181b;
+    letter-spacing: -0.3px;
+  }
+  .topbar .sub {
+    margin-top: 3px;
+    font-size: 12.5px;
+    line-height: 16px;
+    color: #71717a;
+  }
+  .tools { display: flex; align-items: center; gap: 10px; }
+  .search {
+    width: 250px;
+    height: 36px;
+    border-radius: 10px;
+    background: #f4f4f5;
+    border: 1px solid #e4e4e7;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 12px;
+    font-size: 13px;
+    color: #a1a1aa;
+  }
+  .compose {
+    height: 36px;
+    padding: 0 16px;
+    border-radius: 10px;
+    background: #1d4ed8;
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+
+  /* filters — light row, brand-colored selection */
+  .filters {
+    padding: 0 24px 16px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .chips { display: flex; gap: 8px; }
+  .chip {
+    height: 32px;
+    padding: 0 14px;
+    border-radius: 9px;
+    display: flex;
+    align-items: center;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: #52525b;
+    background: #ffffff;
+    border: 1px solid #e4e4e7;
+    white-space: nowrap;
+  }
+  .chip.on {
+    background: #1d4ed8;
+    border-color: #1d4ed8;
+    color: #ffffff;
+    font-weight: 700;
+  }
+  .sort {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 12px;
+    color: #71717a;
+  }
+
+  .rule { height: 1px; background: #e4e4e7; }
+
+  /* list — desktop single-line rows */
+  .list { }
+  .row {
+    height: 52px;
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #f1f1f4;
+  }
+  .dot { flex: 0 0 18px; }
+  .dot i {
+    display: block;
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: #1d4ed8;
+  }
+  .sender {
+    flex: 0 0 178px;
+    padding-right: 18px;
+    font-size: 13.5px;
+    color: #52525b;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .unread .sender { color: #18181b; font-weight: 700; }
+  .subject {
+    flex: 1;
+    min-width: 0;
+    font-size: 13.5px;
+    color: #52525b;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .unread .subject { color: #18181b; font-weight: 700; }
+  .snippet { color: #a1a1aa; font-weight: 400; }
+  .time {
+    flex: 0 0 84px;
+    text-align: right;
+    font-size: 12px;
+    color: #a1a1aa;
+    white-space: nowrap;
+  }
+  .clip { display: inline-flex; vertical-align: -2px; margin-right: 5px; color: #71717a; }
+
+  .listfoot {
+    margin-top: auto;
+    border-top: 1px solid #e4e4e7;
+    padding: 11px 24px;
+    font-size: 11.5px;
+    line-height: 16px;
+    color: #a1a1aa;
+  }
+</style>
+</head>
+<body>
+  <div class="screen">
+
+    <aside class="sidebar">
+      <div class="brandrow">
+        <div class="mark">N</div>
+        <div>
+          <div class="bname">Northline</div>
+          <div class="btag">Wealth</div>
+        </div>
+      </div>
+
+      <div class="navlabel">Overview</div>
+      <div class="navitem">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="13" rx="2.5"/><path d="M3 10h18"/></svg>
+        <span>Accounts</span>
+      </div>
+      <div class="navitem">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V5"/><path d="M4 19h16"/><path d="M8 15l4-5 3 3 4-6"/></svg>
+        <span>Invest</span>
+      </div>
+      <div class="navitem active">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M4 7.5l8 5.5 8-5.5"/></svg>
+        <span>Inbox</span>
+        <span class="count">3</span>
+      </div>
+      <div class="navitem">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="9" r="3.5"/><path d="M5 20c1.5-3.5 4-5 7-5s5.5 1.5 7 5"/></svg>
+        <span>Profile</span>
+      </div>
+
+      <div class="advisor">
+        <div class="alabel">Your advisor</div>
+        <div class="aname">Dana Whitfield</div>
+        <div class="amail">dana.whitfield@northline.com</div>
+      </div>
+    </aside>
+
+    <main class="main">
+
+      <div class="topbar">
+        <div>
+          <h1>Inbox</h1>
+          <div class="sub">Northline Wealth · 3 unread</div>
+        </div>
+        <div class="tools">
+          <div class="search">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M16.5 16.5 21 21"/></svg>
+            <span>Search mail</span>
+          </div>
+          <div class="compose">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4l11-11a2.5 2.5 0 0 0-3.5-3.5L4.5 16.5 4 20z"/></svg>
+            <span>Compose</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="filters">
+        <div class="chips">
+          <div class="chip on">All mail</div>
+          <div class="chip">Unread</div>
+          <div class="chip">Statements</div>
+          <div class="chip">Alerts</div>
+          <div class="chip">Tax documents</div>
+        </div>
+        <div class="sort">
+          <span>Newest first</span>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+        </div>
+      </div>
+
+      <div class="rule"></div>
+
+      <div class="list">
+
+        <div class="row unread">
+          <div class="dot"><i></i></div>
+          <div class="sender">Northline Statements</div>
+          <div class="subject">Your March statement is ready <span class="snippet">— Account summary for Feb 24 – Mar 23 is available to download.</span></div>
+          <div class="time">9:42 AM</div>
+        </div>
+
+        <div class="row unread">
+          <div class="dot"><i></i></div>
+          <div class="sender">Security Center</div>
+          <div class="subject">New device signed in <span class="snippet">— Sign-in from a laptop in Austin, TX was approved at 8:11 AM.</span></div>
+          <div class="time">8:15 AM</div>
+        </div>
+
+        <div class="row unread">
+          <div class="dot"><i></i></div>
+          <div class="sender">Dana Whitfield</div>
+          <div class="subject">Re: Rebalancing the growth sleeve <span class="snippet">— I moved 4% out of short-term bonds. Call me before Friday.</span></div>
+          <div class="time">7:04 AM</div>
+        </div>
+
+        <div class="row">
+          <div class="dot"></div>
+          <div class="sender">Transfers</div>
+          <div class="subject">Transfer of $2,400.00 completed <span class="snippet">— Sent to Everyday Checking ••4417 on March 22.</span></div>
+          <div class="time">Yesterday</div>
+        </div>
+
+        <div class="row">
+          <div class="dot"></div>
+          <div class="sender">Card Services</div>
+          <div class="subject">Statement credit applied <span class="snippet">— A $38.50 travel credit posted to your Northline card.</span></div>
+          <div class="time">Yesterday</div>
+        </div>
+
+        <div class="row">
+          <div class="dot"></div>
+          <div class="sender">Marcus Ellery</div>
+          <div class="subject"><span class="clip"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12 12.5 19.5a4 4 0 0 1-5.7-5.7l7.3-7.3a2.7 2.7 0 0 1 3.8 3.8l-7.4 7.4"/></svg></span>Documents for the joint account <span class="snippet">— Signed forms and the notarized page, both PDFs.</span></div>
+          <div class="time">Mar 20</div>
+        </div>
+
+        <div class="row">
+          <div class="dot"></div>
+          <div class="sender">Tax Documents</div>
+          <div class="subject">Your 1099-B is available <span class="snippet">— Consolidated form for tax year 2024, including cost basis.</span></div>
+          <div class="time">Mar 19</div>
+        </div>
+
+        <div class="row">
+          <div class="dot"></div>
+          <div class="sender">Round-Up Savings</div>
+          <div class="subject">You set aside $46.20 this month <span class="snippet">— From 61 rounded-up purchases. Goal: $600 by December 31.</span></div>
+          <div class="time">Mar 18</div>
+        </div>
+
+        <div class="row">
+          <div class="dot"></div>
+          <div class="sender">Northline Research</div>
+          <div class="subject">Quarterly outlook: rates and credit <span class="snippet">— Our view on duration heading into the second half of the year.</span></div>
+          <div class="time">Mar 17</div>
+        </div>
+
+        <div class="row">
+          <div class="dot"></div>
+          <div class="sender">Beneficiary Updates</div>
+          <div class="subject">Confirm your beneficiary details <span class="snippet">— Two accounts have no contingent beneficiary on file.</span></div>
+          <div class="time">Mar 16</div>
+        </div>
+
+        <div class="row">
+          <div class="dot"></div>
+          <div class="sender">Account Alerts</div>
+          <div class="subject">Balance below $1,000 on ••4417 <span class="snippet">— Checking dipped to $912.40 after a scheduled payment.</span></div>
+          <div class="time">Mar 15</div>
+        </div>
+
+      </div>
+
+      <div class="listfoot">Showing 11 of 128 messages · Last synced 9:44 AM</div>
+
+    </main>
+
+  </div>
+</body>
+</html>

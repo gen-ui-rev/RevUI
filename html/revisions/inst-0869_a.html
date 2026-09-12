@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Account Activity</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #e6e9e8;
+      color: #1f292b;
+      font-family: 'Roboto', system-ui, sans-serif;
+    }
+
+    .screen {
+      width: 1024px;
+      height: 768px;
+      padding: 36px 40px;
+      background: #f6f8f7;
+      box-shadow: 0 18px 50px rgba(34, 49, 52, 0.12);
+    }
+
+    .activity {
+      width: 100%;
+      background: #ffffff;
+      border: 1px solid #d8dfde;
+      border-radius: 14px;
+      box-shadow: 0 4px 14px rgba(36, 55, 58, 0.05);
+    }
+
+    .activity-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 32px;
+      padding: 24px 28px 22px;
+      background: #dce9eb;
+      border-bottom: 1px solid #cbdadd;
+      border-radius: 14px 14px 0 0;
+    }
+
+    .header-text {
+      min-width: 0;
+    }
+
+    .eyebrow {
+      margin: 0 0 5px;
+      color: #52696e;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      color: #1d3539;
+      font-size: 28px;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    .header-copy {
+      margin: 7px 0 0;
+      color: #52666a;
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .header-summary {
+      flex: 0 0 auto;
+      padding: 11px 14px;
+      border: 1px solid #bfd0d3;
+      border-radius: 9px;
+      background: rgba(255, 255, 255, 0.55);
+      color: #3d575c;
+      font-size: 13px;
+      line-height: 1.35;
+      text-align: right;
+    }
+
+    .header-summary strong {
+      display: block;
+      color: #203d42;
+      font-size: 16px;
+    }
+
+    .toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      padding: 13px 20px;
+      border-bottom: 1px solid #e1e6e5;
+    }
+
+    .filters {
+      display: flex;
+      gap: 8px;
+    }
+
+    .filter {
+      padding: 8px 14px;
+      border: 1px solid #d2dada;
+      border-radius: 7px;
+      background: #ffffff;
+      color: #586466;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 500;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    .filter.selected {
+      border-color: #68858a;
+      background: #dce9eb;
+      color: #294b51;
+      box-shadow: inset 0 0 0 1px rgba(104, 133, 138, 0.12);
+    }
+
+    .comparison-label {
+      margin: 0;
+      color: #707b7d;
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    .comparison-label strong {
+      color: #3f4e50;
+      font-weight: 500;
+    }
+
+    .date-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+      padding: 20px;
+      background: #f9faf9;
+      border-radius: 0 0 14px 14px;
+    }
+
+    .date-group {
+      min-width: 0;
+      background: #ffffff;
+      border: 1px solid #dce2e1;
+      border-radius: 10px;
+    }
+
+    .date-group-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 14px 16px 12px;
+      border-bottom: 1px solid #e2e7e6;
+      background: #f5f7f6;
+      border-radius: 10px 10px 0 0;
+    }
+
+    .date-label {
+      margin: 0;
+      color: #35484b;
+      font-size: 15px;
+      font-weight: 700;
+      line-height: 1.3;
+    }
+
+    .event-count {
+      flex: 0 0 auto;
+      padding: 4px 8px;
+      border-radius: 10px;
+      background: #e4edee;
+      color: #526a6e;
+      font-size: 11px;
+      font-weight: 700;
+      line-height: 1;
+      text-transform: uppercase;
+    }
+
+    .event {
+      display: grid;
+      grid-template-columns: 16px minmax(0, 1fr) auto;
+      column-gap: 11px;
+      padding: 14px 16px;
+      position: relative;
+    }
+
+    .event + .event {
+      border-top: 1px solid #edf0ef;
+    }
+
+    .marker {
+      position: relative;
+      min-height: 39px;
+    }
+
+    .marker::before {
+      content: "";
+      position: absolute;
+      top: 4px;
+      left: 3px;
+      width: 7px;
+      height: 7px;
+      border: 2px solid #68858a;
+      border-radius: 50%;
+      background: #ffffff;
+    }
+
+    .marker::after {
+      content: "";
+      position: absolute;
+      top: 17px;
+      bottom: -20px;
+      left: 7px;
+      width: 1px;
+      background: #d7dede;
+    }
+
+    .event:last-child .marker::after {
+      display: none;
+    }
+
+    .event-main {
+      min-width: 0;
+    }
+
+    .event-title {
+      margin: 0;
+      overflow: hidden;
+      color: #253033;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.35;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .event-detail {
+      margin: 3px 0 0;
+      overflow: hidden;
+      color: #717b7d;
+      font-size: 12px;
+      line-height: 1.35;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .event-meta {
+      padding-left: 8px;
+      text-align: right;
+    }
+
+    .event-value {
+      margin: 0;
+      color: #283437;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.35;
+      white-space: nowrap;
+    }
+
+    .event-value.credit {
+      color: #32645c;
+    }
+
+    .event-time {
+      margin: 3px 0 0;
+      color: #7a8485;
+      font-size: 12px;
+      line-height: 1.3;
+      white-space: nowrap;
+    }
+
+    .comparison-note {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      margin: 0 20px 20px;
+      padding: 11px 13px;
+      border: 1px solid #e0e5e4;
+      border-radius: 8px;
+      background: #ffffff;
+      color: #687476;
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .note-icon {
+      flex: 0 0 auto;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #dce9eb;
+      color: #36565b;
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 18px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <section class="activity" aria-labelledby="activity-title">
+      <header class="activity-header">
+        <div class="header-text">
+          <p class="eyebrow">Northfield Money</p>
+          <h1 id="activity-title">Recent activity</h1>
+          <p class="header-copy">Review changes across your money and account.</p>
+        </div>
+        <div class="header-summary" aria-label="Activity summary">
+          <strong>5 updates</strong>
+          Across the last two days
+        </div>
+      </header>
+
+      <div class="toolbar">
+        <div class="filters" aria-label="Activity filters">
+          <button class="filter selected" type="button">All activity</button>
+          <button class="filter" type="button">Money</button>
+          <button class="filter" type="button">Account</button>
+        </div>
+        <p class="comparison-label"><strong>Side-by-side view</strong> · Newest activity first</p>
+      </div>
+
+      <div class="date-grid">
+        <section class="date-group" aria-labelledby="today-label">
+          <div class="date-group-heading">
+            <h2 class="date-label" id="today-label">Today, March 12</h2>
+            <span class="event-count">3 updates</span>
+          </div>
+
+          <article class="event">
+            <div class="marker" aria-hidden="true"></div>
+            <div class="event-main">
+              <p class="event-title">Transfer from checking</p>
+              <p class="event-detail">Added to Reserve savings</p>
+            </div>
+            <div class="event-meta">
+              <p class="event-value credit">+$250.00</p>
+              <p class="event-time">10:42 AM</p>
+            </div>
+          </article>
+
+          <article class="event">
+            <div class="marker" aria-hidden="true"></div>
+            <div class="event-main">
+              <p class="event-title">Price alert updated</p>
+              <p class="event-detail">Harbor Index Fund at $84.00</p>
+            </div>
+            <div class="event-meta">
+              <p class="event-value">Investing</p>
+              <p class="event-time">9:18 AM</p>
+            </div>
+          </article>
+
+          <article class="event">
+            <div class="marker" aria-hidden="true"></div>
+            <div class="event-main">
+              <p class="event-title">Debit card unlocked</p>
+              <p class="event-detail">Everyday card ending in 4821</p>
+            </div>
+            <div class="event-meta">
+              <p class="event-value">Card</p>
+              <p class="event-time">8:03 AM</p>
+            </div>
+          </article>
+        </section>
+
+        <section class="date-group" aria-labelledby="yesterday-label">
+          <div class="date-group-heading">
+            <h2 class="date-label" id="yesterday-label">Yesterday, March 11</h2>
+            <span class="event-count">2 updates</span>
+          </div>
+
+          <article class="event">
+            <div class="marker" aria-hidden="true"></div>
+            <div class="event-main">
+              <p class="event-title">Direct deposit received</p>
+              <p class="event-detail">Linden Works payroll</p>
+            </div>
+            <div class="event-meta">
+              <p class="event-value credit">+$2,184.62</p>
+              <p class="event-time">4:16 PM</p>
+            </div>
+          </article>
+
+          <article class="event">
+            <div class="marker" aria-hidden="true"></div>
+            <div class="event-main">
+              <p class="event-title">Contact details changed</p>
+              <p class="event-detail">Mailing address updated</p>
+            </div>
+            <div class="event-meta">
+              <p class="event-value">Profile</p>
+              <p class="event-time">11:27 AM</p>
+            </div>
+          </article>
+        </section>
+      </div>
+
+      <p class="comparison-note">
+        <span class="note-icon" aria-hidden="true">i</span>
+        Money amounts and account changes are shown together so activity can be compared by date.
+      </p>
+    </section>
+  </div>
+</body>
+</html>

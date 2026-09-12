@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LingoShelf Learning Bag</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #e9e9ee;
+      color: #202024;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    button {
+      font: inherit;
+      cursor: pointer;
+    }
+
+    .screen {
+      width: 1024px;
+      height: 768px;
+      display: flex;
+      flex-direction: column;
+      background: #ffffff;
+      border: 1px solid #d9d9de;
+      box-shadow: 0 12px 34px rgba(26, 26, 32, 0.12);
+    }
+
+    /* ---------- top bar ---------- */
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      padding: 11px 24px;
+      border-bottom: 1px solid #dedee3;
+      flex-shrink: 0;
+    }
+
+    .bar-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .icon-button {
+      width: 32px;
+      min-height: 32px;
+      padding: 5px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #202024;
+      background: #f4f4f7;
+      border: 1px solid #e2e2e8;
+      border-radius: 8px;
+    }
+
+    .icon-button svg {
+      width: 18px;
+      height: 18px;
+      display: block;
+    }
+
+    .brand {
+      font-size: 16px;
+      line-height: 22px;
+      font-weight: 800;
+      letter-spacing: -0.2px;
+    }
+
+    .crumb {
+      margin: 0;
+      color: #79797f;
+      font-size: 13px;
+      line-height: 20px;
+      white-space: nowrap;
+    }
+
+    .top-nav {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .nav-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 7px 11px;
+      color: #5c5c64;
+      background: transparent;
+      border: 0;
+      border-radius: 8px;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .nav-item svg {
+      width: 18px;
+      height: 18px;
+      display: block;
+    }
+
+    .nav-item.active {
+      color: #c51673;
+      background: #fceaf3;
+    }
+
+    .nav-badge {
+      min-width: 18px;
+      padding: 0 5px;
+      color: #ffffff;
+      background: #c51673;
+      border-radius: 9px;
+      font-size: 11px;
+      line-height: 17px;
+      text-align: center;
+    }
+
+    /* ---------- workspace ---------- */
+    .workspace {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      align-items: flex-start;
+      gap: 24px;
+      padding: 20px 24px;
+    }
+
+    .cart-panel {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .cart-heading {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .cart-heading h1 {
+      margin: 0;
+      font-size: 21px;
+      line-height: 27px;
+      font-weight: 700;
+      letter-spacing: -0.2px;
+    }
+
+    .cart-heading p {
+      margin: 3px 0 0;
+      color: #68686f;
+      font-size: 13px;
+      line-height: 18px;
+    }
+
+    .heading-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .ghost-button {
+      padding: 6px 11px;
+      color: #40404a;
+      background: #ffffff;
+      border: 1px solid #d5d5da;
+      border-radius: 8px;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 600;
+    }
+
+    .clear-button {
+      padding: 6px 11px;
+      color: #c51673;
+      background: #ffffff;
+      border: 1px solid #f0c3da;
+      border-radius: 8px;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 600;
+    }
+
+    .table-head,
+    .cart-item {
+      display: grid;
+      grid-template-columns: 20px 64px minmax(0, 1fr) 84px 106px 30px;
+      gap: 14px;
+      align-items: center;
+    }
+
+    .table-head {
+      margin-top: 16px;
+      padding-bottom: 7px;
+      border-bottom: 1px solid #dedee3;
+      color: #83838b;
+      font-size: 11px;
+      line-height: 15px;
+      font-weight: 700;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+    }
+
+    .col-right {
+      text-align: right;
+    }
+
+    .cart-item {
+      padding: 12px 0;
+      border-bottom: 1px solid #eeeef2;
+    }
+
+    .items .cart-item:last-child {
+      border-bottom: 0;
+    }
+
+    .select-button {
+      width: 18px;
+      height: 18px;
+      padding: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      background: #c51673;
+      border: 1px solid #c51673;
+      border-radius: 5px;
+    }
+
+    .select-button svg {
+      width: 12px;
+      height: 12px;
+      display: block;
+    }
+
+    .product-image {
+      width: 64px;
+      height: 64px;
+      display: block;
+      object-fit: cover;
+      background: #e1e1e5;
+      border-radius: 9px;
+    }
+
+    .item-details {
+      min-width: 0;
+    }
+
+    .item-name {
+      margin: 0;
+      overflow: hidden;
+      font-size: 15px;
+      line-height: 20px;
+      font-weight: 700;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    .item-meta {
+      margin: 1px 0 0;
+      overflow: hidden;
+      color: #727279;
+      font-size: 12px;
+      line-height: 16px;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    .item-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 6px;
+    }
+
+    .item-actions button {
+      padding: 0;
+      background: transparent;
+      border: 0;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .action-edit {
+      color: #4a4a53;
+      text-decoration: underline;
+    }
+
+    .action-save {
+      color: #c51673;
+      text-decoration: underline;
+    }
+
+    .action-sep {
+      color: #c6c6cd;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .price {
+      font-size: 15px;
+      line-height: 20px;
+      font-weight: 700;
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .quantity {
+      display: grid;
+      grid-template-columns: 30px 44px 30px;
+      align-items: center;
+      border: 1px solid #d5d5da;
+      border-radius: 8px;
+      background: #ffffff;
+    }
+
+    .quantity button {
+      width: 30px;
+      min-height: 28px;
+      padding: 0;
+      color: #303036;
+      background: transparent;
+      border: 0;
+      font-size: 16px;
+      line-height: 22px;
+    }
+
+    .quantity span {
+      text-align: center;
+      font-size: 13px;
+      line-height: 28px;
+      font-weight: 600;
+      border-right: 1px solid #e6e6ea;
+      border-left: 1px solid #e6e6ea;
+    }
+
+    .remove-button {
+      width: 30px;
+      min-height: 30px;
+      padding: 5px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #8a8a92;
+      background: transparent;
+      border: 1px solid #e4e4e9;
+      border-radius: 8px;
+    }
+
+    .remove-button svg {
+      width: 16px;
+      height: 16px;
+      display: block;
+    }
+
+    .table-foot {
+      margin: 12px 0 0;
+      padding-top: 10px;
+      border-top: 1px solid #dedee3;
+      color: #79797f;
+      font-size: 12px;
+      line-height: 17px;
+    }
+
+    /* ---------- side panel ---------- */
+    .side-panel {
+      width: 320px;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .panel {
+      padding: 14px 16px;
+      border: 1px solid #dedee3;
+      border-radius: 12px;
+      background: #ffffff;
+    }
+
+    .panel-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .panel-head h2 {
+      margin: 0;
+      font-size: 15px;
+      line-height: 20px;
+      font-weight: 700;
+    }
+
+    .link-button {
+      padding: 0;
+      color: #c51673;
+      background: transparent;
+      border: 0;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 600;
+    }
+
+    .panel-sub {
+      margin: 2px 0 0;
+      color: #79797f;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .group-title {
+      margin: 11px 0 3px;
+      color: #83838b;
+      font-size: 11px;
+      line-height: 15px;
+      font-weight: 700;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+    }
+
+    .group-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 2px 0;
+      color: #4d4d55;
+      font-size: 13px;
+      line-height: 19px;
+    }
+
+    .group-row span:last-child {
+      color: #c51673;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .group-total {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 9px;
+      padding-top: 8px;
+      border-top: 1px solid #eeeef2;
+      font-size: 14px;
+      line-height: 19px;
+      font-weight: 700;
+    }
+
+    .group-total span:last-child {
+      color: #c51673;
+    }
+
+    .promo-note {
+      margin: 8px 0 0;
+      color: #8a8a92;
+      font-size: 11px;
+      line-height: 15px;
+    }
+
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 3px 0;
+      color: #5f5f66;
+      font-size: 13px;
+      line-height: 19px;
+    }
+
+    .summary-row span:last-child {
+      color: #202024;
+      white-space: nowrap;
+    }
+
+    .summary-row.discount span:last-child {
+      color: #c51673;
+      font-weight: 600;
+    }
+
+    .summary-row.total {
+      margin-top: 6px;
+      padding-top: 9px;
+      border-top: 1px solid #dedee3;
+      color: #202024;
+      font-size: 17px;
+      line-height: 23px;
+      font-weight: 700;
+    }
+
+    .checkout-button {
+      width: 100%;
+      min-height: 44px;
+      margin-top: 12px;
+      padding: 11px 16px;
+      color: #ffffff;
+      background: #c51673;
+      border: 1px solid #c51673;
+      border-radius: 9px;
+      font-size: 15px;
+      line-height: 21px;
+      font-weight: 700;
+    }
+
+    .checkout-note {
+      margin: 7px 0 0;
+      text-align: center;
+      color: #79797f;
+      font-size: 11px;
+      line-height: 16px;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="top-bar">
+      <div class="bar-left">
+        <button class="icon-button" type="button" aria-label="Back to catalog">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <span class="brand">LingoShelf</span>
+        <p class="crumb">Catalog / Learning bag</p>
+      </div>
+      <nav class="top-nav" aria-label="Primary navigation">
+        <button class="nav-item" type="button">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M4 5.5C4 4.67 4.67 4 5.5 4H11V19H5.5C4.67 19 4 18.33 4 17.5V5.5Z" stroke="currentColor" stroke-width="1.7"/>
+            <path d="M20 5.5C20 4.67 19.33 4 18.5 4H13V19H18.5C19.33 19 20 18.33 20 17.5V5.5Z" stroke="currentColor" stroke-width="1.7"/>
+          </svg>
+          <span>Learn</span>
+        </button>
+        <button class="nav-item" type="button">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="1.7"/>
+            <path d="M16 16L20 20" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+          </svg>
+          <span>Explore</span>
+        </button>
+        <button class="nav-item active" type="button" aria-current="page">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M5 8H19L18 20H6L5 8Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+            <path d="M9 9V6.5C9 4.57 10.34 3 12 3C13.66 3 15 4.57 15 6.5V9" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+          </svg>
+          <span>Bag</span>
+          <span class="nav-badge">4</span>
+        </button>
+        <button class="nav-item" type="button">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="12" cy="8" r="3.5" stroke="currentColor" stroke-width="1.7"/>
+            <path d="M5.5 20C6.1 16.65 8.5 15 12 15C15.5 15 17.9 16.65 18.5 20" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+          </svg>
+          <span>Profile</span>
+        </button>
+      </nav>
+    </header>
+
+    <main class="workspace">
+      <section class="cart-panel" aria-labelledby="cart-title">
+        <div class="cart-heading">
+          <div>
+            <h1 id="cart-title">4 items selected</h1>
+            <p>Edit quantities and licenses, or save a course for later.</p>
+          </div>
+          <div class="heading-actions">
+            <button class="ghost-button" type="button">Select all</button>
+            <button class="clear-button" type="button">Clear bag</button>
+          </div>
+        </div>
+
+        <div class="table-head" aria-hidden="true">
+          <span></span>
+          <span></span>
+          <span>Product</span>
+          <span class="col-right">Amount</span>
+          <span>Quantity</span>
+          <span></span>
+        </div>
+
+        <div class="items">
+          <article class="cart-item">
+            <button class="select-button" type="button" aria-label="Deselect Spanish Foundations A1">
+              <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M3.5 8.2L6.5 11L12.5 4.8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+            <img class="product-image" src="https://loremflickr.com/64/64/books?lock=6530" width="64" height="64" alt="Spanish course books on a desk">
+            <div class="item-details">
+              <p class="item-name">Spanish Foundations A1</p>
+              <p class="item-meta">12 weeks · Self-paced access</p>
+              <div class="item-actions">
+                <button class="action-edit" type="button">Edit options</button>
+                <span class="action-sep">·</span>
+                <button class="action-save" type="button">Save for later</button>
+              </div>
+            </div>
+            <span class="price">$89.00</span>
+            <div class="quantity" aria-label="Quantity for Spanish Foundations A1">
+              <button type="button" aria-label="Decrease quantity">−</button>
+              <span>1</span>
+              <button type="button" aria-label="Increase quantity">+</button>
+            </div>
+            <button class="remove-button" type="button" aria-label="Remove Spanish Foundations A1">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M6 6L18 18M18 6L6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+              </svg>
+            </button>
+          </article>
+
+          <article class="cart-item">
+            <button class="select-button" type="button" aria-label="Deselect Business English Live">
+              <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M3.5 8.2L6.5 11L12.5 4.8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+            <img class="product-image" src="https://loremflickr.com/64/64/classroom?lock=6531" width="64" height="64" alt="Language classroom prepared for a live lesson">
+            <div class="item-details">
+              <p class="item-name">Business English Live</p>
+              <p class="item-meta">8 classes · Starts May 12</p>
+              <div class="item-actions">
+                <button class="action-edit" type="button">Edit options</button>
+                <span class="action-sep">·</span>
+                <button class="action-save" type="button">Save for later</button>
+              </div>
+            </div>
+            <span class="price">$129.00</span>
+            <div class="quantity" aria-label="Quantity for Business English Live">
+              <button type="button" aria-label="Decrease quantity">−</button>
+              <span>1</span>
+              <button type="button" aria-label="Increase quantity">+</button>
+            </div>
+            <button class="remove-button" type="button" aria-label="Remove Business English Live">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M6 6L18 18M18 6L6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+              </svg>
+            </button>
+          </article>
+
+          <article class="cart-item">
+            <button class="select-button" type="button" aria-label="Deselect French Verb Practice Pack">
+              <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M3.5 8.2L6.5 11L12.5 4.8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+            <img class="product-image" src="https://loremflickr.com/64/64/study?lock=6532" width="64" height="64" alt="Study notes and workbook for French practice">
+            <div class="item-details">
+              <p class="item-name">French Verb Practice Pack</p>
+              <p class="item-meta">Digital workbook · $48.00 per license</p>
+              <div class="item-actions">
+                <button class="action-edit" type="button">Edit options</button>
+                <span class="action-sep">·</span>
+                <button class="action-save" type="button">Save for later</button>
+              </div>
+            </div>
+            <span class="price">$96.00</span>
+            <div class="quantity" aria-label="Quantity for French Verb Practice Pack">
+              <button type="button" aria-label="Decrease quantity">−</button>
+              <span>2</span>
+              <button type="button" aria-label="Increase quantity">+</button>
+            </div>
+            <button class="remove-button" type="button" aria-label="Remove French Verb Practice Pack">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M6 6L18 18M18 6L6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+              </svg>
+            </button>
+          </article>
+
+          <article class="cart-item">
+            <button class="select-button" type="button" aria-label="Deselect German Pronunciation Lab">
+              <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M3.5 8.2L6.5 11L12.5 4.8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+            <img class="product-image" src="https://loremflickr.com/64/64/library?lock=6533" width="64" height="64" alt="Language reference books in a library">
+            <div class="item-details">
+              <p class="item-name">German Pronunciation Lab</p>
+              <p class="item-meta">6 weeks · Audio feedback</p>
+              <div class="item-actions">
+                <button class="action-edit" type="button">Edit options</button>
+                <span class="action-sep">·</span>
+                <button class="action-save" type="button">Save for later</button>
+              </div>
+            </div>
+            <span class="price">$59.00</span>
+            <div class="quantity" aria-label="Quantity for German Pronunciation Lab">
+              <button type="button" aria-label="Decrease quantity">−</button>
+              <span>1</span>
+              <button type="button" aria-label="Increase quantity">+</button>
+            </div>
+            <button class="remove-button" type="button" aria-label="Remove German Pronunciation Lab">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M6 6L18 18M18 6L6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+              </svg>
+            </button>
+          </article>
+        </div>
+
+        <p class="table-foot">4 products · 5 licenses · Seats can be assigned after checkout.</p>
+      </section>
+
+      <aside class="side-panel">
+        <section class="panel" aria-labelledby="promo-title">
+          <div class="panel-head">
+            <h2 id="promo-title">Promotion details</h2>
+            <button class="link-button" type="button">Change</button>
+          </div>
+          <p class="panel-sub">Grouped by discount type</p>
+
+          <p class="group-title">Course code</p>
+          <div class="group-row">
+            <span>LEARN25 spring code</span>
+            <span>−$25.00</span>
+          </div>
+
+          <p class="group-title">Bundle &amp; credits</p>
+          <div class="group-row">
+            <span>2-seat license bundle</span>
+            <span>−$12.00</span>
+          </div>
+          <div class="group-row">
+            <span>Returning learner credit</span>
+            <span>−$8.00</span>
+          </div>
+
+          <div class="group-total">
+            <span>Total savings</span>
+            <span>−$45.00</span>
+          </div>
+          <p class="promo-note">Codes apply to course fees only, not to printed materials.</p>
+        </section>
+
+        <section class="panel" aria-labelledby="summary-title">
+          <div class="panel-head">
+            <h2 id="summary-title">Order summary</h2>
+          </div>
+          <div class="summary-row">
+            <span>Subtotal</span>
+            <span>$373.00</span>
+          </div>
+          <div class="summary-row discount">
+            <span>Savings (3 applied)</span>
+            <span>−$45.00</span>
+          </div>
+          <div class="summary-row">
+            <span>Estimated tax</span>
+            <span>At checkout</span>
+          </div>
+          <div class="summary-row total">
+            <span>Total</span>
+            <span>$328.00</span>
+          </div>
+          <button class="checkout-button" type="button">Continue to checkout · $328.00</button>
+          <p class="checkout-note">Taxes are calculated at checkout.</p>
+        </section>
+      </aside>
+    </main>
+  </div>
+</body>
+</html>

@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fluent Commons Following Feed</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #e9e7e8;
+      color: #252126;
+      font-family: 'Poppins', system-ui, sans-serif;
+    }
+
+    button {
+      margin: 0;
+      padding: 0;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      color: inherit;
+      font: inherit;
+      cursor: default;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #ffffff;
+      border: 1px solid #d8d4d7;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px 10px;
+      border-bottom: 1px solid #ece8eb;
+    }
+
+    .service-name {
+      margin: 0 0 1px;
+      color: #8b8389;
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 16px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 20px;
+      font-weight: 600;
+      line-height: 27px;
+      letter-spacing: -0.3px;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .icon-button {
+      width: 32px;
+      height: 32px;
+      display: grid;
+      place-items: center;
+      color: #403a3e;
+    }
+
+    .icon-button.compose {
+      background: #e84382;
+      color: #ffffff;
+    }
+
+    .icon-button svg {
+      width: 20px;
+      height: 20px;
+      display: block;
+    }
+
+    .feed-tabs {
+      display: flex;
+      padding: 0 16px;
+      border-bottom: 1px solid #ded9dc;
+    }
+
+    .feed-tab {
+      position: relative;
+      flex: 1;
+      padding: 10px 0 9px;
+      color: #827a80;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 21px;
+      text-align: center;
+    }
+
+    .feed-tab.active {
+      color: #d93273;
+      font-weight: 600;
+    }
+
+    .feed-tab.active::after {
+      position: absolute;
+      right: 19px;
+      bottom: -1px;
+      left: 19px;
+      height: 2px;
+      background: #e84382;
+      content: "";
+    }
+
+    .feed {
+      flex: 1;
+      min-height: 0;
+    }
+
+    .post {
+      padding: 10px 16px 9px;
+      border-bottom: 1px solid #e7e2e5;
+    }
+
+    .post-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .avatar {
+      width: 32px;
+      height: 32px;
+      flex: 0 0 32px;
+      background: #efb5cc;
+    }
+
+    .avatar.blue {
+      background: #b7cfdd;
+    }
+
+    .avatar.gold {
+      background: #dccaa5;
+    }
+
+    .avatar.lilac {
+      background: #cbbddc;
+    }
+
+    .author-block {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .author-name {
+      margin: 0;
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 18px;
+    }
+
+    .post-meta {
+      margin: 0;
+      color: #8b8389;
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 16px;
+    }
+
+    .more-button {
+      width: 28px;
+      height: 28px;
+      display: grid;
+      place-items: center;
+      color: #756d72;
+    }
+
+    .more-button svg {
+      width: 19px;
+      height: 19px;
+      display: block;
+    }
+
+    .post-copy {
+      margin: 7px 0 0;
+      color: #373136;
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 20px;
+    }
+
+    .post-media {
+      width: 100%;
+      height: 72px;
+      margin-top: 8px;
+      background: #f1ccd9;
+    }
+
+    .post-media.cool {
+      height: 60px;
+      background: #d2dfe6;
+    }
+
+    .post-actions {
+      display: flex;
+      align-items: center;
+      gap: 22px;
+      margin-top: 8px;
+    }
+
+    .action-button {
+      color: #716970;
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 20px;
+    }
+
+    .action-button.liked {
+      color: #d93273;
+    }
+
+    .action-button.save {
+      margin-left: auto;
+    }
+
+    .bottom-nav {
+      display: flex;
+      border-top: 1px solid #dcd7da;
+      background: #ffffff;
+    }
+
+    .nav-item {
+      position: relative;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+      gap: 2px;
+      padding: 8px 2px;
+      color: #7e767c;
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 15px;
+    }
+
+    .nav-item.active {
+      color: #d93273;
+    }
+
+    .nav-item.active::before {
+      position: absolute;
+      top: -1px;
+      left: 25px;
+      right: 25px;
+      height: 2px;
+      background: #e84382;
+      content: "";
+    }
+
+    .nav-item svg {
+      width: 21px;
+      height: 21px;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <div>
+        <p class="service-name">Fluent Commons</p>
+        <h1>Following</h1>
+      </div>
+      <div class="top-actions">
+        <button class="icon-button" aria-label="Search">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="10.5" cy="10.5" r="6.5" stroke="currentColor" stroke-width="1.8"/>
+            <path d="M15.5 15.5L20 20" stroke="currentColor" stroke-width="1.8" stroke-linecap="square"/>
+          </svg>
+        </button>
+        <button class="icon-button compose" aria-label="Create a post">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="2"/>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <nav class="feed-tabs" aria-label="Feed selection">
+      <button class="feed-tab active">Following</button>
+      <button class="feed-tab">Community</button>
+    </nav>
+
+    <main class="feed">
+      <article class="post">
+        <header class="post-header">
+          <div class="avatar" role="img" aria-label="Portrait of Mara Vance"></div>
+          <div class="author-block">
+            <p class="author-name">Mara Vance</p>
+            <p class="post-meta">Speaking practice · 12 min</p>
+          </div>
+          <button class="more-button" aria-label="More options for Mara Vance's post">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <circle cx="5" cy="12" r="1.5"/>
+              <circle cx="12" cy="12" r="1.5"/>
+              <circle cx="19" cy="12" r="1.5"/>
+            </svg>
+          </button>
+        </header>
+        <p class="post-copy">I used the past tense without checking my notes today. The conversation finally felt natural.</p>
+        <div class="post-media" role="img" aria-label="A shared photo from a speaking practice session"></div>
+        <div class="post-actions">
+          <button class="action-button liked">Like 24</button>
+          <button class="action-button">Reply 7</button>
+          <button class="action-button save">Save</button>
+        </div>
+      </article>
+
+      <article class="post">
+        <header class="post-header">
+          <div class="avatar blue" role="img" aria-label="Portrait of Owen Bell"></div>
+          <div class="author-block">
+            <p class="author-name">Owen Bell</p>
+            <p class="post-meta">Grammar group · 28 min</p>
+          </div>
+          <button class="more-button" aria-label="More options for Owen Bell's post">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <circle cx="5" cy="12" r="1.5"/>
+              <circle cx="12" cy="12" r="1.5"/>
+              <circle cx="19" cy="12" r="1.5"/>
+            </svg>
+          </button>
+        </header>
+        <p class="post-copy">How do you remember the difference between direct and indirect objects? My notes keep blending together.</p>
+        <div class="post-actions">
+          <button class="action-button">Like 9</button>
+          <button class="action-button">Reply 11</button>
+          <button class="action-button save">Save</button>
+        </div>
+      </article>
+
+      <article class="post">
+        <header class="post-header">
+          <div class="avatar gold" role="img" aria-label="Portrait of Tessa Hale"></div>
+          <div class="author-block">
+            <p class="author-name">Tessa Hale</p>
+            <p class="post-meta">Pronunciation · 1 hr</p>
+          </div>
+          <button class="more-button" aria-label="More options for Tessa Hale's post">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <circle cx="5" cy="12" r="1.5"/>
+              <circle cx="12" cy="12" r="1.5"/>
+              <circle cx="19" cy="12" r="1.5"/>
+            </svg>
+          </button>
+        </header>
+        <p class="post-copy">I turned today's pronunciation drill into a one-page study map. Sharing it for anyone on Unit 6.</p>
+        <div class="post-media cool" role="img" aria-label="A shared study map"></div>
+        <div class="post-actions">
+          <button class="action-button">Like 31</button>
+          <button class="action-button">Reply 5</button>
+          <button class="action-button save">Save</button>
+        </div>
+      </article>
+
+      <article class="post">
+        <header class="post-header">
+          <div class="avatar lilac" role="img" aria-label="Portrait of Julian Reed"></div>
+          <div class="author-block">
+            <p class="author-name">Julian Reed</p>
+            <p class="post-meta">Weekly progress · 2 hr</p>
+          </div>
+          <button class="more-button" aria-label="More options for Julian Reed's post">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <circle cx="5" cy="12" r="1.5"/>
+              <circle cx="12" cy="12" r="1.5"/>
+              <circle cx="19" cy="12" r="1.5"/>
+            </svg>
+          </button>
+        </header>
+        <p class="post-copy">Finished my first five-minute conversation with no prompts. Pauses included, but I kept going.</p>
+        <div class="post-actions">
+          <button class="action-button">Like 18</button>
+          <button class="action-button">Reply 4</button>
+          <button class="action-button save">Save</button>
+        </div>
+      </article>
+    </main>
+
+    <nav class="bottom-nav" aria-label="Primary navigation">
+      <button class="nav-item active">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M4 10.5L12 4L20 10.5V20H14.5V14H9.5V20H4V10.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="miter"/>
+        </svg>
+        <span>Feed</span>
+      </button>
+      <button class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M5 5.5H10.5C11.3 5.5 12 6.2 12 7V19C12 17.9 11.1 17 10 17H5V5.5Z" stroke="currentColor" stroke-width="1.7"/>
+          <path d="M19 5.5H13.5C12.7 5.5 12 6.2 12 7V19C12 17.9 12.9 17 14 17H19V5.5Z" stroke="currentColor" stroke-width="1.7"/>
+        </svg>
+        <span>Learn</span>
+      </button>
+      <button class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M12 20C16.4 20 20 16.4 20 12C20 7.6 16.4 4 12 4C7.6 4 4 7.6 4 12C4 13.6 4.5 15.1 5.3 16.3L4.5 20L8.3 19.2C9.4 19.7 10.7 20 12 20Z" stroke="currentColor" stroke-width="1.7"/>
+          <path d="M8.5 12H15.5" stroke="currentColor" stroke-width="1.7"/>
+        </svg>
+        <span>Practice</span>
+      </button>
+      <button class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="12" cy="8" r="3.5" stroke="currentColor" stroke-width="1.7"/>
+          <path d="M5.5 20C5.8 16.7 8.5 14.5 12 14.5C15.5 14.5 18.2 16.7 18.5 20" stroke="currentColor" stroke-width="1.7"/>
+        </svg>
+        <span>Profile</span>
+      </button>
+    </nav>
+  </div>
+</body>
+</html>

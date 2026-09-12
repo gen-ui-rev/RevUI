@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Planloom Inbox</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 32px 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #d9d8d3;
+      color: #24231f;
+      font-family: 'Source Sans 3', system-ui, sans-serif;
+    }
+
+    button {
+      font: inherit;
+      color: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      background: #fffef9;
+      border: 1px solid #c8c6be;
+    }
+
+    .topbar {
+      padding: 12px 16px 10px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .service-name {
+      margin: 0 0 1px;
+      color: #76736a;
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1.4;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 28px;
+      font-weight: 700;
+      line-height: 1.25;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding-bottom: 2px;
+    }
+
+    .icon-button,
+    .write-button {
+      border-radius: 6px;
+      cursor: default;
+    }
+
+    .icon-button {
+      width: 38px;
+      height: 38px;
+      padding: 8px;
+      display: grid;
+      place-items: center;
+      background: transparent;
+      border: 1px solid #d5d2c8;
+    }
+
+    .write-button {
+      height: 38px;
+      padding: 0 12px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      border: 1px solid #d7aa00;
+      background: #f2c94c;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    svg {
+      display: block;
+      flex: 0 0 auto;
+    }
+
+    .folder-tabs {
+      padding: 5px;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 4px;
+      border-top: 1px solid #e2dfd6;
+      border-bottom: 1px solid #d8d5cc;
+      background: #f3f1ea;
+    }
+
+    .folder-tab {
+      padding: 7px 3px;
+      border: 1px solid transparent;
+      border-radius: 5px;
+      background: transparent;
+      color: #77736a;
+      font-size: 14px;
+      line-height: 20px;
+      text-align: center;
+    }
+
+    .folder-tab.active {
+      border-color: #d4d0c5;
+      background: #fffef9;
+      color: #24231f;
+      font-weight: 600;
+      box-shadow: inset 0 -3px 0 #e4b817;
+    }
+
+    .tab-count {
+      margin-left: 3px;
+      color: #8a867d;
+      font-size: 12px;
+      font-weight: 400;
+    }
+
+    main {
+      flex: 1 1 auto;
+      padding: 10px 12px 8px;
+      background: #f8f6f0;
+    }
+
+    .timeline {
+      position: relative;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .timeline::before {
+      content: "";
+      position: absolute;
+      top: 12px;
+      bottom: 18px;
+      left: 13px;
+      width: 2px;
+      background: #d5d1c7;
+    }
+
+    .timeline-group {
+      position: relative;
+      padding-left: 34px;
+    }
+
+    .timeline-group + .timeline-group {
+      margin-top: 10px;
+    }
+
+    .group-marker {
+      position: absolute;
+      top: 5px;
+      left: 6px;
+      width: 16px;
+      height: 16px;
+      display: grid;
+      place-items: center;
+      border: 3px solid #f8f6f0;
+      border-radius: 50%;
+      background: #e4b817;
+      box-shadow: 0 0 0 1px #c39b0d;
+    }
+
+    .group-marker::after {
+      content: "";
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: #fffef9;
+    }
+
+    .group-heading {
+      margin: 0 0 6px;
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .group-title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 17px;
+      font-weight: 700;
+      line-height: 23px;
+    }
+
+    .group-summary {
+      color: #817d73;
+      font-size: 11px;
+      line-height: 16px;
+      white-space: nowrap;
+    }
+
+    .message-card {
+      padding: 8px 10px;
+      border: 1px solid #dedad0;
+      border-radius: 6px;
+      background: #fffef9;
+    }
+
+    .message-card + .message-card {
+      margin-top: 6px;
+    }
+
+    .message-card.unread {
+      border-left: 4px solid #e4b817;
+      padding-left: 7px;
+    }
+
+    .mail-meta {
+      min-width: 0;
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 10px;
+      line-height: 18px;
+    }
+
+    .sender {
+      min-width: 0;
+      overflow: hidden;
+      color: #35332e;
+      font-size: 14px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .message-card.unread .sender,
+    .message-card.unread .subject {
+      font-weight: 600;
+    }
+
+    .mail-time {
+      flex: 0 0 auto;
+      color: #827e75;
+      font-size: 12px;
+    }
+
+    .subject-line {
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      line-height: 20px;
+    }
+
+    .subject {
+      min-width: 0;
+      overflow: hidden;
+      color: #292824;
+      font-size: 14px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .attachment {
+      color: #77736a;
+    }
+
+    .preview {
+      margin: 1px 0 0;
+      overflow: hidden;
+      color: #77736a;
+      font-size: 13px;
+      line-height: 17px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .bottom-nav {
+      margin-top: auto;
+      padding: 8px 10px 9px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border-top: 1px solid #d8d5cc;
+      background: #fffef9;
+    }
+
+    .nav-item {
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      border: 0;
+      background: transparent;
+      color: #77736a;
+      font-size: 12px;
+      line-height: 15px;
+    }
+
+    .nav-icon {
+      width: 26px;
+      height: 25px;
+      display: grid;
+      place-items: center;
+      border-radius: 6px;
+    }
+
+    .nav-item.active {
+      color: #25231e;
+      font-weight: 600;
+    }
+
+    .nav-item.active .nav-icon {
+      background: #f2c94c;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <div>
+        <p class="service-name">Planloom Mail</p>
+        <h1>Inbox</h1>
+      </div>
+      <div class="top-actions">
+        <button class="icon-button" type="button" aria-label="Search mail">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="10.5" cy="10.5" r="6.5" stroke="currentColor" stroke-width="1.8"/>
+            <path d="M15.5 15.5L21 21" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+        </button>
+        <button class="write-button" type="button">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M4 20H8L19 9L15 5L4 16V20Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+            <path d="M13.5 6.5L17.5 10.5" stroke="currentColor" stroke-width="1.7"/>
+          </svg>
+          Write
+        </button>
+      </div>
+    </header>
+
+    <nav class="folder-tabs" aria-label="Mail folders">
+      <button class="folder-tab active" type="button">Inbox <span class="tab-count">12</span></button>
+      <button class="folder-tab" type="button">Starred</button>
+      <button class="folder-tab" type="button">Sent</button>
+    </nav>
+
+    <main>
+      <ol class="timeline" aria-label="Inbox timeline">
+        <li class="timeline-group">
+          <span class="group-marker" aria-hidden="true"></span>
+          <h2 class="group-heading">
+            <span class="group-title">Today</span>
+            <span class="group-summary">3 unread</span>
+          </h2>
+
+          <article class="message-card unread">
+            <div class="mail-meta">
+              <span class="sender">Nora Vance</span>
+              <time class="mail-time">10:42 AM</time>
+            </div>
+            <div class="subject-line">
+              <span class="subject">Updated timing for Tuesday</span>
+            </div>
+            <p class="preview">Planning review moved to 2:30 PM so research can join.</p>
+          </article>
+
+          <article class="message-card unread">
+            <div class="mail-meta">
+              <span class="sender">Workspace Operations</span>
+              <time class="mail-time">9:18 AM</time>
+            </div>
+            <div class="subject-line">
+              <span class="subject">Quarterly access review</span>
+            </div>
+            <p class="preview">Confirm project spaces and remove former guests.</p>
+          </article>
+
+          <article class="message-card unread">
+            <div class="mail-meta">
+              <span class="sender">Elliot Mercer</span>
+              <time class="mail-time">8:06 AM</time>
+            </div>
+            <div class="subject-line">
+              <span class="subject">Roadmap working session notes</span>
+              <svg class="attachment" width="14" height="14" viewBox="0 0 24 24" fill="none" aria-label="Attachment">
+                <path d="M8.5 12.5L14.7 6.3C16.1 4.9 18.3 4.9 19.7 6.3C21.1 7.7 21.1 9.9 19.7 11.3L11.4 19.6C9.3 21.7 5.9 21.7 3.8 19.6C1.7 17.5 1.7 14.1 3.8 12L12.1 3.7" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <p class="preview">Decisions, open questions, and owners from yesterday.</p>
+          </article>
+        </li>
+
+        <li class="timeline-group">
+          <span class="group-marker" aria-hidden="true"></span>
+          <h2 class="group-heading">
+            <span class="group-title">Yesterday</span>
+            <span class="group-summary">2 messages</span>
+          </h2>
+
+          <article class="message-card">
+            <div class="mail-meta">
+              <span class="sender">Mara Bell</span>
+              <time class="mail-time">4:26 PM</time>
+            </div>
+            <div class="subject-line">
+              <span class="subject">Re: Client handoff checklist</span>
+            </div>
+            <p class="preview">Final items are complete and the recording is linked.</p>
+          </article>
+
+          <article class="message-card">
+            <div class="mail-meta">
+              <span class="sender">Theo Linden</span>
+              <time class="mail-time">11:03 AM</time>
+            </div>
+            <div class="subject-line">
+              <span class="subject">Feedback on the weekly digest</span>
+            </div>
+            <p class="preview">The shorter summary works well. Keep deadlines?</p>
+          </article>
+        </li>
+
+        <li class="timeline-group">
+          <span class="group-marker" aria-hidden="true"></span>
+          <h2 class="group-heading">
+            <span class="group-title">Earlier this week</span>
+            <span class="group-summary">May 14</span>
+          </h2>
+
+          <article class="message-card">
+            <div class="mail-meta">
+              <span class="sender">Sonia Alder</span>
+              <time class="mail-time">May 14</time>
+            </div>
+            <div class="subject-line">
+              <span class="subject">June workshop availability</span>
+            </div>
+            <p class="preview">June 11 or June 13 works, preferably morning.</p>
+          </article>
+        </li>
+      </ol>
+    </main>
+
+    <nav class="bottom-nav" aria-label="Primary navigation">
+      <button class="nav-item active" type="button">
+        <span class="nav-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" stroke-width="1.7"/>
+            <path d="M4 7L12 13L20 7" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+          </svg>
+        </span>
+        Mail
+      </button>
+      <button class="nav-item" type="button">
+        <span class="nav-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <rect x="4" y="3" width="16" height="18" rx="2" stroke="currentColor" stroke-width="1.7"/>
+            <path d="M8 8H16M8 12H16M8 16H13" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+          </svg>
+        </span>
+        Notes
+      </button>
+      <button class="nav-item" type="button">
+        <span class="nav-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <rect x="3" y="5" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.7"/>
+            <path d="M7 3V7M17 3V7M3 10H21" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+            <path d="M8 14H10M14 14H16M8 17H10" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+          </svg>
+        </span>
+        Schedule
+      </button>
+      <button class="nav-item" type="button">
+        <span class="nav-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.7"/>
+            <path d="M4.5 21C5.2 16.8 7.7 14.5 12 14.5C16.3 14.5 18.8 16.8 19.5 21" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+          </svg>
+        </span>
+        Account
+      </button>
+    </nav>
+  </div>
+</body>
+</html>

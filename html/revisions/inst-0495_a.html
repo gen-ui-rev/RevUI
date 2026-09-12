@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Loopframe Clip Style</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 40px 0;
+      background: #dcdadd;
+      color: #262328;
+      font-family: 'Inter', system-ui, sans-serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .screen {
+      width: 390px;
+      height: 560px;
+      padding: 16px;
+      background: #efedef;
+    }
+
+    .style-panel {
+      width: 100%;
+      background: #ffffff;
+      border-radius: 18px;
+      box-shadow: 0 12px 30px rgba(45, 35, 41, 0.13);
+    }
+
+    /* ---- hero preview ---- */
+    .preview {
+      position: relative;
+    }
+
+    .preview img {
+      width: 358px;
+      height: 232px;
+      display: block;
+      object-fit: cover;
+      background: #d8d3d6;
+      border-radius: 18px 18px 0 0;
+      filter: saturate(0.86) sepia(0.12) hue-rotate(300deg);
+    }
+
+    .preview-scrim {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 150px;
+      border-radius: 0 0 0 0;
+      background: linear-gradient(to top, rgba(26, 15, 21, 0.9) 0%, rgba(26, 15, 21, 0.45) 45%, rgba(26, 15, 21, 0) 100%);
+    }
+
+    .preview-tags {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      right: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .preview-label {
+      padding: 6px 10px;
+      border-radius: 14px;
+      background: #c43d69;
+      color: #ffffff;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 600;
+    }
+
+    .preview-time {
+      padding: 6px 10px;
+      border-radius: 14px;
+      background: rgba(24, 14, 19, 0.6);
+      color: #f4eef1;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 600;
+    }
+
+    .preview-text {
+      position: absolute;
+      left: 16px;
+      right: 16px;
+      bottom: 14px;
+    }
+
+    .panel-heading {
+      margin: 0;
+      color: #ffffff;
+      font-size: 22px;
+      line-height: 28px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .panel-copy {
+      margin: 3px 0 0;
+      color: rgba(255, 255, 255, 0.82);
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 400;
+    }
+
+    /* ---- controls ---- */
+    .panel-body {
+      padding: 14px 16px 16px;
+    }
+
+    .choice-section + .choice-section {
+      margin-top: 12px;
+    }
+
+    .section-title {
+      margin: 0;
+      color: #302c32;
+      font-size: 15px;
+      line-height: 20px;
+      font-weight: 600;
+    }
+
+    .filter-row {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 8px;
+    }
+
+    .filter-option {
+      width: 102px;
+      margin: 0;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: #625c65;
+      cursor: default;
+    }
+
+    .filter-option img {
+      width: 102px;
+      height: 56px;
+      display: block;
+      object-fit: cover;
+      background: #d8d3d6;
+      border-radius: 12px;
+    }
+
+    .filter-option.selected img {
+      outline: 3px solid #c43d69;
+      outline-offset: 2px;
+      filter: saturate(0.86) sepia(0.12) hue-rotate(300deg);
+    }
+
+    .filter-option:nth-child(2) img {
+      filter: saturate(0.75) contrast(1.05);
+    }
+
+    .filter-option:nth-child(3) img {
+      filter: grayscale(1) contrast(1.1);
+    }
+
+    .filter-name {
+      display: block;
+      margin-top: 6px;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 500;
+      text-align: center;
+    }
+
+    .filter-option.selected .filter-name {
+      color: #b4315d;
+      font-weight: 600;
+    }
+
+    .sticker-row {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 8px;
+    }
+
+    .sticker-option {
+      width: 102px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 7px 6px;
+      border: 1px solid #ded9de;
+      border-radius: 12px;
+      background: #ffffff;
+      color: #5d5760;
+      cursor: default;
+    }
+
+    .sticker-option.selected {
+      border-color: #c43d69;
+      background: #fff1f5;
+      color: #ae2d58;
+    }
+
+    .sticker-option svg {
+      width: 16px;
+      height: 16px;
+      display: block;
+      flex: none;
+    }
+
+    .sticker-name {
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 600;
+    }
+
+    .apply-button {
+      width: 100%;
+      margin-top: 14px;
+      padding: 13px 16px;
+      border: 0;
+      border-radius: 14px;
+      background: #c43d69;
+      color: #ffffff;
+      font-size: 15px;
+      line-height: 20px;
+      font-weight: 600;
+      cursor: default;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <section class="style-panel" aria-labelledby="style-title">
+      <div class="preview">
+        <img src="https://loremflickr.com/358/232/concert?lock=6770" width="358" height="232" alt="Concert stage preview with rose-toned lighting">
+        <span class="preview-scrim"></span>
+        <div class="preview-tags">
+          <span class="preview-label">Roselight preview</span>
+          <span class="preview-time">0:14 clip</span>
+        </div>
+        <div class="preview-text">
+          <h1 class="panel-heading" id="style-title">Choose a clip style</h1>
+          <p class="panel-copy">Roselight filter with the On Air sticker.</p>
+        </div>
+      </div>
+
+      <div class="panel-body">
+        <section class="choice-section" aria-labelledby="filters-title">
+          <h2 class="section-title" id="filters-title">Filters</h2>
+          <div class="filter-row">
+            <button class="filter-option selected" type="button" aria-pressed="true">
+              <img src="https://loremflickr.com/102/56/concert?lock=6771" width="102" height="56" alt="Roselight concert filter preview">
+              <span class="filter-name">Roselight</span>
+            </button>
+            <button class="filter-option" type="button" aria-pressed="false">
+              <img src="https://loremflickr.com/102/56/studio?lock=6772" width="102" height="56" alt="Soft studio filter preview">
+              <span class="filter-name">Soft Fade</span>
+            </button>
+            <button class="filter-option" type="button" aria-pressed="false">
+              <img src="https://loremflickr.com/102/56/vinyl?lock=6773" width="102" height="56" alt="Black and white vinyl filter preview">
+              <span class="filter-name">Monochrome</span>
+            </button>
+          </div>
+        </section>
+
+        <section class="choice-section" aria-labelledby="stickers-title">
+          <h2 class="section-title" id="stickers-title">Stickers</h2>
+          <div class="sticker-row">
+            <button class="sticker-option" type="button" aria-pressed="false">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.8"/>
+                <path d="M6.4 17.6 17.6 6.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+              </svg>
+              <span class="sticker-name">None</span>
+            </button>
+            <button class="sticker-option selected" type="button" aria-pressed="true">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M5 8.5A2.5 2.5 0 0 1 7.5 6h9A2.5 2.5 0 0 1 19 8.5v7a2.5 2.5 0 0 1-2.5 2.5h-9A2.5 2.5 0 0 1 5 15.5v-7Z" stroke="currentColor" stroke-width="1.8"/>
+                <circle cx="12" cy="12" r="2.6" fill="currentColor"/>
+                <path d="M8.4 9.1a5.2 5.2 0 0 0 0 5.8M15.6 9.1a5.2 5.2 0 0 1 0 5.8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+              <span class="sticker-name">On Air</span>
+            </button>
+            <button class="sticker-option" type="button" aria-pressed="false">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="m12 4 2.1 4.4 4.9.7-3.6 3.4.9 4.9-4.3-2.3-4.3 2.3.9-4.9L5 9.1l4.9-.7L12 4Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+              </svg>
+              <span class="sticker-name">Encore</span>
+            </button>
+          </div>
+        </section>
+
+        <button class="apply-button" type="button">Apply style</button>
+      </div>
+    </section>
+  </div>
+</body>
+</html>

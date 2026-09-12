@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pick a time — Loopside</title>
+<style>
+  :root{
+    --amber:#d97706;
+    --amber-dark:#b45309;
+    --amber-soft:rgba(245,158,11,0.16);
+    --amber-softer:rgba(245,158,11,0.09);
+    --ink:#1c1917;
+    --mid:#6b6560;
+    --fill:#f2f0ee;
+    --line:#e7e5e2;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:#e7e5e2;
+    font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    color:var(--ink);
+  }
+  .screen{
+    width:1024px;
+    height:768px;
+    background:#ffffff;
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
+  }
+  /* top bar */
+  .topbar{
+    display:flex;
+    align-items:center;
+    gap:20px;
+    padding:0 32px;
+    height:60px;
+    border-bottom:1px solid var(--line);
+    flex:0 0 auto;
+  }
+  .brand{
+    font-size:16px;
+    font-weight:700;
+    letter-spacing:.01em;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .brand i{
+    width:9px;
+    height:9px;
+    border-radius:50%;
+    background:var(--amber);
+    display:block;
+  }
+  .crumbs{
+    font-size:13px;
+    color:var(--mid);
+  }
+  .crumbs span{color:#c9c5c1;margin:0 7px;}
+  .crumbs b{color:var(--ink);font-weight:600;}
+  .topright{
+    margin-left:auto;
+    display:flex;
+    align-items:center;
+    gap:14px;
+  }
+  .replies{
+    font-size:12px;
+    color:var(--amber-dark);
+    background:var(--amber-softer);
+    border-radius:20px;
+    padding:5px 11px;
+    font-weight:600;
+  }
+  .stack{display:flex;}
+  .av{
+    width:28px;
+    height:28px;
+    border-radius:50%;
+    background:var(--fill);
+    color:#57534e;
+    font-size:11px;
+    font-weight:600;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border:2px solid #fff;
+    margin-left:-7px;
+  }
+  .av:first-child{margin-left:0;}
+  .av.dim{color:#a8a29d;}
+  /* body grid */
+  .body{
+    flex:1;
+    display:grid;
+    grid-template-columns:380px 1fr;
+    gap:34px;
+    padding:26px 32px 24px;
+  }
+  .hero{
+    width:380px;
+    height:220px;
+    object-fit:cover;
+    display:block;
+    background:#d6d2cd;
+    border-radius:12px;
+  }
+  .kicker{
+    margin-top:18px;
+    font-size:12px;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    color:var(--amber-dark);
+    font-weight:600;
+  }
+  h1{
+    margin:7px 0 6px;
+    font-size:25px;
+    line-height:1.22;
+    font-weight:600;
+  }
+  .sub{
+    margin:0;
+    font-size:13px;
+    color:var(--mid);
+  }
+  .facts{
+    margin:18px 0 0;
+    border-top:1px solid var(--line);
+  }
+  .fact{
+    display:flex;
+    justify-content:space-between;
+    gap:14px;
+    padding:10px 0;
+    border-bottom:1px solid var(--line);
+    font-size:13px;
+  }
+  .fact dt{color:var(--mid);margin:0;}
+  .fact dd{margin:0;font-weight:600;text-align:right;}
+  .whoblock{margin-top:18px;}
+  .whoblock .cap{
+    font-size:12px;
+    font-weight:600;
+    color:var(--mid);
+    margin-bottom:9px;
+  }
+  .whorow{
+    display:flex;
+    align-items:center;
+    gap:9px;
+    margin-bottom:8px;
+    font-size:13px;
+  }
+  .mono{
+    width:30px;
+    height:30px;
+    border-radius:9px;
+    background:var(--fill);
+    color:#57534e;
+    font-size:12px;
+    font-weight:600;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex:0 0 auto;
+  }
+  .whorow .st{
+    margin-left:auto;
+    font-size:12px;
+    color:var(--mid);
+  }
+  .whorow .st.free{color:var(--amber-dark);font-weight:600;}
+  /* right column */
+  .col-right{display:flex;flex-direction:column;}
+  .labelrow{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    margin:0 0 11px;
+  }
+  .label{
+    font-size:13px;
+    font-weight:600;
+    color:var(--mid);
+  }
+  .hint{font-size:12px;color:#a09a94;}
+  .dates{
+    display:grid;
+    grid-template-columns:repeat(7,1fr);
+    gap:9px;
+  }
+  .date{
+    background:var(--fill);
+    border-radius:10px;
+    padding:9px 0 10px;
+    text-align:center;
+  }
+  .date .dow{font-size:11px;color:var(--mid);}
+  .date .num{font-size:17px;font-weight:600;margin-top:2px;}
+  .date.on{background:var(--amber-soft);}
+  .date.on .dow,.date.on .num{color:var(--amber-dark);}
+  .slots{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:10px;
+  }
+  .slot{
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:11px 12px 12px;
+    background:#fff;
+  }
+  .slot .t{font-size:16px;font-weight:600;}
+  .meter{display:flex;gap:3px;margin-top:10px;}
+  .seg{
+    height:6px;
+    flex:1;
+    border-radius:3px;
+    background:#eceae7;
+  }
+  .seg.f{background:#e0a63f;}
+  .slot .fit{
+    margin-top:8px;
+    font-size:11px;
+    color:var(--mid);
+  }
+  .slot .fit b{font-weight:600;}
+  .w-good{color:var(--amber-dark);}
+  .w-mid{color:#8a8079;}
+  .w-poor{color:#a8a29d;}
+  .slot.on{
+    border-color:var(--amber);
+    background:var(--amber-softer);
+    box-shadow:0 0 0 1px var(--amber);
+  }
+  .slot.on .t{color:var(--amber-dark);}
+  .slot.on .seg.f{background:var(--amber);}
+  .slot.closed{background:#faf9f8;}
+  .slot.closed .t{color:#a8a29d;}
+  /* summary */
+  .summary{
+    margin-top:22px;
+    background:var(--amber-softer);
+    border-radius:12px;
+    padding:15px 16px;
+    display:flex;
+    align-items:center;
+    gap:12px;
+  }
+  .summary svg{flex:0 0 auto;}
+  .summary .line1{font-size:16px;font-weight:600;}
+  .summary .line2{font-size:12px;color:var(--mid);margin-top:3px;}
+  .summary .pill{
+    margin-left:auto;
+    font-size:11px;
+    font-weight:600;
+    color:#fff;
+    background:var(--amber);
+    border-radius:20px;
+    padding:5px 11px;
+    letter-spacing:.03em;
+    text-transform:uppercase;
+  }
+  .actions{
+    margin-top:auto;
+    padding-top:20px;
+    display:flex;
+    align-items:center;
+    gap:14px;
+  }
+  .cta{
+    background:var(--amber);
+    color:#fff;
+    border:0;
+    border-radius:10px;
+    padding:13px 26px;
+    font-size:15px;
+    font-weight:600;
+    font-family:inherit;
+    cursor:pointer;
+  }
+  .ghost{
+    background:#fff;
+    color:var(--ink);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:13px 20px;
+    font-size:14px;
+    font-weight:600;
+    font-family:inherit;
+    cursor:pointer;
+  }
+  .note{font-size:12px;color:#a09a94;margin-left:auto;}
+</style>
+</head>
+<body>
+  <div class="screen">
+    <header class="topbar">
+      <div class="brand"><i></i>Loopside</div>
+      <nav class="crumbs">Groups <span>/</span> Latte Club <span>/</span> <b>Thursday coffee</b></nav>
+      <div class="topright">
+        <span class="replies">3 of 5 replied</span>
+        <div class="stack">
+          <div class="av">DR</div>
+          <div class="av">KP</div>
+          <div class="av">JL</div>
+          <div class="av dim">+2</div>
+        </div>
+      </div>
+    </header>
+
+    <main class="body">
+      <aside class="col-left">
+        <img class="hero" src="https://loremflickr.com/380/220/cafe?lock=3681" width="380" height="220" alt="Corner table at Marlow Coffee, where the meetup is planned">
+
+        <div class="kicker">Latte Club</div>
+        <h1>Pick a time for Thursday coffee</h1>
+        <p class="sub">Marlow Coffee, 4th &amp; Pine · Recurring every other week</p>
+
+        <dl class="facts">
+          <div class="fact"><dt>Where</dt><dd>Marlow Coffee, 4th &amp; Pine</dd></div>
+          <div class="fact"><dt>Length</dt><dd>About 90 minutes</dd></div>
+          <div class="fact"><dt>Organizer</dt><dd>Dana Reyes</dd></div>
+        </dl>
+
+        <div class="whoblock">
+          <div class="cap">Who answered</div>
+          <div class="whorow"><div class="mono">DR</div>Dana Reyes<span class="st free">Free 6:30</span></div>
+          <div class="whorow"><div class="mono">KP</div>Kiran Patel<span class="st free">Free 6:30</span></div>
+          <div class="whorow"><div class="mono">JL</div>Jules Lam<span class="st free">Free 6:30</span></div>
+          <div class="whorow"><div class="mono">MO</div>Mira Osei<span class="st">No reply yet</span></div>
+        </div>
+      </aside>
+
+      <section class="col-right">
+        <div class="labelrow">
+          <div class="label">March</div>
+          <div class="hint">Week of March 9</div>
+        </div>
+        <div class="dates">
+          <div class="date"><div class="dow">Mon</div><div class="num">9</div></div>
+          <div class="date"><div class="dow">Tue</div><div class="num">10</div></div>
+          <div class="date"><div class="dow">Wed</div><div class="num">11</div></div>
+          <div class="date on"><div class="dow">Thu</div><div class="num">12</div></div>
+          <div class="date"><div class="dow">Fri</div><div class="num">13</div></div>
+          <div class="date"><div class="dow">Sat</div><div class="num">14</div></div>
+          <div class="date"><div class="dow">Sun</div><div class="num">15</div></div>
+        </div>
+
+        <div class="labelrow" style="margin-top:24px;">
+          <div class="label">Start time</div>
+          <div class="hint">Filled bars show how many of 5 members are free</div>
+        </div>
+        <div class="slots">
+          <div class="slot">
+            <div class="t">3:30 PM</div>
+            <div class="meter"><span class="seg f"></span><span class="seg"></span><span class="seg"></span><span class="seg"></span><span class="seg"></span></div>
+            <div class="fit">1 of 5 free · <b class="w-poor">Poor fit</b></div>
+          </div>
+          <div class="slot">
+            <div class="t">4:00 PM</div>
+            <div class="meter"><span class="seg f"></span><span class="seg f"></span><span class="seg"></span><span class="seg"></span><span class="seg"></span></div>
+            <div class="fit">2 of 5 free · <b class="w-poor">Poor fit</b></div>
+          </div>
+          <div class="slot">
+            <div class="t">5:30 PM</div>
+            <div class="meter"><span class="seg f"></span><span class="seg f"></span><span class="seg f"></span><span class="seg"></span><span class="seg"></span></div>
+            <div class="fit">3 of 5 free · <b class="w-mid">Mixed fit</b></div>
+          </div>
+          <div class="slot">
+            <div class="t">6:00 PM</div>
+            <div class="meter"><span class="seg f"></span><span class="seg f"></span><span class="seg f"></span><span class="seg"></span><span class="seg"></span></div>
+            <div class="fit">3 of 5 free · <b class="w-mid">Mixed fit</b></div>
+          </div>
+          <div class="slot on">
+            <div class="t">6:30 PM</div>
+            <div class="meter"><span class="seg f"></span><span class="seg f"></span><span class="seg f"></span><span class="seg f"></span><span class="seg f"></span></div>
+            <div class="fit">5 of 5 free · <b class="w-good">Best fit</b></div>
+          </div>
+          <div class="slot">
+            <div class="t">7:00 PM</div>
+            <div class="meter"><span class="seg f"></span><span class="seg f"></span><span class="seg f"></span><span class="seg f"></span><span class="seg"></span></div>
+            <div class="fit">4 of 5 free · <b class="w-good">Strong fit</b></div>
+          </div>
+          <div class="slot">
+            <div class="t">8:00 PM</div>
+            <div class="meter"><span class="seg f"></span><span class="seg f"></span><span class="seg"></span><span class="seg"></span><span class="seg"></span></div>
+            <div class="fit">2 of 5 free · <b class="w-poor">Poor fit</b></div>
+          </div>
+          <div class="slot closed">
+            <div class="t">9:30 PM</div>
+            <div class="meter"><span class="seg"></span><span class="seg"></span><span class="seg"></span><span class="seg"></span><span class="seg"></span></div>
+            <div class="fit">Café closes at 9 PM</div>
+          </div>
+        </div>
+
+        <div class="summary">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#b45309" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="9"></circle>
+            <path d="M12 7.5V12l3 1.8"></path>
+          </svg>
+          <div>
+            <div class="line1">Thursday, March 12 · 6:30 PM</div>
+            <div class="line2">Runs about 90 minutes, ends 8:00 PM · Dana, Kiran and Jules are free then</div>
+          </div>
+          <span class="pill">Best fit</span>
+        </div>
+
+        <div class="actions">
+          <button class="cta" type="button">Send this time to the group</button>
+          <button class="ghost" type="button">Suggest another day</button>
+          <span class="note">Mira and Tom get a reminder</span>
+        </div>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

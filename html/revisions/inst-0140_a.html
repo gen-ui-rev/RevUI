@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Halyard — Post</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --taupe:#8A7968;
+    --taupe-dk:#6C5D4E;
+    --taupe-lt:#EFEBE5;
+    --ink:#221F1C;
+    --body:#3C3833;
+    --muted:#7C766E;
+    --line:#E4DFD8;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    padding:40px 0;
+    background:#D4CEC5;
+    font-family:'Source Sans 3', system-ui, sans-serif;
+  }
+  .screen{
+    width:1024px;
+    height:768px;
+    background:#FFFFFF;
+    display:flex;
+    color:var(--ink);
+  }
+
+  /* ---------- left sidebar ---------- */
+  .side{
+    width:216px;
+    flex:0 0 216px;
+    border-right:1px solid var(--line);
+    padding:20px 0 18px;
+    display:flex;
+    flex-direction:column;
+    background:#FCFBF9;
+  }
+  .brand{
+    font-family:'Playfair Display', Georgia, serif;
+    font-weight:700;
+    font-size:19px;
+    line-height:24px;
+    padding:0 20px 4px;
+  }
+  .brand span{
+    display:block;
+    font-family:'Source Sans 3', system-ui, sans-serif;
+    font-weight:400;
+    font-size:12px;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    color:var(--muted);
+  }
+  .navlist{margin-top:20px;display:flex;flex-direction:column;}
+  .nav{
+    display:flex;align-items:center;gap:10px;
+    padding:9px 20px;
+    font-size:14px;
+    color:var(--body);
+    border-left:2px solid transparent;
+  }
+  .nav.active{
+    background:var(--taupe-lt);
+    color:var(--taupe-dk);
+    font-weight:600;
+    border-left-color:var(--taupe);
+  }
+  .nav .cnt{margin-left:auto;font-size:12px;color:var(--muted);}
+  .side-lbl{
+    padding:18px 20px 6px;
+    font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);
+  }
+  .team{
+    display:flex;align-items:center;gap:8px;
+    padding:6px 20px;
+    font-size:13px;color:var(--body);
+  }
+  .dot{width:7px;height:7px;background:var(--taupe);flex:0 0 auto;}
+  .me{
+    margin-top:auto;
+    display:flex;align-items:center;gap:10px;
+    padding:12px 20px 0;
+    border-top:1px solid var(--line);
+  }
+  .me .nm2{font-size:13px;font-weight:600;line-height:17px;}
+  .me .rl{font-size:12px;color:var(--muted);line-height:16px;}
+
+  /* ---------- main ---------- */
+  .mainwrap{flex:1;display:flex;flex-direction:column;min-width:0;}
+  .topbar{
+    display:flex;align-items:center;gap:12px;
+    padding:14px 24px;
+    border-bottom:1px solid var(--line);
+  }
+  .icon-btn{
+    width:22px;height:22px;
+    display:flex;align-items:center;justify-content:center;
+    color:var(--body);
+    flex:0 0 auto;
+  }
+  .tb-title{font-size:15px;font-weight:600;letter-spacing:.02em;}
+  .tb-sub{font-size:13px;color:var(--muted);}
+  .tb-actions{margin-left:auto;display:flex;align-items:center;gap:10px;}
+  .ghost{
+    display:flex;align-items:center;gap:7px;
+    border:1px solid var(--line);
+    padding:6px 12px;
+    font-size:13px;font-weight:600;color:var(--taupe-dk);
+  }
+
+  .cols{flex:1;display:flex;min-height:0;}
+  .center{
+    flex:1;min-width:0;
+    padding:24px 24px 0;
+    border-right:1px solid var(--line);
+  }
+
+  .author{display:flex;align-items:center;gap:12px;}
+  .mono{
+    width:40px;height:40px;
+    background:var(--taupe);
+    color:#fff;
+    font-size:15px;font-weight:600;letter-spacing:.04em;
+    display:flex;align-items:center;justify-content:center;
+    flex:0 0 auto;
+  }
+  .who{flex:1;min-width:0;}
+  .who .nm{font-size:15px;font-weight:600;line-height:19px;}
+  .who .mt{font-size:13px;color:var(--muted);line-height:17px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .tag{
+    font-size:12px;
+    color:var(--taupe-dk);
+    border:1px solid var(--taupe);
+    padding:1px 6px;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    flex:0 0 auto;
+  }
+  h1{
+    font-family:'Playfair Display', Georgia, serif;
+    font-weight:600;
+    font-size:24px;
+    line-height:30px;
+    margin:16px 0 0;
+  }
+  .lead{
+    margin:8px 0 0;
+    font-size:15px;
+    line-height:23px;
+    color:var(--body);
+    max-width:430px;
+  }
+
+  /* attached doc with provenance */
+  .doc{
+    display:flex;align-items:flex-start;gap:12px;
+    margin-top:18px;
+    padding:14px 16px;
+    border:1px solid var(--line);
+    background:#FCFBF9;
+  }
+  .doc>svg{color:var(--taupe-dk);flex:0 0 auto;margin-top:2px;}
+  .dinfo{min-width:0;flex:1;}
+  .dn{font-size:14px;font-weight:600;line-height:19px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .dmeta{font-size:12.5px;color:var(--muted);line-height:18px;}
+  .dmeta b{color:var(--body);font-weight:600;}
+  .open{
+    flex:0 0 auto;
+    border:1px solid var(--taupe);
+    color:var(--taupe-dk);
+    font-size:13px;font-weight:600;
+    padding:5px 12px;
+  }
+
+  .shots{display:flex;gap:8px;margin-top:16px;}
+  .shots img{display:block;object-fit:cover;background:#CFC9C0;}
+
+  .reactions{
+    display:flex;align-items:center;gap:8px;
+    margin-top:16px;
+    padding-bottom:16px;
+    border-bottom:1px solid var(--line);
+  }
+  .chip{
+    display:flex;align-items:center;gap:6px;
+    height:30px;
+    padding:0 12px;
+    font-size:13px;
+  }
+  .chip.on{background:var(--taupe);color:#fff;font-weight:600;}
+  .chip.off{border:1px solid var(--line);color:var(--body);}
+  .seen{margin-left:auto;font-size:13px;color:var(--muted);}
+
+  .changes{padding:16px 0 0;}
+  .changes h3{
+    font-family:'Playfair Display', Georgia, serif;
+    font-size:16px;font-weight:600;line-height:21px;margin:0;
+  }
+  .changes ul{margin:8px 0 0;padding:0;list-style:none;}
+  .changes li{
+    font-size:14px;line-height:20px;color:var(--body);
+    padding:5px 0 5px 14px;
+    position:relative;
+  }
+  .changes li:before{
+    content:"";position:absolute;left:0;top:12px;
+    width:6px;height:1px;background:var(--taupe);
+  }
+
+  /* ---------- comments rail, grouped by day ---------- */
+  .rail{width:320px;flex:0 0 320px;display:flex;flex-direction:column;min-height:0;}
+  .c-head{
+    display:flex;align-items:baseline;gap:8px;
+    padding:16px 16px 10px;
+    border-bottom:1px solid var(--line);
+  }
+  .c-head h2{
+    font-family:'Playfair Display', Georgia, serif;
+    font-weight:600;font-size:18px;line-height:23px;margin:0;
+  }
+  .c-head .ct{font-size:13px;color:var(--muted);}
+  .c-head .sort{margin-left:auto;font-size:13px;color:var(--taupe-dk);font-weight:600;}
+
+  .clist{flex:1;}
+  .cgroup{
+    display:flex;align-items:center;gap:8px;
+    padding:11px 16px 7px;
+    font-size:11px;letter-spacing:.09em;text-transform:uppercase;
+    color:var(--taupe-dk);font-weight:600;
+    background:#FCFBF9;
+    border-bottom:1px solid var(--line);
+  }
+  .cgroup em{
+    font-style:normal;font-weight:400;letter-spacing:.02em;
+    text-transform:none;color:var(--muted);font-size:12px;
+  }
+  .cmt{
+    display:flex;gap:10px;
+    padding:11px 16px;
+    border-bottom:1px solid var(--line);
+  }
+  .cmono{
+    width:30px;height:30px;flex:0 0 auto;
+    background:var(--taupe-lt);
+    color:var(--taupe-dk);
+    font-size:12px;font-weight:600;letter-spacing:.04em;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .cbody{min-width:0;}
+  .cline{display:flex;align-items:baseline;gap:6px;line-height:18px;}
+  .cline .cn{font-size:13.5px;font-weight:600;}
+  .cline .cw{font-size:12px;color:var(--muted);}
+  .cbody p{margin:2px 0 0;font-size:13.5px;line-height:19px;color:var(--body);}
+  .viewall{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:12px 16px;
+    border-bottom:1px solid var(--line);
+    font-size:13.5px;font-weight:600;color:var(--taupe-dk);
+  }
+  .composer{
+    display:flex;align-items:center;gap:10px;
+    padding:14px 16px;
+    border-top:1px solid var(--line);
+  }
+  .field{
+    flex:1;min-width:0;
+    height:32px;
+    border:1px solid var(--line);
+    display:flex;align-items:center;
+    padding:0 10px;
+    font-size:13.5px;
+    color:var(--muted);
+  }
+  .send{
+    background:var(--taupe);color:#fff;
+    font-size:13px;font-weight:600;
+    padding:7px 12px;flex:0 0 auto;
+  }
+</style>
+</head>
+<body>
+<div class="screen">
+
+  <aside class="side">
+    <div class="brand">Halyard<span>Design Ops</span></div>
+    <div class="navlist">
+      <span class="nav active">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h10"/></svg>
+        Feed
+      </span>
+      <span class="nav">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4h16v16H4z"/><path d="M8 12.5l3 3 5-6"/></svg>
+        Tasks <span class="cnt">7</span>
+      </span>
+      <span class="nav">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h16v14H4z"/><path d="M4 10h16"/><path d="M9 3v4"/><path d="M15 3v4"/></svg>
+        Calendar
+      </span>
+      <span class="nav">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 13l3-8h10l3 8v6H4z"/><path d="M4 13h5l1 3h4l1-3h5"/></svg>
+        Inbox <span class="cnt">3</span>
+      </span>
+    </div>
+    <div class="side-lbl">Channels</div>
+    <span class="team"><i class="dot"></i>Team feed</span>
+    <span class="team"><i class="dot"></i>Release notes</span>
+    <span class="team"><i class="dot"></i>Research library</span>
+    <div class="me">
+      <div class="cmono">AK</div>
+      <div>
+        <div class="nm2">Aya Kestrel</div>
+        <div class="rl">Design Ops</div>
+      </div>
+    </div>
+  </aside>
+
+  <div class="mainwrap">
+
+    <div class="topbar">
+      <span class="icon-btn" aria-label="Back">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M15 5l-7 7 7 7"/></svg>
+      </span>
+      <span class="tb-title">Design Ops</span>
+      <span class="tb-sub">Team feed · 24 members</span>
+      <span class="tb-actions">
+        <span class="ghost">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M6 3h12v18l-6-4.5L6 21z"/></svg>
+          Save post
+        </span>
+        <span class="ghost">Share</span>
+      </span>
+    </div>
+
+    <div class="cols">
+      <main class="center">
+        <div class="author">
+          <div class="mono">RM</div>
+          <div class="who">
+            <div class="nm">Renata Mahoney</div>
+            <div class="mt">Product Ops · Mar 14, 9:42 AM</div>
+          </div>
+          <span class="tag">Pinned</span>
+        </div>
+
+        <h1>Sprint 24 retro notes are up</h1>
+        <p class="lead">Everything from Thursday's session is in the shared doc, including the three workflow changes we agreed to try. Board photos are attached below.</p>
+
+        <div class="doc">
+          <svg width="16" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M14 3H6v18h12V7z"/><path d="M14 3v4h4"/></svg>
+          <div class="dinfo">
+            <div class="dn">Retro 24 — decisions and owners</div>
+            <div class="dmeta">Uploaded by <b>Renata Mahoney</b> · 3 pages</div>
+            <div class="dmeta">Updated Mar 14, 8:15 AM by <b>Dana Lindqvist</b></div>
+          </div>
+          <span class="open">Open</span>
+        </div>
+
+        <div class="shots">
+          <img src="https://loremflickr.com/140/94/notebook?lock=2661" width="140" height="94" alt="Handwritten retro notes in an open notebook">
+          <img src="https://loremflickr.com/140/94/meeting?lock=2662" width="140" height="94" alt="Team gathered around the retro board">
+          <img src="https://loremflickr.com/140/94/desk?lock=2663" width="140" height="94" alt="Desk with sticky notes sorted into columns">
+        </div>
+
+        <div class="reactions">
+          <span class="chip on">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 12.5l5 5L20 6.5"/></svg>
+            Acknowledged 24
+          </span>
+          <span class="chip off">Watching 6</span>
+          <span class="seen">Seen by 31</span>
+        </div>
+
+        <div class="changes">
+          <h3>Workflow changes we're trying</h3>
+          <ul>
+            <li>Design sync moves to Wednesday mornings for this cycle.</li>
+            <li>Every retro item gets an owner before the board closes.</li>
+            <li>One release note per sprint, drafted by the on-call designer.</li>
+          </ul>
+        </div>
+      </main>
+
+      <aside class="rail">
+        <div class="c-head">
+          <h2>Comments</h2>
+          <span class="ct">18</span>
+          <span class="sort">Newest</span>
+        </div>
+
+        <div class="clist">
+          <div class="cgroup">Today <em>5 comments</em></div>
+
+          <div class="cmt">
+            <div class="cmono">PV</div>
+            <div class="cbody">
+              <div class="cline"><span class="cn">Priya Venkatesan</span><span class="cw">34m</span></div>
+              <p>Can we move the design sync to Wednesday? Thursday is packed for the whole team this cycle.</p>
+            </div>
+          </div>
+
+          <div class="cmt">
+            <div class="cmono">MO</div>
+            <div class="cbody">
+              <div class="cline"><span class="cn">Marcus Oyelaran</span><span class="cw">1h</span></div>
+              <p>Taking the API cleanup item.</p>
+            </div>
+          </div>
+
+          <div class="cgroup">Yesterday <em>7 comments</em></div>
+
+          <div class="cmt">
+            <div class="cmono">DL</div>
+            <div class="cbody">
+              <div class="cline"><span class="cn">Dana Lindqvist</span><span class="cw">4:20 PM</span></div>
+              <p>Migration checklist is in the doc now. Two items still need owners before Friday's cutoff.</p>
+            </div>
+          </div>
+
+          <div class="viewall">
+            <span>View all 18 comments</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 5l7 7-7 7"/></svg>
+          </div>
+        </div>
+
+        <div class="composer">
+          <div class="cmono">AK</div>
+          <div class="field">Add a comment</div>
+          <span class="send">Post</span>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
